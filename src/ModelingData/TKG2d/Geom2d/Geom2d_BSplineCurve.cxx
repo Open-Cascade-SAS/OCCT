@@ -69,9 +69,13 @@ static void CheckCurveData(const NCollection_Array1<gp_Pnt2d>& CPoles,
   }
 
   if (CPoles.Length() < 2)
+  {
     throw Standard_ConstructionError("BSpline curve: at least 2 poles required");
+  }
   if (CKnots.Length() != CMults.Length())
+  {
     throw Standard_ConstructionError("BSpline curve: Knot and Mult array size mismatch");
+  }
 
   for (int I = CKnots.Lower(); I < CKnots.Upper(); I++)
   {
@@ -82,7 +86,9 @@ static void CheckCurveData(const NCollection_Array1<gp_Pnt2d>& CPoles,
   }
 
   if (CPoles.Length() != BSplCLib::NbPoles(Degree, Periodic, CMults))
+  {
     throw Standard_ConstructionError("BSpline curve: # Poles and degree mismatch");
+  }
 }
 
 //! Check rationality of an array of weights
@@ -179,7 +185,9 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const NCollection_Array1<gp_Pnt2d>& Pol
   CheckCurveData(Poles, Knots, Mults, Degree, Periodic);
 
   if (Weights.Length() != Poles.Length())
+  {
     throw Standard_ConstructionError("Geom2d_BSplineCurve: Weights and Poles array size mismatch");
+  }
 
   int i;
   for (i = Weights.Lower(); i <= Weights.Upper(); i++)
@@ -228,7 +236,9 @@ int Geom2d_BSplineCurve::MaxDegree()
 void Geom2d_BSplineCurve::IncreaseDegree(const int Degree)
 {
   if (Degree == myDeg)
+  {
     return;
+  }
 
   if (Degree < myDeg || Degree > Geom2d_BSplineCurve::MaxDegree())
   {
@@ -270,9 +280,13 @@ void Geom2d_BSplineCurve::IncreaseDegree(const int Degree)
   myDeg   = Degree;
   myPoles = std::move(npoles);
   if (IsRational())
+  {
     myWeights = std::move(nweights);
+  }
   else
+  {
     myWeights = BSplCLib::UnitWeights(myPoles.Length());
+  }
   myKnots = std::move(nknots);
   myMults = std::move(nmults);
   updateKnots();
@@ -297,7 +311,9 @@ void Geom2d_BSplineCurve::IncreaseMultiplicity(const int I1, const int I2, const
   NCollection_Array1<int>    m(I1, I2);
   int                        i;
   for (i = I1; i <= I2; i++)
+  {
     m(i) = M - myMults.Value(i);
+  }
   InsertKnots(k, m, Epsilon(1.), true);
 }
 
@@ -342,10 +358,14 @@ void Geom2d_BSplineCurve::InsertKnots(const NCollection_Array1<double>& Knots,
                                     nbknots,
                                     Epsilon,
                                     Add))
+  {
     throw Standard_ConstructionError("Geom2d_BSplineCurve::InsertKnots");
+  }
 
   if (nbpoles == myPoles.Length())
+  {
     return;
+  }
 
   NCollection_Array1<gp_Pnt2d> npoles(1, nbpoles);
   NCollection_Array1<double>   nknots(1, nbknots);
@@ -372,9 +392,13 @@ void Geom2d_BSplineCurve::InsertKnots(const NCollection_Array1<double>& Knots,
                         Epsilon,
                         Add);
   if (myRational)
+  {
     myWeights = std::move(nweights);
+  }
   else
+  {
     myWeights = BSplCLib::UnitWeights(npoles.Length());
+  }
   myPoles = std::move(npoles);
   myKnots = std::move(nknots);
   myMults = std::move(nmults);
@@ -386,7 +410,9 @@ void Geom2d_BSplineCurve::InsertKnots(const NCollection_Array1<double>& Knots,
 bool Geom2d_BSplineCurve::RemoveKnot(const int Index, const int M, const double Tolerance)
 {
   if (M < 0)
+  {
     return true;
+  }
 
   int I1 = FirstUKnotIndex();
   int I2 = LastUKnotIndex();
@@ -400,7 +426,9 @@ bool Geom2d_BSplineCurve::RemoveKnot(const int Index, const int M, const double 
 
   int step = myMults.Value(Index) - M;
   if (step <= 0)
+  {
     return true;
+  }
 
   NCollection_Array1<gp_Pnt2d> npoles(1, oldpoles.Length() - step);
 
@@ -431,9 +459,13 @@ bool Geom2d_BSplineCurve::RemoveKnot(const int Index, const int M, const double 
   }
 
   if (IsRational())
+  {
     myWeights = std::move(nweights);
+  }
   else
+  {
     myWeights = BSplCLib::UnitWeights(npoles.Length());
+  }
   myPoles = std::move(npoles);
   myKnots = std::move(nknots);
   myMults = std::move(nmults);
@@ -448,10 +480,14 @@ bool Geom2d_BSplineCurve::RemoveKnot(const int Index, const int M, const double 
 void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, const double Weight)
 {
   if (Index < 0 || Index > myPoles.Length())
+  {
     throw Standard_OutOfRange("BSpline curve: InsertPoleAfter: Index and #pole mismatch");
+  }
 
   if (Weight <= gp::Resolution())
+  {
     throw Standard_ConstructionError("BSpline curve: InsertPoleAfter: Weight too small");
+  }
 
   if (myKnotSet == GeomAbs_NonUniform || myKnotSet == GeomAbs_PiecewiseBezier)
   {
@@ -476,7 +512,9 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
   const NCollection_Array1<int>& cmults = myMults;
 
   for (i = 2; i <= nbknots; i++)
+  {
     nmults(i) = 1;
+  }
   nmults(1)           = cmults(1);
   nmults(nbknots + 1) = cmults(nbknots);
 
@@ -487,12 +525,16 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
   // insert the pole
 
   for (i = 1; i <= Index; i++)
+  {
     npoles(i) = cpoles(i);
+  }
 
   npoles(Index + 1) = P;
 
   for (i = Index + 1; i <= nbpoles; i++)
+  {
     npoles(i + 1) = cpoles(i);
+  }
 
   // Insert the weight
 
@@ -504,25 +546,41 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
     nweights.Resize(1, nbpoles + 1, false);
 
     for (i = 1; i <= Index; i++)
+    {
       if (IsRational())
+      {
         nweights(i) = myWeights.Value(i);
+      }
       else
+      {
         nweights(i) = 1.;
+      }
+    }
 
     nweights(Index + 1) = Weight;
 
     for (i = Index + 1; i <= nbpoles; i++)
+    {
       if (IsRational())
+      {
         nweights(i + 1) = myWeights.Value(i);
+      }
       else
+      {
         nweights(i + 1) = 1.;
+      }
+    }
   }
 
   myPoles = std::move(npoles);
   if (rat)
+  {
     myWeights = std::move(nweights);
+  }
   else
+  {
     myWeights = BSplCLib::UnitWeights(myPoles.Length());
+  }
   myRational      = rat;
   myKnots         = std::move(nknots);
   myMults         = std::move(nmults);
@@ -542,13 +600,19 @@ void Geom2d_BSplineCurve::InsertPoleBefore(const int Index, const gp_Pnt2d& P, c
 void Geom2d_BSplineCurve::RemovePole(const int Index)
 {
   if (Index < 1 || Index > myPoles.Length())
+  {
     throw Standard_OutOfRange("BSpline curve: RemovePole: Index and #pole mismatch");
+  }
 
   if (myPoles.Length() <= 2)
+  {
     throw Standard_ConstructionError("BSpline curve: RemovePole: #pole is already minimum");
+  }
 
   if (myKnotSet == GeomAbs_NonUniform || myKnotSet == GeomAbs_PiecewiseBezier)
+  {
     throw Standard_ConstructionError("BSpline curve: RemovePole: bad knotSet type");
+  }
 
   int                        i;
   NCollection_Array1<double> nknots(1, myKnots.Length() - 1);
@@ -567,18 +631,26 @@ void Geom2d_BSplineCurve::RemovePole(const int Index)
   NCollection_Array1<gp_Pnt2d> npoles(1, myPoles.Upper() - 1);
 
   for (i = 1; i < Index; i++)
+  {
     npoles(i) = myPoles.Value(i);
+  }
   for (i = Index; i <= npoles.Length(); i++)
+  {
     npoles(i) = myPoles.Value(i + 1);
+  }
 
   NCollection_Array1<double> nweights;
   if (IsRational())
   {
     nweights.Resize(1, npoles.Length(), false);
     for (i = 1; i < Index; i++)
+    {
       nweights(i) = myWeights.Value(i);
+    }
     for (i = Index; i <= nweights.Length(); i++)
+    {
       nweights(i) = myWeights.Value(i + 1);
+    }
   }
 
   myPoles = std::move(npoles);
@@ -587,7 +659,9 @@ void Geom2d_BSplineCurve::RemovePole(const int Index)
     myWeights  = std::move(nweights);
     myRational = Rational(myWeights);
     if (!myRational)
+    {
       myWeights = BSplCLib::UnitWeights(myPoles.Length());
+    }
   }
   else
   {
@@ -606,12 +680,18 @@ void Geom2d_BSplineCurve::Reverse()
   BSplCLib::Reverse(myMults);
   int last;
   if (myPeriodic)
+  {
     last = myFlatKnots.Upper() - myDeg - 1;
+  }
   else
+  {
     last = myPoles.Upper();
+  }
   BSplCLib::Reverse(myPoles, last);
   if (myRational)
+  {
     BSplCLib::Reverse(myWeights, last);
+  }
   updateKnots();
 }
 
@@ -627,7 +707,9 @@ double Geom2d_BSplineCurve::ReversedParameter(const double U) const
 void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const double theTolerance)
 {
   if (aU2 < aU1)
+  {
     throw Standard_DomainError("Geom2d_BSplineCurve::Segment");
+  }
 
   double NewU1, NewU2;
   double U, DU = 0, aDDU = 0;
@@ -645,9 +727,13 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
     double Period = LastParameter() - FirstParameter();
     DU            = U2 - U1;
     if (DU - Period > Precision::PConfusion())
+    {
       throw Standard_DomainError("Geom2d_BSplineCurve::Segment");
+    }
     if (DU > Period)
+    {
       DU = Period;
+    }
     aDDU = DU;
   }
 
@@ -790,9 +876,13 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
   myMults = std::move(nmults);
   myPoles = std::move(npoles);
   if (myRational)
+  {
     myWeights = std::move(nweights);
+  }
   else
+  {
     myWeights = BSplCLib::UnitWeights(myPoles.Length());
+  }
   myMaxDerivInvOk = false;
   updateKnots();
 }
@@ -802,12 +892,16 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
 void Geom2d_BSplineCurve::SetKnot(const int Index, const double K)
 {
   if (Index < 1 || Index > myKnots.Length())
+  {
     throw Standard_OutOfRange("BSpline curve: SetKnot: Index and #knots mismatch");
+  }
   double DK = std::abs(Epsilon(K));
   if (Index == 1)
   {
     if (K >= myKnots.Value(2) - DK)
+    {
       throw Standard_ConstructionError("BSpline curve: SetKnot: K out of range");
+    }
   }
   else if (Index == myKnots.Length())
   {
@@ -858,12 +952,16 @@ void Geom2d_BSplineCurve::SetPeriodic()
 
   NCollection_Array1<double> cknots(1, last - first + 1);
   for (int k = first; k <= last; k++)
+  {
     cknots(k - first + 1) = myKnots(k);
+  }
   myKnots = std::move(cknots);
 
   NCollection_Array1<int> cmults(1, last - first + 1);
   for (int k = first; k <= last; k++)
+  {
     cmults(k - first + 1) = myMults(k);
+  }
   cmults(1) = cmults(cmults.Upper()) = std::min(myDeg, std::max(cmults(1), cmults(cmults.Upper())));
   myMults                            = std::move(cmults);
 
@@ -872,9 +970,13 @@ void Geom2d_BSplineCurve::SetPeriodic()
 
   myPoles.Resize(1, nbp, true);
   if (myRational)
+  {
     myWeights.Resize(1, nbp, true);
+  }
   else
+  {
     myWeights = BSplCLib::UnitWeights(nbp);
+  }
 
   myPeriodic = true;
 
@@ -887,13 +989,17 @@ void Geom2d_BSplineCurve::SetPeriodic()
 void Geom2d_BSplineCurve::SetOrigin(const int Index)
 {
   if (!myPeriodic)
+  {
     throw Standard_NoSuchObject("Geom2d_BSplineCurve::SetOrigin");
+  }
   int i, k;
   int first = FirstUKnotIndex();
   int last  = LastUKnotIndex();
 
   if ((Index < first) || (Index > last))
+  {
     throw Standard_DomainError("Geom2d_BSplineCurve::SetOrigin");
+  }
 
   int nbknots = myKnots.Length();
   int nbpoles = myPoles.Length();
@@ -920,7 +1026,9 @@ void Geom2d_BSplineCurve::SetOrigin(const int Index)
 
   int index = 1;
   for (i = first + 1; i <= Index; i++)
+  {
     index += myMults.Value(i);
+  }
 
   // set the poles and weights
   NCollection_Array1<gp_Pnt2d> npoles(1, nbpoles);
@@ -963,9 +1071,13 @@ void Geom2d_BSplineCurve::SetOrigin(const int Index)
   myKnots = std::move(nknots);
   myMults = std::move(nmults);
   if (myRational)
+  {
     myWeights = std::move(nweights);
+  }
   else
+  {
     myWeights = BSplCLib::UnitWeights(nbpoles);
+  }
   myMaxDerivInvOk = false;
   updateKnots();
 }
@@ -1002,9 +1114,13 @@ void Geom2d_BSplineCurve::SetNotPeriodic()
                           myRational ? &nweights : BSplCLib::NoWeights());
     myPoles = std::move(npoles);
     if (IsRational())
+    {
       myWeights = std::move(nweights);
+    }
     else
+    {
       myWeights = BSplCLib::UnitWeights(myPoles.Length());
+    }
     myMults         = std::move(nmults);
     myKnots         = std::move(nknots);
     myPeriodic      = false;
@@ -1018,7 +1134,9 @@ void Geom2d_BSplineCurve::SetNotPeriodic()
 void Geom2d_BSplineCurve::SetPole(const int Index, const gp_Pnt2d& P)
 {
   if (Index < 1 || Index > myPoles.Length())
+  {
     throw Standard_OutOfRange("BSpline curve: SetPole: index and #pole mismatch");
+  }
   myPoles.SetValue(Index, P);
   myMaxDerivInvOk = false;
 }
@@ -1036,10 +1154,14 @@ void Geom2d_BSplineCurve::SetPole(const int Index, const gp_Pnt2d& P, const doub
 void Geom2d_BSplineCurve::SetWeight(const int Index, const double W)
 {
   if (Index < 1 || Index > myPoles.Length())
+  {
     throw Standard_OutOfRange("BSpline curve: SetWeight: Index and #pole mismatch");
+  }
 
   if (W <= gp::Resolution())
+  {
     throw Standard_ConstructionError("BSpline curve: SetWeight: Weight too small");
+  }
 
   bool rat = IsRational() || (std::abs(W - 1.) > gp::Resolution());
 
@@ -1057,7 +1179,9 @@ void Geom2d_BSplineCurve::SetWeight(const int Index, const double W)
     {
       rat = Rational(myWeights);
       if (!rat)
+      {
         myWeights = BSplCLib::UnitWeights(myPoles.Length());
+      }
     }
 
     myRational = rat;
@@ -1173,7 +1297,9 @@ void Geom2d_BSplineCurve::updateKnots()
   }
 
   if (MaxKnotMult == 0)
+  {
     mySmooth = GeomAbs_CN;
+  }
   else
   {
     switch (myDeg - MaxKnotMult)

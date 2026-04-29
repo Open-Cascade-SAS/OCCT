@@ -52,6 +52,8 @@ const StepAP214_SecurityClassificationItem& StepAP214_AppliedSecurityClassificat
 int StepAP214_AppliedSecurityClassificationAssignment::NbItems() const
 {
   if (items.IsNull())
+  {
     return 0;
+  }
   return items->Length();
 }

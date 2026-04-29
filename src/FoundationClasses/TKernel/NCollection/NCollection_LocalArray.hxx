@@ -180,15 +180,17 @@ public:
   {
     if (theOther.isInline())
     {
+      // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
+      const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
       if constexpr (IS_TRIVIAL)
       {
-        std::memcpy(inlinePtr(), theOther.inlinePtr(), mySize * sizeof(theItem));
+        std::memcpy(inlinePtr(), theOther.inlinePtr(), aNb * sizeof(theItem));
       }
       else
       {
-        for (size_t i = 0; i < mySize; ++i)
+        for (size_t i = 0; i < aNb; ++i)
           new (inlinePtr() + i) theItem(std::move(theOther.inlinePtr()[i]));
-        for (size_t i = 0; i < mySize; ++i)
+        for (size_t i = 0; i < aNb; ++i)
           theOther.inlinePtr()[i].~theItem();
       }
     }
@@ -212,7 +214,9 @@ public:
       {
         Deallocate();
         myPtr = inlinePtr();
-        std::memcpy(inlinePtr(), theOther.inlinePtr(), mySize * sizeof(theItem));
+        // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
+        const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
+        std::memcpy(inlinePtr(), theOther.inlinePtr(), aNb * sizeof(theItem));
       }
       else if (!isInline())
       {
@@ -240,9 +244,11 @@ public:
           Standard::Free(myPtr);
         myPtr  = inlinePtr();
         mySize = theOther.mySize;
-        for (size_t i = 0; i < mySize; ++i)
+        // When the source is inline, mySize is bounded by MAX_ARRAY_SIZE.
+        const size_t aNb = std::min(mySize, static_cast<size_t>(MAX_ARRAY_SIZE));
+        for (size_t i = 0; i < aNb; ++i)
           new (inlinePtr() + i) theItem(std::move(theOther.inlinePtr()[i]));
-        for (size_t i = 0; i < mySize; ++i)
+        for (size_t i = 0; i < aNb; ++i)
           theOther.inlinePtr()[i].~theItem();
       }
       else

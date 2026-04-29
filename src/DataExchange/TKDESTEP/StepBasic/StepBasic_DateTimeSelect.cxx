@@ -23,13 +23,21 @@ StepBasic_DateTimeSelect::StepBasic_DateTimeSelect() = default;
 int StepBasic_DateTimeSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Date)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_LocalTime)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_DateAndTime)))
+  {
     return 3;
+  }
   return 0;
 }
 

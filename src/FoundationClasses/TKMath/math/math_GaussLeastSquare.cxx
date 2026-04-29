@@ -46,8 +46,6 @@ void math_GaussLeastSquare::Solve(const math_Vector& B, math_Vector& X) const
   X.Multiply(A2, B);
 
   LU_Solve(LU, Index, X);
-
-  return;
 }
 
 void math_GaussLeastSquare::Dump(Standard_OStream& o) const

@@ -37,7 +37,9 @@ void RWStepKinematics_RWMechanismStateRepresentation::ReadStep(
 {
   // Number of Parameter Control
   if (!theData->CheckNbParams(theNum, 4, theArch, "mechanism_state_representation"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -59,7 +61,9 @@ void RWStepKinematics_RWMechanismStateRepresentation::ReadStep(
                               theArch,
                               STANDARD_TYPE(StepRepr_RepresentationItem),
                               anEnt))
+      {
         aItems->SetValue(i, anEnt);
+      }
     }
   }
 

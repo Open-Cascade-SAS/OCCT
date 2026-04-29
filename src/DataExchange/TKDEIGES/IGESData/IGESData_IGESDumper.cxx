@@ -43,10 +43,14 @@ void IGESData_IGESDumper::PrintDNum(const occ::handle<IGESData_IGESEntity>& ent,
   if (!ent.IsNull())
   {
     if (themodel.IsNull())
+    {
       S << "    D???    ";
+    }
     else if ((num = themodel->Number(ent)) == 0)
+    {
       S << "    0:D?????";
-    // throw Interface_InterfaceError("IGESDumper : PrintDNum");
+      // throw Interface_InterfaceError("IGESDumper : PrintDNum");
+    }
     else
     {
       S << Interface_MSG::Blanks(num, 9) << num << ":D" << 2 * num - 1
@@ -54,7 +58,9 @@ void IGESData_IGESDumper::PrintDNum(const occ::handle<IGESData_IGESEntity>& ent,
     }
   }
   else
+  {
     S << "  D0(Null)  ";
+  }
 }
 
 void IGESData_IGESDumper::PrintShort(const occ::handle<IGESData_IGESEntity>& ent,
@@ -65,9 +71,13 @@ void IGESData_IGESDumper::PrintShort(const occ::handle<IGESData_IGESEntity>& ent
   {
     int num = 0;
     if (!themodel.IsNull())
+    {
       num = themodel->Number(ent);
+    }
     if (num > 0)
+    {
       S << num << ":D" << 2 * num - 1;
+    }
     S << "  Type:" << ent->TypeNumber() << "  Form:" << ent->FormNumber()
       << Interface_MSG::Blanks(ent->FormNumber(), 3)
       << " Class:" << Interface_InterfaceModel::ClassName(ent->DynamicType()->Name());
@@ -82,20 +92,30 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
   int att    = attached;
   int diratt = 1;
   if (own < 3)
+  {
     diratt = own - 1;
+  }
   if (att == 0)
+  {
     att = diratt; // -1 signifie : ne rien sortir
+  }
 
   if (own < 0)
+  {
     return;
+  }
 
   if (own > 1)
+  {
     S << "\n";
+  }
   if (ent.IsNull())
   {
     S << "(Null)";
     if (own > 1)
+    {
       S << "\n";
+    }
     return;
   }
   if (own == 0)
@@ -110,7 +130,9 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
   } // affichage auxiliaire
 
   if (own > 0)
+  {
     S << "****    Dump IGES, level " << own << " ( ";
+  }
   switch (own)
   {
     case 0:
@@ -144,17 +166,25 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
   S << "              Directory Part\n";
   // **      Status :   Blank:1    Subordinate:2    UseFlag:3    Hierarchy:4
   if (own >= 2)
+  {
     S << "**      Status Number :   Blank:" << ent->BlankStatus()
       << "    Subordinate:" << ent->SubordinateStatus() << "    UseFlag:" << ent->UseFlag()
       << "    Hierarchy:" << ent->HierarchyStatus() << "\n";
+  }
   if (own >= 1)
   {
     if (ent->HasShortLabel())
+    {
       S << "****    Label         :" << ent->ShortLabel()->ToCString();
+    }
     if (ent->HasSubScriptNumber())
+    {
       S << "    SubScript:" << ent->SubScriptNumber();
+    }
     if (ent->HasShortLabel())
-      S << std::endl;
+    {
+      S << '\n';
+    }
 
     if (ent->HasTransf())
     {
@@ -200,7 +230,9 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
     }
 
     if (ent->Level() > 0)
+    {
       S << "**      Level Value   :" << ent->Level() << "\n";
+    }
     else if (ent->Level() < 0)
     {
       S << "**      Level List    :";
@@ -218,8 +250,10 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
     {
       S << "**      LineWeight Num:" << ent->LineWeightNumber();
       if (diratt > 0)
+      {
         S << "    ->  Value:" << ent->LineWeight();
-      S << std::endl;
+      }
+      S << '\n';
     }
     if (ent->DefColor() == IGESData_DefValue)
     {
@@ -230,7 +264,7 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
       S << "**      Color Ref     :";
       PrintDNum(ent->Color(), S);
     }
-    S << std::endl;
+    S << '\n';
 
     if (own > 3)
     {
@@ -241,7 +275,9 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
 
   //   Attached data : Properties, Associativities, and Sharings
   if (att < 0)
+  {
     return;
+  }
   Interface_EntityIterator iter   = ent->Properties();
   int                      nb     = iter.NbEntities();
   bool                     iasuit = (nb > 0);
@@ -257,7 +293,9 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
   iter = ent->Associativities();
   nb   = iter.NbEntities();
   if (nb > 0)
+  {
     iasuit = true;
+  }
   if (nb > 0)
   {
     S << "\n****   Associativities (nb:" << nb << ")        ****\n";
@@ -270,9 +308,11 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
   if (iasuit)
   {
     if (att <= 1)
+    {
       S << "\n";
+    }
   }
-  S << "\n****             End of Dump          ****\n" << std::endl;
+  S << "\n****             End of Dump          ****\n" << '\n';
 }
 
 void IGESData_IGESDumper::OwnDump(const occ::handle<IGESData_IGESEntity>& ent,
@@ -282,10 +322,16 @@ void IGESData_IGESDumper::OwnDump(const occ::handle<IGESData_IGESEntity>& ent,
   occ::handle<IGESData_SpecificModule> module;
   int                                  CN;
   if (thelib.Select(ent, module, CN))
+  {
     module->OwnDump(CN, ent, *this, S, own);
+  }
   else if (themodel.IsNull())
-    S << "  ****  Dump impossible. Type " << ent->DynamicType()->Name() << std::endl;
+  {
+    S << "  ****  Dump impossible. Type " << ent->DynamicType()->Name() << '\n';
+  }
   else
+  {
     S << "  ****  Dump Impossible, n0:id:" << themodel->Number(ent) << ":D" << themodel->DNum(ent)
-      << " Type " << ent->DynamicType()->Name() << std::endl;
+      << " Type " << ent->DynamicType()->Name() << '\n';
+  }
 }

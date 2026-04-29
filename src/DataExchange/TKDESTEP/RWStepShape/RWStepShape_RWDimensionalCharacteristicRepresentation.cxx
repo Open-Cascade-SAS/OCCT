@@ -37,7 +37,9 @@ void RWStepShape_RWDimensionalCharacteristicRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "dimensional_characteristic_representation"))
+  {
     return;
+  }
 
   // Own fields of DimensionalCharacteristicRepresentation
 

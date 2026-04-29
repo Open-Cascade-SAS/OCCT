@@ -58,10 +58,14 @@ bool TopOpeBRepTool::RegularizeShells(
     REGUS.Init(sh);
     bool ok = REGUS.MapS();
     if (!ok)
+    {
       return false;
+    }
     ok = REGUS.SplitFaces();
     if (!ok)
+    {
       return false;
+    }
     REGUS.REGU();
 
   } // exsh(theSolid)

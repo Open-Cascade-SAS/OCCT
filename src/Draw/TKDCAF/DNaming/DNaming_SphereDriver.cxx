@@ -70,7 +70,9 @@ int DNaming_SphereDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
+  {
     return -1;
+  }
 
   double                           aRadius  = DNaming::GetReal(aFunction, SPHERE_RADIUS)->Get();
   occ::handle<TDataStd_UAttribute> anObject = DNaming::GetObjectArg(aFunction, SPHERE_CENTER);
@@ -128,7 +130,9 @@ int DNaming_SphereDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   LoadNamingDS(RESPOSITION(aFunction), aMakeSphere);
   // restore location
   if (!aLocation.IsIdentity())
+  {
     TNaming::Displace(RESPOSITION(aFunction), aLocation, true);
+  }
 
   theLog->SetValid(RESPOSITION(aFunction), true);
   aFunction->SetFailure(DONE);
@@ -143,7 +147,9 @@ void DNaming_SphereDriver::LoadNamingDS(const TDF_Label&        theResultLabel,
 
   occ::handle<TDF_TagSource> Tagger = TDF_TagSource::Set(theResultLabel);
   if (Tagger.IsNull())
+  {
     return;
+  }
   Tagger->Set(0);
 
   TNaming_Builder Builder(theResultLabel);
@@ -184,8 +190,12 @@ void DNaming_SphereDriver::LoadNamingDS(const TDF_Label&        theResultLabel,
   int                   i = 1;
   NCollection_List<int> goodEdges;
   for (; i <= LateralEdges.Extent(); i++)
+  {
     if (!BRep_Tool::Degenerated(TopoDS::Edge(LateralEdges.FindKey(i))))
+    {
       goodEdges.Append(i);
+    }
+  }
 
   if (goodEdges.Extent() == 1)
   {

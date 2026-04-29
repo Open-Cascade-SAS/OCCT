@@ -23,13 +23,21 @@ StepVisual_CurveStyleFontSelect::StepVisual_CurveStyleFontSelect() = default;
 int StepVisual_CurveStyleFontSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_CurveStyleFont)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PreDefinedCurveFont)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_ExternallyDefinedCurveFont)))
+  {
     return 3;
+  }
   return 0;
 }
 

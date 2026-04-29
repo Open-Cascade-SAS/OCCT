@@ -52,66 +52,92 @@ void IGESSolid_ToolCylinder::ReadOwnParams(const occ::handle<IGESSolid_Cylinder>
     // st = PR.ReadReal(PR.Current(), "Face center (X)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Face center (X)", tempreal))
+    {
       tempCenter.SetX(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Face center (Y)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Face center (Y)", tempreal))
+    {
       tempCenter.SetY(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Face center (Z)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Face center (Z)", tempreal))
+    {
       tempCenter.SetZ(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal))
+    {
       tempAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal))
+    {
       tempAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal); //szv#4:S4163:12Mar99 moved
     // in if
     if (PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal))
+    {
       tempAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempAxis.SetZ(1.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempHeight, tempRadius, tempCenter, tempAxis);
   double eps = 1.E-05;
   if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
+  {
     PR.AddWarning("Axis poorly unitary, normalized");
+  }
 }
 
 void IGESSolid_ToolCylinder::WriteOwnParams(const occ::handle<IGESSolid_Cylinder>& ent,
@@ -161,9 +187,13 @@ void IGESSolid_ToolCylinder::OwnCheck(const occ::handle<IGESSolid_Cylinder>& ent
                                       occ::handle<Interface_Check>& ach) const
 {
   if (ent->Height() <= 0.0)
+  {
     ach->AddFail("Height : Value < 0");
+  }
   if (ent->Radius() <= 0.0)
+  {
     ach->AddFail("Radius : Value < 0");
+  }
 }
 
 void IGESSolid_ToolCylinder::OwnDump(const occ::handle<IGESSolid_Cylinder>& ent,
@@ -183,5 +213,5 @@ void IGESSolid_ToolCylinder::OwnDump(const occ::handle<IGESSolid_Cylinder>& ent,
   IGESData_DumpXYZL(S, level, ent->FaceCenter(), ent->Location());
   S << "\nAxis : ";
   IGESData_DumpXYZL(S, level, ent->Axis(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

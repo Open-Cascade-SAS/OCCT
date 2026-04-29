@@ -33,7 +33,9 @@ void RWStepShape_RWConnectedFaceSet::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "connected_face_set"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -54,7 +56,9 @@ void RWStepShape_RWConnectedFaceSet::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "face", ach, STANDARD_TYPE(StepShape_Face), anent2))
+      {
         aCfsFaces->SetValue(i2, anent2);
+      }
     }
   }
 

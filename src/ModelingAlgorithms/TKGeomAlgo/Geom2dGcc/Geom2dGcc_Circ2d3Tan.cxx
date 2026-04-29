@@ -578,55 +578,73 @@ void Geom2dGcc_Circ2d3Tan::Results(const GccAna_Circ2d3Tan& Circ,
     {
       TheSame1(j) = i1;
       if (i1 == 0)
+      {
         Circ.Tangency1(j, par1sol(j), pararg1(j), pnttg1sol(j));
+      }
     }
     else if (Rank1 == 2)
     {
       TheSame1(j) = i2;
       if (i2 == 0)
+      {
         Circ.Tangency2(j, par1sol(j), pararg1(j), pnttg1sol(j));
+      }
     }
     else if (Rank1 == 3)
     {
       TheSame1(j) = i3;
       if (i3 == 0)
+      {
         Circ.Tangency3(j, par1sol(j), pararg1(j), pnttg1sol(j));
+      }
     }
     if (Rank2 == 1)
     {
       TheSame2(j) = i1;
       if (i1 == 0)
+      {
         Circ.Tangency1(j, par2sol(j), pararg2(j), pnttg2sol(j));
+      }
     }
     else if (Rank2 == 2)
     {
       TheSame2(j) = i2;
       if (i2 == 0)
+      {
         Circ.Tangency2(j, par2sol(j), pararg2(j), pnttg2sol(j));
+      }
     }
     else if (Rank2 == 3)
     {
       TheSame2(j) = i3;
       if (i3 == 0)
+      {
         Circ.Tangency3(j, par2sol(j), pararg2(j), pnttg2sol(j));
+      }
     }
     if (Rank3 == 1)
     {
       TheSame3(j) = i1;
       if (i1 == 0)
+      {
         Circ.Tangency1(j, par3sol(j), pararg3(j), pnttg3sol(j));
+      }
     }
     else if (Rank3 == 2)
     {
       TheSame3(j) = i2;
       if (i2 == 0)
+      {
         Circ.Tangency2(j, par3sol(j), pararg3(j), pnttg3sol(j));
+      }
     }
     else if (Rank3 == 3)
     {
       TheSame3(j) = i3;
       if (i3 == 0)
+      {
         Circ.Tangency3(j, par3sol(j), pararg3(j), pnttg3sol(j));
+      }
     }
   }
 }

@@ -70,9 +70,13 @@ void DsgPrs_OffsetPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   parcur      = ElCLib::Parameter(L3, Proj2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
+  {
     parmin = parcur;
+  }
   if (parcur > parmax)
+  {
     parmax = parcur;
+  }
   parcur      = ElCLib::Parameter(L3, OffsetPoint);
   gp_Pnt offp = ElCLib::Value(parcur, L3);
 
@@ -115,10 +119,14 @@ void DsgPrs_OffsetPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   else
   {
     if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
+    {
       outside = true;
+    }
     gp_Dir arrdir = L3.Direction().Reversed();
     if (outside)
+    {
       arrdir.Reverse();
+    }
 
     // fleche 1 : 2eme groupe
     Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),

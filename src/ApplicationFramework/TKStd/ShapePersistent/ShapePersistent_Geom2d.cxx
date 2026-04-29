@@ -114,7 +114,9 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Standard_Type> aCT = theCurve->DynamicType();

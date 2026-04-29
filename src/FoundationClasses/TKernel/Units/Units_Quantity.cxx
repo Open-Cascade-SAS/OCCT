@@ -32,15 +32,19 @@ bool Units_Quantity::IsEqual(const char* const astring) const
 void Units_Quantity::Dump(const int ashift, const int alevel) const
 {
   int index;
-  std::cout << std::endl;
+  std::cout << '\n';
   for (int i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << Name() << std::endl;
+  }
+  std::cout << Name() << '\n';
   //  thedimensions->Dump(ashift+1);
   if (alevel > 0)
   {
     for (index = 1; index <= theunitssequence->Length(); index++)
+    {
       theunitssequence->Value(index)->Dump(ashift + 1, 0);
+    }
   }
 }
 

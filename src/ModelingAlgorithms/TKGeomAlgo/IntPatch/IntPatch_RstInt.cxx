@@ -57,9 +57,13 @@ static void Recadre(GeomAbs_SurfaceType                typeS1,
 {
   int nbpnts = wlin->NbPnts();
   if (Param < 1)
+  {
     Param = 1;
+  }
   else if (Param > nbpnts)
+  {
     Param = nbpnts;
+  }
   double U1p, V1p, U2p, V2p;
 
   wlin->Point(Param).Parameters(U1p, V1p, U2p, V2p);
@@ -70,9 +74,13 @@ static void Recadre(GeomAbs_SurfaceType                typeS1,
     case GeomAbs_Sphere:
     case GeomAbs_Torus:
       while (U1 < (U1p - 1.5 * M_PI))
+      {
         U1 += M_PI + M_PI;
+      }
       while (U1 > (U1p + 1.5 * M_PI))
+      {
         U1 -= M_PI + M_PI;
+      }
       break;
     default:
       break;
@@ -80,9 +88,13 @@ static void Recadre(GeomAbs_SurfaceType                typeS1,
   if (typeS1 == GeomAbs_Torus)
   {
     while (V1 < (V1p - 1.5 * M_PI))
+    {
       V1 += M_PI + M_PI;
+    }
     while (V1 > (V1p + 1.5 * M_PI))
+    {
       V1 -= M_PI + M_PI;
+    }
   }
 
   switch (typeS2)
@@ -92,9 +104,13 @@ static void Recadre(GeomAbs_SurfaceType                typeS1,
     case GeomAbs_Sphere:
     case GeomAbs_Torus:
       while (U2 < (U2p - 1.5 * M_PI))
+      {
         U2 += M_PI + M_PI;
+      }
       while (U2 > (U2p + 1.5 * M_PI))
+      {
         U2 -= M_PI + M_PI;
+      }
       break;
     default:
       break;
@@ -102,9 +118,13 @@ static void Recadre(GeomAbs_SurfaceType                typeS1,
   if (typeS2 == GeomAbs_Torus)
   {
     while (V2 < (V1p - 1.5 * M_PI))
+    {
       V2 += M_PI + M_PI;
+    }
     while (V2 > (V2p + 1.5 * M_PI))
+    {
       V2 -= M_PI + M_PI;
+    }
   }
 }
 
@@ -216,7 +236,9 @@ static void GetLinePoint2d(const occ::handle<IntPatch_Line>& L,
     par = 1.0;
   }
   else
+  {
     par = std::abs(param - par);
+  }
 
   double us1, vs1, us2, vs2;
   if (typL == IntPatch_Walking)
@@ -387,7 +409,9 @@ static bool FindParameter(const occ::handle<IntPatch_Line>&     L,
       }
     }
     if (found)
+    {
       return true;
+    }
   }
   else
   {
@@ -467,8 +491,10 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
     throw Standard_DomainError();
   }
   if (!Domain->Has3d())
+  {
     // don't use computed deflection in the mode of pure geometric intersection
     PLin.ResetError();
+  }
 
   const bool SurfaceIsUClosed  = Surf->IsUClosed();
   const bool SurfaceIsVClosed  = Surf->IsVClosed();
@@ -480,13 +506,21 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
   if (possiblyClosed)
   {
     if (SurfaceIsUClosed)
+    {
       tolUClosed = (Surf->LastUParameter() - Surf->FirstUParameter()) * 0.01;
+    }
     if (SurfaceIsVClosed)
+    {
       tolVClosed = (Surf->LastVParameter() - Surf->FirstVParameter()) * 0.01;
+    }
     if (OSurfaceIsUClosed)
+    {
       tolOUClosed = (OtherSurf->LastUParameter() - OtherSurf->FirstUParameter()) * 0.01;
+    }
     if (OSurfaceIsVClosed)
+    {
       tolOVClosed = (OtherSurf->LastVParameter() - OtherSurf->FirstVParameter()) * 0.01;
+    }
   }
 
   //------------------------------------------------------------------------
@@ -523,9 +557,13 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
 
     IntPatch_HInterTool::Bounds(arc, PFirst, PLast);
     if (Precision::IsNegativeInfinite(PFirst))
+    {
       PFirst = -myInfinite;
+    }
     if (Precision::IsPositiveInfinite(PLast))
+    {
       PLast = myInfinite;
+    }
     // if (Precision::IsNegativeInfinite(PFirst) ||
     //  Precision::IsPositiveInfinite(PLast)) {
     //  //-- std::cout<<" IntPatch_RstInt::PutVertexOnLine  ---> Restrictions Infinies
@@ -583,9 +621,13 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
       case GeomAbs_BezierCurve: {
         NbEchant = (3 + arc->NbPoles());
         if (NbEchant < 10)
+        {
           NbEchant = 10;
+        }
         else if (NbEchant > 50)
+        {
           NbEchant = 50;
+        }
       }
       break;
       case GeomAbs_BSplineCurve: {
@@ -595,9 +637,13 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                            / (arc->LastParameter() - arc->FirstParameter());
         NbEchant = (nbs < 2.0 ? 2 : (int)nbs);
         if (NbEchant < 10)
+        {
           NbEchant = 10;
+        }
         else if (NbEchant > 50)
+        {
           NbEchant = 50;
+        }
       }
       break;
       default: {
@@ -633,23 +679,31 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
     do
     {
       if (IndiceOffsetBiPeriodic == 1)
+      {
         OffsetV = aRefOV - M_PI - M_PI;
+      }
       else if (IndiceOffsetBiPeriodic == 2)
+      {
         OffsetV = aRefOV + M_PI + M_PI;
+      }
 
       do
       {
         if (IndiceOffsetPeriodic == 1)
+        {
           OffsetU = aRefOU - M_PI - M_PI;
+        }
         else if (IndiceOffsetPeriodic == 2)
+        {
           OffsetU = aRefOU + M_PI + M_PI;
+        }
 
         Brise.SetOffset(OffsetU, OffsetV);
 
         static int debug_polygon2d = 0;
         if (debug_polygon2d)
         {
-          std::cout << " ***** Numero Restriction : " << NumeroEdge << " *****" << std::endl;
+          std::cout << " ***** Numero Restriction : " << NumeroEdge << " *****" << '\n';
           PLin.Dump();
           Brise.Dump();
         }
@@ -727,7 +781,9 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                   locpt2(j).Coord(U, V);
                   if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
                       || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
+                  {
                     continue;
+                  }
                 }
                 duplicate = true;
                 break;
@@ -744,9 +800,13 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
               if (typL == IntPatch_Walking && SurfaceIsPeriodic)
               {
                 if (OnFirst)
+                {
                   Recadre(TypeS1, TypeS2, wlin, ParamApproxOnLine, U1, V1, U2, V2);
+                }
                 else
+                {
                   Recadre(TypeS1, TypeS2, wlin, ParamApproxOnLine, U2, V2, U1, V1);
+                }
               }
               locpt.Append(ptsommet);
               locpt2.Append(gp_Pnt2d(U2, V2));
@@ -769,14 +829,18 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                   GetLinePoint2d(L, paramline, OnFirst, U, V);
                   if ((SurfaceIsUClosed && std::abs(U - U1) > tolUClosed)
                       || (SurfaceIsVClosed && std::abs(V - V1) > tolVClosed))
+                  {
                     found = false;
+                  }
                 }
                 if (found && (OSurfaceIsUClosed || OSurfaceIsVClosed))
                 {
                   GetLinePoint2d(L, paramline, !OnFirst, U, V);
                   if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
                       || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
+                  {
                     found = false;
+                  }
                 }
               }
               if (!found)
@@ -790,10 +854,14 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
               {
                 vtxTol = Tol3d(vtxarc, Domain);
                 if (edgeTol > vtxTol)
+                {
                   vtxTol = edgeTol;
+                }
               }
               else
+              {
                 vtxTol = edgeTol;
+              }
 
               //-- It is necessary to test that the point does not already exist
               //--   - It can be already a point on arc
@@ -815,22 +883,34 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                     if (SurfaceIsUClosed || SurfaceIsVClosed)
                     {
                       if (OnFirst)
+                      {
                         Rptline.ParametersOnS1(U, V);
+                      }
                       else
+                      {
                         Rptline.ParametersOnS2(U, V);
+                      }
                       if ((SurfaceIsUClosed && std::abs(U - U1) > tolUClosed)
                           || (SurfaceIsVClosed && std::abs(V - V1) > tolVClosed))
+                      {
                         continue;
+                      }
                     }
                     if (OSurfaceIsUClosed || OSurfaceIsVClosed)
                     {
                       if (OnFirst)
+                      {
                         Rptline.ParametersOnS2(U, V);
+                      }
                       else
+                      {
                         Rptline.ParametersOnS1(U, V);
+                      }
                       if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
                           || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
+                      {
                         continue;
+                      }
                     }
                   }
                   double dist = ptsommet.Distance(Rptline.Value());
@@ -869,14 +949,18 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                     {
                       double tol = Tol3d(vtxarc, Domain);
                       if (tol > vtxTol)
+                      {
                         vtxTol = tol;
+                      }
                     }
                   }
                 }
               }
 
               if (typL == IntPatch_Walking)
+              {
                 VerifyTgline(wlin, (int)paramline, edgeTol, tgline);
+              }
 
               Surf->D1(U1, V1, ptbid, d1u, d1v);
               tgrst.SetLinearForm(d2d.X(), d1u, d2d.Y(), d1v);
@@ -888,19 +972,27 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                 transarc.SetValue(true, IntSurf_Undecided);
               }
               else
+              {
                 IntSurf::MakeTransition(tgline, tgrst, normsurf, transline, transarc);
+              }
 
               nbTreated++;
               if (!ivtx)
               {
                 Sommet.SetValue(ptsommet, vtxTol, false); // pour tangence
                 if (OnFirst)
+                {
                   Sommet.SetParameters(U1, V1, U2, V2);
+                }
                 else
+                {
                   Sommet.SetParameters(U2, V2, U1, V1);
+                }
 
                 if (VtxOnArc)
+                {
                   Sommet.SetVertex(OnFirst, vtxarc);
+                }
 
                 //---------------------------------------------------------
                 //-- lbr : On remplace le point d indice paramline sur la -
@@ -954,7 +1046,9 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                     ptline.SetArc(OnFirst, arc, paramarc, transline, transarc);
                     // ptline.SetParameter(paramline); //-- rajout lbr le 20 nov 97
                     if (VtxOnArc)
+                    {
                       ptline.SetVertex(OnFirst, vtxarc);
+                    }
                     if (typL == IntPatch_Walking)
                     {
                       if (OnDifferentRst)
@@ -986,7 +1080,9 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                     Sommet = ptline;
                     Sommet.SetArc(OnFirst, arc, paramarc, transline, transarc);
                     if (VtxOnArc)
+                    {
                       Sommet.SetVertex(OnFirst, vtxarc);
+                    }
                     if (typL == IntPatch_Walking)
                     {
                       wlin->AddVertex(Sommet);
@@ -1011,7 +1107,9 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                   {
                     ptline.SetArc(OnFirst, arc, paramarc, transline, transarc);
                     if (VtxOnArc)
+                    {
                       ptline.SetVertex(OnFirst, vtxarc);
+                    }
                     if (typL == IntPatch_Walking)
                     {
                       wlin->Replace(ivtx, ptline);
@@ -1022,6 +1120,7 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                     }
 
                     for (k = 1; k <= Nbvtx; k++)
+                    {
                       if (k != ivtx)
                       {
                         if (typL == IntPatch_Walking)
@@ -1040,10 +1139,14 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                                                           : (ptline.VertexOnS2())))
                           {
                             if (ptline.Tolerance() < vtxTol)
+                            {
                               ptline.SetTolerance(vtxTol);
+                            }
                             ptline.SetArc(OnFirst, arc, paramarc, transline, transarc);
                             if (VtxOnArc)
+                            {
                               ptline.SetVertex(OnFirst, vtxarc);
+                            }
                             if (typL == IntPatch_Walking)
                             {
                               wlin->Replace(k, ptline);
@@ -1055,6 +1158,7 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                           }
                         }
                       }
+                    }
                   }
                   else if ((OnFirst && ptline.IsVertexOnS2())
                            || (!OnFirst && ptline.IsVertexOnS1()))
@@ -1073,6 +1177,7 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                       Nbvtx++;
                     }
                     for (k = 1; k <= Nbvtx; k++)
+                    {
                       if (k != ivtx)
                       {
                         if (typL == IntPatch_Walking)
@@ -1091,7 +1196,9 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                                                           : (ptline.VertexOnS2())))
                           {
                             if (ptline.Tolerance() < vtxTol)
+                            {
                               ptline.SetTolerance(vtxTol);
+                            }
                             Sommet = ptline;
                             Sommet.SetArc(OnFirst, arc, paramarc, transline, transarc);
                             if (typL == IntPatch_Walking)
@@ -1109,6 +1216,7 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                           }
                         }
                       }
+                    }
                   }
                   else
                   {
@@ -1123,9 +1231,13 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
             // We processed a tangent zone, and both ends have been treated.
             // So mark WLine as having arc
             if (OnFirst)
+            {
               wlin->SetArcOnS1(arc);
+            }
             else
+            {
               wlin->SetArcOnS2(arc);
+            }
           }
         }
 

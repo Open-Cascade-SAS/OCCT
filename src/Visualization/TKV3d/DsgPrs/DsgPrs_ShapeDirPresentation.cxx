@@ -150,7 +150,9 @@ static bool ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir& dir, const
     GeomLProp_CLProps lProps(curve, 1, gp::Resolution());
     lProps.SetParameter((mode == 0) ? last : first);
     if (!lProps.IsTangentDefined())
+    {
       return false;
+    }
     pt = lProps.Value();
     lProps.Tangent(dir);
   }
@@ -167,12 +169,16 @@ static bool ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir& dir, const
     else
     {
       if (!FindPointOnFace(TopoDS::Face(shape), pt2d))
+      {
         return false;
+      }
     }
 
     GeomLProp_SLProps lProps(surface, pt2d.X(), pt2d.Y(), 1, gp::Resolution());
     if (!lProps.IsNormalDefined())
+    {
       return false;
+    }
 
     pt  = lProps.Value();
     dir = lProps.Normal();
@@ -194,7 +200,9 @@ void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs
 
 {
   if ((mode != 0) && (mode != 1))
+  {
     return;
+  }
 
   gp_Dir  dir;
   gp_Pnt  pt;
@@ -220,7 +228,9 @@ void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs
       const TopoDS_Edge& edge = anExp.Current();
       nb++;
       if (nb <= 3)
+      {
         BRepBndLib::Add(edge, box);
+      }
       aList.Append(edge);
     }
 
@@ -248,7 +258,9 @@ void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs
       aList.Append(face);
       BRepBndLib::Add(face, box);
       if (nb > 3)
+      {
         break;
+      }
     }
     const TopoDS_Face& face = TopoDS::Face(aList.Last());
     ComputeDir(face, pt, dir, mode);
@@ -261,7 +273,9 @@ void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs
   double leng = ptmin.Distance(ptmax) / 3.;
   // mei 19/09/96 extrusion infinie -> taille fixe
   if (leng >= 20000.)
+  {
     leng = 50;
+  }
 
   gp_Pnt pt2(pt.XYZ() + leng * dir.XYZ());
 

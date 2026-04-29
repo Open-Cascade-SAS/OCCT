@@ -203,7 +203,6 @@ void math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
   }
   Done      = false;
   TheStatus = math_TooManyIterations;
-  return;
 }
 
 //=================================================================================================

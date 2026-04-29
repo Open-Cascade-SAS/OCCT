@@ -26,9 +26,13 @@ IMPLEMENT_STANDARD_RTTIEXT(APIHeaderSection_EditHeader, IFSelect_Editor)
 static bool IsTimeStamp(const occ::handle<TCollection_HAsciiString>& val)
 {
   if (val.IsNull())
+  {
     return false;
+  }
   if (val->Length() != 19)
+  {
     return false;
+  }
   //  On y va
   char dizmois = val->Value(6);
   char dizjour = val->Value(9);
@@ -40,79 +44,119 @@ static bool IsTimeStamp(const occ::handle<TCollection_HAsciiString>& val)
     {
       case 1:
         if (uncar != '1' && uncar != '2')
+        {
           return false;
+        }
         break;
       case 2:
       case 3:
       case 4:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         break;
       case 5:
         if (uncar != '-')
+        {
           return false;
+        }
         [[fallthrough]];
       case 6:
         if (uncar != '0' && uncar != '1')
+        {
           return false;
+        }
         break;
       case 7:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         if (dizmois == '1' && (uncar < '0' || uncar > '2'))
+        {
           return false;
+        }
         break;
       case 8:
         if (uncar != '-')
+        {
           return false;
+        }
         [[fallthrough]];
       case 9:
         if (uncar < '0' || uncar > '3')
+        {
           return false;
+        }
         break;
       case 10:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         if (dizjour == '3' && (uncar != '0' && uncar != '1'))
+        {
           return false;
+        }
         break;
       case 11:
         if (uncar != 'T')
+        {
           return false;
+        }
         [[fallthrough]];
       case 12:
         if (uncar < '0' || uncar > '2')
+        {
           return false;
+        }
         break;
       case 13:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         if (dizheur == '2' && (uncar < '0' || uncar > '3'))
+        {
           return false;
+        }
         break;
       case 14:
         if (uncar != ':')
+        {
           return false;
+        }
         [[fallthrough]];
       case 15:
         if (uncar < '0' || uncar > '5')
+        {
           return false;
+        }
         break;
       case 16:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         break;
       case 17:
         if (uncar != ':')
+        {
           return false;
+        }
         [[fallthrough]];
       case 18:
         if (uncar < '0' || uncar > '5')
+        {
           return false;
+        }
         break;
       case 19:
         if (uncar < '0' || uncar > '9')
+        {
           return false;
+        }
         break;
       default:
         break;
@@ -176,7 +220,9 @@ bool APIHeaderSection_EditHeader::Load(const occ::handle<IFSelect_EditForm>& for
 {
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
+  {
     return false;
+  }
 
   APIHeaderSection_MakeHeader mkh(modl);
 
@@ -202,32 +248,54 @@ bool APIHeaderSection_EditHeader::Apply(const occ::handle<IFSelect_EditForm>& fo
 {
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
+  {
     return false;
+  }
 
   APIHeaderSection_MakeHeader mkh(modl);
 
   if (form->IsModified(1))
+  {
     mkh.SetName(form->EditedValue(1));
+  }
   if (form->IsModified(2))
+  {
     mkh.SetTimeStamp(form->EditedValue(2));
+  }
   if (form->IsModified(3))
+  {
     mkh.SetAuthorValue(1, form->EditedValue(3));
+  }
   if (form->IsModified(4))
+  {
     mkh.SetOrganizationValue(1, form->EditedValue(4));
+  }
   if (form->IsModified(5))
+  {
     mkh.SetPreprocessorVersion(form->EditedValue(5));
+  }
   if (form->IsModified(6))
+  {
     mkh.SetOriginatingSystem(form->EditedValue(6));
+  }
   if (form->IsModified(7))
+  {
     mkh.SetAuthorisation(form->EditedValue(7));
+  }
 
   if (form->IsModified(8))
+  {
     mkh.SetSchemaIdentifiersValue(1, form->EditedValue(8));
+  }
 
   if (form->IsModified(9))
+  {
     mkh.SetDescriptionValue(1, form->EditedValue(9));
+  }
   if (form->IsModified(10))
+  {
     mkh.SetImplementationLevel(form->EditedValue(10));
+  }
 
   mkh.Apply(occ::down_cast<StepData_StepModel>(model));
 

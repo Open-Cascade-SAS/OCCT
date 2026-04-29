@@ -34,12 +34,16 @@ Interface_GraphContent::Interface_GraphContent(const Interface_Graph&           
   Interface_EntityIterator list = agraph.Shareds(ent);
   int                      nb   = list.NbEntities();
   if (nb == 0)
+  {
     return; // Liste redefinie a VIDE
+  }
   for (; list.More(); list.Next())
   {
     const occ::handle<Standard_Transient>& curent = list.Value();
     if (agraph.IsPresent(agraph.EntityNumber(curent)))
+    {
       GetOneItem(curent);
+    }
   }
 }
 
@@ -49,7 +53,9 @@ void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph)
   for (int i = 1; i <= nb; i++)
   {
     if (agraph.IsPresent(i))
+    {
       GetOneItem(agraph.Entity(i));
+    }
   }
 }
 
@@ -59,7 +65,9 @@ void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph, const i
   for (int i = 1; i <= nb; i++)
   {
     if (agraph.IsPresent(i) && agraph.Status(i) == stat)
+    {
       GetOneItem(agraph.Entity(i));
+    }
   }
 }
 
@@ -67,7 +75,9 @@ Interface_EntityIterator Interface_GraphContent::Result()
 {
   Interface_EntityIterator iter; // On transvase ...
   for (Begin(); More(); Next())
+  {
     iter.GetOneItem(Value());
+  }
   return iter;
 }
 

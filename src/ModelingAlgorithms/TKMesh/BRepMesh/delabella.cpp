@@ -123,21 +123,37 @@ struct CDelaBella : IDelaBella
       Vert* va = (Vert*)a;
       Vert* vb = (Vert*)b;
       if (va->z < vb->z)
+      {
         return -1;
+      }
       if (va->z > vb->z)
+      {
         return 1;
+      }
       if (va->y < vb->y)
+      {
         return -1;
+      }
       if (va->y > vb->y)
+      {
         return 1;
+      }
       if (va->x < vb->x)
+      {
         return -1;
+      }
       if (va->x > vb->x)
+      {
         return 1;
+      }
       if (va->i < vb->i)
+      {
         return -1;
+      }
       if (va->i > vb->i)
+      {
         return 1;
+      }
       return 0;
     }
   };
@@ -165,11 +181,17 @@ struct CDelaBella : IDelaBella
       // return next face in same direction as face vertices are (cw/ccw)
 
       if (v[0] == p)
+      {
         return (Face*)f[1];
+      }
       if (v[1] == p)
+      {
         return (Face*)f[2];
+      }
       if (v[2] == p)
+      {
         return (Face*)f[0];
+      }
       return nullptr;
     }
 
@@ -224,17 +246,23 @@ struct CDelaBella : IDelaBella
 
         // skip dups
         while (r < points && Vert::overlap(vert_alloc + r, vert_alloc + r - 1))
+        {
           r++;
+        }
 
         // copy next no-dups block
         while (r < points && !Vert::overlap(vert_alloc + r, vert_alloc + r - 1))
+        {
           vert_alloc[w++] = vert_alloc[r++];
+        }
       }
 
       if (points - w)
       {
         if (errlog_proc)
+        {
           errlog_proc(errlog_file, "[WRN] detected %d dups in xy array!\n", points - w);
+        }
         points = w;
       }
     }
@@ -244,8 +272,10 @@ struct CDelaBella : IDelaBella
       if (points == 2)
       {
         if (errlog_proc)
+        {
           errlog_proc(errlog_file,
                       "[WRN] all input points are colinear, returning single segment!\n");
+        }
         first_hull_vert    = vert_alloc + 0;
         vert_alloc[0].next = (DelaBella_Vertex*)(vert_alloc + 1);
         vert_alloc[1].next = nullptr;
@@ -253,8 +283,10 @@ struct CDelaBella : IDelaBella
       else
       {
         if (errlog_proc)
+        {
           errlog_proc(errlog_file,
                       "[WRN] all input points are identical, returning single point!\n");
+        }
         first_hull_vert    = vert_alloc + 0;
         vert_alloc[0].next = nullptr;
       }
@@ -267,21 +299,29 @@ struct CDelaBella : IDelaBella
     if (max_faces < hull_faces)
     {
       if (max_faces)
+      {
         free(face_alloc);
+      }
       max_faces  = 0;
       face_alloc = (Face*)malloc(sizeof(Face) * hull_faces);
       if (face_alloc)
+      {
         max_faces = hull_faces;
+      }
       else
       {
         if (errlog_proc)
+        {
           errlog_proc(errlog_file, "[ERR] Not enough memory, shop for some more RAM. See you!\n");
+        }
         return 0;
       }
     }
 
     for (int i = 1; i < hull_faces; i++)
+    {
       face_alloc[i - 1].next = face_alloc + i;
+    }
     face_alloc[hull_faces - 1].next = nullptr;
 
     Face* cache = face_alloc;
@@ -373,8 +413,10 @@ struct CDelaBella : IDelaBella
       if (colinear)
       {
         if (errlog_proc)
+        {
           errlog_proc(errlog_file,
                       "[WRN] all input points are colinear, returning segment list!\n");
+        }
         first_hull_vert = head;
         last->next      = nullptr; // break contour, make it a list
         return -points;
@@ -384,12 +426,16 @@ struct CDelaBella : IDelaBella
         if (points > 3)
         {
           if (errlog_proc)
+          {
             errlog_proc(errlog_file, "[NFO] all input points are cocircular.\n");
+          }
         }
         else
         {
           if (errlog_proc)
+          {
             errlog_proc(errlog_file, "[NFO] trivial case of 3 points, thank you.\n");
+          }
 
           first_dela_face       = Face::Alloc(&cache);
           first_dela_face->next = nullptr;
@@ -489,9 +535,13 @@ struct CDelaBella : IDelaBella
 
         base->f[0] = prev_base;
         if (prev_base)
+        {
           prev_base->f[1] = base;
+        }
         else
+        {
           first_base = base;
+        }
 
         prev_base = base;
         prev_side = side;
@@ -561,9 +611,13 @@ struct CDelaBella : IDelaBella
 
         base->f[1] = prev_base;
         if (prev_base)
+        {
           prev_base->f[0] = base;
+        }
         else
+        {
           first_base = base;
+        }
 
         prev_base = base;
         prev_side = side;
@@ -635,7 +689,9 @@ struct CDelaBella : IDelaBella
         _f    = stack;
         stack = (Face*)_f->next;
         if (stack == _f)
+        {
           stack = nullptr;
+        }
         _f->next = nullptr;
 
         // copy parts of old face that we still need after removal
@@ -672,13 +728,21 @@ struct CDelaBella : IDelaBella
 
               // change neighbour's adjacency from old visible face to cone side
               if (n->f[0] == _f)
+              {
                 n->f[0] = s;
+              }
               else if (n->f[1] == _f)
+              {
                 n->f[1] = s;
+              }
               else if (n->f[2] == _f)
+              {
                 n->f[2] = s;
+              }
               else
+              {
                 assert(0);
+              }
 
               // build silhouette needed for sewing sides in the second pass
               a->sew  = s;
@@ -690,13 +754,21 @@ struct CDelaBella : IDelaBella
               // so they won't be processed more than once
 
               if (n->f[0] == _f)
+              {
                 n->f[0] = nullptr;
+              }
               else if (n->f[1] == _f)
+              {
                 n->f[1] = nullptr;
+              }
               else if (n->f[2] == _f)
+              {
                 n->f[2] = nullptr;
+              }
               else
+              {
                 assert(0);
+              }
 
               // push neighbor face, it's visible and requires processing
               n->next = stack ? stack : n;
@@ -800,11 +872,15 @@ struct CDelaBella : IDelaBella
 
       vert_alloc = (Vert*)malloc(sizeof(Vert) * points);
       if (vert_alloc)
+      {
         max_verts = points;
+      }
       else
       {
         if (errlog_proc)
+        {
           errlog_proc(errlog_file, "[ERR] Not enough memory, shop for some more RAM. See you!\n");
+        }
         return false;
       }
     }
@@ -818,16 +894,24 @@ struct CDelaBella : IDelaBella
                   int          advance_bytes = 0) override
   {
     if (!x)
+    {
       return 0;
+    }
 
     if (!y)
+    {
       y = x + 1;
+    }
 
     if (advance_bytes < static_cast<int>(sizeof(float) * 2))
+    {
       advance_bytes = static_cast<int>(sizeof(float) * 2);
+    }
 
     if (!ReallocVerts(points))
+    {
       return 0;
+    }
 
     for (int i = 0; i < points; i++)
     {
@@ -845,16 +929,24 @@ struct CDelaBella : IDelaBella
   int Triangulate(int points, const double* x, const double* y, int advance_bytes) override
   {
     if (!x)
+    {
       return 0;
+    }
 
     if (!y)
+    {
       y = x + 1;
+    }
 
     if (advance_bytes < static_cast<int>(sizeof(double) * 2))
+    {
       advance_bytes = static_cast<int>(sizeof(double) * 2);
+    }
 
     if (!ReallocVerts(points))
+    {
       return 0;
+    }
 
     for (int i = 0; i < points; i++)
     {
@@ -872,9 +964,13 @@ struct CDelaBella : IDelaBella
   void Destroy() override
   {
     if (face_alloc)
+    {
       free(face_alloc);
+    }
     if (vert_alloc)
+    {
       free(vert_alloc);
+    }
     delete this;
   }
 
@@ -901,7 +997,9 @@ IDelaBella* IDelaBella::Create()
 {
   CDelaBella* db = new CDelaBella;
   if (!db)
+  {
     return nullptr;
+  }
 
   db->vert_alloc = nullptr;
   db->face_alloc = nullptr;
@@ -975,16 +1073,22 @@ const DelaBella_Vertex* GetFirstHullVertex(void* db)
 int DelaBella(int points, const double* xy, int* abc, int (*errlog)(const char* fmt, ...))
 {
   if (errlog)
+  {
     errlog("[WRN] Depreciated interface! errlog disabled.\n");
+  }
 
   if (!xy || points <= 0)
+  {
     return 0;
+  }
 
   IDelaBella* db    = IDelaBella::Create();
   int         verts = db->Triangulate(points, xy, nullptr, 0);
 
   if (!abc)
+  {
     return verts;
+  }
 
   if (verts > 0)
   {
@@ -993,7 +1097,9 @@ int DelaBella(int points, const double* xy, int* abc, int (*errlog)(const char* 
     for (int i = 0; i < tris; i++)
     {
       for (int j = 0; j < 3; j++)
+      {
         abc[3 * i + j] = dela->v[j]->i;
+      }
       dela = dela->next;
     }
   }

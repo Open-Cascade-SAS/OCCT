@@ -94,12 +94,18 @@ void DrawDim_Angle::DrawOn(Draw_Display&) const
   // calculation of myAxis
   gp_Pln pln1, pln2;
   if (!DrawDim::Pln(myPlane1, pln1))
+  {
     return;
+  }
   if (!DrawDim::Pln(myPlane2, pln2))
+  {
     return;
+  }
   IntAna_QuadQuadGeo ip(pln1, pln2, Precision::Confusion(), Precision::Angular());
   if (!ip.IsDone())
+  {
     return;
+  }
 
   gp_Pnt curpos;
   gp_Ax1 AxePos     = myAxis;

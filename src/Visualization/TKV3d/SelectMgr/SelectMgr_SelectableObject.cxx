@@ -261,7 +261,7 @@ void SelectMgr_SelectableObject::UpdateTransformations(
   const occ::handle<SelectMgr_Selection>& theSel)
 {
   const TopLoc_Location aSelfLocation(Transformation());
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSel->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -379,10 +379,14 @@ void SelectMgr_SelectableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
 
   // update selection presentations
   if (!mySelectionPrs.IsNull())
+  {
     mySelectionPrs->SetZLayer(theLayerId);
+  }
 
   if (!myHilightPrs.IsNull())
+  {
     myHilightPrs->SetZLayer(theLayerId);
+  }
 
   // update all entity owner presentations
   for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
@@ -390,7 +394,7 @@ void SelectMgr_SelectableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+    for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();
          aSelEntIter.Next())
@@ -470,7 +474,7 @@ void SelectMgr_SelectableObject::SetAssemblyOwner(
          aSelIter.Next())
     {
       const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
-      for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+      for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
              aSel->Entities());
            aSelEntIter.More();
            aSelEntIter.Next())
@@ -488,7 +492,7 @@ void SelectMgr_SelectableObject::SetAssemblyOwner(
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
     if (aSel->Mode() == theMode)
     {
-      for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+      for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
              aSel->Entities());
            aSelEntIter.More();
            aSelEntIter.Next())
@@ -507,7 +511,9 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected(
     theOwners)
 {
   if (theOwners->IsEmpty())
+  {
     return Bnd_Box();
+  }
 
   Bnd_Box aBnd;
   for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
@@ -516,9 +522,11 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected(
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
     if (aSel->GetSelectionState() != SelectMgr_SOS_Activated)
+    {
       continue;
+    }
 
-    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+    for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();
          aSelEntIter.Next())

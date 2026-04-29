@@ -331,9 +331,13 @@ void AIS_Plane::SetSize(const double aXLength, const double aYLength)
   DA->SetAxisLength(aXLength, aYLength, aXLength);
 
   if (!yenavaitPA)
+  {
     myDrawer->SetPlaneAspect(PA);
+  }
   if (!yenavaitDA)
+  {
     myDrawer->SetDatumAspect(DA);
+  }
 
   myHasOwnSize = true;
   SetToUpdate();
@@ -349,7 +353,9 @@ void AIS_Plane::UnsetSize()
 {
 
   if (!myHasOwnSize)
+  {
     return;
+  }
   if (!hasOwnColor)
   {
     myDrawer->SetPlaneAspect(occ::handle<Prs3d_PlaneAspect>());
@@ -442,9 +448,13 @@ void AIS_Plane::SetColor(const Quantity_Color& aCol)
   DA->LineAspect(Prs3d_DatumParts_ZAxis)->SetColor(aCol);
 
   if (!yenavaitPA)
+  {
     myDrawer->SetPlaneAspect(PA);
+  }
   if (!yenavaitDA)
+  {
     myDrawer->SetDatumAspect(DA);
+  }
 
   myDrawer->ShadingAspect()->SetColor(aCol);
 
@@ -457,7 +467,9 @@ void AIS_Plane::SetColor(const Quantity_Color& aCol)
 void AIS_Plane::UnsetColor()
 {
   if (!hasOwnColor)
+  {
     return;
+  }
   if (!myHasOwnSize)
   {
     myDrawer->SetPlaneAspect(occ::handle<Prs3d_PlaneAspect>());
@@ -500,9 +512,13 @@ void AIS_Plane::ComputeFrame()
     U = 2.4 * std::abs(U);
     V = 2.4 * std::abs(V);
     if (U < 10 * Precision::Confusion())
+    {
       U = 0.1;
+    }
     if (V < 10 * Precision::Confusion())
+    {
       V = 0.1;
+    }
     SetSize(U, V);
     myDrawer->PlaneAspect()->SetPlaneLength(U, V);
   }

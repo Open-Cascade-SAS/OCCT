@@ -36,7 +36,9 @@ void RWStepDimTol_RWStraightnessTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "straightness_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

@@ -215,10 +215,14 @@ void PrsDim_Relation::ComputeProjVertexPresentation(const occ::handle<Prs3d_Pres
 void PrsDim_Relation::SetColor(const Quantity_Color& aCol)
 {
   if (hasOwnColor && myDrawer->Color() == aCol)
+  {
     return;
+  }
 
   if (!myDrawer->HasOwnTextAspect())
+  {
     myDrawer->SetTextAspect(new Prs3d_TextAspect());
+  }
   hasOwnColor = true;
   myDrawer->SetColor(aCol);
   myDrawer->TextAspect()->SetColor(aCol);
@@ -249,7 +253,9 @@ void PrsDim_Relation::SetColor(const Quantity_Color& aCol)
 void PrsDim_Relation::UnsetColor()
 {
   if (!hasOwnColor)
+  {
     return;
+  }
   hasOwnColor                             = false;
   const occ::handle<Prs3d_LineAspect>& LA = myDrawer->LineAspect();
   Quantity_Color                       CC = Quantity_NOC_YELLOW;

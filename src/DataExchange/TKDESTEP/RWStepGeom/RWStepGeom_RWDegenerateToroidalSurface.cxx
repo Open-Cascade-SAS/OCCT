@@ -30,7 +30,9 @@ void RWStepGeom_RWDegenerateToroidalSurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 5, ach, "degenerate_toroidal_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

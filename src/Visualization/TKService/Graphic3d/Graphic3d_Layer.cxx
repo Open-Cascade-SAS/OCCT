@@ -95,7 +95,7 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
       continue;
     }
 
-    aStructures.Swap(anIndex, aStructures.Size());
+    aStructures.Swap(anIndex, aStructures.Length());
     aStructures.RemoveLast();
 
     if (!isForChangePriority)
@@ -116,7 +116,7 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
         const int anIndex2 = myAlwaysRenderedMap.FindIndex(theStruct);
         if (anIndex2 != 0)
         {
-          myAlwaysRenderedMap.Swap(myAlwaysRenderedMap.Size(), anIndex2);
+          myAlwaysRenderedMap.Swap(myAlwaysRenderedMap.Length(), anIndex2);
           myAlwaysRenderedMap.RemoveLast();
         }
       }
@@ -573,7 +573,9 @@ void Graphic3d_Layer::UpdateCulling(
     if (isTrsfPers)
     {
       if (myBVHPrimitivesTrsfPers.Size() == 0)
+      {
         continue;
+      }
 
       const NCollection_Mat4<double>&     aProjection     = theSelector.ProjectionMatrix();
       const NCollection_Mat4<double>&     aWorldView      = theSelector.WorldViewMatrix();
@@ -591,7 +593,9 @@ void Graphic3d_Layer::UpdateCulling(
     else
     {
       if (myBVHPrimitives.Size() == 0)
+      {
         continue;
+      }
 
       aBVHTree = myBVHPrimitives.BVH();
     }

@@ -46,7 +46,7 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -136,7 +136,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CPC> BOPTools_VectorOfCPC;
+typedef NCollection_DynamicArray<BOPTools_CPC> BOPTools_VectorOfCPC;
 
 //=================================================================================================
 
@@ -175,7 +175,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CWT> BOPTools_VectorOfCWT;
+typedef NCollection_DynamicArray<BOPTools_CWT> BOPTools_VectorOfCWT;
 
 //=================================================================================================
 
@@ -223,7 +223,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CDT> BOPTools_VectorOfCDT;
+typedef NCollection_DynamicArray<BOPTools_CDT> BOPTools_VectorOfCDT;
 
 //=================================================================================================
 
@@ -263,7 +263,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CVT> BOPTools_VectorOfCVT;
+typedef NCollection_DynamicArray<BOPTools_CVT> BOPTools_VectorOfCVT;
 
 //=================================================================================================
 
@@ -302,7 +302,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CET> BOPTools_VectorOfCET;
+typedef NCollection_DynamicArray<BOPTools_CET> BOPTools_VectorOfCET;
 
 //=================================================================================================
 
@@ -476,7 +476,9 @@ void CheckEdge(const TopoDS_Edge&                                               
               {
                 double aNewTolerance = sqrt(aD2) + dd;
                 if (aNewTolerance < aMaxTol)
+                {
                   UpdateShape(aV, aNewTolerance, aMapToAvoid);
+                }
               }
             }
             aItPR.Next();
@@ -502,7 +504,9 @@ void CheckEdge(const TopoDS_Edge&                                               
             {
               double aNewTolerance = sqrt(aD2) + dd;
               if (aNewTolerance < aMaxTol)
+              {
                 UpdateShape(aV, aNewTolerance, aMapToAvoid);
+              }
             }
           }
         }
@@ -732,7 +736,9 @@ void CorrectWires(const TopoDS_Face&                                            
         const TopoDS_Shape& aE2     = *aEData2.Edge;
 
         if (aE1.IsSame(aE2))
+        {
           continue;
+        }
 
         aD2 = IntersectCurves2d(aV, aS, aEData1, aEData2, aMapEdgeLen);
         if (aD2 > aD2max)
@@ -861,7 +867,9 @@ void CorrectEdgeTolerance(
   // 2. Tolerances in InContext
   {
     if (myCref.IsNull())
+    {
       return;
+    }
 
     occ::handle<BRep_TEdge>& TE      = *((occ::handle<BRep_TEdge>*)&myShape.TShape());
     double                   Tol     = BRep_Tool::Tolerance(TopoDS::Edge(myShape));

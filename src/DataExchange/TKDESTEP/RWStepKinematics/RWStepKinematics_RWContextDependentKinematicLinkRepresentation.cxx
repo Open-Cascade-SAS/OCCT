@@ -41,7 +41,9 @@ void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::ReadStep(
                               2,
                               theArch,
                               "context_dependent_kinematic_link_representation"))
+  {
     return;
+  }
 
   // Own fields of ContextDependentKinematicLinkRepresentation
 

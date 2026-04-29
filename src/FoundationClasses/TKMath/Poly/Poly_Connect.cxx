@@ -73,11 +73,11 @@ void Poly_Connect::Load(const occ::handle<Poly_Triangulation>& theTriangulation)
   const int aNbTris  = myTriangulation->NbTriangles();
   {
     const int aNbAdjs = 6 * aNbTris;
-    if (myTriangles.Size() != aNbNodes)
+    if (myTriangles.Length() != aNbNodes)
     {
       myTriangles.Resize(1, aNbNodes, false);
     }
-    if (myAdjacents.Size() != aNbAdjs)
+    if (myAdjacents.Length() != aNbAdjs)
     {
       myAdjacents.Resize(1, aNbAdjs, false);
     }
@@ -219,8 +219,12 @@ void Poly_Connect::Initialize(const int N)
     int i, no[3];
     myTriangulation->Triangle(myfirst).Get(no[0], no[1], no[2]);
     for (i = 0; i < 3; i++)
+    {
       if (no[i] == mynode)
+      {
         break;
+      }
+    }
     myothernode = no[(i + 2) % 3];
   }
 }
@@ -256,8 +260,12 @@ void Poly_Connect::Next()
     // sinon, depart vers la gauche.
     myTriangulation->Triangle(myfirst).Get(n[0], n[1], n[2]);
     for (i = 0; i < 3; i++)
+    {
       if (n[i] == mynode)
+      {
         break;
+      }
+    }
     myothernode = n[(i + 1) % 3];
     mysense     = false;
     mytr        = myfirst;

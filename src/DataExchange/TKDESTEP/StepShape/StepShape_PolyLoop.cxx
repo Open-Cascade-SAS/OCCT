@@ -48,6 +48,8 @@ occ::handle<StepGeom_CartesianPoint> StepShape_PolyLoop::PolygonValue(const int 
 int StepShape_PolyLoop::NbPolygon() const
 {
   if (polygon.IsNull())
+  {
     return 0;
+  }
   return polygon->Length();
 }

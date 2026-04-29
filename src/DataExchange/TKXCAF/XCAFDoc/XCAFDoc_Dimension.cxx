@@ -92,7 +92,9 @@ static void setString(const TDF_Label&                             theLabel,
                       const occ::handle<TCollection_HAsciiString>& theStr)
 {
   if (theStr.IsNull())
+  {
     return;
+  }
 
   TCollection_ExtendedString aStr(theStr->String());
   TDataStd_Name::Set(theLabel, aStr);
@@ -108,7 +110,9 @@ static void setRealArrayXYZ(const TDF_Label& theLabel, const gp_XYZ& theArr)
   anArr->SetValue(3, theArr.Z());
   occ::handle<TDataStd_RealArray> anArrayAttr = TDataStd_RealArray::Set(theLabel, 1, 3);
   if (!anArrayAttr.IsNull())
+  {
     anArrayAttr->ChangeArray(anArr);
+  }
 }
 
 //=================================================================================================
@@ -121,7 +125,9 @@ static occ::handle<TCollection_HAsciiString> getString(const TDF_Label& theLabel
   {
     const TCollection_ExtendedString& aName = aStrAttr->Get();
     if (!aName.IsEmpty())
+    {
       aStr = new TCollection_HAsciiString(aName);
+    }
   }
   return aStr;
 }
@@ -164,7 +170,9 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
       theObject->GetValues()->Lower(),
       theObject->GetValues()->Lower() + theObject->GetValues()->Length() - 1);
     if (!aVal.IsNull())
+    {
       aVal->ChangeArray(theObject->GetValues());
+    }
   }
 
   occ::handle<TDataStd_Integer> aQualifier =
@@ -188,7 +196,9 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
     occ::handle<TDataStd_IntegerArray> aClass =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Class), 1, 3);
     if (!aClass.IsNull())
+    {
       aClass->ChangeArray(anArrI);
+    }
   }
 
   int aL, aR;
@@ -201,20 +211,26 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
     occ::handle<TDataStd_IntegerArray> aDec =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Dec), 1, 2);
     if (!aDec.IsNull())
+    {
       aDec->ChangeArray(anArrI);
+    }
   }
 
   if (theObject->GetModifiers().Length() > 0)
   {
     anArrI = new NCollection_HArray1<int>(1, theObject->GetModifiers().Length());
     for (int i = 1; i <= theObject->GetModifiers().Length(); i++)
+    {
       anArrI->SetValue(i, theObject->GetModifiers().Value(i));
+    }
     occ::handle<TDataStd_IntegerArray> aModifiers =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Modifiers),
                                  1,
                                  theObject->GetModifiers().Length());
     if (!aModifiers.IsNull())
+    {
       aModifiers->ChangeArray(anArrI);
+    }
   }
 
   if (!theObject->GetPath().IsNull())
@@ -250,7 +266,9 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
       occ::handle<TDataStd_RealArray> aAxis =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_ConnectionAxis1), 1, 6);
       if (!aAxis.IsNull())
+      {
         aAxis->ChangeArray(aAxisArr);
+      }
     }
   }
 
@@ -273,7 +291,9 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
       occ::handle<TDataStd_RealArray> aAxis =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_ConnectionAxis2), 1, 6);
       if (!aAxis.IsNull())
+      {
         aAxis->ChangeArray(aAxisArr);
+      }
     }
   }
 
@@ -322,9 +342,13 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
                                    1,
                                    theObject->NbDescriptions());
     if (!aDescriptions.IsNull())
+    {
       aDescriptions->ChangeArray(aDescrArr);
+    }
     if (!aDescriptionNames.IsNull())
+    {
       aDescriptionNames->ChangeArray(aDescrNameArr);
+    }
   }
 }
 
@@ -388,7 +412,9 @@ occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() co
   {
     NCollection_Sequence<XCAFDimTolObjects_DimensionModif> aM;
     for (int i = 1; i <= aModifiers->Array()->Length(); i++)
+    {
       aM.Append((XCAFDimTolObjects_DimensionModif)aModifiers->Array()->Value(i));
+    }
     anObj->SetModifiers(aM);
   }
 

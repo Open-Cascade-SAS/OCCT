@@ -739,7 +739,9 @@ static void Analyse(const NCollection_Array2<gp_Pnt>& array2,
         }
       }
       if (locnbch > nbch)
+      {
         nbch = locnbch;
+      }
     }
   }
   myNbSamplesU = nbch + 5;
@@ -812,11 +814,15 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
       nbsv = myS->NbVKnots();
       nbsv *= myS->VDegree();
       if (nbsv < 4)
+      {
         nbsv = 4;
+      }
       nbsu = myS->NbUKnots();
       nbsu *= myS->UDegree();
       if (nbsu < 4)
+      {
         nbsu = 4;
+      }
     }
     break;
     case GeomAbs_Cylinder:
@@ -841,9 +847,13 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
   //--
 
   if (nbsu < 6)
+  {
     nbsu = 6;
+  }
   if (nbsv < 6)
+  {
     nbsv = 6;
+  }
 
   if (typS == GeomAbs_BSplineSurface)
   {
@@ -951,13 +961,21 @@ void Adaptor3d_TopolTool::SamplePoint(const int i, gp_Pnt2d& P2d, gp_Pnt& P3d)
 bool Adaptor3d_TopolTool::DomainIsInfinite()
 {
   if (Precision::IsNegativeInfinite(Uinf))
+  {
     return (true);
+  }
   if (Precision::IsPositiveInfinite(Usup))
+  {
     return (true);
+  }
   if (Precision::IsNegativeInfinite(Vinf))
+  {
     return (true);
+  }
   if (Precision::IsPositiveInfinite(Vsup))
+  {
     return (true);
+  }
   return (false);
 }
 
@@ -1109,8 +1127,6 @@ void Adaptor3d_TopolTool::SamplePnts(const double theDefl, const int theNUmin, c
   {
     myVPars->SetValue(i, t);
   }
-
-  return;
 }
 
 //=================================================================================================
@@ -1248,9 +1264,13 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
     for (i = ui1 + 1; i <= ui2; ++i)
     {
       if (i == ui2)
+      {
         t2 = usup;
+      }
       else
+      {
         t2 = aBS->UKnot(i);
+      }
       dt = (t2 - t1) / nbi;
       j  = 1;
       do
@@ -1289,9 +1309,13 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
     for (i = vi1 + 1; i <= vi2; ++i)
     {
       if (i == vi2)
+      {
         t2 = vsup;
+      }
       else
+      {
         t2 = aBS->VKnot(i);
+      }
       dt = (t2 - t1) / nbi;
       j  = 1;
       do
@@ -1340,7 +1364,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
         // const gp_Lin& lin = MkLin.Value();
 
         if (p1.SquareDistance(p2) <= tol)
+        {
           continue;
+        }
 
         gp_Lin lin(p1, gp_Dir(gp_Vec(p1, p2)));
         bool   ok = true;
@@ -1357,7 +1383,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
           double d  = lin.SquareDistance(pp);
 
           if (d <= aDefl2)
+          {
             continue;
+          }
 
           ok = false;
           break;
@@ -1379,14 +1407,20 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
       }
 
       if (k >= nbsu)
+      {
         bCont = false;
+      }
     }
   }
 
   myNbSamplesU = 0;
   for (i = 1; i <= nbsu; i++)
+  {
     if (anUFlg(i))
+    {
       myNbSamplesU++;
+    }
+  }
 
   if (myNbSamplesU < myMinPnts)
   {
@@ -1402,11 +1436,17 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
       // insert in bigger segment
       i = 2;
       while (!anUFlg(i++))
+      {
         ;
+      }
       if (i < nbsu / 2)
+      {
         j = std::min(i + (nbsu - i) / 2, nbsu - 1);
+      }
       else
+      {
         j = std::max(i / 2, 2);
+      }
     }
     anUFlg(j)    = true;
     myNbSamplesU = myMinPnts;
@@ -1437,7 +1477,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
         gp_Pnt p2 = myS->Value(t1, t2);
 
         if (p1.SquareDistance(p2) <= tol)
+        {
           continue;
+        }
         // gce_MakeLin MkLin(p1, p2);
         // const gp_Lin& lin = MkLin.Value();
         gp_Lin lin(p1, gp_Dir(gp_Vec(p1, p2)));
@@ -1455,7 +1497,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
           double d  = lin.SquareDistance(pp);
 
           if (d <= aDefl2)
+          {
             continue;
+          }
 
           ok = false;
           break;
@@ -1477,14 +1521,20 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
       }
 
       if (k >= nbsv)
+      {
         bCont = false;
+      }
     }
   }
 
   myNbSamplesV = 0;
   for (i = 1; i <= nbsv; i++)
+  {
     if (aVFlg(i))
+    {
       myNbSamplesV++;
+    }
+  }
 
   if (myNbSamplesV < myMinPnts)
   {
@@ -1501,11 +1551,17 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
       // insert in bigger segment
       i = 2;
       while (!aVFlg(i++))
+      {
         ;
+      }
       if (i < nbsv / 2)
+      {
         j = std::min(i + (nbsv - i) / 2, nbsv - 1);
+      }
       else
+      {
         j = std::max(i / 2, 2);
+      }
     }
     myNbSamplesV = myMinPnts;
     aVFlg(j)     = true;
@@ -1627,9 +1683,13 @@ void Adaptor3d_TopolTool::GetConeApexParam(const gp_Cone& theC, double& theU, do
   }
 
   if (theU < -1.e-16)
+  {
     theU += (M_PI + M_PI);
+  }
   else if (theU < 0)
+  {
     theU = 0;
+  }
 
   theV =
     sin(SAngle) * (Ploc.X() * cos(theU) + Ploc.Y() * sin(theU) - Radius) + cos(SAngle) * Ploc.Z();

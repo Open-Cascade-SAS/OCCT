@@ -54,22 +54,25 @@ void IGESBasic_ToolExternalRefFileIndex::ReadOwnParams(
     tempEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
   }
   else
+  {
     PR.AddFail("Number of index entries: Not Positive");
+  }
   if (!tempNames.IsNull() && !tempEntities.IsNull())
+  {
     for (i = 1; i <= num; i++)
     {
       occ::handle<TCollection_HAsciiString> tempNam;
-      if (PR.ReadText(PR.Current(),
-                      "External Reference Entity",
-                      tempNam)) // szv#4:S4163:12Mar99 `st=` not needed
+      if (PR.ReadText(PR.Current(), "External Reference Entity", tempNam))
+      { // szv#4:S4163:12Mar99 `st=` not needed
         tempNames->SetValue(i, tempNam);
+      }
       occ::handle<IGESData_IGESEntity> tempEnt;
-      if (PR.ReadEntity(IR,
-                        PR.Current(),
-                        "Internal Entity",
-                        tempEnt)) // szv#4:S4163:12Mar99 `st=` not needed
+      if (PR.ReadEntity(IR, PR.Current(), "Internal Entity", tempEnt))
+      { // szv#4:S4163:12Mar99 `st=` not needed
         tempEntities->SetValue(i, tempEnt);
+      }
     }
+  }
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNames, tempEntities);
 }
@@ -93,7 +96,9 @@ void IGESBasic_ToolExternalRefFileIndex::OwnShared(
 {
   int i, num;
   for (num = ent->NbEntries(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->Entity(i));
+  }
 }
 
 void IGESBasic_ToolExternalRefFileIndex::OwnCopy(
@@ -150,6 +155,7 @@ void IGESBasic_ToolExternalRefFileIndex::OwnDump(
   IGESData_DumpEntities(S, dumper, -level, 1, ent->NbEntries(), ent->Entity);
   S << "\n";
   if (level > 4)
+  {
     for (num = ent->NbEntries(), i = 1; i <= num; i++)
     {
       S << "[" << i << "]: "
@@ -159,5 +165,6 @@ void IGESBasic_ToolExternalRefFileIndex::OwnDump(
       dumper.Dump(ent->Entity(i), S, 1);
       S << "\n";
     }
-  S << std::endl;
+  }
+  S << '\n';
 }

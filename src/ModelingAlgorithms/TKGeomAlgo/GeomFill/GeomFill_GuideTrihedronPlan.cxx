@@ -55,9 +55,13 @@ static void InGoodPeriod(const double Prec, const double Period, double& Current
   Current -= nb * Period;
   Diff = Current - Prec;
   if (Diff > Period / 2)
+  {
     Current -= Period;
+  }
   else if (Diff < -Period / 2)
+  {
     Current += Period;
+  }
 }
 
 //=================================================================================================
@@ -192,7 +196,9 @@ bool GeomFill_GuideTrihedronPlan::SetCurve(const occ::handle<Adaptor3d_Curve>& C
 {
   myCurve = C;
   if (!myCurve.IsNull())
+  {
     Init();
+  }
   return true;
 }
 
@@ -491,7 +497,9 @@ bool GeomFill_GuideTrihedronPlan::IsConstant() const
     double Angle;
     Angle = myCurve->Line().Angle(myGuide->Line());
     if ((Angle < 1.e-12) || ((2 * M_PI - Angle) < 1.e-12))
+    {
       return true;
+    }
   }
 
   return false;

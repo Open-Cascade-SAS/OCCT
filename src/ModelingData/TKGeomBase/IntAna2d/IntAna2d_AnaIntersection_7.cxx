@@ -71,7 +71,9 @@ void IntAna2d_AnaIntersection::Perform(const gp_Parab2d& P, const IntAna2d_Conic
       ty = S;
       Coord_Ancien_Repere(tx, ty, Axe_rep);
       if (!PIsDirect)
+      {
         S = -S;
+      }
       lpnt[i - 1].SetValue(tx, ty, S);
     }
     Traitement_Points_Confondus(nbp, lpnt);

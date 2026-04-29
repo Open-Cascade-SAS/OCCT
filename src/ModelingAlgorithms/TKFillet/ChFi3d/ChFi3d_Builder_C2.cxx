@@ -415,19 +415,29 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     Fd2->ChangeVertex(isfirst2, IFaCo2)  = Fd1->Vertex(isfirst1, IFaCo1);
     Fd2->ChangeVertex(isfirst2, IFaArc2) = Fd1->Vertex(isfirst1, IFaArc1);
     if (IFaCo1 != IFaCo2)
+    {
       Corner2->SetOrientation(TopAbs_REVERSED, isfirst2);
+    }
     Corner2->SetIndexPoint(Corner1->IndexPoint(isfirst1, IFaCo1), isfirst2, IFaCo2);
     Corner2->SetIndexPoint(Corner1->IndexPoint(isfirst1, IFaArc1), isfirst2, IFaArc2);
     // The tolerances of points are updated.
     Bnd_Box bco, barc;
     if (IFaCo1 == 1)
+    {
       ChFi3d_EnlargeBox(DStr, Corner1, Fd1, bco, barc, isfirst1);
+    }
     else
+    {
       ChFi3d_EnlargeBox(DStr, Corner1, Fd1, barc, bco, isfirst1);
+    }
     if (IFaCo2 == 1)
+    {
       ChFi3d_EnlargeBox(DStr, Corner2, Fd2, bco, barc, isfirst2);
+    }
     else
+    {
       ChFi3d_EnlargeBox(DStr, Corner2, Fd2, barc, bco, isfirst2);
+    }
     const ChFiDS_CommonPoint& cparc = Fd1->Vertex(isfirst1, IFaArc1);
     ChFi3d_EnlargeBox(cparc.Arc(), myEFMap(cparc.Arc()), cparc.ParameterOnArc(), barc);
     ChFi3d_SetPointTolerance(DStr, barc, Corner1->IndexPoint(isfirst1, IFaArc1));
@@ -523,14 +533,18 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     {
       wi = temp = FiArcSma.FirstParameter();
       if (UIntPCSma < temp)
+      {
         temp = UIntPCSma;
+      }
       bid.Load(ctg, temp, FiArcSma.LastParameter());
     }
     else
     {
       wi = temp = FiArcSma.LastParameter();
       if (UIntPCSma > temp)
+      {
         temp = UIntPCSma;
+      }
       bid.Load(ctg, FiArcSma.FirstParameter(), temp);
     }
     if (SmaFD->Surf() == BigFD->Surf())
@@ -598,7 +612,9 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     IpointMil = ChFi3d_IndexPointInDS(psmamil, DStr);
     SmaCD->SetIndexPoint(IpointMil, isfirstSma, IFaArcSma);
     if (IFaCoSma == 2)
+    {
       SmaCD->SetOrientation(TopAbs_REVERSED, isfirstSma);
+    }
 
     // For BigCD the first results are met in the DS.
     BigCD->SetIndexPoint(IpointCo, isfirstBig, IFaCoBig);
@@ -620,9 +636,13 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     TopAbs_Orientation tracurv = TopAbs::Compose(ofac, ofil);
     tracurv                    = TopAbs::Compose(tracurv, tra);
     if (!isfirstBig)
+    {
       tracurv = TopAbs::Reverse(tracurv);
+    }
     if (IFaCoBig != 1)
+    {
       tracurv = TopAbs::Reverse(tracurv);
+    }
 
     occ::handle<TopOpeBRepDS_SurfaceCurveInterference> Interfc;
     int                                                ISurf = BigFD->Surf();
@@ -632,9 +652,13 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     // The tolerances of points are updated (beginning).
     Bnd_Box bco, bmil, barc;
     if (IFaCoSma == 1)
+    {
       ChFi3d_EnlargeBox(DStr, SmaCD, SmaFD, bco, bmil, isfirstSma);
+    }
     else
+    {
       ChFi3d_EnlargeBox(DStr, SmaCD, SmaFD, bmil, bco, isfirstSma);
+    }
     ChFi3d_EnlargeBox(BigHS, PGc2, WFirst, WLast, bco, bmil);
 
     // Intersection of the big with the face at end :
@@ -683,7 +707,9 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     ChFiDS_CommonPoint& cpend = BigFD->ChangeVertex(isfirstBig, IFaArcBig);
     TopoDS_Edge         etest = cpend.Arc();
     if (BRep_Tool::IsClosed(etest, F))
+    {
       etest.Reverse();
+    }
     BRepAdaptor_Curve2d arc(etest, F);
     UVi            = arc.Value(cpend.ParameterOnArc());
     Parfin(1)      = UVi.X();
@@ -758,9 +784,13 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     // The tolerances of points are updated (end).
     occ::handle<ChFiDS_Stripe> bidst;
     if (IFaCoBig == 1)
+    {
       ChFi3d_EnlargeBox(DStr, bidst, BigFD, bco, barc, isfirstBig);
+    }
     else
+    {
       ChFi3d_EnlargeBox(DStr, bidst, BigFD, barc, bco, isfirstBig);
+    }
     ChFi3d_EnlargeBox(BigHS, PGc2, WFirst, WLast, bmil, barc);
     ChFi3d_EnlargeBox(HF, PGc1, WFirst, WLast, bmil, barc);
     ChFi3d_EnlargeBox(Gc, WFirst, WLast, bmil, barc);

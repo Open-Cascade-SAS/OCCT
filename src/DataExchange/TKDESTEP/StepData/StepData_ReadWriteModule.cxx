@@ -25,17 +25,25 @@ int StepData_ReadWriteModule::CaseNum(const occ::handle<Interface_FileReaderData
 {
   DeclareAndCast(StepData_StepReaderData, stepdat, data);
   if (stepdat.IsNull())
+  {
     return 0;
+  }
   if (stepdat->IsComplex(num))
   {
     NCollection_Sequence<TCollection_AsciiString> types;
     stepdat->ComplexType(num, types);
     if (types.IsEmpty())
+    {
       return 0;
+    }
     if (types.Length() == 1)
+    {
       return CaseStep(types.Value(1));
+    }
     else
+    {
       return CaseStep(types);
+    }
   }
   return CaseStep(stepdat->RecordType(num));
 }
@@ -71,6 +79,8 @@ void StepData_ReadWriteModule::Read(const int                                   
 {
   DeclareAndCast(StepData_StepReaderData, stepdat, data);
   if (stepdat.IsNull())
+  {
     return;
+  }
   ReadStep(CN, stepdat, num, ach, ent);
 }

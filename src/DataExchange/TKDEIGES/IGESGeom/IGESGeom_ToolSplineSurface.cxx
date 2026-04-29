@@ -146,7 +146,9 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_Spline
         st = PR.ReadReals(PR.CurrentList(16), Msg145_X, Temp);
         // st = PR.ReadReals (PR.CurrentList(16),"X Coefficient Of Patch",Temp);
         if (st && Temp->Length() == 16)
+        {
           allXCoeffs->SetValue(i, j, Temp);
+        }
         else
         {
           Message_Msg Msg147_X("XSTEP_147");
@@ -156,7 +158,9 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_Spline
         st = PR.ReadReals(PR.CurrentList(16), Msg145_Y, Temp);
         // st = PR.ReadReals (PR.CurrentList(16),"Y Coefficient Of Patch",Temp);
         if (st && Temp->Length() == 16)
+        {
           allYCoeffs->SetValue(i, j, Temp);
+        }
         else
         {
           Message_Msg Msg147_Y("XSTEP_147");
@@ -166,7 +170,9 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_Spline
         st = PR.ReadReals(PR.CurrentList(16), Msg145_Z, Temp);
         // st = PR.ReadReals (PR.CurrentList(16),"Z Coefficient Of Patch",Temp);
         if (st && Temp->Length() == 16)
+        {
           allZCoeffs->SetValue(i, j, Temp);
+        }
         else if (i < allNbUSegments || j < allNbVSegments)
         {
           Message_Msg Msg147_Z("XSTEP_147");
@@ -196,13 +202,19 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_Spline
         }
       }
       for (int kk = 1; kk <= 48; kk++)
+      {
         PR.SetCurrentNumber(PR.CurrentNumber() + 1);
+      }
       // Skip the Arbitrary Values
     }
   }
   if (vbreak)
+  {
     for (k = 1; k <= 48 * (allNbVSegments + 1); k++)
+    {
       PR.SetCurrentNumber(PR.CurrentNumber() + 1);
+    }
+  }
   // Skip the Arbitrary Values
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -229,27 +241,41 @@ void IGESGeom_ToolSplineSurface::WriteOwnParams(const occ::handle<IGESGeom_Splin
   IW.Send(nbVSegs);
 
   for (I = 1; I <= nbUSegs + 1; I++)
+  {
     IW.Send(ent->UBreakPoint(I));
+  }
 
   for (I = 1; I <= nbVSegs + 1; I++)
+  {
     IW.Send(ent->VBreakPoint(I));
+  }
 
   for (I = 1; I <= nbUSegs; I++)
   {
     for (J = 1; J <= nbVSegs; J++)
     {
       for (k = 1; k <= 16; k++)
+      {
         IW.Send((ent->XPolynomial(I, J))->Value(k));
+      }
       for (k = 1; k <= 16; k++)
+      {
         IW.Send((ent->YPolynomial(I, J))->Value(k));
+      }
       for (k = 1; k <= 16; k++)
+      {
         IW.Send((ent->ZPolynomial(I, J))->Value(k));
+      }
     }
     for (k = 1; k <= 48; k++)
+    {
       IW.Send(0.0); // Send Arbitrary Values
+    }
   }
   for (J = 1; J <= (nbVSegs + 1) * 48; J++)
+  {
     IW.Send(0.0); // Send Arbitrary Values
+  }
 }
 
 void IGESGeom_ToolSplineSurface::OwnShared(const occ::handle<IGESGeom_SplineSurface>& /* ent */,
@@ -277,10 +303,14 @@ void IGESGeom_ToolSplineSurface::OwnCopy(const occ::handle<IGESGeom_SplineSurfac
     new NCollection_HArray1<double>(1, allNbVSegments + 1);
 
   for (I = 1; I <= allNbUSegments + 1; I++)
+  {
     allUBreakPoints->SetValue(I, another->UBreakPoint(I));
+  }
 
   for (I = 1; I <= allNbVSegments + 1; I++)
+  {
     allVBreakPoints->SetValue(I, another->VBreakPoint(I));
+  }
 
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allXCoeffs =
     new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1,
@@ -303,6 +333,7 @@ void IGESGeom_ToolSplineSurface::OwnCopy(const occ::handle<IGESGeom_SplineSurfac
   occ::handle<NCollection_HArray1<double>> temp = new NCollection_HArray1<double>(1, 16);
 
   for (I = 1; I <= allNbUSegments; I++)
+  {
     for (J = 1; J <= allNbVSegments; J++)
     {
       temp = another->XPolynomial(I, J);
@@ -312,6 +343,7 @@ void IGESGeom_ToolSplineSurface::OwnCopy(const occ::handle<IGESGeom_SplineSurfac
       temp = another->ZPolynomial(I, J);
       allZCoeffs->SetValue(I, J, temp);
     }
+  }
 
   ent->Init(aBoundaryType,
             aPatchType,
@@ -394,9 +426,13 @@ void IGESGeom_ToolSplineSurface::OwnDump(const occ::handle<IGESGeom_SplineSurfac
   S << "\n"
     << "The  Patch Type : " << ent->PatchType();
   if (ent->PatchType() == 1)
+  {
     S << "  (Cartesian Product)";
+  }
   else
+  {
     S << "  (Unspecified)";
+  }
   S << "\n"
     << "Number Of Segments. In U : " << nbUSegs << "    In V : " << nbVSegs << "\n"
     << "The U Break Points : ";
@@ -408,6 +444,7 @@ void IGESGeom_ToolSplineSurface::OwnDump(const occ::handle<IGESGeom_SplineSurfac
   if (level > 4)
   {
     for (I = 1; I <= nbUSegs; I++)
+    {
       for (J = 1; J <= nbVSegs; J++)
       {
         S << "[" << I << "," << J << "]:\n"
@@ -424,7 +461,10 @@ void IGESGeom_ToolSplineSurface::OwnDump(const occ::handle<IGESGeom_SplineSurfac
         IGESData_DumpVals(S, level, 1, temp->Length(), temp->Value);
         S << "\n";
       }
+    }
   }
   else
-    S << std::endl;
+  {
+    S << '\n';
+  }
 }

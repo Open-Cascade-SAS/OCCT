@@ -23,7 +23,8 @@
 #include <Standard_CStringHasher.hxx>
 #include <VrmlData_ErrorStatus.hxx>
 
-#define VRMLDATA_LCOMPARE(aa, bb) ((strncmp(aa, bb, sizeof(bb) - 1)) ? 0L : (aa += sizeof(bb) - 1))
+#define VRMLDATA_LCOMPARE(aa, bb)                                                                  \
+  ((strncmp(aa, bb, sizeof(bb) - 1)) ? nullptr : (aa += sizeof(bb) - 1))
 
 struct VrmlData_InBuffer;
 class VrmlData_Scene;

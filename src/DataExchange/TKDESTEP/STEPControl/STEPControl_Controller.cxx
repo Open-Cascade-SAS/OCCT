@@ -448,13 +448,17 @@ IFSelect_ReturnStatus STEPControl_Controller::TransferWriteShape(
   const Message_ProgressRange&                 theProgress) const
 {
   if (modeshape < 0 || modeshape > 4)
+  {
     return IFSelect_RetError;
+  }
   occ::handle<STEPControl_ActorWrite> ActWrite =
     occ::down_cast<STEPControl_ActorWrite>(myAdaptorWrite);
   //    A PRESENT ON PASSE PAR LE PROFILE
   occ::handle<StepData_StepModel> aModel = occ::down_cast<StepData_StepModel>(model);
   if (!ActWrite.IsNull())
+  {
     ActWrite->SetGroupMode(aModel->InternalParameters.WriteAssembly);
+  }
   TopoDS_Shape                                                             aShape = shape;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aModifedMap;
   if (aModel->InternalParameters.WriteNonmanifold)
@@ -495,7 +499,9 @@ void STEPControl_Controller::Customise(occ::handle<XSControl_WorkSession>& WS)
   occ::handle<IFSelect_SelectModelRoots> slr;
   occ::handle<Standard_Transient>        slr1 = WS->NamedItem("xst-model-roots");
   if (!slr1.IsNull())
+  {
     slr = occ::down_cast<IFSelect_SelectModelRoots>(slr1);
+  }
   else
   {
     slr = new IFSelect_SelectModelRoots;

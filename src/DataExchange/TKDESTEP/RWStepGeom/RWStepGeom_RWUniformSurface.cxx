@@ -31,7 +31,9 @@ void RWStepGeom_RWUniformSurface::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 8, ach, "uniform_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -76,7 +78,9 @@ void RWStepGeom_RWUniformSurface::ReadStep(const occ::handle<StepData_StepReader
                                ach,
                                STANDARD_TYPE(StepGeom_CartesianPoint),
                                anent4))
+          {
             aControlPointsList->SetValue(i4, j4, anent4);
+          }
         }
       }
     }
@@ -94,7 +98,9 @@ void RWStepGeom_RWUniformSurface::ReadStep(const occ::handle<StepData_StepReader
     }
   }
   else
+  {
     ach->AddFail("Parameter #5 (surface_form) is not an enumeration");
+  }
 
   // --- inherited field : uClosed ---
 

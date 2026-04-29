@@ -24,13 +24,11 @@
 #include <IntPatch_RLine.hxx>
 #include <IntPatch_WLine.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <NCollection_OccAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-
-#include <vector>
 
 namespace
 {
@@ -158,7 +156,9 @@ static bool IsPointOnBoundary(const double theParameter,
 {
   IsOnFirstBoundary = true;
   if (fabs(theParameter - theFirstBoundary) < theResolution)
+  {
     return true;
+  }
   if (fabs(theParameter - theSecondBoundary) < theResolution)
   {
     IsOnFirstBoundary = false;
@@ -194,9 +194,13 @@ static bool FindPoint(const gp_Pnt2d& theFirstPoint,
       anOtherVecNormal.SetY(0.);
 
       if (i < 2)
+      {
         aprojpoint.SetX(theUmin);
+      }
       else
+      {
         aprojpoint.SetX(theUmax);
+      }
     }
     else
     {
@@ -206,16 +210,22 @@ static bool FindPoint(const gp_Pnt2d& theFirstPoint,
       anOtherVecNormal.SetY(1.);
 
       if (i < 2)
+      {
         aprojpoint.SetY(theVmin);
+      }
       else
+      {
         aprojpoint.SetY(theVmax);
+      }
     }
     gp_Vec2d anormvec = aVec;
     anormvec.Normalize();
     double adot1 = anormvec.Dot(anOtherVecNormal);
 
     if (fabs(adot1) < Precision::Angular())
+    {
       continue;
+    }
     double adist = 0.;
 
     if ((i % 2) == 0)
@@ -312,11 +322,15 @@ double GeomInt_LineTool::FirstParameter(const occ::handle<IntPatch_Line>& L)
     case IntPatch_Analytic: {
       occ::handle<IntPatch_ALine> alin = occ::down_cast<IntPatch_ALine>(L);
       if (alin->HasFirstPoint())
+      {
         return alin->FirstPoint().ParameterOnLine();
+      }
       bool   included;
       double firstp = alin->FirstParameter(included);
       if (!included)
+      {
         firstp += Epsilon(firstp);
+      }
       return firstp;
     }
 
@@ -335,7 +349,9 @@ double GeomInt_LineTool::FirstParameter(const occ::handle<IntPatch_Line>& L)
     default: {
       occ::handle<IntPatch_GLine> glin = occ::down_cast<IntPatch_GLine>(L);
       if (glin->HasFirstPoint())
+      {
         return glin->FirstPoint().ParameterOnLine();
+      }
       switch (typl)
       {
         case IntPatch_Lin:
@@ -360,11 +376,15 @@ double GeomInt_LineTool::LastParameter(const occ::handle<IntPatch_Line>& L)
     case IntPatch_Analytic: {
       occ::handle<IntPatch_ALine> alin = occ::down_cast<IntPatch_ALine>(L);
       if (alin->HasLastPoint())
+      {
         return alin->LastPoint().ParameterOnLine();
+      }
       bool   included;
       double lastp = alin->LastParameter(included);
       if (!included)
+      {
         lastp -= Epsilon(lastp);
+      }
       return lastp;
     }
 
@@ -383,7 +403,9 @@ double GeomInt_LineTool::LastParameter(const occ::handle<IntPatch_Line>& L)
     default: {
       occ::handle<IntPatch_GLine> glin = occ::down_cast<IntPatch_GLine>(L);
       if (glin->HasLastPoint())
+      {
         return glin->LastPoint().ParameterOnLine();
+      }
       switch (typl)
       {
         case IntPatch_Lin:
@@ -411,10 +433,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   const GeomInt_LineConstructor&                    theLConstructor,
   NCollection_Sequence<occ::handle<IntPatch_Line>>& theNewLines)
 {
-  typedef NCollection_List<int> ListOfInteger;
-  // have to use std::vector, not NCollection_Vector in order to use copy constructor of
-  // ListOfInteger which will be created with specific allocator instance
-  typedef std::vector<ListOfInteger, NCollection_OccAllocator<ListOfInteger>> ArrayOfListOfInteger;
+  typedef NCollection_List<int>                   ListOfInteger;
+  typedef NCollection_LinearVector<ListOfInteger> ArrayOfListOfInteger;
 
   bool   bIsPrevPointOnBoundary, bIsCurrentPointOnBoundary;
   int    nblines, aNbPnts, aNbParts, pit, i, j, aNbListOfPointIndex;
@@ -440,10 +460,9 @@ bool GeomInt_LineTool::DecompositionOfWLine(
     return false;
   }
   //
-  occ::handle<NCollection_IncAllocator>   anIncAlloc = new NCollection_IncAllocator();
-  NCollection_OccAllocator<ListOfInteger> anAlloc(anIncAlloc);
+  occ::handle<NCollection_IncAllocator> anIncAlloc = new NCollection_IncAllocator();
   const ListOfInteger  aDummy(anIncAlloc); // empty list to be copy constructed from
-  ArrayOfListOfInteger anArrayOfLines(aNbPnts + 1, aDummy, anAlloc);
+  ArrayOfListOfInteger anArrayOfLines(aNbPnts + 1, aDummy);
 
   NCollection_LocalArray<int> anArrayOfLineTypeArr(aNbPnts + 1);
   int*                        anArrayOfLineType = anArrayOfLineTypeArr;
@@ -701,9 +720,13 @@ bool GeomInt_LineTool::DecompositionOfWLine(
             double                 nU1, nV1;
 
             if (surfit == 0)
+            {
               aNeighbourPoint.ParametersOnS1(nU1, nV1);
+            }
             else
+            {
               aNeighbourPoint.ParametersOnS2(nU1, nV1);
+            }
 
             double adist1   = (bIsUBoundary) ? fabs(nU1 - U) : fabs(nV1 - V);
             double adist2   = (bIsUBoundary) ? fabs(nU1 - anotherPar) : fabs(nV1 - anotherPar);
@@ -749,9 +772,13 @@ bool GeomInt_LineTool::DecompositionOfWLine(
                 double                 nU2, nV2;
 
                 if (surfit == 0)
+                {
                   aPrevNeighbourPoint.ParametersOnS1(nU2, nV2);
+                }
                 else
+                {
                   aPrevNeighbourPoint.ParametersOnS2(nU2, nV2);
+                }
                 gp_Vec2d aVecOld(gp_Pnt2d(nU2, nV2), gp_Pnt2d(nU1, nV1));
 
                 if (aVecOld.SquareMagnitude() <= (gp::Resolution() * gp::Resolution()))
@@ -801,9 +828,13 @@ bool GeomInt_LineTool::DecompositionOfWLine(
           double                 nU1, nV1;
 
           if (surfit == 0)
+          {
             aNeighbourPoint.ParametersOnS1(nU1, nV1);
+          }
           else
+          {
             aNeighbourPoint.ParametersOnS2(nU1, nV1);
+          }
           gp_Pnt2d ap1(nU1, nV1);
           gp_Pnt2d ap2(nU1, nV1);
           int      aneighbourpointindex2 = aneighbourpointindex1;
@@ -817,9 +848,13 @@ bool GeomInt_LineTool::DecompositionOfWLine(
             double                 nU2, nV2;
 
             if (surfit == 0)
+            {
               aPrevNeighbourPoint.ParametersOnS1(nU2, nV2);
+            }
             else
+            {
               aPrevNeighbourPoint.ParametersOnS2(nU2, nV2);
+            }
             ap2.SetX(nU2);
             ap2.SetY(nV2);
 
@@ -852,9 +887,13 @@ bool GeomInt_LineTool::DecompositionOfWLine(
                 aProjector.LowerDistanceParameters(foundU, foundV);
 
                 if (surfit == 0)
+                {
                   aNewP.SetValue(aP3d, anewpoint.X(), anewpoint.Y(), foundU, foundV);
+                }
                 else
+                {
                   aNewP.SetValue(aP3d, foundU, foundV, anewpoint.X(), anewpoint.Y());
+                }
               }
             }
           }
@@ -966,7 +1005,9 @@ bool GeomInt_LineTool::DecompositionOfWLine(
         for (; anIt.More(); anIt.Next())
         {
           if ((anIt.Value() < ifprm) || (anIt.Value() > ilprm))
+          {
             continue;
+          }
           const IntSurf_PntOn2S& aP = theWLine->Point(anIt.Value());
           aLineOn2S->Add(aP);
         }
@@ -982,7 +1023,9 @@ bool GeomInt_LineTool::DecompositionOfWLine(
           for (; anIt.More(); anIt.Next())
           {
             if (anIt.Value() < ifprm)
+            {
               continue;
+            }
             const IntSurf_PntOn2S& aP = theWLine->Point(anIt.Value());
             aLineOn2S->Add(aP);
           }
@@ -1032,7 +1075,9 @@ bool GeomInt_LineTool::DecompositionOfWLine(
           for (; anIt.More(); anIt.Next())
           {
             if (anIt.Value() > ilprm)
+            {
               continue;
+            }
             const IntSurf_PntOn2S& aP = theWLine->Point(anIt.Value());
             aLineOn2S->Add(aP);
           }

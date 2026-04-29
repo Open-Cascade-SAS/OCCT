@@ -41,7 +41,9 @@ void RWStepFEA_RWElementRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "element_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

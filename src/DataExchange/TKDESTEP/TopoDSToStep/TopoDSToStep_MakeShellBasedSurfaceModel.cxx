@@ -74,7 +74,9 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
   TopoDSToStep_Tool    aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
   TopoDSToStep_Builder StepB(aFace, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())
+  {
     return;
+  }
 
   TopoDSToStep::AddResult(FP, aTool);
 
@@ -137,7 +139,9 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
   TopoDSToStep_Tool    aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
   TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())
+  {
     return;
+  }
   // TopoDSToStep::AddResult ( FP, aTool );
 
   if (StepB.IsDone())
@@ -207,8 +211,12 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
 
   int nbshapes = 0;
   for (It.Initialize(aSolid); It.More(); It.Next())
+  {
     if (It.Value().ShapeType() == TopAbs_SHELL)
+    {
       nbshapes++;
+    }
+  }
   Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
   for (It.Initialize(aSolid); It.More() && aPS.More(); It.Next())
   {
@@ -240,7 +248,9 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
     }
   }
   if (!aPS.More())
+  {
     return;
+  }
   int N = S.Length();
   if (N >= 1)
   {

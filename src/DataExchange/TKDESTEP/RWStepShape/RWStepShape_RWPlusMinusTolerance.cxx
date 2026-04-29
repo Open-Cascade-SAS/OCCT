@@ -29,7 +29,9 @@ void RWStepShape_RWPlusMinusTolerance::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "plus_minus_tolerance"))
+  {
     return;
+  }
 
   // --- own field : range ---
 

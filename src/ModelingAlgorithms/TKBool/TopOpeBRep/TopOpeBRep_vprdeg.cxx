@@ -110,12 +110,16 @@ Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_P
     const TopOpeBRep_VPointInter& vp   = itvp.CurrentVP();
     int                           sind = vp.ShapeIndex();
     if (sind != 3)
+    {
       continue;
+    }
     bool isvon1  = vp.IsVertexOnS1();
     bool isvon2  = vp.IsVertexOnS2();
     bool isvon12 = isvon1 && isvon2;
     if (!isvon12)
+    {
       continue;
+    }
     const TopoDS_Shape& v1 = vp.VertexOnS1();
     const TopoDS_Shape& v2 = vp.VertexOnS2();
     pDS->FillShapesSameDomain(v1, v2);
@@ -157,11 +161,13 @@ static void FUN_addmapve(
     bool                                     found = false;
     NCollection_List<TopoDS_Shape>::Iterator it(mapve.Find(v));
     for (; it.More(); it.Next())
+    {
       if (it.Value().IsSame(e))
       {
         found = true;
         break;
       }
+    }
     if (!found)
     {
       mapve.ChangeFind(v).Append(e);
@@ -196,7 +202,9 @@ Standard_EXPORT void FUN_GetdgData(
     bool                          isv1 = vp.IsVertex(1), isv2 = vp.IsVertex(2);
     bool                          isv = isv1 || isv2;
     if (!isv)
+    {
       continue;
+    }
 
     int          sind = vp.ShapeIndex();
     TopoDS_Shape v    = isv1 ? vp.Vertex(1) : vp.Vertex(2);
@@ -222,11 +230,17 @@ Standard_EXPORT void FUN_GetdgData(
 
         isdg = BRep_Tool::Degenerated(e);
         if (!isdg)
+        {
           iscl = TopOpeBRepTool_ShapeTool::Closed(e, f);
+        }
         if (isdg)
+        {
           FUN_addmapve(mapved, v, e);
+        }
         if (iscl)
+        {
           FUN_addmapve(mapvec, v, e);
+        }
       } // ison
     } // i = 1..2
   } // itvp
@@ -238,7 +252,9 @@ Standard_EXPORT void FUN_GetdgData(
   {
     const TopoDS_Shape& v = itm.Key();
     if (v.ShapeType() != TopAbs_VERTEX)
+    {
       continue;
+    }
     int rkv = shaperk.Find(v);
 
     NCollection_List<TopoDS_Shape>::Iterator ite(itm.Value());
@@ -265,7 +281,9 @@ Standard_EXPORT void FUN_GetdgData(
     int                 rk  = shaperk.Find(dge);
     TopoDS_Face         f   = (rk == 1) ? F1 : F2;
     if (dge.ShapeType() != TopAbs_EDGE)
+    {
       continue;
+    }
 
     TopExp_Explorer      ex(dge, TopAbs_VERTEX);
     const TopoDS_Vertex& v     = TopoDS::Vertex(ex.Current());
@@ -273,7 +291,9 @@ Standard_EXPORT void FUN_GetdgData(
     bool                 hassd = mapvvsd.IsBound(v);
     TopoDS_Vertex        vsd;
     if (hassd)
+    {
       vsd = TopoDS::Vertex(mapvvsd.Find(v));
+    }
 
     bool         hasecl = false;
     TopoDS_Shape cle;
@@ -294,10 +314,14 @@ Standard_EXPORT void FUN_GetdgData(
       {
         const TopoDS_Edge& ee = TopoDS::Edge(iteds.Value());
         if (ee.IsSame(dge))
+        {
           continue;
+        }
         bool iscl = TopOpeBRepTool_ShapeTool::Closed(ee, f);
         if (!iscl)
+        {
           continue;
+        }
         isbv   = true;
         cle    = ee;
         hasecl = true;
@@ -309,7 +333,9 @@ Standard_EXPORT void FUN_GetdgData(
       TopoDS_Vertex                            vv = isbv ? v : vsd;
       NCollection_List<TopoDS_Shape>::Iterator ite;
       if (isbv)
+      {
         ite.Initialize(mapvec.Find(v));
+      }
       for (; ite.More(); ite.Next())
       {
         const TopoDS_Shape& e   = ite.Value();
@@ -323,7 +349,9 @@ Standard_EXPORT void FUN_GetdgData(
       }
     }
     if (!hasecl)
+    {
       continue;
+    }
 
     TopoDS_Vertex                  vv = (rkv == rk) ? v : vsd;
     NCollection_List<TopoDS_Shape> ls;
@@ -384,16 +412,22 @@ static int FUN_putInterfonDegenEd(
   {
     bool isv = (ShapeIndex == 1) ? (VP.IsVertexOnS1()) : (VP.IsVertexOnS2());
     if (!isv)
+    {
       continue;
+    }
     v = (ShapeIndex == 1) ? TopoDS::Vertex(VP.VertexOnS1()) : TopoDS::Vertex(VP.VertexOnS2());
     bool hasdegened = DataforDegenEd.IsBound(v);
     if (!hasdegened)
+    {
       continue;
+    }
     rkv = ShapeIndex;
     break;
   } // ShapeIndex = 1..2
   if (rkv == 0)
+  {
     return NOI; // compute interference once only.
+  }
   bool isvsd = HDS->HasSameDomain(v);
 
   // edges dge, cle on shape<rkdg>
@@ -403,14 +437,20 @@ static int FUN_putInterfonDegenEd(
   dgE                                       = dge;
   int rkdg                                  = 0;
   if (BDS.HasShape(dge))
+  {
     rkdg = BDS.AncestorRank(dge);
+  }
   else
   {
     bool vindge = FUN_tool_inS(v, dge);
     if (vindge)
+    {
       rkdg = rkv;
+    }
     else
+    {
       rkdg = (rkv == 1) ? 2 : 1;
+    }
   }
   is      = rkdg;
   int rki = (rkdg == 1) ? 2 : 1;
@@ -425,9 +465,13 @@ static int FUN_putInterfonDegenEd(
     // modified by NIZHNY-MKK  Tue Nov 21 17:44:56 2000.BEGIN
     double upar, vpar;
     if (rki == 1)
+    {
       VP.ParametersOnS1(upar, vpar);
+    }
     else
+    {
       VP.ParametersOnS2(upar, vpar);
+    }
     uvi = gp_Pnt2d(upar, vpar);
     // modified by NIZHNY-MKK  Tue Nov 21 17:44:59 2000.END
     fi = (rki == 1) ? F1 : F2;
@@ -436,15 +480,21 @@ static int FUN_putInterfonDegenEd(
   TopOpeBRepTool_mkTondgE mktdg;
   bool                    ok = mktdg.Initialize(dge, f, uvi, fi);
   if (!ok)
+  {
     return NOI;
+  }
   ok = mktdg.SetclE(cle);
   if (!ok)
+  {
     return NOI;
+  }
 
   if (onv12 || isvsd)
   {
     if (onv12)
+    {
       ov = (rkv == 2) ? TopoDS::Vertex(VP.VertexOnS1()) : TopoDS::Vertex(VP.VertexOnS2());
+    }
     else
     {
       // modified by NIZHNY-MKK  Tue Nov 21 17:45:46 2000.BEGIN
@@ -452,7 +502,9 @@ static int FUN_putInterfonDegenEd(
       //       if (!ok) return false;
       bool found = FUN_ds_getoov(v, HDS, ov);
       if (!found)
+      {
         return NOI;
+      }
       // modified by NIZHNY-MKK  Tue Nov 21 17:45:50 2000.END
     }
     // clang-format off
@@ -470,7 +522,9 @@ static int FUN_putInterfonDegenEd(
     mktdg.SetRest(pari, ei);
     ok = mktdg.MkTonE(ei, mkt, par1, par2);
     if ((!ok) || (mkt == NOI))
+    {
       return NOI;
+    }
     OOEi      = ei;
     paronOOEi = pari;
     hasOOEi   = true;
@@ -541,7 +595,9 @@ static int FUN_putInterfonDegenEd(
     }
     // modified by NIZHNY-MKK  Tue Nov 21 17:31:36 2000.END
     if ((!ok) || (mkt == NOI))
+    {
       return NOI;
+    }
   }
   isT2d = mktdg.IsT2d();
 
@@ -584,6 +640,7 @@ bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&       
                                             occ::handle<TopOpeBRepDS_Interference>& ICPI) // out
 {
   if (PVIndex == 0)
+  {
     FUN_VPIndex((*this),
                 (*myLine),
                 VP,
@@ -597,6 +654,7 @@ bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&       
                 CPIfound,
                 ICPI, // out
                 M_FINDVP);
+  }
 
   // kpart : sphere/box, with one sphere's degenerated edge lying on one boxe's
   // face, IN or ON the face
@@ -649,6 +707,7 @@ bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&       
   // -------------------------------------------------------------------
 
   if (PVIndex == 0)
+  {
     FUN_VPIndex((*this),
                 (*myLine),
                 VP,
@@ -662,6 +721,7 @@ bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&       
                 CPIfound,
                 ICPI, // out
                 M_MKNEWVP);
+  }
 
   // -------------------------------------------------------------------
   //             --- EVI on degenerated edge ---
@@ -672,9 +732,13 @@ bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&       
   //  TopoDS_Shape dgEd = VP.Edge(rankdg);
   TopoDS_Face Fi;
   if (rankFi == 1)
+  {
     Fi = myF1;
+  }
   else
+  {
     Fi = myF2;
+  }
   int iFi = myDS->AddShape(Fi, rankFi);
   myDS->AddShape(dgEd, rankdg);
   //  int iOOEi = 0;

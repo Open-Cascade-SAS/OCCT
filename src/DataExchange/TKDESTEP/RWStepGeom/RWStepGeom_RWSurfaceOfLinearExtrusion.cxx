@@ -31,7 +31,9 @@ void RWStepGeom_RWSurfaceOfLinearExtrusion::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "surface_of_linear_extrusion"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

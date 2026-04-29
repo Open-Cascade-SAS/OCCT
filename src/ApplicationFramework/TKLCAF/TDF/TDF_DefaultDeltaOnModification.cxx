@@ -40,5 +40,7 @@ void TDF_DefaultDeltaOnModification::Apply()
   const occ::handle<TDF_Attribute>& savAtt = Attribute();
   occ::handle<TDF_Attribute>        refAtt;
   if (Label().FindAttribute(savAtt->ID(), refAtt))
+  {
     refAtt->DeltaOnModification(this);
+  }
 }

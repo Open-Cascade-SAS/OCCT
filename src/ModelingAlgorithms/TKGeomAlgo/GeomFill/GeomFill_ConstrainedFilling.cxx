@@ -116,9 +116,13 @@ static void sortbounds(const int                       nb,
   for (i = 0; i < nb - 1; i++)
   {
     if (!rev[i])
+    {
       bound[i]->Points(pf, pl);
+    }
     else
+    {
       bound[i]->Points(pl, pf);
+    }
     for (j = i + 1; j <= nb - 1; j++)
     {
       bound[j]->Points(qf, ql);
@@ -151,9 +155,13 @@ static void sortbounds(const int                       nb,
     }
   }
   if (!rev[nb - 1])
+  {
     bound[nb - 1]->Points(pf, pl);
+  }
   else
+  {
     bound[nb - 1]->Points(pl, pf);
+  }
   bound[0]->Points(qf, ql);
   stat[0].Gap(pl.Distance(qf));
 
@@ -166,19 +174,31 @@ static void sortbounds(const int                       nb,
   {
     int next = (i + 1) % nb;
     if (!rev[i])
+    {
       bound[i]->Bounds(fi, li);
+    }
     else
+    {
       bound[i]->Bounds(li, fi);
+    }
     bound[i]->D1(li, pbid, tgi);
     if (rev[i])
+    {
       tgi.Reverse();
+    }
     if (!rev[next])
+    {
       bound[next]->Bounds(fn, ln);
+    }
     else
+    {
       bound[next]->Bounds(ln, fn);
+    }
     bound[next]->D1(fn, pbid, tgn);
     if (rev[next])
+    {
       tgn.Reverse();
+    }
     double ang = M_PI - tgi.Angle(tgn);
     stat[next].TgtAng(ang);
     if (bound[i]->HasNormals() && bound[next]->HasNormals())
@@ -217,7 +237,9 @@ static void coonscnd(const int                       nb,
         an    = M_PI - an;
       }
       if (an > tolang)
+      {
         stat[i].DoKill(0.);
+      }
       else
       {
         double fact = 0.5 * 27. / 4;
@@ -226,21 +248,31 @@ static void coonscnd(const int                       nb,
         gp_Pnt pbid;
         double fp, lp, fi, li;
         if (!rev[ip])
+        {
           bound[ip]->Bounds(fp, lp);
+        }
         else
+        {
           bound[ip]->Bounds(lp, fp);
+        }
         bound[ip]->D1(lp, pbid, tgp);
         bound[ip]->D1Norm(lp, vbid, dnorp);
         if (!rev[i])
+        {
           bound[i]->Bounds(fi, li);
+        }
         else
+        {
           bound[i]->Bounds(li, fi);
+        }
         bound[i]->D1(fi, pbid, tgi);
         bound[i]->D1Norm(fi, vbid, dnori);
         double scal1 = tgp.Dot(dnori);
         double scal2 = tgi.Dot(dnorp);
         if (!twist)
+        {
           scal2 *= -1.;
+        }
         scal1 = std::abs(scal1 + scal2);
         if (scal1 > tolang)
         {
@@ -398,17 +430,25 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
 
   occ::handle<GeomFill_TgtField> ttgalg[3];
   if (bound[0]->HasNormals())
+  {
     ttgalg[0] = tgalg[0] = new GeomFill_TgtOnCoons(ptch, 0);
+  }
   if (bound[1]->HasNormals())
+  {
     ttgalg[1] = tgalg[1] = new GeomFill_TgtOnCoons(ptch, 1);
+  }
   if (bound[2]->HasNormals())
+  {
     ttgalg[2] = tgalg[3] = new GeomFill_TgtOnCoons(ptch, 3);
+  }
 
   for (i = 0; i <= 3; i++)
   {
     mig[i] = 1.;
     if (!tgalg[i].IsNull())
+    {
       MinTgte(i);
+    }
   }
 
   if (!NoCheck)
@@ -434,9 +474,9 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
       {
         occ::handle<Law_Function> fu1, fu2;
         ptch->Func(fu1, fu2);
-        fu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
-        fu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
-        ptch->Func(fu1, fu2);
+        const occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
+        const occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
+        ptch->SetFunc(ffu1, ffu2);
         break;
       }
     }
@@ -492,7 +532,9 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
   for (i = 0; i <= 3; i++)
   {
     if (bound[i]->HasNormals())
+    {
       tgalg[i] = new GeomFill_TgtOnCoons(ptch, i);
+    }
   }
   // on calcule le min de chacun des champs tangents pour l evaluation
   // des tolerances.
@@ -500,7 +542,9 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
   {
     mig[i] = 1.;
     if (!tgalg[i].IsNull())
+    {
       MinTgte(i);
+    }
   }
 
   if (!NoCheck)
@@ -523,8 +567,8 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
       {
         occ::handle<Law_Function> fu1, fu2;
         ptch->Func(fu1, fu2);
-        occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
-        occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
+        const occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
+        const occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
         ptch->SetFunc(ffu1, ffu2);
         break;
       }
@@ -540,13 +584,21 @@ void GeomFill_ConstrainedFilling::SetDomain(const double                        
                                             const occ::handle<GeomFill_BoundWithSurf>& B)
 {
   if (B == ptch->Bound(0))
+  {
     dom[0] = std::min(1., std::abs(l));
+  }
   else if (B == ptch->Bound(1))
+  {
     dom[1] = std::min(1., std::abs(l));
+  }
   else if (B == ptch->Bound(2))
+  {
     dom[2] = std::min(1., std::abs(l));
+  }
   else if (B == ptch->Bound(3))
+  {
     dom[3] = std::min(1., std::abs(l));
+  }
 }
 
 //=================================================================================================
@@ -554,7 +606,9 @@ void GeomFill_ConstrainedFilling::SetDomain(const double                        
 void GeomFill_ConstrainedFilling::ReBuild()
 {
   if (!appdone)
+  {
     throw Standard_Failure("GeomFill_ConstrainedFilling::ReBuild Approx non faite");
+  }
   MatchKnots();
   PerformS0();
   PerformS1();
@@ -601,7 +655,9 @@ void GeomFill_ConstrainedFilling::Build()
     appclock.Start();
 #endif
     if (nbd3)
+    {
       PerformApprox();
+    }
 #ifdef OCCT_DEBUG
     appclock.Stop();
 #endif
@@ -640,7 +696,9 @@ void GeomFill_ConstrainedFilling::PerformApprox()
   int                                      ii;
   occ::handle<NCollection_HArray1<double>> tol3d, tol2d, tol1d;
   if (nbd3)
+  {
     tol3d = new NCollection_HArray1<double>(1, nbd3);
+  }
   int i3d = 0;
   for (ii = 0; ii <= 1; ii++)
   {
@@ -1030,7 +1088,9 @@ void GeomFill_ConstrainedFilling::PerformS1()
   for (i = 0; i <= 3; i++)
   {
     if (ntpol[i].IsNull())
+    {
       nt[i] = nullptr;
+    }
     else
     {
       double z   = 0;
@@ -1179,26 +1239,42 @@ void GeomFill_ConstrainedFilling::PerformS1()
   {
     double pq1 = 0, pq3 = 0;
     if (nt[1])
+    {
       pq1 = -pq[1]->Value(i);
+    }
     if (nt[3])
+    {
       pq3 = pq[3]->Value(i);
+    }
     gp_XYZ t0, t2;
     if (nt[0])
+    {
       t0 = nt[0][i - 1];
+    }
     if (nt[2])
+    {
       t2 = nt[2][i - 1];
+    }
     for (j = 1; j <= nj; j++)
     {
       double pq0 = 0, pq2 = 0;
       if (nt[0])
+      {
         pq0 = pq[0]->Value(j);
+      }
       if (nt[2])
+      {
         pq2 = -pq[2]->Value(j);
+      }
       gp_XYZ t1, t3;
       if (nt[1])
+      {
         t1 = nt[1][j - 1];
+      }
       if (nt[3])
+      {
         t3 = nt[3][j - 1];
+      }
 
       gp_XYZ tpolij(0., 0., 0.), temp;
       if (nt[0])
@@ -1282,7 +1358,9 @@ bool GeomFill_ConstrainedFilling::CheckTgte(const int I)
 {
   occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
   if (!bou->HasNormals())
+  {
     return true;
+  }
   // On prend 13 points le long du bord et on verifie que le triedre
   // forme par la tangente a la courbe la normale et la tangente du
   // peigne ne change pas d orientation.
@@ -1296,12 +1374,16 @@ bool GeomFill_ConstrainedFilling::CheckTgte(const int I)
     gp_Vec norm   = bou->Norm(uu);
     gp_Vec vfield = tgalg[I]->Value(uu);
     if (iu == 0)
+    {
       pmix = vfield.Dot(tgte.Crossed(norm));
+    }
     else
     {
       double pmixcur = vfield.Dot(tgte.Crossed(norm));
       if (pmix * pmixcur < 0.)
+      {
         return false;
+      }
     }
   }
   return true;
@@ -1312,7 +1394,9 @@ bool GeomFill_ConstrainedFilling::CheckTgte(const int I)
 void GeomFill_ConstrainedFilling::MinTgte(const int I)
 {
   if (!ptch->Bound(I)->HasNormals())
+  {
     return;
+  }
   double minmag = RealLast();
   double ll     = 0.02;
   for (int iu = 0; iu <= 30; iu++)
@@ -1321,7 +1405,9 @@ void GeomFill_ConstrainedFilling::MinTgte(const int I)
     gp_Vec vv   = tgalg[I]->Value(uu);
     double temp = vv.SquareMagnitude();
     if (temp < minmag)
+    {
       minmag = temp;
+    }
   }
   mig[I] = sqrt(minmag);
 }
@@ -1422,9 +1508,13 @@ void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const int I)
   {
     pbound = bou->Value(ww);
     if (enu)
+    {
       vptch = ptch->D1U(uu, vv);
+    }
     else
+    {
       vptch = ptch->D1V(uu, vv);
+    }
     uu += duu;
     vv += dvv;
     ww += dww;
@@ -1436,7 +1526,9 @@ void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const int I)
 void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
 {
   if (tgalg[I].IsNull())
+  {
     return;
+  }
   gp_Pnt                         p1;
   gp_Vec                         d1;
   bool                           caplisse = false;
@@ -1451,23 +1543,31 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
     gp_Vec vcros = d1.Crossed(vnor);
     vcros.Normalize();
     if (iu == 0)
+    {
       pmix = vtg.Dot(vcros);
+    }
     else
     {
       pmixcur = vtg.Dot(vcros);
       if (pmix * pmixcur < 0.)
+      {
         caplisse = true;
+      }
     }
     if (vnor.Magnitude() > 1.e-15 && vtg.Magnitude() > 1.e-15)
     {
       double alpha = std::abs(M_PI / 2. - std::abs(vnor.Angle(vtg)));
       if (std::abs(alpha) > maxang)
+      {
         maxang = std::abs(alpha);
+      }
     }
   }
-  std::cout << "KAlgo angle max sur bord " << I << " : " << maxang << std::endl;
+  std::cout << "KAlgo angle max sur bord " << I << " : " << maxang << '\n';
   if (caplisse)
-    std::cout << "sur bord " << I << " le champ tangent change de cote!" << std::endl;
+  {
+    std::cout << "sur bord " << I << " le champ tangent change de cote!" << '\n';
+  }
 }
 
 //=================================================================================================
@@ -1511,18 +1611,22 @@ void GeomFill_ConstrainedFilling::CheckApprox(const int I)
       {
         double alpha = std::abs(M_PI / 2. - std::abs(vbound.Angle(vapp)));
         if (std::abs(alpha) > maxang)
+        {
           maxang = std::abs(alpha);
+        }
       }
     }
     if (papp.Distance(pbound) > maxdist)
+    {
       maxdist = papp.Distance(pbound);
+    }
   }
-  std::cout << "Controle approx/contrainte sur bord " << I << " : " << std::endl;
-  std::cout << "Distance max : " << maxdist << std::endl;
+  std::cout << "Controle approx/contrainte sur bord " << I << " : " << '\n';
+  std::cout << "Distance max : " << maxdist << '\n';
   if (donor)
   {
     maxang = maxang * 180. / M_PI;
-    std::cout << "Angle max    : " << maxang << " deg" << std::endl;
+    std::cout << "Angle max    : " << maxang << " deg" << '\n';
   }
 }
 
@@ -1569,7 +1673,9 @@ void GeomFill_ConstrainedFilling::CheckResult(const int I)
   {
     pbound[k] = bou->Value(ww);
     if (!donor)
+    {
       surf->D0(uu, vv, pres[k]);
+    }
     else
     {
       vbound[k] = bou->Norm(ww);
@@ -1581,20 +1687,24 @@ void GeomFill_ConstrainedFilling::CheckResult(const int I)
         double alpha = std::abs(vres[k].Angle(vbound[k]));
         alpha        = std::min(alpha, std::abs(M_PI - alpha));
         if (alpha > maxang)
+        {
           maxang = alpha;
+        }
       }
     }
     if (pres[k].Distance(pbound[k]) > maxdist)
+    {
       maxdist = pres[k].Distance(pbound[k]);
+    }
     uu += duu;
     vv += dvv;
     ww += dww;
   }
-  std::cout << "Controle resultat/contrainte sur bord " << I << " : " << std::endl;
-  std::cout << "Distance max : " << maxdist << std::endl;
+  std::cout << "Controle resultat/contrainte sur bord " << I << " : " << '\n';
+  std::cout << "Distance max : " << maxdist << '\n';
   if (donor)
   {
     double angdeg = maxang * 180. / M_PI;
-    std::cout << "Angle max    : " << angdeg << " deg" << std::endl;
+    std::cout << "Angle max    : " << angdeg << " deg" << '\n';
   }
 }

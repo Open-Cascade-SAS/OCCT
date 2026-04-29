@@ -69,7 +69,7 @@ void HLRAlgo_PolyAlgo::Update()
   constexpr double Big = Precision::Infinite();
   Bnd_Box          aBox;
 
-  myNbrShell = myHShell.Size();
+  myNbrShell = myHShell.Length();
   for (int aShellIter = myHShell.Lower(); aShellIter <= myHShell.Upper(); ++aShellIter)
   {
     const occ::handle<HLRAlgo_PolyShellData>& aPsd = myHShell.ChangeValue(aShellIter);
@@ -82,9 +82,13 @@ void HLRAlgo_PolyAlgo::Update()
   double dz                                             = aZMax - aZMin;
   double precad                                         = dx;
   if (precad < dy)
+  {
     precad = dy;
+  }
   if (precad < dz)
+  {
     precad = dz;
+  }
   myTriangle.Tolerance = precad * myTriangle.TolParam;
   precad               = precad * 0.01;
   double SurDX         = 1020 / (dx + precad);
@@ -154,17 +158,29 @@ void HLRAlgo_PolyAlgo::Update()
       theIndices.MaxSeg <<= 10;
       theIndices.MaxSeg += nzMax + 0x00000200;
       if (xShellMin > xSegmnMin)
+      {
         xShellMin = xSegmnMin;
+      }
       if (xShellMax < xSegmnMax)
+      {
         xShellMax = xSegmnMax;
+      }
       if (yShellMin > ySegmnMin)
+      {
         yShellMin = ySegmnMin;
+      }
       if (yShellMax < ySegmnMax)
+      {
         yShellMax = ySegmnMax;
+      }
       if (zShellMin > zSegmnMin)
+      {
         zShellMin = zSegmnMin;
+      }
       if (zShellMax < zSegmnMax)
+      {
         zShellMax = zSegmnMax;
+      }
     }
     NCollection_Array1<occ::handle<HLRAlgo_PolyData>>& aPolyg = aPsd->PolyData();
     const int                                          nbFace = aPolyg.Upper();
@@ -213,29 +229,53 @@ void HLRAlgo_PolyAlgo::Update()
             yTrianMax = yTrianMin = Y1;
             zTrianMax = zTrianMin = Z1;
             if (xTrianMin > X2)
+            {
               xTrianMin = X2;
+            }
             else if (xTrianMax < X2)
+            {
               xTrianMax = X2;
+            }
             if (yTrianMin > Y2)
+            {
               yTrianMin = Y2;
+            }
             else if (yTrianMax < Y2)
+            {
               yTrianMax = Y2;
+            }
             if (zTrianMin > Z2)
+            {
               zTrianMin = Z2;
+            }
             else if (zTrianMax < Z2)
+            {
               zTrianMax = Z2;
+            }
             if (xTrianMin > X3)
+            {
               xTrianMin = X3;
+            }
             else if (xTrianMax < X3)
+            {
               xTrianMax = X3;
+            }
             if (yTrianMin > Y3)
+            {
               yTrianMin = Y3;
+            }
             else if (yTrianMax < Y3)
+            {
               yTrianMax = Y3;
+            }
             if (zTrianMin > Z3)
+            {
               zTrianMin = Z3;
+            }
             else if (zTrianMax < Z3)
+            {
               zTrianMax = Z3;
+            }
             nxMin = (int)((DecaX + xTrianMin) * SurDX);
             nyMin = (int)((DecaY + yTrianMin) * SurDY);
             nzMin = (int)((DecaZ + zTrianMin) * SurDZ);
@@ -273,45 +313,81 @@ void HLRAlgo_PolyAlgo::Update()
             adx1 = dx1;
             ady1 = dy1;
             if (dx1 < 0)
+            {
               adx1 = -dx1;
+            }
             if (dy1 < 0)
+            {
               ady1 = -dy1;
+            }
             adx2 = dx2;
             ady2 = dy2;
             if (dx2 < 0)
+            {
               adx2 = -dx2;
+            }
             if (dy2 < 0)
+            {
               ady2 = -dy2;
+            }
             adx3 = dx3;
             ady3 = dy3;
             if (dx3 < 0)
+            {
               adx3 = -dx3;
+            }
             if (dy3 < 0)
+            {
               ady3 = -dy3;
+            }
             if (adx1 > ady1)
+            {
               aTD.Flags |= HLRAlgo_PolyMask_EMskGrALin1;
+            }
             else
+            {
               aTD.Flags &= ~HLRAlgo_PolyMask_EMskGrALin1;
+            }
             if (adx2 > ady2)
+            {
               aTD.Flags |= HLRAlgo_PolyMask_EMskGrALin2;
+            }
             else
+            {
               aTD.Flags &= ~HLRAlgo_PolyMask_EMskGrALin2;
+            }
             if (adx3 > ady3)
+            {
               aTD.Flags |= HLRAlgo_PolyMask_EMskGrALin3;
+            }
             else
+            {
               aTD.Flags &= ~HLRAlgo_PolyMask_EMskGrALin3;
+            }
             if (xPolyTMin > xTrianMin)
+            {
               xPolyTMin = xTrianMin;
+            }
             if (xPolyTMax < xTrianMax)
+            {
               xPolyTMax = xTrianMax;
+            }
             if (yPolyTMin > yTrianMin)
+            {
               yPolyTMin = yTrianMin;
+            }
             if (yPolyTMax < yTrianMax)
+            {
               yPolyTMax = yTrianMax;
+            }
             if (zPolyTMin > zTrianMin)
+            {
               zPolyTMin = zTrianMin;
+            }
             if (zPolyTMax < zTrianMax)
+            {
               zPolyTMax = zTrianMax;
+            }
           }
         }
         nxMin            = (int)((DecaX + xPolyTMin) * SurDX);
@@ -327,17 +403,29 @@ void HLRAlgo_PolyAlgo::Update()
         PolyTIndices.Max <<= 10;
         PolyTIndices.Max += nzMax;
         if (xShellMin > xPolyTMin)
+        {
           xShellMin = xPolyTMin;
+        }
         if (xShellMax < xPolyTMax)
+        {
           xShellMax = xPolyTMax;
+        }
         if (yShellMin > yPolyTMin)
+        {
           yShellMin = yPolyTMin;
+        }
         if (yShellMax < yPolyTMax)
+        {
           yShellMax = yPolyTMax;
+        }
         if (zShellMin > zPolyTMin)
+        {
           zShellMin = zPolyTMin;
+        }
         if (zShellMax < zPolyTMax)
+        {
           zShellMax = zPolyTMax;
+        }
       }
     }
     if (nbFaHi > 0)
@@ -383,7 +471,9 @@ void HLRAlgo_PolyAlgo::NextHide()
   {
     mySegListIt.Next();
     if (mySegListIt.More())
+    {
       myFound = true;
+    }
   }
 
   if (!myFound)
@@ -464,7 +554,9 @@ void HLRAlgo_PolyAlgo::NextShow()
   {
     mySegListIt.Next();
     if (mySegListIt.More())
+    {
       myFound = true;
+    }
   }
   if (!myFound)
   {

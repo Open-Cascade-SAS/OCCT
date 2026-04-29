@@ -41,7 +41,9 @@ void IntPolyh_SectionLine::Init(const int /*N*/)
   //   ptr = (void*) (new IntPolyh_StartPoint [N]);
   //   n=N;
   if (!mySeqOfSPoints.Length())
+  {
     IncrementNbStartPoints();
+  }
 }
 
 //=================================================================================================

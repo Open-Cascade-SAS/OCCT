@@ -105,12 +105,16 @@ void math_PSO::Perform(const math_Vector& theSteps,
         aCurrPoint(aDimIdx + 1) += mySteps(aDimIdx + 1);
       }
       else
+      {
         break;
+      }
     }
 
     // Stop criteria.
     if (aCurrPoint(myN) > aMaxUV(myN))
+    {
       isRegularGridFinished = true;
+    }
   } while (!isRegularGridFinished);
 
   performPSOWithGivenParticles(aPool, myNbParticles, theValue, theOutPnt, theNbIter);
@@ -150,7 +154,9 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
 
   aParticle = aParticles.GetBestParticle();
   for (int aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
+  {
     aBestGlobalPosition(aDimIdx + 1) = aParticle->Position[aDimIdx];
+  }
   double aBestGlobalDistance = aParticle->Distance;
 
   // This velocity is used for detecting stagnation state.
@@ -199,13 +205,17 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
       {
         aParticle->BestDistance = aParticle->Distance;
         for (int aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
+        {
           aParticle->BestPosition[aDimIdx] = aParticle->Position[aDimIdx];
+        }
 
         if (aParticle->Distance < aBestGlobalDistance)
         {
           aBestGlobalDistance = aParticle->Distance;
           for (int aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
+          {
             aBestGlobalPosition(aDimIdx + 1) = aParticle->Position[aDimIdx];
+          }
         }
       }
     }

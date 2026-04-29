@@ -71,7 +71,7 @@ void NCollection_IncAllocator::SetThreadSafe(const bool theIsThreadSafe)
   {
     if (!myMutex)
     {
-      myMutex = opencascade::make_unique<std::mutex>();
+      myMutex = std::make_unique<std::shared_mutex>();
     }
   }
   else
@@ -91,18 +91,55 @@ NCollection_IncAllocator::~NCollection_IncAllocator()
 
 void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
 {
-  std::unique_lock<std::mutex> aLock =
-    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
-  // Allocating using general block
+  if (myMutex)
+  {
+    // Fast path: shared lock allows multiple threads to bump-allocate
+    // concurrently via CAS. Block list structure is read-only under shared lock.
+    {
+      std::shared_lock<std::shared_mutex> aSharedLock(*myMutex);
+      IBlock*                             aBlock = myAllocationHeap;
+      if (aBlock)
+      {
+        size_t anAvail = aBlock->AvailableSize.load(std::memory_order_relaxed);
+        while (anAvail >= theSize)
+        {
+          if (aBlock->AvailableSize.compare_exchange_weak(anAvail,
+                                                          anAvail - theSize,
+                                                          std::memory_order_acquire,
+                                                          std::memory_order_relaxed))
+          {
+            // Won the CAS - claim our disjoint portion of the block.
+            char* aRes = aBlock->CurPointer.fetch_add(theSize, std::memory_order_relaxed);
+            return aRes;
+          }
+          // CAS failed (another thread allocated), anAvail updated - retry.
+        }
+      }
+    } // shared lock released before taking exclusive
+
+    // Slow path: exclusive lock for new block allocation and list reordering.
+    std::lock_guard<std::shared_mutex> aExclLock(*myMutex);
+    return allocateSlow(theSize);
+  }
+
+  // Non-thread-safe path: no synchronization overhead at all.
+  return allocateSlow(theSize);
+}
+
+//=================================================================================================
+
+void* NCollection_IncAllocator::allocateSlow(const size_t theSize)
+{
   IBlock* aBlock = nullptr;
-  // Use allocated blocks
-  if (myAllocationHeap && myAllocationHeap->AvailableSize >= theSize)
+  // Use existing head block if it has enough space.
+  if (myAllocationHeap
+      && myAllocationHeap->AvailableSize.load(std::memory_order_relaxed) >= theSize)
   {
     aBlock = myAllocationHeap;
   }
-  else // Allocate new general block
+  else // Allocate new block from OS.
   {
-    if (++myBlockCount % 5 == 0) // increase count before checking
+    if (++myBlockCount % 5 == 0)
     {
       increaseBlockSize();
     }
@@ -117,10 +154,12 @@ void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
     myOrderedBlocks          = aBlock;
     myAllocationHeap         = aBlock;
   }
-  void* aRes = aBlock->CurPointer;
-  aBlock->CurPointer += theSize;
-  aBlock->AvailableSize -= theSize;
-  if (aBlock->AvailableSize < 16)
+  // Bump allocate within the selected block.
+  const size_t anAvail = aBlock->AvailableSize.load(std::memory_order_relaxed);
+  void*        aRes    = aBlock->CurPointer.load(std::memory_order_relaxed);
+  aBlock->CurPointer.store(static_cast<char*>(aRes) + theSize, std::memory_order_relaxed);
+  aBlock->AvailableSize.store(anAvail - theSize, std::memory_order_relaxed);
+  if (anAvail - theSize < 16)
   {
     myAllocationHeap  = aBlock->NextBlock;
     aBlock->NextBlock = myUsedHeap;
@@ -132,7 +171,8 @@ void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
     IBlock* aBlockToReplaceAfter = nullptr;
     while (aBlockIter) // Search new sorted position
     {
-      if (aBlockIter->AvailableSize > aBlock->AvailableSize)
+      if (aBlockIter->AvailableSize.load(std::memory_order_relaxed)
+          > aBlock->AvailableSize.load(std::memory_order_relaxed))
       {
         aBlockToReplaceAfter = aBlockIter;
         aBlockIter           = aBlockIter->NextBlock;
@@ -162,8 +202,11 @@ void* NCollection_IncAllocator::Allocate(const size_t theSize)
 
 void NCollection_IncAllocator::clean()
 {
-  std::unique_lock<std::mutex> aLock =
-    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+  // Exclusive lock - no allocations can be in progress.
+  if (myMutex)
+  {
+    myMutex->lock();
+  }
   IBlock* aHeapIter = myOrderedBlocks;
   while (aHeapIter)
   {
@@ -176,6 +219,10 @@ void NCollection_IncAllocator::clean()
   myUsedHeap       = nullptr;
   myBlockCount     = 0;
   myBlockSize      = THE_DEFAULT_BLOCK_SIZE;
+  if (myMutex)
+  {
+    myMutex->unlock();
+  }
 }
 
 //=================================================================================================
@@ -205,10 +252,12 @@ void NCollection_IncAllocator::increaseBlockSize()
 
 void NCollection_IncAllocator::resetBlock(IBlock* theBlock) const
 {
-  theBlock->AvailableSize =
-    theBlock->AvailableSize
-    + (theBlock->CurPointer - (reinterpret_cast<char*>(theBlock) + sizeof(IBlock)));
-  theBlock->CurPointer = reinterpret_cast<char*>(theBlock) + sizeof(IBlock);
+  char*  aBlockStart = reinterpret_cast<char*>(theBlock) + sizeof(IBlock);
+  size_t anAvail     = theBlock->AvailableSize.load(std::memory_order_relaxed);
+  char*  aCurPtr     = theBlock->CurPointer.load(std::memory_order_relaxed);
+  theBlock->AvailableSize.store(anAvail + static_cast<size_t>(aCurPtr - aBlockStart),
+                                std::memory_order_relaxed);
+  theBlock->CurPointer.store(aBlockStart, std::memory_order_relaxed);
 }
 
 //=================================================================================================
@@ -220,8 +269,10 @@ void NCollection_IncAllocator::Reset(const bool theReleaseMemory)
     clean();
     return;
   }
-  std::unique_lock<std::mutex> aLock =
-    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+  if (myMutex)
+  {
+    myMutex->lock();
+  }
   IBlock* aHeapIter = myOrderedBlocks;
   while (aHeapIter)
   {
@@ -232,6 +283,10 @@ void NCollection_IncAllocator::Reset(const bool theReleaseMemory)
   }
   myAllocationHeap = myOrderedBlocks;
   myUsedHeap       = nullptr;
+  if (myMutex)
+  {
+    myMutex->unlock();
+  }
 }
 
 //=================================================================================================

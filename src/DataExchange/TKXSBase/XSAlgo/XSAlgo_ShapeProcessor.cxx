@@ -38,7 +38,6 @@
 #include <UnitsMethods.hxx>
 
 #include <sstream>
-#include <unordered_set>
 
 //=============================================================================
 

@@ -24,7 +24,7 @@
 #include <VrmlData_TextureCoordinate.hxx>
 #include <VrmlData_Scene.hxx>
 #include <Precision.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Poly.hxx>
 #include <Standard_ShortReal.hxx>
@@ -50,17 +50,23 @@ VrmlData_ErrorStatus VrmlData_Faceted::readData(VrmlData_InBuffer& theBuffer)
   if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "ccw"))
   {
     if (OK(aStatus, ReadBoolean(theBuffer, aBool)))
+    {
       myIsCCW = aBool;
+    }
   }
   else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "convex"))
   {
     if (OK(aStatus, ReadBoolean(theBuffer, aBool)))
+    {
       myIsConvex = aBool;
+    }
   }
   else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "solid"))
   {
     if (OK(aStatus, ReadBoolean(theBuffer, aBool)))
+    {
       myIsSolid = aBool;
+    }
   }
   else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "creaseAngle"))
   {
@@ -68,9 +74,13 @@ VrmlData_ErrorStatus VrmlData_Faceted::readData(VrmlData_InBuffer& theBuffer)
     if (OK(aStatus, Scene().ReadReal(theBuffer, anAngle, false, false)))
     {
       if (anAngle < -Precision::Confusion() * 0.001)
+      {
         aStatus = VrmlData_IrrelevantNumber;
+      }
       else
+      {
         myCreaseAngle = anAngle;
+      }
     }
   }
   return aStatus;
@@ -159,8 +169,8 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
     return myTShape;
   }
   // prepare vector of nodes
-  NCollection_Vector<gp_XYZ>    aNodes;
-  NCollection_DataMap<int, int> mapIdId;
+  NCollection_DynamicArray<gp_XYZ> aNodes;
+  NCollection_DataMap<int, int>    mapIdId;
   for (i = 0; i < nNodes; i++)
   {
     if (mapNodeId.Contains(i))
@@ -281,7 +291,9 @@ occ::handle<VrmlData_Node> VrmlData_IndexedFaceSet::Clone(
   occ::handle<VrmlData_IndexedFaceSet> aResult =
     occ::down_cast<VrmlData_IndexedFaceSet>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_IndexedFaceSet(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
 
   if (&aResult->Scene() == &Scene())
   {
@@ -298,11 +310,17 @@ occ::handle<VrmlData_Node> VrmlData_IndexedFaceSet::Clone(
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
     if (!myCoords.IsNull())
+    {
       aResult->SetCoordinates(occ::down_cast<VrmlData_Coordinate>(myCoords->Clone(aDummyNode)));
+    }
     if (!myNormals.IsNull())
+    {
       aResult->SetNormals(occ::down_cast<VrmlData_Normal>(myNormals->Clone(aDummyNode)));
+    }
     if (!myColors.IsNull())
+    {
       aResult->SetColors(occ::down_cast<VrmlData_Color>(myColors->Clone(aDummyNode)));
+    }
     // TODO: Replace the following lines with the relevant copying
     aResult->SetPolygons(myNbPolygons, myArrPolygons);
     aResult->SetNormalInd(myNbNormals, myArrNormalInd);
@@ -323,13 +341,21 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Read(VrmlData_InBuffer& theBuffer)
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (OK(aStatus, VrmlData_Faceted::readData(theBuffer)))
+    {
       continue;
+    }
     if (aStatus != VrmlData_EmptyData)
+    {
       break;
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "colorPerVertex"))
+    {
       aStatus = ReadBoolean(theBuffer, myColorPerVertex);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "normalPerVertex"))
+    {
       aStatus = ReadBoolean(theBuffer, myNormalPerVertex);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "coordIndex"))
     {
       aStatus = aScene.ReadArrIndex(theBuffer, myArrPolygons, myNbPolygons);
@@ -346,13 +372,19 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Read(VrmlData_InBuffer& theBuffer)
       // }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "colorIndex"))
+    {
       aStatus = aScene.ReadArrIndex(theBuffer, myArrColorInd, myNbColors);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "normalIndex"))
+    {
       aStatus = aScene.ReadArrIndex(theBuffer, myArrNormalInd, myNbNormals);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "texCoordIndex"))
+    {
       aStatus = aScene.ReadArrIndex(theBuffer, myArrTextureInd, myNbTextures);
-    // These four checks should be the last one to avoid their interference
-    // with the other tokens (e.g., coordIndex)
+      // These four checks should be the last one to avoid their interference
+      // with the other tokens (e.g., coordIndex)
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "texCoord"))
     {
       occ::handle<VrmlData_Node> aNode;
@@ -378,15 +410,19 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Read(VrmlData_InBuffer& theBuffer)
       myNormals = occ::down_cast<VrmlData_Normal>(aNode);
     }
     if (!OK(aStatus))
+    {
       break;
+    }
   }
   // Read the terminating (closing) brace
   if (OK(aStatus) || aStatus == VrmlData_EmptyData)
+  {
     if (OK(aStatus, readBrace(theBuffer)))
     {
       // Post-processing
       ;
     }
+  }
   return aStatus;
 }
 
@@ -427,9 +463,13 @@ bool VrmlData_IndexedFaceSet::IsDefault() const
 {
   bool aResult(true);
   if (myNbPolygons)
+  {
     aResult = false;
+  }
   else if (!myCoords.IsNull())
+  {
     aResult = myCoords->IsDefault();
+  }
   return aResult;
 }
 
@@ -445,11 +485,17 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Write(const char* thePrefix) const
 
     // Write the attributes of interface "VrmlData_Faceted"
     if (!IsCCW())
+    {
       aStatus = aScene.WriteLine("ccw         FALSE");
+    }
     if (OK(aStatus) && !IsSolid())
+    {
       aStatus = aScene.WriteLine("solid       FALSE");
+    }
     if (OK(aStatus) && !IsConvex())
+    {
       aStatus = aScene.WriteLine("convex      FALSE");
+    }
     if (OK(aStatus) && CreaseAngle() > Precision::Confusion())
     {
       char buf[64];
@@ -458,28 +504,48 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Write(const char* thePrefix) const
     }
 
     if (OK(aStatus) && !myCoords.IsNull())
+    {
       aStatus = aScene.WriteNode("coord", myCoords);
+    }
     if (OK(aStatus))
+    {
       aStatus = aScene.WriteArrIndex("coordIndex", myArrPolygons, myNbPolygons);
+    }
 
     if (OK(aStatus) && !myNormalPerVertex)
+    {
       aStatus = aScene.WriteLine("normalPerVertex FALSE");
+    }
     if (OK(aStatus) && !myNormals.IsNull())
+    {
       aStatus = aScene.WriteNode("normal", myNormals);
+    }
     if (OK(aStatus))
+    {
       aStatus = aScene.WriteArrIndex("normalIndex", myArrNormalInd, myNbNormals);
+    }
 
     if (OK(aStatus) && !myColorPerVertex)
+    {
       aStatus = aScene.WriteLine("colorPerVertex  FALSE");
+    }
     if (OK(aStatus) && !myColors.IsNull())
+    {
       aStatus = aScene.WriteNode("color", myColors);
+    }
     if (OK(aStatus))
+    {
       aStatus = aScene.WriteArrIndex("colorIndex", myArrColorInd, myNbColors);
+    }
 
     if (OK(aStatus) && !myTxCoords.IsNull())
+    {
       aStatus = aScene.WriteNode("texCoord", myTxCoords);
+    }
     if (OK(aStatus))
+    {
       aStatus = aScene.WriteArrIndex("texCoordIndex", myArrTextureInd, myNbTextures);
+    }
 
     aStatus = WriteClosing();
   }

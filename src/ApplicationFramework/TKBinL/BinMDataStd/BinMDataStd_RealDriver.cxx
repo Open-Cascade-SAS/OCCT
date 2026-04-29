@@ -49,7 +49,9 @@ bool BinMDataStd_RealDriver::Paste(const BinObjMgt_Persistent&       theSource,
   double                     aValue;
   bool                       ok = theSource >> aValue;
   if (ok)
+  {
     anAtt->Set(aValue);
+  }
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
@@ -68,7 +70,9 @@ bool BinMDataStd_RealDriver::Paste(const BinObjMgt_Persistent&       theSource,
     }
   }
   else
+  {
     anAtt->SetID(TDataStd_Real::GetID());
+  }
   return ok;
 }
 
@@ -85,5 +89,7 @@ void BinMDataStd_RealDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
   theTarget << anAtt->Get();
   // process user defined guid
   if (anAtt->ID() != TDataStd_Real::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

@@ -32,7 +32,9 @@ void RWStepGeom_RWQuasiUniformSurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 8, ach, "quasi_uniform_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -77,7 +79,9 @@ void RWStepGeom_RWQuasiUniformSurface::ReadStep(
                                ach,
                                STANDARD_TYPE(StepGeom_CartesianPoint),
                                anent4))
+          {
             aControlPointsList->SetValue(i4, j4, anent4);
+          }
         }
       }
     }
@@ -95,7 +99,9 @@ void RWStepGeom_RWQuasiUniformSurface::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #5 (surface_form) is not an enumeration");
+  }
 
   // --- inherited field : uClosed ---
 

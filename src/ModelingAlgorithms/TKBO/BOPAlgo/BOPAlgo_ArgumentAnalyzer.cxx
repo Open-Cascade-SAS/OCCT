@@ -165,7 +165,9 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     if (mySmallEdgeMode)
     {
       if (myResult.IsEmpty() || !myStopOnFirst)
+      {
         TestSmallEdge();
+      }
       if (UserBreak(aPS))
       {
         return;
@@ -176,7 +178,9 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     if (myRebuildFaceMode)
     {
       if (myResult.IsEmpty() || !myStopOnFirst)
+      {
         TestRebuildFace();
+      }
       if (UserBreak(aPS))
       {
         return;
@@ -200,7 +204,9 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     if (myMergeVertexMode)
     {
       if (myResult.IsEmpty() || !myStopOnFirst)
+      {
         TestMergeVertex();
+      }
       if (UserBreak(aPS))
       {
         return;
@@ -211,7 +217,9 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     if (myMergeEdgeMode)
     {
       if (myResult.IsEmpty() || !myStopOnFirst)
+      {
         TestMergeEdge();
+      }
       if (UserBreak(aPS))
       {
         return;
@@ -222,7 +230,9 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     if (myContinuityMode)
     {
       if (myResult.IsEmpty() || !myStopOnFirst)
+      {
         TestContinuity();
+      }
       if (UserBreak(aPS))
       {
         return;
@@ -233,7 +243,9 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     if (myCurveOnSurfaceMode)
     {
       if (myResult.IsEmpty() || !myStopOnFirst)
+      {
         TestCurveOnSurface();
+      }
     }
   }
   catch (Standard_Failure const&)
@@ -302,9 +314,13 @@ void BOPAlgo_ArgumentAnalyzer::TestTypes()
       {
         const TopoDS_Shape& aS = myEmpty1 ? myShape1 : myShape2;
         if (myEmpty1)
+        {
           aResult.SetShape1(aS);
+        }
         else
+        {
           aResult.SetShape2(aS);
+        }
       }
       aResult.SetCheckStatus(BOPAlgo_BadType);
       myResult.Append(aResult);
@@ -392,14 +408,18 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences(const Message_ProgressRange
         aResult.SetShape1(myShape1);
         aResult.AddFaultyShape1(aS1);
         if (!aS1.IsSame(aS2))
+        {
           aResult.AddFaultyShape1(aS2);
+        }
       }
       else
       {
         aResult.SetShape2(myShape2);
         aResult.AddFaultyShape2(aS1);
         if (!aS1.IsSame(aS2))
+        {
           aResult.AddFaultyShape2(aS2);
+        }
       }
       aResult.SetCheckStatus(BOPAlgo_SelfIntersect);
       myResult.Append(aResult);
@@ -439,7 +459,9 @@ void BOPAlgo_ArgumentAnalyzer::TestSmallEdge()
     const TopoDS_Shape& aS = (i == 0) ? myShape1 : myShape2;
 
     if (aS.IsNull())
+    {
       continue;
+    }
 
     TopExp_Explorer anExp(aS, TopAbs_EDGE);
 
@@ -549,7 +571,9 @@ void BOPAlgo_ArgumentAnalyzer::TestSmallEdge()
 void BOPAlgo_ArgumentAnalyzer::TestRebuildFace()
 {
   if ((myOperation == BOPAlgo_SECTION) || (myOperation == BOPAlgo_UNKNOWN))
+  {
     return;
+  }
   int i = 0;
 
   for (i = 0; i < 2; i++)
@@ -557,7 +581,9 @@ void BOPAlgo_ArgumentAnalyzer::TestRebuildFace()
     const TopoDS_Shape& aS = (i == 0) ? myShape1 : myShape2;
 
     if (aS.IsNull())
+    {
       continue;
+    }
 
     TopExp_Explorer                anExp(aS, TopAbs_FACE);
     NCollection_List<TopoDS_Shape> aLS;
@@ -608,7 +634,9 @@ void BOPAlgo_ArgumentAnalyzer::TestRebuildFace()
         anExpE.Init(aLF.First(), TopAbs_EDGE);
 
         for (; anExpE.More(); anExpE.Next(), nbedgeused++)
+        {
           ;
+        }
 
         if (nbstartedges != nbedgeused)
         {
@@ -655,10 +683,14 @@ void BOPAlgo_ArgumentAnalyzer::TestTangent()
 void BOPAlgo_ArgumentAnalyzer::TestMergeSubShapes(const TopAbs_ShapeEnum theType)
 {
   if (myShape1.IsNull() || myShape2.IsNull())
+  {
     return;
+  }
 
   if (myEmpty1 || myEmpty2)
+  {
     return;
+  }
 
   BOPAlgo_CheckStatus aStatus = BOPAlgo_CheckUnknown;
 
@@ -689,7 +721,9 @@ void BOPAlgo_ArgumentAnalyzer::TestMergeSubShapes(const TopAbs_ShapeEnum theType
     const TopoDS_Shape& aS1 = anExp1.Current();
 
     if (aMap1.Contains(aS1))
+    {
       continue;
+    }
     aSeq1.Append(aS1);
     aMap1.Add(aS1);
   }
@@ -698,7 +732,9 @@ void BOPAlgo_ArgumentAnalyzer::TestMergeSubShapes(const TopAbs_ShapeEnum theType
   {
     const TopoDS_Shape& aS2 = anExp2.Current();
     if (aMap2.Contains(aS2))
+    {
       continue;
+    }
     aSeq2.Append(aS2);
     aMap2.Add(aS2);
   }
@@ -706,8 +742,12 @@ void BOPAlgo_ArgumentAnalyzer::TestMergeSubShapes(const TopAbs_ShapeEnum theType
   NCollection_Array2<bool> anArrayOfFlag(1, aSeq1.Length(), 1, aSeq2.Length());
   int                      i = 0, j = 0;
   for (i = 1; i <= aSeq1.Length(); i++)
+  {
     for (j = 1; j <= aSeq2.Length(); j++)
+    {
       anArrayOfFlag.SetValue(i, j, false);
+    }
+  }
 
   for (i = 1; i <= aSeq1.Length(); i++)
   {

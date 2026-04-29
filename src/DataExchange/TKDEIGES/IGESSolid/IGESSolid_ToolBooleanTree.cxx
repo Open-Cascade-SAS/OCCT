@@ -59,12 +59,16 @@ void IGESSolid_ToolBooleanTree::ReadOwnParams(const occ::handle<IGESSolid_Boolea
     // st = PR.ReadEntity(IR, PR.Current(), "Operand 1", entvalue); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadEntity(IR, PR.Current(), "Operand 1", entvalue))
+    {
       tempOperands->SetValue(1, entvalue);
+    }
 
     // st = PR.ReadEntity(IR, PR.Current(), "Operand 2", entvalue); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadEntity(IR, PR.Current(), "Operand 2", entvalue))
+    {
       tempOperands->SetValue(2, entvalue);
+    }
 
     // Op. 3 -> length-1 : Operand or Operation
     for (int i = 3; i < length; i++)
@@ -77,21 +81,31 @@ void IGESSolid_ToolBooleanTree::ReadOwnParams(const occ::handle<IGESSolid_Boolea
       {
         entvalue = PR.ParamEntity(IR, curnum);
         if (entvalue.IsNull())
+        {
           PR.AddFail("Operand : incorrect reference");
+        }
         else
+        {
           tempOperands->SetValue(i, entvalue);
+        }
       }
       else
+      {
         tempOperations->SetValue(i, intvalue);
+      }
     }
     // Last Op. : Operation
     // st = PR.ReadInteger(PR.Current(), "Operation code", intvalue); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadInteger(PR.Current(), "Operation code", intvalue))
+    {
       tempOperations->SetValue(length, intvalue);
+    }
   }
   else
+  {
     PR.AddFail("Length of post-order : Not Positive");
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempOperands, tempOperations);
@@ -106,9 +120,13 @@ void IGESSolid_ToolBooleanTree::WriteOwnParams(const occ::handle<IGESSolid_Boole
   for (int i = 1; i <= length; i++)
   {
     if (ent->IsOperand(i))
+    {
       IW.Send(ent->Operand(i), true);
+    }
     else
+    {
       IW.Send(ent->Operation(i));
+    }
   }
 }
 
@@ -119,7 +137,9 @@ void IGESSolid_ToolBooleanTree::OwnShared(const occ::handle<IGESSolid_BooleanTre
   for (int i = 1; i <= length; i++)
   {
     if (ent->IsOperand(i))
+    {
       iter.GetOneItem(ent->Operand(i));
+    }
   }
 }
 
@@ -141,8 +161,10 @@ void IGESSolid_ToolBooleanTree::OwnCopy(const occ::handle<IGESSolid_BooleanTree>
       DeclareAndCast(IGESData_IGESEntity, new_ent, TC.Transferred(another->Operand(i)));
       tempOperands->SetValue(i, new_ent);
     }
-    else // Operation
+    else
+    { // Operation
       tempOperations->SetValue(i, another->Operation(i));
+    }
   }
   ent->Init(tempOperands, tempOperations);
 }
@@ -166,20 +188,30 @@ void IGESSolid_ToolBooleanTree::OwnCheck(const occ::handle<IGESSolid_BooleanTree
 {
   int length = ent->Length();
   if (length <= 2)
+  {
     ach->AddFail("Length of post-order notation : Less than three");
+  }
   else
   {
     if (!ent->IsOperand(1))
+    {
       ach->AddFail("First Item is not an Operand");
+    }
     if (!ent->IsOperand(2))
+    {
       ach->AddFail("Second Item is not an Operand");
+    }
     if (ent->IsOperand(length))
+    {
       ach->AddFail("Last Item is not an Operation");
+    }
   }
   for (int i = 1; i <= length; i++)
   {
     if (!ent->Operand(i).IsNull())
+    {
       continue;
+    }
     if (ent->Operation(i) < 1 || ent->Operation(i) > 3)
     {
       char mess[80];
@@ -214,13 +246,21 @@ void IGESSolid_ToolBooleanTree::OwnDump(const occ::handle<IGESSolid_BooleanTree>
         int opcode = ent->Operation(i);
         S << "[" << i << "] Operator : " << opcode;
         if (opcode == 1)
+        {
           S << " (Union)";
+        }
         else if (opcode == 2)
+        {
           S << " (Intersection)\n";
+        }
         else if (opcode == 3)
+        {
           S << " (Difference)\n";
+        }
         else
+        {
           S << " (incorrect value)\n";
+        }
       }
     }
   }

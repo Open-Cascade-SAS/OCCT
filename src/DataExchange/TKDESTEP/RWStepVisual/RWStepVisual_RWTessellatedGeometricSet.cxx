@@ -35,7 +35,9 @@ void RWStepVisual_RWTessellatedGeometricSet::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 2, ach, "tessellated_geometric_set"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -52,7 +54,9 @@ void RWStepVisual_RWTessellatedGeometricSet::ReadStep(
       occ::handle<StepVisual_TessellatedItem> anItem; // = new StepVisual_TesselatedItem;
       if (data
             ->ReadEntity(nsub2, i2, "item", ach, STANDARD_TYPE(StepVisual_TessellatedItem), anItem))
+      {
         anItems->SetValue(i2, anItem);
+      }
     }
   }
 
@@ -73,7 +77,9 @@ void RWStepVisual_RWTessellatedGeometricSet::WriteStep(
   // Own field : children
   SW.OpenSub();
   for (int i = 1; i <= ent->Items()->Length(); i++)
+  {
     SW.Send(ent->Items()->Value(i));
+  }
   SW.CloseSub();
 }
 
@@ -85,5 +91,7 @@ void RWStepVisual_RWTessellatedGeometricSet::Share(
 {
   // Own field : children
   for (int i = 1; i <= ent->Items()->Length(); i++)
+  {
     iter.AddItem(ent->Items()->Value(i));
+  }
 }

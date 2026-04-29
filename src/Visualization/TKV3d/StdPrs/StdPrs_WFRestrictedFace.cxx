@@ -57,7 +57,9 @@ void StdPrs_WFRestrictedFace::Add(
     BndLib_Add2dCurve::Add(aRCurve, Precision::PConfusion(), aBndBox);
   }
   if (!aBndBox.IsVoid())
+  {
     aBndBox.Get(aUMin, aVMin, aUMax, aVMax);
+  }
   else
   { // No pcurves -- take natural bounds
     aUMin = theFace->FirstUParameter();
@@ -127,9 +129,13 @@ void StdPrs_WFRestrictedFace::Add(
         aPoint1 = aPoint2;
         aPoint2 = aRCurve->Value(anU);
         if (anOrientation == TopAbs_FORWARD)
+        {
           anIsoBuild.Trim(aPoint1, aPoint2);
+        }
         else
+        {
           anIsoBuild.Trim(aPoint2, aPoint1);
+        }
       }
     }
     else
@@ -137,9 +143,13 @@ void StdPrs_WFRestrictedFace::Add(
       aPoint1 = aRCurve->Value(anU1);
       aPoint2 = aRCurve->Value(anU2);
       if (anOrientation == TopAbs_FORWARD)
+      {
         anIsoBuild.Trim(aPoint1, aPoint2);
+      }
       else
+      {
         anIsoBuild.Trim(aPoint2, aPoint1);
+      }
     }
   }
 
@@ -170,7 +180,9 @@ void StdPrs_WFRestrictedFace::Add(
       double b1 = anIsoBuild.Start(anI, aJ), b2 = anIsoBuild.End(anI, aJ);
 
       if (b1 == RealFirst() || b2 == RealLast())
+      {
         continue;
+      }
 
       occ::handle<NCollection_HSequence<gp_Pnt>> aPoints = new NCollection_HSequence<gp_Pnt>;
       if (!aGeomBSurface.IsNull())
@@ -250,13 +262,21 @@ bool StdPrs_WFRestrictedFace::Match(const double                            theX
       {
         gp_Pnt2d aRCurvePoint = aRCurve->Value(anU);
         if (aRCurvePoint.X() < anUMin)
+        {
           anUMin = aRCurvePoint.X();
+        }
         if (aRCurvePoint.X() > anUMax)
+        {
           anUMax = aRCurvePoint.X();
+        }
         if (aRCurvePoint.Y() < aVMin)
+        {
           aVMin = aRCurvePoint.Y();
+        }
         if (aRCurvePoint.Y() > aVMax)
+        {
           aVMax = aRCurvePoint.Y();
+        }
         anU += aStep;
       }
     }
@@ -264,23 +284,39 @@ bool StdPrs_WFRestrictedFace::Match(const double                            theX
     {
       aPoint1 = aRCurve->Value(anU);
       if (aPoint1.X() < anUMin)
+      {
         anUMin = aPoint1.X();
+      }
       if (aPoint1.X() > anUMax)
+      {
         anUMax = aPoint1.X();
+      }
       if (aPoint1.Y() < aVMin)
+      {
         aVMin = aPoint1.Y();
+      }
       if (aPoint1.Y() > aVMax)
+      {
         aVMax = aPoint1.Y();
+      }
 
       aPoint2 = aRCurve->Value(aV);
       if (aPoint2.X() < anUMin)
+      {
         anUMin = aPoint2.X();
+      }
       if (aPoint2.X() > anUMax)
+      {
         anUMax = aPoint2.X();
+      }
       if (aPoint2.Y() < aVMin)
+      {
         aVMin = aPoint2.Y();
+      }
       if (aPoint2.Y() > aVMax)
+      {
         aVMax = aPoint2.Y();
+      }
     }
   }
 
@@ -345,9 +381,13 @@ bool StdPrs_WFRestrictedFace::Match(const double                            theX
         aPoint1 = aPoint2;
         aPoint2 = aRCurve->Value(anU);
         if (Orient == TopAbs_FORWARD)
+        {
           anIsoBuild.Trim(aPoint1, aPoint2);
+        }
         else
+        {
           anIsoBuild.Trim(aPoint2, aPoint1);
+        }
       }
     }
     else
@@ -355,9 +395,13 @@ bool StdPrs_WFRestrictedFace::Match(const double                            theX
       aPoint1 = aRCurve->Value(anU1);
       aPoint2 = aRCurve->Value(anU2);
       if (Orient == TopAbs_FORWARD)
+      {
         anIsoBuild.Trim(aPoint1, aPoint2);
+      }
       else
+      {
         anIsoBuild.Trim(aPoint2, aPoint1);
+      }
     }
   }
 
@@ -379,9 +423,13 @@ bool StdPrs_WFRestrictedFace::Match(const double                            theX
       anIsoEnd   = anIsoEnd == RealLast() ? aLimit : anIsoEnd;
 
       if (anIsoBuild.IsXLine(anI))
+      {
         anIso.Load(GeomAbs_IsoU, aCoord, anIsoStart, anIsoEnd);
+      }
       else
+      {
         anIso.Load(GeomAbs_IsoV, aCoord, anIsoStart, anIsoEnd);
+      }
 
       if (StdPrs_Curve::Match(theX,
                               theY,
@@ -391,7 +439,9 @@ bool StdPrs_WFRestrictedFace::Match(const double                            theX
                               theDeflection,
                               aLimit,
                               aNbPoints))
+      {
         return true;
+      }
     }
   }
   return false;

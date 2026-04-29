@@ -36,20 +36,30 @@ double gp_Dir2d::Angle(const gp_Dir2d& Other) const
   if (Cosinus > -0.70710678118655 && Cosinus < 0.70710678118655)
   {
     if (Sinus > 0.0)
+    {
       return acos(Cosinus);
+    }
     else
+    {
       return -acos(Cosinus);
+    }
   }
   else
   {
     if (Cosinus > 0.0)
+    {
       return asin(Sinus);
+    }
     else
     {
       if (Sinus > 0.0)
+      {
         return M_PI - asin(Sinus);
+      }
       else
+      {
         return -M_PI - asin(Sinus);
+      }
     }
   }
 }

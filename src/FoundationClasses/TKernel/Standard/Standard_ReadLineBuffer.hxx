@@ -14,8 +14,10 @@
 #ifndef _Standard_ReadLineBuffer_HeaderFile
 #define _Standard_ReadLineBuffer_HeaderFile
 
+#include <NCollection_LinearVector.hxx>
+
+#include <cstring>
 #include <iostream>
-#include <vector>
 
 //! Auxiliary tool for buffered reading of lines from input stream.
 class Standard_ReadLineBuffer
@@ -31,7 +33,7 @@ public:
         myBytesLastRead(0)
   {
     // allocate read buffer
-    myReadBuffer.resize(theMaxBufferSizeBytes);
+    myReadBuffer.Resize(theMaxBufferSizeBytes);
   }
 
   //! Destructor.
@@ -40,7 +42,7 @@ public:
   //! Clear buffer and cached values.
   void Clear()
   {
-    myReadBufferLastStr.clear();
+    myReadBufferLastStr.Clear();
     myUseReadBufferLastStr = false;
     myIsMultilineMode      = false;
     myToPutGapInMultiline  = true;
@@ -86,7 +88,7 @@ public:
       if (myBufferPos == 0 || myBufferPos >= (myBytesLastRead))
       {
         // read new chunk from the stream
-        if (!readStream(theStream, myReadBuffer.size(), myBytesLastRead))
+        if (!readStream(theStream, myReadBuffer.Size(), myBytesLastRead))
         {
           // error during file reading
           break;
@@ -103,8 +105,8 @@ public:
           // end of the stream
           if (myUseReadBufferLastStr)
           {
-            theLineLength          = myReadBufferLastStr.size();
-            aResultLine            = &myReadBufferLastStr.front();
+            theLineLength          = myReadBufferLastStr.Size();
+            aResultLine            = myReadBufferLastStr.Data();
             myUseReadBufferLastStr = false;
           }
           break;
@@ -147,14 +149,18 @@ public:
 
             if (myUseReadBufferLastStr)
             {
-              myReadBufferLastStr.insert(myReadBufferLastStr.end(),
-                                         myReadBuffer.begin() + aStartLinePos,
-                                         myReadBuffer.begin() + aBufferPos);
+              const size_t aIns = myReadBufferLastStr.Size();
+              const size_t aCnt = aBufferPos - aStartLinePos;
+              myReadBufferLastStr.Resize(aIns + aCnt);
+              std::memcpy(myReadBufferLastStr.Data() + aIns,
+                          myReadBuffer.Data() + aStartLinePos,
+                          aCnt);
             }
             else
             {
-              myReadBufferLastStr    = std::vector<char>(myReadBuffer.begin() + aStartLinePos,
-                                                      myReadBuffer.begin() + aBufferPos);
+              const size_t aCnt = aBufferPos - aStartLinePos;
+              myReadBufferLastStr.Resize(aCnt);
+              std::memcpy(myReadBufferLastStr.Data(), myReadBuffer.Data() + aStartLinePos, aCnt);
               myUseReadBufferLastStr = true;
             }
 
@@ -169,20 +175,21 @@ public:
           }
           else if (myBufferPos == 1 && myReadBuffer[0] == '\r')
           {
-            myReadBufferLastStr.erase(myReadBufferLastStr.end() - 1);
+            myReadBufferLastStr.EraseLast();
             aStartLinePos += 2;
             isMultiline = false;
           }
           else if (myBufferPos == 0)
           {
             aStartLinePos += 1;
-            if (myReadBufferLastStr[myReadBufferLastStr.size() - 1] == '\\')
+            if (myReadBufferLastStr[myReadBufferLastStr.Size() - 1] == '\\')
             {
-              myReadBufferLastStr.erase(myReadBufferLastStr.end() - 1);
+              myReadBufferLastStr.EraseLast();
             }
             else
             {
-              myReadBufferLastStr.erase(myReadBufferLastStr.end() - 2, myReadBufferLastStr.end());
+              myReadBufferLastStr.EraseLast();
+              myReadBufferLastStr.EraseLast();
             }
             isMultiline = false;
           }
@@ -199,21 +206,26 @@ public:
         if (myUseReadBufferLastStr)
         {
           // append current string to the last "unfinished" string of the previous chunk
-          myReadBufferLastStr.insert(myReadBufferLastStr.end(),
-                                     myReadBuffer.begin() + aStartLinePos,
-                                     myReadBuffer.begin() + myBufferPos);
+          {
+            const size_t aIns = myReadBufferLastStr.Size();
+            const size_t aCnt = myBufferPos - aStartLinePos;
+            myReadBufferLastStr.Resize(aIns + aCnt);
+            std::memcpy(myReadBufferLastStr.Data() + aIns,
+                        myReadBuffer.Data() + aStartLinePos,
+                        aCnt);
+          }
           myUseReadBufferLastStr = false;
-          theLineLength          = myReadBufferLastStr.size();
-          aResultLine            = &myReadBufferLastStr.front();
+          theLineLength          = myReadBufferLastStr.Size();
+          aResultLine            = myReadBufferLastStr.Data();
         }
         else
         {
-          if (myReadBufferLastStr.size() > 0)
+          if (!myReadBufferLastStr.IsEmpty())
           {
-            myReadBufferLastStr.clear();
+            myReadBufferLastStr.Clear();
           }
           theLineLength = myBufferPos - aStartLinePos;
-          aResultLine   = &myReadBuffer.front() + aStartLinePos;
+          aResultLine   = myReadBuffer.Data() + aStartLinePos;
         }
         // make string null terminated by replacing '\n' or '\r' (before '\n') symbol to null
         // character.
@@ -235,14 +247,18 @@ public:
         {
           if (myUseReadBufferLastStr)
           {
-            myReadBufferLastStr.insert(myReadBufferLastStr.end(),
-                                       myReadBuffer.begin() + aStartLinePos,
-                                       myReadBuffer.begin() + myBufferPos);
+            const size_t aIns = myReadBufferLastStr.Size();
+            const size_t aCnt = myBufferPos - aStartLinePos;
+            myReadBufferLastStr.Resize(aIns + aCnt);
+            std::memcpy(myReadBufferLastStr.Data() + aIns,
+                        myReadBuffer.Data() + aStartLinePos,
+                        aCnt);
           }
           else
           {
-            myReadBufferLastStr    = std::vector<char>(myReadBuffer.begin() + aStartLinePos,
-                                                    myReadBuffer.begin() + myBufferPos);
+            const size_t aCnt = myBufferPos - aStartLinePos;
+            myReadBufferLastStr.Resize(aCnt);
+            std::memcpy(myReadBufferLastStr.Data(), myReadBuffer.Data() + aStartLinePos, aCnt);
             myUseReadBufferLastStr = true;
           }
         }
@@ -282,7 +298,7 @@ protected:
   //! @return true if reading was finished without errors.
   bool readStream(std::istream& theStream, size_t theLen, size_t& theReadLen)
   {
-    theReadLen = (size_t)theStream.read(&myReadBuffer.front(), theLen).gcount();
+    theReadLen = (size_t)theStream.read(myReadBuffer.Data(), theLen).gcount();
     return !theStream.bad();
   }
 
@@ -290,13 +306,13 @@ protected:
   //! @return true if reading was finished without errors.
   bool readStream(FILE* theStream, size_t theLen, size_t& theReadLen)
   {
-    theReadLen = ::fread(&myReadBuffer.front(), 1, theLen, theStream);
+    theReadLen = ::fread(myReadBuffer.Data(), 1, theLen, theStream);
     return ::ferror(theStream) == 0;
   }
 
 protected:
-  std::vector<char> myReadBuffer;        //!< Temp read buffer
-  std::vector<char> myReadBufferLastStr; //!< Part of last string of myReadBuffer
+  NCollection_LinearVector<char> myReadBuffer;        //!< Temp read buffer
+  NCollection_LinearVector<char> myReadBufferLastStr; //!< Part of last string of myReadBuffer
   // clang-format off
   bool              myUseReadBufferLastStr; //!< Flag to use myReadBufferLastStr during next line reading
   bool              myIsMultilineMode;      //!< Flag to process of the special multi-line case at the end of the line

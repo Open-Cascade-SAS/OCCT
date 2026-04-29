@@ -37,7 +37,9 @@ void RWStepFEA_RWCurveElementInterval::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "curve_element_interval"))
+  {
     return;
+  }
 
   // Own fields of CurveElementInterval
 

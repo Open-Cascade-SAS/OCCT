@@ -273,18 +273,26 @@ void BRepFeat_Form::GlobalPerform()
       else if (ASI2.IsDone())
       {
         if (ASI2.NbPoints(jj) <= 0)
+        {
           continue;
+        }
 
         // for base case prism on mySUntil -> ambivalent direction
         //      ->  preferable direction = 1
         if (sens != 1)
         {
           if (ASI2.Point(jj, 1).Parameter() * ASI2.Point(jj, ASI2.NbPoints(jj)).Parameter() <= 0)
+          {
             sens = 1;
+          }
           else if (ASI2.Point(jj, 1).Parameter() < 0.)
+          {
             sens = -1;
+          }
           else
+          {
             sens = 1;
+          }
         }
 
         int ku;
@@ -405,13 +413,17 @@ void BRepFeat_Form::GlobalPerform()
               {
                 myMap(fac) = trP.Modified(fac);
                 if (myMap(fac).IsEmpty())
+                {
                   myMap(fac).Append(fac);
+                }
               }
               else
               {
                 locmap(fac) = trP.Modified(fac);
                 if (locmap(fac).IsEmpty())
+                {
                   locmap(fac).Append(fac);
+                }
               }
             }
           } // if(!mySFrom.IsNull())
@@ -440,13 +452,17 @@ void BRepFeat_Form::GlobalPerform()
               {
                 myMap(fac) = trP.Modified(fac);
                 if (myMap(fac).IsEmpty())
+                {
                   myMap(fac).Append(fac);
+                }
               }
               else
               {
                 locmap(fac) = trP.Modified(fac);
                 if (locmap(fac).IsEmpty())
+                {
                   locmap(fac).Append(fac);
+                }
               }
             }
           } // if(!mySUntil.IsNull())
@@ -465,7 +481,9 @@ void BRepFeat_Form::GlobalPerform()
             {
               ldsc = trP.Modified(gl);
               if (ldsc.IsEmpty())
+              {
                 ldsc.Append(gl);
+              }
             }
             const TopoDS_Face& glface = TopoDS::Face(itm.Value());
             for (it.Initialize(ldsc); it.More(); it.Next())
@@ -746,7 +764,9 @@ void BRepFeat_Form::GlobalPerform()
             {
               myMap(fac) = trP.Modified(fac);
               if (myMap(fac).IsEmpty())
+              {
                 myMap(fac).Append(fac);
+              }
             }
           }
         }
@@ -768,7 +788,9 @@ void BRepFeat_Form::GlobalPerform()
             {
               myMap(fac) = trP.Modified(fac);
               if (myMap.IsEmpty())
+              {
                 myMap(fac).Append(fac);
+              }
             }
           }
         }
@@ -848,7 +870,9 @@ void BRepFeat_Form::GlobalPerform()
         double prbmin1, prbmax1, prbmin2, prbmax2;
 
         if (!myJustFeat && sens == 0)
+        {
           sens = 1;
+        }
         if (sens == 0)
         {
           myStatusError = BRepFeat_IncDirection;
@@ -1231,7 +1255,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_Form::Modified(const TopoDS_Shape
 {
   myGenerated.Clear();
   if (!IsDone())
+  {
     return myGenerated;
+  }
 
   if (mySbase.IsEqual(F))
   {
@@ -1246,7 +1272,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_Form::Modified(const TopoDS_Shape
     {
       const TopoDS_Shape& sh = ite.Value();
       if (!sh.IsSame(F) && sh.ShapeType() == F.ShapeType())
+      {
         myGenerated.Append(sh);
+      }
     }
   }
   return myGenerated; // empty list
@@ -1258,7 +1286,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_Form::Generated(const TopoDS_Shap
 {
   myGenerated.Clear();
   if (!IsDone())
+  {
     return myGenerated;
+  }
   if (myMap.IsBound(S) && S.ShapeType() != TopAbs_FACE)
   { // check if filter on face or not
     NCollection_List<TopoDS_Shape>::Iterator ite(myMap(S));
@@ -1266,7 +1296,9 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_Form::Generated(const TopoDS_Shap
     {
       const TopoDS_Shape& sh = ite.Value();
       if (!sh.IsSame(S))
+      {
         myGenerated.Append(sh);
+      }
     }
     return myGenerated;
   }
@@ -1352,11 +1384,17 @@ bool BRepFeat_Form::TransformShapeFU(const int flag)
 
   TopoDS_Shape shapefu;
   if (flag == 0)
+  {
     shapefu = mySFrom;
+  }
   else if (flag == 1)
+  {
     shapefu = mySUntil;
+  }
   else
+  {
     return Trf;
+  }
 
   TopExp_Explorer exp(shapefu, TopAbs_FACE);
   if (!exp.More())
@@ -1499,7 +1537,9 @@ void BRepFeat_Form::UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBOP,
     {
       const TopoDS_Shape& sh = it.Value();
       if (sh.ShapeType() != TopAbs_FACE)
+      {
         continue;
+      }
       const TopoDS_Face& fdsc = TopoDS::Face(it.Value());
       for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
       {

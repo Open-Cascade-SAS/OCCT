@@ -32,7 +32,9 @@ void RWStepBasic_RWProductRelatedProductCategory::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "product_related_product_category"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -68,7 +70,9 @@ void RWStepBasic_RWProductRelatedProductCategory::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "product", ach, STANDARD_TYPE(StepBasic_Product), anent3))
+      {
         aProducts->SetValue(i3, anent3);
+      }
     }
   }
 

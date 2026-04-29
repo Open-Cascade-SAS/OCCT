@@ -66,7 +66,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 1: {
       DeclareAndCast(IGESGraph_Color, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolColor tool;
       tool.OwnShared(anent, iter);
     }
@@ -74,7 +76,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 2: {
       DeclareAndCast(IGESGraph_DefinitionLevel, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDefinitionLevel tool;
       tool.OwnShared(anent, iter);
     }
@@ -82,7 +86,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 3: {
       DeclareAndCast(IGESGraph_DrawingSize, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDrawingSize tool;
       tool.OwnShared(anent, iter);
     }
@@ -90,7 +96,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 4: {
       DeclareAndCast(IGESGraph_DrawingUnits, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDrawingUnits tool;
       tool.OwnShared(anent, iter);
     }
@@ -98,7 +106,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 5: {
       DeclareAndCast(IGESGraph_HighLight, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolHighLight tool;
       tool.OwnShared(anent, iter);
     }
@@ -106,7 +116,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 6: {
       DeclareAndCast(IGESGraph_IntercharacterSpacing, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolIntercharacterSpacing tool;
       tool.OwnShared(anent, iter);
     }
@@ -114,7 +126,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 7: {
       DeclareAndCast(IGESGraph_LineFontDefPattern, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontDefPattern tool;
       tool.OwnShared(anent, iter);
     }
@@ -122,7 +136,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 8: {
       DeclareAndCast(IGESGraph_LineFontPredefined, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontPredefined tool;
       tool.OwnShared(anent, iter);
     }
@@ -130,7 +146,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 9: {
       DeclareAndCast(IGESGraph_LineFontDefTemplate, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontDefTemplate tool;
       tool.OwnShared(anent, iter);
     }
@@ -138,7 +156,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 10: {
       DeclareAndCast(IGESGraph_NominalSize, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolNominalSize tool;
       tool.OwnShared(anent, iter);
     }
@@ -146,7 +166,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 11: {
       DeclareAndCast(IGESGraph_Pick, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolPick tool;
       tool.OwnShared(anent, iter);
     }
@@ -154,7 +176,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 12: {
       DeclareAndCast(IGESGraph_TextDisplayTemplate, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolTextDisplayTemplate tool;
       tool.OwnShared(anent, iter);
     }
@@ -162,7 +186,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 13: {
       DeclareAndCast(IGESGraph_TextFontDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolTextFontDef tool;
       tool.OwnShared(anent, iter);
     }
@@ -170,7 +196,9 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
     case 14: {
       DeclareAndCast(IGESGraph_UniformRectGrid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolUniformRectGrid tool;
       tool.OwnShared(anent, iter);
     }
@@ -189,98 +217,126 @@ IGESData_DirChecker IGESGraph_GeneralModule::DirChecker(
     case 1: {
       DeclareAndCast(IGESGraph_Color, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolColor tool;
       return tool.DirChecker(anent);
     }
     case 2: {
       DeclareAndCast(IGESGraph_DefinitionLevel, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolDefinitionLevel tool;
       return tool.DirChecker(anent);
     }
     case 3: {
       DeclareAndCast(IGESGraph_DrawingSize, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolDrawingSize tool;
       return tool.DirChecker(anent);
     }
     case 4: {
       DeclareAndCast(IGESGraph_DrawingUnits, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolDrawingUnits tool;
       return tool.DirChecker(anent);
     }
     case 5: {
       DeclareAndCast(IGESGraph_HighLight, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolHighLight tool;
       return tool.DirChecker(anent);
     }
     case 6: {
       DeclareAndCast(IGESGraph_IntercharacterSpacing, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolIntercharacterSpacing tool;
       return tool.DirChecker(anent);
     }
     case 7: {
       DeclareAndCast(IGESGraph_LineFontDefPattern, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolLineFontDefPattern tool;
       return tool.DirChecker(anent);
     }
     case 8: {
       DeclareAndCast(IGESGraph_LineFontPredefined, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolLineFontPredefined tool;
       return tool.DirChecker(anent);
     }
     case 9: {
       DeclareAndCast(IGESGraph_LineFontDefTemplate, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolLineFontDefTemplate tool;
       return tool.DirChecker(anent);
     }
     case 10: {
       DeclareAndCast(IGESGraph_NominalSize, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolNominalSize tool;
       return tool.DirChecker(anent);
     }
     case 11: {
       DeclareAndCast(IGESGraph_Pick, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolPick tool;
       return tool.DirChecker(anent);
     }
     case 12: {
       DeclareAndCast(IGESGraph_TextDisplayTemplate, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolTextDisplayTemplate tool;
       return tool.DirChecker(anent);
     }
     case 13: {
       DeclareAndCast(IGESGraph_TextFontDef, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolTextFontDef tool;
       return tool.DirChecker(anent);
     }
     case 14: {
       DeclareAndCast(IGESGraph_UniformRectGrid, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGraph_ToolUniformRectGrid tool;
       return tool.DirChecker(anent);
     }
@@ -300,7 +356,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 1: {
       DeclareAndCast(IGESGraph_Color, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolColor tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -308,7 +366,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 2: {
       DeclareAndCast(IGESGraph_DefinitionLevel, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDefinitionLevel tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -316,7 +376,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 3: {
       DeclareAndCast(IGESGraph_DrawingSize, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDrawingSize tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -324,7 +386,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 4: {
       DeclareAndCast(IGESGraph_DrawingUnits, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolDrawingUnits tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -332,7 +396,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 5: {
       DeclareAndCast(IGESGraph_HighLight, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolHighLight tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -340,7 +406,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 6: {
       DeclareAndCast(IGESGraph_IntercharacterSpacing, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolIntercharacterSpacing tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -348,7 +416,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 7: {
       DeclareAndCast(IGESGraph_LineFontDefPattern, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontDefPattern tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -356,7 +426,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 8: {
       DeclareAndCast(IGESGraph_LineFontPredefined, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontPredefined tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -364,7 +436,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 9: {
       DeclareAndCast(IGESGraph_LineFontDefTemplate, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolLineFontDefTemplate tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -372,7 +446,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 10: {
       DeclareAndCast(IGESGraph_NominalSize, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolNominalSize tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -380,7 +456,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 11: {
       DeclareAndCast(IGESGraph_Pick, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolPick tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -388,7 +466,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 12: {
       DeclareAndCast(IGESGraph_TextDisplayTemplate, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolTextDisplayTemplate tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -396,7 +476,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 13: {
       DeclareAndCast(IGESGraph_TextFontDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolTextFontDef tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -404,7 +486,9 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
     case 14: {
       DeclareAndCast(IGESGraph_UniformRectGrid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGraph_ToolUniformRectGrid tool;
       tool.OwnCheck(anent, shares, ach);
     }

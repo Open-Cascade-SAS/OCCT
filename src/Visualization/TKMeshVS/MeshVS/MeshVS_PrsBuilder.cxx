@@ -32,9 +32,13 @@ MeshVS_PrsBuilder::MeshVS_PrsBuilder(const occ::handle<MeshVS_Mesh>&       Paren
                                      const MeshVS_BuilderPriority&         Priority)
 {
   if (Id < 0 && !Parent.IsNull())
+  {
     myId = Parent->GetFreeId();
+  }
   else
+  {
     myId = Id;
+  }
 
   myParentMesh = Parent.operator->();
   myDataSource = DS;
@@ -76,9 +80,13 @@ occ::handle<MeshVS_DataSource> MeshVS_PrsBuilder::DataSource() const
 occ::handle<MeshVS_DataSource> MeshVS_PrsBuilder::GetDataSource() const
 {
   if (myDataSource.IsNull())
+  {
     return myParentMesh->GetDataSource();
+  }
   else
+  {
     return myDataSource;
+  }
 }
 
 //=================================================================================================
@@ -135,9 +143,13 @@ int MeshVS_PrsBuilder::GetPriority() const
 occ::handle<MeshVS_Drawer> MeshVS_PrsBuilder::GetDrawer() const
 {
   if (myDrawer.IsNull())
+  {
     return myParentMesh->GetDrawer();
+  }
   else
+  {
     return myDrawer;
+  }
 }
 
 //=================================================================================================

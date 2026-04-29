@@ -39,7 +39,9 @@ void RWStepShape_RWShapeRepresentationWithParameters::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "shape_representation_with_parameters"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

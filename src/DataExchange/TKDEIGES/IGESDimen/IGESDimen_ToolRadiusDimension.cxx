@@ -63,11 +63,13 @@ void IGESDimen_ToolRadiusDimension::ReadOwnParams(const occ::handle<IGESDimen_Ra
   PR.ReadXY(PR.CurrentList(1, 2), "Arc center", arcCenter); // szv#4:S4163:12Mar99 `st=` not needed
 
   if (ent->FormNumber() == 1)
+  {
     PR.ReadEntity(IR,
                   PR.Current(),
                   "Leader arrow 2",
                   // clang-format off
 		  STANDARD_TYPE(IGESDimen_LeaderArrow), leadArr2, true); //szv#4:S4163:12Mar99 `st=` not needed
+}
   // clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -83,7 +85,9 @@ void IGESDimen_ToolRadiusDimension::WriteOwnParams(
   IW.Send(ent->Center().X());
   IW.Send(ent->Center().Y());
   if (ent->HasLeader2() || ent->FormNumber() == 1)
+  {
     IW.Send(ent->Leader2());
+  }
 }
 
 void IGESDimen_ToolRadiusDimension::OwnShared(const occ::handle<IGESDimen_RadiusDimension>& ent,
@@ -103,7 +107,9 @@ void IGESDimen_ToolRadiusDimension::OwnCopy(const occ::handle<IGESDimen_RadiusDi
   gp_XY                              arcCenter = another->Center().XY();
   occ::handle<IGESDimen_LeaderArrow> leadArr2;
   if (another->HasLeader2())
+  {
     leadArr2 = GetCasted(IGESDimen_LeaderArrow, TC.Transferred(another->Leader2()));
+  }
   ent->Init(tempNote, leadArr, arcCenter, leadArr2);
   ent->InitForm(another->FormNumber());
 }
@@ -127,7 +133,9 @@ void IGESDimen_ToolRadiusDimension::OwnCheck(const occ::handle<IGESDimen_RadiusD
                                              occ::handle<Interface_Check>& ach) const
 {
   if (ent->HasLeader2() && ent->FormNumber() == 0)
+  {
     ach->AddFail("Value of Form Number not consistent with presence of Leader2");
+  }
   // Form 1 : Leader can be defined or not. Form 0 : only cannot
 }
 
@@ -153,5 +161,5 @@ void IGESDimen_ToolRadiusDimension::OwnDump(const occ::handle<IGESDimen_RadiusDi
     dumper.Dump(ent->Leader2(), S, sublevel);
     S << "\n";
   }
-  S << std::endl;
+  S << '\n';
 }

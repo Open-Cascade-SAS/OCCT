@@ -121,17 +121,29 @@ GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
   }
   int n1 = 0, n2 = 0;
   if (cont1 >= 5)
+  {
     n1 = 3;
+  }
   else if (cont1 == 4)
+  {
     n1 = 2;
+  }
   else if (cont1 == 2)
+  {
     n1 = 1;
+  }
   if (cont2 >= 5)
+  {
     n2 = 3;
+  }
   else if (cont2 == 4)
+  {
     n2 = 2;
+  }
   else if (cont2 == 2)
+  {
     n2 = 1;
+  }
   GeomLProp_CLProps clp1(C1, u1, n1, tl);
   GeomLProp_CLProps clp2(C2, u2, n2, tl);
   if (!(clp1.Value().IsEqual(clp2.Value(), tl)))
@@ -144,9 +156,13 @@ GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
     d1 = clp1.D1();
     d2 = clp2.D1();
     if (r1)
+    {
       d1.Reverse();
+    }
     if (r2)
+    {
       d2.Reverse();
+    }
     if (d1.IsEqual(d2, tl, ta))
     {
       cont = GeomAbs_C1;
@@ -156,9 +172,13 @@ GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
       clp1.Tangent(dir1);
       clp2.Tangent(dir2);
       if (r1)
+      {
         dir1.Reverse();
+      }
       if (r2)
+      {
         dir2.Reverse();
+      }
       if (dir1.IsEqual(dir2, ta))
       {
         cont = GeomAbs_G1;

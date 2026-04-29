@@ -38,7 +38,9 @@ bool ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
                                              const TopAbs_ShapeEnum styp) const
 {
   if (shape.IsNull() || tmin < 0)
+  {
     return false;
+  }
   bool   iamax = (tmax >= tmin);
   double prec;
   bool   fait = false;
@@ -53,9 +55,13 @@ bool ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
         TopoDS_Vertex V = TopoDS::Vertex(sh);
         prec            = BRep_Tool::Tolerance(V);
         if (iamax && prec > tmax)
+        {
           newtol = 1;
+        }
         else if (prec < tmin)
+        {
           newtol = -1;
+        }
         if (newtol)
         {
           const occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*)&V.TShape());
@@ -68,9 +74,13 @@ bool ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
         TopoDS_Edge E = TopoDS::Edge(sh);
         prec          = BRep_Tool::Tolerance(E);
         if (iamax && prec > tmax)
+        {
           newtol = 1;
+        }
         else if (prec < tmin)
+        {
           newtol = -1;
+        }
         if (newtol)
         {
           const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
@@ -83,9 +93,13 @@ bool ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
         TopoDS_Face F = TopoDS::Face(sh);
         prec          = BRep_Tool::Tolerance(F);
         if (iamax && prec > tmax)
+        {
           newtol = 1;
+        }
         else if (prec < tmin)
+        {
           newtol = -1;
+        }
         if (newtol)
         {
           const occ::handle<BRep_TFace>& TF = *((occ::handle<BRep_TFace>*)&F.TShape());
@@ -105,9 +119,13 @@ bool ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(E, V1, V2);
       if (!V1.IsNull())
+      {
         fait |= LimitTolerance(V1, tmin, tmax, TopAbs_VERTEX);
+      }
       if (!V2.IsNull())
+      {
         fait |= LimitTolerance(V2, tmin, tmax, TopAbs_VERTEX);
+      }
     }
   }
   else
@@ -129,7 +147,9 @@ void ShapeFix_ShapeTolerance::SetTolerance(const TopoDS_Shape&    shape,
   //   WIRE : EDGE + VERTEX
   //   Autres : TOUT (donc == WIRE + FACE)
   if (shape.IsNull() || preci <= 0)
+  {
     return;
+  }
   if (styp == TopAbs_VERTEX || styp == TopAbs_EDGE || styp == TopAbs_FACE)
   {
     for (TopExp_Explorer ex(shape, styp); ex.More(); ex.Next())

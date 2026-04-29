@@ -47,7 +47,9 @@ occ::handle<IGESGeom_Point> IGESSolid_SphericalSurface::Center() const
 gp_Pnt IGESSolid_SphericalSurface::TransformedCenter() const
 {
   if (!HasTransf())
+  {
     return theCenter->Value();
+  }
   else
   {
     gp_XYZ tmp = (theCenter->Value()).XYZ();

@@ -102,16 +102,20 @@ static void NormalD0(const double                          U,
     }
 
     for (i = 0; i <= MaxOrder + 1; i++)
+    {
       for (j = 1; j <= MaxOrder + 1; j++)
       {
         DerSurf.SetValue(i, j, Surf->DN(U, V, i, j));
       }
+    }
 
     for (i = 0; i <= MaxOrder; i++)
+    {
       for (j = 0; j <= MaxOrder; j++)
       {
         DerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurf));
       }
+    }
 
     CSLib::Normal(MaxOrder,
                   DerNUV,
@@ -171,9 +175,13 @@ static void NormalD1(const double                          U,
   CSLib::Normal(D1UNormal, D1VNormal, MagTol, NStatus, Normal);
   int MaxOrder;
   if (NStatus == CSLib_Defined)
+  {
     MaxOrder = 0;
+  }
   else
+  {
     MaxOrder = 3;
+  }
   int                        OrderU, OrderV;
   NCollection_Array2<gp_Vec> DerNUV(0, MaxOrder + 1, 0, MaxOrder + 1);
   NCollection_Array2<gp_Vec> DerSurf(0, MaxOrder + 2, 0, MaxOrder + 2);
@@ -190,19 +198,27 @@ static void NormalD1(const double                          U,
   DerSurf.SetValue(2, 0, d2u);
   DerSurf.SetValue(0, 2, d2v);
   for (i = 0; i <= MaxOrder + 1; i++)
+  {
     for (j = i; j <= MaxOrder + 2; j++)
+    {
       if (i + j > 2)
       {
         DerSurf.SetValue(i, j, Surf->DN(U, V, i, j));
         if (i != j)
+        {
           DerSurf.SetValue(j, i, Surf->DN(U, V, j, i));
+        }
       }
+    }
+  }
 
   for (i = 0; i <= MaxOrder + 1; i++)
+  {
     for (j = 0; j <= MaxOrder + 1; j++)
     {
       DerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurf));
     }
+  }
 
   CSLib::Normal(MaxOrder,
                 DerNUV,
@@ -218,7 +234,9 @@ static void NormalD1(const double                          U,
                 OrderU,
                 OrderV);
   if (NStatus != CSLib_Defined)
+  {
     throw Geom_UndefinedValue();
+  }
 
   D1UNormal = CSLib::DNNormal(1, 0, DerNUV, OrderU, OrderV);
   D1VNormal = CSLib::DNNormal(0, 1, DerNUV, OrderU, OrderV);
@@ -255,9 +273,13 @@ static void NormalD2(const double                          U,
   CSLib::Normal(D1UNormal, D1VNormal, MagTol, NStatus, Normal);
   int MaxOrder;
   if (NStatus == CSLib_Defined)
+  {
     MaxOrder = 0;
+  }
   else
+  {
     MaxOrder = 3;
+  }
   int                        OrderU, OrderV;
   NCollection_Array2<gp_Vec> DerNUV(0, MaxOrder + 2, 0, MaxOrder + 2);
   NCollection_Array2<gp_Vec> DerSurf(0, MaxOrder + 3, 0, MaxOrder + 3);
@@ -279,19 +301,27 @@ static void NormalD2(const double                          U,
   DerSurf.SetValue(1, 2, d3uvv);
   DerSurf.SetValue(0, 3, d3v);
   for (i = 0; i <= MaxOrder + 2; i++)
+  {
     for (j = i; j <= MaxOrder + 3; j++)
+    {
       if (i + j > 3)
       {
         DerSurf.SetValue(i, j, Surf->DN(U, V, i, j));
         if (i != j)
+        {
           DerSurf.SetValue(j, i, Surf->DN(U, V, j, i));
+        }
       }
+    }
+  }
 
   for (i = 0; i <= MaxOrder + 2; i++)
+  {
     for (j = 0; j <= MaxOrder + 2; j++)
     {
       DerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurf));
     }
+  }
 
   CSLib::Normal(MaxOrder,
                 DerNUV,
@@ -307,7 +337,9 @@ static void NormalD2(const double                          U,
                 OrderU,
                 OrderV);
   if (NStatus != CSLib_Defined)
+  {
     throw Geom_UndefinedValue();
+  }
 
   D1UNormal  = CSLib::DNNormal(1, 0, DerNUV, OrderU, OrderV);
   D1VNormal  = CSLib::DNNormal(0, 1, DerNUV, OrderU, OrderV);
@@ -322,7 +354,9 @@ occ::handle<GeomFill_TrihedronLaw> GeomFill_Darboux::Copy() const
 {
   occ::handle<GeomFill_Darboux> copy = new (GeomFill_Darboux)();
   if (!myCurve.IsNull())
+  {
     copy->SetCurve(myCurve);
+  }
   return copy;
 }
 
@@ -500,7 +534,9 @@ void GeomFill_Darboux::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& 
   {
     Param = myTrimmed->FirstParameter() + i * Step;
     if (Param > myTrimmed->LastParameter())
+    {
       Param = myTrimmed->LastParameter();
+    }
     D0(Param, T, N, BN);
     ATangent += T;
     ANormal += N;

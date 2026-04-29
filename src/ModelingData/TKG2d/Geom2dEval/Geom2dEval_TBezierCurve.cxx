@@ -87,7 +87,7 @@ void evalCurveBasis(const NCollection_Array1<gp_Pnt2d>& thePoles,
 {
   theData                    = CurveBasisEval<theMaxOrder>();
   const int       aPoleLow   = thePoles.Lower();
-  const int       aNbPoles   = thePoles.Size();
+  const int       aNbPoles   = thePoles.Length();
   const int       aWeightLow = (theWeights != nullptr) ? theWeights->Lower() : 0;
   const gp_Pnt2d* aPoles     = &thePoles.Value(aPoleLow);
   const double*   aWeights   = (theWeights != nullptr) ? &theWeights->Value(aWeightLow) : nullptr;
@@ -211,7 +211,7 @@ Geom2dEval_TBezierCurve::Geom2dEval_TBezierCurve(const NCollection_Array1<gp_Pnt
       myAlpha(theAlpha),
       myRational(false)
 {
-  const int aNbPoles = thePoles.Size();
+  const int aNbPoles = thePoles.Length();
   if (aNbPoles < 3 || (aNbPoles % 2) == 0)
   {
     throw Standard_ConstructionError(
@@ -233,7 +233,7 @@ Geom2dEval_TBezierCurve::Geom2dEval_TBezierCurve(const NCollection_Array1<gp_Pnt
       myAlpha(theAlpha),
       myRational(true)
 {
-  const int aNbPoles = thePoles.Size();
+  const int aNbPoles = thePoles.Length();
   if (aNbPoles < 3 || (aNbPoles % 2) == 0)
   {
     throw Standard_ConstructionError(
@@ -243,7 +243,7 @@ Geom2dEval_TBezierCurve::Geom2dEval_TBezierCurve(const NCollection_Array1<gp_Pnt
   {
     throw Standard_ConstructionError("Geom2dEval_TBezierCurve: alpha must be > 0");
   }
-  if (theWeights.Size() != aNbPoles)
+  if (theWeights.Length() != aNbPoles)
   {
     throw Standard_ConstructionError("Geom2dEval_TBezierCurve: weights size must equal poles size");
   }
@@ -281,14 +281,14 @@ double Geom2dEval_TBezierCurve::Alpha() const
 
 int Geom2dEval_TBezierCurve::NbPoles() const
 {
-  return myPoles.Size();
+  return myPoles.Length();
 }
 
 //=================================================================================================
 
 int Geom2dEval_TBezierCurve::Order() const
 {
-  return (myPoles.Size() - 1) / 2;
+  return (myPoles.Length() - 1) / 2;
 }
 
 //=================================================================================================
@@ -453,7 +453,7 @@ gp_Pnt2d Geom2dEval_TBezierCurve::evalNonRationalPoint(
   const NCollection_Array1<double>& theBasis) const
 {
   gp_XY           aSum(0.0, 0.0);
-  const int       aNbPoles   = myPoles.Size();
+  const int       aNbPoles   = myPoles.Length();
   const gp_Pnt2d* aPolesData = &myPoles.Value(myPoles.Lower());
   const double*   aBasisData = &theBasis.Value(theBasis.Lower());
   for (int i = 0; i < aNbPoles; ++i)
@@ -469,7 +469,7 @@ gp_Vec2d Geom2dEval_TBezierCurve::evalNonRationalDeriv(
   const NCollection_Array1<double>& theBasisDeriv) const
 {
   gp_XY           aSum(0.0, 0.0);
-  const int       aNbPoles   = myPoles.Size();
+  const int       aNbPoles   = myPoles.Length();
   const gp_Pnt2d* aPolesData = &myPoles.Value(myPoles.Lower());
   const double*   aBasisData = &theBasisDeriv.Value(theBasisDeriv.Lower());
   for (int i = 0; i < aNbPoles; ++i)
@@ -644,7 +644,7 @@ gp_Vec2d Geom2dEval_TBezierCurve::EvalDN(const double U, const int N) const
   // For N > 3 on rational curves, use the general recurrence formula:
   // C^(n)(t) = (Cw^(n)(t) - sum_{k=1..n} C(n,k)*w^(k)(t)*C^(n-k)(t)) / w(t)
   // We compute iteratively from lower-order derivatives.
-  const int aNbPoles = myPoles.Size();
+  const int aNbPoles = myPoles.Length();
 
   // Precompute all basis derivative arrays up to order N.
   NCollection_Array1<NCollection_Array1<double>> aBasisDerivs(0, N);
@@ -733,5 +733,5 @@ void Geom2dEval_TBezierCurve::DumpJson(Standard_OStream& theOStream, int theDept
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAlpha)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRational)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Size())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Length())
 }

@@ -33,7 +33,9 @@ void RWStepGeom_RWCompositeCurveOnSurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "composite_curve_on_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -59,7 +61,9 @@ void RWStepGeom_RWCompositeCurveOnSurface::ReadStep(
                            ach,
                            STANDARD_TYPE(StepGeom_CompositeCurveSegment),
                            anent2))
+      {
         aSegments->SetValue(i2, anent2);
+      }
     }
   }
 

@@ -156,6 +156,11 @@ protected:
   //! Generates shader program to render correctly colored quad.
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getColoredQuadProgram() const;
 
+  //! Generates shader program to render an infinite grid on an arbitrary plane.
+  //! Uses a screen-space triangle unprojected to world rays and ray-plane intersection
+  //! driven by uniforms uPlaneOrigin / uPlaneX / uPlaneY / uPlaneN.
+  Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getGridProgram() const;
+
   //! Prepare GLSL source for IBL generation used in PBR pipeline.
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getPBREnvBakingProgram(int theIndex) const;
 

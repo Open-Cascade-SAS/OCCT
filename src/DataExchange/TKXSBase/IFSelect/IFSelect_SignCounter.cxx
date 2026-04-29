@@ -58,7 +58,9 @@ bool IFSelect_SignCounter::AddEntity(const occ::handle<Standard_Transient>&     
   if (themapstat && !ent.IsNull())
   {
     if (themap.Contains(ent))
+    {
       return false;
+    }
     themap.Add(ent);
   }
   AddSign(ent, model);
@@ -71,9 +73,13 @@ void IFSelect_SignCounter::AddSign(const occ::handle<Standard_Transient>&       
   char nulsign[2];
   nulsign[0] = '\0';
   if (ent.IsNull() || thematcher.IsNull())
+  {
     Add(ent, nulsign); // to count the Nulls
+  }
   else
+  {
     Add(ent, thematcher->Value(ent, model));
+  }
 }
 
 void IFSelect_SignCounter::AddList(
@@ -81,10 +87,14 @@ void IFSelect_SignCounter::AddList(
   const occ::handle<Interface_InterfaceModel>&                               model)
 {
   if (list.IsNull())
+  {
     return;
+  }
   int nb = list->Length();
   for (int i = 1; i <= nb; i++)
+  {
     AddEntity(list->Value(i), model);
+  }
 }
 
 void IFSelect_SignCounter::AddWithGraph(
@@ -97,14 +107,20 @@ void IFSelect_SignCounter::AddWithGraph(
 void IFSelect_SignCounter::AddModel(const occ::handle<Interface_InterfaceModel>& model)
 {
   if (model.IsNull())
+  {
     return;
+  }
   int nb = model->NbEntities();
   //  If we start from empty, we know that each entity is unique in the model
   bool mapstat = themapstat;
   if (themap.Extent() == 0)
+  {
     themapstat = false;
+  }
   for (int i = 1; i <= nb; i++)
+  {
     AddEntity(model->Value(i), model);
+  }
   themapstat = mapstat;
 }
 
@@ -132,11 +148,17 @@ occ::handle<IFSelect_Selection> IFSelect_SignCounter::Selection() const
 void IFSelect_SignCounter::SetSelMode(const int selmode)
 {
   if (selmode < 0)
+  {
     thenbcomp1 = thenbcomp2 = 0;
+  }
   else
+  {
     theselmode = selmode;
+  }
   if (selmode == 0)
+  {
     theselect.Nullify();
+  }
 }
 
 int IFSelect_SignCounter::SelMode() const
@@ -147,17 +169,23 @@ int IFSelect_SignCounter::SelMode() const
 bool IFSelect_SignCounter::ComputeSelected(const Interface_Graph& G, const bool forced)
 {
   if (theselmode < 2 || theselect.IsNull())
+  {
     return false;
+  }
   bool                     afaire = forced;
   Interface_EntityIterator iter   = theselect->RootResult(G);
   int                      nb1    = G.Size();
   int                      nb2    = iter.NbEntities();
   if (!afaire)
+  {
     afaire = (nb1 != thenbcomp1 || nb2 != thenbcomp2);
+  }
   thenbcomp1 = nb1;
   thenbcomp2 = nb2;
   if (afaire)
+  {
     AddWithGraph(iter.Content(), G);
+  }
   return true;
 }
 
@@ -167,7 +195,9 @@ occ::handle<TCollection_HAsciiString> IFSelect_SignCounter::Sign(
 {
   occ::handle<TCollection_HAsciiString> res;
   if (ent.IsNull() || thematcher.IsNull())
+  {
     return res;
+  }
   res = new TCollection_HAsciiString(thematcher->Value(ent, model));
   return res;
 }

@@ -27,7 +27,9 @@ void RWStepVisual_RWPlanarExtent::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "planar_extent"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

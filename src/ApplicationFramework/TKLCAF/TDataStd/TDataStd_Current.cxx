@@ -80,7 +80,9 @@ void TDataStd_Current::SetLabel(const TDF_Label& current)
 {
   // OCC2932 correction
   if (myLabel == current)
+  {
     return;
+  }
 
   Backup();
   myLabel = current;
@@ -123,7 +125,9 @@ void TDataStd_Current::Paste(const occ::handle<TDF_Attribute>&       Into,
   if (!myLabel.IsNull())
   {
     if (!RT->HasRelocation(myLabel, tLab))
+    {
       tLab = myLabel;
+    }
   }
   occ::down_cast<TDataStd_Current>(Into)->SetLabel(tLab);
 }

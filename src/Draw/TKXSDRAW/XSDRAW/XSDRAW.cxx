@@ -105,9 +105,13 @@ static int XSTEPDRAWRUN(Draw_Interpretor& di, int argc, const char** argv)
   aMsgMgr->ChangePrinters().Append(aPrinters);
 
   if (stat == IFSelect_RetError || stat == IFSelect_RetFail)
+  {
     return 1;
+  }
   else
+  {
     return 0;
+  }
 }
 
 void XSDRAW::ChangeCommand(const char* const oldname, const char* const newname)
@@ -116,7 +120,9 @@ void XSDRAW::ChangeCommand(const char* const oldname, const char* const newname)
   if (newname[0] != '\0')
   {
     if (thenews.IsNull())
+    {
       thenews = new NCollection_HSequence<TCollection_AsciiString>();
+    }
     TCollection_AsciiString newstr(newname);
     thenews->Append(newstr);
     num = thenews->Length();
@@ -132,7 +138,9 @@ void XSDRAW::RemoveCommand(const char* const oldname)
 bool XSDRAW::LoadSession()
 {
   if (deja)
+  {
     return false;
+  }
   deja                                  = 1;
   thepilot                              = new IFSelect_SessionPilot("XSTEP-DRAW>");
   occ::handle<XSControl_WorkSession> WS = new XSControl_WorkSession;
@@ -222,13 +230,21 @@ const occ::handle<XSControl_WorkSession> XSDRAW::Session()
 void XSDRAW::SetController(const occ::handle<XSControl_Controller>& control)
 {
   if (thepilot.IsNull())
+  {
     XSDRAW::LoadSession();
+  }
   if (control.IsNull())
-    std::cout << "XSTEP Controller not defined" << std::endl;
+  {
+    std::cout << "XSTEP Controller not defined" << '\n';
+  }
   else if (!Session().IsNull())
+  {
     Session()->SetController(control);
+  }
   else
-    std::cout << "XSTEP Session badly or not defined" << std::endl;
+  {
+    std::cout << "XSTEP Session badly or not defined" << '\n';
+  }
 }
 
 occ::handle<XSControl_Controller> XSDRAW::Controller()
@@ -255,7 +271,9 @@ void XSDRAW::SetModel(const occ::handle<Interface_InterfaceModel>& model, const 
 {
   thepilot->Session()->SetModel(model);
   if (file && file[0] != '\0')
+  {
     thepilot->Session()->SetLoadedFile(file);
+  }
 }
 
 occ::handle<Interface_InterfaceModel> XSDRAW::NewModel()
@@ -280,13 +298,17 @@ void XSDRAW::SetTransferProcess(const occ::handle<Standard_Transient>& ATP)
 
   //   Cas FinderProcess    ==> TransferWriter
   if (!FP.IsNull())
+  {
     Session()->SetMapWriter(FP);
+  }
 
   //   Cas TransientProcess ==> TransferReader
   if (!TP.IsNull())
   {
     if (!TP->Model().IsNull() && TP->Model() != Session()->Model())
+    {
       Session()->SetModel(TP->Model());
+    }
     Session()->SetMapReader(TP);
   }
 }
@@ -339,7 +361,9 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSDRAW::GetL
     std::cin.get(terminateSymbol);
 
     if (terminateSymbol == '\n')
+    {
       return XSDRAW::GetList(aLineFirst.c_str(), nullptr);
+    }
     else
     {
       std::string aLineSecond;

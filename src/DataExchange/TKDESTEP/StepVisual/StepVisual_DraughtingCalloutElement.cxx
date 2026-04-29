@@ -29,15 +29,25 @@ StepVisual_DraughtingCalloutElement::StepVisual_DraughtingCalloutElement() = def
 int StepVisual_DraughtingCalloutElement::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationTextOccurrence)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationFillAreaOccurrence)))
+  {
     return 4;
+  }
   return 0;
 }
 

@@ -47,6 +47,8 @@ occ::handle<TCollection_HAsciiString> HeaderSection_FileSchema::SchemaIdentifier
 int HeaderSection_FileSchema::NbSchemaIdentifiers() const
 {
   if (schemaIdentifiers.IsNull())
+  {
     return 0;
+  }
   return schemaIdentifiers->Length();
 }

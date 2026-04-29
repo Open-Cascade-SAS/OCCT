@@ -90,7 +90,9 @@ static int DFBrowse(Draw_Interpretor& di, int n, const char** a)
 static int DFOpenLabel(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<DDF_Browser> browser = occ::down_cast<DDF_Browser>(Draw::GetExisting(a[1]));
   if (browser.IsNull())
@@ -101,7 +103,9 @@ static int DFOpenLabel(Draw_Interpretor& di, int n, const char** a)
 
   TDF_Label lab;
   if (n == 3)
+  {
     TDF_Tool::Label(browser->Data(), a[2], lab);
+  }
 
   TCollection_AsciiString list(lab.IsNull() ? browser->OpenRoot() : browser->OpenLabel(lab));
   di << list.ToCString();
@@ -118,7 +122,9 @@ static int DFOpenLabel(Draw_Interpretor& di, int n, const char** a)
 static int DFOpenAttributeList(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   occ::handle<DDF_Browser> browser = occ::down_cast<DDF_Browser>(Draw::GetExisting(a[1]));
   if (browser.IsNull())
@@ -131,7 +137,9 @@ static int DFOpenAttributeList(Draw_Interpretor& di, int n, const char** a)
   TDF_Tool::Label(browser->Data(), a[2], lab);
 
   if (lab.IsNull())
+  {
     return 1;
+  }
 
   TCollection_AsciiString list(browser->OpenAttributeList(lab));
   di << list.ToCString();
@@ -148,7 +156,9 @@ static int DFOpenAttributeList(Draw_Interpretor& di, int n, const char** a)
 static int DFOpenAttribute(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   occ::handle<DDF_Browser> browser = occ::down_cast<DDF_Browser>(Draw::GetExisting(a[1]));
   if (browser.IsNull())
@@ -171,7 +181,9 @@ void DDF::BrowserCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "DF browser commands";

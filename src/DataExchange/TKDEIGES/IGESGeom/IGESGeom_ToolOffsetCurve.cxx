@@ -283,10 +283,14 @@ void IGESGeom_ToolOffsetCurve::OwnCopy(const occ::handle<IGESGeom_OffsetCurve>& 
 bool IGESGeom_ToolOffsetCurve::OwnCorrect(const occ::handle<IGESGeom_OffsetCurve>& ent) const
 {
   if (ent->OffsetType() == 3)
+  {
     return false;
+  }
   occ::handle<IGESData_IGESEntity> func = ent->Function();
   if (func.IsNull())
+  {
     return false;
+  }
   //  OffsetType != 3 : reconstruct with Null Offset Function
   func.Nullify();
   ent->Init(ent->BaseCurve(),
@@ -376,5 +380,5 @@ void IGESGeom_ToolOffsetCurve::OwnDump(const occ::handle<IGESGeom_OffsetCurve>& 
   IGESData_DumpXYZL(S, level, ent->NormalVector(), ent->VectorLocation());
   S << "\n";
   S << "Offset curve Parameters. Starting : " << ent->StartParameter() << "  "
-    << "Ending : " << ent->EndParameter() << std::endl;
+    << "Ending : " << ent->EndParameter() << '\n';
 }

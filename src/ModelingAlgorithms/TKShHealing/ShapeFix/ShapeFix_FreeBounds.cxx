@@ -81,9 +81,13 @@ bool ShapeFix_FreeBounds::Perform()
 {
   ShapeAnalysis_FreeBounds safb;
   if (myShared)
+  {
     safb = ShapeAnalysis_FreeBounds(myShape, mySplitClosed, mySplitOpen);
+  }
   else
+  {
     safb = ShapeAnalysis_FreeBounds(myShape, mySewToler, mySplitClosed, mySplitOpen);
+  }
 
   myWires = safb.GetClosedWires();
   myEdges = safb.GetOpenWires();

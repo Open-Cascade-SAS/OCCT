@@ -33,7 +33,9 @@ void RWStepShape_RWFaceSurface::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "face_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -55,7 +57,9 @@ void RWStepShape_RWFaceSurface::ReadStep(const occ::handle<StepData_StepReaderDa
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data
             ->ReadEntity(nsub2, i2, "face_bound", ach, STANDARD_TYPE(StepShape_FaceBound), anent2))
+      {
         aBounds->SetValue(i2, anent2);
+      }
     }
   }
 

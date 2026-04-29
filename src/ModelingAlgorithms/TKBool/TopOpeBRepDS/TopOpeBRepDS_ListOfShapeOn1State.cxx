@@ -51,7 +51,9 @@ bool TopOpeBRepDS_ListOfShapeOn1State::IsSplit() const
 {
   bool res = false;
   if (mySplits & 1)
+  {
     res = true;
+  }
   return res;
 }
 
@@ -61,7 +63,11 @@ void TopOpeBRepDS_ListOfShapeOn1State::Split(const bool B)
 {
   int mask = 1;
   if (B)
+  {
     mySplits |= mask;
+  }
   else
+  {
     mySplits &= ~mask;
+  }
 }

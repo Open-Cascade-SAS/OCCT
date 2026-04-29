@@ -56,10 +56,14 @@ bool Transfer_ResultFromModel::Fill(const occ::handle<Transfer_TransientProcess>
                                     const occ::handle<Standard_Transient>&        ent)
 {
   if (TP.IsNull() || ent.IsNull())
+  {
     return false;
+  }
   occ::handle<Transfer_Binder> binder = TP->Find(ent);
   if (binder.IsNull())
+  {
     return false;
+  }
   themain = new Transfer_ResultFromTransient;
   themain->SetStart(ent);
   themain->SetBinder(binder);
@@ -67,20 +71,28 @@ bool Transfer_ResultFromModel::Fill(const occ::handle<Transfer_TransientProcess>
   //   Result substitution for the Shape (-> HShape): not here, we are
   //   in the Transfer package which is general and doesn't know what a Shape is ...
   if (!TP->Model().IsNull())
+  {
     themodel = TP->Model();
+  }
   if (themodel.IsNull())
+  {
     return true;
+  }
   themnum = themodel->Number(ent);
   themlab.Clear();
   if (themnum > 0)
+  {
     themlab.AssignCat(themodel->StringLabel(ent)->ToCString());
+  }
   return true;
 }
 
 void Transfer_ResultFromModel::Strip(const int mode)
 {
   if (themain.IsNull())
+  {
     return;
+  }
   themain->Strip();
   if (mode >= 10)
   {
@@ -90,14 +102,18 @@ void Transfer_ResultFromModel::Strip(const int mode)
     occ::handle<Standard_Transient> nulh;
     themain->SetStart(nulh);
     if (mode > 10)
+    {
       themain.Nullify();
+    }
   }
 }
 
 void Transfer_ResultFromModel::FillBack(const occ::handle<Transfer_TransientProcess>& TP) const
 {
   if (!themodel.IsNull())
+  {
     TP->SetModel(themodel);
+  }
   themain->FillBack(TP);
 }
 
@@ -116,11 +132,15 @@ void Transfer_ResultFromModel::SetMainResult(const occ::handle<Transfer_ResultFr
   themchk = Interface_CheckAny;
   themain = amain;
   if (themodel.IsNull() || themain.IsNull())
+  {
     return;
+  }
   themnum = themodel->Number(themain->Start());
   themlab.Clear();
   if (themnum > 0)
+  {
     themlab.AssignCat(themodel->StringLabel(themain->Start())->ToCString());
+  }
 }
 
 const char* Transfer_ResultFromModel::MainLabel() const
@@ -155,15 +175,21 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_Res
     themain->FillMap(map);
     nb = map.Extent();
     for (i = 1; i <= nb; i++)
+    {
       list->Append(map.FindKey(i));
+    }
   }
   else
+  {
     list->Append(themain);
+  }
   if (level == 1)
   {
     nb = themain->NbSubResults();
     for (i = 1; i <= nb; i++)
+    {
       list->Append(themain->SubResult(i));
+    }
     list->Append(themain);
   }
   return list;
@@ -181,9 +207,13 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_Res
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));
     if (unres.IsNull())
+    {
       continue;
+    }
     if (unres->HasResult())
+    {
       list->Append(unres->Start());
+    }
   }
   return list;
 }
@@ -200,12 +230,18 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_Res
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));
     if (unres.IsNull())
+    {
       continue;
+    }
     if (result && !unres->HasResult())
+    {
       continue;
+    }
     const occ::handle<Interface_Check> ach = unres->Check();
     if (ach->Complies(check))
+    {
       list->Append(unres->Start());
+    }
   }
   return list;
 }
@@ -223,10 +259,14 @@ Interface_CheckIterator Transfer_ResultFromModel::CheckList(const bool erronly,
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));
     if (unres.IsNull())
+    {
       continue;
+    }
     Interface_CheckStatus stat = unres->CheckStatus();
     if (stat == Interface_CheckOK || (stat == Interface_CheckWarning && erronly))
+    {
       continue;
+    }
     occ::handle<Transfer_Binder> binder = unres->Binder();
     occ::handle<Interface_Check> bch    = binder->Check();
     bch->SetEntity(unres->Start());
@@ -238,7 +278,9 @@ Interface_CheckIterator Transfer_ResultFromModel::CheckList(const bool erronly,
 Interface_CheckStatus Transfer_ResultFromModel::CheckStatus() const
 {
   if (themchk != Interface_CheckAny)
+  {
     return themchk;
+  }
   Interface_CheckIterator chl = CheckList(false, 2);
   return chl.Status();
 }
@@ -246,6 +288,8 @@ Interface_CheckStatus Transfer_ResultFromModel::CheckStatus() const
 Interface_CheckStatus Transfer_ResultFromModel::ComputeCheckStatus(const bool enforce)
 {
   if (themchk == Interface_CheckAny || enforce)
+  {
     themchk = CheckStatus();
+  }
   return themchk;
 }

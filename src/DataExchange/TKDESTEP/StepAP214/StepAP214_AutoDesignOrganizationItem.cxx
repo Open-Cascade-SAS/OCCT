@@ -22,14 +22,22 @@ StepAP214_AutoDesignOrganizationItem::StepAP214_AutoDesignOrganizationItem() = d
 int StepAP214_AutoDesignOrganizationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   int num = StepAP214_AutoDesignGeneralOrgItem::CaseNum(ent);
   if (num > 0)
+  {
     return num;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Document)))
+  {
     return 9;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_PhysicallyModeledProductDefinition)))
+  {
     return 10;
+  }
   return 0;
 }
 

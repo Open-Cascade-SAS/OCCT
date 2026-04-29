@@ -27,7 +27,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Message_ProgressRange.hxx>
@@ -227,8 +227,8 @@ protected:
 
 private:
   NCollection_Sequence<occ::handle<Standard_Transient>>                   myAdaptorApplied;
-  NCollection_Vector<occ::handle<Standard_Transient>>                     myParams;
-  NCollection_Vector<int>                                                 myParamUses;
+  NCollection_DynamicArray<occ::handle<Standard_Transient>>               myParams;
+  NCollection_DynamicArray<int>                                           myParamUses;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> myModeWriteShapeN;
 };
 

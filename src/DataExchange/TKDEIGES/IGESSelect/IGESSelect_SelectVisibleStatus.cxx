@@ -30,7 +30,9 @@ bool IGESSelect_SelectVisibleStatus::Sort(
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return false;
+  }
   return (igesent->BlankStatus() == 0);
 }
 

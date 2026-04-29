@@ -99,7 +99,9 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
       return false;
     }
     if (theRelocTable.IsBound(aNb))
+    {
       TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+    }
     else
     {
       TNS = new TNaming_NamedShape;
@@ -116,7 +118,9 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
       return false;
     }
     if (theRelocTable.IsBound(aNb))
+    {
       TReal = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
+    }
     else
     {
       TReal = new TDataStd_Real;
@@ -133,7 +137,9 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
       return false;
     }
     if (theRelocTable.IsBound(aNb))
+    {
       TInt = occ::down_cast<TDataStd_Integer>(theRelocTable.Find(aNb));
+    }
     else
     {
       TInt = new TDataStd_Integer;
@@ -152,7 +158,9 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
         return false;
       }
       if (theRelocTable.IsBound(aNb))
+      {
         TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+      }
       else
       {
         TNS = new TNaming_NamedShape;
@@ -169,7 +177,9 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
         return false;
       }
       if (theRelocTable.IsBound(aNb))
+      {
         TReal = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
+      }
       else
       {
         TReal = new TDataStd_Real;
@@ -186,7 +196,9 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
         return false;
       }
       if (theRelocTable.IsBound(aNb))
+      {
         TInt = occ::down_cast<TDataStd_Integer>(theRelocTable.Find(aNb));
+      }
       else
       {
         TInt = new TDataStd_Integer;
@@ -206,7 +218,9 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
       return false;
     }
     if (theRelocTable.IsBound(aNb))
+    {
       TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+    }
     else
     {
       TNS = new TNaming_NamedShape;
@@ -230,9 +244,13 @@ void XmlMDataXtd_PatternStdDriver::Paste(const occ::handle<TDF_Attribute>& theSo
   anElem.setAttribute(::SignatureString(), signature);
 
   if (aP->Axis1Reversed())
+  {
     anElem.setAttribute(::Axis1RevString(), ::TrueString());
+  }
   if (aP->Axis2Reversed())
+  {
     anElem.setAttribute(::Axis2RevString(), ::TrueString());
+  }
 
   occ::handle<TNaming_NamedShape> TNS;
   occ::handle<TDataStd_Real>      TReal;

@@ -29,7 +29,9 @@ void DPrsStd::AllCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DPrsStd::AISPresentationCommands(theCommands);
@@ -44,7 +46,9 @@ void DPrsStd::Factory(Draw_Interpretor& theDI)
 {
   static bool DPrsStdFactoryDone = false;
   if (DPrsStdFactoryDone)
+  {
     return;
+  }
   DPrsStdFactoryDone = true;
 
   DDF::AllCommands(theDI);

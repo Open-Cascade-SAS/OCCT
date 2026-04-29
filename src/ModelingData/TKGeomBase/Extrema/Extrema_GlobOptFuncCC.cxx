@@ -222,9 +222,13 @@ int Extrema_GlobOptFuncCCC0::NbVariables() const
 bool Extrema_GlobOptFuncCCC0::Value(const math_Vector& X, double& F)
 {
   if (myType == 1)
+  {
     return _Value(*myC1_3d, *myC2_3d, X, F);
+  }
   else
+  {
     return _Value(*myC1_2d, *myC2_2d, X, F);
+  }
 }
 
 // C1
@@ -265,9 +269,13 @@ int Extrema_GlobOptFuncCCC1::NbVariables() const
 bool Extrema_GlobOptFuncCCC1::Value(const math_Vector& X, double& F)
 {
   if (myType == 1)
+  {
     return _Value(*myC1_3d, *myC2_3d, X, F);
+  }
   else
+  {
     return _Value(*myC1_2d, *myC2_2d, X, F);
+  }
 }
 
 //=================================================================================================
@@ -275,9 +283,13 @@ bool Extrema_GlobOptFuncCCC1::Value(const math_Vector& X, double& F)
 bool Extrema_GlobOptFuncCCC1::Gradient(const math_Vector& X, math_Vector& G)
 {
   if (myType == 1)
+  {
     return _Gradient(*myC1_3d, *myC2_3d, X, G);
+  }
   else
+  {
     return _Gradient(*myC1_2d, *myC2_2d, X, G);
+  }
 }
 
 //=================================================================================================
@@ -325,9 +337,13 @@ int Extrema_GlobOptFuncCCC2::NbVariables() const
 bool Extrema_GlobOptFuncCCC2::Value(const math_Vector& X, double& F)
 {
   if (myType == 1)
+  {
     return _Value(*myC1_3d, *myC2_3d, X, F);
+  }
   else
+  {
     return _Value(*myC1_2d, *myC2_2d, X, F);
+  }
 }
 
 //=================================================================================================
@@ -335,9 +351,13 @@ bool Extrema_GlobOptFuncCCC2::Value(const math_Vector& X, double& F)
 bool Extrema_GlobOptFuncCCC2::Gradient(const math_Vector& X, math_Vector& G)
 {
   if (myType == 1)
+  {
     return _Gradient(*myC1_3d, *myC2_3d, X, G);
+  }
   else
+  {
     return _Gradient(*myC1_2d, *myC2_2d, X, G);
+  }
 }
 
 //=================================================================================================
@@ -356,9 +376,13 @@ bool Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
 {
   bool isHessianComputed = false;
   if (myType == 1)
+  {
     isHessianComputed = _Hessian(*myC1_3d, *myC2_3d, X, H);
+  }
   else
+  {
     isHessianComputed = _Hessian(*myC1_2d, *myC2_2d, X, H);
+  }
 
   return (Value(X, F) && Gradient(X, G) && isHessianComputed);
 }

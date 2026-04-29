@@ -28,7 +28,9 @@ CDF_Directory::CDF_Directory() = default;
 void CDF_Directory::Add(const occ::handle<CDM_Document>& aDocument)
 {
   if (!Contains(aDocument))
+  {
     myDocuments.Append(aDocument);
+  }
 }
 
 void CDF_Directory::Remove(const occ::handle<CDM_Document>& aDocument)
@@ -48,7 +50,9 @@ bool CDF_Directory::Contains(const occ::handle<CDM_Document>& aDocument) const
   for (NCollection_List<occ::handle<CDM_Document>>::Iterator it(myDocuments); it.More(); it.Next())
   {
     if (aDocument == it.Value())
+    {
       return true;
+    }
   }
   return false;
 }

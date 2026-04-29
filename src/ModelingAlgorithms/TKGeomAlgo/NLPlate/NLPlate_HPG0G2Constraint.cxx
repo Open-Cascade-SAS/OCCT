@@ -34,9 +34,13 @@ NLPlate_HPG0G2Constraint::NLPlate_HPG0G2Constraint(const gp_XY&    UV,
 int NLPlate_HPG0G2Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 2)
+  {
     return myActiveOrder;
+  }
   else
+  {
     return 2;
+  }
 }
 
 const Plate_D2& NLPlate_HPG0G2Constraint::G2Target() const

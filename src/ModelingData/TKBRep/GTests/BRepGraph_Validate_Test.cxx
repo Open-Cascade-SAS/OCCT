@@ -14,10 +14,10 @@
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_EditorView.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
-#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_NodeId.hxx>
@@ -26,6 +26,7 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraph_Validate.hxx>
+#include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -45,18 +46,20 @@ namespace
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&       theGraph,
-                                                           const BRepGraph_WireId theWireId)
+NCollection_DynamicArray<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&       theGraph,
+                                                                 const BRepGraph_WireId theWireId)
 {
-  NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph_NodeId                    aParentNode = BRepGraph_WireId(theWireId.Index);
-  const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
-  for (int aRefIdx = 0; aRefIdx < aRefs.CoEdges().Nb(); ++aRefIdx)
+  NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aRefIds;
+  const BRepGraph_NodeId                          aParentNode   = theWireId;
+  const BRepGraph::RefsView&                      aRefs         = theGraph.Refs();
+  const int                                       aNbCoEdgeRefs = aRefs.CoEdges().Nb();
+  for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
-    const BRepGraph_CoEdgeRefId    aRefId(aRefIdx);
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -69,7 +72,9 @@ TEST(BRepGraph_ValidateTest, CleanGraph_NoIssues)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Validate::Result aResult = BRepGraph_Validate::Perform(aGraph);
@@ -106,7 +111,9 @@ TEST(BRepGraph_ValidateTest, AfterGeomDeduplicate_NoIssues)
   aBuilder.Add(aCompound, aCopy2.Shape());
 
   BRepGraph aGraph;
-  aGraph.Build(aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -122,26 +129,29 @@ TEST(BRepGraph_ValidateTest, DetectsRemovedNodeReference)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
   // Find an edge that has a valid start vertex and remove it.
-  int aVtxToRemove = -1;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
+  BRepGraph_VertexId aVtxToRemove;
+  const int          aNbEdges = aGraph.Topo().Edges().Nb();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraph_EdgeId         anEdgeId(anEdgeIdx);
-    const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
+    const BRepGraphInc::VertexRef& aStartRef =
+      BRepGraph_Tool::Edge::StartVertexRef(aGraph, anEdgeId);
     if (aStartRef.VertexDefId.IsValid())
     {
-      aVtxToRemove = aStartRef.VertexDefId.Index;
+      aVtxToRemove = aStartRef.VertexDefId;
       break;
     }
   }
-  ASSERT_GE(aVtxToRemove, 0);
+  ASSERT_TRUE(aVtxToRemove.IsValid());
 
   // Remove the vertex without fixing edges referencing it.
-  aGraph.Builder().RemoveNode(BRepGraph_VertexId(aVtxToRemove));
+  aGraph.Editor().Gen().RemoveNode(aVtxToRemove);
 
   const BRepGraph_Validate::Result aDefaultResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_TRUE(aDefaultResult.IsValid());
@@ -158,26 +168,29 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Wires().Nb(), 0);
 
   // Corrupt a wire by swapping its vertex reference to break connectivity.
   // Find a wire with at least 2 edges.
-  int aTargetWire = -1;
-  for (int aWireIdx = 0; aWireIdx < aGraph.Topo().Wires().Nb(); ++aWireIdx)
+  BRepGraph_WireId aTargetWire;
+  const int        aNbWires = aGraph.Topo().Wires().Nb();
+  for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbWires); ++aWireId)
   {
-    if (coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aWireIdx)).Length() >= 2)
+    if (coEdgeRefsOfWire(aGraph, aWireId).Length() >= 2)
     {
-      aTargetWire = aWireIdx;
+      aTargetWire = aWireId;
       break;
     }
   }
-  ASSERT_GE(aTargetWire, 0);
+  ASSERT_TRUE(aTargetWire.IsValid());
 
   // Get the first edge in the wire and corrupt its end vertex.
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds =
-    coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aTargetWire));
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aWireRefIds =
+    coEdgeRefsOfWire(aGraph, aTargetWire);
   ASSERT_GE(aWireRefIds.Length(), 1);
   const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdges().Entry(aWireRefIds.Value(0));
   const BRepGraphInc::CoEdgeDef& aFirstCoEdge =
@@ -186,22 +199,22 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
   BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aFirstEdge =
-    aGraph.Builder().MutEdge(BRepGraph_EdgeId(aFirstEdgeId.Index));
+    aGraph.Editor().Edges().Mut(BRepGraph_EdgeId(aFirstEdgeId));
 
   // Find a vertex different from the current end vertex.
   const BRepGraph_VertexId anOrigEndVtx =
     aGraph.Refs().Vertices().Entry(aFirstEdge->EndVertexRefId).VertexDefId;
   const BRepGraph_VertexId anOrigStartVtx =
     aGraph.Refs().Vertices().Entry(aFirstEdge->StartVertexRefId).VertexDefId;
-  const BRepGraph_NodeId anOrigEnd = BRepGraph_NodeId(anOrigEndVtx);
-  for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().Vertices().Nb(); ++aVtxIdx)
+  const BRepGraph_NodeId anOrigEnd   = BRepGraph_NodeId(anOrigEndVtx);
+  const int              aNbVertices = aGraph.Topo().Vertices().Nb();
+  for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aNbVertices); ++aVertexId)
   {
-    if (BRepGraph_VertexId(aVtxIdx) != anOrigEnd
-        && BRepGraph_VertexId(aVtxIdx) != BRepGraph_NodeId(anOrigStartVtx))
+    if (aVertexId != anOrigEnd && aVertexId != BRepGraph_NodeId(anOrigStartVtx))
     {
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aMutEndRef =
-        aGraph.Builder().MutVertexRef(aFirstEdge->EndVertexRefId);
-      aMutEndRef->VertexDefId = BRepGraph_VertexId(aVtxIdx);
+        aGraph.Editor().Vertices().MutRef(aFirstEdge->EndVertexRefId);
+      aMutEndRef.Internal().VertexDefId = aVertexId;
       break;
     }
   }
@@ -236,13 +249,16 @@ TEST(BRepGraph_ValidateTest, BoundsCheck_InvalidIndex)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
   // Corrupt edge's Curve3d to null.
-  BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-  anEdge->Curve3DRepId                             = BRepGraph_Curve3DRepId();
+  BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
+    aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+  anEdge.Internal().Curve3DRepId = BRepGraph_Curve3DRepId();
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -256,22 +272,24 @@ TEST(BRepGraph_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   const int anOrigEdgeCount = aGraph.Topo().Edges().Nb();
 
   // Find a non-degenerate edge with valid vertices to split.
   BRepGraph_EdgeId anEdgeId;
   double           aSplitParam = 0.0;
-  for (int i = 0; i < aGraph.Topo().Edges().Nb(); ++i)
+  const int        aNbEdges    = aGraph.Topo().Edges().Nb();
+  for (BRepGraph_EdgeId anCandEdgeId(0); anCandEdgeId.IsValid(aNbEdges); ++anCandEdgeId)
   {
-    const BRepGraph_EdgeId       anCandEdgeId(i);
     const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edges().Definition(anCandEdgeId);
     if (!anEdgeDef.IsDegenerate && anEdgeDef.Curve3DRepId.IsValid()
-        && BRepGraph_Tool::Edge::StartVertex(aGraph, anCandEdgeId).VertexDefId.IsValid()
-        && BRepGraph_Tool::Edge::EndVertex(aGraph, anCandEdgeId).VertexDefId.IsValid())
+        && BRepGraph_Tool::Edge::StartVertexRef(aGraph, anCandEdgeId).VertexDefId.IsValid()
+        && BRepGraph_Tool::Edge::EndVertexRef(aGraph, anCandEdgeId).VertexDefId.IsValid())
     {
-      anEdgeId    = BRepGraph_EdgeId(i);
+      anEdgeId    = anCandEdgeId;
       aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
       break;
     }
@@ -282,10 +300,10 @@ TEST(BRepGraph_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   gp_Pnt aMidPt;
   BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId)->D0(aSplitParam, aMidPt);
   BRepGraph_VertexId aSplitVtx =
-    aGraph.Builder().AddVertex(aMidPt, BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId));
+    aGraph.Editor().Vertices().Add(aMidPt, BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId));
 
   BRepGraph_EdgeId aSubA, aSubB;
-  aGraph.Builder().SplitEdge(anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
+  aGraph.Editor().Edges().Split(anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
 
   // Two new sub-edges should have been created.
   EXPECT_EQ(aGraph.Topo().Edges().Nb(), anOrigEdgeCount + 2);
@@ -294,6 +312,13 @@ TEST(BRepGraph_ValidateTest, AfterSplitEdge_ProducesSubEdges)
 
   // Original edge should be marked removed.
   EXPECT_TRUE(aGraph.Topo().Edges().Definition(anEdgeId).IsRemoved);
+
+  // Full Audit must remain clean: every new CoEdge must carry a Curve2DRep,
+  // no orphan VertexRefs, no reverse-index drift.
+  const BRepGraph_Validate::Result anAuditResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_TRUE(anAuditResult.IsValid())
+    << "Audit must remain clean after splitting a non-seam box edge";
 }
 
 TEST(BRepGraph_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
@@ -302,15 +327,17 @@ TEST(BRepGraph_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
   // Corrupt a CoEdge's FaceDefId to an out-of-range value.
   ASSERT_GT(aGraph.Topo().CoEdges().Nb(), 0);
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdgeDef =
-    aGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(0));
-  aCoEdgeDef->FaceDefId = BRepGraph_FaceId(aGraph.Topo().Faces().Nb() + 999);
+    aGraph.Editor().CoEdges().Mut(BRepGraph_CoEdgeId::Start());
+  aCoEdgeDef.Internal().FaceDefId = BRepGraph_FaceId(aGraph.Topo().Faces().Nb() + 999);
 
   const BRepGraph_Validate::Result aDefaultResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_FALSE(aDefaultResult.IsValid());
@@ -327,7 +354,9 @@ TEST(BRepGraph_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
 TEST(BRepGraph_ValidateTest, LightweightAndAudit_DetectActiveCountDrift)
 {
   BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbActiveFacesBefore = aGraph.Topo().Faces().NbActive();
@@ -335,8 +364,8 @@ TEST(BRepGraph_ValidateTest, LightweightAndAudit_DetectActiveCountDrift)
 
   // Intentionally bypass RemoveNode() to simulate counter drift bug class.
   BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
-    aGraph.Builder().MutFace(BRepGraph_FaceId(0));
-  aFaceDef->IsRemoved = true;
+    aGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start());
+  aFaceDef.Internal().IsRemoved = true;
 
   const BRepGraph_Validate::Result aLightResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight());
@@ -374,42 +403,22 @@ TEST(BRepGraph_ValidateTest, LightweightAndAudit_DetectActiveCountDrift)
   EXPECT_EQ(aGraph.Topo().Faces().NbActive(), aNbActiveFacesBefore);
 }
 
-TEST(BRepGraph_ValidateTest, DeepDetectsIdDriftButLightweightSkipsIt)
-{
-  BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
-  ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
-
-  BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
-    aGraph.Builder().MutFace(BRepGraph_FaceId(0));
-  aFaceDef->Id = BRepGraph_FaceId(42);
-
-  const BRepGraph_Validate::Result aLightResult =
-    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight());
-  EXPECT_TRUE(aLightResult.IsValid());
-
-  const BRepGraph_Validate::Result anAuditResult =
-    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_FALSE(anAuditResult.IsValid());
-
-  const BRepGraph_Validate::Result aDefaultResult = BRepGraph_Validate::Perform(aGraph);
-  EXPECT_TRUE(aDefaultResult.IsValid());
-}
-
 TEST(BRepGraph_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreation)
 {
   BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
-  NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> anEdges;
-  anEdges.Append(std::make_pair(BRepGraph_EdgeId(0), TopAbs_FORWARD));
-  const BRepGraph_WireId aWireId = aGraph.Builder().AddWire(anEdges);
+  NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> anEdges;
+  anEdges.Append(std::make_pair(BRepGraph_EdgeId::Start(), TopAbs_FORWARD));
+  const BRepGraph_WireId aWireId = aGraph.Editor().Wires().Add(anEdges);
   ASSERT_TRUE(aWireId.IsValid());
 
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds = coEdgeRefsOfWire(aGraph, aWireId);
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aWireRefIds =
+    coEdgeRefsOfWire(aGraph, aWireId);
   ASSERT_EQ(aWireRefIds.Length(), 1);
   const BRepGraph_NodeId aCoEdgeId =
     BRepGraph_CoEdgeId(aGraph.Refs().CoEdges().Entry(aWireRefIds.Value(0)).CoEdgeDefId.Index);
@@ -437,32 +446,30 @@ TEST(BRepGraph_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreation)
 
 TEST(BRepGraph_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
 {
-  // Build a box; Build() auto-creates a root part product.
+  // Build a box; BRepGraph_Builder::Add() auto-creates a root part product.
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Products().Nb(), 1);
 
-  // Identify the auto-created part product.
-  const occ::handle<NCollection_BaseAllocator>  anAllocator = new NCollection_IncAllocator();
-  const NCollection_Vector<BRepGraph_ProductId> aInitialRootProducts =
-    aGraph.Topo().Products().RootProducts(anAllocator);
-  ASSERT_GT(aInitialRootProducts.Length(), 0);
-  const BRepGraph_ProductId aPartProduct = aInitialRootProducts.Value(0);
+  // BRepGraph_Builder::Add() auto-creates the part product at index 0.
+  const BRepGraph_ProductId aPartProduct = BRepGraph_ProductId::Start();
   ASSERT_TRUE(aGraph.Topo().Products().IsPart(aPartProduct));
 
   // Explicitly create an assembly product and add two occurrences of the part.
-  const BRepGraph_ProductId aAssemblyProduct = aGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_ProductId aAssemblyProduct = aGraph.Editor().Products().CreateEmptyProduct();
   ASSERT_TRUE(aAssemblyProduct.IsValid());
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId anOcc1 =
-    aGraph.Builder().AddOccurrence(aAssemblyProduct, aPartProduct, TopLoc_Location());
+    aGraph.Editor().Products().LinkProducts(aAssemblyProduct, aPartProduct, TopLoc_Location());
   const BRepGraph_OccurrenceId anOcc2 =
-    aGraph.Builder().AddOccurrence(aAssemblyProduct, aPartProduct, TopLoc_Location(aTrsf));
+    aGraph.Editor().Products().LinkProducts(aAssemblyProduct, aPartProduct, TopLoc_Location(aTrsf));
   ASSERT_TRUE(anOcc1.IsValid());
   ASSERT_TRUE(anOcc2.IsValid());
 
@@ -471,7 +478,7 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   EXPECT_EQ(aGraph.Topo().Products().NbComponents(aAssemblyProduct), 2);
 
   // Rebuild reverse index after assembly modifications.
-  aGraph.Builder().CommitMutation();
+  aGraph.Editor().CommitMutation();
 
   // Audit should pass on the explicitly constructed assembly.
   const BRepGraph_Validate::Result aAuditResult =
@@ -489,24 +496,28 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   EXPECT_TRUE(aAuditResult.IsValid());
 }
 
-TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedProductShapeRootId_DetectedByAudit)
+TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceChildDefId_DetectedByAudit)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Products().Nb(), 1);
+  ASSERT_GE(aGraph.Topo().Occurrences().Nb(), 1);
 
-  // Corrupt ShapeRootId to an out-of-bounds value.
-  BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =
-    aGraph.Builder().MutProduct(BRepGraph_ProductId(0));
-  aProduct->ShapeRootId = BRepGraph_SolidId(aGraph.Topo().Solids().Nb() + 1);
+  // Corrupt the first occurrence's ChildDefId to an out-of-bounds value.
+  BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> anOccDef =
+    aGraph.Editor().Occurrences().Mut(BRepGraph_OccurrenceId::Start());
+  anOccDef.Internal().ChildDefId =
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, aGraph.Topo().Solids().Nb() + 999);
 
   const BRepGraph_Validate::Result aAuditResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
   EXPECT_FALSE(aAuditResult.IsValid())
-    << "Product with out-of-bounds ShapeRootId should be detected by audit.";
+    << "Occurrence with out-of-bounds ChildDefId should be detected by audit.";
   EXPECT_GT(aAuditResult.NbIssues(BRepGraph_Validate::Severity::Error), 0);
 
   // Verify the specific error message.
@@ -515,55 +526,48 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedProductShapeRootId_DetectedB
   {
     const BRepGraph_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
     if (anIssue.Sev == BRepGraph_Validate::Severity::Error
-        && anIssue.Description.Search("ShapeRootId out of bounds") > 0)
+        && anIssue.Description.Search("ChildDefId invalid") > 0)
     {
       aFoundExpectedError = true;
       break;
     }
   }
-  EXPECT_TRUE(aFoundExpectedError) << "Audit should report 'ProductDef.ShapeRootId out of bounds'.";
+  EXPECT_TRUE(aFoundExpectedError) << "Audit should report 'OccurrenceDef.ChildDefId invalid'.";
 }
 
-TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_DetectedByAudit)
+TEST(BRepGraph_ValidateTest,
+     AssemblyGraph_CorruptedOccurrenceChildDefId_ProductIndex_DetectedByAudit)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Create an assembly with one occurrence.
-  const BRepGraph_ProductId aRootAssembly = aGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_ProductId aRootAssembly = aGraph.Editor().Products().CreateEmptyProduct();
   ASSERT_TRUE(aRootAssembly.IsValid());
 
-  const occ::handle<NCollection_BaseAllocator>  anAllocator = new NCollection_IncAllocator();
-  const NCollection_Vector<BRepGraph_ProductId> aRootProducts =
-    aGraph.Topo().Products().RootProducts(anAllocator);
-  BRepGraph_ProductId aPartId;
-  for (int i = 0; i < aRootProducts.Length(); ++i)
-  {
-    const BRepGraph_ProductId aProductId = aRootProducts.Value(i);
-    if (aGraph.Topo().Products().IsPart(aProductId))
-    {
-      aPartId = aRootProducts.Value(i);
-      break;
-    }
-  }
+  const BRepGraph_ProductId aPartId = BRepGraph_ProductId::Start();
+  ASSERT_TRUE(aGraph.Topo().Products().IsPart(aPartId));
   ASSERT_TRUE(aPartId.IsValid());
 
   const BRepGraph_OccurrenceId anOccId =
-    aGraph.Builder().AddOccurrence(aRootAssembly, aPartId, TopLoc_Location());
+    aGraph.Editor().Products().LinkProducts(aRootAssembly, aPartId, TopLoc_Location());
   ASSERT_TRUE(anOccId.IsValid());
 
-  // Corrupt the occurrence's ProductDefId to an invalid index.
+  // Corrupt the occurrence's ChildDefId to an invalid index.
   BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> anOccDef =
-    aGraph.Builder().MutOccurrence(anOccId);
-  anOccDef->ProductDefId = BRepGraph_ProductId(aGraph.Topo().Products().Nb() + 1);
+    aGraph.Editor().Occurrences().Mut(anOccId);
+  anOccDef.Internal().ChildDefId =
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Product, aGraph.Topo().Products().Nb() + 999);
 
   const BRepGraph_Validate::Result aAuditResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
   EXPECT_FALSE(aAuditResult.IsValid())
-    << "Occurrence with out-of-bounds ProductDefId should be detected by audit.";
+    << "Occurrence with out-of-bounds ChildDefId should be detected by audit.";
   EXPECT_GT(aAuditResult.NbIssues(BRepGraph_Validate::Severity::Error), 0);
 
   // Verify the specific error message.
@@ -572,13 +576,48 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_Detec
   {
     const BRepGraph_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
     if (anIssue.Sev == BRepGraph_Validate::Severity::Error
-        && anIssue.Description.Search("ProductDefId invalid") > 0)
+        && anIssue.Description.Search("ChildDefId invalid") > 0)
     {
       aFoundExpectedError = true;
       break;
     }
   }
-  EXPECT_TRUE(aFoundExpectedError) << "Audit should report 'OccurrenceDef.ProductDefId invalid'.";
+  EXPECT_TRUE(aFoundExpectedError) << "Audit should report 'OccurrenceDef.ChildDefId invalid'.";
+}
+
+TEST(BRepGraph_ValidateTest, AssemblyGraph_OccurrenceChildRefersToOccurrence_DetectedByAudit)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 =
+    BRepGraph_Builder::Add(aGraph, aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Topo().Occurrences().Nb(), 0);
+
+  BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> anOccDef =
+    aGraph.Editor().Occurrences().Mut(BRepGraph_OccurrenceId::Start());
+  anOccDef.Internal().ChildDefId = BRepGraph_OccurrenceId::Start();
+
+  const BRepGraph_Validate::Result aAuditResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_FALSE(aAuditResult.IsValid())
+    << "Occurrence child pointing to another occurrence should be detected by audit.";
+
+  bool aFoundExpectedError = false;
+  for (int anIdx = 0; anIdx < aAuditResult.Issues.Length(); ++anIdx)
+  {
+    const BRepGraph_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
+    if (anIssue.Sev == BRepGraph_Validate::Severity::Error
+        && anIssue.Description.Search("cannot reference an Occurrence") >= 0)
+    {
+      aFoundExpectedError = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFoundExpectedError)
+    << "Audit should report that OccurrenceDef.ChildDefId cannot reference an Occurrence.";
 }
 
 TEST(BRepGraph_ValidateTest, LightweightVsAudit_RemovedVertexReference_Differential)
@@ -587,27 +626,30 @@ TEST(BRepGraph_ValidateTest, LightweightVsAudit_RemovedVertexReference_Different
   // RemoveNode(vertex) correctly updates active counts (Lightweight passes)
   // but leaves edges referencing the removed vertex (Audit detects).
   BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
   // Find a vertex referenced by at least one edge.
-  int aVtxToRemove = -1;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
+  BRepGraph_VertexId aVtxToRemove;
+  const int          aNbEdges = aGraph.Topo().Edges().Nb();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraph_EdgeId         anEdgeId(anEdgeIdx);
-    const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
+    const BRepGraphInc::VertexRef& aStartRef =
+      BRepGraph_Tool::Edge::StartVertexRef(aGraph, anEdgeId);
     if (aStartRef.VertexDefId.IsValid())
     {
-      aVtxToRemove = aStartRef.VertexDefId.Index;
+      aVtxToRemove = aStartRef.VertexDefId;
       break;
     }
   }
-  ASSERT_GE(aVtxToRemove, 0) << "Need a vertex referenced by an edge.";
+  ASSERT_TRUE(aVtxToRemove.IsValid()) << "Need a vertex referenced by an edge.";
 
   // Remove the vertex. RemoveNode correctly decrements active count
   // but does NOT fix edges that still reference it.
-  aGraph.Builder().RemoveNode(BRepGraph_VertexId(aVtxToRemove));
+  aGraph.Editor().Gen().RemoveNode(aVtxToRemove);
 
   // Lightweight only checks active counts - should pass.
   const BRepGraph_Validate::Result aLightResult =
@@ -634,4 +676,48 @@ TEST(BRepGraph_ValidateTest, LightweightVsAudit_RemovedVertexReference_Different
   }
   EXPECT_TRUE(aFoundExpectedError)
     << "Audit should report 'Non-removed EdgeDef references removed StartVertexEntity'.";
+}
+
+TEST(BRepGraph_ValidateTest, Audit_DetectsOrphanWireRef_AfterFaceRemoval)
+{
+  // Build a simple box; pick one face; corrupt its WireRef so the parent points
+  // at a removed face index. The new audit block for orphan WireRefs must flag it.
+  BRepGraph          aGraph;
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 =
+    BRepGraph_Builder::Add(aGraph, aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Find a live wire ref and rewrite its ParentId to a definitely-invalid Face id.
+  const BRepGraph::RefsView& aRefs = aGraph.Refs();
+  ASSERT_GT(aRefs.Wires().Nb(), 0);
+  bool aDidCorrupt = false;
+  for (int aRefIdx = 0; aRefIdx < aRefs.Wires().Nb() && !aDidCorrupt; ++aRefIdx)
+  {
+    const BRepGraph_WireRefId    aRefId(aRefIdx);
+    const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aRefId);
+    if (aRef.IsRemoved)
+    {
+      continue;
+    }
+    BRepGraph_MutGuard<BRepGraphInc::WireRef> aMut = aGraph.Editor().Wires().MutRef(aRefId);
+    aMut.Internal().ParentId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 9999);
+    aDidCorrupt              = true;
+  }
+  ASSERT_TRUE(aDidCorrupt);
+
+  const BRepGraph_Validate::Result aResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_FALSE(aResult.IsValid());
+  bool aFound = false;
+  for (int i = 0; i < aResult.Issues.Length(); ++i)
+  {
+    if (aResult.Issues.Value(i).Description.Search("Orphan WireRef") >= 0)
+    {
+      aFound = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFound) << "Expected 'Orphan WireRef' issue from audit validate";
 }

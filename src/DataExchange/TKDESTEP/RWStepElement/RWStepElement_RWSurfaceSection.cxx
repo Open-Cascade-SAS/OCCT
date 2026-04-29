@@ -35,7 +35,9 @@ void RWStepElement_RWSurfaceSection::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "surface_section"))
+  {
     return;
+  }
 
   // Own fields of SurfaceSection
 

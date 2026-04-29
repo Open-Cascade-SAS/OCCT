@@ -37,25 +37,45 @@ StepAP203_DateTimeItem::StepAP203_DateTimeItem() = default;
 int StepAP203_DateTimeItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_ChangeRequest)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_StartRequest)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_Change)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_StartWork)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ApprovalPersonOrganization)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Contract)))
+  {
     return 7;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_SecurityClassification)))
+  {
     return 8;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Certification)))
+  {
     return 9;
+  }
   return 0;
 }
 

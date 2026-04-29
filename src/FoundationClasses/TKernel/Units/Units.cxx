@@ -28,6 +28,7 @@
 #include <Units_ShiftedToken.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <Message.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Units_Operators.hxx>
@@ -72,14 +73,11 @@ occ::handle<Units_UnitsDictionary> Units::DictionaryOfUnits(const bool amode)
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (unitsdictionary.IsNull())
   {
-    //      std::cout<<"Allocation du dictionnaire"<<std::endl;
     unitsdictionary = new Units_UnitsDictionary();
-    //      std::cout<<"Creation du dictionnaire"<<std::endl;
     unitsdictionary->Creates();
   }
   else if (amode)
   {
-    //      std::cout<<"Creation du dictionnaire"<<std::endl;
     unitsdictionary->Creates();
   }
   return unitsdictionary;
@@ -100,13 +98,10 @@ occ::handle<Units_Quantity> Units::Quantity(const char* const aquantity)
   {
     quantity = quantitiessequence->Value(index);
     if (quantity->Name() == aquantity)
+    {
       return quantity;
+    }
   }
-
-#ifdef OCCT_DEBUG
-  std::cout << "Warning: BAD Quantity = Units::Quantity(quantity('" << aquantity << "'))"
-            << std::endl;
-#endif
   return nullquantity;
 }
 
@@ -126,7 +121,9 @@ const char* Units::FirstQuantity(const char* const aunit)
   TCollection_AsciiString                                                   symbol(aunit);
 
   if (symbol == symbol_string)
+  {
     return quantity_string.ToCString();
+  }
 
   quantitiessequence = Units::DictionaryOfUnits()->Sequence();
   for (i = 1; i <= quantitiessequence->Length(); i++)
@@ -148,10 +145,6 @@ const char* Units::FirstQuantity(const char* const aunit)
       }
     }
   }
-
-#ifdef OCCT_DEBUG
-  std::cout << "Warning: BAD Quantity = Units::Quantity(unit('" << symbol << "'))" << std::endl;
-#endif
   return nullptr;
 }
 
@@ -162,9 +155,7 @@ occ::handle<Units_Lexicon> Units::LexiconUnits(const bool amode)
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (lexiconunits.IsNull())
   {
-    //      std::cout<<"Allocation du lexique d'unites"<<std::endl;
     lexiconunits = new Units_UnitsLexicon();
-    //      std::cout<<"Creation du lexique d'unites"<<std::endl;
     lexiconunits->Creates(amode);
   }
   return lexiconunits;
@@ -177,9 +168,7 @@ occ::handle<Units_Lexicon> Units::LexiconFormula()
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (lexiconformula.IsNull())
   {
-    //      std::cout<<"Allocation du lexique d'expression"<<std::endl;
     lexiconformula = new Units_Lexicon();
-    //      std::cout<<"Creation du lexique d'expression"<<std::endl;
     lexiconformula->Creates();
   }
   return lexiconformula;
@@ -191,7 +180,9 @@ occ::handle<Units_Dimensions> Units::NullDimensions()
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (nulldimensions.IsNull())
+  {
     nulldimensions = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
+  }
   return nulldimensions;
 }
 
@@ -203,6 +194,14 @@ double Units::Convert(const double      avalue,
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   Units_Measurement                     measurement(avalue, afirstunit);
+  if (!measurement.HasToken())
+  {
+    // No token means that the unit is not correct, so we can not convert. We return the value
+    // without conversion to preserve the original behavior, and print a warning.
+    Message::SendWarning() << "Units::Convert: can not convert - incorrect unit '" << afirstunit
+                           << "' => result is not correct";
+    return avalue;
+  }
   measurement.Convert(asecondunit);
   return measurement.Measurement();
 }
@@ -226,9 +225,6 @@ double Units::ToSI(const double aData, const char* const aUnit, occ::handle<Unit
     Units_UnitSentence unitsentence(aUnit);
     if (!unitsentence.IsDone())
     {
-#ifdef OCCT_DEBUG
-      std::cout << "can not convert - incorrect unit => return 0.0" << std::endl;
-#endif
       return 0.0;
     }
     occ::handle<Units_Token> token = unitsentence.Evaluate();
@@ -267,9 +263,6 @@ double Units::FromSI(const double                   aData,
     Units_UnitSentence unitsentence(aUnit);
     if (!unitsentence.IsDone())
     {
-#ifdef OCCT_DEBUG
-      std::cout << "Warning: can not convert - incorrect unit => return 0.0" << std::endl;
-#endif
       return 0.0;
     }
     occ::handle<Units_Token> token = unitsentence.Evaluate();

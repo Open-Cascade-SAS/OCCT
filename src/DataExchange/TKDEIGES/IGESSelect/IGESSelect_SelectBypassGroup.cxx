@@ -36,11 +36,15 @@ bool IGESSelect_SelectBypassGroup::Explore(const int /*level*/,
 {
   DeclareAndCast(IGESBasic_Group, gr, ent); // Group groups them all
   if (gr.IsNull())
+  {
     return true;
+  }
 
   int i, nb = gr->NbEntities();
   for (i = 1; i <= nb; i++)
+  {
     explored.AddItem(gr->Entity(i));
+  }
   return true;
 }
 

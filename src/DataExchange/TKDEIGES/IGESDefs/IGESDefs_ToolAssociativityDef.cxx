@@ -58,9 +58,12 @@ void IGESDefs_ToolAssociativityDef::ReadOwnParams(
     items        = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
   }
   else
+  {
     PR.AddFail("No. of Class definitions: Not Positive");
+  }
 
   if (!requirements.IsNull())
+  {
     for (int i = 1; i <= nbval; i++)
     {
       int                                   requirement;
@@ -71,12 +74,16 @@ void IGESDefs_ToolAssociativityDef::ReadOwnParams(
       // st = PR.ReadInteger(PR.Current(), "Back Pointer Requirement", requirement);
       // //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "Back Pointer Requirement", requirement))
+      {
         requirements->SetValue(i, requirement);
+      }
 
       // st = PR.ReadInteger(PR.Current(), "Ordered/Unordered Class", order); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadInteger(PR.Current(), "Ordered/Unordered Class", order))
+      {
         orders->SetValue(i, order);
+      }
 
       // st = PR.ReadInteger(PR.Current(),"No. of items per entry", numItem); //szv#4:S4163:12Mar99
       // moved in if
@@ -90,11 +97,14 @@ void IGESDefs_ToolAssociativityDef::ReadOwnParams(
           // int temp; //szv#4:S4163:12Mar99 moved out of for
           // st = PR.ReadInteger(PR.Current(), "Item", temp); //szv#4:S4163:12Mar99 moved in if
           if (PR.ReadInteger(PR.Current(), "Item", temp))
+          {
             item->SetValue(j, temp);
+          }
         }
         items->SetValue(i, item);
       }
     }
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(requirements, orders, numItems, items);
@@ -113,7 +123,9 @@ void IGESDefs_ToolAssociativityDef::WriteOwnParams(
     IW.Send(ent->NbItemsPerClass(i));
     int items = ent->NbItemsPerClass(i);
     for (int j = 1; j <= items; j++)
+    {
       IW.Send(ent->Item(i, j));
+    }
   }
 }
 
@@ -196,7 +208,7 @@ void IGESDefs_ToolAssociativityDef::OwnDump(const occ::handle<IGESDefs_Associati
     << "Number Of Items per Entry :\n"
     << "Items :\n";
   IGESData_DumpVals(S, -level, 1, ent->NbClassDefs(), ent->BackPointerReq);
-  S << std::endl;
+  S << '\n';
   if (level > 4)
   {
     // Warning : Item is a JAGGED Array
@@ -206,14 +218,22 @@ void IGESDefs_ToolAssociativityDef::OwnDump(const occ::handle<IGESDefs_Associati
       S << "[" << i << "]:\n";
       S << "Back Pointer Requirement : " << ent->BackPointerReq(i) << "  ";
       if (ent->IsBackPointerReq(i))
+      {
         S << "(Yes)  ";
+      }
       else
+      {
         S << "(No)   ";
+      }
       S << " Ordered/Unordered Class : " << ent->ClassOrder(i) << " ";
       if (ent->IsOrdered(i))
+      {
         S << "(Yes)\n";
+      }
       else
+      {
         S << "(No)\n";
+      }
       S << "Number Of Items per Entry : " << ent->NbItemsPerClass(i);
       if (level < 6)
       {
@@ -222,9 +242,11 @@ void IGESDefs_ToolAssociativityDef::OwnDump(const occ::handle<IGESDefs_Associati
       }
       S << "\n [";
       for (int j = 1; j <= ent->NbItemsPerClass(i); j++)
+      {
         S << "  " << ent->Item(i, j);
+      }
       S << "]\n";
     }
   }
-  S << std::endl;
+  S << '\n';
 }

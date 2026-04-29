@@ -184,7 +184,9 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
 {
   occ::handle<TNaming_Naming> anAtt = occ::down_cast<TNaming_Naming>(theTarget);
   if (anAtt.IsNull())
+  {
     return false;
+  }
 
   TNaming_Name&              aName = anAtt->ChangeName();
   TCollection_ExtendedString aMsg;
@@ -199,7 +201,9 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
       aNewF = true;
       ok    = theSource >> aValue; // skip the sign & get NameType
       if (!ok)
+      {
         return ok;
+      }
     }
 
     aName.Type(CharTypeToName(aValue));
@@ -224,15 +228,20 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
           for (i = 1; i <= aNbArgs; i++)
           {
             // clang-format off
-            if(!aNewF && i > OBSOLETE_NUM) break;//interrupt reading as old format can have only 4 items
+            if(!aNewF && i > OBSOLETE_NUM) { break;//interrupt reading as old format can have only 4 items
+}
             // clang-format on
             ok = theSource >> anIndx;
             if (!ok)
+            {
               break;
+            }
             else
             {
               if (theRelocTable.IsBound(anIndx))
+              {
                 aNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(anIndx));
+              }
               else
               {
                 aNS = new TNaming_NamedShape;
@@ -245,7 +254,9 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
           if (!aNewF && aNbArgs < OBSOLETE_NUM)
           {
             for (i = aNbArgs + 1; i <= OBSOLETE_NUM; i++)
+            {
               theSource >> anIndx;
+            }
           }
         }
         // 4. StopNS
@@ -255,7 +266,9 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
           if (anIndx > 0)
           {
             if (theRelocTable.IsBound(anIndx))
+            {
               aNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(anIndx));
+            }
             else
             {
               aNS = new TNaming_NamedShape;
@@ -267,7 +280,9 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
           // 5. Index
           ok = theSource >> anIndx;
           if (ok)
+          {
             aName.Index(anIndx);
+          }
           else
           {
             aMsg = TCollection_ExtendedString("BinMNaming_NamingDriver: "
@@ -309,7 +324,9 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
             TDF_Label tLab; // Null label.
             TDF_Tool::Label(anAtt->Label().Data(), entry, tLab, true);
             if (!tLab.IsNull())
+            {
               aName.ContextLabel(tLab);
+            }
           }
         }
         if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
@@ -327,7 +344,9 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
             {
               const TopoDS_Shape& S = itL.NewShape();
               if (S.IsNull())
+              {
                 continue;
+              }
               if (aNShape->Evolution() == TNaming_SELECTED)
               {
                 if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX
@@ -410,7 +429,9 @@ void BinMNaming_NamingDriver::Paste(
       {
         anIndx = theRelocTable.FindIndex(anArg);
         if (anIndx == 0)
+        {
           anIndx = theRelocTable.Add(anArg);
+        }
       }
       anArray.SetValue(i, anIndx);
     }
@@ -424,10 +445,14 @@ void BinMNaming_NamingDriver::Paste(
   {
     anIndx = theRelocTable.FindIndex(aStopNS);
     if (anIndx == 0)
+    {
       anIndx = theRelocTable.Add(aStopNS);
+    }
   }
   else
+  {
     anIndx = 0;
+  }
   theTarget << anIndx;
 
   // 5. keep Index
@@ -436,7 +461,9 @@ void BinMNaming_NamingDriver::Paste(
   // 6. keep context label
   TCollection_AsciiString entry(NULL_ENTRY);
   if (!aName.ContextLabel().IsNull())
+  {
     TDF_Tool::Entry(aName.ContextLabel(), entry);
+  }
   theTarget << entry;
 
   // 7. keep Orientation

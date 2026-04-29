@@ -37,20 +37,28 @@ void IGESGeom_SplineCurve::Init(const int                                       
 {
   int len = allXPolynomials->ColLength();
   if ((len != allYPolynomials->ColLength()) || (len != allZPolynomials->ColLength()))
+  {
     throw Standard_DimensionMismatch("IGESGeom_SplineCurve : Column Length of HArray2s in Init");
+  }
   if (allBreakPoints->Lower() != 1 || allXvalues->Lower() != 1 || allYvalues->Lower() != 1
       || allZvalues->Lower() != 1 || allXPolynomials->LowerCol() != 1
       || allXPolynomials->LowerRow() != 1 || allYPolynomials->LowerCol() != 1
       || allYPolynomials->LowerRow() != 1 || allZPolynomials->LowerCol() != 1
       || allZPolynomials->LowerRow() != 1)
+  {
     throw Standard_DimensionMismatch("IGESGeom_SplineCurve : Lower Indices of HArrays in Init");
+  }
   len = allXPolynomials->RowLength();
   if ((len != allYPolynomials->RowLength()) || (len != allZPolynomials->RowLength()))
+  {
     throw Standard_DimensionMismatch("IGESGeom_SplineCurve : Row Length of HArray2s in Init");
+  }
 
   len = allXvalues->Length();
   if ((len != allYvalues->Length()) || (len != allZvalues->Length()))
+  {
     throw Standard_DimensionMismatch("IGESGeom_SplineCurve : Length of HArray1s in Init");
+  }
 
   theType              = aType;
   theDegree            = aDegree;
@@ -83,9 +91,13 @@ int IGESGeom_SplineCurve::NbDimensions() const
 int IGESGeom_SplineCurve::NbSegments() const
 {
   if (theBreakPoints.IsNull())
+  {
     return 0;
+  }
   else
+  {
     return ((theBreakPoints->Length()) - 1);
+  }
 }
 
 double IGESGeom_SplineCurve::BreakPoint(const int Index) const

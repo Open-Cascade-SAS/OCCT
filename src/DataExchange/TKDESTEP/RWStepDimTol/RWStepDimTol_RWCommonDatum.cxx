@@ -36,7 +36,9 @@ void RWStepDimTol_RWCommonDatum::ReadStep(const occ::handle<StepData_StepReaderD
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 9, ach, "common_datum"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

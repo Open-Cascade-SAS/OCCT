@@ -34,7 +34,9 @@ int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C,
     {
       double t1 = U1 - U0;
       if (t1 < 0.0)
+      {
         t1 = -t1;
+      }
       nbs = C.NbKnots();
       nbs *= C.Degree();
       double anb = t1 / t * nbs;
@@ -42,7 +44,9 @@ int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C,
 
       int aMinPntNb = std::max(C.Degree() + 1, 4);
       if (nbs < aMinPntNb)
+      {
         nbs = aMinPntNb;
+      }
     }
   }
   else if (typC == GeomAbs_Circle)
@@ -59,7 +63,9 @@ int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C,
   }
 
   if (nbs > 300)
+  {
     nbs = 300;
+  }
   return nbs;
 }
 

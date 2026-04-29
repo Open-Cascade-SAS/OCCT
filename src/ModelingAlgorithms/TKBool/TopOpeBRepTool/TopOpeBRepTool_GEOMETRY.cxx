@@ -36,11 +36,17 @@ Standard_EXPORT occ::handle<Geom2d_Curve> BASISCURVE2D(const occ::handle<Geom2d_
 {
   occ::handle<Standard_Type> T = C->DynamicType();
   if (T == STANDARD_TYPE(Geom2d_OffsetCurve))
+  {
     return ::BASISCURVE2D(occ::down_cast<Geom2d_OffsetCurve>(C)->BasisCurve());
+  }
   else if (T == STANDARD_TYPE(Geom2d_TrimmedCurve))
+  {
     return ::BASISCURVE2D(occ::down_cast<Geom2d_TrimmedCurve>(C)->BasisCurve());
+  }
   else
+  {
     return C;
+  }
 }
 
 /*// ----------------------------------------------------------------------
@@ -142,9 +148,13 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const occ::handle<Geom_
         double y = p2d.Y();
         // NYIXPU : devrait plutot etre fait sur les faces & TopOpeBRepTool_TOOL::minDUV...
         if (onvf)
+        {
           y += 1.;
+        }
         else
+        {
           y -= 1.;
+        }
         S->D1(x, y, p, d1u, d1v);
         gp_Vec ng = d1u ^ d1v;
         return ng;
@@ -196,15 +206,25 @@ Standard_EXPORT bool FUN_quadCT(const GeomAbs_CurveType& CT)
 {
   bool isquad = false;
   if (CT == GeomAbs_Line)
+  {
     isquad = true;
+  }
   if (CT == GeomAbs_Circle)
+  {
     isquad = true;
+  }
   if (CT == GeomAbs_Ellipse)
+  {
     isquad = true;
+  }
   if (CT == GeomAbs_Hyperbola)
+  {
     isquad = true;
+  }
   if (CT == GeomAbs_Parabola)
+  {
     isquad = true;
+  }
   return isquad;
 }
 
@@ -213,7 +233,9 @@ Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Curve>& C3d)
 {
   occ::handle<Geom_Curve> C = TopOpeBRepTool_ShapeTool::BASISCURVE(C3d);
   if (C.IsNull())
+  {
     return false;
+  }
   GeomAdaptor_Curve GC(C);
   GeomAbs_CurveType CT   = GC.GetType();
   bool              quad = FUN_quadCT(CT);
@@ -225,20 +247,32 @@ Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom2d_Curve>& pc)
 {
   occ::handle<Geom2d_Curve> pcb = BASISCURVE2D(pc); // NYI TopOpeBRepTool_ShapeTool
   if (pcb.IsNull())
+  {
     return false;
+  }
   Geom2dAdaptor_Curve GC2d(pcb);
   GeomAbs_CurveType   typ    = GC2d.GetType();
   bool                isquad = false;
   if (typ == GeomAbs_Line)
+  {
     isquad = true;
+  }
   if (typ == GeomAbs_Circle)
+  {
     isquad = true;
+  }
   if (typ == GeomAbs_Ellipse)
+  {
     isquad = true;
+  }
   if (typ == GeomAbs_Hyperbola)
+  {
     isquad = true;
+  }
   if (typ == GeomAbs_Parabola)
+  {
     isquad = true;
+  }
   return isquad;
 }
 
@@ -247,7 +281,9 @@ Standard_EXPORT bool FUN_tool_line(const occ::handle<Geom2d_Curve>& pc)
 {
   occ::handle<Geom2d_Curve> pcb = BASISCURVE2D(pc); // NYI TopOpeBRepTool_ShapeTool
   if (pcb.IsNull())
+  {
     return false;
+  }
   Geom2dAdaptor_Curve GC2d(pcb);
   GeomAbs_CurveType   typ = GC2d.GetType();
 
@@ -258,20 +294,32 @@ Standard_EXPORT bool FUN_tool_line(const occ::handle<Geom2d_Curve>& pc)
 Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Surface>& S)
 {
   if (S.IsNull())
+  {
     return false;
+  }
   GeomAdaptor_Surface GAS(S);
   GeomAbs_SurfaceType typ    = GAS.GetType();
   bool                isquad = false;
   if (typ == GeomAbs_Plane)
+  {
     isquad = true;
+  }
   if (typ == GeomAbs_Cylinder)
+  {
     isquad = true;
+  }
   if (typ == GeomAbs_Cone)
+  {
     isquad = true;
+  }
   if (typ == GeomAbs_Sphere)
+  {
     isquad = true;
+  }
   if (typ == GeomAbs_Torus)
+  {
     isquad = true;
+  }
   return isquad;
 }
 
@@ -284,17 +332,27 @@ Standard_EXPORT bool FUN_tool_closed(const occ::handle<Geom_Surface>& S,
 {
   uperiod = vperiod = 0.;
   if (S.IsNull())
+  {
     return false;
+  }
   uclosed = S->IsUClosed();
   if (uclosed)
+  {
     uclosed = S->IsUPeriodic(); // xpu261098 (BUC60382)
+  }
   if (uclosed)
+  {
     uperiod = S->UPeriod();
+  }
   vclosed = S->IsVClosed();
   if (vclosed)
+  {
     vclosed = S->IsVPeriodic();
+  }
   if (vclosed)
+  {
     vperiod = S->VPeriod();
+  }
   bool closed = uclosed || vclosed;
   return closed;
 }

@@ -29,7 +29,7 @@
 #include <Message.hxx>
 
 #ifndef _WIN32
-extern Draw_Viewer dout;
+
 #else
 Standard_IMPORT Draw_Viewer dout;
 #endif
@@ -44,7 +44,9 @@ static int DDataStd_PNT(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
     double x = Draw::Atof(arg[3]);
@@ -104,10 +106,14 @@ static int DDataStd_DrawOwner(Draw_Interpretor& di, int nb, const char** arg)
         di << entry.ToCString();
       }
       else
+      {
         di << name.ToCString();
+      }
     }
     else
+    {
       di << 0;
+    }
     return 0;
   }
   di << "DDataStd_DrawOwner : Error\n";
@@ -125,10 +131,14 @@ static int DDataStd_DrawDisplay(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(DF, arg[2], L))
+    {
       return 1;
+    }
     DDataStd_DrawPresentation::Display(L);
     return 0;
   }
@@ -168,10 +178,14 @@ static int DDataStd_DrawErase(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(DF, arg[2], L))
+    {
       return 1;
+    }
     DDataStd_DrawPresentation::Erase(L);
     return 0;
   }
@@ -190,10 +204,14 @@ static int DDataStd_DrawUpdate(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(DF, arg[2], L))
+    {
       return 1;
+    }
     DDataStd_DrawPresentation::Update(L);
     return 0;
   }
@@ -217,7 +235,9 @@ void DDataStd::DrawDisplayCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done          = true;
   const char* g = "SKETCH commands";
 

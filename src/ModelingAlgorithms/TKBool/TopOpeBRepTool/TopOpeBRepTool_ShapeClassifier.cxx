@@ -130,7 +130,9 @@ void TopOpeBRepTool_ShapeClassifier::MapRef()
       TopoDS_Vertex      v1, v2;
       TopExp::Vertices(E, v1, v2);
       if (v1.IsSame(v2))
+      {
         mymren = 0;
+      }
     }
   }
   mymredone = true;
@@ -242,14 +244,20 @@ void TopOpeBRepTool_ShapeClassifier::FindEdge(const TopoDS_Shape& S)
   bool isavls = HasAvLS();
   bool isavs  = (!myAvS.IsNull());
   if (S.IsNull())
+  {
     return;
+  }
 
   TopAbs_ShapeEnum tS = S.ShapeType();
   TopExp_Explorer  eex;
   if (!myFace.IsNull())
+  {
     eex.Init(myFace, TopAbs_EDGE);
+  }
   else
+  {
     eex.Init(S, TopAbs_EDGE);
+  }
 
   for (; eex.More(); eex.Next())
   {
@@ -259,12 +267,18 @@ void TopOpeBRepTool_ShapeClassifier::FindEdge(const TopoDS_Shape& S)
     {
       toavoid = toavoid || myMapAvS.Contains(E);
       if (!myAvS.IsNull())
+      {
         toavoid = toavoid || E.IsSame(myAvS);
+      }
     }
     else if (BRep_Tool::Degenerated(E))
+    {
       toavoid = (tS != TopAbs_EDGE);
+    }
     if (toavoid)
+    {
       continue;
+    }
     myEdge = E;
     break;
   }
@@ -286,10 +300,14 @@ void TopOpeBRepTool_ShapeClassifier::FindFace(const TopoDS_Shape& S)
     {
       toavoid = toavoid || myMapAvS.Contains(F);
       if (!myAvS.IsNull())
+      {
         toavoid = toavoid || F.IsSame(myAvS);
+      }
     }
     if (toavoid)
+    {
       continue;
+    }
     myFace = F;
     break;
   }
@@ -301,9 +319,13 @@ void TopOpeBRepTool_ShapeClassifier::Perform()
 {
   myState = TopAbs_UNKNOWN;
   if (myS.IsNull())
+  {
     return;
+  }
   if (myRef.IsNull())
+  {
     return;
+  }
 
   if (!mymredone)
   {
@@ -454,7 +476,9 @@ void TopOpeBRepTool_ShapeClassifier::Perform()
   if (oriRef == TopAbs_EXTERNAL || oriRef == TopAbs_INTERNAL)
   {
     if (myState == TopAbs_IN)
+    {
       myState = TopAbs_OUT;
+    }
   }
 }
 
@@ -465,9 +489,13 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
   myState = TopAbs_UNKNOWN;
 
   if (myEdge.IsNull())
+  {
     return;
+  }
   if (myRef.IsNull())
+  {
     return;
+  }
 
   occ::handle<Geom_Curve> C3D;
   gp_Pnt                  P3D;
@@ -488,7 +516,9 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
       C2D            = FC2D_CurveOnSurface(myEdge, F, f2d, l2d, tol2d, trimCurve);
 
       if (C2D.IsNull())
+      {
         throw Standard_ProgramError("StateShapeShape : no 2d curve");
+      }
 
       double t = 0.127956477;
       double p = (1 - t) * f2d + t * l2d;
@@ -507,7 +537,9 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
       C3D = BRep_Tool::Curve(myEdge, f3d, l3d);
 
       if (C3D.IsNull())
+      {
         throw Standard_ProgramError("StateShapeShape : no 3d curve");
+      }
 
       double t = 0.127956477;
       double p = (1 - t) * f3d + t * l3d;
@@ -531,7 +563,9 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
       C3D = BRep_Tool::Curve(myEdge, f3d, l3d);
 
       if (C3D.IsNull())
+      {
         throw Standard_ProgramError("StateShapeShape : no 3d curve");
+      }
 
       double t = 0.127956477;
       double p = (1 - t) * f3d + t * l3d;
@@ -541,7 +575,9 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
     }
   }
   else
+  {
     throw Standard_ProgramError("StateShapeShape : bad operands");
+  }
 }
 
 //=================================================================================================
@@ -550,7 +586,9 @@ void TopOpeBRepTool_ShapeClassifier::StateP2DReference(const gp_Pnt2d& P2D)
 {
   myState = TopAbs_UNKNOWN;
   if (myRef.IsNull())
+  {
     return;
+  }
   TopAbs_ShapeEnum tR = myRef.ShapeType();
 
   if (tR == TopAbs_FACE)
@@ -564,10 +602,14 @@ void TopOpeBRepTool_ShapeClassifier::StateP2DReference(const gp_Pnt2d& P2D)
         TopAbs_Orientation o = x.Current().Orientation();
         //	if      (o == TopAbs_EXTERNAL) myState == TopAbs_OUT;
         if (o == TopAbs_EXTERNAL)
+        {
           myState = TopAbs_OUT;
-        //	else if (o == TopAbs_INTERNAL) myState == TopAbs_IN;
+          //	else if (o == TopAbs_INTERNAL) myState == TopAbs_IN;
+        }
         else if (o == TopAbs_INTERNAL)
+        {
           myState = TopAbs_IN;
+        }
         else
         {
 #ifdef OCCT_DEBUG
@@ -600,7 +642,9 @@ void TopOpeBRepTool_ShapeClassifier::StateP3DReference(const gp_Pnt& P3D)
 {
   myState = TopAbs_UNKNOWN;
   if (myRef.IsNull())
+  {
     return;
+  }
   TopAbs_ShapeEnum tR = myRef.ShapeType();
 
   if (tR == TopAbs_SOLID)

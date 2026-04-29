@@ -82,6 +82,8 @@ occ::handle<StepBasic_ProductContext> StepBasic_Product::FrameOfReferenceValue(c
 int StepBasic_Product::NbFrameOfReference() const
 {
   if (frameOfReference.IsNull())
+  {
     return 0;
+  }
   return frameOfReference->Length();
 }

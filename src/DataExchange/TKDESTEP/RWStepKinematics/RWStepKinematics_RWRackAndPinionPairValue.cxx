@@ -38,7 +38,9 @@ void RWStepKinematics_RWRackAndPinionPairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "rack_and_pinion_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

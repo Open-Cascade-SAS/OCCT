@@ -103,8 +103,8 @@ void HLRBRep_InternalAlgo::Update()
         if (myDebug)
         {
           std::cout << "An exception was caught when preparing the Shape " << i;
-          std::cout << " and computing its OutLines " << std::endl;
-          std::cout << anException << std::endl;
+          std::cout << " and computing its OutLines " << '\n';
+          std::cout << anException << '\n';
         }
         DS[i - 1] = new HLRBRep_Data(0, 0, 0);
         dv        = 0;
@@ -119,7 +119,9 @@ void HLRBRep_InternalAlgo::Update()
     }
 
     if (n == 1)
+    {
       myDS = DS[0];
+    }
     else
     {
       myDS = new HLRBRep_Data(nv, ne, nf);
@@ -165,7 +167,9 @@ void HLRBRep_InternalAlgo::Update()
           HLRAlgo::CopyMinMax(TheMin, TheMax, ShapMin, ShapMax);
         }
         else
+        {
           HLRAlgo::AddMinMax(TheMin, TheMax, ShapMin, ShapMax);
+        }
       }
 
       for (int f = f1; f <= f2; f++)
@@ -205,8 +209,12 @@ int HLRBRep_InternalAlgo::Index(const occ::handle<HLRTopoBRep_OutLiner>& S) cons
   int n = myShapes.Length();
 
   for (int i = 1; i <= n; i++)
+  {
     if (myShapes(i).Shape() == S)
+    {
       return i;
+    }
+  }
 
   return 0;
 }
@@ -273,7 +281,9 @@ void HLRBRep_InternalAlgo::InitEdgeStatus()
   {
     HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
     if (ed.Selected())
+    {
       ed.Status().ShowAll();
+    }
   }
   //  for (int f = 1; f <= nf; f++) {
   int f;
@@ -287,7 +297,9 @@ void HLRBRep_InternalAlgo::InitEdgeStatus()
       {
         HLRBRep_EdgeData* edf = &(myDS->EDataArray().ChangeValue(faceIt.Edge()));
         if (edf->Selected())
+        {
           edf->Status().HideAll();
+        }
       }
     }
   }
@@ -299,7 +311,9 @@ void HLRBRep_InternalAlgo::InitEdgeStatus()
     if (fd.Selected() && fd.Closed())
     {
       if (fd.Side())
+      {
         visible = false;
+      }
       else if (!fd.WithOutL())
       {
         switch (fd.Orientation())
@@ -325,7 +339,9 @@ void HLRBRep_InternalAlgo::InitEdgeStatus()
         int               E   = faceIt.Edge();
         HLRBRep_EdgeData* edf = &(myDS->EDataArray().ChangeValue(E));
         if (edf->Selected() && !edf->Vertical())
+        {
           edf->Status().ShowAll();
+        }
       }
     }
   }
@@ -468,7 +484,9 @@ void HLRBRep_InternalAlgo::ShowAll(const int I)
     {
       HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
       if (ed.Selected())
+      {
         ed.Status().ShowAll();
+      }
     }
   }
 }
@@ -508,7 +526,9 @@ void HLRBRep_InternalAlgo::HideAll(const int I)
     {
       HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
       if (ed.Selected())
+      {
         ed.Status().HideAll();
+      }
     }
   }
 }
@@ -522,10 +542,14 @@ void HLRBRep_InternalAlgo::PartialHide()
     int i, n = myShapes.Length();
 
     if (myDebug)
-      std::cout << " Partial hiding" << std::endl << std::endl;
+    {
+      std::cout << " Partial hiding" << '\n' << '\n';
+    }
 
     for (i = 1; i <= n; i++)
+    {
       Hide(i);
+    }
 
     Select();
   }
@@ -540,15 +564,25 @@ void HLRBRep_InternalAlgo::Hide()
     int i, j, n = myShapes.Length();
 
     if (myDebug)
-      std::cout << " Total hiding" << std::endl;
+    {
+      std::cout << " Total hiding" << '\n';
+    }
 
     for (i = 1; i <= n; i++)
+    {
       Hide(i);
+    }
 
     for (i = 1; i <= n; i++)
+    {
       for (j = 1; j <= n; j++)
+      {
         if (i != j)
+        {
           Hide(i, j);
+        }
+      }
+    }
 
     Select();
   }
@@ -564,7 +598,9 @@ void HLRBRep_InternalAlgo::Hide(const int I)
                                  "HLRBRep_InternalAlgo::Hide : unknown Shape");
 
     if (myDebug)
-      std::cout << " hiding the shape " << I << " by itself" << std::endl;
+    {
+      std::cout << " hiding the shape " << I << " by itself" << '\n';
+    }
 
     Select(I);
     InitEdgeStatus();
@@ -582,7 +618,9 @@ void HLRBRep_InternalAlgo::Hide(const int I, const int J)
                                  "HLRBRep_InternalAlgo::Hide : unknown Shapes");
 
     if (I == J)
+    {
       Hide(I);
+    }
     else
     {
       HLRAlgo_EdgesBlock::MinMaxIndices* MinMaxShBI = &myShapes(I).MinMax();
@@ -605,7 +643,7 @@ void HLRBRep_InternalAlgo::Hide(const int I, const int J)
         if (myDebug)
         {
           std::cout << " hiding the shape " << I;
-          std::cout << " by the shape : " << J << std::endl;
+          std::cout << " by the shape : " << J << '\n';
         }
         SelectEdge(I);
         SelectFace(J);
@@ -664,7 +702,9 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
         {
           nbSelEdges++;
           if (!ed.Status().AllHidden())
+          {
             nbVisEdges++;
+          }
         }
       }
 
@@ -675,32 +715,42 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
         {
           nbSelFaces++;
           if (fd.Hiding())
+          {
             nbCache++;
+          }
           if (fd.Side())
+          {
             nbFSide++;
+          }
           if (fd.Simple())
+          {
             nbFSimp++;
+          }
         }
       }
 
       if (myDebug)
       {
-        std::cout << std::endl;
-        std::cout << "Vertices  : " << std::setw(5) << myDS->NbVertices() << std::endl;
+        std::cout << '\n';
+        std::cout << "Vertices  : " << std::setw(5) << myDS->NbVertices() << '\n';
         std::cout << "Edges     : " << std::setw(5) << myDS->NbEdges() << " , ";
         std::cout << "Selected  : " << std::setw(5) << nbSelEdges << " , ";
-        std::cout << "Visible   : " << std::setw(5) << nbVisEdges << std::endl;
+        std::cout << "Visible   : " << std::setw(5) << nbVisEdges << '\n';
         std::cout << "Faces     : " << std::setw(5) << myDS->NbFaces() << " , ";
         std::cout << "Selected  : " << std::setw(5) << nbSelFaces << " , ";
-        std::cout << "Simple    : " << std::setw(5) << nbFSimp << std::endl;
+        std::cout << "Simple    : " << std::setw(5) << nbFSimp << '\n';
         if (SideFace)
+        {
           std::cout << "Side      : " << std::setw(5) << nbFSide << " , ";
-        std::cout << "Cachantes : " << std::setw(5) << nbCache << std::endl << std::endl;
+        }
+        std::cout << "Cachantes : " << std::setw(5) << nbCache << '\n' << '\n';
       }
     }
 
     if (nf == 0)
+    {
       return;
+    }
 
     int QWE = 0, QWEQWE;
     QWEQWE  = nf / 10;
@@ -722,7 +772,9 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
               {
                 QWE = 0;
                 if (myDebug)
+                {
                   std::cout << "*";
+                }
               }
             }
             else
@@ -730,7 +782,7 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
               if (myDebug && HLRBRep_InternalAlgo_TRACE)
               {
                 j++;
-                std::cout << " OwnHiding " << j << " of face : " << f << std::endl;
+                std::cout << " OwnHiding " << j << " of face : " << f << '\n';
               }
             }
             Cache.OwnHiding(f);
@@ -748,23 +800,41 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
     {
       HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
       if (fd.Plane())
+      {
         Val(f) = 10;
+      }
       else if (fd.Cylinder())
+      {
         Val(f) = 9;
+      }
       else if (fd.Cone())
+      {
         Val(f) = 8;
+      }
       else if (fd.Sphere())
+      {
         Val(f) = 7;
+      }
       else if (fd.Torus())
+      {
         Val(f) = 6;
+      }
       else
+      {
         Val(f) = 0;
+      }
       if (fd.Cut())
+      {
         Val(f) -= 10;
+      }
       if (fd.Side())
+      {
         Val(f) -= 100;
+      }
       if (fd.WithOutL())
+      {
         Val(f) -= 20;
+      }
 
       Size(f) = fd.Size();
     }
@@ -824,11 +894,15 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
           if (k < ir)
           {
             if (Val(Index(k)) > Val(Index(k + 1)))
+            {
               k++;
+            }
             else if (Val(Index(k)) == Val(Index(k + 1)))
             {
               if (Size(Index(k)) > Size(Index(k + 1)))
+              {
                 k++;
+              }
             }
           }
           if (Val(rra) > Val(Index(k)))
@@ -868,7 +942,9 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
             if (++QWE > QWEQWE)
             {
               if (myDebug)
+              {
                 std::cout << ".";
+              }
               QWE = 0;
             }
           }

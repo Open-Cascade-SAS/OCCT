@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <gtest/gtest.h>
 
@@ -133,7 +133,7 @@ TEST(NCollection_BaseAllocatorTest, AllocateArray)
 TEST(NCollection_BaseAllocatorTest, UsageWithVector)
 {
   // Create a collection using the default allocator
-  NCollection_Vector<TestStruct> aVector;
+  NCollection_DynamicArray<TestStruct> aVector;
 
   // Add elements
   aVector.Append(TestStruct(10, 1.0, 'X'));
@@ -159,7 +159,7 @@ TEST(NCollection_BaseAllocatorTest, UsageWithVector)
     NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Create a collection using custom allocator
-  NCollection_Vector<TestStruct> aVectorWithCustomAlloc(5, aCustomAlloc);
+  NCollection_DynamicArray<TestStruct> aVectorWithCustomAlloc(5, aCustomAlloc);
 
   // Add elements
   aVectorWithCustomAlloc.Append(TestStruct(40, 4.0, 'P'));
@@ -182,12 +182,12 @@ TEST(NCollection_BaseAllocatorTest, CopyAndMove)
     NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Create a collection with allocator
-  NCollection_Vector<TestStruct> aVector1(5, anAlloc1);
+  NCollection_DynamicArray<TestStruct> aVector1(5, anAlloc1);
   aVector1.Append(TestStruct(10, 1.0, 'A'));
   aVector1.Append(TestStruct(20, 2.0, 'B'));
 
   // Copy constructor should preserve the allocator
-  NCollection_Vector<TestStruct> aVector2(aVector1);
+  NCollection_DynamicArray<TestStruct> aVector2(aVector1);
   EXPECT_EQ(aVector2.Length(), 2);
   EXPECT_EQ(aVector2(0), TestStruct(10, 1.0, 'A'));
   EXPECT_EQ(aVector2(1), TestStruct(20, 2.0, 'B'));
@@ -195,7 +195,7 @@ TEST(NCollection_BaseAllocatorTest, CopyAndMove)
   // Create a new collection with new allocator
   occ::handle<NCollection_BaseAllocator> anAlloc2 =
     NCollection_BaseAllocator::CommonBaseAllocator();
-  NCollection_Vector<TestStruct> aVector3(5, anAlloc2);
+  NCollection_DynamicArray<TestStruct> aVector3(5, anAlloc2);
 
   // Assignment operator should preserve the destination's allocator
   aVector3 = aVector1;

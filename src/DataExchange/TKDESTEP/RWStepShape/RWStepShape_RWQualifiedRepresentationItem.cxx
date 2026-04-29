@@ -32,7 +32,9 @@ void RWStepShape_RWQualifiedRepresentationItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "qualified_representation_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -51,7 +53,9 @@ void RWStepShape_RWQualifiedRepresentationItem::ReadStep(
     {
       StepShape_ValueQualifier VQ;
       if (data->ReadEntity(nsub2, i2, "qualifier", ach, VQ))
+      {
         quals->SetValue(i2, VQ);
+      }
     }
   }
 
@@ -72,7 +76,9 @@ void RWStepShape_RWQualifiedRepresentationItem::WriteStep(
   int i, nbq = ent->NbQualifiers();
   SW.OpenSub();
   for (i = 1; i <= nbq; i++)
+  {
     SW.Send(ent->QualifiersValue(i).Value());
+  }
   SW.CloseSub();
 }
 
@@ -82,5 +88,7 @@ void RWStepShape_RWQualifiedRepresentationItem::Share(
 {
   int i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)
+  {
     iter.AddItem(ent->QualifiersValue(i).Value());
+  }
 }

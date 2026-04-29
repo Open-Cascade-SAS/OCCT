@@ -30,7 +30,9 @@ Interface_EntityIterator IGESSelect_SelectFromDrawing::RootResult(const Interfac
   Interface_EntityIterator list, views;
   Interface_EntityIterator draws = InputResult(G);
   if (draws.NbEntities() == 0)
+  {
     return list;
+  }
   int nb = G.Size();
   int i; // svv Jan11 2000 : porting on DEC
 
@@ -40,9 +42,13 @@ Interface_EntityIterator IGESSelect_SelectFromDrawing::RootResult(const Interfac
   {
     DeclareAndCast(IGESData_IGESEntity, igesent, draws.Value());
     if (igesent.IsNull())
+    {
       continue;
+    }
     if (igesent->TypeNumber() != PourDrawing)
+    {
       continue;
+    }
     list.GetOneItem(igesent);
     Interface_EntityIterator someviews = G.Shareds(draws.Value());
     list.AddList(someviews.Content());
@@ -52,10 +58,14 @@ Interface_EntityIterator IGESSelect_SelectFromDrawing::RootResult(const Interfac
     //    if (!G.IsPresent(i)) continue;
     DeclareAndCast(IGESData_IGESEntity, igesent, G.Entity(i));
     if (igesent.IsNull())
+    {
       continue;
+    }
     int nv = G.EntityNumber(igesent->View());
     if (nv > 0 && nv <= nb)
+    {
       list.GetOneItem(igesent);
+    }
   }
   return list;
 }

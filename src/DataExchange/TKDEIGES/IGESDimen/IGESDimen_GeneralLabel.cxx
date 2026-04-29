@@ -31,7 +31,9 @@ void IGESDimen_GeneralLabel::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders)
 {
   if (someLeaders->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDimen_GeneralLabel : Init");
+  }
   theNote    = aNote;
   theLeaders = someLeaders;
   InitTypeAndForm(210, 0);

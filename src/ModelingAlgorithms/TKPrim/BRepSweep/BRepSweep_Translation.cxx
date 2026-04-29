@@ -61,15 +61,23 @@ static void SetThePCurve(const BRep_Builder&              B,
   TopLoc_Location           SL;
   occ::handle<Geom_Plane>   GP = occ::down_cast<Geom_Plane>(BRep_Tool::Surface(F, SL));
   if (GP.IsNull())
+  {
     OC = BRep_Tool::CurveOnSurface(E, F, f, l);
+  }
   if (OC.IsNull())
+  {
     B.UpdateEdge(E, C, F, Precision::Confusion());
+  }
   else
   {
     if (O == TopAbs_REVERSED)
+    {
       B.UpdateEdge(E, OC, C, F, Precision::Confusion());
+    }
     else
+    {
       B.UpdateEdge(E, C, OC, F, Precision::Confusion());
+    }
   }
 }
 
@@ -100,7 +108,9 @@ TopoDS_Shape BRepSweep_Translation::MakeEmptyVertex(const TopoDS_Shape&   aGenV,
   Standard_ConstructionError_Raise_if(!myCopy, "BRepSweep_Translation::MakeEmptyVertex");
   gp_Pnt P = BRep_Tool::Pnt(TopoDS::Vertex(aGenV));
   if (aDirV.Index() == 2)
+  {
     P.Transform(myLocation.Transformation());
+  }
   TopoDS_Vertex V;
   ////// modified by jgv, 5.10.01, for buc61008 //////
   // myBuilder.Builder().MakeVertex(V,P,Precision::Confusion());
@@ -146,7 +156,9 @@ TopoDS_Shape BRepSweep_Translation::MakeEmptyGeneratingEdge(const TopoDS_Shape& 
       C = occ::down_cast<Geom_Curve>(C->Copy());
       C->Transform(L.Transformation());
       if (aDirV.Index() == 2)
+      {
         C->Transform(myLocation.Transformation());
+      }
     }
     myBuilder.Builder().MakeEdge(newE, C, BRep_Tool::Tolerance(TopoDS::Edge(aGenE)));
   }
@@ -180,7 +192,9 @@ void BRepSweep_Translation::SetDirectingParameter(const TopoDS_Shape& aNewEdge,
 {
   double param = 0;
   if (aDirV.Index() == 2)
+  {
     param = myVec.Magnitude();
+  }
   myBuilder.Builder().UpdateVertex(TopoDS::Vertex(aNewVertex),
                                    param,
                                    TopoDS::Edge(aNewEdge),
@@ -256,7 +270,9 @@ TopoDS_Shape BRepSweep_Translation::MakeEmptyFace(const TopoDS_Shape&   aGenS,
     S          = occ::down_cast<Geom_Surface>(S->Copy());
     S->Transform(Tr);
     if (aDirS.Index() == 2)
+    {
       S->Translate(myVec);
+    }
   }
   myBuilder.Builder().MakeFace(F, S, toler);
   return F;
@@ -350,7 +366,9 @@ void BRepSweep_Translation::SetGeneratingPCurve(const TopoDS_Shape& aNewFace,
   {
     double v = 0;
     if (aDirV.Index() == 2)
+    {
       v = -myVec.Magnitude();
+    }
     L.SetLocation(gp_Pnt2d(0, v));
     L.SetDirection(gp_Dir2d(gp_Dir2d::D::X));
     //  }
@@ -488,7 +506,9 @@ bool BRepSweep_Translation::HasShape(const TopoDS_Shape& aGenS, const Sweep_NumS
       {
         TopoDS_Face F = TopoDS::Face(FaceExp.Current());
         if (BRepTools::IsReallyClosed(E, F))
+        {
           return false;
+        }
       }
       //  modified by NIZHNY-EAP Fri Dec 24 11:13:21 1999 ___END___
     }

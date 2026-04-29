@@ -27,14 +27,18 @@ Transfer_SimpleBinderOfTransient::Transfer_SimpleBinderOfTransient() = default;
 occ::handle<Standard_Type> Transfer_SimpleBinderOfTransient::ResultType() const
 {
   if (!HasResult() || theres.IsNull())
+  {
     return STANDARD_TYPE(Standard_Transient);
+  }
   return Result()->DynamicType();
 }
 
 const char* Transfer_SimpleBinderOfTransient::ResultTypeName() const
 {
   if (!HasResult() || theres.IsNull())
+  {
     return "(void)";
+  }
   return Result()->DynamicType()->Name();
 }
 
@@ -54,7 +58,9 @@ bool Transfer_SimpleBinderOfTransient::GetTypedResult(const occ::handle<Transfer
                                                       occ::handle<Standard_Transient>&    res)
 {
   if (atype.IsNull())
+  {
     return false;
+  }
   occ::handle<Transfer_Binder> bn = bnd;
   while (!bn.IsNull())
   {
@@ -62,12 +68,18 @@ bool Transfer_SimpleBinderOfTransient::GetTypedResult(const occ::handle<Transfer
       occ::down_cast<Transfer_SimpleBinderOfTransient>(bn);
     bn = bn->NextResult();
     if (trb.IsNull())
+    {
       continue;
+    }
     const occ::handle<Standard_Transient>& rs = trb->Result();
     if (rs.IsNull())
+    {
       continue;
+    }
     if (!rs->IsKind(atype))
+    {
       continue;
+    }
     res = rs;
     return true;
   }

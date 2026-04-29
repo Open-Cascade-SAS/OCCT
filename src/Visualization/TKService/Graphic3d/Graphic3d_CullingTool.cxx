@@ -119,7 +119,9 @@ double Graphic3d_CullingTool::SignedPlanePointDistance(const NCollection_Vec4<do
                                        + theNormal.z() * theNormal.z());
 
   if (aNormLength < gp::Resolution())
+  {
     return 0.0;
+  }
 
   const double anInvNormLength = 1.0 / aNormLength;
   const double aD              = theNormal.w() * anInvNormLength;

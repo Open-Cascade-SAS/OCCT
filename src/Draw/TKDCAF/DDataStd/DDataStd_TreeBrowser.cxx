@@ -53,7 +53,7 @@ DDataStd_TreeBrowser::DDataStd_TreeBrowser(const TDF_Label& aLabel)
 
 void DDataStd_TreeBrowser::DrawOn(Draw_Display& /*dis*/) const
 {
-  std::cout << "DDataStd_TreeBrowser" << std::endl;
+  std::cout << "DDataStd_TreeBrowser" << '\n';
 }
 
 //=================================================================================================
@@ -67,7 +67,7 @@ occ::handle<Draw_Drawable3D> DDataStd_TreeBrowser::Copy() const
 
 void DDataStd_TreeBrowser::Dump(Standard_OStream& S) const
 {
-  S << "DDataStd_TreeBrowser on a label: " << std::endl;
+  S << "DDataStd_TreeBrowser on a label: " << '\n';
   S << myRoot;
 }
 
@@ -122,7 +122,9 @@ TCollection_AsciiString DDataStd_TreeBrowser::OpenNode(const TDF_Label& aLabel) 
     while (!current.IsNull())
     {
       if (split)
+      {
         list.AssignCat(TDF_BrowserSeparator1);
+      }
       OpenNode(current, list);
       split   = true;
       current = current->Next();
@@ -159,9 +161,13 @@ void DDataStd_TreeBrowser::OpenNode(const occ::handle<TDataStd_TreeNode>& aTreeN
   aList.AssignCat(TDF_BrowserSeparator2);
   TCollection_ExtendedString ext;
   if (TDF::ProgIDFromGUID(aTreeNode->ID(), ext))
+  {
     aList.AssignCat(ext);
+  }
   else
+  {
     aList.AssignCat(aTreeNode->DynamicType()->Name());
+  }
   // Executable or Forgotten?  -3
   //  aList.AssignCat(TDF_BrowserSeparator2);
   //   if (aTreeNode->IsExecutable()) aList.AssignCat("Executable");
@@ -173,13 +179,19 @@ void DDataStd_TreeBrowser::OpenNode(const occ::handle<TDataStd_TreeNode>& aTreeN
   // Children?             -3
   aList.AssignCat(TDF_BrowserSeparator2);
   if (aTreeNode->First().IsNull())
+  {
     aList.AssignCat("Null");
+  }
   else
+  {
     aList.AssignCat("First");
+  }
   // Father?                -4
   aList.AssignCat(TDF_BrowserSeparator2);
   if (!aTreeNode->HasFather())
+  {
     aList.AssignCat("Null");
+  }
   else
   {
     TDF_Tool::Entry(aTreeNode->Father()->Label(), tmp);
@@ -188,7 +200,9 @@ void DDataStd_TreeBrowser::OpenNode(const occ::handle<TDataStd_TreeNode>& aTreeN
   // First?                -5
   aList.AssignCat(TDF_BrowserSeparator2);
   if (!aTreeNode->HasFirst())
+  {
     aList.AssignCat("Null");
+  }
   else
   {
     TDF_Tool::Entry(aTreeNode->First()->Label(), tmp);
@@ -197,7 +211,9 @@ void DDataStd_TreeBrowser::OpenNode(const occ::handle<TDataStd_TreeNode>& aTreeN
   // Next?                -6
   aList.AssignCat(TDF_BrowserSeparator2);
   if (!aTreeNode->HasNext())
+  {
     aList.AssignCat("Null");
+  }
   else
   {
     TDF_Tool::Entry(aTreeNode->Next()->Label(), tmp);
@@ -206,7 +222,9 @@ void DDataStd_TreeBrowser::OpenNode(const occ::handle<TDataStd_TreeNode>& aTreeN
   // Previous?                -7
   aList.AssignCat(TDF_BrowserSeparator2);
   if (!aTreeNode->HasPrevious())
+  {
     aList.AssignCat("Null");
+  }
   else
   {
     TDF_Tool::Entry(aTreeNode->Previous()->Label(), tmp);

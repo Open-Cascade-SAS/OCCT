@@ -63,7 +63,9 @@ static void Tangente(const Adaptor3d_Curve& Path, const double Param, gp_Pnt& P,
   }
 
   if (Norm > 100 * gp::Resolution())
+  {
     Tang /= Norm;
+  }
 }
 
 static double Penalite(const double angle, const double dist)
@@ -71,11 +73,17 @@ static double Penalite(const double angle, const double dist)
   double penal;
 
   if (dist < 1)
+  {
     penal = std::sqrt(dist);
+  }
   else if (dist < 2)
+  {
     penal = std::pow(dist, 2);
+  }
   else
+  {
     penal = dist + 2;
+  }
 
   if (angle > 1.e-3)
   {
@@ -94,7 +102,9 @@ static double EvalAngle(const gp_Vec& V1, const gp_Vec& V2)
   double angle;
   angle = V1.Angle(V2);
   if (angle > M_PI / 2)
+  {
     angle = M_PI - angle;
+  }
   return angle;
 }
 
@@ -175,9 +185,13 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const occ::handle<GeomFill_
   // Boite d'encombrement de la section pour en deduire le gabarit
   Bnd_Box box;
   if (myIsPoint)
+  {
     box.Add(myPoint);
+  }
   else
+  {
     BndLib_Add3dCurve::Add(myAdpSection, 1.e-4, box);
+  }
   box.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   double DX = aXmax - aXmin;
@@ -247,15 +261,21 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const occ::handle<GeomFill_
         // Correct boundaries to avoid mistake of LocateU
         occ::handle<Geom_Curve> aCurve = myAdpSection.Curve();
         if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+        {
           aCurve = (occ::down_cast<Geom_TrimmedCurve>(aCurve))->BasisCurve();
+        }
         double Ufirst  = aCurve->FirstParameter();
         double aPeriod = aCurve->Period();
         double U1      = Ufirst + std::floor((first - Ufirst) / aPeriod) * aPeriod;
         double U2      = U1 + aPeriod;
         if (std::abs(first - U1) <= Precision::PConfusion())
+        {
           first = U1;
+        }
         if (std::abs(last - U2) <= Precision::PConfusion())
+        {
           last = U2;
+        }
       }
       double t, delta;
       if (myAdpSection.GetType() == GeomAbs_BSplineCurve)
@@ -269,13 +289,21 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const occ::handle<GeomFill_
         int NbLocalPnts = 10;
         int NbPnts      = (NbKnots - 1) * NbLocalPnts;
         if (NbPnts < 0)
+        {
           NbPnts = 0;
+        }
         if (I1 != I2)
+        {
           NbPnts += NbLocalPnts;
+        }
         if (I3 != I4 && first < BC->Knot(I3))
+        {
           NbPnts += NbLocalPnts;
+        }
         if (!myAdpSection.IsClosed())
+        {
           NbPnts++;
+        }
         Pnts   = new NCollection_HArray1<gp_Pnt>(1, NbPnts);
         int nb = 1;
         if (I1 != I2)
@@ -309,13 +337,17 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const occ::handle<GeomFill_
           }
         }
         if (!myAdpSection.IsClosed())
+        {
           Pnts->SetValue(nb, myAdpSection.Value(last));
+        }
       }
       else // other type
       {
         int NbPnts = NbPoles - 1;
         if (!myAdpSection.IsClosed())
+        {
           NbPnts++;
+        }
         Pnts  = new NCollection_HArray1<gp_Pnt>(1, NbPnts);
         delta = (last - first) / (NbPoles - 1);
         for (i = 0; i < NbPoles - 1; i++)
@@ -324,7 +356,9 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const occ::handle<GeomFill_
           Pnts->SetValue(i + 1, myAdpSection.Value(t));
         }
         if (!myAdpSection.IsClosed())
+        {
           Pnts->SetValue(NbPnts, myAdpSection.Value(last));
+        }
       }
 
       bool   issing;
@@ -398,7 +432,9 @@ void GeomFill_SectionPlacement::Perform(const occ::handle<Adaptor3d_Curve>& Path
     }
     AngleMax = EvalAngle(VRef, dp1);
     if (isplan)
+    {
       AngleMax = M_PI / 2 - AngleMax;
+    }
 
     bool Trouve = false;
     int  ii;
@@ -410,7 +446,9 @@ void GeomFill_SectionPlacement::Perform(const occ::handle<Adaptor3d_Curve>& Path
       gp_Vec V1(PonPath, TheAxe.Location());
       DistPlan = std::abs(V1.Dot(VRef));
       if (DistPlan <= IntTol)
+      {
         DistCenter = V1.Magnitude();
+      }
 
       gp_Pnt Plast = Path->Value(Path->LastParameter());
       V1.SetXYZ(TheAxe.Location().XYZ() - Plast.XYZ());
@@ -707,7 +745,9 @@ void GeomFill_SectionPlacement::Perform(const double Param, const double Tol)
     }
     AngleMax = EvalAngle(VRef, dp1);
     if (isplan)
+    {
       AngleMax = M_PI / 2 - AngleMax;
+    }
   }
 
   done = true;
@@ -770,9 +810,13 @@ gp_Trsf GeomFill_SectionPlacement::Transformation(const bool WithTranslation,
   if (WithTranslation || WithCorrection)
   {
     if (myIsPoint)
+    {
       PSection = myPoint;
+    }
     else
+    {
       PSection = mySection->Value(SecParam);
+    }
   }
   // modified by NIZHNY-MKK  Wed Oct  8 15:03:19 2003.BEGIN
   gp_Trsf Rot;
@@ -782,7 +826,9 @@ gp_Trsf GeomFill_SectionPlacement::Transformation(const bool WithTranslation,
     double angle;
 
     if (!isplan)
+    {
       throw Standard_Failure("Illegal usage: can't rotate non-planar profile");
+    }
 
     gp_Dir ProfileNormal = TheAxe.Direction();
     gp_Dir SpineStartDir = Paxe.Direction();
@@ -913,18 +959,24 @@ bool GeomFill_SectionPlacement::Choix(const double dist, const double angle) con
   evolangle = angle - AngleMax;
   // (1) Si la gain en distance est > que le gabarit, on prend
   if (evoldist < -Gabarit)
+  {
     return true;
+  }
 
   //  (2) si l'ecart en distance est de l'ordre du gabarit
   if (std::abs(evoldist) < Gabarit)
   {
     //  (2.1) si le gain en angle est important on garde
     if (evolangle > 0.5)
+    {
       return true;
+    }
     //  (2.2) si la variation d'angle est moderee on evalue
     //  une fonction de penalite
     if (Penalite(angle, dist / Gabarit) < Penalite(AngleMax, Dist / Gabarit))
+    {
       return true;
+    }
   }
 
   return false;

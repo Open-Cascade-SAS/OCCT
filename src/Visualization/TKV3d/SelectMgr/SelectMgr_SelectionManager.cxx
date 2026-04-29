@@ -46,7 +46,9 @@ void SelectMgr_SelectionManager::Load(const occ::handle<SelectMgr_SelectableObje
                                       const int                                      theMode)
 {
   if (myGlobal.Contains(theObject))
+  {
     return;
+  }
 
   for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildrenIter(
          theObject->Children());
@@ -57,7 +59,9 @@ void SelectMgr_SelectionManager::Load(const occ::handle<SelectMgr_SelectableObje
   }
 
   if (!theObject->HasOwnPresentations())
+  {
     return;
+  }
 
   myGlobal.Add(theObject);
   if (!mySelector->Contains(theObject) && theObject->HasOwnPresentations())
@@ -65,7 +69,9 @@ void SelectMgr_SelectionManager::Load(const occ::handle<SelectMgr_SelectableObje
     mySelector->AddSelectableObject(theObject);
   }
   if (theMode != -1)
+  {
     loadMode(theObject, theMode);
+  }
 }
 
 //=================================================================================================
@@ -81,7 +87,9 @@ void SelectMgr_SelectionManager::Remove(const occ::handle<SelectMgr_SelectableOb
   }
 
   if (!theObject->HasOwnPresentations())
+  {
     return;
+  }
 
   if (myGlobal.Contains(theObject))
   {
@@ -110,7 +118,9 @@ void SelectMgr_SelectionManager::Activate(const occ::handle<SelectMgr_Selectable
                                           const int                                      theMode)
 {
   if (theMode == -1)
+  {
     return;
+  }
 
   for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anChildIter(
          theObject->Children());
@@ -125,7 +135,9 @@ void SelectMgr_SelectionManager::Activate(const occ::handle<SelectMgr_Selectable
     }
   }
   if (!theObject->HasOwnPresentations())
+  {
     return;
+  }
 
   bool isComputed = false;
   if (const occ::handle<SelectMgr_Selection>& aSelOld = theObject->Selection(theMode))
@@ -235,7 +247,9 @@ bool SelectMgr_SelectionManager::IsActivated(
        anChildrenIter.Next())
   {
     if (IsActivated(occ::down_cast<SelectMgr_SelectableObject>(anChildrenIter.Value()), theMode))
+    {
       return true;
+    }
   }
   if (!theObject->HasOwnPresentations())
   {
@@ -547,7 +561,7 @@ void SelectMgr_SelectionManager::buildBVH(const occ::handle<SelectMgr_Selection>
 {
   if (mySelector->ToPrebuildBVH())
   {
-    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIter(
+    for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIter(
            theSelection->Entities());
          anIter.More();
          anIter.Next())

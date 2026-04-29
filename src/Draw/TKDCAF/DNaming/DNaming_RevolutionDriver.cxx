@@ -77,7 +77,9 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
   occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
+  {
     return -1;
+  }
 
   // Save location
   occ::handle<TNaming_NamedShape> aPrevRevol = DNaming::GetFunctionResult(aFunction);
@@ -105,11 +107,15 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
     {
       BRepBuilderAPI_MakeFace aMaker(TopoDS::Wire(aBasis), true); // Makes planar face
       if (aMaker.IsDone())
+      {
         aBASIS = aMaker.Face(); // aMaker.Face();
+      }
     }
   }
   else if (aBasis.ShapeType() == TopAbs_FACE)
+  {
     aBASIS = aBasis;
+  }
   if (aBASIS.IsNull())
   {
     aFunction->SetFailure(WRONG_ARGUMENT);
@@ -194,12 +200,16 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
     }
     bool aVol = false;
     if (aResult.ShapeType() == TopAbs_SOLID)
+    {
       aVol = true;
+    }
     else if (aResult.ShapeType() == TopAbs_SHELL)
     {
       occ::handle<BRepCheck_Shell> aCheck = new BRepCheck_Shell(TopoDS::Shell(aResult));
       if (aCheck->Closed() == BRepCheck_NoError)
+      {
         aVol = true;
+      }
     }
     if (aVol)
     {
@@ -213,9 +223,13 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
     }
     // Naming
     if (anIsAttachment)
+    {
       LoadNamingDS(RESPOSITION(aFunction), aMakeRevol, aBASIS, aContextOfBasis->Get());
+    }
     else
+    {
       LoadNamingDS(RESPOSITION(aFunction), aMakeRevol, aBASIS, aBASIS);
+    }
   }
   else if (aFunction->GetDriverGUID() == SECREVOL_GUID)
   {
@@ -228,7 +242,9 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
     // Reverse
     int aRev = DNaming::GetInteger(aFunction, REVOL_REV)->Get();
     if (aRev)
+    {
       anAXIS.Reverse();
+    }
 
     BRepPrimAPI_MakeRevol aMakeRevol(aBASIS, anAXIS, anANGLE, true);
     aMakeRevol.Build();
@@ -246,12 +262,16 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
     }
     bool aVol = false;
     if (aResult.ShapeType() == TopAbs_SOLID)
+    {
       aVol = true;
+    }
     else if (aResult.ShapeType() == TopAbs_SHELL)
     {
       occ::handle<BRepCheck_Shell> aCheck = new BRepCheck_Shell(TopoDS::Shell(aResult));
       if (aCheck->Closed() == BRepCheck_NoError)
+      {
         aVol = true;
+      }
     }
     if (aVol)
     {
@@ -266,9 +286,13 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
 
     // Naming
     if (anIsAttachment)
+    {
       LoadNamingDS(RESPOSITION(aFunction), aMakeRevol, aBASIS, aContextOfBasis->Get());
+    }
     else
+    {
       LoadNamingDS(RESPOSITION(aFunction), aMakeRevol, aBASIS, aBASIS);
+    }
   }
   else
   {
@@ -278,7 +302,9 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
 
   // restore location
   if (!aLocation.IsIdentity())
+  {
     TNaming::Displace(RESPOSITION(aFunction), aLocation, true);
+  }
 
   theLog->SetValid(RESPOSITION(aFunction), true);
   aFunction->SetFailure(DONE);
@@ -298,14 +324,18 @@ static void LoadSeamEdge(BRepPrimAPI_MakeRevol& mkRevol,
   {
     const TopoDS_Shape& Root = ShapeExplorer.Current();
     if (!View.Add(Root))
+    {
       continue;
+    }
     const NCollection_List<TopoDS_Shape>&    Shapes = mkRevol.Generated(Root);
     NCollection_List<TopoDS_Shape>::Iterator ShapesIterator(Shapes);
     for (; ShapesIterator.More(); ShapesIterator.Next())
     {
       TopoDS_Shape newShape = ShapesIterator.Value();
       if (newShape.ShapeType() != TopAbs_FACE)
+      {
         continue;
+      }
       if (!Root.IsSame(newShape))
       {
         TopExp_Explorer exp(newShape, TopAbs_EDGE);
@@ -333,7 +363,9 @@ static void LoadSeamEdge(BRepPrimAPI_MakeRevol& mkRevol,
 static bool HasDangle(const TopoDS_Shape& ShapeIn)
 {
   if (ShapeIn.ShapeType() == TopAbs_SOLID)
+  {
     return false;
+  }
   else if (ShapeIn.ShapeType() == TopAbs_SHELL)
   {
     occ::handle<BRepCheck_Shell> aCheck = new BRepCheck_Shell(TopoDS::Shell(ShapeIn));
@@ -341,7 +373,9 @@ static bool HasDangle(const TopoDS_Shape& ShapeIn)
   }
   else if (ShapeIn.ShapeType() == TopAbs_FACE || ShapeIn.ShapeType() == TopAbs_WIRE
            || ShapeIn.ShapeType() == TopAbs_EDGE || ShapeIn.ShapeType() == TopAbs_VERTEX)
+  {
     return true;
+  }
   return false;
 }
 
@@ -355,13 +389,19 @@ static void BuildAtomicMap(const TopoDS_Shape&                                  
     for (; it.More(); it.Next())
     {
       if (it.Value().ShapeType() > TopAbs_COMPSOLID)
+      {
         M.Add(it.Value());
+      }
       else
+      {
         BuildAtomicMap(it.Value(), M);
+      }
     }
   }
   else
+  {
     M.Add(S);
+  }
 }
 
 //=================================================================================================
@@ -374,11 +414,17 @@ bool HasDangleShapes(const TopoDS_Shape& ShapeIn)
     BuildAtomicMap(ShapeIn, M);
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator it(M);
     for (; it.More(); it.Next())
+    {
       if (HasDangle(it.Key()))
+      {
         return true;
+      }
+    }
   }
   else
+  {
     return HasDangle(ShapeIn);
+  }
   return false;
 }
 
@@ -398,14 +444,20 @@ void DNaming_RevolutionDriver::LoadNamingDS(const TDF_Label&       theResultLabe
 
   occ::handle<TDF_TagSource> Tagger = TDF_TagSource::Set(theResultLabel);
   if (Tagger.IsNull())
+  {
     return;
+  }
   Tagger->Set(0);
 
   TNaming_Builder Builder(theResultLabel);
   if (Basis.IsEqual(Context))
+  {
     Builder.Generated(MS.Shape());
+  }
   else
+  {
     Builder.Generated(Context, MS.Shape());
+  }
 
   // Insert lateral face : Face from Edge
   TNaming_Builder LateralFaceBuilder(theResultLabel.NewChild());
@@ -416,7 +468,9 @@ void DNaming_RevolutionDriver::LoadNamingDS(const TDF_Label&       theResultLabe
   TopoDS_Shape EndShape   = MS.LastShape();
   bool         isFull(false);
   if (!StartShape.IsNull() && !EndShape.IsNull())
+  {
     isFull = StartShape.IsEqual(EndShape);
+  }
 
   bool          hasDangle = HasDangleShapes(MS.Shape());
   bool          isBasisClosed(true);

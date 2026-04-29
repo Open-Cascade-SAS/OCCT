@@ -45,7 +45,9 @@ FEmTool_LinearJerk::FEmTool_LinearJerk(const int WorkDegree, const GeomAbs_Shape
   if (myOrder != Order)
   {
     if (WorkDegree > WDeg)
+    {
       throw Standard_ConstructionError("Degree too high");
+    }
     Order        = myOrder;
     int DerOrder = 3;
 
@@ -78,7 +80,9 @@ FEmTool_LinearJerk::FEmTool_LinearJerk(const int WorkDegree, const GeomAbs_Shape
 occ::handle<NCollection_HArray2<int>> FEmTool_LinearJerk::DependenceTable() const
 {
   if (myCoeff.IsNull())
+  {
     throw Standard_DomainError("FEmTool_LinearJerk::DependenceTable");
+  }
 
   occ::handle<NCollection_HArray2<int>> DepTab = new NCollection_HArray2<int>(myCoeff->LowerCol(),
                                                                               myCoeff->UpperCol(),
@@ -87,7 +91,9 @@ occ::handle<NCollection_HArray2<int>> FEmTool_LinearJerk::DependenceTable() cons
                                                                               0);
   int                                   i;
   for (i = myCoeff->LowerCol(); i <= myCoeff->UpperCol(); i++)
+  {
     DepTab->SetValue(i, i, 1);
+  }
 
   return DepTab;
 }
@@ -111,13 +117,17 @@ double FEmTool_LinearJerk::Value()
     k1    = (i <= myOrder) ? i : i - myOrder - 1;
     mfact = std::pow(coeff, k1);
     for (dim = 1; dim <= NbDim; dim++)
+    {
       NewCoeff(dim, i) = myCoeff->Value(j0 + i, dim) * mfact;
+    }
   }
 
   for (i = degH + 1; i <= deg; i++)
   {
     for (dim = 1; dim <= NbDim; dim++)
+    {
       NewCoeff(dim, i) = myCoeff->Value(j0 + i, dim);
+    }
   }
 
   for (dim = 1; dim <= NbDim; dim++)
@@ -129,11 +139,15 @@ double FEmTool_LinearJerk::Value()
       Jline = 0.5 * RefMatrix(i, i) * NewCoeff(dim, i);
 
       for (j = 0; j < i; j++)
+      {
         Jline += RefMatrix(i, j) * NewCoeff(dim, j);
+      }
 
       J += Jline * NewCoeff(dim, i);
       if (J < 0.)
+      {
         J = 0.;
+      }
     }
   }
 
@@ -147,10 +161,14 @@ void FEmTool_LinearJerk::Hessian(const int Dimension1, const int Dimension2, mat
 
   if (Dimension1 < DepTab->LowerRow() || Dimension1 > DepTab->UpperRow()
       || Dimension2 < DepTab->LowerCol() || Dimension2 > DepTab->UpperCol())
+  {
     throw Standard_OutOfRange("FEmTool_LinearJerk::Hessian");
+  }
 
   if (DepTab->Value(Dimension1, Dimension2) == 0)
+  {
     throw Standard_DomainError("FEmTool_LinearJerk::Hessian");
+  }
 
   int deg  = std::min(RefMatrix.UpperRow(), H.RowNumber() - 1),
       degH = std::min(2 * myOrder + 1, deg);
@@ -172,7 +190,9 @@ void FEmTool_LinearJerk::Hessian(const int Dimension1, const int Dimension2, mat
       k2        = (j <= myOrder) ? j : j - myOrder - 1;
       H(i1, j1) = mfact * std::pow(coeff, k2) * RefMatrix(i, j);
       if (i != j)
+      {
         H(j1, i1) = H(i1, j1);
+      }
       j1++;
     }
     // Hermite*Jacobi part of matrix
@@ -195,7 +215,9 @@ void FEmTool_LinearJerk::Hessian(const int Dimension1, const int Dimension2, mat
     {
       H(i1, j1) = cteh3 * RefMatrix(i, j);
       if (i != j)
+      {
         H(j1, i1) = H(i1, j1);
+      }
       j1++;
     }
     i1++;
@@ -205,14 +227,18 @@ void FEmTool_LinearJerk::Hessian(const int Dimension1, const int Dimension2, mat
 void FEmTool_LinearJerk::Gradient(const int Dimension, math_Vector& G)
 {
   if (Dimension < myCoeff->LowerCol() || Dimension > myCoeff->UpperCol())
+  {
     throw Standard_OutOfRange("FEmTool_LinearJerk::Gradient");
+  }
 
   int deg = std::min(G.Length() - 1, myCoeff->ColLength() - 1);
 
   math_Vector X(0, deg);
   int         i, i1 = myCoeff->LowerRow();
   for (i = 0; i <= deg; i++)
+  {
     X(i) = myCoeff->Value(i1 + i, Dimension);
+  }
 
   math_Matrix H(0, deg, 0, deg);
   Hessian(Dimension, Dimension, H);

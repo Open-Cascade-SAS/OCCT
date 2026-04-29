@@ -37,7 +37,9 @@ void StepData::AddHeaderProtocol(const occ::handle<StepData_Protocol>& header)
 {
   InitHandle(StepData_Protocol, theheader);
   if (theheader.IsNull())
+  {
     theheader = header;
+  }
   else
   {
     DeclareAndCast(StepData_FileProtocol, headmult, theheader);

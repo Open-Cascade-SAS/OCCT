@@ -72,17 +72,25 @@ void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams(
     {
       fontEnt = GetCasted(IGESGraph_TextFontDef, PR.ParamEntity(IR, curnum));
       if (fontEnt.IsNull())
+      {
         PR.AddFail("Font Entity : incorrect reference");
+      }
     }
   }
   else
+  {
     fontCode = 1; // Default Value
+  }
 
   if (PR.DefinedElseSkip())
+  {
     // Reading slantAngle(Real)
     PR.ReadReal(PR.Current(), "Slant Angle", slantAngle); // szv#4:S4163:12Mar99 `st=` not needed
+  }
   else
+  {
     slantAngle = M_PI / 2.0; // Default Value
+  }
 
   // Reading rotationAngle(Real)
   // clang-format off
@@ -120,9 +128,13 @@ void IGESGraph_ToolTextDisplayTemplate::WriteOwnParams(
   IW.Send(ent->BoxHeight());
 
   if (ent->IsFontEntity())
+  {
     IW.Send(ent->FontEntity(), true); // negative
+  }
   else
+  {
     IW.Send(ent->FontCode());
+  }
 
   IW.Send(ent->SlantAngle());
   IW.Send(ent->RotationAngle());
@@ -138,7 +150,9 @@ void IGESGraph_ToolTextDisplayTemplate::OwnShared(
   Interface_EntityIterator&                         iter) const
 {
   if (ent->IsFontEntity())
+  {
     iter.GetOneItem(ent->FontEntity());
+  }
 }
 
 void IGESGraph_ToolTextDisplayTemplate::OwnCopy(
@@ -160,9 +174,13 @@ void IGESGraph_ToolTextDisplayTemplate::OwnCopy(
   boxHeight = another->BoxHeight();
 
   if (another->IsFontEntity())
+  {
     fontEntity = occ::down_cast<IGESGraph_TextFontDef>(TC.Transferred(another->FontEntity()));
+  }
   else
+  {
     fontCode = another->FontCode();
+  }
 
   slantAngle    = another->SlantAngle();
   rotationAngle = another->RotationAngle();
@@ -219,7 +237,9 @@ void IGESGraph_ToolTextDisplayTemplate::OwnDump(
     dumper.Dump(ent->FontEntity(), S, sublevel);
   }
   else
+  {
     S << "Font code : " << ent->FontCode();
+  }
 
   S << "\n"
     << "Slant angle    : " << ent->SlantAngle() << "  "
@@ -227,9 +247,13 @@ void IGESGraph_ToolTextDisplayTemplate::OwnDump(
     << "Mirror flag    : " << ent->MirrorFlag() << "  "
     << "Rotate flag    : " << ent->RotateFlag() << "\n";
   if (ent->FormNumber() == 0)
+  {
     S << "Lower Left Corner coordinates : ";
+  }
   else
+  {
     S << "Increments from coordinates : ";
+  }
   IGESData_DumpXYZL(S, level, ent->StartingCorner(), ent->Location());
-  S << std::endl;
+  S << '\n';
 }

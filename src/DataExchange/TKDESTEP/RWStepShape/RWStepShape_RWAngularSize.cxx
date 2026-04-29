@@ -35,7 +35,9 @@ void RWStepShape_RWAngularSize::ReadStep(const occ::handle<StepData_StepReaderDa
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "angular_size"))
+  {
     return;
+  }
 
   // Inherited fields of DimensionalSize
 
@@ -61,16 +63,26 @@ void RWStepShape_RWAngularSize::ReadStep(const occ::handle<StepData_StepReaderDa
   {
     const char* text = data->ParamCValue(num, 3);
     if (strcmp(text, ".EQUAL.") == 0)
+    {
       aAngleSelection = StepShape_Equal;
+    }
     else if (strcmp(text, ".LARGE.") == 0)
+    {
       aAngleSelection = StepShape_Large;
+    }
     else if (strcmp(text, ".SMALL.") == 0)
+    {
       aAngleSelection = StepShape_Small;
+    }
     else
+    {
       ach->AddFail("Parameter #3 (angle_selection) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #3 (angle_selection) is not enumeration");
+  }
 
   // Initialize entity
   ent->Init(aDimensionalSize_AppliesTo, aDimensionalSize_Name, aAngleSelection);

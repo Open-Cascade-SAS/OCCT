@@ -41,7 +41,9 @@
 static int extendcurve(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   occ::handle<Geom_BoundedCurve> GB = occ::down_cast<Geom_BoundedCurve>(DrawTrSurf::GetCurve(a[1]));
   if (GB.IsNull())
@@ -52,7 +54,9 @@ static int extendcurve(Draw_Interpretor& di, int n, const char** a)
 
   gp_Pnt P;
   if (!DrawTrSurf::GetPoint(a[2], P))
+  {
     return 1;
+  }
   bool apres = true;
   if (n == 5)
   {
@@ -72,7 +76,9 @@ static int extendcurve(Draw_Interpretor& di, int n, const char** a)
 static int extendsurf(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   occ::handle<Geom_BoundedSurface> GB =
     occ::down_cast<Geom_BoundedSurface>(DrawTrSurf::GetSurface(a[1]));
@@ -114,7 +120,9 @@ static int extendsurf(Draw_Interpretor& di, int n, const char** a)
 static int samerange(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
   occ::handle<Geom2d_Curve> C = DrawTrSurf::GetCurve2d(a[2]);
   occ::handle<Geom2d_Curve> Res;
   double                    f, l, rf, rl;
@@ -205,7 +213,9 @@ void GeomliteTest::ModificationCommands(Draw_Interpretor& theCommands)
 {
   static bool loaded = false;
   if (loaded)
+  {
     return;
+  }
   loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);

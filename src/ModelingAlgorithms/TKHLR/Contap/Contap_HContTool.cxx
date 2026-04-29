@@ -44,7 +44,9 @@ int Contap_HContTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
       nbs = S->NbVKnots();
       nbs *= S->VDegree();
       if (nbs < 2)
+      {
         nbs = 2;
+      }
     }
     break;
     case GeomAbs_Cylinder:
@@ -86,7 +88,9 @@ int Contap_HContTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
       nbs = S->NbUKnots();
       nbs *= S->UDegree();
       if (nbs < 2)
+      {
         nbs = 2;
+      }
     }
     break;
     case GeomAbs_Torus: {
@@ -160,12 +164,18 @@ int Contap_HContTool::NbSamplePoints(const occ::handle<Adaptor3d_Surface>& S)
   {
     int m = (NbSamplesU(S, uinf, usup) / 3) * (NbSamplesV(S, vinf, vsup) / 3);
     if (m > 5)
+    {
       return (m);
+    }
     else
+    {
       return (5);
+    }
   }
   else
+  {
     return 5;
+  }
 }
 
 void Contap_HContTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,

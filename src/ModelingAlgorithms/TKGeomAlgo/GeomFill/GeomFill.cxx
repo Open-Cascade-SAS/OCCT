@@ -237,7 +237,9 @@ void GeomFill::GetMinimalWeights(const Convert_ParameterisationType TConv,
 
 {
   if (TConv == Convert_Polynomial)
+  {
     Weights.Init(1);
+  }
   else
   {
     gp_Ax2                         popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
@@ -382,9 +384,13 @@ void GeomFill::GetCircle(const Convert_ParameterisationType TConv,
   if (Sina < 0.)
   {
     if (Cosa > 0.)
+    {
       Angle = -Angle;
+    }
     else
+    {
       Angle = 2. * M_PI - Angle;
+    }
   }
 
   switch (TConv)
@@ -483,9 +489,13 @@ bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
   if (Sina < 0.)
   {
     if (Cosa > 0.)
+    {
       Angle = -Angle;
+    }
     else
+    {
       Angle = 2. * M_PI - Angle;
+    }
   }
 
   if (std::abs(Sina) > std::abs(Cosa))
@@ -648,9 +658,13 @@ bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
   if (Sina < 0.)
   {
     if (Cosa > 0.)
+    {
       Angle = -Angle;
+    }
     else
+    {
       Angle = 2. * M_PI - Angle;
+    }
   }
 
   if (std::abs(Sina) > std::abs(Cosa))

@@ -198,7 +198,9 @@ Geom2d_Curve::ResD3 Geom2d_Circle::EvalD3(const double U) const
 gp_Vec2d Geom2d_Circle::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom2d_UndefinedDerivative();
+  }
   return ElCLib::CircleDN(U, pos, radius, N);
 }
 

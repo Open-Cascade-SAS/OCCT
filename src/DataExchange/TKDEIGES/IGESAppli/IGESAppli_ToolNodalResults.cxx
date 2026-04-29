@@ -74,17 +74,25 @@ void IGESAppli_ToolNodalResults::ReadOwnParams(const occ::handle<IGESAppli_Nodal
       occ::handle<IGESAppli_Node> aNode;
 
       if (PR.ReadInteger(PR.Current(), "Node no. identifier", aitem))
+      {
         tempNodeIdentifiers->SetValue(i, aitem);
+      }
       if (PR.ReadEntity(IR, PR.Current(), "FEM Node", STANDARD_TYPE(IGESAppli_Node), aNode))
+      {
         tempNodes->SetValue(i, aNode);
+      }
       if (tempFlag)
+      {
         // Check  whether nbval properly read or not.
         for (int j = 1; j <= nbval; j++)
         {
           double aval;
           if (PR.ReadReal(PR.Current(), "Value", aval))
+          {
             tempData->SetValue(i, j, aval);
+          }
         }
+      }
     }
   }
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -106,7 +114,9 @@ void IGESAppli_ToolNodalResults::WriteOwnParams(const occ::handle<IGESAppli_Noda
     IW.Send(ent->NodeIdentifier(i));
     IW.Send(ent->Node(i));
     for (int j = 1; j <= nbdata; j++)
+    {
       IW.Send(ent->Data(i, j));
+    }
   }
 }
 
@@ -116,7 +126,9 @@ void IGESAppli_ToolNodalResults::OwnShared(const occ::handle<IGESAppli_NodalResu
   int nbnodes = ent->NbNodes();
   iter.GetOneItem(ent->Note());
   for (int i = 1; i <= nbnodes; i++)
+  {
     iter.GetOneItem(ent->Node(i));
+  }
 }
 
 void IGESAppli_ToolNodalResults::OwnCopy(const occ::handle<IGESAppli_NodalResults>& another,
@@ -141,7 +153,9 @@ void IGESAppli_ToolNodalResults::OwnCopy(const occ::handle<IGESAppli_NodalResult
     DeclareAndCast(IGESAppli_Node, anentity, TC.Transferred(another->Node(i)));
     aNodes->SetValue(i, anentity);
     for (int j = 1; j <= nbval; j++)
+    {
       aData->SetValue(i, j, another->Data(i, j));
+    }
   }
 
   ent->Init(aNote, aSubCaseNum, aTime, aNodeIdentifiers, aNodes, aData);
@@ -173,150 +187,222 @@ void IGESAppli_ToolNodalResults::OwnCheck(const occ::handle<IGESAppli_NodalResul
   {
     case 0:
       if (nv < 0)
+      {
         OK = false;
+      }
       break;
     case 1:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 2:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 3:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 4:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 5:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 6:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 7:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 8:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 9:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 10:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 11:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 12:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 13:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 14:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 15:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 16:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 17:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 18:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 19:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 20:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 21:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 22:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 23:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 24:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 25:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 26:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 27:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 28:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 29:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 30:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 31:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 32:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 33:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 34:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     default:
       ach->AddFail("Incorrect Form Number");
       break;
   }
   if (!OK)
+  {
     ach->AddFail("Incorrect count of real values in array V for FEM node");
+  }
 }
 
 void IGESAppli_ToolNodalResults::OwnDump(const occ::handle<IGESAppli_NodalResults>& ent,
@@ -339,7 +425,9 @@ void IGESAppli_ToolNodalResults::OwnDump(const occ::handle<IGESAppli_NodalResult
   S << "Nodes :\n";
   S << "Data : ";
   if (level < 6)
+  {
     S << " [ask level > 5]";
+  }
   //  IGESData_DumpRectVals(S ,-level,1, ent->NbData(),ent->Data);
   S << "\n";
   if (level > 4)
@@ -352,10 +440,14 @@ void IGESAppli_ToolNodalResults::OwnDump(const occ::handle<IGESAppli_NodalResult
       dumper.Dump(ent->Node(i), S, 1);
       S << "\n";
       if (level < 6)
+      {
         continue;
+      }
       S << "Data : [ ";
       for (int j = 1; j <= ent->NbData(); j++)
+      {
         S << "  " << ent->Data(i, j);
+      }
       S << " ]\n";
     }
   }

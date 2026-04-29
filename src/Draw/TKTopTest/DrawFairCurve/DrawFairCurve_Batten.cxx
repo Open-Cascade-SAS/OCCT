@@ -95,9 +95,13 @@ void DrawFairCurve_Batten::SetSlope(const double Slope)
 double DrawFairCurve_Batten::GetAngle(const int Side) const
 {
   if (Side == 1)
+  {
     return ((FairCurve_Batten*)MyBatten)->GetAngle1();
+  }
   else
+  {
     return ((FairCurve_Batten*)MyBatten)->GetAngle2();
+  }
 }
 
 double DrawFairCurve_Batten::GetSliding() const
@@ -114,9 +118,13 @@ void DrawFairCurve_Batten::FreeSliding()
 void DrawFairCurve_Batten::FreeAngle(const int Side)
 {
   if (Side == 1)
+  {
     ((FairCurve_Batten*)MyBatten)->SetConstraintOrder1(0);
+  }
   else
+  {
     ((FairCurve_Batten*)MyBatten)->SetConstraintOrder2(0);
+  }
 
   Compute();
 }

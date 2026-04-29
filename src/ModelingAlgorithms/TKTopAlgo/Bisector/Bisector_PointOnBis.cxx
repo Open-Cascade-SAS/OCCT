@@ -132,8 +132,8 @@ bool Bisector_PointOnBis::IsInfinite() const
 
 void Bisector_PointOnBis::Dump() const
 {
-  std::cout << "Param1    :" << param1 << std::endl;
-  std::cout << "Param2    :" << param2 << std::endl;
-  std::cout << "Param Bis :" << paramBis << std::endl;
-  std::cout << "Distance  :" << distance << std::endl;
+  std::cout << "Param1    :" << param1 << '\n';
+  std::cout << "Param2    :" << param2 << '\n';
+  std::cout << "Param Bis :" << paramBis << '\n';
+  std::cout << "Distance  :" << distance << '\n';
 }

@@ -36,29 +36,53 @@ StepAP242_IdAttributeSelect::StepAP242_IdAttributeSelect() = default;
 int StepAP242_IdAttributeSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Action)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Address)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ApplicationContext)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Group)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductCategory)))
+  {
     return 8;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition)))
+  {
     return 9;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+  {
     return 10;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+  {
     return 11;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship)))
+  {
     return 12;
+  }
   return 0;
 }
 

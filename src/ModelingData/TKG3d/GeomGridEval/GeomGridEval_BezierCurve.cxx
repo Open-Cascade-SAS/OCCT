@@ -44,7 +44,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BezierCurve::EvaluateGrid(
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const int                  aNb = theParams.Size();
+  const int                  aNb = theParams.Length();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
   occ::handle<BSplCLib_Cache> aCache = CreateBezierCache(myGeom);
@@ -68,7 +68,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   occ::handle<BSplCLib_Cache> aCache = CreateBezierCache(myGeom);
@@ -93,7 +93,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   occ::handle<BSplCLib_Cache> aCache = CreateBezierCache(myGeom);
@@ -118,7 +118,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   occ::handle<BSplCLib_Cache> aCache = CreateBezierCache(myGeom);
@@ -144,7 +144,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
     return NCollection_Array1<gp_Vec>();
   }
 
-  const int                  aNb = theParams.Size();
+  const int                  aNb = theParams.Length();
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   // For Bezier curves, derivatives become zero when order exceeds degree

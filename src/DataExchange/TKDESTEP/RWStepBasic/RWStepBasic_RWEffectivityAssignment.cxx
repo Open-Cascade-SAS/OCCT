@@ -36,7 +36,9 @@ void RWStepBasic_RWEffectivityAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "effectivity_assignment"))
+  {
     return;
+  }
 
   // Own fields of EffectivityAssignment
 

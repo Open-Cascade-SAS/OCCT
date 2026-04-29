@@ -106,11 +106,15 @@ bool Prs3d::MatchSegment(const double  X,
   double DZ   = Z2 - Z1;
   double Dist = DX * DX + DY * DY + DZ * DZ;
   if (Dist == 0.)
+  {
     return false;
+  }
 
   double Lambda = ((X - X1) * DX + (Y - Y1) * DY + (Z - Z1) * DZ) / Dist;
   if (Lambda < 0. || Lambda > 1.)
+  {
     return false;
+  }
   dist = std::abs(X - X1 - Lambda * DX) + std::abs(Y - Y1 - Lambda * DY)
          + std::abs(Z - Z1 - Lambda * DZ);
   return (dist < aDistance);
@@ -133,7 +137,7 @@ occ::handle<Graphic3d_ArrayOfPrimitives> Prs3d::PrimitivesFromPolylines(
   {
     aNbVertices += anIt.Value()->Length();
   }
-  const int                              aSegmentEdgeNb = (aNbVertices - thePoints.Size()) * 2;
+  const int                              aSegmentEdgeNb = (aNbVertices - thePoints.Length()) * 2;
   occ::handle<Graphic3d_ArrayOfSegments> aSegments =
     new Graphic3d_ArrayOfSegments(aNbVertices, aSegmentEdgeNb);
   for (NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator anIt(thePoints);

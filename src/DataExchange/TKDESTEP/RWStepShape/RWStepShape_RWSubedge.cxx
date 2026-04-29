@@ -35,7 +35,9 @@ void RWStepShape_RWSubedge::ReadStep(const occ::handle<StepData_StepReaderData>&
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "subedge"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

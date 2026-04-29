@@ -17,7 +17,7 @@
 #include <BRepGraph.hxx>
 
 #include <BRepGraph_NodeId.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -61,8 +61,8 @@ public:
     int NbMergedWires    = 0;
     int NbMergedFaces    = 0;
 
-    NCollection_Vector<BRepGraph_FaceId> AffectedFaces; //!< Faces whose SurfNodeId changed.
-    NCollection_Vector<BRepGraph_EdgeId> AffectedEdges; //!< Edges whose CurveNodeId changed.
+    NCollection_DynamicArray<BRepGraph_FaceId> AffectedFaces; //!< Faces whose SurfNodeId changed.
+    NCollection_DynamicArray<BRepGraph_EdgeId> AffectedEdges; //!< Edges whose CurveNodeId changed.
   };
 
   //! Run deduplication on a built graph.

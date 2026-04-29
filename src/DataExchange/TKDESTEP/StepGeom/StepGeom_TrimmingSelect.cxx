@@ -23,9 +23,13 @@ StepGeom_TrimmingSelect::StepGeom_TrimmingSelect() = default;
 int StepGeom_TrimmingSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_CartesianPoint)))
+  {
     return 1;
+  }
   return 0;
 }
 
@@ -37,13 +41,19 @@ occ::handle<StepData_SelectMember> StepGeom_TrimmingSelect::NewMember() const
 int StepGeom_TrimmingSelect::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   Interface_ParamType type = ent->ParamType();
   //  Void : on admet "non defini" (en principe, on ne devrait pas)
   if (type != Interface_ParamVoid && type != Interface_ParamReal)
+  {
     return 0;
+  }
   if (ent->Matches("PARAMETER_VALUE"))
+  {
     return 1;
+  }
   return 0;
 }
 

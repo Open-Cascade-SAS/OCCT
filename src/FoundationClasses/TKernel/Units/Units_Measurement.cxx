@@ -19,13 +19,14 @@
 #include <Units_Operators.hxx>
 #include <Units_Token.hxx>
 #include <Units_UnitSentence.hxx>
+#include <Message.hxx>
 
 //=================================================================================================
 
 Units_Measurement::Units_Measurement()
 {
   themeasurement = 0.;
-  myHasToken     = false;
+  myToken        = nullptr;
 }
 
 //=================================================================================================
@@ -33,8 +34,7 @@ Units_Measurement::Units_Measurement()
 Units_Measurement::Units_Measurement(const double avalue, const occ::handle<Units_Token>& atoken)
 {
   themeasurement = avalue;
-  thetoken       = atoken;
-  myHasToken     = true;
+  myToken        = atoken;
 }
 
 //=================================================================================================
@@ -45,17 +45,13 @@ Units_Measurement::Units_Measurement(const double avalue, const char* const auni
   Units_UnitSentence unit(aunit);
   if (!unit.IsDone())
   {
-#ifdef OCCT_DEBUG
-    std::cout << "can not create Units_Measurement - incorrect unit" << std::endl;
-#endif
-    myHasToken = false;
+    myToken = nullptr;
   }
   else
   {
-    thetoken = unit.Evaluate();
-    thetoken->Word(aunit);
-    thetoken->Mean("U");
-    myHasToken = true;
+    myToken = unit.Evaluate();
+    myToken->Word(aunit);
+    myToken->Mean("U");
   }
 }
 
@@ -63,12 +59,19 @@ Units_Measurement::Units_Measurement(const double avalue, const char* const auni
 
 void Units_Measurement::Convert(const char* const aunit)
 {
-  occ::handle<Units_Token> oldtoken = thetoken;
-  Units_UnitSentence       newunit(aunit);
+  occ::handle<Units_Token> oldtoken = myToken;
+  if (oldtoken.IsNull())
+  {
+    Message::SendWarning()
+      << "Units_Measurement: can not convert - incorrect unit => result is not correct";
+    return;
+  }
+
+  Units_UnitSentence newunit(aunit);
   if (!newunit.IsDone())
   {
-    std::cout << "Units_Measurement: can not convert - incorrect unit => result is not correct"
-              << std::endl;
+    Message::SendWarning() << "Units_Measurement: can not convert - incorrect unit '" << aunit
+                           << "' => result is not correct";
     return;
   }
   occ::handle<Units_Token>      newtoken   = newunit.Evaluate();
@@ -77,32 +80,26 @@ void Units_Measurement::Convert(const char* const aunit)
 
   if (dimensions->IsEqual(Units::NullDimensions()))
   {
-    thetoken = new Units_Token(aunit, "U");
-    thetoken->Value(((newunit.Sequence())->Value(1))->Value());
-    thetoken->Dimensions(((newunit.Sequence())->Value(1))->Dimensions());
+    myToken = new Units_Token(aunit, "U");
+    myToken->Value(((newunit.Sequence())->Value(1))->Value());
+    myToken->Dimensions(((newunit.Sequence())->Value(1))->Dimensions());
     themeasurement = oldtoken->Multiplied(themeasurement);
     themeasurement = newtoken->Divided(themeasurement);
   }
-#ifdef OCCT_DEBUG
-  else
-  {
-    std::cout << " The units don't have the same physical dimensions" << std::endl;
-  }
-#endif
 }
 
 //=================================================================================================
 
 Units_Measurement Units_Measurement::Integer() const
 {
-  return Units_Measurement((int)themeasurement, thetoken);
+  return Units_Measurement((int)themeasurement, myToken);
 }
 
 //=================================================================================================
 
 Units_Measurement Units_Measurement::Fractional() const
 {
-  return Units_Measurement(themeasurement - (int)themeasurement, thetoken);
+  return Units_Measurement(themeasurement - (int)themeasurement, myToken);
 }
 
 //=================================================================================================
@@ -116,7 +113,7 @@ double Units_Measurement::Measurement() const
 
 occ::handle<Units_Token> Units_Measurement::Token() const
 {
-  return thetoken;
+  return myToken;
 }
 
 //=================================================================================================
@@ -125,12 +122,14 @@ Units_Measurement Units_Measurement::Add(const Units_Measurement& ameasurement) 
 {
   double            value;
   Units_Measurement measurement;
-  if (thetoken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
+  if (myToken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
+  {
     return measurement;
+  }
   value                          = ameasurement.Token()->Multiplied(ameasurement.Measurement());
-  value                          = thetoken->Divided(value);
+  value                          = myToken->Divided(value);
   value                          = themeasurement + value;
-  occ::handle<Units_Token> token = thetoken->Creates();
+  occ::handle<Units_Token> token = myToken->Creates();
   return Units_Measurement(value, token);
 }
 
@@ -140,12 +139,14 @@ Units_Measurement Units_Measurement::Subtract(const Units_Measurement& ameasurem
 {
   double            value;
   Units_Measurement measurement;
-  if (thetoken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
+  if (myToken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
+  {
     return measurement;
+  }
   value                          = ameasurement.Token()->Multiplied(ameasurement.Measurement());
-  value                          = thetoken->Divided(value);
+  value                          = myToken->Divided(value);
   value                          = themeasurement - value;
-  occ::handle<Units_Token> token = thetoken->Creates();
+  occ::handle<Units_Token> token = myToken->Creates();
   return Units_Measurement(value, token);
 }
 
@@ -154,7 +155,7 @@ Units_Measurement Units_Measurement::Subtract(const Units_Measurement& ameasurem
 Units_Measurement Units_Measurement::Multiply(const Units_Measurement& ameasurement) const
 {
   double                   value = themeasurement * ameasurement.Measurement();
-  occ::handle<Units_Token> token = thetoken * ameasurement.Token();
+  occ::handle<Units_Token> token = myToken * ameasurement.Token();
   return Units_Measurement(value, token);
 }
 
@@ -163,7 +164,7 @@ Units_Measurement Units_Measurement::Multiply(const Units_Measurement& ameasurem
 Units_Measurement Units_Measurement::Multiply(const double avalue) const
 {
   double                   value = themeasurement * avalue;
-  occ::handle<Units_Token> token = thetoken->Creates();
+  occ::handle<Units_Token> token = myToken->Creates();
   return Units_Measurement(value, token);
 }
 
@@ -172,7 +173,7 @@ Units_Measurement Units_Measurement::Multiply(const double avalue) const
 Units_Measurement Units_Measurement::Divide(const Units_Measurement& ameasurement) const
 {
   double                   value = themeasurement / ameasurement.Measurement();
-  occ::handle<Units_Token> token = thetoken / ameasurement.Token();
+  occ::handle<Units_Token> token = myToken / ameasurement.Token();
   return Units_Measurement(value, token);
 }
 
@@ -181,7 +182,7 @@ Units_Measurement Units_Measurement::Divide(const Units_Measurement& ameasuremen
 Units_Measurement Units_Measurement::Divide(const double avalue) const
 {
   double                   value = themeasurement / avalue;
-  occ::handle<Units_Token> token = thetoken->Creates();
+  occ::handle<Units_Token> token = myToken->Creates();
   return Units_Measurement(value, token);
 }
 
@@ -190,7 +191,7 @@ Units_Measurement Units_Measurement::Divide(const double avalue) const
 Units_Measurement Units_Measurement::Power(const double anexponent) const
 {
   double                   value = pow(themeasurement, anexponent);
-  occ::handle<Units_Token> token = pow(thetoken, anexponent);
+  occ::handle<Units_Token> token = pow(myToken, anexponent);
   return Units_Measurement(value, token);
 }
 
@@ -198,15 +199,15 @@ Units_Measurement Units_Measurement::Power(const double anexponent) const
 
 bool Units_Measurement::HasToken() const
 {
-  return myHasToken;
+  return !myToken.IsNull();
 }
 
 //=================================================================================================
 
 void Units_Measurement::Dump() const
 {
-  std::cout << " Measurement : " << themeasurement << std::endl;
-  thetoken->Dump(1, 1);
+  Message::SendInfo() << " Measurement : " << themeasurement;
+  myToken->Dump(1, 1);
 }
 
 #ifdef BUG

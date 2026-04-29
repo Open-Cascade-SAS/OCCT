@@ -35,11 +35,17 @@ void StepData_FreeFormEntity::SetNext(const occ::handle<StepData_FreeFormEntity>
                                       const bool                                  last)
 {
   if (next.IsNull())
+  {
     thenext.Nullify();
+  }
   else if (thenext.IsNull())
+  {
     thenext = next;
+  }
   else if (last)
+  {
     thenext->SetNext(next);
+  }
   else
   {
     next->SetNext(thenext, last);
@@ -62,9 +68,13 @@ occ::handle<StepData_FreeFormEntity> StepData_FreeFormEntity::Typed(const char* 
 {
   occ::handle<StepData_FreeFormEntity> res;
   if (thetype.IsEqual(typenam))
+  {
     return this;
+  }
   if (thenext.IsNull())
+  {
     return res;
+  }
   return thenext->Typed(typenam);
 }
 
@@ -87,9 +97,13 @@ bool StepData_FreeFormEntity::Reorder(occ::handle<StepData_FreeFormEntity>& ent)
 {
   // Reorder complex entities to ensure alphabetical sorting of entity types
   if (ent.IsNull())
+  {
     return false;
+  }
   if (!ent->IsComplex())
+  {
     return false;
+  }
   bool                                 afr = false; // flag: any reordering needed
   occ::handle<StepData_FreeFormEntity> e1  = ent;
   occ::handle<StepData_FreeFormEntity> e2  = ent->Next();
@@ -105,7 +119,9 @@ bool StepData_FreeFormEntity::Reorder(occ::handle<StepData_FreeFormEntity>& ent)
     e2 = e1->Next();
   }
   if (!afr)
+  {
     return afr;
+  }
   //  Reordering using a dictionary (map) to sort entity types alphabetically
   e1 = ent;
   e2.Nullify();
@@ -123,7 +139,9 @@ bool StepData_FreeFormEntity::Reorder(occ::handle<StepData_FreeFormEntity>& ent)
   {
     e1 = GetCasted(StepData_FreeFormEntity, iter.Value());
     if (!e1.IsNull())
+    {
       e1->SetNext(e2);
+    }
   }
   //  ... then rebuild the chain in alphabetical order
   e1.Nullify();
@@ -134,7 +152,9 @@ bool StepData_FreeFormEntity::Reorder(occ::handle<StepData_FreeFormEntity>& ent)
   {
     e2 = GetCasted(StepData_FreeFormEntity, iter.Value());
     if (!e1.IsNull())
+    {
       e1->SetNext(e2);
+    }
     e1 = e2;
   }
 
@@ -146,9 +166,13 @@ void StepData_FreeFormEntity::SetNbFields(const int nb)
 {
   // Initialize the array of fields for this entity
   if (nb <= 0)
+  {
     thefields.Nullify();
+  }
   else
+  {
     thefields = new NCollection_HArray1<StepData_Field>(1, nb);
+  }
 }
 
 int StepData_FreeFormEntity::NbFields() const

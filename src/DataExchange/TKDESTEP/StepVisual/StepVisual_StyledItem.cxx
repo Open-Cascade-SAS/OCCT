@@ -54,6 +54,8 @@ StepVisual_StyledItemTarget StepVisual_StyledItem::ItemAP242() const
 {
   StepVisual_StyledItemTarget anItem;
   if (anItem.CaseNum(myItem) > 0)
+  {
     anItem.SetValue(myItem);
+  }
   return anItem;
 }

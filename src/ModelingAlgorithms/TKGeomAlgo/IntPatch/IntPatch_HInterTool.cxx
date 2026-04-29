@@ -48,9 +48,13 @@ int IntPatch_HInterTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
       int nbs = S->NbVKnots();
       nbs *= S->VDegree();
       if (!S->IsVRational())
+      {
         nbs *= 2;
+      }
       if (nbs < 4)
+      {
         nbs = 4;
+      }
       return nbs;
     }
     break;
@@ -83,9 +87,13 @@ int IntPatch_HInterTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
       int nbs = S->NbUKnots();
       nbs *= S->UDegree();
       if (!S->IsURational())
+      {
         nbs *= 2;
+      }
       if (nbs < 4)
+      {
         nbs = 4;
+      }
       return nbs;
     }
     case GeomAbs_Torus:

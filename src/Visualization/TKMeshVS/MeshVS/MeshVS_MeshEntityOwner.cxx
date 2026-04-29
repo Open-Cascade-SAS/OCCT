@@ -78,7 +78,9 @@ void MeshVS_MeshEntityOwner::HilightWithColor(const occ::handle<PrsMgr_Presentat
 {
   occ::handle<SelectMgr_SelectableObject> aSelObj;
   if (HasSelectable())
+  {
     aSelObj = Selectable();
+  }
 
   if (thePM->IsImmediateModeOn() && aSelObj->IsKind(STANDARD_TYPE(MeshVS_Mesh)))
   {

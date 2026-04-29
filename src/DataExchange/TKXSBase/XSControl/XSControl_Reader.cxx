@@ -61,7 +61,9 @@ XSControl_Reader::XSControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
 bool XSControl_Reader::SetNorm(const char* const norm)
 {
   if (thesession.IsNull())
+  {
     SetWS(new XSControl_WorkSession);
+  }
   bool stat = thesession->SelectNorm(norm);
   if (stat)
   {
@@ -80,10 +82,14 @@ void XSControl_Reader::SetWS(const occ::handle<XSControl_WorkSession>& WS, const
   thesession = WS;
   //  There must be a Controller ...  Otherwise we'll see later (after SetNorm)
   if (thesession->NormAdaptor().IsNull())
+  {
     return;
+  }
   occ::handle<Interface_InterfaceModel> model = thesession->Model();
   if (scratch || model.IsNull())
+  {
     model = thesession->NewModel();
+  }
   thesession->InitTransferReader(0);
   thesession->InitTransferReader(4);
 }
@@ -136,7 +142,9 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Re
     new NCollection_HSequence<occ::handle<Standard_Transient>>();
   int i, nbr = NbRootsForTransfer();
   for (i = 1; i <= nbr; i++)
+  {
     list->Append(RootForTransfer(i));
+  }
   return list;
 }
 
@@ -154,7 +162,9 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Re
 int XSControl_Reader::NbRootsForTransfer()
 {
   if (therootsta)
+  {
     return theroots.Length();
+  }
   therootsta = true;
   Interface_ShareFlags sf(thesession->Graph());
   int                  i, nbr = sf.NbRoots();
@@ -163,7 +173,9 @@ int XSControl_Reader::NbRootsForTransfer()
     //    on filtre les racines qu on sait transferer
     occ::handle<Standard_Transient> start = sf.Root(i);
     if (thesession->TransferReader()->Recognize(start))
+    {
       theroots.Append(start);
+    }
   }
   return theroots.Length();
 }
@@ -175,7 +187,9 @@ occ::handle<Standard_Transient> XSControl_Reader::RootForTransfer(const int num)
   occ::handle<Standard_Transient> voidroot;
   int                             nbr = NbRootsForTransfer();
   if (num < 1 || num > nbr)
+  {
     return voidroot;
+  }
   return theroots.Value(num);
 }
 
@@ -197,52 +211,61 @@ bool XSControl_Reader::TransferOne(const int num, const Message_ProgressRange& t
 
 //=================================================================================================
 
-bool XSControl_Reader::TransferEntity(const occ::handle<Standard_Transient>& start,
+bool XSControl_Reader::TransferEntity(const occ::handle<Standard_Transient>& theStart,
                                       const Message_ProgressRange&           theProgress)
 {
-  if (start.IsNull())
+  if (theStart.IsNull())
+  {
     return false;
-  const occ::handle<XSControl_TransferReader>& TR = thesession->TransferReader();
-  TR->BeginTransfer();
+  }
+
+  const occ::handle<XSControl_TransferReader>& aTransferReader = thesession->TransferReader();
+  aTransferReader->BeginTransfer();
   InitializeMissingParameters();
-  if (TR->TransferOne(start, true, theProgress) == 0)
+  if (aTransferReader->TransferOne(theStart, true, theProgress) == 0)
+  {
     return false;
-  TopoDS_Shape sh = TR->ShapeResult(start);
-  // ShapeExtend_Explorer STU;
+  }
+
+  const TopoDS_Shape aShape = aTransferReader->ShapeResult(theStart);
+  // Null shapes are allowed intentionally.
   // SMH May 00: allow empty shapes (STEP CAX-IF, external references)
-  // if (STU.ShapeType(sh,true) == TopAbs_SHAPE) return false;  // nulle-vide
-  theshapes.Append(sh);
+  theshapes.Append(aShape);
   return true;
 }
 
 //=================================================================================================
 
 int XSControl_Reader::TransferList(
-  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theList,
   const Message_ProgressRange&                                               theProgress)
 {
-  if (list.IsNull())
+  if (theList.IsNull())
+  {
     return 0;
-  int                                          nbt = 0;
-  int                                          i, nb = list->Length();
-  const occ::handle<XSControl_TransferReader>& TR = thesession->TransferReader();
-  TR->BeginTransfer();
+  }
+
+  int                                          aTransferredCount = 0;
+  const occ::handle<XSControl_TransferReader>& aTransferReader   = thesession->TransferReader();
+  aTransferReader->BeginTransfer();
   InitializeMissingParameters();
   ClearShapes();
-  ShapeExtend_Explorer  STU;
-  Message_ProgressScope PS(theProgress, nullptr, nb);
-  for (i = 1; i <= nb && PS.More(); i++)
+  Message_ProgressScope aProgressScope(theProgress, nullptr, static_cast<double>(theList->Size()));
+  for (size_t i = 1; i <= theList->Size() && aProgressScope.More(); i++)
   {
-    occ::handle<Standard_Transient> start = list->Value(i);
-    if (TR->TransferOne(start, true, PS.Next()) == 0)
+    occ::handle<Standard_Transient> aStart = theList->Value(i);
+    if (aTransferReader->TransferOne(aStart, true, aProgressScope.Next()) == 0)
+    {
       continue;
-    TopoDS_Shape sh = TR->ShapeResult(start);
-    if (STU.ShapeType(sh, true) == TopAbs_SHAPE)
-      continue; // nulle-vide
-    theshapes.Append(sh);
-    nbt++;
+    }
+
+    const TopoDS_Shape aShape = aTransferReader->ShapeResult(aStart);
+    // Null shapes are allowed intentionally.
+    // SMH May 00: allow empty shapes (STEP CAX-IF, external references)
+    theshapes.Append(aShape);
+    ++aTransferredCount;
   }
-  return nbt;
+  return aTransferredCount;
 }
 
 //=================================================================================================
@@ -250,27 +273,28 @@ int XSControl_Reader::TransferList(
 int XSControl_Reader::TransferRoots(const Message_ProgressRange& theProgress)
 {
   NbRootsForTransfer();
-  int                                          nbt = 0;
-  int                                          i, nb = theroots.Length();
-  const occ::handle<XSControl_TransferReader>& TR = thesession->TransferReader();
 
-  TR->BeginTransfer();
+  int                                          aTransferredCount = 0;
+  const occ::handle<XSControl_TransferReader>& aTransferReader   = thesession->TransferReader();
+  aTransferReader->BeginTransfer();
   InitializeMissingParameters();
   ClearShapes();
-  ShapeExtend_Explorer  STU;
-  Message_ProgressScope PS(theProgress, "Root", nb);
-  for (i = 1; i <= nb && PS.More(); i++)
+  Message_ProgressScope aProgressScope(theProgress, "Root", static_cast<double>(theroots.Size()));
+  for (size_t i = 1; i <= theroots.Size() && aProgressScope.More(); i++)
   {
-    occ::handle<Standard_Transient> start = theroots.Value(i);
-    if (TR->TransferOne(start, true, PS.Next()) == 0)
+    occ::handle<Standard_Transient> aStart = theroots.Value(i);
+    if (aTransferReader->TransferOne(aStart, true, aProgressScope.Next()) == 0)
+    {
       continue;
-    TopoDS_Shape sh = TR->ShapeResult(start);
-    if (STU.ShapeType(sh, true) == TopAbs_SHAPE)
-      continue; // nulle-vide
-    theshapes.Append(sh);
-    nbt++;
+    }
+
+    TopoDS_Shape aShape = aTransferReader->ShapeResult(aStart);
+    // Null shapes are allowed intentionally.
+    // SMH May 00: allow empty shapes (STEP CAX-IF, external references)
+    theshapes.Append(aShape);
+    ++aTransferredCount;
   }
-  return nbt;
+  return aTransferredCount;
 }
 
 //=================================================================================================
@@ -305,19 +329,28 @@ TopoDS_Shape XSControl_Reader::Shape(const int num) const
 
 TopoDS_Shape XSControl_Reader::OneShape() const
 {
-  TopoDS_Shape sh;
-  int          i, nb = theshapes.Length();
-  if (nb == 0)
-    return sh;
-  if (nb == 1)
-    return theshapes.Value(1);
-  TopoDS_Compound C;
-  BRep_Builder    B;
-  // pdn 26.02.99 testing S4133
-  B.MakeCompound(C);
-  for (i = 1; i <= nb; i++)
-    B.Add(C, theshapes.Value(i));
-  return C;
+  if (theshapes.IsEmpty())
+  {
+    return {};
+  }
+  if (theshapes.Length() == 1)
+  {
+    return theshapes.First();
+  }
+
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aResult;
+  aBuilder.MakeCompound(aResult);
+  bool aNonNullShapeAdded = false;
+  for (const auto& aCurrShape : theshapes)
+  {
+    if (!aCurrShape.IsNull())
+    {
+      aBuilder.Add(aResult, aCurrShape);
+      aNonNullShapeAdded = true;
+    }
+  }
+  return aNonNullShapeAdded ? aResult : TopoDS_Shape();
 }
 
 //=================================================================================================
@@ -388,7 +421,9 @@ void XSControl_Reader::GetStatsTransfer(
   Transfer_IteratorOfProcessForTransient itrp(true);
   itrp = TP->CompleteResult(true);
   if (!list.IsNull())
+  {
     itrp.Filter(list);
+  }
   nbMapped = nbWithFail = nbWithResult = 0;
 
   for (itrp.Start(); itrp.More(); itrp.Next())
@@ -396,16 +431,24 @@ void XSControl_Reader::GetStatsTransfer(
     const occ::handle<Transfer_Binder>& binder = itrp.Value();
     nbMapped++;
     if (binder.IsNull())
+    {
       nbWithFail++;
+    }
     else if (!binder->HasResult())
+    {
       nbWithFail++;
+    }
     else
     {
       Interface_CheckStatus cst = binder->Check()->Status();
       if ((cst == Interface_CheckOK) || (cst == Interface_CheckWarning))
+      {
         nbWithResult++;
+      }
       else
+      {
         nbWithFail++;
+      }
     }
   }
 }

@@ -88,7 +88,9 @@ void TopOpeBRepBuild_Builder::GSOBUMakeSolids(const TopoDS_Shape&             SO
     {
       bool isold = SOBU.IsOldShell();
       if (isold)
+      {
         newShell = SOBU.OldShell();
+      }
       else
       {
         myBuildTool.MakeShell(newShell);
@@ -115,11 +117,15 @@ void TopOpeBRepBuild_Builder::GSOBUMakeSolids(const TopoDS_Shape&             SO
           const TopoDS_Shape& E  = edgemap.FindKey(iedge);
           TopAbs_Orientation  oE = E.Orientation();
           if (oE == TopAbs_INTERNAL || oE == TopAbs_EXTERNAL)
+          {
             continue;
+          }
           const TopoDS_Edge& EE    = TopoDS::Edge(E);
           bool               degen = BRep_Tool::Degenerated(EE);
           if (degen)
+          {
             continue;
+          }
           int nbf = edgemap(iedge).Extent();
           if (nbf < 2)
           {
@@ -156,7 +162,9 @@ void TopOpeBRepBuild_Builder::GSOBUMakeSolids(const TopoDS_Shape&             SO
       }
       newSolidOK = hasnondegenerated;
       if (!newSolidOK)
+      {
         continue;
+      }
     }
 
     NCollection_List<TopoDS_Shape> newSolidLOS;

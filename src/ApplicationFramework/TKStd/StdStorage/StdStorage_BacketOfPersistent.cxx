@@ -68,7 +68,9 @@ void StdStorage_BucketOfPersistent::Clear()
     int i;
 
     for (i = 1; i < myNumberOfBucket; i++)
+    {
       delete myBuckets[i];
+    }
     myNumberOfBucket = 1;
     myCurrentBucket  = myBuckets[0];
     myCurrentBucket->Clear();
@@ -141,7 +143,9 @@ StdStorage_BucketIterator::StdStorage_BucketIterator(StdStorage_BucketOfPersiste
     myMoreObject         = true;
   }
   else
+  {
     myMoreObject = false;
+  }
 }
 
 //=================================================================================================
@@ -157,7 +161,9 @@ void StdStorage_BucketIterator::Reset()
     myMoreObject         = true;
   }
   else
+  {
     myMoreObject = false;
+  }
 }
 
 //=================================================================================================
@@ -174,7 +180,9 @@ void StdStorage_BucketIterator::Init(StdStorage_BucketOfPersistent* aBucketManag
     myMoreObject         = true;
   }
   else
+  {
     myMoreObject = false;
+  }
 }
 
 //=================================================================================================
@@ -182,7 +190,9 @@ void StdStorage_BucketIterator::Init(StdStorage_BucketOfPersistent* aBucketManag
 void StdStorage_BucketIterator::Next()
 {
   if (!myMoreObject)
+  {
     return;
+  }
 
   if (myCurrentIndex < myCurrentBucket->myCurrentSpace)
   {

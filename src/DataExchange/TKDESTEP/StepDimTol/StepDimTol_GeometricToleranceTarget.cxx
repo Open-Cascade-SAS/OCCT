@@ -29,15 +29,25 @@ StepDimTol_GeometricToleranceTarget::StepDimTol_GeometricToleranceTarget() = def
 int StepDimTol_GeometricToleranceTarget::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+  {
     return 4;
+  }
   return 0;
 }
 

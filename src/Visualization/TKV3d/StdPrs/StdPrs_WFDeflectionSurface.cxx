@@ -45,13 +45,21 @@ static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
     gp_Pnt P1, P2;
     double v;
     if (VfirstInf && VlastInf)
+    {
       v = 0;
+    }
     else if (VfirstInf)
+    {
       v = VLast;
+    }
     else if (VlastInf)
+    {
       v = VFirst;
+    }
     else
+    {
       v = (VFirst + VLast) / 2;
+    }
 
     double delta = aLimit * 2;
 
@@ -153,16 +161,24 @@ void StdPrs_WFDeflectionSurface::Add(const occ::handle<Prs3d_Presentation>& aPre
     double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
     Total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
     if (!(Total.IsOpenXmin() || Total.IsOpenXmax()))
+    {
       m = std::min(m, std::abs(aXmax - aXmin));
+    }
     if (!(Total.IsOpenYmin() || Total.IsOpenYmax()))
+    {
       m = std::min(m, std::abs(aYmax - aYmin));
+    }
     if (!(Total.IsOpenZmin() || Total.IsOpenZmax()))
+    {
       m = std::min(m, std::abs(aZmax - aZmin));
+    }
 
     TheDeflection = m * aDrawer->DeviationCoefficient();
   }
   else
+  {
     TheDeflection = aDrawer->MaximalChordialDeviation();
+  }
 
   Adaptor3d_IsoCurve anIso;
   anIso.Load(aSurface);

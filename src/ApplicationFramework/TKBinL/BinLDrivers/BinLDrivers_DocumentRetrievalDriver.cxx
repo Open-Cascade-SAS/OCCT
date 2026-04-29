@@ -177,9 +177,13 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   {
     TCollection_AsciiString aStr = aUserInfo(i);
     if (aStr == START_TYPES)
+    {
       begin = true;
+    }
     else if (aStr == END_TYPES)
+    {
       break;
+    }
     else if (begin)
     {
       if (aFileVer < TDocStd_FormatVersion_VERSION_8)
@@ -202,14 +206,20 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
     }
   }
   if (myDrivers.IsNull())
+  {
     myDrivers = AttributeDrivers(myMsgDriver);
+  }
   myDrivers->AssignIds(aTypeNames);
 
   // recognize types not supported by drivers
   myMapUnsupported.Clear();
   for (i = 1; i <= aTypeNames.Length(); i++)
+  {
     if (myDrivers->GetDriver(i).IsNull())
+    {
       myMapUnsupported.Add(i);
+    }
+  }
   if (!myMapUnsupported.IsEmpty())
   {
     myMsgDriver->Send(aMethStr
@@ -217,8 +227,12 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
                           "the following attributes have no driver:",
                       Message_Warning);
     for (i = 1; i <= aTypeNames.Length(); i++)
+    {
       if (myMapUnsupported.Contains(i))
+      {
         myMsgDriver->Send(aTypeNames(i), Message_Warning);
+      }
+    }
   }
 
   // 2. Read document contents
@@ -240,7 +254,9 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
     do
     {
       if (!BinLDrivers_DocumentSection::ReadTOC(aSection, theIStream, aFileVer))
+      {
         break;
+      }
       mySections.Append(aSection);
     } while (!aSection.Name().IsEqual(aQuickPart ? ENDSECTION_POS : SHAPESECTION_POS)
              && !theIStream.eof());
@@ -253,7 +269,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
       return;
     }
 
-    NCollection_Vector<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
+    NCollection_DynamicArray<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
     // if there is only empty section, do not call tellg and seekg
     if (!mySections.IsEmpty()
         && (mySections.Size() > 1 || !anIterS.Value().Name().IsEqual(ENDSECTION_POS)))
@@ -275,7 +291,9 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
             }
           }
           else if (!aCurSection.Name().IsEqual(ENDSECTION_POS))
+          {
             ReadSection(aCurSection, theDoc, theIStream);
+          }
         }
       }
       theIStream.seekg(aDocumentPos);
@@ -337,12 +355,16 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   theIStream.read(reinterpret_cast<char*>(&aTag), sizeof(int));
 
   if (aQuickPart)
+  {
     myPAtt.SetIStream(theIStream); // for reading shapes data from the stream directly
+  }
   EnableQuickPartReading(myMsgDriver, aQuickPart);
 
   // read sub-tree of the root label
   if (!theFilter.IsNull())
+  {
     theFilter->StartIteration();
+  }
   const auto aStreamStartPosition = theIStream.tellg();
   int nbRead = ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, false, aPS.Next());
   if (!myUnresolvedLinks.IsEmpty())
@@ -382,7 +404,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   // Read Sections (post-reading type)
   if (aFileVer >= TDocStd_FormatVersion_VERSION_3)
   {
-    NCollection_Vector<BinLDrivers_DocumentSection>::Iterator aSectIter(mySections);
+    NCollection_DynamicArray<BinLDrivers_DocumentSection>::Iterator aSectIter(mySections);
     for (; aSectIter.More(); aSectIter.Next())
     {
       BinLDrivers_DocumentSection& aCurSection = aSectIter.ChangeValue();
@@ -412,7 +434,9 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
 
   bool aSkipAttrs = false;
   if (!theFilter.IsNull() && theFilter->IsPartTree())
+  {
     aSkipAttrs = !theFilter->IsPassed();
+  }
 
   if (theQuickPart)
   {
@@ -427,7 +451,9 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
       aLabelSize -= sizeof(uint64_t);
       theIS.seekg(aLabelSize, std::ios_base::cur);
       if (!theFilter.IsNull())
+      {
         theFilter->Up();
+      }
       return 0;
     }
   }
@@ -475,9 +501,13 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
       occ::handle<TDF_Attribute> tAtt;
       bool                       isBound = myRelocTable.IsBound(anID);
       if (isBound)
+      {
         tAtt = occ::down_cast<TDF_Attribute>(myRelocTable.Find(anID));
+      }
       else
+      {
         tAtt = aDriver->NewEmpty();
+      }
 
       if (!theFilter.IsNull() && !theFilter->IsPassed(tAtt->DynamicType()))
       {
@@ -498,9 +528,13 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
             && theLabel.IsAttribute(tAtt->ID()))
         {
           if (theFilter->Mode() == PCDM_ReaderFilter::AppendMode_Protect)
+          {
             continue; // do not overwrite the existing attribute
+          }
           if (theFilter->Mode() == PCDM_ReaderFilter::AppendMode_Overwrite)
+          {
             theLabel.ForgetAttribute(tAtt->ID()); // forget old attribute to write a new one
+          }
         }
         try
         {
@@ -518,9 +552,11 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
         }
       }
       else
+      {
         myMsgDriver->Send(aMethStr + "warning: attempt to attach attribute " + aDriver->TypeName()
                             + " to a second label",
                           Message_Warning);
+      }
 
       bool ok = aDriver->Paste(myPAtt, tAtt, myRelocTable);
       if (!ok)
@@ -544,8 +580,10 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
       }
     }
     else if (!myMapUnsupported.Contains(myPAtt.TypeId()))
+    {
       myMsgDriver->Send(aMethStr + "warning: type ID not registered in header: " + myPAtt.TypeId(),
                         Message_Warning);
+    }
   }
   if (!theIS || myPAtt.TypeId() != BinLDrivers_ENDATTRLIST)
   {
@@ -575,11 +613,15 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
 
     // read sub-tree
     if (!theFilter.IsNull())
+    {
       theFilter->Down(aTag);
+    }
     int nbSubRead = ReadSubTree(theIS, aLab, theFilter, theQuickPart, theReadMissing, aPS.Next());
     // check for error
     if (nbSubRead == -1)
+    {
       return -1;
+    }
     nbRead += nbSubRead;
 
     // read the tag of the next child
@@ -597,7 +639,9 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
     return -1;
   }
   if (!theFilter.IsNull())
+  {
     theFilter->Up();
+  }
 
   return nbRead;
 }

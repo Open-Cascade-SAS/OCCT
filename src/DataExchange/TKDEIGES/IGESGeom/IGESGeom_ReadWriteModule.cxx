@@ -81,7 +81,9 @@ int IGESGeom_ReadWriteModule::CaseIGES(const int typenum, const int formnum) con
       return 7;
     case 106:
       if (formnum < 20 || formnum > 40)
+      {
         return 8;
+      }
       break;
     case 108:
       return 15;
@@ -137,7 +139,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 1: {
       DeclareAndCast(IGESGeom_BSplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBSplineCurve tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -145,7 +149,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 2: {
       DeclareAndCast(IGESGeom_BSplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBSplineSurface tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -153,7 +159,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 3: {
       DeclareAndCast(IGESGeom_Boundary, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBoundary tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -161,7 +169,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 4: {
       DeclareAndCast(IGESGeom_BoundedSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBoundedSurface tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -169,7 +179,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 5: {
       DeclareAndCast(IGESGeom_CircularArc, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCircularArc tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -177,7 +189,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 6: {
       DeclareAndCast(IGESGeom_CompositeCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCompositeCurve tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -185,7 +199,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 7: {
       DeclareAndCast(IGESGeom_ConicArc, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolConicArc tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -193,7 +209,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 8: {
       DeclareAndCast(IGESGeom_CopiousData, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCopiousData tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -201,7 +219,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 9: {
       DeclareAndCast(IGESGeom_CurveOnSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCurveOnSurface tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -209,7 +229,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 10: {
       DeclareAndCast(IGESGeom_Direction, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolDirection tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -217,7 +239,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 11: {
       DeclareAndCast(IGESGeom_Flash, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolFlash tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -225,7 +249,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 12: {
       DeclareAndCast(IGESGeom_Line, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolLine tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -233,7 +259,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 13: {
       DeclareAndCast(IGESGeom_OffsetCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolOffsetCurve tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -241,7 +269,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 14: {
       DeclareAndCast(IGESGeom_OffsetSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolOffsetSurface tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -249,7 +279,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 15: {
       DeclareAndCast(IGESGeom_Plane, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolPlane tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -257,7 +289,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 16: {
       DeclareAndCast(IGESGeom_Point, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolPoint tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -265,7 +299,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 17: {
       DeclareAndCast(IGESGeom_RuledSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolRuledSurface tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -273,7 +309,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 18: {
       DeclareAndCast(IGESGeom_SplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSplineCurve tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -281,7 +319,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 19: {
       DeclareAndCast(IGESGeom_SplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSplineSurface tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -289,7 +329,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 20: {
       DeclareAndCast(IGESGeom_SurfaceOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSurfaceOfRevolution tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -297,7 +339,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 21: {
       DeclareAndCast(IGESGeom_TabulatedCylinder, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTabulatedCylinder tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -305,7 +349,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 22: {
       DeclareAndCast(IGESGeom_TransformationMatrix, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTransformationMatrix tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -313,7 +359,9 @@ void IGESGeom_ReadWriteModule::ReadOwnParams(const int                          
     case 23: {
       DeclareAndCast(IGESGeom_TrimmedSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTrimmedSurface tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -332,7 +380,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 1: {
       DeclareAndCast(IGESGeom_BSplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBSplineCurve tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -340,7 +390,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 2: {
       DeclareAndCast(IGESGeom_BSplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBSplineSurface tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -348,7 +400,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 3: {
       DeclareAndCast(IGESGeom_Boundary, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBoundary tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -356,7 +410,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 4: {
       DeclareAndCast(IGESGeom_BoundedSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBoundedSurface tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -364,7 +420,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 5: {
       DeclareAndCast(IGESGeom_CircularArc, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCircularArc tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -372,7 +430,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 6: {
       DeclareAndCast(IGESGeom_CompositeCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCompositeCurve tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -380,7 +440,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 7: {
       DeclareAndCast(IGESGeom_ConicArc, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolConicArc tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -388,7 +450,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 8: {
       DeclareAndCast(IGESGeom_CopiousData, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCopiousData tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -396,7 +460,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 9: {
       DeclareAndCast(IGESGeom_CurveOnSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCurveOnSurface tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -404,7 +470,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 10: {
       DeclareAndCast(IGESGeom_Direction, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolDirection tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -412,7 +480,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 11: {
       DeclareAndCast(IGESGeom_Flash, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolFlash tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -420,7 +490,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 12: {
       DeclareAndCast(IGESGeom_Line, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolLine tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -428,7 +500,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 13: {
       DeclareAndCast(IGESGeom_OffsetCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolOffsetCurve tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -436,7 +510,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 14: {
       DeclareAndCast(IGESGeom_OffsetSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolOffsetSurface tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -444,7 +520,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 15: {
       DeclareAndCast(IGESGeom_Plane, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolPlane tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -452,7 +530,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 16: {
       DeclareAndCast(IGESGeom_Point, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolPoint tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -460,7 +540,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 17: {
       DeclareAndCast(IGESGeom_RuledSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolRuledSurface tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -468,7 +550,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 18: {
       DeclareAndCast(IGESGeom_SplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSplineCurve tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -476,7 +560,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 19: {
       DeclareAndCast(IGESGeom_SplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSplineSurface tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -484,7 +570,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 20: {
       DeclareAndCast(IGESGeom_SurfaceOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSurfaceOfRevolution tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -492,7 +580,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 21: {
       DeclareAndCast(IGESGeom_TabulatedCylinder, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTabulatedCylinder tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -500,7 +590,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 22: {
       DeclareAndCast(IGESGeom_TransformationMatrix, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTransformationMatrix tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -508,7 +600,9 @@ void IGESGeom_ReadWriteModule::WriteOwnParams(const int                         
     case 23: {
       DeclareAndCast(IGESGeom_TrimmedSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTrimmedSurface tool;
       tool.WriteOwnParams(anent, IW);
     }

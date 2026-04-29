@@ -79,7 +79,9 @@ TopoDS_Edge ChFi2d_Builder::AddChamfer(const TopoDS_Edge& E1,
 
   bool hasConnection = ChFi2d::CommonVertex(E1, E2, commonVertex);
   if (!hasConnection)
+  {
     return chamfer;
+  }
 
   if (IsAFillet(E1) || IsAChamfer(E1) || IsAFillet(E2) || IsAChamfer(E2))
   {
@@ -130,7 +132,9 @@ TopoDS_Edge ChFi2d_Builder::AddChamfer(const TopoDS_Edge&   E,
   TopoDS_Edge aChamfer, adjEdge1, adjEdge2;
   status = ChFi2d::FindConnectedEdges(newFace, V, adjEdge1, adjEdge2);
   if (status == ChFi2d_ConnexionError)
+  {
     return aChamfer;
+  }
 
   // adjEdge1 is a copy of E  with the good orientation
   // on <newFace>
@@ -186,15 +190,23 @@ void ChFi2d_Builder::ComputeChamfer(const TopoDS_Vertex& V,
   bool          Degen1, Degen2;
   Chamfer = BuildChamferEdge(V, E1, E2, D1, D2, newExtr1, newExtr2);
   if (status != ChFi2d_IsDone)
+  {
     return;
+  }
   TrimE1 = BuildNewEdge(E1, V, newExtr1, Degen1);
   TrimE2 = BuildNewEdge(E2, V, newExtr2, Degen2);
   if (Degen1 && Degen2)
+  {
     status = ChFi2d_BothEdgesDegenerated;
+  }
   if (Degen1 && !Degen2)
+  {
     status = ChFi2d_FirstEdgeDegenerated;
+  }
   if (!Degen1 && Degen2)
+  {
     status = ChFi2d_LastEdgeDegenerated;
+  }
   //   TrimE1 = BuildNewEdge(E1, V, newExtr1);
   //  TrimE2 = BuildNewEdge(E2, V, newExtr2);
 } // ComputeChamfer
@@ -214,15 +226,23 @@ void ChFi2d_Builder::ComputeChamfer(const TopoDS_Vertex& V,
   bool          Degen1, Degen2;
   Chamfer = BuildChamferEdge(V, E1, D, Ang, E2, newExtr1, newExtr2);
   if (status != ChFi2d_IsDone)
+  {
     return;
+  }
   TrimE1 = BuildNewEdge(E1, V, newExtr1, Degen1);
   TrimE2 = BuildNewEdge(E2, V, newExtr2, Degen2);
   if (Degen1 && Degen2)
+  {
     status = ChFi2d_BothEdgesDegenerated;
+  }
   if (Degen1 && !Degen2)
+  {
     status = ChFi2d_FirstEdgeDegenerated;
+  }
   if (!Degen1 && Degen2)
+  {
     status = ChFi2d_LastEdgeDegenerated;
+  }
   //   TrimE1 = BuildNewEdge(E1, V, newExtr1);
   //   TrimE2 = BuildNewEdge(E2, V, newExtr2);
 } // ComputeChamfer
@@ -240,7 +260,9 @@ TopoDS_Edge ChFi2d_Builder::ModifyChamfer(const TopoDS_Edge& Chamfer,
   status = ChFi2d::FindConnectedEdges(newFace, aVertex, adjEdge1, adjEdge2);
   TopoDS_Edge aChamfer;
   if (status == ChFi2d_ConnexionError)
+  {
     return aChamfer;
+  }
 
   // adjEdge1 and adjEdge2 are copies of E1 and E2 with the good orientation
   // on <newFace>
@@ -268,12 +290,18 @@ TopoDS_Edge ChFi2d_Builder::ModifyChamfer(const TopoDS_Edge& Chamfer,
   status = ChFi2d::FindConnectedEdges(newFace, aVertex, adjEdge1, adjEdge2);
   TopoDS_Edge aChamfer;
   if (status == ChFi2d_ConnexionError)
+  {
     return aChamfer;
+  }
 
   if (adjEdge1.IsSame(E))
+  {
     aChamfer = AddChamfer(adjEdge1, aVertex, D, Ang);
+  }
   else
+  {
     aChamfer = AddChamfer(adjEdge2, aVertex, D, Ang);
+  }
   return aChamfer;
 } // ModifyChamfer
 
@@ -297,7 +325,9 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
     i++;
   }
   if (!IsFind)
+  {
     return commonVertex;
+  }
 
   TopoDS_Vertex firstVertex, lastVertex;
   TopExp::Vertices(Chamfer, firstVertex, lastVertex);
@@ -305,23 +335,35 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
   TopoDS_Edge adjEdge1, adjEdge2;
   status = ChFi2d::FindConnectedEdges(newFace, firstVertex, adjEdge1, adjEdge2);
   if (status == ChFi2d_ConnexionError)
+  {
     return commonVertex;
+  }
 
   TopoDS_Edge basisEdge1, basisEdge2, E1, E2;
   // E1 and E2 are the adjacentes edges to Chamfer
 
   if (adjEdge1.IsSame(Chamfer))
+  {
     E1 = adjEdge2;
+  }
   else
+  {
     E1 = adjEdge1;
+  }
   basisEdge1 = BasisEdge(E1);
   status     = ChFi2d::FindConnectedEdges(newFace, lastVertex, adjEdge1, adjEdge2);
   if (status == ChFi2d_ConnexionError)
+  {
     return commonVertex;
+  }
   if (adjEdge1.IsSame(Chamfer))
+  {
     E2 = adjEdge2;
+  }
   else
+  {
     E2 = adjEdge1;
+  }
   basisEdge2 = BasisEdge(E2);
   TopoDS_Vertex connectionE1Chamfer, connectionE2Chamfer;
   bool          hasConnection = ChFi2d::CommonVertex(basisEdge1, basisEdge2, commonVertex);
@@ -353,14 +395,20 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
   TopExp::Vertices(E1, firstVertex, lastVertex);
   TopExp::Vertices(basisEdge1, v1, v2);
   if (v1.IsSame(commonVertex))
+  {
     v = v2;
+  }
   else
+  {
     v = v1;
+  }
 
   if (firstVertex.IsSame(v) || lastVertex.IsSame(v))
+  {
     // It means the edge support only one fillet. In this case
     // the new edge must be the basis edge.
     newEdge1 = basisEdge1;
+  }
   else
   {
     // It means the edge support one fillet on each end.
@@ -390,15 +438,21 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
 
   TopExp::Vertices(basisEdge2, v1, v2);
   if (v1.IsSame(commonVertex))
+  {
     v = v2;
+  }
   else
+  {
     v = v1;
+  }
 
   TopExp::Vertices(E2, firstVertex, lastVertex);
   if (firstVertex.IsSame(v) || lastVertex.IsSame(v))
+  {
     // It means the edge support only one fillet. In this case
     // the new edge must be the basis edge.
     newEdge2 = basisEdge2;
+  }
   else
   {
     // It means the edge support one fillet on each end.
@@ -437,13 +491,19 @@ TopoDS_Vertex ChFi2d_Builder::RemoveChamfer(const TopoDS_Edge& Chamfer)
   {
     const TopoDS_Edge& theEdge = TopoDS::Edge(Ex.Current());
     if (!theEdge.IsSame(E1) && !theEdge.IsSame(E2) && !theEdge.IsSame(Chamfer))
+    {
       B.Add(newWire, theEdge);
+    }
     else
     {
       if (theEdge == E1)
+      {
         B.Add(newWire, newEdge1);
+      }
       else if (theEdge == E2)
+      {
         B.Add(newWire, newEdge2);
+      }
     } // else
     Ex.Next();
   } // while ...
@@ -505,16 +565,24 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
   TopoDS_Vertex V1 = TopExp::FirstVertex(AdjEdge1);
   TopoDS_Vertex V2 = TopExp::LastVertex(AdjEdge1);
   if (V1.IsSame(V))
+  {
     NewExtr1.Orientation(V1.Orientation());
+  }
   else
+  {
     NewExtr1.Orientation(V2.Orientation());
+  }
 
   V1 = TopExp::FirstVertex(AdjEdge2);
   V2 = TopExp::LastVertex(AdjEdge2);
   if (V1.IsSame(V))
+  {
     NewExtr2.Orientation(V1.Orientation());
+  }
   else
+  {
     NewExtr2.Orientation(V2.Orientation());
+  }
   B.UpdateVertex(NewExtr1, param1, AdjEdge1, tol);
   B.UpdateVertex(NewExtr2, param2, AdjEdge2, tol);
 
@@ -562,11 +630,17 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
   TopExp::Vertices(AdjEdge2, v1, v2);
   TopAbs_Orientation orient;
   if (v1.IsSame(V))
+  {
     orient = v1.Orientation();
+  }
   else
+  {
     orient = v2.Orientation();
+  }
   if (orient == TopAbs_REVERSED)
+  {
     tan *= -1;
+  }
 
   // compute the chamfer geometric support
   gp_Ax1                 RotAxe(p1, tan ^ myVec);
@@ -598,16 +672,24 @@ TopoDS_Edge ChFi2d_Builder::BuildChamferEdge(const TopoDS_Vertex& V,
   TopoDS_Vertex V1 = TopExp::FirstVertex(AdjEdge1);
   TopoDS_Vertex V2 = TopExp::LastVertex(AdjEdge1);
   if (V1.IsSame(V))
+  {
     NewExtr1.Orientation(V1.Orientation());
+  }
   else
+  {
     NewExtr1.Orientation(V2.Orientation());
+  }
 
   V1 = TopExp::FirstVertex(AdjEdge2);
   V2 = TopExp::LastVertex(AdjEdge2);
   if (V1.IsSame(V))
+  {
     NewExtr2.Orientation(V1.Orientation());
+  }
   else
+  {
     NewExtr2.Orientation(V2.Orientation());
+  }
   B.UpdateVertex(NewExtr1, param1, AdjEdge1, tol);
   B.UpdateVertex(NewExtr2, param2, AdjEdge2, tol);
 
@@ -642,7 +724,9 @@ gp_Pnt ComputePoint(const TopoDS_Vertex& V, const TopoDS_Edge& E, const double D
       thePoint = p2.Translated(myVec);
     } // if (v2 ...
     else
+    {
       thePoint = p1.Translated(myVec);
+    }
 
     Param = ElCLib::Parameter(c.Line(), thePoint);
     // szv:OCC20823-begin
@@ -670,9 +754,13 @@ gp_Pnt ComputePoint(const TopoDS_Vertex& V, const TopoDS_Edge& E, const double D
     }
     double deltaAlpha = D / radius;
     if (param1 > param2)
+    {
       Param = param1 - deltaAlpha;
+    }
     else
+    {
       Param = param1 + deltaAlpha;
+    }
     c.D0(Param, thePoint);
     return thePoint;
   } // if (C->IsKind(TYPE ...
@@ -757,15 +845,23 @@ void OrientChamfer(TopoDS_Edge& chamfer, const TopoDS_Edge& E, const TopoDS_Vert
   TopoDS_Vertex      v1, v2;
   TopExp::Vertices(E, v1, v2);
   if (v1.IsSame(V))
+  {
     vOrient = v2.Orientation();
+  }
   else
+  {
     vOrient = v1.Orientation();
+  }
 
   if ((orient == TopAbs_FORWARD && vOrient == TopAbs_FORWARD)
       || (orient == TopAbs_REVERSED && vOrient == TopAbs_REVERSED))
+  {
     chamfer.Orientation(TopAbs_FORWARD);
+  }
   else
+  {
     chamfer.Orientation(TopAbs_REVERSED);
+  }
 } // OrientChamfer
 
 //=================================================================================================
@@ -781,9 +877,13 @@ bool IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F)
   occ::handle<Geom2d_Curve>        basisC;
   occ::handle<Geom2d_TrimmedCurve> TC = occ::down_cast<Geom2d_TrimmedCurve>(C);
   if (!TC.IsNull())
+  {
     basisC = TC->BasisCurve();
+  }
   else
+  {
     basisC = C;
+  }
 
   return basisC->DynamicType() == STANDARD_TYPE(Geom2d_Circle)
          || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line); // else ...

@@ -157,9 +157,13 @@ inline gp_Vec CalculateDN(const gp_Vec& theCurveDN,
                           const int     theDerV)
 {
   if (theDerV == 0)
+  {
     return theCurveDN;
+  }
   else if (theDerU == 0 && theDerV == 1)
+  {
     return gp_Vec(theDir);
+  }
   return gp_Vec(0.0, 0.0, 0.0);
 }
 

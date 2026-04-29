@@ -35,14 +35,20 @@ double gp_Dir::Angle(const gp_Dir& Other) const
   //    0 et PI
   double Cosinus = coord.Dot(Other.coord);
   if (Cosinus > -0.70710678118655 && Cosinus < 0.70710678118655)
+  {
     return acos(Cosinus);
+  }
   else
   {
     double Sinus = (coord.Crossed(Other.coord)).Modulus();
     if (Cosinus < 0.0)
+    {
       return M_PI - asin(Sinus);
+    }
     else
+    {
       return asin(Sinus);
+    }
   }
 }
 
@@ -53,18 +59,28 @@ double gp_Dir::AngleWithRef(const gp_Dir& Other, const gp_Dir& Vref) const
   double Cosinus = coord.Dot(Other.coord);
   double Sinus   = XYZ.Modulus();
   if (Cosinus > -0.70710678118655 && Cosinus < 0.70710678118655)
+  {
     Ang = acos(Cosinus);
+  }
   else
   {
     if (Cosinus < 0.0)
+    {
       Ang = M_PI - asin(Sinus);
+    }
     else
+    {
       Ang = asin(Sinus);
+    }
   }
   if (XYZ.Dot(Vref.coord) >= 0.0)
+  {
     return Ang;
+  }
   else
+  {
     return -Ang;
+  }
 }
 
 void gp_Dir::Mirror(const gp_Dir& V) noexcept

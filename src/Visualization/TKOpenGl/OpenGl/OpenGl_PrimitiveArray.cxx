@@ -485,7 +485,9 @@ void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWo
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
         if (theFaceColors != nullptr)
+        {
           aGlContext->SetColor4fv(theFaceColors[aGroupIter]);
+        }
         aGlContext->core11fwd->glDrawElements(aDrawMode,
                                               aNbElemsInGroup,
                                               myVboIndices->GetDataType(),
@@ -510,7 +512,9 @@ void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWo
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
       if (theFaceColors != nullptr)
+      {
         aGlContext->SetColor4fv(theFaceColors[aGroupIter]);
+      }
       aGlContext->core11fwd->glDrawArrays(aDrawMode, aFirstElem, aNbElemsInGroup);
       aFirstElem += aNbElemsInGroup;
     }

@@ -244,7 +244,9 @@ bool SelectMgr_BaseIntersector::RayCylinderIntersection(const double  theBottomR
     return false;
   }
 
-  std::sort(anIntersections, anIntersections + aNbIntersections);
+  // aNbIntersections is bounded by the fixed 4-element buffer; clamp defensively.
+  const int aNbToSort = std::min(aNbIntersections, 4);
+  std::sort(anIntersections, anIntersections + aNbToSort);
   theTimeEnter = anIntersections[0];
   if (aNbIntersections > 1)
   {

@@ -31,7 +31,9 @@ void RWStepVisual_RWPresentationView::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "presentation_view has not 3 parameter(s)"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -57,7 +59,9 @@ void RWStepVisual_RWPresentationView::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

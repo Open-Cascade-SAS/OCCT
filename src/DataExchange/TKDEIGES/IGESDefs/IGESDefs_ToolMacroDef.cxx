@@ -57,13 +57,19 @@ void IGESDefs_ToolMacroDef::ReadOwnParams(const occ::handle<IGESDefs_MacroDef>& 
   int nbval; // svv Jan 10 2000 : porting on DEC
   for (nbval = 0; PR.CurrentNumber() != PR.NbParams();
        nbval++, PR.SetCurrentNumber(PR.CurrentNumber() + 1))
+  {
     ;
+  }
 
   PR.SetCurrentNumber(tempCurrent);
   if (nbval > 0)
+  {
     langStatements = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
+  }
   else
+  {
     PR.AddFail("Number of Lang. Stats. : Not Positive");
+  }
 
   if (!langStatements.IsNull())
   {
@@ -73,7 +79,9 @@ void IGESDefs_ToolMacroDef::ReadOwnParams(const occ::handle<IGESDefs_MacroDef>& 
       // st = PR.ReadText(PR.Current(), "Language Statement", langStat); //szv#4:S4163:12Mar99 moved
       // in if
       if (PR.ReadText(PR.Current(), "Language Statement", langStat))
+      {
         langStatements->SetValue(i, langStat);
+      }
     }
   }
 
@@ -90,7 +98,9 @@ void IGESDefs_ToolMacroDef::WriteOwnParams(const occ::handle<IGESDefs_MacroDef>&
   IW.Send(ent->EntityTypeID());
   int upper = ent->NbStatements();
   for (int i = 1; i <= upper; i++)
+  {
     IW.Send(ent->LanguageStatement(i));
+  }
   IW.Send(ent->ENDMACRO());
 }
 
@@ -156,5 +166,5 @@ void IGESDefs_ToolMacroDef::OwnDump(const occ::handle<IGESDefs_MacroDef>& ent,
   IGESData_DumpStrings(S, level, 1, ent->NbStatements(), ent->LanguageStatement);
   S << "END MACRO : ";
   IGESData_DumpString(S, ent->ENDMACRO());
-  S << std::endl;
+  S << '\n';
 }

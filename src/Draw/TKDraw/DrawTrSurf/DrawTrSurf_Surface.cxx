@@ -83,13 +83,21 @@ void DrawTrSurf_Surface::DrawOn(Draw_Display& dis, const bool Iso) const
     gp_Pnt P1, P2;
     double v;
     if (VfirstInf && VlastInf)
+    {
       v = 0;
+    }
     else if (VfirstInf)
+    {
       v = VLast;
+    }
     else if (VlastInf)
+    {
       v = VFirst;
+    }
     else
+    {
       v = (VFirst + VLast) / 2;
+    }
 
     double delta = 1.;
 
@@ -196,13 +204,21 @@ void DrawTrSurf_Surface::DrawOn(Draw_Display& dis, const bool Iso) const
   // draw bounds
   dis.SetColor(boundsLook);
   if (!UfirstInf)
+  {
     DrawIsoCurveOn(C, GeomAbs_IsoU, UFirst, VFirst, VLast, dis);
+  }
   if (!UlastInf)
+  {
     DrawIsoCurveOn(C, GeomAbs_IsoU, ULast, VFirst, VLast, dis);
+  }
   if (!VfirstInf)
+  {
     DrawIsoCurveOn(C, GeomAbs_IsoV, VFirst, UFirst, ULast, dis);
+  }
   if (!VlastInf)
+  {
     DrawIsoCurveOn(C, GeomAbs_IsoV, VLast, UFirst, ULast, dis);
+  }
 
   // draw marker
   DrawIsoCurveOn(C,

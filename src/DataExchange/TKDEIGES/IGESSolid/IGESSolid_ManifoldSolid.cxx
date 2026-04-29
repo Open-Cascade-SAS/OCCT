@@ -32,9 +32,13 @@ void IGESSolid_ManifoldSolid::Init(
   const occ::handle<NCollection_HArray1<int>>&                          VoidShellFlags)
 {
   if (!VoidShells.IsNull())
+  {
     if (VoidShells->Lower() != 1 || VoidShellFlags->Lower() != 1
         || VoidShells->Length() != VoidShellFlags->Length())
+    {
       throw Standard_DimensionError("IGESSolid_ManifoldSolid : Init");
+    }
+  }
 
   theShell           = aShell;
   theOrientationFlag = Shellflag;
@@ -62,14 +66,20 @@ occ::handle<IGESSolid_Shell> IGESSolid_ManifoldSolid::VoidShell(const int index)
 {
   occ::handle<IGESSolid_Shell> ashell; // par defaut sera Null
   if (!theVoidShells.IsNull())
+  {
     ashell = theVoidShells->Value(index);
+  }
   return ashell;
 }
 
 bool IGESSolid_ManifoldSolid::VoidOrientationFlag(const int index) const
 {
   if (!theOrientFlags.IsNull())
+  {
     return (theOrientFlags->Value(index) != 0);
+  }
   else
+  {
     return false; // pour retourner qqchose ...
+  }
 }

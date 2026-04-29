@@ -80,7 +80,9 @@ void BOPAlgo_BuilderSolid::Perform(const Message_ProgressRange& theRange)
   GetReport()->Clear();
   //
   if (myShapes.IsEmpty())
+  {
     return;
+  }
 
   if (myContext.IsNull())
   {
@@ -507,7 +509,9 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
       const TopoDS_Shape& aHole = aHoleShells(k);
       // Check if it is inside
       if (!IsInside(aHole, aSolid, myContext))
+      {
         continue;
+      }
 
       // Save the relation
       TopoDS_Shape* pSolidWas = aHoleSolidMap.ChangeSeek(aHole);
@@ -537,7 +541,9 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
     //
     NCollection_List<TopoDS_Shape>* pLHoles = aSolidHolesMap.ChangeSeek(aSolid);
     if (!pLHoles)
+    {
       pLHoles = &aSolidHolesMap(aSolidHolesMap.Add(aSolid, NCollection_List<TopoDS_Shape>()));
+    }
     pLHoles->Append(aHole);
   }
 
@@ -596,12 +602,16 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
 void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& theRange)
 {
   if (myAvoidInternalShapes)
+  {
     // user-defined option to avoid internal parts is in force
     return;
+  }
 
   if (myLoopsInternal.IsEmpty())
+  {
     // no internal parts
     return;
+  }
 
   Message_ProgressScope aMainScope(theRange, "Adding internal shapes", 2);
 
@@ -613,7 +623,9 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
     const TopoDS_Shape& aShell = aItLS.Value();
     TopoDS_Iterator     aIt(aShell);
     for (; aIt.More(); aIt.Next())
+    {
       aMFs.Add(aIt.Value());
+    }
   }
 
   BRep_Builder aBB;
@@ -630,7 +642,9 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
     //
     aItLS.Initialize(aLSI);
     for (; aItLS.More(); aItLS.Next())
+    {
       aBB.Add(aSolid, aItLS.Value());
+    }
 
     myAreas.Append(aSolid);
     return;
@@ -647,7 +661,9 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
   NCollection_List<TopoDS_Shape> aLFaces;
   int                            i, aNbF = aMFs.Extent();
   for (i = 1; i <= aNbF; ++i)
+  {
     aLFaces.Append(aMFs(i));
+  }
 
   // Map of solids with IN faces
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
@@ -681,7 +697,9 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
 
     const NCollection_List<TopoDS_Shape>& aLF = aMSLF(i);
     if (aLF.IsEmpty())
+    {
       continue;
+    }
 
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMF;
     aItLS.Initialize(aLF);
@@ -711,7 +729,9 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
   {
     const TopoDS_Shape& aF = aMFs(i);
     if (!aMFDone.Contains(aF))
+    {
       aMFUnUsed.Add(aF);
+    }
   }
 
   if (aMFUnUsed.Extent())
@@ -721,13 +741,17 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
 
     TopoDS_Shape aWShape;
     if (aLSI.Extent() == 1)
+    {
       aWShape = aLSI.First();
+    }
     else
     {
       aBB.MakeCompound(TopoDS::Compound(aWShape));
       aItLS.Initialize(aLSI);
       for (; aItLS.More(); aItLS.Next())
+      {
         aBB.Add(aWShape, aItLS.Value());
+      }
     }
 
     AddWarning(new BOPAlgo_AlertSolidBuilderUnusedFaces(aWShape));
@@ -846,7 +870,9 @@ bool IsGrowthShell(const TopoDS_Shape&                                          
     for (; aIt.More(); aIt.Next())
     {
       if (theMHF.Contains(aIt.Value()))
+      {
         return true;
+      }
     }
   }
   return false;

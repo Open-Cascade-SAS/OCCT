@@ -70,11 +70,15 @@ bool IntTools_MarkedRangeSet::InsertRange(const double theFirstBoundary,
   int anIndex1 = GetIndex(theFirstBoundary, true);
 
   if (!anIndex1)
+  {
     return false;
+  }
   int anIndex2 = GetIndex(theLastBoundary, false);
 
   if (!anIndex2)
+  {
     return false;
+  }
 
   if (anIndex2 < anIndex1)
   { // it can be if theLastBoundary==theFirstBoundary==boundary_of_a_range or theFirstBoundary >
@@ -84,7 +88,9 @@ bool IntTools_MarkedRangeSet::InsertRange(const double theFirstBoundary,
     anIndex2      = atmpindex;
 
     if (theLastBoundary < theFirstBoundary)
+    {
       return false;
+    }
   }
 
   bool areEqualIndices = (anIndex1 == anIndex2);
@@ -136,7 +142,9 @@ bool IntTools_MarkedRangeSet::InsertRange(const double theFirstBoundary,
   int    anIndex    = theIndex;
 
   if ((theIndex <= 0) || (theIndex > myRangeNumber))
+  {
     return false;
+  }
 
   if ((theFirstBoundary < myRangeSetStorer(theIndex))
       || (theLastBoundary > myRangeSetStorer(theIndex + 1))
@@ -195,7 +203,9 @@ const NCollection_Sequence<int>& IntTools_MarkedRangeSet::GetIndices(const doubl
   myFoundIndices.Clear();
 
   if (theValue < myRangeSetStorer(1))
+  {
     return myFoundIndices;
+  }
   else
   {
     bool found = false;
@@ -238,7 +248,9 @@ int IntTools_MarkedRangeSet::GetIndex(const double theValue) const
   int anIndex = 0;
 
   if (theValue < myRangeSetStorer(1))
+  {
     anIndex = 0;
+  }
   else
   {
     for (int i = 2; i <= myRangeSetStorer.Length(); i++)
@@ -260,7 +272,9 @@ int IntTools_MarkedRangeSet::GetIndex(const double theValue, const bool UseLower
 
   if ((UseLower && (theValue < myRangeSetStorer(1)))
       || (!UseLower && (theValue <= myRangeSetStorer(1))))
+  {
     anIndex = 0;
+  }
   else
   {
     for (int i = 2; i <= myRangeSetStorer.Length(); i++)

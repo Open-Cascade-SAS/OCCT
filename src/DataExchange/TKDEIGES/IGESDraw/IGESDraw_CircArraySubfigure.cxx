@@ -37,8 +37,12 @@ void IGESDraw_CircArraySubfigure::Init(const occ::handle<IGESData_IGESEntity>&  
                                        const occ::handle<NCollection_HArray1<int>>& allNumPos)
 {
   if (!allNumPos.IsNull())
+  {
     if (allNumPos->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_CircArraySubfigure : Init");
+    }
+  }
   theBaseEntity  = aBase;
   theNbLocations = aNumLocs;
   theCenter      = aCenter;
@@ -70,7 +74,9 @@ gp_Pnt IGESDraw_CircArraySubfigure::TransformedCenterPoint() const
 {
   gp_XYZ tempCenterPoint = theCenter;
   if (HasTransf())
+  {
     Location().Transforms(tempCenterPoint);
+  }
   gp_Pnt tempRes(tempCenterPoint);
 
   return tempRes;
@@ -116,8 +122,9 @@ bool IGESDraw_CircArraySubfigure::PositionNum(const int Index) const
   //          array return theDoDontFlag else return !theDoDontFlag.
 
   if (thePositions.IsNull())
+  {
     return theDoDontFlag;
-
+  }
   else
   {
     int I;
@@ -125,7 +132,9 @@ bool IGESDraw_CircArraySubfigure::PositionNum(const int Index) const
     for (I = 1; I <= up; I++)
     {
       if (thePositions->Value(I) == Index)
+      {
         return theDoDontFlag;
+      }
     }
     return (!theDoDontFlag);
   }

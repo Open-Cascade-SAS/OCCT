@@ -19,14 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <gp_Ax3.hxx>
-#include <V3d_ViewerPointer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Aspect_RectangularGrid.hxx>
-class Graphic3d_Structure;
-class Graphic3d_Group;
+#include <V3d_ViewerPointer.hxx>
 
+//! Rectangular grid bound to a V3d_Viewer. Snap math (Compute/Hit) is inherited
+//! from Aspect_RectangularGrid; rendering goes through the shader-based infinite
+//! grid (OpenGl_View::renderGrid) instead of CPU-generated line segments.
 class V3d_RectangularGrid : public Aspect_RectangularGrid
 {
   DEFINE_STANDARD_RTTIEXT(V3d_RectangularGrid, Aspect_RectangularGrid)
@@ -59,30 +57,13 @@ protected:
   Standard_EXPORT void UpdateDisplay() override;
 
 private:
-  Standard_EXPORT void DefineLines();
-
-  Standard_EXPORT void DefinePoints();
-
-private:
-  //! Custom Graphic3d_Structure implementation.
-  class RectangularGridStructure;
+  //! Broadcast current parameters to every view owned by the viewer.
+  //! When theDoDisplay is false, erases the shader grid from each view instead.
+  void syncViews(const bool theDoDisplay) const;
 
 private:
-  occ::handle<Graphic3d_Structure> myStructure;
-  occ::handle<Graphic3d_Group>     myGroup;
-  gp_Ax3                           myCurViewPlane;
-  V3d_ViewerPointer                myViewer;
-  bool                             myCurAreDefined;
-  bool                             myToComputePrs;
-  Aspect_GridDrawMode              myCurDrawMode;
-  double                           myCurXo;
-  double                           myCurYo;
-  double                           myCurAngle;
-  double                           myCurXStep;
-  double                           myCurYStep;
-  double                           myXSize;
-  double                           myYSize;
-  double                           myOffSet;
+  V3d_ViewerPointer myViewer;
+  mutable bool      myIsDisplayed;
 };
 
 #endif // _V3d_RectangularGrid_HeaderFile

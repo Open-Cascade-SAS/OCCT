@@ -31,7 +31,9 @@ void RWStepRepr_RWShapeAspect::ReadStep(const occ::handle<StepData_StepReaderDat
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "shape_aspect"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

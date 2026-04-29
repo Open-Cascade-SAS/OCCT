@@ -41,7 +41,9 @@ void RWStepKinematics_RWLinearFlexibleAndPinionPair::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 7, theArch, "linear_flexible_and_pinion_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -135,7 +137,9 @@ void RWStepKinematics_RWLinearFlexibleAndPinionPair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 

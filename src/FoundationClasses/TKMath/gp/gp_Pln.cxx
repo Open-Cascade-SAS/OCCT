@@ -49,23 +49,35 @@ gp_Pln::gp_Pln(const gp_Pnt& theP, const gp_Dir& theV)
   if (anAbsB <= anAbsA && anAbsB <= anAbsC)
   {
     if (anAbsA > anAbsC)
+    {
       myPosition = gp_Ax3(theP, theV, gp_Dir(-C, 0., A));
+    }
     else
+    {
       myPosition = gp_Ax3(theP, theV, gp_Dir(C, 0., -A));
+    }
   }
   else if (anAbsA <= anAbsB && anAbsA <= anAbsC)
   {
     if (anAbsB > anAbsC)
+    {
       myPosition = gp_Ax3(theP, theV, gp_Dir(0., -C, B));
+    }
     else
+    {
       myPosition = gp_Ax3(theP, theV, gp_Dir(0., C, -B));
+    }
   }
   else
   {
     if (anAbsA > anAbsB)
+    {
       myPosition = gp_Ax3(theP, theV, gp_Dir(-B, A, 0.));
+    }
     else
+    {
       myPosition = gp_Ax3(theP, theV, gp_Dir(B, -A, 0.));
+    }
   }
 }
 
@@ -79,29 +91,41 @@ gp_Pln::gp_Pln(const double theA, const double theB, const double theC, const do
   if (anAbsB <= anAbsA && anAbsB <= anAbsC)
   {
     if (anAbsA > anAbsC)
+    {
       myPosition =
         gp_Ax3(gp_Pnt(-theD / theA, 0., 0.), gp_Dir(theA, theB, theC), gp_Dir(-theC, 0., theA));
+    }
     else
+    {
       myPosition =
         gp_Ax3(gp_Pnt(0., 0., -theD / theC), gp_Dir(theA, theB, theC), gp_Dir(theC, 0., -theA));
+    }
   }
   else if (anAbsA <= anAbsB && anAbsA <= anAbsC)
   {
     if (anAbsB > anAbsC)
+    {
       myPosition =
         gp_Ax3(gp_Pnt(0., -theD / theB, 0.), gp_Dir(theA, theB, theC), gp_Dir(0., -theC, theB));
+    }
     else
+    {
       myPosition =
         gp_Ax3(gp_Pnt(0., 0., -theD / theC), gp_Dir(theA, theB, theC), gp_Dir(0., theC, -theB));
+    }
   }
   else
   {
     if (anAbsA > anAbsB)
+    {
       myPosition =
         gp_Ax3(gp_Pnt(-theD / theA, 0., 0.), gp_Dir(theA, theB, theC), gp_Dir(-theB, theA, 0.));
+    }
     else
+    {
       myPosition =
         gp_Ax3(gp_Pnt(0., -theD / theB, 0.), gp_Dir(theA, theB, theC), gp_Dir(theB, -theA, 0.));
+    }
   }
 }
 

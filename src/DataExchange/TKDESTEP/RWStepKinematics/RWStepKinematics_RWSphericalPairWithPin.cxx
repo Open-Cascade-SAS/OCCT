@@ -39,7 +39,9 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "spherical_pair_with_pin"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -177,7 +179,9 @@ void RWStepKinematics_RWSphericalPairWithPin::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 

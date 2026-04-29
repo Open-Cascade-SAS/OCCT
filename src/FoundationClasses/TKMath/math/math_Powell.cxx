@@ -159,7 +159,9 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
     for (i = 1; i <= n; i++)
     {
       for (j = 1; j <= n; j++)
+      {
         xit(j) = TheDirections(j, i);
+      }
       F.Value(TheLocation, fptt);
       bool IsGood = MinimizeDirection(TheLocation, xit, TheMinimum, F_Dir);
 

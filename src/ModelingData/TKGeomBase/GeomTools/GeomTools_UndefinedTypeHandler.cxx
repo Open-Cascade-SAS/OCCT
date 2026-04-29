@@ -30,9 +30,13 @@ void GeomTools_UndefinedTypeHandler::PrintCurve(const occ::handle<Geom_Curve>& /
                                                 const bool        compact) const
 {
   if (!compact)
+  {
     OS << "****** UNKNOWN CURVE TYPE ******\n";
+  }
   else
-    std::cout << "****** UNKNOWN CURVE TYPE ******" << std::endl;
+  {
+    std::cout << "****** UNKNOWN CURVE TYPE ******" << '\n';
+  }
 }
 
 //=================================================================================================
@@ -51,9 +55,13 @@ void GeomTools_UndefinedTypeHandler::PrintCurve2d(const occ::handle<Geom2d_Curve
                                                   const bool        compact) const
 {
   if (!compact)
+  {
     OS << "****** UNKNOWN CURVE2d TYPE ******\n";
+  }
   else
-    std::cout << "****** UNKNOWN CURVE2d TYPE ******" << std::endl;
+  {
+    std::cout << "****** UNKNOWN CURVE2d TYPE ******" << '\n';
+  }
 }
 
 //=================================================================================================
@@ -73,9 +81,13 @@ void GeomTools_UndefinedTypeHandler::PrintSurface(const occ::handle<Geom_Surface
                                                   const bool        compact) const
 {
   if (!compact)
+  {
     OS << "****** UNKNOWN SURFACE TYPE ******\n";
+  }
   else
-    std::cout << "****** UNKNOWN SURFACE TYPE ******" << std::endl;
+  {
+    std::cout << "****** UNKNOWN SURFACE TYPE ******" << '\n';
+  }
 }
 
 Standard_IStream& GeomTools_UndefinedTypeHandler::ReadSurface(

@@ -131,7 +131,9 @@ bool XmlMXCAFDoc_LocationDriver::Translate(const XmlObjMgt_Element&    theParent
 {
   XmlObjMgt_Element aLocElem = XmlObjMgt::FindChildByName(theParent, ::LocationString());
   if (aLocElem == nullptr)
+  {
     return false;
+  }
 
   int aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
   if (aFileVer >= TDocStd_FormatVersion_VERSION_6 && myLocations == nullptr)
@@ -164,9 +166,13 @@ bool XmlMXCAFDoc_LocationDriver::Translate(const XmlObjMgt_Element&    theParent
       int aDatumID;
       aLocElem.getAttribute(::DatumString()).GetInteger(aDatumID);
       if (aDatumID > 0 && theMap.IsBound(aDatumID))
+      {
         aDatum = occ::down_cast<TopLoc_Datum3D>(theMap.Find(aDatumID));
+      }
       else
+      {
         return false;
+      }
     }
     else
     {

@@ -12,6 +12,7 @@ vraytrace 0
 vgrid -type rectangular
 vraytrace 1
 checkcolor 198 197 0.5 0.5 0.5
+vdump $imagedir/${casename}_rectangular.png
 vclose
 
 # Circular Grid
@@ -21,3 +22,5 @@ vraytrace 0
 vgrid -type circular
 vraytrace 1
 checkcolor 198 197 0.5 0.5 0.5
+vdump $imagedir/${casename}_circular.png
+vclose

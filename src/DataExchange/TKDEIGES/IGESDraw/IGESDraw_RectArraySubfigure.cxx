@@ -39,8 +39,12 @@ void IGESDraw_RectArraySubfigure::Init(const occ::handle<IGESData_IGESEntity>&  
                                        const occ::handle<NCollection_HArray1<int>>& allNumPos)
 {
   if (!allNumPos.IsNull())
+  {
     if (allNumPos->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_RectArraySubfigure : Init");
+    }
+  }
   theBaseEntity       = aBase;
   theScaleFactor      = aScale;
   theLowerLeftCorner  = aCorner;
@@ -74,7 +78,9 @@ gp_Pnt IGESDraw_RectArraySubfigure::TransformedLowerLeftCorner() const
 {
   gp_XYZ tempLowerLeftCorner = theLowerLeftCorner;
   if (HasTransf())
+  {
     Location().Transforms(tempLowerLeftCorner);
+  }
   gp_Pnt tempRes(tempLowerLeftCorner);
 
   return (tempRes);
@@ -128,14 +134,18 @@ bool IGESDraw_RectArraySubfigure::PositionNum(const int Index) const
   //          array return theDoDontFlag else return !theDoDontFlag.
 
   if (thePositions.IsNull())
+  {
     return theDoDontFlag;
+  }
 
   int I;
   int up = thePositions->Upper();
   for (I = 1; I <= up; I++)
   {
     if (thePositions->Value(I) == Index)
+    {
       return theDoDontFlag;
+    }
   }
   return (!theDoDontFlag);
 }

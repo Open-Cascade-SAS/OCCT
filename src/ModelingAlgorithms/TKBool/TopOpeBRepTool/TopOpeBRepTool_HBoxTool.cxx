@@ -82,7 +82,9 @@ void TopOpeBRepTool_HBoxTool::AddBox(const TopoDS_Shape& S)
     S.ShapeType();
   bool hasb = HasBox(S);
   if (hasb)
+  {
     return;
+  }
 
   Bnd_Box B;
   ComputeBox(S, B);
@@ -105,17 +107,27 @@ void TopOpeBRepTool_HBoxTool::ComputeBox(const TopoDS_Shape& S, Bnd_Box& B)
 {
   TopAbs_ShapeEnum t = S.ShapeType();
   if (t == TopAbs_FACE)
+  {
     BRepBndLib::Add(S, B);
+  }
   else if (t == TopAbs_EDGE)
+  {
     BRepBndLib::Add(S, B);
-  // modified by NIZHNY-MZV  Tue Sep 21 14:04:33 1999
+    // modified by NIZHNY-MZV  Tue Sep 21 14:04:33 1999
+  }
   else if (t == TopAbs_SOLID)
+  {
     BRepBndLib::Add(S, B);
+  }
   else if (t == TopAbs_COMPOUND)
+  {
     BRepBndLib::Add(S, B);
-  // modified by NIZHNY-MZV  Wed Apr  5 10:05:53 2000
+    // modified by NIZHNY-MZV  Wed Apr  5 10:05:53 2000
+  }
   else if (t == TopAbs_VERTEX)
+  {
     BRepBndLib::Add(S, B);
+  }
   else
   {
     throw Standard_ProgramError("HBT::ComputeBox : invalid type");

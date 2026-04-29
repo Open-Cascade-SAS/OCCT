@@ -457,7 +457,9 @@ bool V3d_View::IsEmpty() const
   {
     int Nstruct = myView->NumberOfDisplayedStructures();
     if (Nstruct > 0)
+    {
       TheStatus = false;
+    }
   }
   return (TheStatus);
 }
@@ -721,23 +723,47 @@ void V3d_View::Rotate(const double ax, const double ay, const double az, const b
   double Az = az;
 
   if (Ax > 0.)
+  {
     while (Ax > THE_TWO_PI)
+    {
       Ax -= THE_TWO_PI;
+    }
+  }
   else if (Ax < 0.)
+  {
     while (Ax < -THE_TWO_PI)
+    {
       Ax += THE_TWO_PI;
+    }
+  }
   if (Ay > 0.)
+  {
     while (Ay > THE_TWO_PI)
+    {
       Ay -= THE_TWO_PI;
+    }
+  }
   else if (Ay < 0.)
+  {
     while (Ay < -THE_TWO_PI)
+    {
       Ay += THE_TWO_PI;
+    }
+  }
   if (Az > 0.)
+  {
     while (Az > THE_TWO_PI)
+    {
       Az -= THE_TWO_PI;
+    }
+  }
   else if (Az < 0.)
+  {
     while (Az < -THE_TWO_PI)
+    {
       Az += THE_TWO_PI;
+    }
+  }
 
   occ::handle<Graphic3d_Camera> aCamera = Camera();
 
@@ -788,23 +814,47 @@ void V3d_View::Rotate(const double ax,
   double Az = az;
 
   if (Ax > 0.)
+  {
     while (Ax > THE_TWO_PI)
+    {
       Ax -= THE_TWO_PI;
+    }
+  }
   else if (Ax < 0.)
+  {
     while (Ax < -THE_TWO_PI)
+    {
       Ax += THE_TWO_PI;
+    }
+  }
   if (Ay > 0.)
+  {
     while (Ay > THE_TWO_PI)
+    {
       Ay -= THE_TWO_PI;
+    }
+  }
   else if (Ay < 0.)
+  {
     while (Ay < -THE_TWO_PI)
+    {
       Ay += THE_TWO_PI;
+    }
+  }
   if (Az > 0.)
+  {
     while (Az > THE_TWO_PI)
+    {
       Az -= THE_TWO_PI;
+    }
+  }
   else if (Az < 0.)
+  {
     while (Az < -THE_TWO_PI)
+    {
       Az += THE_TWO_PI;
+    }
+  }
 
   occ::handle<Graphic3d_Camera> aCamera = Camera();
 
@@ -873,11 +923,19 @@ void V3d_View::Rotate(const V3d_TypeOfAxe theAxe,
   double anAngle = theAngle;
 
   if (anAngle > 0.0)
+  {
     while (anAngle > THE_TWO_PI)
+    {
       anAngle -= THE_TWO_PI;
+    }
+  }
   else if (anAngle < 0.0)
+  {
     while (anAngle < -THE_TWO_PI)
+    {
       anAngle += THE_TWO_PI;
+    }
+  }
 
   occ::handle<Graphic3d_Camera> aCamera = Camera();
 
@@ -929,11 +987,19 @@ void V3d_View::Rotate(const double angle, const bool Start)
   double Angle = angle;
 
   if (Angle > 0.)
+  {
     while (Angle > THE_TWO_PI)
+    {
       Angle -= THE_TWO_PI;
+    }
+  }
   else if (Angle < 0.)
+  {
     while (Angle < -THE_TWO_PI)
+    {
       Angle += THE_TWO_PI;
+    }
+  }
 
   occ::handle<Graphic3d_Camera> aCamera = Camera();
 
@@ -968,23 +1034,47 @@ void V3d_View::Turn(const double ax, const double ay, const double az, const boo
   double Az = az;
 
   if (Ax > 0.)
+  {
     while (Ax > THE_TWO_PI)
+    {
       Ax -= THE_TWO_PI;
+    }
+  }
   else if (Ax < 0.)
+  {
     while (Ax < -THE_TWO_PI)
+    {
       Ax += THE_TWO_PI;
+    }
+  }
   if (Ay > 0.)
+  {
     while (Ay > THE_TWO_PI)
+    {
       Ay -= THE_TWO_PI;
+    }
+  }
   else if (Ay < 0.)
+  {
     while (Ay < -THE_TWO_PI)
+    {
       Ay += THE_TWO_PI;
+    }
+  }
   if (Az > 0.)
+  {
     while (Az > THE_TWO_PI)
+    {
       Az -= THE_TWO_PI;
+    }
+  }
   else if (Az < 0.)
+  {
     while (Az < -THE_TWO_PI)
+    {
       Az += THE_TWO_PI;
+    }
+  }
 
   occ::handle<Graphic3d_Camera> aCamera = Camera();
 
@@ -1044,11 +1134,19 @@ void V3d_View::Turn(const double angle, const bool Start)
   double Angle = angle;
 
   if (Angle > 0.)
+  {
     while (Angle > THE_TWO_PI)
+    {
       Angle -= THE_TWO_PI;
+    }
+  }
   else if (Angle < 0.)
+  {
     while (Angle < -THE_TWO_PI)
+    {
       Angle += THE_TWO_PI;
+    }
+  }
 
   occ::handle<Graphic3d_Camera> aCamera = Camera();
 
@@ -1081,11 +1179,19 @@ void V3d_View::SetTwist(const double angle)
   double Angle = angle;
 
   if (Angle > 0.)
+  {
     while (Angle > THE_TWO_PI)
+    {
       Angle -= THE_TWO_PI;
+    }
+  }
   else if (Angle < 0.)
+  {
     while (Angle < -THE_TWO_PI)
+    {
       Angle += THE_TWO_PI;
+    }
+  }
 
   occ::handle<Graphic3d_Camera> aCamera = Camera();
 
@@ -2500,11 +2606,17 @@ void V3d_View::AxialScale(const int Dx, const int Dy, const V3d_TypeOfAxe Axis)
     double dscale = std::sqrt(Dx * Dx + Dy * Dy) / 100. + 1;
     dscale        = (Dx > 0) ? dscale : 1. / dscale;
     if (Axis == V3d_X)
+    {
       Sx = dscale;
+    }
     if (Axis == V3d_Y)
+    {
       Sy = dscale;
+    }
     if (Axis == V3d_Z)
+    {
       Sz = dscale;
+    }
     SetAxialScale(Sx, Sy, Sz);
   }
 }
@@ -2557,7 +2669,9 @@ void V3d_View::StartRotation(const int X, const int Y, const double zRotationThr
     //  if( dx > rx/3. || dy > ry/3. ) myZRotation = true;
     double dd = zRotationThreshold * (rx + ry) / 2.;
     if (dx > dd || dy > dd)
+    {
       myZRotation = true;
+    }
   }
 }
 
@@ -3055,7 +3169,9 @@ void V3d_View::SetLightOn(const occ::handle<V3d_Light>& theLight)
 void V3d_View::SetLightOff(const occ::handle<V3d_Light>& theLight)
 {
   if (MyViewer->IsGlobalLight(theLight))
+  {
     throw Standard_TypeMismatch("V3d_View::SetLightOff, the light is global");
+  }
   myActiveLights.Remove(theLight);
   UpdateLights();
 }
@@ -3377,6 +3493,7 @@ void V3d_View::SetGrid(const gp_Ax3& aPlane, const occ::handle<Aspect_Grid>& aGr
   int    i, j, k;
   // Calculation of the product of matrices
   for (i = 1; i <= 4; i++)
+  {
     for (j = 1; j <= 4; j++)
     {
       MyTrsf(i, j) = 0.0;
@@ -3388,6 +3505,7 @@ void V3d_View::SetGrid(const gp_Ax3& aPlane, const occ::handle<Aspect_Grid>& aGr
         MyTrsf(i, j) = valuenewtrsf;
       }
     }
+  }
 }
 
 //=================================================================================================
@@ -3395,9 +3513,34 @@ void V3d_View::SetGrid(const gp_Ax3& aPlane, const occ::handle<Aspect_Grid>& aGr
 void V3d_View::SetGridActivity(const bool AFlag)
 {
   if (AFlag)
+  {
     MyGrid->Activate();
+  }
   else
+  {
     MyGrid->Deactivate();
+  }
+}
+
+//=================================================================================================
+
+void V3d_View::GridDisplay(const Aspect_GridParams& theParams)
+{
+  GridDisplay(theParams, MyViewer->PrivilegedPlane());
+}
+
+//=================================================================================================
+
+void V3d_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+{
+  myView->GridDisplay(theParams, thePlane);
+}
+
+//=================================================================================================
+
+void V3d_View::GridErase()
+{
+  myView->GridErase();
 }
 
 //=================================================================================================

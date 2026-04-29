@@ -92,11 +92,15 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
   {
     // First pass: collect empty labels, assign IDs to the types
     if (myDrivers.IsNull())
+    {
       myDrivers = AttributeDrivers(myMsgDriver);
+    }
     occ::handle<TDF_Data> aData = aDoc->GetData();
     FirstPass(aData->Root());
     if (aDoc->EmptyLabelsSavingMode())
+    {
       myEmptyLabels.Clear(); //
+    }
 
     //  1. Write info section (including types table)
     WriteInfoSection(aDoc, theOStream);
@@ -110,9 +114,11 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
 
     //  2. Write the Table of Contents of Sections
     const TDocStd_FormatVersion aDocVer = aDoc->StorageFormatVersion();
-    NCollection_Vector<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
+    NCollection_DynamicArray<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
     for (; anIterS.More(); anIterS.Next())
+    {
       anIterS.ChangeValue().WriteTOC(theOStream, aDocVer);
+    }
 
     EnableQuickPartWriting(myMsgDriver, IsQuickPart(aDocVer));
     BinLDrivers_DocumentSection* aShapesSection = nullptr;
@@ -135,7 +141,9 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
     myRelocTable.Clear();
     myPAtt.Init();
     if (aQuickPart)
+    {
       myPAtt.SetOStream(theOStream); // for writing shapes data into the stream directly
+    }
 
     Message_ProgressScope aPS(theRange, "Writing document", 3);
 
@@ -155,7 +163,9 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
       delete aShapesSection;
     }
     else
+    {
       Clear();
+    }
 
     if (!aPS.More())
     {
@@ -175,7 +185,9 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
 
     //  5. Write sizes along the file where it is needed for quick part mode
     if (aQuickPart)
+    {
       WriteSizes(theOStream);
+    }
 
     // End of processing: close structures and check the status
     myPAtt.Destroy(); // free buffer
@@ -330,7 +342,9 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree(const TDF_Label&           
 #endif
   theOS.write(reinterpret_cast<char*>(&anEndLabel), sizeof(anEndLabel));
   if (theQuickPart)
+  {
     aPosition->StoreSize(theOS);
+  }
 }
 
 //=================================================================================================
@@ -374,15 +388,21 @@ bool BinLDrivers_DocumentStorageDriver::FirstPassSubTree(const TDF_Label&       
   for (; itChld.More(); itChld.Next())
   {
     if (FirstPassSubTree(itChld.Value(), emptyChildrenList))
+    {
       emptyChildrenList.Append(itChld.Value());
+    }
     else
+    {
       hasChildAttr = true;
+    }
   }
 
   bool isEmpty = !(hasAttr || hasChildAttr);
 
   if (!isEmpty)
+  {
     ListOfEmptyL.Append(emptyChildrenList);
+  }
 
   return isEmpty;
 }
@@ -395,7 +415,9 @@ void BinLDrivers_DocumentStorageDriver::FirstPass(const TDF_Label& theRoot)
   myEmptyLabels.Clear();
 
   if (FirstPassSubTree(theRoot, myEmptyLabels))
+  {
     myEmptyLabels.Append(theRoot);
+  }
 
   myDrivers->AssignIds(myTypesMap);
 }
@@ -582,6 +604,8 @@ void BinLDrivers_DocumentStorageDriver::WriteSizes(Standard_OStream& theOS)
 {
   NCollection_List<occ::handle<BinObjMgt_Position>>::Iterator anIter(mySizesToWrite);
   for (; anIter.More() && theOS; anIter.Next())
+  {
     anIter.Value()->WriteSize(theOS);
+  }
   mySizesToWrite.Clear();
 }

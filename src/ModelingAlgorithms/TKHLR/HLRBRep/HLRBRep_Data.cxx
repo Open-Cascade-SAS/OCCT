@@ -117,7 +117,9 @@ public:
     std::cout << "\n@#@#@#@#@# SetDim " << n << std::endl;
 #endif
     if (UV)
+    {
       Destroy();
+    }
 #ifdef OCCT_DEBUG
     StNbLect = StNbEcr = StNbMax = StNbMoy = 0;
 #endif
@@ -329,27 +331,41 @@ public:
     //-- ordre decroissant
     int a = 0, b = nbUV[i0] - 1, ab;
     if (IndUV[i0][a] == -1)
+    {
       return (RealLast());
+    }
     if (IndUV[i0][a] == j0)
+    {
       return (UV[i0][a]);
+    }
     if (IndUV[i0][b] == j0)
+    {
       return (UV[i0][b]);
+    }
     while ((IndUV[i0][a] > j0) && (IndUV[i0][b] < j0))
     {
       ab = (a + b) >> 1;
       if (IndUV[i0][ab] < j0)
       {
         if (b == ab)
+        {
           return (RealLast());
+        }
         else
+        {
           b = ab;
+        }
       }
       else if (IndUV[i0][ab] > j0)
       {
         if (a == ab)
+        {
           return (RealLast());
+        }
         else
+        {
           a = ab;
+        }
       }
       else
       {
@@ -487,13 +503,17 @@ static void AdjustParameter(HLRBRep_EdgeData* E, const bool h, double& p, float&
   {
     E->Status().Bounds(p, t, p2, t2);
     if (E->VerAtSta())
+    {
       p = p + (p2 - p) * CutBig;
+    }
   }
   else
   {
     E->Status().Bounds(p1, t1, p, t);
     if (E->VerAtEnd())
+    {
       p = p - (p - p1) * CutBig;
+    }
   }
 }
 
@@ -574,7 +594,9 @@ void HLRBRep_Data::Write(const occ::handle<HLRBRep_Data>& DS,
         int                                    ne = eb->NbEdges();
 
         for (int ie = 1; ie <= ne; ie++)
+        {
           eb->Edge(ie, eb->Edge(ie) + de);
+        }
       }
     }
 
@@ -613,7 +635,9 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
     EC.Projector(&myProj);
     double enl = EC.Update(TotMin, TotMax);
     if (enl > tolMinMax)
+    {
       tolMinMax = enl;
+    }
   }
   HLRAlgo::EnlargeMinMax(tolMinMax, TotMin, TotMax);
   double d[16];
@@ -623,17 +647,23 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
   {
     d[i] = TotMax[i] - TotMin[i];
     if (precad < d[i])
+    {
       precad = d[i];
+    }
   }
   myBigSize = precad;
   precad    = precad * 0.0005;
 
   for (i = 0; i <= 15; i++)
+  {
     mySurD[i] = 0x00007fff / (d[i] + precad);
+  }
   precad = precad * 0.5;
 
   for (i = 0; i <= 15; i++)
+  {
     myDeca[i] = -TotMin[i] + precad;
+  }
 
   double tol;
   bool   ver1, ver2;
@@ -725,14 +755,18 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
       Tg1.Transform(T);
       Tg2.Transform(T);
       if (std::abs(Tg1.X()) + std::abs(Tg1.Y()) < myToler * 10)
+      {
         ver1 = true;
+      }
       else
       {
         gp_Dir Dir1(Tg1);
         ver1 = std::abs(Dir1.X()) + std::abs(Dir1.Y()) < myToler * 10;
       }
       if (std::abs(Tg2.X()) + std::abs(Tg2.Y()) < myToler * 10)
+      {
         ver2 = true;
+      }
       else
       {
         gp_Dir Dir2(Tg2);
@@ -774,7 +808,9 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
       {
         withOutL = true;
         if (myFaceItr1.Double())
+        {
           cut = true;
+        }
       }
     }
     fd.Cut(cut);
@@ -786,9 +822,13 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
     if (!withOutL
         && (iFaceType == GeomAbs_Plane || iFaceType == GeomAbs_Cylinder || iFaceType == GeomAbs_Cone
             || iFaceType == GeomAbs_Sphere || iFaceType == GeomAbs_Torus))
+    {
       fd.Simple(true);
+    }
     else
+    {
       fd.Simple(false);
+    }
 
     fd.Plane(iFaceType == GeomAbs_Plane);
     fd.Cylinder(iFaceType == GeomAbs_Cylinder);
@@ -842,7 +882,9 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
                 r = Nm.Z() * myProj.Focus() - (Nm.X() * Pt.X() + Nm.Y() * Pt.Y() + Nm.Z() * Pt.Z());
               }
               else
+              {
                 r = Nm.Z();
+              }
               if (std::abs(r) > myToler * 10)
               {
                 fd.Back(r < 0);
@@ -879,7 +921,9 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
         }
       }
       else
+      {
         fd.Hiding(true);
+      }
     }
     else
     {
@@ -902,12 +946,18 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
       myFE                       = myFaceItr1.Edge();
       HLRBRep_EdgeData& EDataFE2 = myEData(myFE);
       if (!fd.Simple())
+      {
         EDataFE2.AutoIntersectionDone(false);
+      }
       HLRAlgo::DecodeMinMax(EDataFE2.MinMax(), EdgeMin, EdgeMax);
       if (myFaceItr1.BeginningOfWire())
+      {
         HLRAlgo::CopyMinMax(EdgeMin, EdgeMax, WireMin, WireMax);
+      }
       else
+      {
         HLRAlgo::AddMinMax(EdgeMin, EdgeMax, WireMin, WireMax);
+      }
       if (myFaceItr1.EndOfWire())
       {
         HLRAlgo::EncodeMinMax(WireMin, WireMax, MinMaxWire);
@@ -918,7 +968,9 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
           HLRAlgo::CopyMinMax(WireMin, WireMax, FaceMin, FaceMax);
         }
         else
+        {
           HLRAlgo::AddMinMax(WireMin, WireMax, FaceMin, FaceMax);
+        }
       }
     }
     HLRAlgo::EncodeMinMax(FaceMin, FaceMax, MinMaxFace);
@@ -1040,7 +1092,9 @@ bool HLRBRep_Data::MoreEdge()
       myLETol      = myLEData->Tolerance();
       myLEType     = myLEGeom->GetType();
       if (!myLEDouble)
+      {
         myLEData->HideCount(myHideCount - 1);
+      }
       return true;
     }
     else
@@ -1063,12 +1117,18 @@ void HLRBRep_Data::NextEdge(const bool skip)
   if (skip)
   {
     if (iFaceTest)
+    {
       myFaceItr2.NextEdge();
+    }
     else
+    {
       myCurSortEd++;
+    }
   }
   if (!MoreEdge())
+  {
     return;
+  }
   if (iFaceTest)
   {
     myLE         = myFaceItr2.Edge();
@@ -1083,7 +1143,9 @@ void HLRBRep_Data::NextEdge(const bool skip)
     myLEType     = myLEGeom->GetType();
     if (((HLRBRep_EdgeData*)myLEData)->Vertical()
         || (myLEDouble && ((HLRBRep_EdgeData*)myLEData)->HideCount() == myHideCount - 1))
+    {
       NextEdge();
+    }
     ((HLRBRep_EdgeData*)myLEData)->HideCount(myHideCount - 1);
     return;
   }
@@ -1139,7 +1201,7 @@ void HLRBRep_Data::NextEdge(const bool skip)
     NextEdge();
     return;
   }
-  return; // edge is OK
+  // edge is OK
 }
 
 //=================================================================================================
@@ -1147,9 +1209,13 @@ void HLRBRep_Data::NextEdge(const bool skip)
 int HLRBRep_Data::Edge() const
 {
   if (iFaceTest)
+  {
     return myFaceItr2.Edge();
+  }
   else
+  {
     return myEdgeIndices(myCurSortEd);
+  }
 }
 
 //=================================================================================================
@@ -1318,13 +1384,21 @@ void HLRBRep_Data::NextInterference()
                 if (mySameVertex || myLE == myFE)
                 {
                   if (h1)
+                  {
                     da1 = CutLar;
+                  }
                   if (e1)
+                  {
                     db1 = CutLar;
+                  }
                   if (h2)
+                  {
                     da2 = CutLar;
+                  }
                   if (e2)
+                  {
                     db2 = CutLar;
+                  }
                 }
                 int NoInter = 0;
                 if (myLE == myFE)
@@ -1421,13 +1495,17 @@ bool HLRBRep_Data::RejectedInterference()
     bool firstPoint = (n & 1) != 0;
     int  nseg       = n >> 1;
     if (firstPoint)
+    {
       nseg++;
+    }
     double pf = ((HLRBRep_Curve*)myLEGeom)
                   ->Parameter3d(myIntersector.Segment(nseg).FirstPoint().ParamOnFirst());
     double pl = ((HLRBRep_Curve*)myLEGeom)
                   ->Parameter3d(myIntersector.Segment(nseg).LastPoint().ParamOnFirst());
     if (pf > pl)
+    {
       firstPoint = !firstPoint;
+    }
 
     if (firstPoint)
     {
@@ -1455,13 +1533,19 @@ void HLRBRep_Data::LocalLEGeometry2D(const double Param, gp_Dir2d& Tg, gp_Dir2d&
 {
   myLLProps.SetParameter(Param);
   if (!myLLProps.IsTangentDefined())
+  {
     throw Standard_Failure("HLRBRep_Data::LocalGeometry2D");
+  }
   myLLProps.Tangent(Tg);
   Cu = myLLProps.Curvature();
   if (Cu > Epsilon(1.) && !Precision::IsInfinite(Cu))
+  {
     myLLProps.Normal(Nm);
+  }
   else
+  {
     Nm = gp_Dir2d(-Tg.Y(), Tg.X());
+  }
 }
 
 //=================================================================================================
@@ -1476,13 +1560,19 @@ void HLRBRep_Data::LocalFEGeometry2D(const int    FE,
   myFLProps.SetCurve(aCurve);
   myFLProps.SetParameter(Param);
   if (!myFLProps.IsTangentDefined())
+  {
     throw Standard_Failure("HLRBRep_Data::LocalGeometry2D");
+  }
   myFLProps.Tangent(Tg);
   Cu = myFLProps.Curvature();
   if (Cu > Epsilon(1.) && !Precision::IsInfinite(Cu))
+  {
     myFLProps.Normal(Nm);
+  }
   else
+  {
     Nm = gp_Dir2d(-Tg.Y(), Tg.X());
+  }
 }
 
 //=================================================================================================
@@ -1522,7 +1612,9 @@ void HLRBRep_Data::EdgeState(const double  p1,
       }
       V.Transform(TI);
       if (NrmFace.Dot(V) > 0.)
+      {
         NrmFace.Reverse();
+      }
 
       const double scal = (TngEdge.SquareMagnitude() > 1.e-10) ? NrmFace.Dot(gp_Dir(TngEdge)) : 0.;
 
@@ -1581,13 +1673,19 @@ int HLRBRep_Data::HidingStartLevel(const int                                    
   {
     param = It.Value().Intersection().Parameter();
     if (param > end)
+    {
       Loop = false;
+    }
     else
     {
       if (std::abs(param - sta) > std::abs(param - end))
+      {
         end = param;
+      }
       else
+      {
         sta = param;
+      }
     }
     It.Next();
   }
@@ -1619,7 +1717,9 @@ int HLRBRep_Data::HidingStartLevel(const int                                    
       }
     }
     else if (p > param + tolpar)
+    {
       Loop = false;
+    }
     else
     {
 #ifdef OCCT_DEBUG
@@ -1665,9 +1765,13 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
       myFE                  = eb1->Edge(ie1);
       HLRBRep_EdgeData& ed1 = myEData(myFE);
       if (eb1->Double(ie1) || eb1->IsoLine(ie1) || ed1.Vertical())
+      {
         ed1.Used(true);
+      }
       else
+      {
         ed1.Used(false);
+      }
       if ((eb1->OutLine(ie1) || eb1->Internal(ie1)) && !ed1.Vertical())
       {
         double p, pu, pv, r;
@@ -1676,13 +1780,21 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
         int                  vsta = ed1.VSta();
         int                  vend = ed1.VEnd();
         if (vsta == 0 && vend == 0)
+        {
           p = 0;
+        }
         else if (vsta == 0)
+        {
           p = EC.Parameter3d(EC.LastParameter());
+        }
         else if (vend == 0)
+        {
           p = EC.Parameter3d(EC.FirstParameter());
+        }
         else
+        {
           p = EC.Parameter3d((EC.LastParameter() + EC.FirstParameter()) / 2);
+        }
         if (HLRBRep_EdgeFaceTool::UVPoint(p, myFEGeom, iFaceGeom, pu, pv))
         {
           gp_Pnt Pt;
@@ -1714,7 +1826,9 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
 #endif
             }
             if (curv > 0)
+            {
               Nm.Reverse();
+            }
             Tg.Transform(T);
             Pt.Transform(T);
             Nm.Transform(T);
@@ -1728,9 +1842,13 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
 #endif
             }
             if (myProj.Perspective())
+            {
               r = Nm.Z() * myProj.Focus() - (Nm.X() * Pt.X() + Nm.Y() * Pt.Y() + Nm.Z() * Pt.Z());
+            }
             else
+            {
               r = Nm.Z();
+            }
             myFEOri = (r > 0) ? TopAbs_FORWARD : TopAbs_REVERSED;
             if (!FD.Cut() && FD.Closed() && FirstInversion)
             {
@@ -2083,9 +2201,13 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
       if (iFaceTest)
       {
         if (!myLEOutLine && !myLEInternal)
+        {
           TolZ = myBigSize * 0.001;
+        }
         else
+        {
           TolZ = myBigSize * 0.01;
+        }
       }
       wLim -= TolZ;
       double PeriodU, PeriodV, UMin = 0., UMax = 0., VMin = 0., VMax = 0.;
@@ -2096,7 +2218,9 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
         UMax    = iFaceGeom->LastUParameter();
       }
       else
+      {
         PeriodU = 0.;
+      }
       if (iFaceGeom->IsVPeriodic())
       {
         PeriodV = iFaceGeom->VPeriod();
@@ -2104,7 +2228,9 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
         VMax    = iFaceGeom->LastVParameter();
       }
       else
+      {
         PeriodV = 0;
+      }
       gp_Pnt                            PInter;
       double                            u, v, w;
       IntCurveSurface_TransitionOnCurve Tr;
@@ -2116,9 +2242,13 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
         {
           double aDummyShift;
           if (PeriodU > 0.)
+          {
             GeomInt::AdjustPeriodic(u, UMin, UMax, PeriodU, u, aDummyShift);
+          }
           if (PeriodV > 0.)
+          {
             GeomInt::AdjustPeriodic(v, VMin, VMax, PeriodV, v, aDummyShift);
+          }
 
           gp_Pnt2d pnt2d(u, v);
           if (myClassifier->Classify(pnt2d, Precision::PConfusion()) != TopAbs_OUT)
@@ -2253,7 +2383,9 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
     if (myLE == myFE)
     {
       if (st == TopAbs_IN)
+      {
         ((HLRBRep_EdgeData*)myLEData)->Simple(false);
+      }
     }
     else
     {
@@ -2261,11 +2393,15 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
       {
         if ((st == TopAbs_ON) || (Tr1->PositionOnCurve() != IntRes2d_Middle)
             || (Tr2->PositionOnCurve() != IntRes2d_Middle))
+        {
           return true;
+        }
       }
     }
     if (st == TopAbs_IN)
+    {
       iFaceSmpl = false;
+    }
   }
 
   switch (Tr1->TransitionType())
@@ -2294,7 +2430,9 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
   }
 
   if (iFaceBack)
+  {
     Orie = TopAbs::Complement(Orie); // change the transition
+  }
   TopAbs_Orientation Ori = TopAbs_FORWARD;
   switch (Tr1->PositionOnCurve())
   {
@@ -2314,7 +2452,8 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
     if (Tr2->PositionOnCurve() != IntRes2d_Middle)
     { // correction de la transition  sur myFE
       // clang-format off
-      if (mySameVertex) return true;        // si intersection a une extremite verticale !
+      if (mySameVertex) { return true;        // si intersection a une extremite verticale !
+}
       // clang-format on
 
       bool     douteux = false;
@@ -2331,7 +2470,9 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
           douteux = true;
           ((HLRBRep_Curve*)myFEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
           if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+          {
             Tgsav = Nmsav;
+          }
         }
       }
       else
@@ -2344,7 +2485,9 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
           douteux = true;
           ((HLRBRep_Curve*)myFEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
           if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+          {
             Tgsav = Nmsav;
+          }
         }
       }
       gp_Vec2d TgFE;
@@ -2354,9 +2497,13 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
         if (TgFE.XY().Dot(Tgsav.XY()) < 0.0)
         {
           if (Orie == TopAbs_FORWARD)
+          {
             Orie = TopAbs_REVERSED;
+          }
           else if (Orie == TopAbs_REVERSED)
+          {
             Orie = TopAbs_FORWARD;
+          }
         }
       }
       myIntf.ChangeBoundary().Set2D(myFE, p2);
@@ -2375,7 +2522,9 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
           douteux = true;
           ((HLRBRep_Curve*)myLEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
           if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+          {
             Tgsav = Nmsav;
+          }
         }
       }
       else
@@ -2386,7 +2535,9 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
           douteux = true;
           ((HLRBRep_Curve*)myLEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
           if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+          {
             Tgsav = Nmsav;
+          }
         }
       }
       if (douteux)
@@ -2396,9 +2547,13 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
         if (TgLE.XY().Dot(Tgsav.XY()) < 0.0)
         {
           if (Orie == TopAbs_FORWARD)
+          {
             Orie = TopAbs_REVERSED;
+          }
           else if (Orie == TopAbs_REVERSED)
+          {
             Orie = TopAbs_FORWARD;
+          }
         }
       }
     }
@@ -2418,7 +2573,9 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
   {
     decal = 1;
     if (st == TopAbs_IN && Ori == TopAbs_FORWARD && Orie == TopAbs_FORWARD)
+    {
       decal = 0;
+    }
   }
   HLRAlgo_Intersection& inter = myIntf.ChangeIntersection();
   inter.Orientation(Ori);
@@ -2441,20 +2598,30 @@ bool HLRBRep_Data::SameVertex(const bool h1, const bool h2)
 {
   int v1, v2;
   if (h1)
+  {
     v1 = ((HLRBRep_EdgeData*)myLEData)->VSta();
+  }
   else
+  {
     v1 = ((HLRBRep_EdgeData*)myLEData)->VEnd();
+  }
   if (h2)
+  {
     v2 = ((HLRBRep_EdgeData*)myFEData)->VSta();
+  }
   else
+  {
     v2 = ((HLRBRep_EdgeData*)myFEData)->VEnd();
+  }
   bool SameV = v1 == v2;
   if (SameV)
   {
     myIntersected = true; // compute the intersections
     if ((myLEType == GeomAbs_Line || myLEType == GeomAbs_Circle || myLEType == GeomAbs_Ellipse)
         && (myFEType == GeomAbs_Line || myFEType == GeomAbs_Circle || myFEType == GeomAbs_Ellipse))
+    {
       myIntersected = false; // no other intersection
+    }
 
     bool otherCase = true;
 
@@ -2462,10 +2629,14 @@ bool HLRBRep_Data::SameVertex(const bool h1, const bool h2)
         || (!h1 && ((HLRBRep_EdgeData*)myLEData)->OutLVEnd()))
     {
       if (iFaceTest || myLEInternal)
+      {
         otherCase = false;
+      }
     }
     else if (iFaceTest)
+    {
       otherCase = false;
+    }
 
     if (otherCase)
     {
@@ -2493,7 +2664,9 @@ bool HLRBRep_Data::IsBadFace() const
       double aMin    = pGeom->FirstUParameter();
       double aMax    = pGeom->LastUParameter();
       if (aPeriod * 2 < aMax - aMin)
+      {
         return true;
+      }
     }
     if (pGeom->IsVPeriodic())
     {
@@ -2501,7 +2674,9 @@ bool HLRBRep_Data::IsBadFace() const
       double aMin    = pGeom->FirstVParameter();
       double aMax    = pGeom->LastVParameter();
       if (aPeriod * 2 < aMax - aMin)
+      {
         return true;
+      }
     }
   }
   return false;

@@ -37,7 +37,9 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 5, ach, "product_definition_reference_with_local_representation"))
+  {
     return;
+  }
 
   // Own field source
   occ::handle<StepBasic_ExternalSource> aSource;

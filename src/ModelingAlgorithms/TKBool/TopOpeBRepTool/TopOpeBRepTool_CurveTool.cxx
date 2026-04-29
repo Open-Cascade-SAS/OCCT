@@ -146,7 +146,9 @@ static bool CheckApproxResults(const BRepApprox_Approx& Approx)
   int                               np  = amc.NbPoles();
   int                               nc  = amc.NbCurves();
   if (np < 2 || nc < 1)
+  {
     return false;
+  }
 
   // check the knots for coincidence
   const NCollection_Array1<double>& knots = amc.Knots();
@@ -179,7 +181,9 @@ static bool CheckPCurve(const occ::handle<Geom2d_Curve>& aPC, const TopoDS_Face&
   TopLoc_Location           aLoc;
   occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace, aLoc);
   if (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  {
     aSurf = (occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf))->BasisSurface();
+  }
 
   gp_Pnt2d pnt = aPC->Value((fp + lp) / 2);
   double   u, v;
@@ -190,7 +194,9 @@ static bool CheckPCurve(const occ::handle<Geom2d_Curve>& aPC, const TopoDS_Face&
     double aPer   = aSurf->UPeriod();
     int    nshift = (int)((u - umin) / aPer);
     if (u < umin + aPer * nshift)
+    {
       nshift--;
+    }
     umin += aPer * nshift;
     umax += aPer * nshift;
   }
@@ -199,7 +205,9 @@ static bool CheckPCurve(const occ::handle<Geom2d_Curve>& aPC, const TopoDS_Face&
     double aPer   = aSurf->VPeriod();
     int    nshift = (int)((v - vmin) / aPer);
     if (v < vmin + aPer * nshift)
+    {
       nshift--;
+    }
     vmin += aPer * nshift;
     vmax += aPer * nshift;
   }
@@ -211,7 +219,9 @@ static bool CheckPCurve(const occ::handle<Geom2d_Curve>& aPC, const TopoDS_Face&
     pnt      = aPC->Value(p);
     pnt.Coord(u, v);
     if (umin - u > tolU || u - umax > tolU || vmin - v > tolV || v - vmax > tolV)
+    {
       return false;
+    }
   }
   return true;
 }
@@ -272,8 +282,12 @@ static occ::handle<Geom2d_Curve> MakeCurve2DfromWLineApprox(const BRepApprox_App
   NCollection_Array1<gp_Pnt2d>      poles2d(1, np);
   int                               nc = amc.NbCurves();
   for (int ic = 1; ic <= nc; ic++)
+  {
     if (ic == CI)
+    {
       amc.Curve(ic, poles2d);
+    }
+  }
   const NCollection_Array1<double>& knots  = amc.Knots();
   const NCollection_Array1<int>&    mults  = amc.Multiplicities();
   int                               degree = amc.Degree();
@@ -303,7 +317,9 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
 
   // std::cout << "MakeCurves begin" << std::endl;
   if (!CompC3D)
+  {
     return false;
+  }
 
   bool   CompPC1 = myGeomTool.CompPC1();
   bool   CompPC2 = myGeomTool.CompPC2();
@@ -360,9 +376,13 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
     gp_Pnt   P = PolC3D(ip);
     gp_Pnt2d P1, P2;
     if (CompPC1)
+    {
       P1 = PolPC1(ip);
+    }
     if (CompPC2)
+    {
       P2 = PolPC2(ip);
+    }
 
     for (ip = 2; ip <= nbpol; ip++)
     {
@@ -389,7 +409,9 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
         {
           double dd = 0.;
           if (ip < nbpol)
+          {
             dd = P.Distance(PolC3D(ip + 1));
+          }
           if (ip < nbpol && dd < 10. * tol)
           {
             gce_MakeLin mkL(P, PolC3D(ip + 1));
@@ -403,23 +425,31 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
                 d1          = L1.SquareDistance(PolPC1(ip));
               }
               else
+              {
                 d1 = 0.;
+              }
               if (CompPC2)
               {
                 gp_Lin2d L2 = gce_MakeLin2d(P2, PolPC2(ip + 1));
                 d2          = L2.SquareDistance(PolPC2(ip));
               }
               else
+              {
                 d2 = 0.;
+              }
 
               if (d > def || d1 > def2d || d2 > def2d)
               {
                 NbPol++;
                 P = PolC3D(ip);
                 if (CompPC1)
+                {
                   P1 = PolPC1(ip);
+                }
                 if (CompPC2)
+                {
                   P2 = PolPC2(ip);
+                }
               }
               else
               {
@@ -432,9 +462,13 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
               NbPol++;
               P = PolC3D(ip);
               if (CompPC1)
+              {
                 P1 = PolPC1(ip);
+              }
               if (CompPC2)
+              {
                 P2 = PolPC2(ip);
+              }
             }
           }
           else
@@ -442,9 +476,13 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
             NbPol++;
             P = PolC3D(ip);
             if (CompPC1)
+            {
               P1 = PolPC1(ip);
+            }
             if (CompPC2)
+            {
               P2 = PolPC2(ip);
+            }
           }
         }
         else
@@ -481,26 +519,38 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
           count++;
           Polc3d(count) = PolC3D(ip);
           if (CompPC1)
+          {
             Polpc1(count) = PolPC1(ip);
+          }
           if (CompPC2)
+          {
             Polpc2(count) = PolPC2(ip);
+          }
           knots(count) = count;
         }
       }
 
       Polc3d(NbPol) = PolC3D(nbpol);
       if (CompPC1)
+      {
         Polpc1(NbPol) = PolPC1(nbpol);
+      }
       if (CompPC2)
+      {
         Polpc2(NbPol) = PolPC2(nbpol);
+      }
 
       const_cast<occ::handle<Geom_Curve>&>(C3D) = new Geom_BSplineCurve(Polc3d, knots, mults, 1);
       if (CompPC1)
+      {
         const_cast<occ::handle<Geom2d_Curve>&>(PC1) =
           new Geom2d_BSplineCurve(Polpc1, knots, mults, 1);
+      }
       if (CompPC2)
+      {
         const_cast<occ::handle<Geom2d_Curve>&>(PC2) =
           new Geom2d_BSplineCurve(Polpc2, knots, mults, 1);
+      }
       iparmax = NbPol;
 
   #ifdef IFV
@@ -568,7 +618,9 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
           kc               = 1. / cir.Radius();
         }
         else
+        {
           kc = 0.;
+        }
 
         Curvature(ic) = kc;
         ic            = npol;
@@ -586,7 +638,9 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
         kc               = 1. / cir.Radius();
       }
       else
+      {
         kc = 0.;
+      }
       Curvature(1) = Curvature(npol) = kc;
     }
     else
@@ -690,21 +744,29 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
       C3Dnew = ::MakeCurve3DfromWLineApprox(Approx, 1);
       PC1new = ::MakeCurve2DfromWLineApproxAndPlane(Approx, BAS1.Plane());
       if (CompPC2)
+      {
         PC2new = ::MakeCurve2DfromWLineApprox(Approx, 2);
+      }
     }
     else if (CompC3D && CompPC2 && BAS2.GetType() == GeomAbs_Plane)
     {
       C3Dnew = ::MakeCurve3DfromWLineApprox(Approx, 1);
       if (CompPC1)
+      {
         PC1new = ::MakeCurve2DfromWLineApprox(Approx, 2);
+      }
       PC2new = ::MakeCurve2DfromWLineApproxAndPlane(Approx, BAS2.Plane());
     }
     else
     {
       if (CompC3D)
+      {
         C3Dnew = ::MakeCurve3DfromWLineApprox(Approx, 1);
+      }
       if (CompPC1)
+      {
         PC1new = ::MakeCurve2DfromWLineApprox(Approx, 2);
+      }
       if (CompPC2)
       {
         int i32 = (CompPC1) ? 3 : 2;
@@ -714,19 +776,29 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
 
     // check the pcurves relatively the faces bounds
     if (CompPC1)
+    {
       done = done && CheckPCurve(PC1new, TopoDS::Face(S1));
+    }
     if (CompPC2)
+    {
       done = done && CheckPCurve(PC2new, TopoDS::Face(S2));
+    }
   }
 
   if (!done)
   {
     if (CompC3D)
+    {
       C3Dnew.Nullify();
+    }
     if (CompPC1)
+    {
       PC1new.Nullify();
+    }
     if (CompPC2)
+    {
       PC2new.Nullify();
+    }
     return false;
   }
 
@@ -853,7 +925,9 @@ occ::handle<Geom_Curve> TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(
 
   // take point index as parameter : JYL 01/AUG/94
   for (i = 1; i <= nbknots; i++)
+  {
     knots(i) = (double)i;
+  }
   occ::handle<Geom_Curve> C = new Geom_BSplineCurve(Points, knots, mults, Degree);
   return C;
 }
@@ -890,7 +964,9 @@ occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt2d(
 
   // take point index as parameter : JYL 01/AUG/94
   for (i = 1; i <= nbknots; i++)
+  {
     knots(i) = (double)i;
+  }
   occ::handle<Geom2d_Curve> C = new Geom2d_BSplineCurve(Points, knots, mults, Degree);
   return C;
 }
@@ -971,16 +1047,22 @@ occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakePCurveOnFace(
 {
   bool trim = false;
   if (first < last)
+  {
     trim = true;
+  }
 
   const TopoDS_Face&  F            = TopoDS::Face(S);
   bool                compminmaxUV = false;
   BRepAdaptor_Surface BAS(F, compminmaxUV);
   GeomAdaptor_Curve   GAC;
   if (trim)
+  {
     GAC.Load(C3D, first, last);
+  }
   else
+  {
     GAC.Load(C3D);
+  }
   occ::handle<BRepAdaptor_Surface> BAHS = new BRepAdaptor_Surface(BAS);
   occ::handle<GeomAdaptor_Curve>   BAHC = new GeomAdaptor_Curve(GAC);
   ProjLib_ProjectedCurve           projcurv(BAHS, BAHC);
@@ -1012,14 +1094,18 @@ occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakePCurveOnFace(
       gp_Trsf2d aTrsf;
       gp_Pnt2d  po(0, -M_PI / 2);
       if (maxcond)
+      {
         po.SetY(M_PI / 2);
+      }
       aTrsf.SetMirror(gp_Ax2d(po, gp_Dir2d(gp_Dir2d::D::X)));
       PCT->Transform(aTrsf);
       // add translation along U direction on PI
       gp_Vec2d vec(M_PI, 0);
       double   UFirst = BAS.FirstUParameter();
       if (u2 - UFirst - M_PI > -1e-7)
+      {
         vec.Reverse();
+      }
       PCT->Translate(vec);
       C2D = PCT;
       // recompute the test point
@@ -1037,7 +1123,9 @@ occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakePCurveOnFace(
     bool maxcond = u2 - UMax > 1e-7;
     bool decalu  = mincond || maxcond;
     if (decalu)
+    {
       du = (mincond) ? BAHS->UPeriod() : -BAHS->UPeriod();
+    }
     // bool decalu = ( u2 < UMin || u2 > UMax);
     // if (decalu) du = ( u2 < UMin ) ? BAHS->UPeriod() : -BAHS->UPeriod();
   }
@@ -1049,7 +1137,9 @@ occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakePCurveOnFace(
     bool maxcond = v2 - VMax > 1e-7;
     bool decalv  = mincond || maxcond;
     if (decalv)
+    {
       dv = (mincond) ? BAHS->VPeriod() : -BAHS->VPeriod();
+    }
     // bool decalv = ( v2 < VMin || v2 > VMax);
     // if (decalv) dv = ( v2 < VMin ) ? BAHS->VPeriod() : -BAHS->VPeriod();
   }

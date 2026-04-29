@@ -36,7 +36,9 @@ void RWStepBasic_RWAction::ReadStep(const occ::handle<StepData_StepReaderData>& 
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "action"))
+  {
     return;
+  }
 
   // Own fields of Action
 
@@ -81,7 +83,9 @@ void RWStepBasic_RWAction::WriteStep(StepData_StepWriter&                 SW,
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->ChosenMethod());
 }

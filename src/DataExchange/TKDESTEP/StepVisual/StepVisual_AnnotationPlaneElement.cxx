@@ -27,11 +27,17 @@ StepVisual_AnnotationPlaneElement::StepVisual_AnnotationPlaneElement() = default
 int StepVisual_AnnotationPlaneElement::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_StyledItem)))
+  {
     return 2;
+  }
   return 0;
 }
 

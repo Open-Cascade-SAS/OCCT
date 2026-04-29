@@ -36,9 +36,13 @@ ShapeUpgrade_ShellSewing::ShapeUpgrade_ShellSewing()
 void ShapeUpgrade_ShellSewing::Init(const TopoDS_Shape& shape)
 {
   if (shape.IsNull())
+  {
     return;
+  }
   if (shape.ShapeType() == TopAbs_SHELL)
+  {
     myShells.Add(shape);
+  }
   else
   {
     for (TopExp_Explorer exs(shape, TopAbs_SHELL); exs.More(); exs.Next())
@@ -59,7 +63,9 @@ int ShapeUpgrade_ShellSewing::Prepare(const double tol)
     BRepBuilderAPI_Sewing ss(tol);
     TopExp_Explorer       exp(sl, TopAbs_FACE);
     for (; exp.More(); exp.Next())
+    {
       ss.Add(exp.Current());
+    }
     ss.Perform();
     TopoDS_Shape newsh = ss.SewedShape();
     if (!newsh.IsNull())
@@ -76,7 +82,9 @@ int ShapeUpgrade_ShellSewing::Prepare(const double tol)
 TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const double tol)
 {
   if (shape.IsNull() || myShells.Extent() == 0)
+  {
     return shape;
+  }
 
   TopoDS_Shape res = myReShape->Apply(shape, TopAbs_FACE, 2);
 
@@ -97,7 +105,9 @@ TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const do
 
   // szv#4:S4163:12Mar99 optimized
   if (ns != 0)
+  {
     res = myReShape->Apply(res, TopAbs_SHELL, 2);
+  }
 
   return res;
 }
@@ -107,7 +117,9 @@ TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const do
 TopoDS_Shape ShapeUpgrade_ShellSewing::ApplySewing(const TopoDS_Shape& shape, const double tol)
 {
   if (shape.IsNull())
+  {
     return shape;
+  }
 
   double t = tol;
   if (t <= 0.)
@@ -118,7 +130,9 @@ TopoDS_Shape ShapeUpgrade_ShellSewing::ApplySewing(const TopoDS_Shape& shape, co
 
   Init(shape);
   if (Prepare(t))
+  {
     return Apply(shape, t);
+  }
 
   return TopoDS_Shape();
 }

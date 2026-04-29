@@ -180,7 +180,9 @@ TopAbs_ShapeEnum TopOpeBRepDS_Transition::ShapeAfter() const
 int TopOpeBRepDS_Transition::Index() const
 {
   if (myIndexAfter != myIndexBefore)
+  {
     throw Standard_Failure("Transition::Index() on different shapes");
+  }
   return myIndexBefore;
 }
 
@@ -240,16 +242,24 @@ TopAbs_Orientation TopOpeBRepDS_Transition::Orientation(const TopAbs_State     S
     if (myStateBefore == S)
     {
       if (myStateAfter == S)
+      {
         return TopAbs_INTERNAL;
+      }
       else
+      {
         return TopAbs_REVERSED;
+      }
     }
     else
     {
       if (myStateAfter == S)
+      {
         return TopAbs_FORWARD;
+      }
       else
+      {
         return TopAbs_EXTERNAL;
+      }
     }
   }
 }
@@ -264,25 +274,39 @@ TopAbs_Orientation TopOpeBRepDS_Transition::OrientationON(const TopAbs_State S,
   if (myStateBefore == TopAbs_ON && myStateAfter == TopAbs_ON)
   {
     if (S == TopAbs_IN)
+    {
       result = TopAbs_INTERNAL;
+    }
     else if (S == TopAbs_OUT)
+    {
       result = TopAbs_EXTERNAL;
+    }
     else if (S == TopAbs_ON)
+    {
       result = TopAbs_INTERNAL;
+    }
   }
   else if (myStateBefore == TopAbs_ON)
   {
     if (myStateAfter == S)
+    {
       return TopAbs_FORWARD;
+    }
     else
+    {
       return TopAbs_REVERSED;
+    }
   }
   else if (myStateAfter == TopAbs_ON)
   {
     if (myStateBefore == S)
+    {
       return TopAbs_REVERSED;
+    }
     else
+    {
       return TopAbs_FORWARD;
+    }
   }
 
   return result;
@@ -311,14 +335,22 @@ TopOpeBRepDS_Transition TopOpeBRepDS_Transition::Complement() const
   else
   {
     TopAbs_Orientation o = Orientation(TopAbs_IN);
-    if (o == TopAbs_FORWARD) // (OUT,IN) --> (IN,OUT)
+    if (o == TopAbs_FORWARD)
+    { // (OUT,IN) --> (IN,OUT)
       T.Set(TopAbs_IN, TopAbs_OUT, myShapeBefore, myShapeAfter);
-    else if (o == TopAbs_REVERSED) // (IN,OUT) --> (OUT,IN)
+    }
+    else if (o == TopAbs_REVERSED)
+    { // (IN,OUT) --> (OUT,IN)
       T.Set(TopAbs_OUT, TopAbs_IN, myShapeBefore, myShapeAfter);
-    else if (o == TopAbs_EXTERNAL) // (OUT,OUT) --> (IN,IN)
+    }
+    else if (o == TopAbs_EXTERNAL)
+    { // (OUT,OUT) --> (IN,IN)
       T.Set(TopAbs_IN, TopAbs_IN, myShapeBefore, myShapeAfter);
-    else if (o == TopAbs_INTERNAL) // (IN,IN) --> (OUT,OUT)
+    }
+    else if (o == TopAbs_INTERNAL)
+    { // (IN,IN) --> (OUT,OUT)
       T.Set(TopAbs_OUT, TopAbs_OUT, myShapeBefore, myShapeAfter);
+    }
   }
 
   return T;

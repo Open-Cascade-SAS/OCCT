@@ -57,16 +57,24 @@ static int setView(Draw_Interpretor& di, int argc, const char** argv)
     TDF_Label aLabel;
     TDF_Tool::Label(aDoc->GetData(), argv[i], aLabel);
     if (aLabel.IsNull())
+    {
       continue;
+    }
     if (aShapeTool->IsShape(aLabel))
+    {
       aShapes.Append(aLabel);
+    }
     else if (aDimTolTool->IsDatum(aLabel) || aDimTolTool->IsDimension(aLabel)
              || aDimTolTool->IsGeomTolerance(aLabel))
+    {
       aGDTs.Append(aLabel);
+    }
   }
 
   if (aShapes.Length() == 0 && aGDTs.Length() == 0)
+  {
     return 1;
+  }
 
   TDF_Label aViewL = aViewTool->AddView();
   aViewTool->SetView(aShapes, aGDTs, aViewL);
@@ -131,13 +139,19 @@ static int setClippingPlanes(Draw_Interpretor& di, int argc, const char** argv)
     TDF_Label aLabel;
     TDF_Tool::Label(aDoc->GetData(), argv[i], aLabel);
     if (aLabel.IsNull())
+    {
       continue;
+    }
     if (aCPlaneTool->IsClippingPlane(aLabel))
+    {
       aCPlanes.Append(aLabel);
+    }
   }
 
   if (aCPlanes.Length() == 0)
+  {
     return 1;
+  }
 
   TDF_Label aViewL;
   TDF_Tool::Label(aDoc->GetData(), argv[2], aViewL);
@@ -172,9 +186,13 @@ static int isView(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   if (aViewTool->IsView(aLabel))
+  {
     di << "1";
+  }
   else
+  {
     di << "0";
+  }
 
   return 0;
 }
@@ -397,9 +415,13 @@ static int setType(Draw_Interpretor& di, int argc, const char** argv)
     occ::handle<XCAFView_Object> anObj = aView->GetObject();
     XCAFView_ProjectionType      aType = XCAFView_ProjectionType_NoCamera;
     if (argv[3][0] == 'c')
+    {
       aType = XCAFView_ProjectionType_Central;
+    }
     else if (argv[3][0] == 'p')
+    {
       aType = XCAFView_ProjectionType_Parallel;
+    }
     anObj->SetType(aType);
     aView->SetObject(anObj);
   }
@@ -896,9 +918,13 @@ static int getFrontPlaneDistance(Draw_Interpretor& di, int argc, const char** ar
   if (aLabel.FindAttribute(XCAFDoc_View::GetID(), aView))
   {
     if (aView->GetObject()->HasFrontPlaneClipping())
+    {
       di << aView->GetObject()->FrontPlaneDistance();
+    }
     else
+    {
       di << "View has not front plane clipping\n";
+    }
   }
   return 0;
 }
@@ -1002,9 +1028,13 @@ static int getBackPlaneDistance(Draw_Interpretor& di, int argc, const char** arg
   if (aLabel.FindAttribute(XCAFDoc_View::GetID(), aView))
   {
     if (aView->GetObject()->HasBackPlaneClipping())
+    {
       di << aView->GetObject()->BackPlaneDistance();
+    }
     else
+    {
       di << "View has not back plane clipping\n";
+    }
   }
   return 0;
 }
@@ -1168,14 +1198,22 @@ static int dump(Draw_Interpretor& di, int argc, const char** argv)
      << aView->GetObject()->WindowVerticalSize() << "\n";
 
   if (aView->GetObject()->HasFrontPlaneClipping())
+  {
     di << "Front Plane Distance: " << aView->GetObject()->FrontPlaneDistance() << "\n";
+  }
   else
+  {
     di << "No Front Plane\n";
+  }
 
   if (aView->GetObject()->HasFrontPlaneClipping())
+  {
     di << "Front Back Distance: " << aView->GetObject()->BackPlaneDistance() << "\n";
+  }
   else
+  {
     di << "No Back Plane\n";
+  }
 
   di << "View VolumeSized Clipping: " << aView->GetObject()->HasViewVolumeSidesClipping() << "\n";
 
@@ -1204,7 +1242,7 @@ static int addClippingPlane(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<Geom_Plane> aSurf = occ::down_cast<Geom_Plane>(DrawTrSurf::GetSurface(argv[2]));
   if (aSurf.IsNull())
   {
-    std::cout << argv[2] << " is not a plane" << std::endl;
+    std::cout << argv[2] << " is not a plane" << '\n';
     return 1;
   }
   aPlane                                         = aSurf->Pln();
@@ -1282,9 +1320,13 @@ static int removeClippingPlane(Draw_Interpretor& di, int argc, const char** argv
   }
   bool isRemoved = aClippingPlaneTool->RemoveClippingPlane(aLabel);
   if (isRemoved)
+  {
     di << "removed\n";
+  }
   else
+  {
     di << "clipping plane is not free, not removed\n";
+  }
   return 0;
 }
 

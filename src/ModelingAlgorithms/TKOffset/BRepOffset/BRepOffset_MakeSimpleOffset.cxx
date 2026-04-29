@@ -132,11 +132,15 @@ void BRepOffset_MakeSimpleOffset::Clear()
 double BRepOffset_MakeSimpleOffset::GetSafeOffset(const double theExpectedToler)
 {
   if (myInputShape.IsNull())
+  {
     return 0.0; // Input shape is null.
+  }
 
   // Compute max angle in faces junctions.
-  if (myMaxAngle == 0.0) // Non-initialized.
+  if (myMaxAngle == 0.0)
+  { // Non-initialized.
     ComputeMaxAngle();
+  }
 
   double aMaxTol = 0.0;
   aMaxTol        = BRep_Tool::MaxTolerance(myInputShape, TopAbs_VERTEX);
@@ -160,8 +164,10 @@ void BRepOffset_MakeSimpleOffset::Perform()
     return;
   }
 
-  if (myMaxAngle == 0.0) // Non-initialized.
+  if (myMaxAngle == 0.0)
+  { // Non-initialized.
     ComputeMaxAngle();
+  }
 
   myBuilder.Init(myInputShape);
   occ::handle<BRepOffset_SimpleOffset> aMapper =
@@ -184,7 +190,9 @@ void BRepOffset_MakeSimpleOffset::Perform()
     const TopoDS_Edge& aCurrEdge = TopoDS::Edge(anExpSE.Current());
 
     if (!BRep_Tool::Degenerated(aCurrEdge))
+    {
       continue;
+    }
 
     const TopoDS_Edge& anEdge = TopoDS::Edge(myBuilder.ModifiedShape(aCurrEdge));
     aBB.Degenerated(anEdge, true);
@@ -192,7 +200,9 @@ void BRepOffset_MakeSimpleOffset::Perform()
 
   // Restore walls for solid.
   if (myIsBuildSolid && !BuildMissingWalls())
+  {
     return;
+  }
 
   myIsDone = true;
 }
@@ -213,10 +223,14 @@ static void tgtfaces(const TopoDS_Edge& Ed,
   occ::handle<Geom2d_Curve> aCurve;
   aCurve = BRep_Tool::CurveOnSurface(Ed, F1, aFirst, aLast);
   if (aCurve.IsNull())
+  {
     return;
+  }
   aCurve = BRep_Tool::CurveOnSurface(Ed, F2, aFirst, aLast);
   if (aCurve.IsNull())
+  {
     return;
+  }
 
   double              u;
   TopoDS_Edge         E = Ed;
@@ -226,15 +240,21 @@ static void tgtfaces(const TopoDS_Edge& Ed,
   occ::handle<BRepAdaptor_Surface> HS1 = new BRepAdaptor_Surface(aBAS1);
   occ::handle<BRepAdaptor_Surface> HS2;
   if (couture)
+  {
     HS2 = HS1;
+  }
   else
+  {
     HS2 = new BRepAdaptor_Surface(aBAS2);
+  }
   // case when edge lies on the one face
 
   E.Orientation(TopAbs_FORWARD);
   BRepAdaptor_Curve2d C2d1(E, F1);
   if (couture)
+  {
     E.Orientation(TopAbs_REVERSED);
+  }
   BRepAdaptor_Curve2d C2d2(E, F2);
 
   bool   rev1 = (F1.Orientation() == TopAbs_REVERSED);
@@ -265,22 +285,34 @@ static void tgtfaces(const TopoDS_Edge& Ed,
     d1   = (du1.Crossed(dv1));
     norm = d1.Magnitude();
     if (norm > 1.e-12)
+    {
       d1 /= norm;
+    }
     else
+    {
       continue; // skip degenerated point
+    }
     if (rev1)
+    {
       d1.Reverse();
+    }
 
     C2d2.D0(u, p);
     HS2->D1(p.X(), p.Y(), pp2, du2, dv2);
     d2   = (du2.Crossed(dv2));
     norm = d2.Magnitude();
     if (norm > 1.e-12)
+    {
       d2 /= norm;
+    }
     else
+    {
       continue; // skip degenerated point
+    }
     if (rev2)
+    {
       d2.Reverse();
+    }
 
     // Compute angle.
     double aCurrentAng = d1.Angle(d2);
@@ -421,12 +453,16 @@ bool BRepOffset_MakeSimpleOffset::BuildMissingWalls()
   // Add old faces the result.
   TopExp_Explorer anExpSF(myInputShape, TopAbs_FACE);
   for (; anExpSF.More(); anExpSF.Next())
+  {
     aBB.Add(aResCompound, anExpSF.Current());
+  }
 
   // Add new faces the result.
   anExpSF.Init(myResShape, TopAbs_FACE);
   for (; anExpSF.More(); anExpSF.Next())
+  {
     aBB.Add(aResCompound, anExpSF.Current());
+  }
 
   // Add wall faces to the result.
   TopExp_Explorer anExpCF(aNewFaces, TopAbs_FACE);
@@ -511,7 +547,9 @@ TopoDS_Face BRepOffset_MakeSimpleOffset::BuildWallFace(const TopoDS_Edge& theOri
     BRepLib_MakeEdge aME1(TopoDS::Vertex(aV2.Oriented(TopAbs_FORWARD)),
                           TopoDS::Vertex(aNewV2.Oriented(TopAbs_REVERSED)));
     if (!aME1.IsDone())
+    {
       return aResFace;
+    }
     aWall1 = aME1.Edge();
 
     myMapVE.Bind(aForwardV2, aWall1);
@@ -530,7 +568,9 @@ TopoDS_Face BRepOffset_MakeSimpleOffset::BuildWallFace(const TopoDS_Edge& theOri
     BRepLib_MakeEdge aME2(TopoDS::Vertex(aV1.Oriented(TopAbs_FORWARD)),
                           TopoDS::Vertex(aNewV1.Oriented(TopAbs_REVERSED)));
     if (!aME2.IsDone())
+    {
       return aResFace;
+    }
     aWall2 = aME2.Edge();
 
     myMapVE.Bind(aForwardV1, aWall2);
@@ -558,7 +598,9 @@ TopoDS_Face BRepOffset_MakeSimpleOffset::BuildWallFace(const TopoDS_Edge& theOri
     // Call of face maker is wrapped by try/catch since it generates exceptions sometimes.
     BRepLib_MakeFace aFM(aWire, true);
     if (aFM.IsDone())
+    {
       aF = aFM.Face();
+    }
   }
   catch (Standard_Failure const&)
   {
@@ -633,7 +675,9 @@ const TopoDS_Shape BRepOffset_MakeSimpleOffset::Generated(const TopoDS_Shape& th
   aRes = myBuilder.ModifiedShape(theShape);
 
   if (aRes.IsNull())
+  {
     return aRes;
+  }
 
   // Shape modifications obtained in scope of shape healing.
   aRes = myReShape->Apply(aRes);
@@ -651,7 +695,9 @@ const TopoDS_Shape BRepOffset_MakeSimpleOffset::Modified(const TopoDS_Shape& the
   int aModStatus = myReShape->Status(theShape, aRes);
 
   if (aModStatus == 0)
+  {
     return anEmptyShape; // No modifications are applied to the shape or its sub-shapes.
+  }
 
   return aRes;
 }

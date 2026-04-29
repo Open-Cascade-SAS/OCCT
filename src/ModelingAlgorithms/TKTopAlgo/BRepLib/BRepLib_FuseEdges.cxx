@@ -82,7 +82,9 @@ static void BCSmoothing(occ::handle<Geom_BSplineCurve>& theC,
     m = m - theCont;
 
     if (m < 1)
+    {
       return;
+    }
 
     aKnotIndex.Clear();
 
@@ -102,7 +104,9 @@ static void BCSmoothing(occ::handle<Geom_BSplineCurve>& theC,
     int aNbAdd = aKnotIndex.Length();
 
     if (aNbAdd == 0)
+    {
       return;
+    }
 
     aKnotIns.Clear();
 
@@ -139,9 +143,9 @@ static void BCSmoothing(occ::handle<Geom_BSplineCurve>& theC,
   }
 
   if (iter > aNbIter)
+  {
     BCSmoothing(theC, theCont, 1.e10);
-
-  return;
+  }
 }
 
 static void MakeClosedCurve(occ::handle<Geom_Curve>& C, const gp_Pnt& PF, double& f, double& l)
@@ -387,7 +391,9 @@ void BRepLib_FuseEdges::BuildListEdges()
         && (edgecur.Orientation() == TopAbs_FORWARD || edgecur.Orientation() == TopAbs_REVERSED))
     {
       if (myAvoidEdg.Contains(edgecur))
+      {
         continue; // edge is not allowed to be fused
+      }
       BuildListConnexEdge(edgecur, mapUniqEdg, LstEdg);
       if (LstEdg.Extent() > 1)
       {
@@ -521,16 +527,22 @@ void BRepLib_FuseEdges::BuildListResultEdges()
 
           ME.Init(ExtC, VF, VL);
           if (!ME.IsDone())
+          {
             throw Standard_ConstructionError("FuseEdges : Fusion failed");
+          }
         }
         else
+        {
           throw Standard_ConstructionError("FuseEdges : Fusion failed");
+        }
       }
 
       NewEdge = ME.Edge();
 
       if (UpdatePCurve(OldEdge, NewEdge, LmapEdg))
+      {
         myMapEdg.Bind(iLst, NewEdge);
+      }
     }
 
     myResultEdgesDone = true;
@@ -557,7 +569,9 @@ void BRepLib_FuseEdges::Perform()
     {
       const int& iLst = itLstEdg.Key();
       if (!myMapEdg.IsBound(iLst))
+      {
         continue;
+      }
       const NCollection_List<TopoDS_Shape>&    LmapEdg = myMapLstEdg.Find(iLst);
       NCollection_List<TopoDS_Shape>::Iterator itEdg;
 
@@ -703,7 +717,9 @@ bool BRepLib_FuseEdges::NextConnexEdge(const TopoDS_Vertex& theVertex,
     }
 
     if (myAvoidEdg.Contains(theEdgeConnex))
+    {
       HasConnex = false; // edge is not allowed to be fused
+    }
 
     // 2nd condition
     if (HasConnex)
@@ -739,11 +755,15 @@ bool BRepLib_FuseEdges::NextConnexEdge(const TopoDS_Vertex& theVertex,
         }
       }
       else
+      {
         HasConnex = false;
+      }
     }
   }
   else
+  {
     HasConnex = false;
+  }
 
   return HasConnex;
 }
@@ -767,7 +787,9 @@ bool BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2
   // modified by NIZNHY-PKV Mon Nov 15 16:24:10 1999
   // degenerated edges has no 3D curve
   if (C1.IsNull())
+  {
     return false;
+  }
 
   if (!loc.IsIdentity())
   {
@@ -778,7 +800,9 @@ bool BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2
   // modified by NIZNHY-PKV Mon Nov 15 16:24:38 1999
   // degenerated edges has no 3D curve
   if (C2.IsNull())
+  {
     return false;
+  }
 
   if (!loc.IsIdentity())
   {
@@ -869,13 +893,21 @@ bool BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2
       C2->D1(l2, aPl2, aDl2);
 
       if (aPl1.Distance(aPf2) <= tollin && aDl1.IsParallel(aDf2, tolang))
+      {
         return true;
+      }
       if (aPl2.Distance(aPf1) <= tollin && aDl2.IsParallel(aDf1, tolang))
+      {
         return true;
+      }
       if (aPf1.Distance(aPf2) <= tollin && aDf1.IsParallel(aDf2, tolang))
+      {
         return true;
+      }
       if (aPl1.Distance(aPl2) <= tollin && aDl1.IsParallel(aDl2, tolang))
+      {
         return true;
+      }
     }
     // we must ensure that before fuse two bsplines, the end of one curve does not
     // corresponds to the beginning of the second.
@@ -1086,9 +1118,13 @@ bool BRepLib_FuseEdges::UpdatePCurve(const TopoDS_Edge&                    theOl
         aFFace.Orientation(TopAbs_FORWARD);
         occ::handle<Geom2d_Curve> Curv2dR = BRep_Tool::CurveOnSurface(aFEdge, aFFace, cf, cl);
         if (Curv2d->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
+        {
           Curv2d = occ::down_cast<Geom2d_TrimmedCurve>(Curv2d)->BasisCurve();
+        }
         if (Curv2dR->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
+        {
           Curv2dR = occ::down_cast<Geom2d_TrimmedCurve>(Curv2dR)->BasisCurve();
+        }
 
         B.UpdateEdge(theNewEdge, Curv2d, Curv2dR, Surf, loc, BRep_Tool::Tolerance(theNewEdge));
       }
@@ -1096,7 +1132,9 @@ bool BRepLib_FuseEdges::UpdatePCurve(const TopoDS_Edge&                    theOl
       {
         // update the new edge
         if (Curv2d->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
+        {
           Curv2d = occ::down_cast<Geom2d_TrimmedCurve>(Curv2d)->BasisCurve();
+        }
         double f, l;
         f = Curv2d->FirstParameter();
         l = Curv2d->LastParameter();
@@ -1104,7 +1142,9 @@ bool BRepLib_FuseEdges::UpdatePCurve(const TopoDS_Edge&                    theOl
         {
           occ::handle<Geom2d_BoundedCurve> bcurve = occ::down_cast<Geom2d_BoundedCurve>(Curv2d);
           if (bcurve.IsNull())
+          {
             bcurve = new Geom2d_TrimmedCurve(Curv2d, cf, cl);
+          }
           Geom2dConvert_CompCurveToBSplineCurve    Concat(bcurve);
           NCollection_List<TopoDS_Shape>::Iterator iter(theLstEdg);
           iter.Next();
@@ -1115,10 +1155,14 @@ bool BRepLib_FuseEdges::UpdatePCurve(const TopoDS_Edge&                    theOl
             occ::handle<Geom2d_Curve> C = BRep_Tool::CurveOnSurface(E, Surf, loc, first, last);
             occ::handle<Geom2d_BoundedCurve> BC = occ::down_cast<Geom2d_BoundedCurve>(C);
             if (BC.IsNull())
+            {
               BC = new Geom2d_TrimmedCurve(C, first, last);
+            }
             if (!Concat.Add(BC, Precision::PConfusion()))
+            {
               // cannot merge pcurves
               return false;
+            }
           }
           Curv2d = Concat.BSplineCurve();
 

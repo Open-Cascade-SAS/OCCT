@@ -38,7 +38,9 @@ void RWStepKinematics_RWCylindricalPairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "cylindrical_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

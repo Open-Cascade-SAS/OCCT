@@ -39,7 +39,9 @@ occ::handle<AIS_InteractiveObject> AIS_MultipleConnectedInteractive::connect(
   const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
 {
   if (myAssemblyOwner.IsNull())
+  {
     myAssemblyOwner = new SelectMgr_EntityOwner(this);
+  }
 
   occ::handle<AIS_InteractiveObject> anObjectToAdd;
 
@@ -91,7 +93,7 @@ occ::handle<AIS_InteractiveObject> AIS_MultipleConnectedInteractive::connect(
 
 bool AIS_MultipleConnectedInteractive::HasConnection() const
 {
-  return (Children().Size() != 0);
+  return (Children().Length() != 0);
 }
 
 //=================================================================================================
@@ -106,7 +108,7 @@ void AIS_MultipleConnectedInteractive::Disconnect(
 
 void AIS_MultipleConnectedInteractive::DisconnectAll()
 {
-  int aNbItemsToRemove = Children().Size();
+  int aNbItemsToRemove = Children().Length();
   for (int anIter = 0; anIter < aNbItemsToRemove; ++anIter)
   {
     RemoveChild(Children().First());

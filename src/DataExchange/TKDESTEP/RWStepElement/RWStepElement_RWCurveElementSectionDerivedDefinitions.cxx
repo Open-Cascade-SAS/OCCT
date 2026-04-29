@@ -41,7 +41,9 @@ void RWStepElement_RWCurveElementSectionDerivedDefinitions::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 12, ach, "curve_element_section_derived_definitions"))
+  {
     return;
+  }
 
   // Inherited fields of CurveElementSectionDefinition
 

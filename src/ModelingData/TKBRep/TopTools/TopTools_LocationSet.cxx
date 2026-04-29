@@ -39,10 +39,14 @@ void TopTools_LocationSet::Clear()
 int TopTools_LocationSet::Add(const TopLoc_Location& L)
 {
   if (L.IsIdentity())
+  {
     return 0;
+  }
   int n = myMap.FindIndex(L);
   if (n > 0)
+  {
     return n;
+  }
   TopLoc_Location N = L;
   do
   {
@@ -58,7 +62,9 @@ const TopLoc_Location& TopTools_LocationSet::Location(const int I) const
 {
   static TopLoc_Location identity;
   if (I <= 0 || I > myMap.Extent())
+  {
     return identity;
+  }
   return myMap(I);
 }
 
@@ -67,7 +73,9 @@ const TopLoc_Location& TopTools_LocationSet::Location(const int I) const
 int TopTools_LocationSet::Index(const TopLoc_Location& L) const
 {
   if (L.IsIdentity())
+  {
     return 0;
+  }
   return myMap.FindIndex(L);
 }
 
@@ -79,31 +87,43 @@ static void WriteTrsf(const gp_Trsf& T, Standard_OStream& OS, const bool compact
   gp_Mat M = T.VectorialPart();
 
   if (!compact)
+  {
     OS << "( ";
+  }
   OS << std::setw(15) << M(1, 1) << " ";
   OS << std::setw(15) << M(1, 2) << " ";
   OS << std::setw(15) << M(1, 3) << " ";
   OS << std::setw(15) << V.Coord(1) << " ";
   if (!compact)
+  {
     OS << " )";
+  }
   OS << "\n";
   if (!compact)
+  {
     OS << "( ";
+  }
   OS << std::setw(15) << M(2, 1) << " ";
   OS << std::setw(15) << M(2, 2) << " ";
   OS << std::setw(15) << M(2, 3) << " ";
   OS << std::setw(15) << V.Coord(2) << " ";
   if (!compact)
+  {
     OS << " )";
+  }
   OS << "\n";
   if (!compact)
+  {
     OS << "( ";
+  }
   OS << std::setw(15) << M(3, 1) << " ";
   OS << std::setw(15) << M(3, 2) << " ";
   OS << std::setw(15) << M(3, 3) << " ";
   OS << std::setw(15) << V.Coord(3) << " ";
   if (!compact)
+  {
     OS << " )";
+  }
   OS << "\n";
 }
 
@@ -136,7 +156,9 @@ void TopTools_LocationSet::Dump(Standard_OStream& OS) const
     {
       OS << "Complex : L" << myMap.FindIndex(L1);
       if (p != 1)
+      {
         OS << "^" << p;
+      }
       while (!L2.IsIdentity())
       {
         L1 = L2.FirstDatum();
@@ -144,7 +166,9 @@ void TopTools_LocationSet::Dump(Standard_OStream& OS) const
         L2 = L2.NextLocation();
         OS << " * L" << myMap.FindIndex(L1);
         if (p != 1)
+        {
           OS << "^" << p;
+        }
       }
       OS << "\n";
     }
@@ -219,7 +243,6 @@ static void ReadTrsf(gp_Trsf& T, Standard_IStream& IS)
   GeomTools::GetReal(IS, V[2]);
 
   T.SetValues(V1[0], V1[1], V1[2], V[0], V2[0], V2[1], V2[2], V[1], V3[0], V3[1], V3[2], V[2]);
-  return;
 }
 
 //=================================================================================================
@@ -234,7 +257,7 @@ void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRang
   IS >> buffer;
   if (strcmp(buffer, "Locations"))
   {
-    std::cout << "Not a location table " << std::endl;
+    std::cout << "Not a location table " << '\n';
     return;
   }
 
@@ -271,6 +294,8 @@ void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRang
     }
 
     if (!L.IsIdentity())
+    {
       myMap.Add(L);
+    }
   }
 }

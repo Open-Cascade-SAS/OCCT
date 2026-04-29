@@ -386,13 +386,21 @@ static double ComputeParametricTolerance(const double  theTol3d,
   double nad1v = theD1v.Magnitude();
   double tolu = 0., tolv = 0.;
   if (nad1u > 1e-12)
+  {
     tolu = theTol3d / nad1u;
+  }
   else
+  {
     tolu = 0.1;
+  }
   if (nad1v > 1e-12)
+  {
     tolv = theTol3d / nad1v;
+  }
   else
+  {
     tolv = 0.1;
+  }
   double aTolerance = (tolu > tolv) ? tolu : tolv;
   return aTolerance;
 }
@@ -422,7 +430,9 @@ static int AppendSameVertexA(occ::handle<IntPatch_ALine>&       alig,
       const IntPatch_Point& Vtxi    = L->Vertex(i);
       double                thetol2 = Vtxi.Tolerance();
       if (thetol2 < thetol1)
+      {
         thetol2 = thetol1;
+      }
       double d_4 = Vtxindex.Value().Distance(Vtxi.Value());
       if (d_4 <= thetol2)
       {
@@ -458,7 +468,9 @@ static int AppendSameVertexG(occ::handle<IntPatch_GLine>&       glig,
       aajouter                   = false;
       double thetol2             = Vtxi.Tolerance();
       if (thetol2 < thetol1)
+      {
         thetol2 = thetol1;
+      }
       d = Vtxindex.Value().Distance(Vtxi.Value());
       if (d <= thetol2)
       {
@@ -511,7 +523,9 @@ static int AppendSameVertexW(occ::handle<IntPatch_WLine>&       wlig,
       double         d_2     = Pntindex.Distance(Vtxi.Value());
       double         thetol2 = Vtxi.Tolerance();
       if (thetol2 < thetol1)
+      {
         thetol2 = thetol1;
+      }
       //-- le debugger voit 2 fois la variable d ici. ???? -> d_2
       if (d_2 <= thetol2)
       {
@@ -550,7 +564,9 @@ static int AppendSameVertexR(occ::handle<IntPatch_RLine>&       rlig,
       double                d_3     = Vtxindex.Value().Distance(Vtxi.Value());
       double                thetol2 = Vtxi.Tolerance();
       if (thetol2 < thetol1)
+      {
         thetol2 = thetol1;
+      }
       if (d_3 < thetol2)
       {
         if (Vtxi.ParameterOnLine() != Vtxindex.ParameterOnLine())
@@ -596,15 +612,21 @@ static void AddLine(const occ::handle<IntPatch_Line>& L,
       occ::handle<IntPatch_ALine> ALine(occ::down_cast<IntPatch_ALine>(L));
       occ::handle<IntPatch_ALine> alig;
       if (L->TransitionOnS1() == IntSurf_Undecided)
+      {
         alig = new IntPatch_ALine(ALine->Curve(), L->IsTangent());
+      }
       else if (L->TransitionOnS1() == IntSurf_Touch)
+      {
         alig =
           new IntPatch_ALine(ALine->Curve(), L->IsTangent(), L->SituationS1(), L->SituationS2());
+      }
       else
+      {
         alig = new IntPatch_ALine(ALine->Curve(),
                                   L->IsTangent(),
                                   L->TransitionOnS1(),
                                   L->TransitionOnS2());
+      }
       alig->AddVertex(ALine->Vertex(i));
       IndexLastVertex += AppendSameVertexA(alig, ALine, i, TabIndex);
       if (i != j)
@@ -629,12 +651,18 @@ static void AddLine(const occ::handle<IntPatch_Line>& L,
       }
       occ::handle<IntPatch_WLine> wlig;
       if (L->TransitionOnS1() == IntSurf_Undecided)
+      {
         wlig = new IntPatch_WLine(LineOn2S, L->IsTangent());
+      }
       else if (L->TransitionOnS1() == IntSurf_Touch)
+      {
         wlig = new IntPatch_WLine(LineOn2S, L->IsTangent(), L->SituationS1(), L->SituationS2());
+      }
       else
+      {
         wlig =
           new IntPatch_WLine(LineOn2S, L->IsTangent(), L->TransitionOnS1(), L->TransitionOnS2());
+      }
       if (WLine->HasArcOnS1())
       {
         wlig->SetArcOnS1(WLine->GetArcOnS1());
@@ -669,11 +697,17 @@ static void AddLine(const occ::handle<IntPatch_Line>& L,
       IndexFirstVertex = 1;
       occ::handle<IntPatch_RLine> rlig;
       if (L->TransitionOnS1() == IntSurf_Undecided)
+      {
         rlig = new IntPatch_RLine(L->IsTangent());
+      }
       else if (L->TransitionOnS1() == IntSurf_Touch)
+      {
         rlig = new IntPatch_RLine(L->IsTangent(), L->SituationS1(), L->SituationS2());
+      }
       else
+      {
         rlig = new IntPatch_RLine(L->IsTangent(), L->TransitionOnS1(), L->TransitionOnS2());
+      }
       if (RLine->IsArcOnS1())
       {
         rlig->SetArcOnS1(RLine->ArcOnS1());
@@ -716,72 +750,102 @@ static void AddLine(const occ::handle<IntPatch_Line>& L,
       {
         case IntPatch_Lin:
           if (L->TransitionOnS1() == IntSurf_Undecided)
+          {
             glig = new IntPatch_GLine(GLine->Line(), L->IsTangent());
+          }
           else if (L->TransitionOnS1() == IntSurf_Touch)
+          {
             glig =
               new IntPatch_GLine(GLine->Line(), L->IsTangent(), L->SituationS1(), L->SituationS2());
+          }
           else
+          {
             glig = new IntPatch_GLine(GLine->Line(),
                                       L->IsTangent(),
                                       L->TransitionOnS1(),
                                       L->TransitionOnS2());
+          }
           break;
         case IntPatch_Parabola:
           if (L->TransitionOnS1() == IntSurf_Undecided)
+          {
             glig = new IntPatch_GLine(GLine->Parabola(), L->IsTangent());
+          }
           else if (L->TransitionOnS1() == IntSurf_Touch)
+          {
             glig = new IntPatch_GLine(GLine->Parabola(),
                                       L->IsTangent(),
                                       L->SituationS1(),
                                       L->SituationS2());
+          }
           else
+          {
             glig = new IntPatch_GLine(GLine->Parabola(),
                                       L->IsTangent(),
                                       L->TransitionOnS1(),
                                       L->TransitionOnS2());
+          }
           break;
         case IntPatch_Hyperbola:
           if (L->TransitionOnS1() == IntSurf_Undecided)
+          {
             glig = new IntPatch_GLine(GLine->Hyperbola(), L->IsTangent());
+          }
           else if (L->TransitionOnS1() == IntSurf_Touch)
+          {
             glig = new IntPatch_GLine(GLine->Hyperbola(),
                                       L->IsTangent(),
                                       L->SituationS1(),
                                       L->SituationS2());
+          }
           else
+          {
             glig = new IntPatch_GLine(GLine->Hyperbola(),
                                       L->IsTangent(),
                                       L->TransitionOnS1(),
                                       L->TransitionOnS2());
+          }
           break;
         case IntPatch_Circle:
           if (L->TransitionOnS1() == IntSurf_Undecided)
+          {
             glig = new IntPatch_GLine(GLine->Circle(), L->IsTangent());
+          }
           else if (L->TransitionOnS1() == IntSurf_Touch)
+          {
             glig = new IntPatch_GLine(GLine->Circle(),
                                       L->IsTangent(),
                                       L->SituationS1(),
                                       L->SituationS2());
+          }
           else
+          {
             glig = new IntPatch_GLine(GLine->Circle(),
                                       L->IsTangent(),
                                       L->TransitionOnS1(),
                                       L->TransitionOnS2());
+          }
           break;
         case IntPatch_Ellipse:
         default:
           if (L->TransitionOnS1() == IntSurf_Undecided)
+          {
             glig = new IntPatch_GLine(GLine->Ellipse(), L->IsTangent());
+          }
           else if (L->TransitionOnS1() == IntSurf_Touch)
+          {
             glig = new IntPatch_GLine(GLine->Ellipse(),
                                       L->IsTangent(),
                                       L->SituationS1(),
                                       L->SituationS2());
+          }
           else
+          {
             glig = new IntPatch_GLine(GLine->Ellipse(),
                                       L->IsTangent(),
                                       L->TransitionOnS1(),
                                       L->TransitionOnS2());
+          }
           break;
       }
       glig->AddVertex(GLine->Vertex(i));
@@ -857,7 +921,9 @@ static bool IsSegmentSmall(const occ::handle<IntPatch_WLine>& WLine,
   int                   ipF  = (int)vtxF.ParameterOnLine();
   int                   ipL  = (int)vtxL.ParameterOnLine();
   if (ipF >= ipL)
+  {
     return true;
+  }
 
   double tolF = GetVertexTolerance(vtxF);
   double tolL = GetVertexTolerance(vtxL);
@@ -870,7 +936,9 @@ static bool IsSegmentSmall(const occ::handle<IntPatch_WLine>& WLine,
     const gp_Pnt& p2 = WLine->Point(i).Value();
     len += p1.Distance(p2);
     if (len > tol)
+    {
       break;
+    }
     p1 = p2;
   }
   return len <= tol;
@@ -885,7 +953,9 @@ static bool TestWLineIsARLine(const NCollection_Sequence<occ::handle<IntPatch_Li
   int nbpnt     = wlin->NbPnts();
   int indicepnt = nbpnt / 2;
   if (indicepnt < 1)
+  {
     return (false);
+  }
   const IntSurf_PntOn2S& POn2S  = wlin->Point(indicepnt);
   const IntSurf_PntOn2S& POn2S1 = wlin->Point(indicepnt + 1);
   int                    lastl  = slinref.Length();
@@ -961,7 +1031,9 @@ static bool TestIfWLineIsRestriction(
     S1->D1(u1, v1, ap, ad1u, ad1v);
     tol = ComputeParametricTolerance(TolArc, ad1u, ad1v);
     if (tol > tol2d1)
+    {
       tol2d1 = tol;
+    }
     //--
     if (allon1 + 1 == i && D1->IsThePointOn(gp_Pnt2d(u1, v1), tol))
     {
@@ -971,14 +1043,18 @@ static bool TestIfWLineIsRestriction(
     S2->D1(u2, v2, ap, ad1u, ad1v);
     tol = ComputeParametricTolerance(TolArc, ad1u, ad1v);
     if (tol > tol2d2)
+    {
       tol2d2 = tol;
+    }
     //--
     if (allon2 + 1 == i && D2->IsThePointOn(gp_Pnt2d(u2, v2), tol))
     {
       allon2++;
     }
     if (allon1 != i && allon2 != i)
+    {
       break;
+    }
   }
   if (allon1 == NbPnts || allon2 == NbPnts)
   {
@@ -1030,11 +1106,15 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
 
   int nbvtx = WLine->NbVertex();
   if (nbvtx < 2)
+  {
     return;
+  }
   int ParamMinOnLine = (int)WLine->Vertex(1).ParameterOnLine();
   int ParamMaxOnLine = (int)WLine->Vertex(nbvtx).ParameterOnLine();
   if (ParamMinOnLine >= ParamMaxOnLine)
+  {
     return;
+  }
   int midInd = (ParamMaxOnLine + ParamMinOnLine) / 2;
 
   NCollection_Sequence<int> indicesV1, indicesV2;
@@ -1043,9 +1123,13 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
   {
     int plin = (int)WLine->Vertex(iv).ParameterOnLine();
     if (plin == ParamMinOnLine)
+    {
       indicesV1.Append(iv);
+    }
     else if (plin == ParamMaxOnLine)
+    {
       indicesV2.Append(iv);
+    }
   }
 
   bool isRLine = false;
@@ -1121,22 +1205,34 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
         iv = indicesV1(i);
         occ::handle<Adaptor2d_Curve2d> arc;
         if ((WLine->Vertex(iv).*pIsOnDomS)())
+        {
           arc = (WLine->Vertex(iv).*pArcOnS)();
+        }
         else
+        {
           arc = occ::down_cast<Adaptor2d_Curve2d>(arcsResolved(iv));
+        }
         if (!arc.IsNull())
+        {
           mapArcsV1.Add(arc);
+        }
       }
       for (i = 1; i <= indicesV2.Length(); i++)
       {
         iv = indicesV2(i);
         occ::handle<Adaptor2d_Curve2d> arc;
         if ((WLine->Vertex(iv).*pIsOnDomS)())
+        {
           arc = (WLine->Vertex(iv).*pArcOnS)();
+        }
         else
+        {
           arc = occ::down_cast<Adaptor2d_Curve2d>(arcsResolved(iv));
+        }
         if (!arc.IsNull() && mapArcsV1.Contains(arc))
+        {
           mapArcs.Add(arc);
+        }
       }
 
       // for each common arc
@@ -1150,22 +1246,34 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
           iv = indicesV1(i);
           occ::handle<Adaptor2d_Curve2d> arc1;
           if ((WLine->Vertex(iv).*pIsOnDomS)())
+          {
             arc1 = (WLine->Vertex(iv).*pArcOnS)();
+          }
           else
+          {
             arc1 = occ::down_cast<Adaptor2d_Curve2d>(arcsResolved(iv));
+          }
           if (!arc1.IsNull() && arc1 == arc)
+          {
             iv1 = iv;
+          }
         }
         for (i = 1; i <= indicesV2.Length() && iv2 == 0; i++)
         {
           iv = indicesV2(i);
           occ::handle<Adaptor2d_Curve2d> arc1;
           if ((WLine->Vertex(iv).*pIsOnDomS)())
+          {
             arc1 = (WLine->Vertex(iv).*pArcOnS)();
+          }
           else
+          {
             arc1 = occ::down_cast<Adaptor2d_Curve2d>(arcsResolved(iv));
+          }
           if (!arc1.IsNull() && arc1 == arc)
+          {
             iv2 = iv;
+          }
         }
         if (!iv1 || !iv2)
         {
@@ -1205,9 +1313,13 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
         occ::handle<IntPatch_RLine> rlig =
           new IntPatch_RLine(true, IntSurf_Unknown, IntSurf_Unknown);
         if (onFirst)
+        {
           rlig->SetArcOnS1(arc);
+        }
         else
+        {
           rlig->SetArcOnS2(arc);
+        }
 
         occ::handle<IntSurf_LineOn2S>        LineOn2S = new IntSurf_LineOn2S();
         const occ::handle<IntSurf_LineOn2S>& Lori     = WLine->Curve();
@@ -1247,9 +1359,13 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
         IntPatch_Point     VtxFirst = WLine->Vertex(ivmin);
         VtxFirst.SetParameter(parmin);
         if (!arcsResolved(ivmin).IsNull())
+        {
           VtxFirst.SetArc(onFirst, arc, parmin, TransitionUndecided, TransitionUndecided);
+        }
         if (reverse)
+        {
           VtxFirst.ReverseTransition(); //-- inversion des transitions
+        }
         rlig->AddVertex(VtxFirst);
         for (i = 1; i <= pIndVmin->Length(); i++)
         {
@@ -1259,9 +1375,13 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
             IntPatch_Point Vtx = WLine->Vertex(iv);
             Vtx.SetParameter(parmin);
             if (!arcsResolved(iv).IsNull())
+            {
               Vtx.SetArc(onFirst, arc, parmin, TransitionUndecided, TransitionUndecided);
+            }
             if (reverse)
+            {
               Vtx.ReverseTransition();
+            }
             rlig->AddVertex(Vtx);
           }
         }
@@ -1273,18 +1393,26 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
             IntPatch_Point Vtx = WLine->Vertex(iv);
             Vtx.SetParameter(parmax);
             if (!arcsResolved(iv).IsNull())
+            {
               Vtx.SetArc(onFirst, arc, parmax, TransitionUndecided, TransitionUndecided);
+            }
             if (reverse)
+            {
               Vtx.ReverseTransition();
+            }
             rlig->AddVertex(Vtx);
           }
         }
         IntPatch_Point VtxLast = WLine->Vertex(ivmax);
         VtxLast.SetParameter(parmax);
         if (!arcsResolved(ivmax).IsNull())
+        {
           VtxLast.SetArc(onFirst, arc, parmax, TransitionUndecided, TransitionUndecided);
+        }
         if (reverse)
+        {
           VtxLast.ReverseTransition();
+        }
         rlig->AddVertex(VtxLast);
         rlig->SetFirstPoint(1);
         rlig->SetLastPoint(indicesV1.Length() + indicesV2.Length());
@@ -1411,7 +1539,9 @@ void IntPatch_LineConstructor::Perform(
         int int_lastp  = (int)lastp;
         int int_firstp = (int)firstp;
         if (pmid == int_lastp)
+        {
           pmid = int_firstp;
+        }
         const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
         Pmid.Parameters(u1, v1, u2, v2);
         Recadre(mySurf1, mySurf2, u1, v1, u2, v2);
@@ -1627,9 +1757,13 @@ void IntPatch_LineConstructor::Perform(
         // modified by NIZHNY-OFV  Wed May 30 17:04:08 2001.BEGIN
         // --purpose: section algo with infinite prism works now!!!
         if (in1 == TopAbs_UNKNOWN)
+        {
           in1 = TopAbs_OUT;
+        }
         if (in2 == TopAbs_UNKNOWN)
+        {
           in2 = TopAbs_OUT;
+        }
         // modified by NIZHNY-OFV  Wed May 30 17:05:47 2001.END
         if (in1 == TopAbs_OUT || in2 == TopAbs_OUT)
         {
@@ -1681,9 +1815,13 @@ void IntPatch_LineConstructor::Perform(
           // modified by NIZHNY-OFV  Wed May 30 17:04:08 2001.BEGIN
           // --purpose: section algo with infinite prism works now!!!
           if (in1 == TopAbs_UNKNOWN)
+          {
             in1 = TopAbs_OUT;
+          }
           if (in2 == TopAbs_UNKNOWN)
+          {
             in2 = TopAbs_OUT;
+          }
           // modified by NIZHNY-OFV  Wed May 30 17:05:47 2001.END
           if (in1 == TopAbs_OUT || in2 == TopAbs_OUT)
           {
@@ -1772,7 +1910,9 @@ void IntPatch_LineConstructor::Perform(
           mySurf2->D1(U2, V2, P, D1u, D1v);
           myDom2->Init();
           if (myDom2->More())
+          {
             Tol = ComputeParametricTolerance(myDom2->Tol3d(myDom2->Value()), D1u, D1v);
+          }
 
           //-- le 23 mars 1999
           TopAbs_State bornin = myDom2->Classify(gp_Pnt2d(U2, V2), Tol, false);
@@ -1783,7 +1923,9 @@ void IntPatch_LineConstructor::Perform(
             bornin = myDom2->Classify(gp_Pnt2d(U2t, V2t), Tol, false);
           }
           if (bornin == TopAbs_OUT)
+          {
             continue;
+          }
 
           //-- Attention , on faisait  une estimatoin de deltau et deltav
           //-- Maintenant :
@@ -1862,7 +2004,9 @@ void IntPatch_LineConstructor::Perform(
           mySurf1->D1(U1, V1, P, D1u, D1v);
           myDom1->Init();
           if (myDom2->More())
+          {
             Tol = ComputeParametricTolerance(myDom1->Tol3d(myDom1->Value()), D1u, D1v);
+          }
 
           //-- le 23 mars 1999
           TopAbs_State bornin = myDom1->Classify(gp_Pnt2d(U1, V1), Tol, false);
@@ -1873,7 +2017,9 @@ void IntPatch_LineConstructor::Perform(
             bornin = myDom1->Classify(gp_Pnt2d(U1t, V1t), Tol, false);
           }
           if (bornin == TopAbs_OUT)
+          {
             continue;
+          }
 
           //-- Attention , on faisait  une estimatoin de deltau et deltav
           //-- Maintenant :

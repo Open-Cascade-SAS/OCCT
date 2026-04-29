@@ -30,11 +30,17 @@ StepAP203_ClassifiedItem::StepAP203_ClassifiedItem() = default;
 int StepAP203_ClassifiedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_AssemblyComponentUsage)))
+  {
     return 2;
+  }
   return 0;
 }
 

@@ -36,7 +36,9 @@ void RWStepRepr_RWGeometricAlignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "geometric_alignment"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

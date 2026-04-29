@@ -29,11 +29,17 @@ int StepRepr_RepresentationOrRepresentationReference::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationReference)))
+  {
     return 2;
+  }
   return 0;
 }
 

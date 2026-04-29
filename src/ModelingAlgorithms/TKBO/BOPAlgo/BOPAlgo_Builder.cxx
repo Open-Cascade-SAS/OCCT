@@ -231,7 +231,7 @@ void BOPAlgo_Builder::PerformInternal(const BOPAlgo_PaveFiller&    theFiller,
 BOPAlgo_Builder::NbShapes BOPAlgo_Builder::getNbShapes() const
 {
   NbShapes aCounter;
-  aCounter.NbVertices() = myDS->ShapesSD().Size();
+  aCounter.NbVertices() = myDS->ShapesSD().Length();
   for (int i = 0; i < myDS->NbSourceShapes(); ++i)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
@@ -484,7 +484,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
                                occ::handle<Message_Report>           theReport)
 {
   if (HasErrors())
+  {
     return;
+  }
 
   // Report for the method
   occ::handle<Message_Report> aReport = theReport.IsNull() ? myReport : theReport;
@@ -579,7 +581,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
         {
           const TopoDS_Shape& aF = expF.Current();
           if (aF.Orientation() != TopAbs_FORWARD && aF.Orientation() != TopAbs_REVERSED)
+          {
             continue;
+          }
           const NCollection_List<TopoDS_Shape>* pLFIm = myImages.Seek(aF);
           if (pLFIm)
           {
@@ -616,7 +620,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
             !i ? anINObjects : anINTools;
           NCollection_List<TopoDS_Shape>::Iterator itLFIn(*pLFIN);
           for (; itLFIn.More(); itLFIn.Next())
+          {
             anINMap.Add(itLFIn.Value());
+          }
         }
       }
     }
@@ -662,11 +668,15 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
 
       // Filtering for FUSE - avoid any IN faces
       if (bAvoidIN && (isIN || isINOpposite))
+      {
         continue;
+      }
 
       // Filtering for CUT - avoid faces IN for both groups
       if (bAvoidINforBoth && isIN && isINOpposite)
+      {
         continue;
+      }
 
       // Treatment of SD faces
       if (!aMFence.Add(aFIm))
@@ -675,7 +685,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
         {
           // The face belongs to only one group
           if (bTakeIN != isSameOriNeeded)
+          {
             aMFToAvoid.Add(aFIm);
+          }
         }
         else
         {
@@ -686,17 +698,23 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
           {
             // Take the shape without classification
             if (aMResFacesFence.Add(aFIm))
+            {
               aMResFacesOri.Add(aFIm);
+            }
           }
           else
+          {
             // Remove the face
             aMFToAvoid.Add(aFIm);
+          }
 
           continue;
         }
       }
       if (!aMFenceOri.Add(aFIm))
+      {
         continue;
+      }
 
       if (bTakeIN == isINOpposite)
       {
@@ -706,9 +724,13 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
           aMResFacesOri.Add(aFIm.Reversed());
         }
         else if (bTakeIN && !isSameOriNeeded)
+        {
           aMResFacesOri.Add(aFIm.Reversed());
+        }
         else
+        {
           aMResFacesOri.Add(aFIm);
+        }
         aMResFacesFence.Add(aFIm);
       }
     }
@@ -721,7 +743,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
   {
     const TopoDS_Shape& aRF = aMResFacesOri(i);
     if (!aMFToAvoid.Contains(aRF))
+    {
       aResFaces.Append(aRF);
+    }
   }
   Message_ProgressScope aPS(theRange, nullptr, 2);
   BRep_Builder          aBB;
@@ -752,7 +776,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
       {
         const TopoDS_Shape& aF = expF.Current();
         if (aMObjFacesOri.Contains(aF) || aMToolFacesOri.Contains(aF))
+        {
           break;
+        }
       }
       if (expF.More())
       {
@@ -774,7 +800,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
   for (; itLF.More(); itLF.Next())
   {
     if (aMFence.Add(itLF.Value()))
+    {
       aBB.Add(anUnUsedFaces, itLF.Value());
+    }
   }
 
   // Build blocks from the unused faces
@@ -791,7 +819,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
     // Add faces of the block to the shell
     TopExp_Explorer anExpF(aCB, TopAbs_FACE);
     for (; anExpF.More(); anExpF.Next())
+    {
       aBB.Add(aShell, anExpF.Current());
+    }
 
     BOPTools_AlgoTools::OrientFacesOnShell(aShell);
     // Make solid out of the shell
@@ -820,13 +850,17 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
           {
             const TopoDS_Shape& aSInt = it.Value();
             if (aSInt.Orientation() == TopAbs_INTERNAL)
+            {
               anInParts.Append(aSInt); // vertex or edge
+            }
             else
             {
               // shell treatment
               TopoDS_Iterator itInt(aSInt);
               if (itInt.More() && itInt.Value().Orientation() == TopAbs_INTERNAL)
+              {
                 anInParts.Append(aSInt);
+              }
             }
           }
         }
@@ -842,7 +876,9 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
 
   NCollection_List<TopoDS_Shape>::Iterator itLS(aResSolids);
   for (; itLS.More(); itLS.Next())
+  {
     aBB.Add(aResult, itLS.Value());
+  }
 
   myShape = aResult;
   PrepareHistory(aPS.Next());

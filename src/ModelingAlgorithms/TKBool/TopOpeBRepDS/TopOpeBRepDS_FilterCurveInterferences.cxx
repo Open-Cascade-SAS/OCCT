@@ -55,7 +55,9 @@ void TopOpeBRepDS_Filter::ProcessCurveInterferences(const int CIX)
           LI.Remove(it2);
         }
         else
+        {
           it2.Next();
+        }
       }
     }
     it1.Next();

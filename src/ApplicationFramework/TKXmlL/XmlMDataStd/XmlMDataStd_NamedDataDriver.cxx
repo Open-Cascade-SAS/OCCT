@@ -66,7 +66,9 @@ static TCollection_ExtendedString SplitItemFromEnd(TCollection_ExtendedString& K
   TCollection_ExtendedString aValue;
   const int                  aPos = Key.SearchFromEnd(" ");
   if (aPos == -1)
+  {
     return aValue;
+  }
   aValue = Key.Split(aPos - 1);
   aValue.Remove(1, 1);
   return aValue;
@@ -78,7 +80,9 @@ static TCollection_ExtendedString SplitItemFromStart(TCollection_ExtendedString&
   TCollection_ExtendedString aValue;
   const int                  aPos = Key.Search(" ");
   if (aPos == -1)
+  {
     return aValue;
+  }
   aValue = Key.Split(aPos);
   Key.Remove(Key.Length(), 1);
   return aValue;
@@ -90,13 +94,17 @@ occ::handle<NCollection_HArray1<int>> BuildIntArray(const TCollection_AsciiStrin
 {
   occ::handle<NCollection_HArray1<int>> anArr;
   if (ValString.Length() == 0 || !theLen)
+  {
     return anArr;
+  }
   anArr = new NCollection_HArray1<int>(1, theLen, 0);
   for (int i = 1; i <= theLen; i++)
   {
     const TCollection_AsciiString& aSVal = ValString.Token(" ", i);
     if (aSVal.Length())
+    {
       anArr->SetValue(i, aSVal.IntegerValue());
+    }
   }
   return anArr;
 }
@@ -107,13 +115,17 @@ occ::handle<NCollection_HArray1<double>> BuildRealArray(const TCollection_AsciiS
 {
   occ::handle<NCollection_HArray1<double>> anArr;
   if (ValString.Length() == 0 || !theLen)
+  {
     return anArr;
+  }
   anArr = new NCollection_HArray1<double>(1, theLen, .0);
   for (int i = 1; i <= theLen; i++)
   {
     const TCollection_AsciiString& aSVal = ValString.Token(" ", i);
     if (aSVal.Length())
+    {
       anArr->SetValue(i, aSVal.RealValue());
+    }
   }
   return anArr;
 }
@@ -130,7 +142,9 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
   // DataMapOfStringInteger: Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIntegerIndex());
   if (aFirstIndex == nullptr)
+  {
     aFirstInd = 1;
+  }
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString =
@@ -210,7 +224,9 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
     // DataMapOfStringReal
     aFirstIndex = anElement.getAttribute(::FirstRealIndex());
     if (aFirstIndex == nullptr)
+    {
       aFirstInd = 1;
+    }
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
       TCollection_ExtendedString aMessageString =
@@ -250,9 +266,13 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
       const LDOM_Element* aCurElement;
       if (aCurNode.isNull())
+      {
         aCurNode = anElement.getFirstChild();
+      }
       else
+      {
         aCurNode = static_cast<const LDOM_Element*>(&aCurNode)->getNextSibling();
+      }
 
       aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
       TCollection_ExtendedString                              aValueStr, aKey;
@@ -292,7 +312,9 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
     // DataMapOfStringString
     aFirstIndex = anElement.getAttribute(::FirstStringIndex());
     if (aFirstIndex == nullptr)
+    {
       aFirstInd = 1;
+    }
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
       TCollection_ExtendedString aMessageString =
@@ -329,9 +351,13 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
       }
       const LDOM_Element* aCurElement;
       if (aCurNode.isNull())
+      {
         aCurNode = anElement.getFirstChild();
+      }
       else
+      {
         aCurNode = static_cast<const LDOM_Element*>(&aCurNode)->getNextSibling();
+      }
 
       aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
       TCollection_ExtendedString                                                  aValue, aKey;
@@ -368,7 +394,9 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
     // DataMapOfStringByte
     aFirstIndex = anElement.getAttribute(::FirstByteIndex());
     if (aFirstIndex == nullptr)
+    {
       aFirstInd = 1;
+    }
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
       TCollection_ExtendedString aMessageString =
@@ -408,9 +436,13 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
       const LDOM_Element* aCurElement;
       if (aCurNode.isNull())
+      {
         aCurNode = anElement.getFirstChild();
+      }
       else
+      {
         aCurNode = static_cast<const LDOM_Element*>(&aCurNode)->getNextSibling();
+      }
 
       aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
       TCollection_ExtendedString                               aValueStr, aKey;
@@ -453,7 +485,9 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
     // DataMapOfStringHArray1OfInteger
     aFirstIndex = anElement.getAttribute(::FirstIntArrIndex());
     if (aFirstIndex == nullptr)
+    {
       aFirstInd = 1;
+    }
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
       TCollection_ExtendedString aMessageString =
@@ -492,9 +526,13 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
       }
       const LDOM_Element* aCurElement;
       if (aCurNode.isNull())
+      {
         aCurNode = anElement.getFirstChild();
+      }
       else
+      {
         aCurNode = static_cast<const LDOM_Element*>(&aCurNode)->getNextSibling();
+      }
 
       aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
       TCollection_ExtendedString aKey, aValueStr;
@@ -556,7 +594,9 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
     // DataMapOfStringHArray1OfReal
     aFirstIndex = anElement.getAttribute(::FirstRealArrIndex());
     if (aFirstIndex == nullptr)
+    {
       aFirstInd = 1;
+    }
     else if (!aFirstIndex.GetInteger(aFirstInd))
     {
       TCollection_ExtendedString aMessageString =
@@ -596,9 +636,13 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
       const LDOM_Element* aCurElement;
       if (aCurNode.isNull())
+      {
         aCurNode = anElement.getFirstChild();
+      }
       else
+      {
         aCurNode = static_cast<const LDOM_Element*>(&aCurNode)->getNextSibling();
+      }
 
       aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
       TCollection_ExtendedString aKey, aValueStr;
@@ -775,7 +819,9 @@ void XmlMDataStd_NamedDataDriver::Paste(const occ::handle<TDF_Attribute>& theSou
       {
         aValueStr2 += TCollection_AsciiString(anArr1.Value(j));
         if (j >= anArr1.Upper())
+        {
           break;
+        }
         aValueStr2 += ' ';
         j++;
       }
@@ -813,7 +859,9 @@ void XmlMDataStd_NamedDataDriver::Paste(const occ::handle<TDF_Attribute>& theSou
         TCollection_AsciiString aValueStr3(aValueChar);
         aValueStr2 += aValueStr3;
         if (j >= anArr1.Upper())
+        {
           break;
+        }
         aValueStr2 += ' ';
         j++;
       }

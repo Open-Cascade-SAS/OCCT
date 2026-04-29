@@ -47,9 +47,13 @@ bool NLPlate_HPG1Constraint::IncrementalLoadAllowed() const
 int NLPlate_HPG1Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 1)
+  {
     return myActiveOrder;
+  }
   else
+  {
     return 1;
+  }
 }
 
 bool NLPlate_HPG1Constraint::IsG0() const

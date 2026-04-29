@@ -59,12 +59,16 @@ bool TPrsStd_AxisDriver::Update(const TDF_Label&                    aLabel,
 
     //  Update de l'AIS
     if (anAISObject.IsNull())
+    {
       aistrihed = new AIS_Axis(apt);
+    }
     else
     {
       aistrihed = occ::down_cast<AIS_Axis>(anAISObject);
       if (aistrihed.IsNull())
+      {
         aistrihed = new AIS_Axis(apt);
+      }
       else
       {
         aistrihed->SetComponent(apt);

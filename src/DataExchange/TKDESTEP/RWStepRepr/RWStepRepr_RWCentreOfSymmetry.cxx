@@ -35,7 +35,9 @@ void RWStepRepr_RWCentreOfSymmetry::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "centre_of_symmetry"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

@@ -65,7 +65,9 @@ Standard_OStream& Vrml_LOD::Print(Standard_OStream& anOStream) const
     {
       anOStream << myRange->Value(i);
       if (i < myRange->Length())
+      {
         anOStream << ",";
+      }
     }
     anOStream << " ]\n";
   }

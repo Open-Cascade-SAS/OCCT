@@ -40,7 +40,9 @@ void StepData_DefaultGeneral::FillSharedCase(const int                          
 {
   // Fill iterator with shared entities from UndefinedEntity parameters
   if (casenum != 1)
+  {
     return; // Only handles case 1 (UndefinedEntity)
+  }
   DeclareAndCast(StepData_UndefinedEntity, undf, ent);
   occ::handle<Interface_UndefinedContent> cont = undf->UndefinedContent();
   int                                     nb   = cont->NbParams();
@@ -73,7 +75,9 @@ bool StepData_DefaultGeneral::NewVoid(const int CN, occ::handle<Standard_Transie
 {
   // Create a new empty entity instance (only UndefinedEntity supported)
   if (CN != 1)
+  {
     return false; // Only case 1 supported
+  }
   ent = new StepData_UndefinedEntity;
   return true;
 }
@@ -85,7 +89,9 @@ void StepData_DefaultGeneral::CopyCase(const int                              ca
 {
   // Copy content from source UndefinedEntity to target UndefinedEntity
   if (casenum != 1)
+  {
     return; // Only handles case 1 (UndefinedEntity)
+  }
   DeclareAndCast(StepData_UndefinedEntity, undfrom, entfrom);
   DeclareAndCast(StepData_UndefinedEntity, undto, entto);
   undto->GetFromAnother(undfrom, TC); //  We could optimize this operation

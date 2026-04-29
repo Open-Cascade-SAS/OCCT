@@ -38,7 +38,9 @@ void RWStepRepr_RWConfigurationEffectivity::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "configuration_effectivity"))
+  {
     return;
+  }
 
   // Inherited fields of Effectivity
 

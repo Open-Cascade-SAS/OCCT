@@ -24,7 +24,9 @@
 #include <OpenGl_Workspace.hxx>
 
 #include <Graphic3d_ArrayOfPrimitives.hxx>
+#include <Graphic3d_Flipper.hxx>
 #include <Graphic3d_GroupDefinitionError.hxx>
+#include <Graphic3d_Structure.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Group, Graphic3d_Group)
 
@@ -197,6 +199,16 @@ void OpenGl_Group::SetFlippingOptions(const bool theIsEnabled, const gp_Ax2& the
   OpenGl_Flipper* aFlipper = new OpenGl_Flipper(theRefPlane);
   aFlipper->SetOptions(theIsEnabled);
   AddElement(aFlipper);
+  // OpenGl_Flipper acts as a push/pop bracket on the render stream, so AIS consumers
+  // call SetFlippingOptions(true,...) then SetFlippingOptions(false,...) on the same
+  // group around the primitives that must be flipped. The selection side needs to know
+  // the group contains flipped geometry, so myFlipper must persist across the disable
+  // call - we only set it, never clear it.
+  if (theIsEnabled)
+  {
+    myStructure->CStructure()->SetGroupFlipping(true);
+    myFlipper = new Graphic3d_Flipper(theRefPlane);
+  }
 }
 
 //=================================================================================================
@@ -263,7 +275,9 @@ void OpenGl_Group::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) con
 
   // Restore aspects
   if (isAspectSet)
+  {
     theWorkspace->SetAspects(aBackAspects);
+  }
 }
 
 //=================================================================================================

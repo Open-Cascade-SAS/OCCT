@@ -34,7 +34,7 @@ public:
   //! Allocates new empty array
   bool Init(const int theNbElems, const NCollection_Array1<Graphic3d_Attribute>& theAttribs)
   {
-    return Init(theNbElems, &theAttribs.First(), theAttribs.Size());
+    return Init(theNbElems, &theAttribs.First(), theAttribs.Length());
   }
 
   //! Return TRUE if data can be invalidated; FALSE by default.

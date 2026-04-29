@@ -24,7 +24,9 @@ void GeomliteTest::AllCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   GeomliteTest::CurveCommands(theCommands);

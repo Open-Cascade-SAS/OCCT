@@ -94,11 +94,13 @@ bool IGESDimen_ToolBasicDimension::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 8);
   if (res)
+  {
     ent->Init(8,
               ent->LowerLeft().XY(),
               ent->LowerRight().XY(),
               ent->UpperRight().XY(),
               ent->UpperLeft().XY()); // nbpropertyvalues = 8
+  }
   return res;
 }
 
@@ -120,7 +122,9 @@ void IGESDimen_ToolBasicDimension::OwnCheck(const occ::handle<IGESDimen_BasicDim
                                             occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 8)
+  {
     ach->AddFail("Num of Property Values != 8");
+  }
 }
 
 void IGESDimen_ToolBasicDimension::OwnDump(const occ::handle<IGESDimen_BasicDimension>& ent,
@@ -138,5 +142,5 @@ void IGESDimen_ToolBasicDimension::OwnDump(const occ::handle<IGESDimen_BasicDime
   IGESData_DumpXY(S, ent->UpperRight());
   S << "\n  Upper left corner  : ";
   IGESData_DumpXY(S, ent->UpperLeft());
-  S << std::endl;
+  S << '\n';
 }

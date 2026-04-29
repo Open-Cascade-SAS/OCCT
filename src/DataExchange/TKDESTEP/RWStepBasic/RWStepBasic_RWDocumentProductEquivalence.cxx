@@ -36,7 +36,9 @@ void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "document_product_equivalence"))
+  {
     return;
+  }
 
   // Inherited fields of DocumentProductAssociation
 
@@ -101,7 +103,9 @@ void RWStepBasic_RWDocumentProductEquivalence::WriteStep(
     SW.Send(ent->StepBasic_DocumentProductAssociation::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepBasic_DocumentProductAssociation::RelatingDocument());
 

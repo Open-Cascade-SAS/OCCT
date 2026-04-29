@@ -16,6 +16,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_Builder.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 
@@ -35,7 +36,7 @@
 //! ## Typical usage
 //! @code
 //!   BRepGraph aGraph;
-//!   aGraph.Build(myShape);
+//!   BRepGraph_Builder::Add(aGraph, myShape);
 //!   BRepGraph aCopy = BRepGraph_Copy::Perform(aGraph);
 //!   TopoDS_Shape aShape = aCopy.Shapes().Shape();
 //! @endcode
@@ -53,21 +54,24 @@ public:
   [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
                                                          const bool       theCopyGeom = true);
 
-  //! Copy a single face sub-graph.
+  //! Copy a single node sub-graph of any kind (Face, Shell, Solid, Wire, Edge, Vertex, etc.).
+  //! The new graph contains only the specified node and all entities it references.
   //! @param[in] theGraph        a pre-built BRepGraph
-  //! @param[in] theFace         face definition identifier in the graph
-  //! @param[in] theCopyGeom     if true, geometry is deep-copied
-  //! @param[in] theReserveCache if true (default), pre-allocates transient cache;
-  //!                            pass false for short-lived temporary graphs
-  //! @return a new BRepGraph containing only the specified face and its dependencies
-  [[nodiscard]] Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&       theGraph,
-                                                          const BRepGraph_FaceId theFace,
+  //! @param[in] theNodeId       node identifier (any kind)
+  //! @param[in] theCopyGeom     if true, geometry handles are deep-copied
+  //! @param[in] theCopyMesh     if true, cached mesh entries are propagated to the result;
+  //!                            if false, mesh references are dropped on copied faces
+  //! @param[in] theReserveCache if true, pre-allocates transient cache
+  //! @return a new BRepGraph containing only the specified sub-graph
+  [[nodiscard]] Standard_EXPORT static BRepGraph CopyNode(const BRepGraph&       theGraph,
+                                                          const BRepGraph_NodeId theNodeId,
                                                           const bool             theCopyGeom = true,
-                                                          const bool theReserveCache = true);
+                                                          const bool             theCopyMesh = true,
+                                                          const bool theReserveCache = false);
 
 private:
   //! Pre-allocate transient cache for lock-free parallel access.
-  Standard_EXPORT static void reserveTransientCache(BRepGraph& theGraph);
+  static void reserveTransientCache(BRepGraph& theGraph);
 
   BRepGraph_Copy() = delete;
 };

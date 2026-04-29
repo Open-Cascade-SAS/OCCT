@@ -56,7 +56,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   int theNum = 0; // num0;
   theData->NamedForComplex("ACTUATED_KINEMATIC_PAIR", "ACKNPR", num0, theNum, theArch);
   if (!theData->CheckNbParams(theNum, 6, theArch, "kinematic actuated_kinematic_pair"))
+  {
     return;
+  }
   // Own fields of ActuatedKinematicPair
   occ::handle<StepKinematics_ActuatedKinematicPair> anActuatedKinematicPair =
     new StepKinematics_ActuatedKinematicPair;
@@ -68,18 +70,30 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 1);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aTX = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aTX = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aTX = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aTX = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #1 (t_x) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #1 (t_x) is not enumeration");
+    }
   }
   else
   {
@@ -94,18 +108,30 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 8);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aTY = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aTY = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aTY = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aTY = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #2 (t_y) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #2 (t_y) is not enumeration");
+    }
   }
   else
   {
@@ -120,18 +146,30 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 9);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aTZ = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aTZ = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aTZ = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aTZ = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #3 (t_z) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #3 (t_z) is not enumeration");
+    }
   }
   else
   {
@@ -146,18 +184,30 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 10);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aRX = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aRX = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aRX = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aRX = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #14 (r_x) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #14 (r_x) is not enumeration");
+    }
   }
   else
   {
@@ -172,18 +222,30 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 11);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aRY = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aRY = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aRY = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aRY = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #5 (r_y) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #5 (r_y) is not enumeration");
+    }
   }
   else
   {
@@ -198,18 +260,30 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
     {
       const char* text = theData->ParamCValue(theNum, 12);
       if (strcmp(text, ".BIDIRECTIONAL."))
+      {
         aRZ = StepKinematics_adBidirectional;
+      }
       else if (strcmp(text, ".POSITIVE_ONLY."))
+      {
         aRZ = StepKinematics_adPositiveOnly;
+      }
       else if (strcmp(text, ".NEGATIVE_ONLY."))
+      {
         aRZ = StepKinematics_adNegativeOnly;
+      }
       else if (strcmp(text, ".NOT_ACTUATED."))
+      {
         aRZ = StepKinematics_adNotActuated;
+      }
       else
+      {
         theArch->AddFail("Parameter #6 (r_z) has not allowed value");
+      }
     }
     else
+    {
       theArch->AddFail("Parameter #6 (r_z) is not enumeration");
+    }
   }
   else
   {
@@ -225,11 +299,13 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   if (strcmp(theData->ParamCValue(theNum, 1), "*"))
+  {
     theData->ReadString(theNum,
                         1,
                         "item_defined_transformation.name",
                         theArch,
                         aItemDefinedTransformation_Name);
+  }
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
   bool                                  hasItemDefinedTransformation_Description = true;
@@ -291,44 +367,58 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
     if (theData->CheckNbParams(theNum, 6, theArch, "LOW_ORDER_KINEMATIC_PAIR"))
     {
       if (strcmp(theData->ParamCValue(theNum, 1), "*"))
+      {
         theData->ReadBoolean(theNum,
                              1,
                              "low_order_kinematic_pair.t_x",
                              theArch,
                              aLowOrderKinematicPair_TX);
+      }
       if (strcmp(theData->ParamCValue(theNum, 2), "*"))
+      {
         theData->ReadBoolean(theNum,
                              2,
                              "low_order_kinematic_pair.t_y",
                              theArch,
                              aLowOrderKinematicPair_TY);
+      }
       if (strcmp(theData->ParamCValue(theNum, 3), "*"))
+      {
         theData->ReadBoolean(theNum,
                              3,
                              "low_order_kinematic_pair.t_z",
                              theArch,
                              aLowOrderKinematicPair_TZ);
+      }
       if (strcmp(theData->ParamCValue(theNum, 4), "*"))
+      {
         theData->ReadBoolean(theNum,
                              4,
                              "low_order_kinematic_pair.r_x",
                              theArch,
                              aLowOrderKinematicPair_RX);
+      }
       if (strcmp(theData->ParamCValue(theNum, 5), "*"))
+      {
         theData->ReadBoolean(theNum,
                              5,
                              "low_order_kinematic_pair.r_y",
                              theArch,
                              aLowOrderKinematicPair_RY);
+      }
       if (strcmp(theData->ParamCValue(theNum, 6), "*"))
+      {
         theData->ReadBoolean(theNum,
                              6,
                              "low_order_kinematic_pair.r_z",
                              theArch,
                              aLowOrderKinematicPair_RZ);
+      }
     }
     else
+    {
       theArch->AddFail("The supertype of kinematic pair is not supported");
+    }
     aKinematicPair = new StepKinematics_KinematicPair;
     aKinematicPair->Init(aRepresentationItem_Name,
                          aItemDefinedTransformation_Name,
@@ -783,7 +873,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
         }
       }
       else
+      {
         theArch->AddFail("The type of kinematic pair with range is not supported");
+      }
     }
     else if (!strcmp(aPairtype, "PRISMATIC_PAIR"))
     {
@@ -2018,7 +2110,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->GetActuatedKinematicPair()->HasTY())
   {
@@ -2039,7 +2133,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->GetActuatedKinematicPair()->HasTZ())
   {
@@ -2060,7 +2156,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->GetActuatedKinematicPair()->HasRX())
   {
@@ -2081,7 +2179,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->GetActuatedKinematicPair()->HasRY())
   {
@@ -2102,7 +2202,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->GetActuatedKinematicPair()->HasRZ())
   {
@@ -2123,7 +2225,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
     }
   }
   else
+  {
     theSW.SendUndef();
+  }
   theSW.StartEntity("(GEOMETRIC_REPRESENTATION_ITEM");
 
   theSW.StartEntity("(ITEM_DEFINED_TRANSFORMATION");
@@ -2136,7 +2240,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -2181,14 +2287,18 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aRevolutePairWithRange->LowerLimitActualRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aRevolutePairWithRange->HasUpperLimitActualRotation())
         {
           theSW.Send(aRevolutePairWithRange->UpperLimitActualRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(STANDARD_TYPE(StepKinematics_CylindricalPair)))
@@ -2207,28 +2317,36 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aCylindricalPairWithRange->LowerLimitActualTranslation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aCylindricalPairWithRange->HasUpperLimitActualTranslation())
         {
           theSW.Send(aCylindricalPairWithRange->UpperLimitActualTranslation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aCylindricalPairWithRange->HasLowerLimitActualRotation())
         {
           theSW.Send(aCylindricalPairWithRange->LowerLimitActualRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aCylindricalPairWithRange->HasUpperLimitActualRotation())
         {
           theSW.Send(aCylindricalPairWithRange->UpperLimitActualRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(STANDARD_TYPE(StepKinematics_SphericalPair)))
@@ -2247,42 +2365,54 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aSphericalPairWithRange->LowerLimitYaw());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSphericalPairWithRange->HasUpperLimitYaw())
         {
           theSW.Send(aSphericalPairWithRange->UpperLimitYaw());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSphericalPairWithRange->HasLowerLimitPitch())
         {
           theSW.Send(aSphericalPairWithRange->LowerLimitPitch());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSphericalPairWithRange->HasUpperLimitPitch())
         {
           theSW.Send(aSphericalPairWithRange->UpperLimitPitch());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSphericalPairWithRange->HasLowerLimitRoll())
         {
           theSW.Send(aSphericalPairWithRange->LowerLimitRoll());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSphericalPairWithRange->HasUpperLimitRoll())
         {
           theSW.Send(aSphericalPairWithRange->UpperLimitRoll());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(
@@ -2303,28 +2433,36 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aSphericalPairWithPinAndRange->LowerLimitYaw());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSphericalPairWithPinAndRange->HasUpperLimitYaw())
         {
           theSW.Send(aSphericalPairWithPinAndRange->UpperLimitYaw());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSphericalPairWithPinAndRange->HasLowerLimitRoll())
         {
           theSW.Send(aSphericalPairWithPinAndRange->LowerLimitRoll());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSphericalPairWithPinAndRange->HasUpperLimitRoll())
         {
           theSW.Send(aSphericalPairWithPinAndRange->UpperLimitRoll());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(STANDARD_TYPE(StepKinematics_PrismaticPair)))
@@ -2343,14 +2481,18 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aPrismaticPairWithRange->LowerLimitActualTranslation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPrismaticPairWithRange->HasUpperLimitActualTranslation())
         {
           theSW.Send(aPrismaticPairWithRange->UpperLimitActualTranslation());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(STANDARD_TYPE(StepKinematics_UniversalPair)))
@@ -2365,7 +2507,9 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
         theSW.Send(anUniversalPair->InputSkewAngle());
       }
       else
+      {
         theSW.SendUndef();
+      }
 
       theSW.StartEntity("(PRISMATIC_PAIR_WITH_RANGE");
       if (theEnt->GetOrderKinematicPair()->IsKind(
@@ -2380,28 +2524,36 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(anUniversalPairWithRange->LowerLimitFirstRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (anUniversalPairWithRange->HasUpperLimitFirstRotation())
         {
           theSW.Send(anUniversalPairWithRange->UpperLimitFirstRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (anUniversalPairWithRange->HasLowerLimitSecondRotation())
         {
           theSW.Send(anUniversalPairWithRange->LowerLimitSecondRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (anUniversalPairWithRange->HasUpperLimitSecondRotation())
         {
           theSW.Send(anUniversalPairWithRange->UpperLimitSecondRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
   }
@@ -2437,14 +2589,18 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aGearPairWithRange->LowerLimitActualRotation1());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aGearPairWithRange->HasUpperLimitActualRotation1())
         {
           theSW.Send(aGearPairWithRange->UpperLimitActualRotation1());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(
@@ -2471,14 +2627,18 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aRackAndPinionPairWithRange->LowerLimitRackDisplacement());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aRackAndPinionPairWithRange->HasUpperLimitRackDisplacement())
         {
           theSW.Send(aRackAndPinionPairWithRange->UpperLimitRackDisplacement());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(STANDARD_TYPE(StepKinematics_ScrewPair)))
@@ -2502,14 +2662,18 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aScrewPairWithRange->LowerLimitActualRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aScrewPairWithRange->HasUpperLimitActualRotation())
         {
           theSW.Send(aScrewPairWithRange->UpperLimitActualRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
   }
@@ -2544,42 +2708,54 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aPointOnPlanarCurvePairWithRange->LowerLimitYaw());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnPlanarCurvePairWithRange->HasUpperLimitYaw())
         {
           theSW.Send(aPointOnPlanarCurvePairWithRange->UpperLimitYaw());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnPlanarCurvePairWithRange->HasLowerLimitPitch())
         {
           theSW.Send(aPointOnPlanarCurvePairWithRange->LowerLimitPitch());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnPlanarCurvePairWithRange->HasUpperLimitPitch())
         {
           theSW.Send(aPointOnPlanarCurvePairWithRange->UpperLimitPitch());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnPlanarCurvePairWithRange->HasLowerLimitRoll())
         {
           theSW.Send(aPointOnPlanarCurvePairWithRange->LowerLimitRoll());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnPlanarCurvePairWithRange->HasUpperLimitRoll())
         {
           theSW.Send(aPointOnPlanarCurvePairWithRange->UpperLimitRoll());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(
@@ -2608,42 +2784,54 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aPointOnSurfacePairWithRange->LowerLimitYaw());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnSurfacePairWithRange->HasUpperLimitYaw())
         {
           theSW.Send(aPointOnSurfacePairWithRange->UpperLimitYaw());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnSurfacePairWithRange->HasLowerLimitPitch())
         {
           theSW.Send(aPointOnSurfacePairWithRange->LowerLimitPitch());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnSurfacePairWithRange->HasUpperLimitPitch())
         {
           theSW.Send(aPointOnSurfacePairWithRange->UpperLimitPitch());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnSurfacePairWithRange->HasLowerLimitRoll())
         {
           theSW.Send(aPointOnSurfacePairWithRange->LowerLimitRoll());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aPointOnSurfacePairWithRange->HasUpperLimitRoll())
         {
           theSW.Send(aPointOnSurfacePairWithRange->UpperLimitRoll());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
     else if (theEnt->GetOrderKinematicPair()->IsKind(STANDARD_TYPE(StepKinematics_PlanarCurvePair)))
@@ -2700,14 +2888,18 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
           theSW.Send(aSurfacePairWithRange->LowerLimitActualRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
 
         if (aSurfacePairWithRange->HasUpperLimitActualRotation())
         {
           theSW.Send(aSurfacePairWithRange->UpperLimitActualRotation());
         }
         else
+        {
           theSW.SendUndef();
+        }
       }
     }
   }

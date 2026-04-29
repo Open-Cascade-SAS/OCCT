@@ -48,7 +48,9 @@ bool BinMXCAFDoc_MaterialDriver::Paste(const BinObjMgt_Persistent&       theSour
   double                        aDensity;
   TCollection_AsciiString       aName, aDescr, aDensName, aDensValType;
   if (!(theSource >> aName >> aDescr >> aDensity >> aDensName >> aDensValType))
+  {
     return false;
+  }
 
   anAtt->Set(new TCollection_HAsciiString(aName),
              new TCollection_HAsciiString(aDescr),
@@ -62,9 +64,13 @@ static void pasteString(BinObjMgt_Persistent&                        theTarget,
                         const occ::handle<TCollection_HAsciiString>& theStr)
 {
   if (!theStr.IsNull())
+  {
     theTarget << theStr->String();
+  }
   else
+  {
     theTarget << TCollection_AsciiString("");
+  }
 }
 
 //=================================================================================================

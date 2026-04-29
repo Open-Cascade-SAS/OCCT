@@ -147,9 +147,13 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
       // clang-format on
       Geom2dConvert_ApproxCurve approx(tcurve, Precision::Approximation(), GeomAbs_C1, 100, 6);
       if (approx.HasResult())
+      {
         aBSpline2d = approx.Curve();
+      }
       else
+      {
         aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve, Convert_QuasiAngular);
+      }
 
       Shift = First - aBSpline2d->FirstParameter();
       First = aBSpline2d->FirstParameter();
@@ -160,14 +164,20 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
       aBSpline2d = Geom2dConvert::CurveToBSplineCurve(myCurve, Convert_QuasiAngular);
     }
     else
+    {
       aBSpline2d = occ::down_cast<Geom2d_BSplineCurve>(myCurve);
+    }
 
     double bf = aBSpline2d->FirstParameter();
     double bl = aBSpline2d->LastParameter();
     if (std::abs(First - bf) < precision)
+    {
       First = bf;
+    }
     if (std::abs(Last - bl) < precision)
+    {
       Last = bl;
+    }
     if (First < bf)
     {
 #ifdef OCCT_DEBUG
@@ -238,9 +248,13 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
       {
         double valknot = knots(i) + Shift;
         if (valknot <= First + precision)
+        {
           continue;
+        }
         if (valknot >= Last - precision)
+        {
           break;
+        }
         mySplitValues->InsertBefore(j++, valknot);
       }
       First = Last;
@@ -263,10 +277,16 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Build(const bool /*Segment*/)
   {
     double par = mySplitValues->Value(i);
     for (; j <= mySplitParams->Length(); j++)
+    {
       if (mySplitParams->Value(j) + prec > par)
+      {
         break;
+      }
       else
+      {
         prevPar = 0.;
+      }
+    }
 
     occ::handle<Geom2d_BezierCurve> bes =
       occ::down_cast<Geom2d_BezierCurve>(mySegments->Value(j - 1)->Copy());

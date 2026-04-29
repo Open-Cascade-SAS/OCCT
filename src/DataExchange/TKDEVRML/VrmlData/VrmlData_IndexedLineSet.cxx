@@ -50,7 +50,9 @@ Quantity_Color VrmlData_IndexedLineSet::GetColor(const int /*iFace*/, const int 
 const occ::handle<TopoDS_TShape>& VrmlData_IndexedLineSet::TShape()
 {
   if (myNbPolygons == 0)
+  {
     myTShape.Nullify();
+  }
   else if (myIsModified)
   {
     int           i;
@@ -89,7 +91,9 @@ occ::handle<VrmlData_Node> VrmlData_IndexedLineSet::Clone(
   occ::handle<VrmlData_IndexedLineSet> aResult =
     occ::down_cast<VrmlData_IndexedLineSet>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_IndexedLineSet(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
 
   if (&aResult->Scene() == &Scene())
   {
@@ -103,9 +107,13 @@ occ::handle<VrmlData_Node> VrmlData_IndexedLineSet::Clone(
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
     if (!myCoords.IsNull())
+    {
       aResult->SetCoordinates(occ::down_cast<VrmlData_Coordinate>(myCoords->Clone(aDummyNode)));
+    }
     if (!myColors.IsNull())
+    {
       aResult->SetColors(occ::down_cast<VrmlData_Color>(myColors->Clone(aDummyNode)));
+    }
     // TODO: Replace the following lines with the relevant copying
     aResult->SetPolygons(myNbPolygons, myArrPolygons);
     aResult->SetColorInd(myNbColors, myArrColorInd);
@@ -126,13 +134,19 @@ VrmlData_ErrorStatus VrmlData_IndexedLineSet::Read(VrmlData_InBuffer& theBuffer)
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "colorPerVertex"))
+    {
       aStatus = ReadBoolean(theBuffer, myColorPerVertex);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "coordIndex"))
+    {
       aStatus = aScene.ReadArrIndex(theBuffer, myArrPolygons, myNbPolygons);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "colorIndex"))
+    {
       aStatus = aScene.ReadArrIndex(theBuffer, myArrColorInd, myNbColors);
-    // These two checks should be the last one to avoid their interference
-    // with the other tokens (e.g., coordIndex)
+      // These two checks should be the last one to avoid their interference
+      // with the other tokens (e.g., coordIndex)
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "color"))
     {
       occ::handle<VrmlData_Node> aNode;
@@ -146,17 +160,23 @@ VrmlData_ErrorStatus VrmlData_IndexedLineSet::Read(VrmlData_InBuffer& theBuffer)
       myCoords = occ::down_cast<VrmlData_Coordinate>(aNode);
     }
     else
+    {
       break;
+    }
     if (!OK(aStatus))
+    {
       break;
+    }
   }
   // Read the terminating (closing) brace
   if (OK(aStatus) || aStatus == VrmlData_EmptyData)
+  {
     if (OK(aStatus, readBrace(theBuffer)))
     {
       // Post-processing
       ;
     }
+  }
   return aStatus;
 }
 
@@ -174,16 +194,26 @@ VrmlData_ErrorStatus VrmlData_IndexedLineSet::Write(const char* thePrefix) const
   {
 
     if (OK(aStatus) && !myCoords.IsNull())
+    {
       aStatus = aScene.WriteNode("coord", myCoords);
+    }
     if (OK(aStatus))
+    {
       aStatus = aScene.WriteArrIndex("coordIndex", myArrPolygons, myNbPolygons);
+    }
 
     if (OK(aStatus) && !myColorPerVertex)
+    {
       aStatus = aScene.WriteLine("colorPerVertex  FALSE");
+    }
     if (OK(aStatus) && !myColors.IsNull())
+    {
       aStatus = aScene.WriteNode("color", myColors);
+    }
     if (OK(aStatus))
+    {
       aStatus = aScene.WriteArrIndex("colorIndex", myArrColorInd, myNbColors);
+    }
 
     aStatus = WriteClosing();
   }
@@ -200,8 +230,12 @@ bool VrmlData_IndexedLineSet::IsDefault() const
 {
   bool aResult(true);
   if (myNbPolygons)
+  {
     aResult = false;
+  }
   else if (!myCoords.IsNull())
+  {
     aResult = myCoords->IsDefault();
+  }
   return aResult;
 }

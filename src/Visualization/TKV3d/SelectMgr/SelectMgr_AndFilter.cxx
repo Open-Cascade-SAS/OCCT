@@ -26,7 +26,11 @@ bool SelectMgr_AndFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) 
 {
   NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator it(myFilters);
   for (; it.More(); it.Next())
+  {
     if (!it.Value()->IsOk(anobj))
+    {
       return false;
+    }
+  }
   return true;
 }

@@ -129,11 +129,15 @@ void Units_UnitsDictionary::Creates()
       {
         unitscomputed = 0;
         for (i = 0; i <= numberofunits; i++)
+        {
           matrix(i, i) = 1.;
+        }
         for (i = 0; i <= numberofunits; i++)
         {
           if (matrix(i, 0))
+          {
             unitscomputed++;
+          }
         }
         while (unitscomputed != numberofunits + 1)
         {
@@ -148,7 +152,9 @@ void Units_UnitsDictionary::Creates()
                   matrix(j, 0) = matrix(i, 0) * matrix(j, i);
                   unitscomputed++;
                   if (unitscomputed == numberofunits + 1)
+                  {
                     break;
+                  }
                 }
               }
               for (k = j + 1; k <= numberofunits; k++)
@@ -158,12 +164,16 @@ void Units_UnitsDictionary::Creates()
                   matrix(j, 0) = matrix(k, 0) / matrix(k, j);
                   unitscomputed++;
                   if (unitscomputed == numberofunits + 1)
+                  {
                     break;
+                  }
                 }
               }
             }
             if (unitscomputed == numberofunits + 1)
+            {
               break;
+            }
           }
         }
         for (i = 1; i <= theunitssequence->Length(); i++)
@@ -228,7 +238,9 @@ void Units_UnitsDictionary::Creates()
       for (i = 0; i < 50; i++)
       {
         for (j = 0; j < 50; j++)
+        {
           matrix(i, j) = 0.;
+        }
       }
 
       // skip next line (dotted)
@@ -254,7 +266,9 @@ void Units_UnitsDictionary::Creates()
       strrightadjust(convert);
       strrightadjust(unit2);
       if (!unite[0] && !symbol[0] && !convert[0] && !unit2[0])
+      {
         continue; // empty line
+      }
 
       if (convert[0] == '[')
       {
@@ -297,9 +311,13 @@ void Units_UnitsDictionary::Creates()
         convert[i - 1] = 0;
         Units_MathSentence mathsentence(&convert[charnumber + 1]);
         if (ismove)
+        {
           move = (mathsentence.Evaluate())->Value();
+        }
         else
+        {
           coeff = (mathsentence.Evaluate())->Value();
+        }
       }
       else if (convert[0])
       {
@@ -308,7 +326,9 @@ void Units_UnitsDictionary::Creates()
           OSD::CStringToReal(&convert[charnumber], move);
         }
         else
+        {
           OSD::CStringToReal(convert, coeff);
+        }
       }
       else
       {
@@ -329,8 +349,12 @@ void Units_UnitsDictionary::Creates()
       if (unit2[0])
       {
         for (j = 1; j <= theunitssequence->Length(); j++)
+        {
           if (theunitssequence->Value(j) == unit2)
+          {
             break;
+          }
+        }
 
         if (j < numberofunits)
         {
@@ -371,7 +395,9 @@ TCollection_AsciiString Units_UnitsDictionary::ActiveUnit(const char* const aqua
     {
       unitssequence = quantity->Sequence();
       if (unitssequence->Length())
+      {
         return unitssequence->Value(1)->SymbolsSequence()->Value(1)->String();
+      }
       else
       {
 #ifdef OCCT_DEBUG
@@ -382,6 +408,6 @@ TCollection_AsciiString Units_UnitsDictionary::ActiveUnit(const char* const aqua
     }
   }
 
-  std::cout << " La grandeur physique " << aquantity << " n'existe pas." << std::endl;
+  std::cout << " La grandeur physique " << aquantity << " n'existe pas." << '\n';
   return "";
 }

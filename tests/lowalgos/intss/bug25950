@@ -6,7 +6,7 @@ puts ""
 cpulimit 200
 
 puts "TODO 0025950 ALL: Error: 0 vertices are expected but 2 are found."
-puts "TODO 0025950 ALL: Error : The length of result shape is 18.8605"
+puts "TODO 0025950 ALL: Error : The length of result shape is 18.853"
 
 set aGoodNbCurves 3
 

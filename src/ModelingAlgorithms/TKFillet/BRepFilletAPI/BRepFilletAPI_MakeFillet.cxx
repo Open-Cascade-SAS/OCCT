@@ -71,7 +71,9 @@ void BRepFilletAPI_MakeFillet::Add(const double Radius, const TopoDS_Edge& E)
   int IinC;
   int IC = myBuilder.Contains(E, IinC);
   if (IC)
+  {
     SetRadius(Radius, IC, IinC);
+  }
 }
 
 //=================================================================================================
@@ -82,7 +84,9 @@ void BRepFilletAPI_MakeFillet::Add(const double R1, const double R2, const TopoD
   int IinC;
   int IC = myBuilder.Contains(E, IinC);
   if (IC)
+  {
     SetRadius(R1, R2, IC, IinC);
+  }
 }
 
 //=================================================================================================
@@ -94,7 +98,9 @@ void BRepFilletAPI_MakeFillet::Add(const occ::handle<Law_Function>& L, const Top
   int IinC;
   int IC = myBuilder.Contains(E, IinC);
   if (IC)
+  {
     SetRadius(L, IC, IinC);
+  }
 }
 
 //=================================================================================================
@@ -105,7 +111,9 @@ void BRepFilletAPI_MakeFillet::Add(const NCollection_Array1<gp_Pnt2d>& UandR, co
   int IinC;
   int IC = myBuilder.Contains(E, IinC);
   if (IC)
+  {
     SetRadius(UandR, IC, IinC);
+  }
 }
 
 //=================================================================================================
@@ -127,7 +135,9 @@ void BRepFilletAPI_MakeFillet::SetRadius(const double R1,
   double r1, r2;
 
   if (std::abs(R1 - R2) < Precision::Confusion())
+  {
     r1 = r2 = (R1 + R2) * 0.5;
+  }
   else
   {
     r1 = R1;
@@ -154,9 +164,13 @@ void BRepFilletAPI_MakeFillet::SetRadius(const NCollection_Array1<gp_Pnt2d>& Uan
                                          const int                           IinC)
 {
   if (UandR.Length() == 1)
+  {
     SetRadius(UandR(UandR.Lower()).Y(), IC, IinC);
+  }
   else if (UandR.Length() == 2)
+  {
     SetRadius(UandR(UandR.Lower()).Y(), UandR(UandR.Upper()).Y(), IC, IinC);
+  }
   else
   {
     double Uf = UandR(UandR.Lower()).X();

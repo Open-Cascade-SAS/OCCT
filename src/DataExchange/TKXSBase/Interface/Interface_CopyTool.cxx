@@ -66,7 +66,9 @@ Interface_CopyTool::Interface_CopyTool(const occ::handle<Interface_InterfaceMode
       thelst(amodel->NbEntities())
 {
   if (Interface_Protocol::Active().IsNull())
+  {
     throw Interface_InterfaceError("Interface CopyTool : Create with Active Protocol undefined");
+  }
 
   thelst.Init(false);
   themod = amodel;
@@ -110,15 +112,21 @@ bool Interface_CopyTool::NewVoid(const occ::handle<Standard_Transient>& entfrom,
   if (entfrom == theent)
   {
     if (themdu.IsNull())
+    {
       return false;
+    }
     return themdu->NewVoid(theCN, entto);
   }
   theent   = entfrom;
   bool res = thelib.Select(entfrom, themdu, theCN);
   if (res)
+  {
     res = themdu->NewVoid(theCN, entto);
+  }
   if (!res)
+  {
     res = themdu->NewCopiedCase(theCN, entfrom, entto, *this);
+  }
   //  if (!res) entto = entfrom->ShallowCopy();   sorry, nothing more possible
   return res;
 }
@@ -132,7 +140,9 @@ bool Interface_CopyTool::Copy(const occ::handle<Standard_Transient>& entfrom,
   if (entfrom == theent)
   {
     if (themdu.IsNull())
+    {
       res = false;
+    }
   }
   else
   {
@@ -143,7 +153,9 @@ bool Interface_CopyTool::Copy(const occ::handle<Standard_Transient>& entfrom,
   {
     //  Built-in :
     if (entfrom.IsNull())
+    {
       return res;
+    }
     if (entfrom->DynamicType() == STANDARD_TYPE(TCollection_HAsciiString))
     {
       entto = new TCollection_HAsciiString(
@@ -155,7 +167,9 @@ bool Interface_CopyTool::Copy(const occ::handle<Standard_Transient>& entfrom,
   //  Create the empty Entity (NewVoid), the Copy remains to be done
   res = NewVoid(entfrom, entto);
   if (mapped)
+  {
     themap->Bind(entfrom, entto); // Map before continuing ...
+  }
 
   //  Now, perform the Copy (depending on case; if ShallowCopy is not enough:
   //  it is <themdu> who decides)
@@ -163,7 +177,9 @@ bool Interface_CopyTool::Copy(const occ::handle<Standard_Transient>& entfrom,
   //    An Entity in Error is not copied (no sense and it's risky ...)
   //    However, it is "Copied Empty (NewVoid)" so referenceable
   if (!errstat)
+  {
     themdu->CopyCase(theCN, entfrom, entto, *this);
+  }
   return res;
 }
 
@@ -173,7 +189,9 @@ void Interface_CopyTool::Implied(const occ::handle<Standard_Transient>& entfrom,
   occ::handle<Interface_GeneralModule> module;
   int                                  CN;
   if (thelib.Select(entfrom, module, CN))
+  {
     module->RenewImpliedCase(CN, entfrom, entto, *this);
+  }
 }
 
 //  ....                Feeding the Map                ....
@@ -183,34 +201,46 @@ occ::handle<Standard_Transient> Interface_CopyTool::Transferred(
 {
   occ::handle<Standard_Transient> res;
   if (ent.IsNull())
+  {
     return res; // Copy of a Null : very simple ...
+  }
   int nument = themod->Number(ent);
 
   //  <nument> == 0 -> May be a non-shared sub-part ...
   //  We accept but we protect against a loop
   if (nument == 0 && thelev > 100)
+  {
     throw Interface_InterfaceError(
       "CopyTool : Transferred, Entity is not contained in Starting Model");
+  }
   if (!themap->Search(ent, res))
   { // already transferred ? if not, do it
 
     //  We perform the Copy (finally, we try)
     //  In case of failure, nothing is recorded
     if (!Copy(ent, res, (nument != 0), themod->IsRedefinedContent(nument)))
+    {
       return res;
+    }
 
     thelev++;
     if (nument != 0)
+    {
       thelst.SetTrue(nument);
+    }
     occ::handle<Interface_ReportEntity> rep;
     if (nument != 0)
+    {
       rep = themod->ReportEntity(nument);
+    }
     if (!rep.IsNull())
     {
       //  WARNING WARNING, if ReportEntity : Also copy Content and remake a
       //  ReportEntity with the initial terms
       if (rep->IsUnknown())
+      {
         therep->Bind(ent, new Interface_ReportEntity(res));
+      }
       else
       {
         occ::handle<Standard_Transient> contfrom, contto;
@@ -219,9 +249,13 @@ occ::handle<Standard_Transient> Interface_CopyTool::Transferred(
         if (!contfrom.IsNull())
         {
           if (contfrom == ent)
+          {
             contto = res;
+          }
           else
+          {
             Copy(contfrom, contto, themod->Contains(contfrom), false);
+          }
           repto->SetContent(contto);
         }
         therep->Bind(ent, repto);
@@ -231,7 +265,9 @@ occ::handle<Standard_Transient> Interface_CopyTool::Transferred(
     thelev--;
   }
   if (thelev == 0 && nument > 0)
+  {
     therts.Append(nument);
+  }
   return res;
 }
 
@@ -268,7 +304,9 @@ int Interface_CopyTool::LastCopiedAfter(const int                        numfrom
     {
       ent = themod->Value(num);
       if (themap->Search(ent, res))
+      {
         return num;
+      }
     }
   }
   return 0;
@@ -285,7 +323,9 @@ void Interface_CopyTool::TransferEntity(const occ::handle<Standard_Transient>& e
 void Interface_CopyTool::RenewImpliedRefs()
 {
   if (theimp)
+  {
     return; // already done
+  }
   theimp = true;
 
   //  Transfer Pass 2 : recovery of non "Share" relations (but "Imply")
@@ -299,8 +339,10 @@ void Interface_CopyTool::RenewImpliedRefs()
     occ::handle<Standard_Transient> ent = themod->Value(i);
     occ::handle<Standard_Transient> res;
     if (!themap->Search(ent, res))
+    {
       continue; // entity not transferred
-                //    Renewal of "Imply" references.  Warning, do not copy if not loaded
+    }
+    //    Renewal of "Imply" references.  Warning, do not copy if not loaded
     occ::handle<Standard_Transient> aRep;
     if (!therep->Search(ent, aRep))
     {
@@ -310,7 +352,9 @@ void Interface_CopyTool::RenewImpliedRefs()
     {
       occ::handle<Interface_ReportEntity> rep = occ::down_cast<Interface_ReportEntity>(aRep);
       if (!rep.IsNull() && !rep->HasNewContent())
+      {
         Implied(ent, res);
+      }
     }
   }
 }
@@ -339,12 +383,16 @@ Interface_EntityIterator Interface_CopyTool::CompleteResult(const bool withrepor
     occ::handle<Standard_Transient> ent = themod->Value(i);
     occ::handle<Standard_Transient> res;
     if (!themap->Search(ent, res))
+    {
       continue;
+    }
     if (withreports)
     {
       occ::handle<Standard_Transient> rep;
       if (therep->Search(ent, rep))
+      {
         res = rep;
+      }
     }
     iter.GetOneItem(res);
   }
@@ -361,12 +409,16 @@ Interface_EntityIterator Interface_CopyTool::RootResult(const bool withreports) 
     occ::handle<Standard_Transient> ent = themod->Value(j);
     occ::handle<Standard_Transient> res;
     if (!themap->Search(ent, res))
+    {
       continue;
+    }
     if (withreports)
     {
       occ::handle<Standard_Transient> rep;
       if (therep->Search(ent, rep))
+      {
         res = rep;
+      }
     }
     iter.GetOneItem(res);
   }

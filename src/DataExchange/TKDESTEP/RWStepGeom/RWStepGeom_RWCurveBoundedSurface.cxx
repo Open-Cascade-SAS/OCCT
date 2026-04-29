@@ -41,7 +41,9 @@ void RWStepGeom_RWCurveBoundedSurface::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "curve_bounded_surface"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

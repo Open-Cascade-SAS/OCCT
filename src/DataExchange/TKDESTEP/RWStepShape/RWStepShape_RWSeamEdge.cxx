@@ -36,7 +36,9 @@ void RWStepShape_RWSeamEdge::ReadStep(const occ::handle<StepData_StepReaderData>
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "seam_edge"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

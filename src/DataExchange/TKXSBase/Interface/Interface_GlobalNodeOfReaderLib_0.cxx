@@ -30,9 +30,13 @@ void Interface_GlobalNodeOfReaderLib::Add(const occ::handle<Interface_ReaderModu
                                           const occ::handle<Interface_Protocol>&     aprotocol)
 {
   if (themod == amodule)
+  {
     return;
+  }
   if (theprot == aprotocol)
+  {
     themod = amodule;
+  }
   else if (thenext.IsNull())
   {
     if (themod.IsNull())
@@ -47,7 +51,9 @@ void Interface_GlobalNodeOfReaderLib::Add(const occ::handle<Interface_ReaderModu
     }
   }
   else
+  {
     thenext->Add(amodule, aprotocol);
+  }
 }
 
 const occ::handle<Interface_ReaderModule>& Interface_GlobalNodeOfReaderLib::Module() const

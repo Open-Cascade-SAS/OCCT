@@ -71,12 +71,15 @@ Graphic3d_Structure::~Graphic3d_Structure()
 void Graphic3d_Structure::clear(const bool theWithDestruction)
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   // clean groups in graphics driver at first
   GraphicClear(theWithDestruction);
 
   myCStructure->SetGroupTransformPersistence(false);
+  myCStructure->SetGroupFlipping(false);
   myStructureManager->Clear(this, theWithDestruction);
 
   Update(true);
@@ -98,7 +101,9 @@ void Graphic3d_Structure::CalculateBoundBox()
 void Graphic3d_Structure::Remove()
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   // clean groups in graphics driver at first; this is also should be done
   // to avoid unwanted group cleaning in group's destructor
@@ -116,12 +121,12 @@ void Graphic3d_Structure::Remove()
   // It is necessary to remove the eventual pointer on the structure that can be destroyed, in the
   // list of descendants of ancestors of this structure and in the list of ancestors of descendants
   // of the same structure.
-  for (int aStructIdx = 1, aNbDesc = myDescendants.Size(); aStructIdx <= aNbDesc; ++aStructIdx)
+  for (int aStructIdx = 1, aNbDesc = myDescendants.Length(); aStructIdx <= aNbDesc; ++aStructIdx)
   {
     myDescendants.FindKey(aStructIdx)->Remove(this, Graphic3d_TOC_ANCESTOR);
   }
 
-  for (int aStructIdx = 1, aNbAnces = myAncestors.Size(); aStructIdx <= aNbAnces; ++aStructIdx)
+  for (int aStructIdx = 1, aNbAnces = myAncestors.Length(); aStructIdx <= aNbAnces; ++aStructIdx)
   {
     myAncestors.FindKey(aStructIdx)->Remove(this, Graphic3d_TOC_DESCENDANT);
   }
@@ -138,7 +143,9 @@ void Graphic3d_Structure::Remove()
 void Graphic3d_Structure::Display()
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   if (!myCStructure->stick)
   {
@@ -242,7 +249,9 @@ void Graphic3d_Structure::Highlight(const occ::handle<Graphic3d_PresentationAttr
 void Graphic3d_Structure::SetVisible(const bool theValue)
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   const unsigned isVisible = theValue ? 1 : 0;
   if (myCStructure->visible == isVisible)
@@ -260,7 +269,9 @@ void Graphic3d_Structure::SetVisible(const bool theValue)
 void Graphic3d_Structure::UnHighlight()
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   if (myCStructure->highlight)
   {
@@ -428,7 +439,7 @@ void Graphic3d_Structure::Descendants(
 
 bool Graphic3d_Structure::AppendAncestor(Graphic3d_Structure* theAncestor)
 {
-  const int aSize = myAncestors.Size();
+  const int aSize = myAncestors.Length();
 
   return myAncestors.Add(theAncestor) > aSize; // new object
 }
@@ -437,7 +448,7 @@ bool Graphic3d_Structure::AppendAncestor(Graphic3d_Structure* theAncestor)
 
 bool Graphic3d_Structure::AppendDescendant(Graphic3d_Structure* theDescendant)
 {
-  const int aSize = myDescendants.Size();
+  const int aSize = myDescendants.Length();
 
   return myDescendants.Add(theDescendant) > aSize; // new object
 }
@@ -450,7 +461,7 @@ bool Graphic3d_Structure::RemoveAncestor(Graphic3d_Structure* theAncestor)
 
   if (anIndex != 0)
   {
-    myAncestors.Swap(anIndex, myAncestors.Size());
+    myAncestors.Swap(anIndex, myAncestors.Length());
     myAncestors.RemoveLast();
   }
 
@@ -465,7 +476,7 @@ bool Graphic3d_Structure::RemoveDescendant(Graphic3d_Structure* theDescendant)
 
   if (anIndex != 0)
   {
-    myDescendants.Swap(anIndex, myDescendants.Size());
+    myDescendants.Swap(anIndex, myDescendants.Length());
     myDescendants.RemoveLast();
   }
 
@@ -551,12 +562,14 @@ void Graphic3d_Structure::Disconnect(Graphic3d_Structure* theStructure)
 void Graphic3d_Structure::DisconnectAll(const Graphic3d_TypeOfConnection theType)
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   switch (theType)
   {
     case Graphic3d_TOC_DESCENDANT: {
-      for (int anIdx = 1, aLength = myDescendants.Size(); anIdx <= aLength; ++anIdx)
+      for (int anIdx = 1, aLength = myDescendants.Length(); anIdx <= aLength; ++anIdx)
       {
         // Value (1) instead of Value (i) as myDescendants
         // is modified by :
@@ -567,7 +580,7 @@ void Graphic3d_Structure::DisconnectAll(const Graphic3d_TypeOfConnection theType
       break;
     }
     case Graphic3d_TOC_ANCESTOR: {
-      for (int anIdx = 1, aLength = myAncestors.Size(); anIdx <= aLength; ++anIdx)
+      for (int anIdx = 1, aLength = myAncestors.Length(); anIdx <= aLength; ++anIdx)
       {
         // Value (1) instead of Value (i) as myAncestors
         // is modified by :
@@ -585,7 +598,9 @@ void Graphic3d_Structure::DisconnectAll(const Graphic3d_TypeOfConnection theType
 void Graphic3d_Structure::SetTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf)
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   const bool wasTransformed = IsTransformed();
 
@@ -849,7 +864,9 @@ void Graphic3d_Structure::SetZLayer(const Graphic3d_ZLayerId theLayerId)
 {
   // if the structure is not displayed, unable to change its display layer
   if (IsDeleted())
+  {
     return;
+  }
 
   myStructureManager->ChangeZLayer(this, theLayerId);
   myCStructure->SetZLayer(theLayerId);

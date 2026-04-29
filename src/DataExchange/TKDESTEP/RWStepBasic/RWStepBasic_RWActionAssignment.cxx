@@ -37,7 +37,9 @@ void RWStepBasic_RWActionAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "action_assignment"))
+  {
     return;
+  }
 
   // Own fields of ActionAssignment
 

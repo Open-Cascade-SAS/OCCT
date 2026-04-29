@@ -61,7 +61,9 @@ void BRepBuilderAPI_FindPlane::Init(const TopoDS_Shape& S, const double Tol)
   {
     double t = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
     if (t > tolerance)
+    {
       tolerance = t;
+    }
   }
 
   double tol2 = tolerance * tolerance;

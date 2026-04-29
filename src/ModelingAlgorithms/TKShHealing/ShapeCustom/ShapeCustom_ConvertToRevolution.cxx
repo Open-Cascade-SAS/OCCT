@@ -63,7 +63,9 @@ static bool IsToConvert(const occ::handle<Geom_Surface>& S, occ::handle<Geom_Ele
       ES = occ::down_cast<Geom_ElementarySurface>(OS->BasisSurface());
     }
     if (ES.IsNull())
+    {
       return false;
+    }
   }
 
   return ES->IsKind(STANDARD_TYPE(Geom_SphericalSurface))
@@ -85,7 +87,9 @@ bool ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face&         F,
 
   occ::handle<Geom_ElementarySurface> ES;
   if (!IsToConvert(S, ES))
+  {
     return false;
+  }
 
   // remove location if it contains inversion
   /*
@@ -147,13 +151,17 @@ bool ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face&         F,
     if ( ( neg != det ) == isdir ) Axis.Reverse();
   */
   if (!Ax3.Direct())
+  {
     Axis.Reverse();
+  }
 
   occ::handle<Geom_SurfaceOfRevolution> Rev = new Geom_SurfaceOfRevolution(BasisCurve, Axis);
 
   // set resulting surface and restore trimming or offsetting if necessary
   if (ES == S)
+  {
     S = Rev;
+  }
   else
   {
     if (S->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
@@ -170,7 +178,9 @@ bool ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face&         F,
       S                                  = new Geom_OffsetSurface(Rev, OS->Offset());
     }
     else
+    {
       S = Rev;
+    }
   }
   SendMsg(F, Message_Msg("ConvertToRevolution.NewSurface.MSG0"));
 
@@ -196,15 +206,21 @@ bool ShapeCustom_ConvertToRevolution::NewCurve(const TopoDS_Edge&       E,
   {
     occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (GC.IsNull() || !GC->IsCurveOnSurface())
+    {
       continue;
+    }
     occ::handle<Geom_Surface>           S = GC->Surface();
     occ::handle<Geom_ElementarySurface> ES;
     if (!IsToConvert(S, ES))
+    {
       continue;
+    }
     double f, l;
     C = BRep_Tool::Curve(E, L, f, l);
     if (!C.IsNull())
+    {
       C = occ::down_cast<Geom_Curve>(C->Copy());
+    }
     Tol = BRep_Tool::Tolerance(E);
     return true;
   }
@@ -236,7 +252,9 @@ bool ShapeCustom_ConvertToRevolution::NewCurve2d(const TopoDS_Edge& E,
 
   // just copy pcurve if either its surface is changing or edge was copied
   if (!IsToConvert(S, ES) && E.IsSame(NewE))
+  {
     return false;
+  }
 
   double f, l;
   C = BRep_Tool::CurveOnSurface(E, F, f, l);

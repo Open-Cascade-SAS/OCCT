@@ -39,7 +39,9 @@ int Extrema_FuncPSDist::NbVariables() const
 bool Extrema_FuncPSDist::Value(const math_Vector& X, double& F)
 {
   if (!IsInside(X))
+  {
     return false;
+  }
 
   F = mySurf.Value(X(1), X(2)).SquareDistance(myP);
 
@@ -52,7 +54,9 @@ bool Extrema_FuncPSDist::Gradient(const math_Vector& X, math_Vector& G)
 
 {
   if (!IsInside(X))
+  {
     return false;
+  }
 
   gp_Pnt aP;
   gp_Vec Du1s, Dv1s;
@@ -71,7 +75,9 @@ bool Extrema_FuncPSDist::Gradient(const math_Vector& X, math_Vector& G)
 bool Extrema_FuncPSDist::Values(const math_Vector& X, double& F, math_Vector& G)
 {
   if (!IsInside(X))
+  {
     return false;
+  }
 
   gp_Pnt aP;
   gp_Vec Du1s, Dv1s;

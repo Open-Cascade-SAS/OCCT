@@ -29,7 +29,9 @@ occ::handle<XCAFApp_Application> XCAFApp_Application::GetApplication()
 {
   static occ::handle<XCAFApp_Application> locApp;
   if (locApp.IsNull())
+  {
     locApp = new XCAFApp_Application;
+  }
   return locApp;
 }
 

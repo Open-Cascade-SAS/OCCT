@@ -198,6 +198,6 @@ void IntCurveSurface_Intersection::Dump() const
   }
   else
   {
-    std::cout << " Intersection NotDone" << std::endl;
+    std::cout << " Intersection NotDone" << '\n';
   }
 }

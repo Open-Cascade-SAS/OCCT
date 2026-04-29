@@ -57,7 +57,9 @@ CDM_Document::CDM_Document()
 CDM_Document::~CDM_Document()
 {
   if (!myMetaData.IsNull())
+  {
     myMetaData->UnsetDocument();
+  }
 }
 
 //=================================================================================================
@@ -106,7 +108,9 @@ int CDM_Document::CreateReference(const occ::handle<CDM_Document>& anOtherDocume
   for (; it.More(); it.Next())
   {
     if (anOtherDocument == it.Value()->Document())
+    {
       return it.Value()->ReferenceIdentifier();
+    }
   }
 
   occ::handle<CDM_Reference> r = new CDM_Reference(this,
@@ -155,13 +159,16 @@ occ::handle<CDM_Document> CDM_Document::Document(const int aReferenceIdentifier)
   occ::handle<CDM_Document> theDocument;
 
   if (aReferenceIdentifier == 0)
+  {
     theDocument = this;
-
+  }
   else
   {
     occ::handle<CDM_Reference> theReference = Reference(aReferenceIdentifier);
     if (!theReference.IsNull())
+    {
       theDocument = theReference->ToDocument();
+    }
   }
   return theDocument;
 }
@@ -180,7 +187,9 @@ occ::handle<CDM_Reference> CDM_Document::Reference(const int aReferenceIdentifie
   {
     found = aReferenceIdentifier == it.Value()->ReferenceIdentifier();
     if (found)
+    {
       theReference = it.Value();
+    }
   }
   return theReference;
 }
@@ -190,11 +199,15 @@ occ::handle<CDM_Reference> CDM_Document::Reference(const int aReferenceIdentifie
 bool CDM_Document::IsInSession(const int aReferenceIdentifier) const
 {
   if (aReferenceIdentifier == 0)
+  {
     return true;
+  }
   occ::handle<CDM_Reference> theReference = Reference(aReferenceIdentifier);
   if (theReference.IsNull())
+  {
     throw Standard_NoSuchObject("CDM_Document::IsInSession: "
                                 "invalid reference identifier");
+  }
   return theReference->IsInSession();
 }
 
@@ -203,11 +216,15 @@ bool CDM_Document::IsInSession(const int aReferenceIdentifier) const
 bool CDM_Document::IsStored(const int aReferenceIdentifier) const
 {
   if (aReferenceIdentifier == 0)
+  {
     return IsStored();
+  }
   occ::handle<CDM_Reference> theReference = Reference(aReferenceIdentifier);
   if (theReference.IsNull())
+  {
     throw Standard_NoSuchObject("CDM_Document::IsInSession: "
                                 "invalid reference identifier");
+  }
   return theReference->IsStored();
 }
 
@@ -216,10 +233,14 @@ bool CDM_Document::IsStored(const int aReferenceIdentifier) const
 TCollection_ExtendedString CDM_Document::Name(const int aReferenceIdentifier) const
 {
   if (!IsStored(aReferenceIdentifier))
+  {
     throw Standard_DomainError("CDM_Document::Name: document is not stored");
+  }
 
   if (aReferenceIdentifier == 0)
+  {
     return myMetaData->Name();
+  }
 
   return Reference(aReferenceIdentifier)->MetaData()->Name();
 }
@@ -238,7 +259,9 @@ void CDM_Document::UpdateFromDocuments(void* const aModifContext) const
     for (; itUpdate.More(); itUpdate.Next())
     {
       if (itUpdate.Value() == theFromDocument)
+      {
         break;
+      }
 
       if (itUpdate.Value()->ShallowReferences(theFromDocument))
       {
@@ -247,7 +270,9 @@ void CDM_Document::UpdateFromDocuments(void* const aModifContext) const
       }
     }
     if (!itUpdate.More())
+    {
       aListOfDocumentsToUpdate.Append(theFromDocument);
+    }
     theFromDocument->Update(this, it.Value()->ReferenceIdentifier(), aModifContext);
   }
 
@@ -294,7 +319,9 @@ bool CDM_Document::ShallowReferences(const occ::handle<CDM_Document>& aDocument)
   for (; it.More(); it.Next())
   {
     if (it.Value()->Document() == aDocument)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -310,9 +337,13 @@ bool CDM_Document::DeepReferences(const occ::handle<CDM_Document>& aDocument) co
     if (!theToDocument.IsNull())
     {
       if (theToDocument == aDocument)
+      {
         return true;
+      }
       if (theToDocument->DeepReferences(aDocument))
+      {
         return true;
+      }
     }
   }
   return false;
@@ -332,10 +363,12 @@ int CDM_Document::CopyReference(const occ::handle<CDM_Document>& /*aFromDocument
       return CreateReference(theDocument);
     }
     else
+    {
       return CreateReference(theReference->MetaData(),
                              theReference->Application(),
                              theReference->DocumentVersion(),
                              theReference->UseStorageConfiguration());
+    }
   }
   return 0; // for NT ...
 }
@@ -416,7 +449,9 @@ void CDM_Document::Comments(NCollection_Sequence<TCollection_ExtendedString>& aC
 const char16_t* CDM_Document::Comment() const
 {
   if (myComments.Length() < 1)
+  {
     return nullptr;
+  }
   return myComments(1).ToExtString();
 }
 
@@ -471,7 +506,9 @@ void CDM_Document::SetMetaData(const occ::handle<CDM_MetaData>& aMetaData)
 
   SetRequestedFolder(aMetaData->Folder());
   if (aMetaData->HasVersion())
+  {
     SetRequestedPreviousVersion(aMetaData->Version());
+  }
 }
 
 //=================================================================================================
@@ -489,8 +526,10 @@ void CDM_Document::UnsetIsStored()
 occ::handle<CDM_MetaData> CDM_Document::MetaData() const
 {
   if (myMetaData.IsNull())
+  {
     throw Standard_NoSuchObject("cannot furnish the MetaData of an object "
                                 "which is not stored");
+  }
   return myMetaData;
 }
 
@@ -513,8 +552,10 @@ TCollection_ExtendedString CDM_Document::RequestedComment() const
 TCollection_ExtendedString CDM_Document::Folder() const
 {
   if (myMetaData.IsNull())
+  {
     throw Standard_NoSuchObject("cannot furnish the folder of an object "
                                 "which is not stored");
+  }
   return myMetaData->Folder();
 }
 
@@ -561,9 +602,13 @@ TCollection_ExtendedString CDM_Document::RequestedName()
   if (!myRequestedNameIsDefined)
   {
     if (!myMetaData.IsNull())
+    {
       myRequestedName = myMetaData->Name();
+    }
     else
+    {
       myRequestedName = "Document_";
+    }
   }
   myRequestedNameIsDefined = true;
   return myRequestedName;
@@ -616,7 +661,9 @@ bool CDM_Document::IsOpened(const int aReferenceIdentifier) const
   for (; it.More(); it.Next())
   {
     if (aReferenceIdentifier == it.Value()->ReferenceIdentifier())
+    {
       return it.Value()->IsOpened();
+    }
   }
   return false;
 }
@@ -669,20 +716,28 @@ void CDM_Document::Close()
 CDM_CanCloseStatus CDM_Document::CanClose() const
 {
   if (!IsOpened())
+  {
     return CDM_CCS_NotOpen;
+  }
 
   if (FromReferencesNumber() != 0)
   {
     if (!IsStored())
+    {
       return CDM_CCS_UnstoredReferenced;
+    }
     if (IsModified())
+    {
       return CDM_CCS_ModifiedReferenced;
+    }
 
     NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myFromReferences);
     for (; it.More(); it.Next())
     {
       if (!it.Value()->FromDocument()->CanCloseReference(this, it.Value()->ReferenceIdentifier()))
+      {
         return CDM_CCS_ReferenceRejection;
+      }
     }
   }
   return CDM_CCS_OK;
@@ -708,8 +763,10 @@ void CDM_Document::CloseReference(const occ::handle<CDM_Document>& /*aDocument*/
 const occ::handle<CDM_Application>& CDM_Document::Application() const
 {
   if (!IsOpened())
+  {
     throw Standard_Failure("this document has not yet been opened "
                            "by any application");
+  }
   return myApplication;
 }
 
@@ -768,7 +825,9 @@ int CDM_Document::CreateReference(const occ::handle<CDM_MetaData>&    aMetaData,
   for (; it.More(); it.Next())
   {
     if (aMetaData == it.Value()->MetaData())
+    {
       return it.Value()->ReferenceIdentifier();
+    }
   }
   occ::handle<CDM_Reference> r = new CDM_Reference(this,
                                                    aMetaData,
@@ -829,7 +888,9 @@ static void FIND(const occ::handle<Resource_Manager>& theDocumentResource,
 {
   IsDef = UTL::Find(theDocumentResource, theResourceName);
   if (IsDef)
+  {
     theValue = UTL::Value(theDocumentResource, theResourceName);
+  }
 }
 
 //=================================================================================================
@@ -840,7 +901,7 @@ occ::handle<Resource_Manager> CDM_Document::StorageResource()
   {
     Standard_SStream aMsg;
     aMsg << "this document of format " << StorageFormat()
-         << " has not yet been opened by any application. " << std::endl;
+         << " has not yet been opened by any application. " << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
   return myApplication->Resources();
@@ -871,7 +932,6 @@ void CDM_Document::LoadResources()
     //    std::cout << "resource Loaded: Format: " << theFormat << ", FileExtension:" <<
     //    myFileExtension << ", Description:" << myDescription << std::endl;
   }
-  return;
 }
 
 //=================================================================================================
@@ -911,7 +971,9 @@ TCollection_ExtendedString CDM_Document::Description()
 bool CDM_Document::IsReadOnly() const
 {
   if (IsStored())
+  {
     return myMetaData->IsReadOnly();
+  }
   return false;
 }
 
@@ -927,7 +989,9 @@ bool CDM_Document::IsReadOnly(const int aReferenceIdentifier) const
 void CDM_Document::SetIsReadOnly()
 {
   if (IsStored())
+  {
     myMetaData->SetIsReadOnly();
+  }
 }
 
 //=================================================================================================
@@ -935,7 +999,9 @@ void CDM_Document::SetIsReadOnly()
 void CDM_Document::UnsetIsReadOnly()
 {
   if (IsStored())
+  {
     myMetaData->UnsetIsReadOnly();
+  }
 }
 
 //=================================================================================================

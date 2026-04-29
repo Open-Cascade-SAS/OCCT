@@ -100,10 +100,16 @@ void IGESAppli_ToolPinNumber::OwnCheck(const occ::handle<IGESAppli_PinNumber>& e
                                        occ::handle<Interface_Check>& ach) const
 {
   if (ent->SubordinateStatus() != 0)
+  {
     if (ent->DefLevel() != IGESData_DefOne && ent->DefLevel() != IGESData_DefSeveral)
+    {
       ach->AddFail("Level type: Incorrect");
+    }
+  }
   if (ent->NbPropertyValues() != 1)
+  {
     ach->AddFail("Number of Property Values != 1");
+  }
   // UNFINISHED
   // Level to be ignored if the property is subordinate -- queried
 }
@@ -117,5 +123,5 @@ void IGESAppli_ToolPinNumber::OwnDump(const occ::handle<IGESAppli_PinNumber>& en
   S << "Number of Property Values : " << ent->NbPropertyValues() << "\n";
   S << "PinNumber : ";
   IGESData_DumpString(S, ent->PinNumberVal());
-  S << std::endl;
+  S << '\n';
 }

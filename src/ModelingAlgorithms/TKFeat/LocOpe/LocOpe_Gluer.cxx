@@ -342,7 +342,9 @@ const NCollection_List<TopoDS_Shape>& LocOpe_Gluer::DescendantFaces(const TopoDS
     throw StdFail_NotDone();
   }
   if (myDescF.IsBound(F))
+  {
     return myDescF(F);
+  }
   static NCollection_List<TopoDS_Shape> nullList;
   return nullList;
 }
@@ -490,7 +492,9 @@ void LocOpe_Gluer::AddEdges()
       {
         TopoDS_Edge e = TopoDS::Edge(exp.Current());
         if (MapE.Contains(e))
+        {
           continue;
+        }
         flag = 0;
         vexp.Init(e, TopAbs_VERTEX);
         for (; vexp.More(); vexp.Next())
@@ -532,11 +536,15 @@ void LocOpe_Gluer::AddEdges()
                   break;
                 }
                 else
+                {
                   flag = 1;
+                }
               }
             }
             else
+            {
               flag = 1;
+            }
           }
           if (flag == 1)
           {

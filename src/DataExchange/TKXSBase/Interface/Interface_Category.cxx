@@ -17,7 +17,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <mutex>
 
@@ -28,9 +28,9 @@ static const char* unspec                      = "unspecified";
 
 static volatile bool gMapTypesInit = false;
 
-static NCollection_Vector<TCollection_AsciiString>& theCats()
+static NCollection_DynamicArray<TCollection_AsciiString>& theCats()
 {
-  static NCollection_Vector<TCollection_AsciiString> aCat;
+  static NCollection_DynamicArray<TCollection_AsciiString> aCat;
   return aCat;
 }
 
@@ -46,11 +46,15 @@ int Interface_Category::CatNum(const occ::handle<Standard_Transient>& theEnt,
                                const Interface_ShareTool&             theShares)
 {
   if (theEnt.IsNull())
+  {
     return 0;
+  }
   int                                  CN;
   occ::handle<Interface_GeneralModule> aModule;
   if (!myGTool->Select(theEnt, aModule, CN))
+  {
     return 0;
+  }
   return aModule->CategoryNumber(CN, theEnt, theShares);
 }
 
@@ -59,21 +63,29 @@ void Interface_Category::Compute(const occ::handle<Interface_InterfaceModel>& th
 {
   ClearNums();
   if (theModel.IsNull())
+  {
     return;
+  }
   int CN, i, nb = theModel->NbEntities();
   myGTool->Reservate(nb);
   if (nb == 0)
+  {
     return;
+  }
   myNum = new NCollection_HArray1<int>(1, nb);
   myNum->Init(0);
   for (i = 1; i <= nb; i++)
   {
     occ::handle<Standard_Transient> anEnt = theModel->Value(i);
     if (anEnt.IsNull())
+    {
       continue;
+    }
     occ::handle<Interface_GeneralModule> aModule;
     if (!myGTool->Select(anEnt, aModule, CN))
+    {
       continue;
+    }
     myNum->SetValue(i, aModule->CategoryNumber(CN, anEnt, theShares));
   }
 }
@@ -81,9 +93,13 @@ void Interface_Category::Compute(const occ::handle<Interface_InterfaceModel>& th
 int Interface_Category::Num(const int theNumEnt) const
 {
   if (myNum.IsNull())
+  {
     return 0;
+  }
   if (theNumEnt < 1 || theNumEnt > myNum->Length())
+  {
     return 0;
+  }
   return myNum->Value(theNumEnt);
 }
 
@@ -93,7 +109,9 @@ int Interface_Category::AddCategory(const char* const theName)
 {
   int aNum = Interface_Category::Number(theName);
   if (aNum > 0)
+  {
     return aNum;
+  }
   theCats().Append(TCollection_AsciiString(theName));
   return theCats().Length() + 1;
 }
@@ -106,9 +124,13 @@ int Interface_Category::NbCategories()
 const char* Interface_Category::Name(const int theNum)
 {
   if (theNum < 0)
+  {
     return "";
+  }
   if (theNum < theCats().Lower() || theNum > theCats().Upper())
+  {
     return unspec;
+  }
   return theCats().ChangeValue(theNum).ToCString();
 }
 
@@ -118,7 +140,9 @@ int Interface_Category::Number(const char* const theName)
   for (i = theCats().Lower(); i <= theCats().Upper(); i++)
   {
     if (theCats().ChangeValue(i).IsEqual(theName))
+    {
       return i;
+    }
   }
   return 0;
 }

@@ -30,7 +30,9 @@ void RWStepBasic_RWApplicationContextElement::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "application_context_element"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

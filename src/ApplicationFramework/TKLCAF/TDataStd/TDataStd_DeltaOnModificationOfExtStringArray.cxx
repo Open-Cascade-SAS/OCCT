@@ -53,7 +53,9 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
 #endif
 
       if (Arr1.IsNull() || Arr2.IsNull())
+      {
         return;
+      }
       if (Arr1 != Arr2)
       {
         myUp1 = Arr1->Upper();
@@ -77,12 +79,18 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
 
         NCollection_List<int> aList;
         for (i = Arr1->Lower(); i <= N; i++)
+        {
           if (Arr1->Value(i) != Arr2->Value(i))
+          {
             aList.Append(i);
+          }
+        }
         if (aCase == 3)
         {
           for (i = N + 1; i <= myUp1; i++)
+          {
             aList.Append(i);
+          }
         }
 
         if (aList.Extent())
@@ -137,36 +145,58 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
     return;
   }
   else
+  {
     aCurAtt->Backup();
+  }
 
   int aCase;
   if (myUp1 == myUp2)
+  {
     aCase = 1;
+  }
   else if (myUp1 < myUp2)
+  {
     aCase = 2;
+  }
   else
+  {
     aCase = 3; // Up1 > Up2
+  }
 
   if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
+  {
     return;
+  }
 
   int                                                          i;
   occ::handle<NCollection_HArray1<TCollection_ExtendedString>> aStrArr = aCurAtt->Array();
   if (aStrArr.IsNull())
+  {
     return;
+  }
 
   if (aCase == 1)
+  {
     for (i = 1; i <= myIndxes->Upper(); i++)
+    {
       aStrArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
+    }
+  }
   else if (aCase == 2)
   {
     occ::handle<NCollection_HArray1<TCollection_ExtendedString>> strArr =
       new NCollection_HArray1<TCollection_ExtendedString>(aStrArr->Lower(), myUp1);
     for (i = aStrArr->Lower(); i <= myUp1 && i <= aStrArr->Upper(); i++)
+    {
       strArr->SetValue(i, aStrArr->Value(i));
+    }
     if (!myIndxes.IsNull() && !myValues.IsNull())
+    {
       for (i = 1; i <= myIndxes->Upper(); i++)
+      {
         strArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
+      }
+    }
     aCurAtt->myValue = strArr;
   }
   else
@@ -175,8 +205,11 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
     occ::handle<NCollection_HArray1<TCollection_ExtendedString>> strArr =
       new NCollection_HArray1<TCollection_ExtendedString>(low, myUp1);
     for (i = aStrArr->Lower(); i <= myUp2 && i <= aStrArr->Upper(); i++)
+    {
       strArr->SetValue(i, aStrArr->Value(i));
+    }
     if (!myIndxes.IsNull() && !myValues.IsNull())
+    {
       for (i = 1; i <= myIndxes->Upper(); i++)
       {
 #ifdef OCCT_DEBUG
@@ -186,6 +219,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
 #endif
         strArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
       }
+    }
     aCurAtt->myValue = strArr;
   }
 

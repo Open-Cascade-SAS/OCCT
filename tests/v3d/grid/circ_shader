@@ -1,0 +1,28 @@
+puts "=================================================================="
+puts "0030979: V3d_CircularGrid now renders through the polar shader path"
+puts "=================================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vaxo
+
+box b 1 2 3
+vdisplay b -dispMode 1
+vfit
+vzoom 0.2
+
+# Classical circular grid: 8 divisions (22.5 deg spokes), radius step 0.5
+vgrid -type circ -step 0.5 8
+vdump $imagedir/${casename}_circ.png
+
+# Finer angular resolution, bigger radial spacing
+vgrid -type circ -step 1.0 24
+vdump $imagedir/${casename}_circ_fine.png
+
+# Rotated
+vgrid -type circ -step 0.5 12 -rotAngle 0.4
+vdump $imagedir/${casename}_circ_rotated.png
+
+vgrid off

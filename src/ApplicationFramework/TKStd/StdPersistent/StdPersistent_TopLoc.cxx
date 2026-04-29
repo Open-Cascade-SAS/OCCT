@@ -59,9 +59,13 @@ TopLoc_Location StdPersistent_TopLoc::ItemLocation::Import() const
 {
   TopLoc_Location aNext = myNext.Import();
   if (myDatum)
+  {
     return aNext * TopLoc_Location(myDatum->Import()).Powered(myPower);
+  }
   else
+  {
     return aNext;
+  }
 }
 
 //=================================================================================================

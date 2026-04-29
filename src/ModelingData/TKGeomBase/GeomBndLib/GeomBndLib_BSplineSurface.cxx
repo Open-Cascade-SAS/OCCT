@@ -50,7 +50,9 @@ void ComputePolesIndexes(const NCollection_Array1<double>& theKnots,
   theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
   theOutMaxIdx += theDegree - aMultiplier;
   if (!theIsPeriodic)
+  {
     theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
+  }
 }
 
 } // namespace
@@ -130,13 +132,17 @@ Bnd_Box GeomBndLib_BSplineSurface::Box(double theUMin,
     {
       int anIP = anI;
       if (isUPeriodic && anIP > aNbUPoles)
+      {
         anIP = anIP - aNbUPoles;
+      }
 
       for (int aJ = aVMinIdx; aJ <= aVMaxIdx; aJ++)
       {
         int aJP = aJ;
         if (isVPeriodic && aJP > aNbVPoles)
+        {
           aJP = aJP - aNbVPoles;
+        }
 
         aBox.Add(aPoles(anIP, aJP));
       }
@@ -239,9 +245,13 @@ Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theUMin,
       for (int aK = 0; aK < 3; ++aK)
       {
         if (aCoordMin[aK] > aP.Coord(aK + 1))
+        {
           aCoordMin[aK] = aP.Coord(aK + 1);
+        }
         if (aCoordMax[aK] < aP.Coord(aK + 1))
+        {
           aCoordMax[aK] = aP.Coord(aK + 1);
+        }
       }
 
       // U-midpoint deflection.
@@ -253,12 +263,18 @@ Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theUMin,
         for (int aK = 0; aK < 3; ++aK)
         {
           if (aCoordMin[aK] > aPM.Coord(aK + 1))
+          {
             aCoordMin[aK] = aPM.Coord(aK + 1);
+          }
           if (aCoordMax[aK] < aPM.Coord(aK + 1))
+          {
             aCoordMax[aK] = aPM.Coord(aK + 1);
+          }
           const double aDiff = std::abs(aD.Coord(aK + 1));
           if (aDeflMax[aK] < aDiff)
+          {
             aDeflMax[aK] = aDiff;
+          }
         }
       }
       // V-midpoint deflection.
@@ -270,12 +286,18 @@ Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theUMin,
         for (int aK = 0; aK < 3; ++aK)
         {
           if (aCoordMin[aK] > aPM.Coord(aK + 1))
+          {
             aCoordMin[aK] = aPM.Coord(aK + 1);
+          }
           if (aCoordMax[aK] < aPM.Coord(aK + 1))
+          {
             aCoordMax[aK] = aPM.Coord(aK + 1);
+          }
           const double aDiff = std::abs(aD.Coord(aK + 1));
           if (aDeflMax[aK] < aDiff)
+          {
             aDeflMax[aK] = aDiff;
+          }
         }
       }
     }
@@ -287,7 +309,9 @@ Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theUMin,
   {
     double aDiff = aDeflMax[aK];
     if (aDiff <= anEps)
+    {
       continue;
+    }
 
     double aCMin = aCoordMin[aK];
     double aCMax = aCoordMax[aK];
@@ -311,7 +335,9 @@ Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theUMin,
                                                                           anEps,
                                                                           true);
           if (aLocMin < aCMin)
+          {
             aCMin = aLocMin;
+          }
         }
         else if (aCMax - aPnts(anI, aJ).Coord(aK + 1) < aDiff)
         {
@@ -329,7 +355,9 @@ Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theUMin,
                                                                           anEps,
                                                                           false);
           if (aLocMax > aCMax)
+          {
             aCMax = aLocMax;
+          }
         }
       }
     }

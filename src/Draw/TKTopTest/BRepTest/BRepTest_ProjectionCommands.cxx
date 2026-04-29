@@ -72,7 +72,9 @@ void BRepTest::ProjectionCommands(Draw_Interpretor& theCommands)
 {
   static bool loaded = false;
   if (loaded)
+  {
     return;
+  }
   loaded = true;
 
   const char* g = "Projection of wire commands";

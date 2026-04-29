@@ -57,9 +57,13 @@ void Draw_Marker3D::DrawOn(Draw_Display& D) const
 {
   D.SetColor(myCol);
   if (myIsRSiz)
+  {
     D.DrawMarker(myPos, myTyp, myRSiz);
+  }
   else
+  {
     D.DrawMarker(myPos, myTyp, mySiz);
+  }
 }
 
 //=================================================================================================

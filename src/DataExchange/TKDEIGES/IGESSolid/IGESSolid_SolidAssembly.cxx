@@ -29,7 +29,9 @@ void IGESSolid_SolidAssembly::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_TransformationMatrix>>>& Matrices)
 {
   if (Items->Lower() != 1 || Matrices->Lower() != 1 || Items->Length() != Matrices->Length())
+  {
     throw Standard_DimensionError("IGESSolid_SolidAssembly : Init");
+  }
 
   theItems    = Items;
   theMatrices = Matrices;

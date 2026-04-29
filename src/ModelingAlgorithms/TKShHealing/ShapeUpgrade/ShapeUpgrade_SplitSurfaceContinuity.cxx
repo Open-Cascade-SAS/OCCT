@@ -78,13 +78,21 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
     double UF, UL, VF, VL;
     mySurface->Bounds(UF, UL, VF, VL);
     if (!Precision::IsInfinite(UF))
+    {
       myUSplitValues->SetValue(1, UF);
+    }
     if (!Precision::IsInfinite(UL))
+    {
       myUSplitValues->SetValue(myUSplitValues->Length(), UL);
+    }
     if (!Precision::IsInfinite(VF))
+    {
       myVSplitValues->SetValue(1, VF);
+    }
     if (!Precision::IsInfinite(VL))
+    {
       myVSplitValues->SetValue(myVSplitValues->Length(), VL);
+    }
   }
 
   double           UFirst    = myUSplitValues->Value(1);
@@ -94,9 +102,13 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
   constexpr double precision = Precision::Confusion();
   //  if (ShapeUpgrade::Debug()) std::cout << "SplitSurfaceContinuity::Build" << std::endl;
   if (mySurface->Continuity() < myCriterion)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
   if (myUSplitValues->Length() > 2 || myVSplitValues->Length() > 2)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
 
   if (mySurface->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
   {
@@ -117,11 +129,17 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
     myVSplitValues->Clear();
     myVSplitValues->ChangeSequence() = spc.SplitValues()->Sequence();
     if (spc.Status(ShapeExtend_DONE1))
+    {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+    }
     if (spc.Status(ShapeExtend_DONE2))
+    {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+    }
     if (spc.Status(ShapeExtend_DONE3))
+    {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
+    }
     return;
   }
   if (mySurface->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)))
@@ -143,9 +161,13 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
     myUSplitValues->Clear();
     myUSplitValues->ChangeSequence() = spc.SplitValues()->Sequence();
     if (spc.Status(ShapeExtend_DONE1))
+    {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+    }
     if (spc.Status(ShapeExtend_DONE2))
+    {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+    }
     if (spc.Status(ShapeExtend_DONE3))
     {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
@@ -231,7 +253,9 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
 
   occ::handle<Geom_BSplineSurface> MyBSpline;
   if (mySurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
+  {
     MyBSpline = occ::down_cast<Geom_BSplineSurface>(mySurface->Copy());
+  }
   if (MyBSpline.IsNull())
   {
     //    if (ShapeUpgrade::Debug()) std::cout<<".  Surface is not a Bspline"<<std::endl;
@@ -263,9 +287,13 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
       {
         double valknot = MyBSpline->UKnot(iknot);
         if (valknot <= UFirst + precision)
+        {
           continue;
+        }
         if (valknot >= ULast - precision)
+        {
           break;
+        }
         int Continuity = UDeg - MyBSpline->UMultiplicity(iknot);
         if (Continuity < myCont)
         {
@@ -273,7 +301,9 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
           int  newMultiplicity = UDeg - myCont;
           bool corrected       = false;
           if (newMultiplicity >= 0)
+          {
             corrected = MyBSpline->RemoveUKnot(iknot, newMultiplicity, myTolerance);
+          }
           if (corrected && newMultiplicity > 0)
           {
             Continuity = UDeg - MyBSpline->UMultiplicity(iknot);
@@ -318,9 +348,13 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
       {
         double valknot = MyBSpline->VKnot(iknot);
         if (valknot <= VFirst + precision)
+        {
           continue;
+        }
         if (valknot >= VLast - precision)
+        {
           break;
+        }
         int Continuity = VDeg - MyBSpline->VMultiplicity(iknot);
         if (Continuity < myCont)
         {
@@ -328,7 +362,9 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
           int  newMultiplicity = VDeg - myCont;
           bool corrected       = false;
           if (newMultiplicity >= 0)
+          {
             corrected = MyBSpline->RemoveVKnot(iknot, newMultiplicity, myTolerance);
+          }
           if (corrected && newMultiplicity > 0)
           {
             Continuity = VDeg - MyBSpline->VMultiplicity(iknot);
@@ -366,5 +402,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
   }
 
   if (myUSplitValues->Length() > 2 || myVSplitValues->Length() > 2)
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
 }

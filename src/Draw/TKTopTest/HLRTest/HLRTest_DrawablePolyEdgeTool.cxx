@@ -129,7 +129,9 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
           bool                   todraw = true;
           if ((!myDispRg1 && BP.Rg1Line() && !BP.OutLine())
               || (!myDispRgN && BP.RgNLine() && !BP.OutLine()))
+          {
             todraw = false;
+          }
           if (todraw)
           {
             D.MoveTo(BP.P1());
@@ -145,7 +147,9 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
         bool                   todraw = true;
         if ((!myDispRg1 && BP.Rg1Line() && !BP.OutLine())
             || (!myDispRgN && BP.RgNLine() && !BP.OutLine()))
+        {
           todraw = false;
+        }
         if (todraw)
         {
           D.MoveTo(BP.P1());
@@ -165,7 +169,9 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
         Coordinates = &myAlgo->Show(S, reg1, regn, outl, intl);
         bool todraw = true;
         if ((!myDispRg1 && reg1 && !outl) || (!myDispRgN && regn && !outl))
+        {
           todraw = false;
+        }
         if (todraw)
         {
           D.MoveTo(gp_Pnt(PntX1, PntY1, PntZ1));

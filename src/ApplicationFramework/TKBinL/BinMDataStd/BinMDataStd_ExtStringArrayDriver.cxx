@@ -50,10 +50,14 @@ bool BinMDataStd_ExtStringArrayDriver::Paste(const BinObjMgt_Persistent&       t
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
+  {
     return false;
+  }
   const int aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
+  {
     return false;
+  }
 
   occ::handle<TDataStd_ExtStringArray> anAtt = occ::down_cast<TDataStd_ExtStringArray>(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
@@ -82,7 +86,9 @@ bool BinMDataStd_ExtStringArrayDriver::Paste(const BinObjMgt_Persistent&       t
         return false;
       }
       else
+      {
         aDelta = (aDeltaValue != 0);
+      }
     }
     anAtt->SetDelta(aDelta);
   }
@@ -110,11 +116,15 @@ void BinMDataStd_ExtStringArrayDriver::Paste(
   const int                                             aLastInd     = aSourceArray.Upper();
   theTarget << aFirstInd << aLastInd;
   for (int i = aFirstInd; i <= aLastInd; i++)
+  {
     theTarget << anAtt->Value(i);
+  }
 
   theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_ExtStringArray::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

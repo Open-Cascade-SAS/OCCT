@@ -161,7 +161,9 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
         myCurves2d.Add(CR->PCurve());
         ChangeLocations().Add(CR->Location());
         if (CR->IsCurveOnClosedSurface())
+        {
           myCurves2d.Add(CR->PCurve2());
+        }
       }
       else if (CR->IsRegularity())
       {
@@ -192,7 +194,9 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
           myNodes.Add(CR->PolygonOnTriangulation());
           ChangeLocations().Add(CR->Location());
           if (CR->IsPolygonOnClosedTriangulation())
+          {
             myNodes.Add(CR->PolygonOnTriangulation2());
+          }
         }
         else if (CR->IsPolygonOnSurface())
         {
@@ -200,7 +204,9 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
           myPolygons2D.Add(CR->Polygon());
           ChangeLocations().Add(CR->Location());
           if (CR->IsPolygonOnClosedSurface())
+          {
             myPolygons2D.Add(CR->Polygon2());
+          }
         }
       }
       itrc.Next();
@@ -225,7 +231,9 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
     { // for XML Persistence
       occ::handle<Poly_Triangulation> Tr = TF->Triangulation();
       if (!Tr.IsNull())
+      {
         myTriangulations.Add(Tr, needNormals);
+      }
     }
 
     ChangeLocations().Add(TF->Location());
@@ -254,23 +262,33 @@ void BRepTools_ShapeSet::WriteGeometry(Standard_OStream&            OS,
 
   myCurves2d.Write(OS, aPS.Next(20));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   myCurves.Write(OS, aPS.Next(20));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   WritePolygon3D(OS, true, aPS.Next(10));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   WritePolygonOnTriangulation(OS, true, aPS.Next(10));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   mySurfaces.Write(OS, aPS.Next(20));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   WriteTriangulation(OS, true, aPS.Next(20));
 }
@@ -285,23 +303,33 @@ void BRepTools_ShapeSet::ReadGeometry(Standard_IStream&            IS,
 
   myCurves2d.Read(IS, aPS.Next(20));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   myCurves.Read(IS, aPS.Next(20));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   ReadPolygon3D(IS, aPS.Next(15));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   ReadPolygonOnTriangulation(IS, aPS.Next(15));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   mySurfaces.Read(IS, aPS.Next(15));
   if (aPS.UserBreak())
+  {
     return;
+  }
 
   ReadTriangulation(IS, aPS.Next(15));
 }
@@ -384,7 +412,9 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
       }
 
       if (!PR->Location().IsIdentity())
+      {
         OS << " location " << Locations().Index(PR->Location());
+      }
       OS << "\n";
 
       itrp.Next();
@@ -400,11 +430,17 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
     // Dump the curve geometry
     OS << "    Tolerance : " << TE->Tolerance() << "\n";
     if (TE->SameParameter())
+    {
       OS << "     same parametrisation of curves\n";
+    }
     if (TE->SameRange())
+    {
       OS << "     same range on curves\n";
+    }
     if (TE->Degenerated())
+    {
       OS << "     degenerated\n";
+    }
 
     double                                                            first, last;
     NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itrc = TE->Curves();
@@ -419,7 +455,9 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
         {
           OS << "    - Curve 3D : " << myCurves.Index(CR->Curve3D());
           if (!CR->Location().IsIdentity())
+          {
             OS << " location " << Locations().Index(CR->Location());
+          }
           OS << ", range : " << first << " " << last << "\n";
         }
       }
@@ -437,7 +475,9 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
         }
         OS << " on surface " << mySurfaces.Index(CR->Surface());
         if (!CR->Location().IsIdentity())
+        {
           OS << " location " << Locations().Index(CR->Location());
+        }
         OS << ", range : " << first << " " << last << "\n";
 
         occ::handle<BRep_CurveOnSurface> COS = occ::down_cast<BRep_CurveOnSurface>(CR);
@@ -459,10 +499,14 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
         PrintRegularity(CR->Continuity(), OS);
         OS << "   on surfaces : " << mySurfaces.Index(CR->Surface());
         if (!CR->Location().IsIdentity())
+        {
           OS << " location " << Locations().Index(CR->Location());
+        }
         OS << ", " << mySurfaces.Index(CR->Surface2());
         if (!CR->Location2().IsIdentity())
+        {
           OS << " location " << Locations().Index(CR->Location2());
+        }
         OS << "\n";
       }
       else if (CR->IsPolygon3D())
@@ -472,7 +516,9 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
         {
           OS << "    - Polygon 3D : " << myPolygons3D.FindIndex(CR->Polygon3D());
           if (!CR->Location().IsIdentity())
+          {
             OS << " location " << Locations().Index(CR->Location());
+          }
         }
       }
       else if (CR->IsPolygonOnTriangulation())
@@ -484,7 +530,9 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
         }
         OS << " on triangulation " << myTriangulations.FindIndex(CR->Triangulation());
         if (!CR->Location().IsIdentity())
+        {
           OS << " location " << Locations().Index(CR->Location());
+        }
         OS << "\n";
       }
       itrc.Next();
@@ -496,7 +544,9 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
 
     const TopoDS_Face& F = TopoDS::Face(S);
     if (BRep_Tool::NaturalRestriction(F))
+    {
       OS << "NaturalRestriction\n";
+    }
 
     // Dump the surface geometry
     occ::handle<BRep_TFace> TF = occ::down_cast<BRep_TFace>(S.TShape());
@@ -505,7 +555,9 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
       OS << "    Tolerance : " << TF->Tolerance() << "\n";
       OS << "    - Surface : " << mySurfaces.Index(TF->Surface());
       if (!S.Location().IsIdentity())
+      {
         OS << " location " << Locations().Index(S.Location());
+      }
       OS << "\n";
     }
     if (!(TF->Triangulation()).IsNull())
@@ -513,7 +565,9 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
       // Dump the triangulation
       OS << "    - Triangulation : " << myTriangulations.FindIndex(TF->Triangulation());
       if (!S.Location().IsIdentity())
+      {
         OS << " location " << Locations().Index(TF->Location());
+      }
       OS << "\n";
     }
   }
@@ -605,9 +659,13 @@ void BRepTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S, Standard_OStream& 
         occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itrc.Value());
         GC->Range(first, last);
         if (!CR->IsCurveOnClosedSurface())
+        {
           OS << "2 "; // -2- Curve on surf
+        }
         else
+        {
           OS << "3 "; // -3- Curve on closed surf
+        }
         OS << " " << myCurves2d.Index(CR->PCurve());
         if (CR->IsCurveOnClosedSurface())
         {
@@ -666,9 +724,13 @@ void BRepTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S, Standard_OStream& 
           occ::handle<BRep_PolygonOnTriangulation> PT =
             occ::down_cast<BRep_PolygonOnTriangulation>(itrc.Value());
           if (!CR->IsPolygonOnClosedTriangulation())
+          {
             OS << "6 "; // -6- Polygon on triangulation
+          }
           else
+          {
             OS << "7 "; // -7- Polygon on closed triangulation
+          }
           OS << " " << myNodes.FindIndex(PT->PolygonOnTriangulation());
           if (CR->IsPolygonOnClosedTriangulation())
           {
@@ -817,7 +879,9 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 
             //  Modified by Sergey KHROMOV - Wed Apr 24 13:59:09 2002 Begin
             if (myCurves.Curve(c).IsNull())
+            {
               break;
+            }
             //  Modified by Sergey KHROMOV - Wed Apr 24 13:59:13 2002 End
 
             occ::handle<BRep_PointOnCurve> POC = new BRep_PointOnCurve(p1, myCurves.Curve(c), L);
@@ -830,7 +894,9 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 
             //  Modified by Sergey KHROMOV - Wed Apr 24 13:59:09 2002 Begin
             if (myCurves2d.Curve2d(pc).IsNull() || mySurfaces.Surface(s).IsNull())
+            {
               break;
+            }
             //  Modified by Sergey KHROMOV - Wed Apr 24 13:59:13 2002 End
 
             occ::handle<BRep_PointOnCurveOnSurface> POC =
@@ -845,7 +911,9 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 
             //  Modified by Sergey KHROMOV - Wed Apr 24 13:59:09 2002 Begin
             if (mySurfaces.Surface(s).IsNull())
+            {
               break;
+            }
             //  Modified by Sergey KHROMOV - Wed Apr 24 13:59:13 2002 End
 
             occ::handle<BRep_PointOnSurface> POC =
@@ -941,12 +1009,15 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
               //  Modified by Sergey KHROMOV - Wed Apr 24 12:11:16 2002 Begin
               if (myCurves2d.Curve2d(pc).IsNull() || (closed && myCurves2d.Curve2d(pc2).IsNull())
                   || mySurfaces.Surface(s).IsNull())
+              {
                 break;
+              }
               //  Modified by Sergey KHROMOV - Wed Apr 24 12:11:17 2002 End
 
               if (closed)
               {
                 if (FormatNb() == TopTools_FormatVersion_VERSION_2)
+                {
                   myBuilder.UpdateEdge(E,
                                        myCurves2d.Curve2d(pc),
                                        myCurves2d.Curve2d(pc2),
@@ -955,13 +1026,16 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
                                        tol,
                                        aPf,
                                        aPl);
+                }
                 else
+                {
                   myBuilder.UpdateEdge(E,
                                        myCurves2d.Curve2d(pc),
                                        myCurves2d.Curve2d(pc2),
                                        mySurfaces.Surface(s),
                                        Locations().Location(l),
                                        tol);
+                }
 
                 myBuilder.Continuity(E,
                                      mySurfaces.Surface(s),
@@ -973,6 +1047,7 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
               else
               {
                 if (FormatNb() == TopTools_FormatVersion_VERSION_2)
+                {
                   myBuilder.UpdateEdge(E,
                                        myCurves2d.Curve2d(pc),
                                        mySurfaces.Surface(s),
@@ -980,12 +1055,15 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
                                        tol,
                                        aPf,
                                        aPl);
+                }
                 else
+                {
                   myBuilder.UpdateEdge(E,
                                        myCurves2d.Curve2d(pc),
                                        mySurfaces.Surface(s),
                                        Locations().Location(l),
                                        tol);
+                }
               }
               myBuilder.Range(E, mySurfaces.Surface(s), Locations().Location(l), first, last);
               break;
@@ -995,7 +1073,9 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
               IS >> s >> l >> s2 >> l2;
               //  Modified by Sergey KHROMOV - Wed Apr 24 12:39:13 2002 Begin
               if (mySurfaces.Surface(s).IsNull() || mySurfaces.Surface(s2).IsNull())
+              {
                 break;
+              }
               //  Modified by Sergey KHROMOV - Wed Apr 24 12:39:14 2002 End
               myBuilder.Continuity(E,
                                    mySurfaces.Surface(s),
@@ -1010,9 +1090,11 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
               // szy-02.05.2004
               // myBuilder.UpdateEdge(E,occ::down_cast<Poly_Polygon3D>(myPolygons3D(c)));
               if (c > 0 && c <= myPolygons3D.Extent())
+              {
                 myBuilder.UpdateEdge(E,
                                      occ::down_cast<Poly_Polygon3D>(myPolygons3D(c)),
                                      Locations().Location(l));
+              }
               break;
 
             case 6:
@@ -1028,19 +1110,23 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
               {
                 if (t > 0 && t <= myTriangulations.Extent() && pt > 0 && pt <= myNodes.Extent()
                     && pt2 > 0 && pt2 <= myNodes.Extent())
+                {
                   myBuilder.UpdateEdge(E,
                                        occ::down_cast<Poly_PolygonOnTriangulation>(myNodes(pt)),
                                        occ::down_cast<Poly_PolygonOnTriangulation>(myNodes(pt2)),
                                        myTriangulations.FindKey(t),
                                        Locations().Location(l));
+                }
               }
               else
               {
                 if (t > 0 && t <= myTriangulations.Extent() && pt > 0 && pt <= myNodes.Extent())
+                {
                   myBuilder.UpdateEdge(E,
                                        occ::down_cast<Poly_PolygonOnTriangulation>(myNodes(pt)),
                                        myTriangulations.FindKey(t),
                                        Locations().Location(l));
+                }
               }
               // range
 
@@ -1097,7 +1183,9 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
       // BUC60769
 
       if (val == 2)
+      {
         break;
+      }
 
       char string[260];
       IS.getline(string, 256, '\n');
@@ -1108,7 +1196,9 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
         // cas triangulation
         s = atoi(&string[2]);
         if (s > 0 && s <= myTriangulations.Extent())
+        {
           myBuilder.UpdateFace(TopoDS::Face(S), myTriangulations.FindKey(s));
+        }
       }
       //    else IS.seekg(pos);
     }
@@ -1179,7 +1269,9 @@ void BRepTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&          
 
   Message_ProgressScope aPS(theProgress, "Polygons On Triangulation", nbpOntri);
   if (Compact)
+  {
     OS << "PolygonOnTriangulations " << nbpOntri << "\n";
+  }
   else
   {
     OS << " -------\n";
@@ -1198,24 +1290,36 @@ void BRepTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&          
       OS << "  " << i << " : PolygonOnTriangulation with " << Nodes.Length() << " Nodes\n";
     }
     else
+    {
       OS << Nodes.Length() << " ";
+    }
     if (!Compact)
+    {
       OS << "  ";
+    }
     for (j = 1; j <= Nodes.Length(); j++)
+    {
       OS << Nodes.Value(j) << " ";
+    }
     OS << "\n";
 
     // writing parameters:
     Param = Poly->Parameters();
     if (Compact)
+    {
       OS << "p ";
+    }
 
     // write the deflection
     if (!Compact)
+    {
       OS << "  Deflection : ";
+    }
     OS << Poly->Deflection() << " ";
     if (!Compact)
+    {
       OS << "\n";
+    }
 
     if (!Param.IsNull())
     {
@@ -1224,15 +1328,23 @@ void BRepTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&          
         OS << "  Parameters :";
       }
       else
+      {
         OS << "1 ";
+      }
       if (!Compact)
+      {
         OS << "  ";
+      }
       for (j = 1; j <= Param->Length(); j++)
+      {
         OS << Param->Value(j) << " ";
+      }
       OS << "\n";
     }
     else
+    {
       OS << "0 \n";
+    }
   }
 }
 
@@ -1251,7 +1363,9 @@ void BRepTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&           
   char buffer[255];
   IS >> buffer;
   if (strstr(buffer, "PolygonOnTriangulations") == nullptr)
+  {
     return;
+  }
   int                                      i, j, val, nbpol = 0, nbnodes = 0;
   int                                      hasparameters;
   double                                   par;
@@ -1285,7 +1399,9 @@ void BRepTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&           
       Poly = new Poly_PolygonOnTriangulation(Nodes, Param1);
     }
     else
+    {
       Poly = new Poly_PolygonOnTriangulation(Nodes);
+    }
     Poly->Deflection(def);
     //      }
     //      else {
@@ -1309,7 +1425,9 @@ void BRepTools_ShapeSet::WritePolygon3D(Standard_OStream&            OS,
   Message_ProgressScope aPS(theProgress, "3D Polygons", nbpol);
 
   if (Compact)
+  {
     OS << "Polygon3D " << nbpol << "\n";
+  }
   else
   {
     OS << " -------\n";
@@ -1334,39 +1452,57 @@ void BRepTools_ShapeSet::WritePolygon3D(Standard_OStream&            OS,
 
     // write the deflection
     if (!Compact)
+    {
       OS << "Deflection : ";
+    }
     OS << P->Deflection() << "\n";
 
     // write the nodes
     if (!Compact)
+    {
       OS << "\nNodes :\n";
+    }
 
     int                               i1, nbNodes = P->NbNodes();
     const NCollection_Array1<gp_Pnt>& Nodes = P->Nodes();
     for (j = 1; j <= nbNodes; j++)
     {
       if (!Compact)
+      {
         OS << std::setw(10) << j << " : ";
+      }
       if (!Compact)
+      {
         OS << std::setw(17);
+      }
       OS << Nodes(j).X() << " ";
       if (!Compact)
+      {
         OS << std::setw(17);
+      }
       OS << Nodes(j).Y() << " ";
       if (!Compact)
+      {
         OS << std::setw(17);
+      }
       OS << Nodes(j).Z();
       if (!Compact)
+      {
         OS << "\n";
+      }
       else
+      {
         OS << " ";
+      }
     }
     OS << "\n";
 
     if (P->HasParameters())
     {
       if (!Compact)
+      {
         OS << "\nParameters :\n";
+      }
       const NCollection_Array1<double>& Param = P->Parameters();
       for (i1 = 1; i1 <= nbNodes; i1++)
       {
@@ -1396,7 +1532,9 @@ void BRepTools_ShapeSet::ReadPolygon3D(Standard_IStream&            IS,
 
   IS >> buffer;
   if (strstr(buffer, "Polygon3D") == nullptr)
+  {
     return;
+  }
   occ::handle<Poly_Polygon3D> P;
   IS >> nbpol;
   // OCC19559
@@ -1424,7 +1562,9 @@ void BRepTools_ShapeSet::ReadPolygon3D(Standard_IStream&            IS,
       P = new Poly_Polygon3D(Nodes, Param);
     }
     else
+    {
       P = new Poly_Polygon3D(Nodes);
+    }
     P->Deflection(d);
     myPolygons3D.Add(P);
   }
@@ -1442,7 +1582,9 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&            OS,
   Message_ProgressScope aPS(theProgress, "Triangulations", nbtri);
 
   if (Compact)
+  {
     OS << "Triangulations " << nbtri << "\n";
+  }
   else
   {
     OS << " -------\n";
@@ -1480,78 +1622,120 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&            OS,
     // write the deflection
 
     if (!Compact)
+    {
       OS << "  Deflection : ";
+    }
     OS << T->Deflection() << "\n";
 
     // write the 3d nodes
 
     if (!Compact)
+    {
       OS << "\n3D Nodes :\n";
+    }
 
     nbNodes = T->NbNodes();
     for (j = 1; j <= nbNodes; j++)
     {
       const gp_Pnt aNode = T->Node(j);
       if (!Compact)
+      {
         OS << std::setw(10) << j << " : ";
+      }
       if (!Compact)
+      {
         OS << std::setw(17);
+      }
       OS << aNode.X() << " ";
       if (!Compact)
+      {
         OS << std::setw(17);
+      }
       OS << aNode.Y() << " ";
       if (!Compact)
+      {
         OS << std::setw(17);
+      }
       OS << aNode.Z();
       if (!Compact)
+      {
         OS << "\n";
+      }
       else
+      {
         OS << " ";
+      }
     }
 
     if (T->HasUVNodes())
     {
       if (!Compact)
+      {
         OS << "\nUV Nodes :\n";
+      }
       for (j = 1; j <= nbNodes; j++)
       {
         const gp_Pnt2d aNode2d = T->UVNode(j);
         if (!Compact)
+        {
           OS << std::setw(10) << j << " : ";
+        }
         if (!Compact)
+        {
           OS << std::setw(17);
+        }
         OS << aNode2d.X() << " ";
         if (!Compact)
+        {
           OS << std::setw(17);
+        }
         OS << aNode2d.Y();
         if (!Compact)
+        {
           OS << "\n";
+        }
         else
+        {
           OS << " ";
+        }
       }
     }
 
     if (!Compact)
+    {
       OS << "\nTriangles :\n";
+    }
     nbTriangles = T->NbTriangles();
     for (j = 1; j <= nbTriangles; j++)
     {
       if (!Compact)
+      {
         OS << std::setw(10) << j << " : ";
+      }
       T->Triangle(j).Get(n1, n2, n3);
       if (!Compact)
+      {
         OS << std::setw(10);
+      }
       OS << n1 << " ";
       if (!Compact)
+      {
         OS << std::setw(10);
+      }
       OS << n2 << " ";
       if (!Compact)
+      {
         OS << std::setw(10);
+      }
       OS << n3;
       if (!Compact)
+      {
         OS << "\n";
+      }
       else
+      {
         OS << " ";
+      }
     }
 
     if (FormatNb() >= TopTools_FormatVersion_VERSION_3)
@@ -1559,7 +1743,9 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&            OS,
       if (T->HasNormals() && toWriteNormals)
       {
         if (!Compact)
+        {
           OS << "\nNormals :\n";
+        }
         for (j = 1; j <= nbNodes; j++)
         {
           if (!Compact)
@@ -1604,7 +1790,9 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
 
   IS >> buffer;
   if (strstr(buffer, "Triangulations") == nullptr)
+  {
     return;
+  }
 
   IS >> nbtri;
   // OCC19559

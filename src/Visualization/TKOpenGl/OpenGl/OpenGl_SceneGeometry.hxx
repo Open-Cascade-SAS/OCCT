@@ -19,7 +19,7 @@
 #include <BVH_Geometry.hxx>
 #include <BVH_Triangulation.hxx>
 #include <BVH_BinnedBuilder.hxx>
-#include <NCollection_OccAllocator.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Sampler.hxx>
 
@@ -113,18 +113,18 @@ public:
   //! Returns material index of triangle set.
   int MaterialIndex() const
   {
-    if (Elements.size() == 0)
+    if (Elements.IsEmpty())
     {
       return INVALID_MATERIAL;
     }
 
-    return Elements.front().w();
+    return Elements.First().w();
   }
 
   //! Sets material index for entire triangle set.
   void SetMaterialIndex(int theMatID)
   {
-    for (size_t anIdx = 0; anIdx < Elements.size(); ++anIdx)
+    for (size_t anIdx = 0; anIdx < Elements.Size(); ++anIdx)
     {
       Elements[anIdx].w() = theMatID;
     }
@@ -167,10 +167,10 @@ public:
 
 public:
   //! Array of properties of light sources.
-  std::vector<OpenGl_RaytraceLight, NCollection_OccAllocator<OpenGl_RaytraceLight>> Sources;
+  NCollection_LinearVector<OpenGl_RaytraceLight> Sources;
 
   //! Array of 'front' material properties.
-  std::vector<OpenGl_RaytraceMaterial, NCollection_OccAllocator<OpenGl_RaytraceMaterial>> Materials;
+  NCollection_LinearVector<OpenGl_RaytraceMaterial> Materials;
 
   //! Global ambient from all light sources.
   BVH_Vec4f Ambient;
@@ -193,11 +193,7 @@ public:
   //! Clears only ray-tracing materials.
   void ClearMaterials()
   {
-    std::vector<OpenGl_RaytraceMaterial, NCollection_OccAllocator<OpenGl_RaytraceMaterial>>
-      anEmptyMaterials;
-
-    Materials.swap(anEmptyMaterials);
-
+    Materials.Clear(true);
     myTextures.Clear();
   }
 
@@ -248,7 +244,7 @@ public: //! @name methods related to texture management
   Standard_EXPORT bool ReleaseTextures(const occ::handle<OpenGl_Context>& theContext) const;
 
   //! Returns array of texture handles.
-  const std::vector<GLuint64>& TextureHandles() const { return myTextureHandles; }
+  const NCollection_LinearVector<GLuint64>& TextureHandles() const { return myTextureHandles; }
 
   //! Releases OpenGL resources.
   void ReleaseResources(const occ::handle<OpenGl_Context>&)
@@ -265,8 +261,8 @@ public: //! @name auxiliary methods
 
 protected:
   // clang-format off
-  NCollection_Vector<occ::handle<OpenGl_Texture>> myTextures;           //!< Array of texture maps shared between rendered objects
-  std::vector<GLuint64>                      myTextureHandles;     //!< Array of unique 64-bit texture handles obtained from OpenGL
+  NCollection_DynamicArray<occ::handle<OpenGl_Texture>> myTextures;           //!< Array of texture maps shared between rendered objects
+  NCollection_LinearVector<GLuint64>                    myTextureHandles;     //!< Array of unique 64-bit texture handles obtained from OpenGL
   int                           myTopLevelTreeDepth;  //!< Depth of high-level scene BVH from last build
   int                           myBotLevelTreeDepth;  //!< Maximum depth of bottom-level scene BVHs from last build
   // clang-format on

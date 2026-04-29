@@ -40,7 +40,9 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 8, theArch, "point_on_planar_curve_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -138,7 +140,9 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 

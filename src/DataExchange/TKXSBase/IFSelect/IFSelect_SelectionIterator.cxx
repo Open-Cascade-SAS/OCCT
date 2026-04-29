@@ -31,13 +31,17 @@ IFSelect_SelectionIterator::IFSelect_SelectionIterator(const occ::handle<IFSelec
 void IFSelect_SelectionIterator::AddFromIter(IFSelect_SelectionIterator& iter)
 {
   for (; iter.More(); iter.Next())
+  {
     AddItem(iter.Value());
+  }
 }
 
 void IFSelect_SelectionIterator::AddItem(const occ::handle<IFSelect_Selection>& sel)
 {
   if (!sel.IsNull())
+  {
     thelist->Append(sel);
+  }
 }
 
 void IFSelect_SelectionIterator::AddList(
@@ -45,7 +49,9 @@ void IFSelect_SelectionIterator::AddList(
 {
   int nb = list.Length(); // <list> Pas Handle  <thelist> Handle
   for (int i = 1; i <= nb; i++)
+  {
     thelist->Append(list.Value(i));
+  }
 }
 
 bool IFSelect_SelectionIterator::More() const

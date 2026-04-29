@@ -35,10 +35,14 @@ static occ::handle<Standard_Type> GetStepType(const occ::handle<StepData_ReadWri
 {
   occ::handle<Standard_Type> atype;
   if (module.IsNull())
+  {
     return atype;
+  }
   int num = module->CaseStep(type);
   if (num == 0)
+  {
     return atype;
+  }
   occ::handle<Standard_Transient> ent;
   RWStepAP214_GeneralModule       genModul;
   genModul.NewVoid(num, ent);
@@ -55,17 +59,23 @@ bool STEPSelections_SelectDerived::Matches(const occ::handle<Standard_Transient>
   occ::handle<StepData_ReadWriteModule> module;
   bool                                  ok = thelib.Select(ent, module, CN);
   if (!ok)
+  {
     return false;
+  }
   occ::handle<Standard_Type> checker = GetStepType(module, text);
   if (checker.IsNull())
+  {
     return false;
+  }
 
   bool plex = module->IsComplex(CN);
   if (!plex)
   {
     DeclareAndCast(Standard_Type, atype, ent);
     if (atype.IsNull())
+    {
       atype = ent->DynamicType();
+    }
     return atype->SubType(checker);
   }
   else
@@ -77,7 +87,9 @@ bool STEPSelections_SelectDerived::Matches(const occ::handle<Standard_Transient>
     {
       occ::handle<Standard_Type> atype = GetStepType(module, list.Value(i));
       if (atype->SubType(checker))
+      {
         return true;
+      }
     }
   }
   return false;

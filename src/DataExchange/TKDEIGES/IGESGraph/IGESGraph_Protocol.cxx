@@ -50,32 +50,60 @@ occ::handle<Interface_Protocol> IGESGraph_Protocol::Resource(const int /*num*/) 
 int IGESGraph_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESGraph_Color))
+  {
     return 1;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_DefinitionLevel))
+  {
     return 2;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_DrawingSize))
+  {
     return 3;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_DrawingUnits))
+  {
     return 4;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_HighLight))
+  {
     return 5;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_IntercharacterSpacing))
+  {
     return 6;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_LineFontDefPattern))
+  {
     return 7;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_LineFontPredefined))
+  {
     return 8;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_LineFontDefTemplate))
+  {
     return 9;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_NominalSize))
+  {
     return 10;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_Pick))
+  {
     return 11;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_TextDisplayTemplate))
+  {
     return 12;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_TextFontDef))
+  {
     return 13;
+  }
   else if (atype == STANDARD_TYPE(IGESGraph_UniformRectGrid))
+  {
     return 14;
+  }
   return 0;
 }

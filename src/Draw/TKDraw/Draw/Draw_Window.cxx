@@ -39,6 +39,10 @@
   #include <unistd.h>
 #endif
 
+#ifdef _WIN32
+extern bool Draw_Batch;
+#endif
+
 #if defined(__EMSCRIPTEN__)
   #include <emscripten/emscripten.h>
 
@@ -115,7 +119,6 @@ static const int Draw_modeTab[16] = {R2_BLACK,
                                      R2_WHITE};
 #endif
 
-extern bool Draw_Batch;
 extern bool Draw_VirtualWindows;
 bool        Draw_BlackBackGround = true;
 #if defined(_WIN32)
@@ -205,7 +208,6 @@ static Tcl_DString Draw_TclLine;
 
 //! Forward declarations for procedures defined later in this file:
 static void StdinProc(ClientData theClientData, int theMask);
-static void Prompt(Tcl_Interp* theInterp, int thePartial);
 
 //! Non-zero means standard input is a terminal-like device.
 //! Zero means it's a file.
@@ -1306,7 +1308,7 @@ bool Init_Appli()
     catch (Standard_Failure const& theFail)
     {
       std::cout << "Cannot open display (" << theFail << "). Interpret commands in batch mode."
-                << std::endl;
+                << '\n';
       return false;
     }
   }

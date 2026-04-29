@@ -94,13 +94,13 @@ public:
 
   //! Creates new tool for the given element sets.
   Standard_EXPORT BRepExtrema_ProximityDistTool(
-    const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-    const int                                   theNbSamples1,
-    const BVH_Array3d&                          theAddVertices1,
-    const NCollection_Vector<ProxPnt_Status>&   theAddStatus1,
-    const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-    const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-    const NCollection_Vector<TopoDS_Shape>&     theShapeList2);
+    const occ::handle<BRepExtrema_TriangleSet>&     theSet1,
+    const int                                       theNbSamples1,
+    const BVH_Array3d&                              theAddVertices1,
+    const NCollection_DynamicArray<ProxPnt_Status>& theAddStatus1,
+    const occ::handle<BRepExtrema_TriangleSet>&     theSet2,
+    const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList1,
+    const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList2);
 
 public:
   //! Loads the given element sets into the tool.
@@ -108,12 +108,12 @@ public:
                                         const occ::handle<BRepExtrema_TriangleSet>& theSet2);
 
   //! Loads the given list of subshapes into the tool.
-  Standard_EXPORT void LoadShapeLists(const NCollection_Vector<TopoDS_Shape>& theShapeList1,
-                                      const NCollection_Vector<TopoDS_Shape>& theShapeList2);
+  Standard_EXPORT void LoadShapeLists(const NCollection_DynamicArray<TopoDS_Shape>& theShapeList1,
+                                      const NCollection_DynamicArray<TopoDS_Shape>& theShapeList2);
 
   //! Loads given additional vertices and their statuses.
-  void LoadAdditionalPointsFirstSet(const BVH_Array3d&                        theAddVertices1,
-                                    const NCollection_Vector<ProxPnt_Status>& theAddStatus1);
+  void LoadAdditionalPointsFirstSet(const BVH_Array3d&                              theAddVertices1,
+                                    const NCollection_DynamicArray<ProxPnt_Status>& theAddStatus1);
 
   //! Performs searching of the proximity distance.
   Standard_EXPORT void Perform();
@@ -196,9 +196,9 @@ private:
   occ::handle<BRepExtrema_TriangleSet> mySet2;
 
   //! List of subshapes of the 1st shape.
-  NCollection_Vector<TopoDS_Shape> myShapeList1;
+  NCollection_DynamicArray<TopoDS_Shape> myShapeList1;
   //! List of subshapes of the 2nd shape.
-  NCollection_Vector<TopoDS_Shape> myShapeList2;
+  NCollection_DynamicArray<TopoDS_Shape> myShapeList2;
 
   int myNbSamples1; //!< Number of samples points on the first shape
 
@@ -206,7 +206,7 @@ private:
   int         myIsProxVtx1FromAddSet;
   BVH_Array3d myAddVertices1; //!< Additional vertices on the 1st shape
                               // clang-format off
-  NCollection_Vector<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape
+  NCollection_DynamicArray<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape
                               // clang-format on
 
   //! Vertex index from 1st BVH corresponding to proximity point of 1st shape

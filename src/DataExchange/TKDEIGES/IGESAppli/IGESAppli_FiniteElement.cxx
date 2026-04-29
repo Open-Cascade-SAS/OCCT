@@ -33,7 +33,9 @@ void IGESAppli_FiniteElement::Init(
   const occ::handle<TCollection_HAsciiString>&                         aName)
 {
   if (allNodes->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESAppli_FiniteElement : Init");
+  }
   theTopology = aType;
   theNodes    = allNodes;
   theName     = aName;

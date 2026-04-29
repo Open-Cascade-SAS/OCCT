@@ -77,7 +77,9 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape&             
 
   const char* aSeq = Interface_Static::CVal(thePseq);
   if (!aSeq)
+  {
     aSeq = thePseq;
+  }
 
   // if resource file is not loaded or does not define <seq>.exec.op,
   // do default fixes
@@ -127,7 +129,9 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape&             
   aRsc->SetResource("Runtime.MaxTolerance", theMaxTol);
 
   if (!ShapeProcess::Perform(aContext, aSeq, theProgress))
+  {
     return theShape; // return original shape
+  }
 
   return aContext->Result();
 }
@@ -150,13 +154,17 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const occ::handle<Transfer_Transien
 {
   occ::handle<ShapeProcess_ShapeContext> context = occ::down_cast<ShapeProcess_ShapeContext>(info);
   if (context.IsNull())
+  {
     return;
+  }
 
   const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& map =
     context->Map();
   occ::handle<ShapeExtend_MsgRegistrator> msg = context->Messages();
   if (map.Extent() <= 0 && (msg.IsNull() || msg->MapShape().Extent() <= 0))
+  {
     return;
+  }
 
   int i = (startTPitem > 0 ? startTPitem : 1);
   for (; i <= TP->NbMapped(); i++)
@@ -164,7 +172,9 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const occ::handle<Transfer_Transien
     occ::handle<Transfer_Binder>          bnd = TP->MapItem(i);
     occ::handle<TransferBRep_ShapeBinder> sb  = occ::down_cast<TransferBRep_ShapeBinder>(bnd);
     if (sb.IsNull() || sb->Result().IsNull())
+    {
       continue;
+    }
 
     TopoDS_Shape orig = sb->Result();
 
@@ -177,7 +187,9 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const occ::handle<Transfer_Transien
       TopLoc_Location aNullLoc;
       TopoDS_Shape    atmpSh = orig.Located(aNullLoc);
       if (map.IsBound(atmpSh))
+      {
         sb->SetResult(map.Find(atmpSh));
+      }
     }
     else
     {
@@ -232,7 +244,9 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const occ::handle<Transfer_FinderPr
 {
   occ::handle<ShapeProcess_ShapeContext> context = occ::down_cast<ShapeProcess_ShapeContext>(info);
   if (context.IsNull())
+  {
     return;
+  }
 
   const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& map =
     context->Map();
@@ -261,16 +275,22 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const occ::handle<Transfer_FinderPr
         {
           occ::handle<Transfer_Finder> subMapper = TransferBRep::ShapeMapper(FP, it.Value());
           if (subMapper.IsNull())
+          {
             continue;
+          }
 
           occ::handle<Standard_Transient> tr = FP->FindTransient(subMapper);
           if (tr.IsNull())
+          {
             continue;
+          }
           TransientListBinder->AddResult(tr);
           sub = it.Value();
         }
         if (TransientListBinder->NbTransients() == 1)
+        {
           resBinder = new TransferBRep_ShapeBinder(sub);
+        }
         else if (TransientListBinder->NbTransients() > 1)
         {
           resBinder->AddResult(TransientListBinder);

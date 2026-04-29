@@ -49,16 +49,22 @@ bool BinMDataStd_RealArrayDriver::Paste(const BinObjMgt_Persistent&       theSou
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
+  {
     return false;
+  }
   const int aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
+  {
     return false;
+  }
 
   const occ::handle<TDataStd_RealArray> anAtt = occ::down_cast<TDataStd_RealArray>(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
   NCollection_Array1<double>& aTargetArray = anAtt->Array()->ChangeArray1();
   if (!theSource.GetRealArray(&aTargetArray(aFirstInd), aLength))
+  {
     return false;
+  }
 
   bool aDelta(false);
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
@@ -66,9 +72,13 @@ bool BinMDataStd_RealArrayDriver::Paste(const BinObjMgt_Persistent&       theSou
   {
     uint8_t aDeltaValue;
     if (!(theSource >> aDeltaValue))
+    {
       return false;
+    }
     else
+    {
       aDelta = (aDeltaValue != 0);
+    }
   }
   anAtt->SetDelta(aDelta);
 
@@ -99,5 +109,7 @@ void BinMDataStd_RealArrayDriver::Paste(
   theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
   // process user defined guid
   if (anAtt->ID() != TDataStd_RealArray::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

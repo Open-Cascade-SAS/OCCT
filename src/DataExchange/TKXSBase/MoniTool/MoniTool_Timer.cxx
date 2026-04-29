@@ -44,7 +44,7 @@ void MoniTool_Timer::Dump(Standard_OStream& ostr)
           system,
           myCount);
 
-  ostr << buff << std::endl;
+  ostr << buff << '\n';
 }
 
 //=================================================================================================
@@ -67,7 +67,9 @@ occ::handle<MoniTool_Timer> MoniTool_Timer::Timer(const char* const name)
   NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>& dic =
     Dictionary();
   if (dic.IsBound(name))
+  {
     return dic.Find(name);
+  }
   occ::handle<MoniTool_Timer> MT = new MoniTool_Timer;
   MT->Timer().Reset();
   dic.Bind(name, MT);
@@ -95,7 +97,7 @@ void MoniTool_Timer::DumpTimers(Standard_OStream& ostr)
 
   int NbTimers = dic.Extent();
 
-  ostr << "DUMP OF TIMERS:" << std::endl;
+  ostr << "DUMP OF TIMERS:" << '\n';
   const char** keys = new const char*[NbTimers];
   int          i    = 0;
   for (; iter.More() && i < NbTimers; iter.Next())
@@ -122,7 +124,9 @@ void MoniTool_Timer::DumpTimers(Standard_OStream& ostr)
     Timer(stmp)->Dump(ostr);
     keys[ntmp] = nullptr;
     if (Timer(stmp)->IsRunning())
-      std::cerr << "Warning: timer " << stmp << " is running" << std::endl;
+    {
+      std::cerr << "Warning: timer " << stmp << " is running" << '\n';
+    }
   }
   delete[] keys;
 }
@@ -153,8 +157,11 @@ void MoniTool_Timer::ComputeAmendments()
   MT0->Start();
   for (i = 1; i <= NBTESTS; i++)
   {
-    for (int k = 1; k <= 100; k++) [[maybe_unused]]
+    for (int k = 1; k <= 100; k++)
+    {
+      [[maybe_unused]]
       const double aDummy = std::sqrt(i + k);
+    }
   }
   MT0->Stop();
 
@@ -164,8 +171,11 @@ void MoniTool_Timer::ComputeAmendments()
   for (i = 1; i <= NBTESTS; i++)
   {
     MT->Start();
-    for (int k = 1; k <= 100; k++) [[maybe_unused]]
+    for (int k = 1; k <= 100; k++)
+    {
+      [[maybe_unused]]
       const double aDummy = std::sqrt(i + k);
+    }
     MT->Stop();
   }
   MT1->Stop();
@@ -210,12 +220,12 @@ void MoniTool_Timer::ComputeAmendments()
   amAccess += (0.5 * (cpu3 - cpu1)) / NBTESTS;
   amError = std::abs(cpu1 + cpu3 - 2 * cpu2) / NBTESTS;
 
-  std::cout << "CPU 0: " << cpu0 << std::endl;
-  std::cout << "CPU 1: " << cpu1 << " INTERNAL: " << cput1 << std::endl;
-  std::cout << "CPU 2: " << cpu2 << " INTERNAL: " << cput2 << std::endl;
-  std::cout << "CPU 3: " << cpu3 << " INTERNAL: " << cput3 << std::endl;
+  std::cout << "CPU 0: " << cpu0 << '\n';
+  std::cout << "CPU 1: " << cpu1 << " INTERNAL: " << cput1 << '\n';
+  std::cout << "CPU 2: " << cpu2 << " INTERNAL: " << cput2 << '\n';
+  std::cout << "CPU 3: " << cpu3 << " INTERNAL: " << cput3 << '\n';
   std::cout << "Access: " << amAccess << ", External: " << amExternal
-            << ", Internal: " << amInternal << ", Error: " << amError << std::endl;
+            << ", Internal: " << amInternal << ", Error: " << amError << '\n';
 }
 
 //=================================================================================================
@@ -239,14 +249,18 @@ void MoniTool_Timer::AmendAccess()
 {
   double amend = amAccess;
   for (occ::handle<MoniTool_Timer> act = myActive; !act.IsNull(); act = act->myNext)
+  {
     act->myAmend += amend;
+  }
 }
 
 void MoniTool_Timer::AmendStart()
 {
   double amend = amExternal;
   for (occ::handle<MoniTool_Timer> act = myActive; !act.IsNull(); act = act->myNext)
+  {
     act->myAmend += amend;
+  }
   myAmend += amInternal;
 
   // add to list
@@ -262,13 +276,19 @@ void MoniTool_Timer::AmendStop()
 {
   occ::handle<MoniTool_Timer> thisActive(this);
   if (myActive == thisActive)
+  {
     myActive = myNext;
+  }
   //    if ( myActive == this )  myActive = myNext;
 
   if (!myPrev.IsNull())
+  {
     myPrev->myNext = myNext;
+  }
   if (!myNext.IsNull())
+  {
     myNext->myPrev = myPrev;
+  }
 
   myNext = myPrev = nullptr;
 }

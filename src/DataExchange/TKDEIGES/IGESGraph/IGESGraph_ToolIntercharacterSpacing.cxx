@@ -43,8 +43,9 @@ void IGESGraph_ToolIntercharacterSpacing::ReadOwnParams(
   // Reading nbPropertyValues(Integer)
   // clang-format off
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
-  if (nbPropertyValues != 1)
+  if (nbPropertyValues != 1) {
     PR.AddFail("No. of Property values : Value is not 1");
+}
 
   // Reading iSpace(Real)
   PR.ReadReal(PR.Current(), "Intercharacter space in % of text height", iSpace); //szv#4:S4163:12Mar99 `st=` not needed
@@ -81,7 +82,9 @@ bool IGESGraph_ToolIntercharacterSpacing::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 1);
   if (res)
+  {
     ent->Init(1, ent->ISpace()); // nbpropertyvalues=1
+  }
   return res;
 }
 
@@ -105,9 +108,13 @@ void IGESGraph_ToolIntercharacterSpacing::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if ((ent->ISpace() < 0.0) || (ent->ISpace() > 100.0))
+  {
     ach->AddFail("Intercharacter Space : Value not in the range [0-100]");
+  }
   if (ent->NbPropertyValues() != 1)
+  {
     ach->AddFail("No. of Property values : Value != 1");
+  }
 }
 
 void IGESGraph_ToolIntercharacterSpacing::OwnDump(
@@ -119,5 +126,5 @@ void IGESGraph_ToolIntercharacterSpacing::OwnDump(
   S << "IGESGraph_IntercharacterSpacing\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"
     << "Intercharacter space in % of text height : " << ent->ISpace() << "\n"
-    << std::endl;
+    << '\n';
 }

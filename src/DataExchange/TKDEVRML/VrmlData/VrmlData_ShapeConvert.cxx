@@ -75,11 +75,17 @@ void VrmlData_ShapeConvert::AddShape(const TopoDS_Shape& theShape, const char* t
         break;
       }
       if (sym == '\"' || sym == '\\')
+      {
         *optr = '/';
+      }
       else if (sym == '.')
+      {
         *optr = '_';
+      }
       else
+      {
         *optr = sym;
+      }
       if (++optr >= eptr)
       {
         *optr = '\0';
@@ -124,11 +130,15 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
           aTestedShapeRev.Orientation(isReverse ? TopAbs_FORWARD : TopAbs_REVERSED);
           occ::handle<VrmlData_IndexedFaceSet> aFaceSetToReuse;
           if (myRelMap.IsBound(aTestedShapeRev))
+          {
             aFaceSetToReuse = occ::down_cast<VrmlData_IndexedFaceSet>(myRelMap(aTestedShapeRev));
+          }
 
           occ::handle<VrmlData_Coordinate> aCoordToReuse;
           if (!aFaceSetToReuse.IsNull())
+          {
             aCoordToReuse = aFaceSetToReuse->Coordinates();
+          }
 
           aTShapeNode = triToIndexedFaceSet(aTri, aFace, aCoordToReuse);
           myScene.AddNode(aTShapeNode, false);
@@ -269,7 +279,9 @@ void VrmlData_ShapeConvert::Convert(const bool   theExtractFaces,
     {
 
       if (!Extract[i])
+      {
         continue;
+      }
 
       TopExp_Explorer anExp(aData.Shape, ShapeType[i]);
       for (; anExp.More(); anExp.Next())
@@ -286,8 +298,10 @@ void VrmlData_ShapeConvert::Convert(const bool   theExtractFaces,
           myScene.AddNode(aShapeNode, false);
           aShapeNode->SetGeometry(aTShapeNode);
           if (aLoc.IsIdentity())
+          {
             // Store the shape node directly into the main Group.
             aGroup->AddNode(aShapeNode);
+          }
           else
           {
             // Create a Transform grouping node
@@ -375,7 +389,9 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
 
   // Create the Coordinates node
   if (!theCoord.IsNull())
+  {
     aFaceSet->SetCoordinates(theCoord);
+  }
   else
   {
     gp_XYZ* arrNodes = static_cast<gp_XYZ*>(anAlloc->Allocate(nNodes * sizeof(gp_XYZ)));
@@ -444,23 +460,35 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
 
             double mod = vv.Modulus();
             if (mod < Tol)
+            {
               continue;
+            }
 
             eqPlan += vv / mod;
           }
 
           if (eqPlan.SquareModulus() > gp::Resolution())
+          {
             aNormal = gp_Dir(eqPlan);
+          }
         }
         if (isReverse)
+        {
           aNormal.Reverse();
+        }
 
         if (aNormal.X() * aNormal.X() < aConf2)
+        {
           aNormal.SetX(0.);
+        }
         if (aNormal.Y() * aNormal.Y() < aConf2)
+        {
           aNormal.SetY(0.);
+        }
         if (aNormal.Z() * aNormal.Z() < aConf2)
+        {
           aNormal.SetZ(0.);
+        }
 
         arrVec[i] = aNormal.XYZ();
       }
@@ -499,13 +527,17 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::polToIndexedLineSet(
   int* aPolygon = static_cast<int*>(anAlloc->Allocate((nNodes + 1) * sizeof(int)));
   aPolygon[0]   = nNodes;
   for (i = 1; i <= nNodes; i++)
+  {
     aPolygon[i] = i - 1;
+  }
   arrPolygons[0] = aPolygon;
 
   // Create the Coordinates node
   gp_XYZ* arrNodes = static_cast<gp_XYZ*>(anAlloc->Allocate(nNodes * sizeof(gp_XYZ)));
   for (i = 0; i < nNodes; i++)
+  {
     arrNodes[i] = arrPolyNodes(i + 1).XYZ() * myScale;
+  }
 
   const occ::handle<VrmlData_Coordinate> aCoordNode =
     new VrmlData_Coordinate(myScene, nullptr, nNodes, arrNodes);

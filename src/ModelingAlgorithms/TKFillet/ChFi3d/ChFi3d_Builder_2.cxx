@@ -172,13 +172,19 @@ static void ChFi3d_CoupeParPlan(const ChFiDS_CommonPoint&         compoint1,
         Parfin = C3d->LastParameter();
       }
       else
+      {
         plane = false;
+      }
     }
     else
+    {
       plane = false;
+    }
   }
   else
+  {
     plane = false;
+  }
 }
 
 //=================================================================================================
@@ -272,7 +278,9 @@ static bool BonVoisin(const gp_Pnt&                     Point,
                 }
               }
               else
+              {
                 PC = getCurveOnSurface(newe, ff);
+              }
               PC->Value(winter).Coord(XDep, YDep);
               if (issame)
               {
@@ -301,7 +309,9 @@ static bool BonVoisin(const gp_Pnt&                     Point,
     }
   }
   if (!found)
+  {
     bonvoisin = false;
+  }
   return bonvoisin;
 }
 
@@ -318,7 +328,9 @@ static bool Projection(Extrema_ExtPC&         PExt,
 
   // It is checked if it is not already a solution
   if (Dist2 < Tol * Tol)
+  {
     return true;
+  }
 
   bool Ok = false;
 
@@ -333,7 +345,9 @@ static bool Projection(Extrema_ExtPC&         PExt,
       Dist2 = daux2;
       Ok    = true;
       if (Dist2 < Tol * Tol)
+      {
         return true;
+      }
     }
   }
 
@@ -366,7 +380,9 @@ static void TgtKP(const occ::handle<ChFiDS_SurfData>& CD,
   double                   wtg = CD->InterferenceOnS1().Parameter(isfirst);
   const BRepAdaptor_Curve& bc  = Spine->CurrentElementarySpine(iedge);
   if (Spine->Edges(iedge).Orientation() == TopAbs_FORWARD)
+  {
     bc.D1(wtg + bc.FirstParameter(), ped, ded);
+  }
   else
   {
     bc.D1(-wtg + bc.LastParameter(), ped, ded);
@@ -415,7 +431,9 @@ static bool IsInput(const gp_Vec& Vec, const TopoDS_Vertex& Ve, const TopoDS_Fac
     }
   }
   if (Trouve < 2)
+  {
     return false;
+  }
   // Calculate the normal and the angles in the associated vector plane
   gp_Vec Normal;
   Normal = Vec3d[0] ^ Vec3d[1];
@@ -432,7 +450,9 @@ static bool IsInput(const gp_Vec& Vec, const TopoDS_Vertex& Ve, const TopoDS_Fac
     amax = 0;
   }
   else
+  {
     amin = 0;
+  }
 
   // Projection of the vector
   gp_Ax3  Axe(Point, Normal, Vec3d[0]);
@@ -545,15 +565,23 @@ static int SearchFaceOnV(const ChFiDS_CommonPoint& Pc,
       }
     }
     if (Trouve)
+    {
       Trouve = IsG1(EFMap, E, FRef, FVoi);
+    }
     if (Trouve)
+    {
       Trouve = IsInput(Pc.Vector(), Pc.Vertex(), FVoi);
+    }
     if (Trouve)
     {
       if (Num == 0)
+      {
         F1 = FVoi;
+      }
       else
+      {
         F2 = FVoi;
+      }
       Num++;
     }
   }
@@ -590,10 +618,12 @@ static void ChangeTransition(const ChFiDS_CommonPoint&                       Pre
   }
 
   if (tochange)
+  {
     Courant.SetArc(Precision::Confusion(),
                    Arc,
                    Precedant.ParameterOnArc(),
                    TopAbs::Reverse(Precedant.TransitionOnArc()));
+  }
 }
 } // namespace
 
@@ -832,9 +862,13 @@ void ChFi3d_Builder::ConexFaces(const occ::handle<ChFiDS_Spine>&  Spine,
                                 occ::handle<BRepAdaptor_Surface>& HS2) const
 {
   if (HS1.IsNull())
+  {
     HS1 = new BRepAdaptor_Surface();
+  }
   if (HS2.IsNull())
+  {
     HS2 = new BRepAdaptor_Surface();
+  }
   BRepAdaptor_Surface& Sb1 = *HS1;
   BRepAdaptor_Surface& Sb2 = *HS2;
 
@@ -878,7 +912,9 @@ void ChFi3d_Builder::StartSol(const occ::handle<ChFiDS_Stripe>&      Stripe,
   int                        nbed       = Spine->NbEdges();
   int                        nbessaimax = 3 * nbed;
   if (nbessaimax < 10)
+  {
     nbessaimax = 10;
+  }
   double unsurnbessaimax = 1. / nbessaimax;
   double wf              = 0.9981 * Spine->FirstParameter(1) + 0.0019 * Spine->LastParameter(1);
   double wl = 0.9973 * Spine->LastParameter(nbed) + 0.0027 * Spine->FirstParameter(nbed);
@@ -955,7 +991,9 @@ void ChFi3d_Builder::StartSol(const occ::handle<ChFiDS_Stripe>&      Stripe,
       }
     }
     if (f1.IsSame(f2))
+    {
       cured.Orientation(TopAbs_REVERSED);
+    }
     PC                                          = getCurveOnSurface(cured, f2forward);
     P2                                          = PC->Value(woned);
     const occ::handle<Adaptor3d_Surface>& HSon2 = HS2; // to avoid ambiguity
@@ -1061,7 +1099,9 @@ void ChFi3d_Builder::StartSol(const occ::handle<ChFiDS_Stripe>&      Stripe,
         }
       }
       if (found)
+      {
         return;
+      }
     }
   }
   Spine->SetErrorStatus(ChFiDS_StartsolFailure);
@@ -1434,9 +1474,13 @@ bool ChFi3d_Builder::StartSol(
           pons = HC->Value(W);
           HCref->Initialize(anArcEdge, F);
           if (aCommonPoint.IsVertex())
+          {
             RecP = true;
+          }
           else
+          {
             RecRst = true;
+          }
           return true;
         }
         else
@@ -1463,9 +1507,13 @@ bool ChFi3d_Builder::StartSol(
     HS->Initialize(F);
     const ChFiDS_FaceInterference& FI = SD->Interference(ons);
     if (FI.PCurveOnFace().IsNull())
+    {
       pons = SD->Get2dPoints(isfirst, ons);
+    }
     else
+    {
       pons = FI.PCurveOnFace()->Value(FI.Parameter(isfirst));
+    }
   }
   return true;
 }
@@ -1479,7 +1527,9 @@ bool ChFi3d_Builder::SearchFace(const occ::handle<ChFiDS_Spine>& Spine,
 {
   bool Trouve = false;
   if (!Pc.IsOnArc())
+  {
     return false;
+  }
   FVoi.Nullify();
   TopoDS_Edge E;
   if (Pc.IsVertex())
@@ -1530,7 +1580,9 @@ bool ChFi3d_Builder::SearchFace(const occ::handle<ChFiDS_Spine>& Spine,
           }
         }
         if (Trouve)
+        {
           FindFace = IsG1(myEFMap, E, FRef, FVoi);
+        }
         if (FindFace)
         {
           FindFace = false;
@@ -1692,15 +1744,21 @@ static void ChFi3d_SingularExtremity(occ::handle<ChFiDS_Stripe>& stripe,
 static bool IsFree(const TopoDS_Shape& E, const ChFiDS_Map& EFMap)
 {
   if (!EFMap.Contains(E))
+  {
     return false;
+  }
   NCollection_List<TopoDS_Shape>::Iterator It;
   TopoDS_Shape                             Fref;
   for (It.Initialize(EFMap(E)); It.More(); It.Next())
   {
     if (Fref.IsNull())
+    {
       Fref = It.Value();
+    }
     else if (!Fref.IsSame(It.Value()))
+    {
       return false;
+    }
   }
   return true;
 }
@@ -1774,9 +1832,13 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       ChFi3d_EnlargeBox(DStr, Stripe, SDF, b1, b2, true);
       ChFi3d_EnlargeBox(DStr, Stripe, SDL, b1, b2, false);
       if (!CV1.IsVertex())
+      {
         ChFi3d_SetPointTolerance(DStr, b1, Stripe->IndexFirstPointOnS1());
+      }
       if (!CV2.IsVertex())
+      {
         ChFi3d_SetPointTolerance(DStr, b2, Stripe->IndexFirstPointOnS2());
+      }
     }
     else
     {
@@ -1833,6 +1895,7 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
                           Parfin,
                           plane);
       if (!plane)
+      {
         ChFi3d_ComputeArete(cpdeb1,
                             SDdeb->InterferenceOnS1().PCurveOnSurf()->Value(
                               SDdeb->InterferenceOnS1().FirstParameter()),
@@ -1848,6 +1911,7 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
                             tol2d,
                             tolreached,
                             0);
+      }
       TopOpeBRepDS_Curve Crv(C3d, tolreached);
       Stripe->ChangeFirstCurve(DStr.AddCurve(Crv));
       Stripe->ChangeFirstParameters(Pardeb, Parfin);
@@ -1863,9 +1927,13 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       }
       ChFi3d_EnlargeBox(DStr, Stripe, SDdeb, b1, b2, true);
       if (!cpdeb1.IsVertex())
+      {
         ChFi3d_SetPointTolerance(DStr, b1, Stripe->IndexFirstPointOnS1());
+      }
       if (!cpdeb2.IsVertex())
+      {
         ChFi3d_SetPointTolerance(DStr, b2, Stripe->IndexFirstPointOnS2());
+      }
     }
     else
     { // Case of a singular extremity
@@ -1918,6 +1986,7 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
                           Parfin,
                           plane);
       if (!plane)
+      {
         ChFi3d_ComputeArete(cpfin1,
                             SDfin->InterferenceOnS1().PCurveOnSurf()->Value(
                               SDfin->InterferenceOnS1().LastParameter()),
@@ -1933,6 +2002,7 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
                             tol2d,
                             tolreached,
                             0);
+      }
       TopOpeBRepDS_Curve Crv(C3d, tolreached);
       Stripe->ChangeLastCurve(DStr.AddCurve(Crv));
       Stripe->ChangeLastParameters(Pardeb, Parfin);
@@ -1948,9 +2018,13 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       }
       ChFi3d_EnlargeBox(DStr, Stripe, SDfin, b1, b2, false);
       if (!cpfin1.IsVertex())
+      {
         ChFi3d_SetPointTolerance(DStr, b1, Stripe->IndexLastPointOnS1());
+      }
       if (!cpfin2.IsVertex())
+      {
         ChFi3d_SetPointTolerance(DStr, b2, Stripe->IndexLastPointOnS2());
+      }
     }
     else
     { // Case of the single extremity
@@ -1979,33 +2053,49 @@ static void ChFi3d_Purge(occ::handle<ChFiDS_Stripe>&   Stripe,
                          int&                          intl)
 {
   if (isfirst)
+  {
     intf = 1;
+  }
   else
+  {
     intl = 1; // End.
+  }
   int opp = 3 - ons;
   if (!SD->Vertex(isfirst, opp).IsOnArc() || SD->TwistOnS1() || SD->TwistOnS2())
   {
     NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Seq =
       Stripe->ChangeSetOfSurfData()->ChangeSequence();
     if (isfirst)
+    {
       Seq.Remove(1);
+    }
     else
+    {
       Seq.Remove(Seq.Length());
+    }
     return;
   }
   if (ons == 1)
+  {
     SD->ChangeIndexOfS1(0);
+  }
   else
+  {
     SD->ChangeIndexOfS2(0);
+  }
 
   SD->ChangeVertex(!isfirst, ons) = VRef;
   SD->ChangeVertex(isfirst, ons)  = VRef;
 
   ChFiDS_FaceInterference& fi = SD->ChangeInterference(ons);
   if (isfirst)
+  {
     fi.SetFirstParameter(fi.LastParameter());
+  }
   else
+  {
     fi.SetLastParameter(fi.FirstParameter());
+  }
   fi.SetLineIndex(0);
 }
 
@@ -2020,7 +2110,9 @@ static void InsertAfter(occ::handle<ChFiDS_Stripe>&   Stripe,
                         occ::handle<ChFiDS_SurfData>& Item)
 {
   if (Ref == Item)
+  {
     throw Standard_Failure("InsertAfter : twice the same surfdata.");
+  }
 
   NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Seq =
     Stripe->ChangeSetOfSurfData()->ChangeSequence();
@@ -2048,12 +2140,16 @@ static void RemoveSD(occ::handle<ChFiDS_Stripe>&   Stripe,
   NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Seq =
     Stripe->ChangeSetOfSurfData()->ChangeSequence();
   if (Seq.IsEmpty())
+  {
     return;
+  }
   int iprev = 0, inext = 0;
   for (int i = 1; i <= Seq.Length(); i++)
   {
     if (Seq.Value(i) == Prev)
+    {
       iprev = i + 1;
+    }
     if (Seq.Value(i) == Next)
     {
       inext = i - 1;
@@ -2061,11 +2157,17 @@ static void RemoveSD(occ::handle<ChFiDS_Stripe>&   Stripe,
     }
   }
   if (Prev.IsNull())
+  {
     iprev = 1;
+  }
   if (Next.IsNull())
+  {
     inext = Seq.Length();
+  }
   if (iprev <= inext)
+  {
     Seq.Remove(iprev, inext);
+  }
 }
 
 //=======================================================================
@@ -2079,7 +2181,9 @@ static void InsertBefore(occ::handle<ChFiDS_Stripe>&   Stripe,
                          occ::handle<ChFiDS_SurfData>& Item)
 {
   if (Ref == Item)
+  {
     throw Standard_Failure("InsertBefore : twice the same surfdata.");
+  }
 
   NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Seq =
     Stripe->ChangeSetOfSurfData()->ChangeSequence();
@@ -2119,7 +2223,9 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
     {
       const occ::handle<ChFiDS_ElSpine>& aHElSpine = ILES.Value();
       if (aHElSpine == HGuide)
+      {
         OffsetHGuide = ILES_offset.Value();
+      }
     }
   }
 
@@ -2263,13 +2369,17 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
       {
         Guide.FirstParameter(wf);
         if (!OffsetHGuide.IsNull())
+        {
           OffsetHGuide->FirstParameter(wf);
+        }
       }
       else
       {
         Guide.LastParameter(wl);
         if (!OffsetHGuide.IsNull())
+        {
           OffsetHGuide->LastParameter(wl);
+        }
       }
     }
   }
@@ -2280,7 +2390,9 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
     int indf = Spine->Index(wf);
     int indl = Spine->Index(wl, false);
     if (Spine->IsPeriodic() && (indl < indf))
+    {
       indl += nbed;
+    }
     nbed = indl - indf + 1;
   }
   // No Max at the touch : 20 points by edge at average without
@@ -2310,36 +2422,52 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
       if (wf < tolesp && (complete == Inside))
       {
         if (Spine->FirstStatus() == ChFiDS_OnSame)
+        {
           intf = 2;
+        }
         else
+        {
           intf = 1;
+        }
       }
       if (Spine->IsTangencyExtremity(true))
       {
         intf = 4;
         Guide.FirstParameter(wfsav);
         if (!OffsetHGuide.IsNull())
+        {
           OffsetHGuide->FirstParameter(wfsav);
+        }
       }
       if (wl - lastedlastp > -tolesp)
       {
         if (Spine->LastStatus() == ChFiDS_OnSame)
+        {
           intl = 2;
+        }
         else
+        {
           intl = 1;
+        }
       }
       if (Spine->IsTangencyExtremity(false))
       {
         intl = 4;
         Guide.LastParameter(wlsav);
         if (!OffsetHGuide.IsNull())
+        {
           OffsetHGuide->LastParameter(wlsav);
+        }
       }
     }
     if (intf && !forward)
+    {
       Vref = Spine->FirstVertex();
+    }
     if (intl && forward)
+    {
       Vref = Spine->LastVertex();
+    }
     if (!ref.IsNull())
     {
       Ok1 = StartSol(Spine,
@@ -2387,28 +2515,42 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
       if ((intf && !forward) || (intl && forward))
       {
         if (!Ok1)
+        {
           ChFi3d_BuildPlane(DStr, HS1, pp1, ref, !forward, 1);
+        }
         if (!Ok2)
+        {
           ChFi3d_BuildPlane(DStr, HS2, pp2, ref, !forward, 2);
+        }
         if (intf)
+        {
           intf = 5;
+        }
         else if (intl)
+        {
           intl = 5;
+        }
         if (forward)
         {
           Guide.FirstParameter(wf);
           if (!OffsetHGuide.IsNull())
+          {
             OffsetHGuide->FirstParameter(wf);
+          }
         }
         else
         {
           Guide.LastParameter(wl);
           if (!OffsetHGuide.IsNull())
+          {
             OffsetHGuide->LastParameter(wl);
+          }
         }
       }
       else
+      {
         throw Standard_Failure("PerformSetOfSurfOnElSpine : Chaining is impossible.");
+      }
     }
 
     // Definition of the domain of patch It1, It2
@@ -2434,9 +2576,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
 
       // Calculate the criterion of Choice edge / edge
       if (Choix % 2 == 0)
+      {
         Choix = 4;
+      }
       else
+      {
         Choix = 1;
+      }
 
       SoldepCC(1) = w1;
       SoldepCC(2) = w2;
@@ -2520,9 +2666,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
                                    Stripe->OrientationOnFace2(),
                                    -Stripe->Choix());
       if (Choix % 2 == 1)
+      {
         Choix++;
+      }
       else
+      {
         Choix--;
+      }
       SoldepCS(3) = w1;
       SoldepCS(1) = pp2.X();
       SoldepCS(2) = pp2.Y();
@@ -2703,9 +2853,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
         done   = true;
         Inside = false;
         if (forward)
+        {
           intl = 1;
+        }
         else
+        {
           intf = 1;
+        }
       }
       else
       { // Otherwise invalidation of the stripe.
@@ -2724,10 +2878,14 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
           SD = SeqSD(ii);
           SD->ChangeIndexOfS1(DStr.AddShape(HS1->Face()));
           if (obstacleon1)
+          {
             SD->SetIndexOfC1(DStr.AddShape(HC1->Edge()));
+          }
           SD->ChangeIndexOfS2(DStr.AddShape(HS2->Face()));
           if (obstacleon2)
+          {
             SD->SetIndexOfC2(DStr.AddShape(HC2->Edge()));
+          }
           InsertAfter(Stripe, refbis, SD);
           refbis = SD;
         }
@@ -2739,22 +2897,30 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
           SD = SeqSD(ii);
           SD->ChangeIndexOfS1(DStr.AddShape(HS1->Face()));
           if (obstacleon1)
+          {
             SD->SetIndexOfC1(DStr.AddShape(HC1->Edge()));
+          }
           SD->ChangeIndexOfS2(DStr.AddShape(HS2->Face()));
           if (obstacleon2)
+          {
             SD->SetIndexOfC2(DStr.AddShape(HC2->Edge()));
+          }
           InsertBefore(Stripe, refbis, SD);
           refbis = SD;
         }
       }
 
       if (!Ok1 && !obstacleon1)
+      {
         // clean infos on the plane of extension.
         ChFi3d_Purge(Stripe, SD, ref->Vertex(!forward, 1), !forward, 1, intf, intl);
+      }
 
       if (!Ok2 && !obstacleon2)
+      {
         // clean infos on the plane of extension.
         ChFi3d_Purge(Stripe, SD, ref->Vertex(!forward, 2), !forward, 2, intf, intl);
+      }
 
       // The end. The reference is changed.
       ref = refbis;
@@ -2785,12 +2951,18 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
         thelast  = Stripe->SetOfSurfData()->Sequence().Last();
 
         if (thefirst->VertexFirstOnS1().IsOnArc() && thelast->VertexLastOnS1().IsOnArc())
+        {
           fini = thefirst->VertexFirstOnS1().Arc().IsSame(thelast->VertexLastOnS1().Arc());
+        }
         if (!fini && thefirst->VertexFirstOnS2().IsOnArc() && thelast->VertexLastOnS2().IsOnArc())
+        {
           fini = thefirst->VertexFirstOnS2().Arc().IsSame(thelast->VertexLastOnS2().Arc());
+        }
 
         if (fini)
+        {
           return; // It is ended!
+        }
       }
 
       if (fini && complete)
@@ -2903,7 +3075,9 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
         LSD.Clear();
       }
       else
+      {
         iedgelastkpart = iedge;
+      }
       if (Spine->IsPeriodic())
       { // debug provisory for SD that arrive in disorder.
         int    nbsd   = LSD.Length();
@@ -2920,7 +3094,9 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
           wwf                                  = ChFi3d_InPeriod(wwf, wfp, wlp, tolesp);
           wwl                                  = ChFi3d_InPeriod(wwl, wfp, wlp, tolesp);
           if (wwl <= wwf + tolesp)
+          {
             wwl += period;
+          }
           wfp = wwf;
           wlp = wfp + period;
         }
@@ -2947,10 +3123,14 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
       {
         occ::handle<ChFiDS_SurfData>& curSD = LSD.ChangeValue(j);
         if (Simul)
+        {
           SimulKPart(curSD);
+        }
         SeqSurf.Append(curSD);
         if (!Simul)
+        {
           li.Append(curSD->Surf());
+        }
         WFirst = LSD.Value(j)->FirstSpineParam();
         WLast  = LSD.Value(j)->LastSpineParam();
         if (Spine->IsPeriodic())
@@ -2958,7 +3138,9 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
           WFirst = ChFi3d_InPeriod(WFirst, WStartPeriodic, WEndPeriodic, tolesp);
           WLast  = ChFi3d_InPeriod(WLast, WStartPeriodic, WEndPeriodic, tolesp);
           if (WLast <= WFirst + tolesp)
+          {
             WLast += Spine->Period();
+          }
         }
         TgtKP(LSD.Value(j), Spine, iedge, true, PFirst, TFirst);
         TgtKP(LSD.Value(j), Spine, iedge, false, PLast, TLast);
@@ -2972,7 +3154,9 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
             WEndPeriodic   = WStartPeriodic + Spine->Period();
             WLast          = ElCLib::InPeriod(WLast, WStartPeriodic, WEndPeriodic);
             if (WLast <= WFirst + tolesp)
+            {
               WLast += Spine->Period();
+            }
             PEndPeriodic = PFirst;
             TEndPeriodic = TFirst;
             Spine->SetFirstParameter(WStartPeriodic);
@@ -3029,7 +3213,9 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
         }
       }
       if (!li.IsEmpty())
+      {
         myEVIMap.Bind(Spine->Edges(iedge), li);
+      }
     }
   }
 
@@ -3045,13 +3231,17 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
         CurrentHE->LastParameter(WEndPeriodic);
         CurrentHE->SetLastPointAndTgt(PEndPeriodic, TEndPeriodic);
         if (!YaKPart)
+        {
           CurrentHE->SetPeriodic(true);
+        }
         Spine->AppendElSpine(CurrentHE);
 
         CurrentOffsetHE->LastParameter(WEndPeriodic);
         CurrentOffsetHE->SetLastPointAndTgt(PEndPeriodic, TEndPeriodic);
         if (!YaKPart)
+        {
           CurrentOffsetHE->SetPeriodic(true);
+        }
         Spine->AppendOffsetElSpine(CurrentOffsetHE);
       }
     }
@@ -3082,7 +3272,9 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
   {
     NCollection_List<occ::handle<ChFiDS_ElSpine>>& offsetll = Spine->ChangeOffsetElSpines();
     for (ILES.Initialize(offsetll); ILES.More(); ILES.Next())
+    {
       ChFi3d_PerformElSpine(ILES.ChangeValue(), Spine, myConti, tolesp, true);
+    }
   }
   Spine->SplitDone(true);
 }
@@ -3124,7 +3316,9 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
     int                                                 last     = len, i;
     bool                                                periodic = Spine->IsPeriodic();
     if (periodic)
+    {
       last++;
+    }
     // It is attempted to reprocess the squares that bore.
     for (i = 1; i <= len; i++)
     {
@@ -3136,22 +3330,30 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
       if (iprev == 0)
       {
         if (periodic)
+        {
           iprev = len;
+        }
       }
       int inext = i + 1;
       if (inext > len)
       {
         if (periodic)
+        {
           inext = 1;
+        }
         else
+        {
           inext = 0;
+        }
       }
 
       // For the moment only the surfaces where the twist is
       // detected at the path are corrected, it is necessary to control
       // more subtly the ugly traces (size, curvature, inflexion... )
       if (!tw1 && !tw2)
+      {
         continue;
+      }
 
       // It is decided (fairly at random) if the extended surface is ready for the filling.
       ChFiDS_FaceInterference& intf1       = cursd->ChangeInterferenceOnS1();
@@ -3195,10 +3397,14 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
         nextsd    = SeqSurf.ChangeValue(inext);
         yanexton1 = !nextsd->TwistOnS1();
         if (samesurfon1)
+        {
           samesurfon1 = (nextsd->IndexOfS1() == cursurf1);
+        }
         yanexton2 = !nextsd->TwistOnS2();
         if (samesurfon2)
+        {
           samesurfon2 = (nextsd->IndexOfS2() == cursurf2);
+        }
       }
       // A contour of filling is constructed
       occ::handle<Geom2d_Curve>        PC1 = intf1.PCurveOnFace();
@@ -3379,11 +3585,17 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
 
       GeomFill_ConstrainedFilling fil(11, 20);
       if (pointuon1)
+      {
         fil.Init(Bon2, Bfin, Bdeb, true);
+      }
       else if (pointuon2)
+      {
         fil.Init(Bon1, Bfin, Bdeb, true);
+      }
       else
+      {
         fil.Init(Bon1, Bfin, Bon2, Bdeb, true);
+      }
 
       ChFi3d_ReparamPcurv(0., 1., PC1);
       ChFi3d_ReparamPcurv(0., 1., PC2);
@@ -3420,7 +3632,9 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
                             false,
                             false);
         if (pointuon2)
+        {
           cursd->ChangeIndexOfS2(0);
+        }
       }
       if (tw1)
       {
@@ -3444,51 +3658,75 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
       ChFiDS_CommonPoint&           curp1  = cursd->ChangeVertexLastOnS1();
       ChFiDS_CommonPoint&           nextp1 = nextsd->ChangeVertexFirstOnS1();
       if (cursd->IsOnCurve1())
+      {
         curs1 = cursd->IndexOfC1();
+      }
       else
+      {
         curs1 = cursd->IndexOfS1();
+      }
       if (cursd->IsOnCurve2())
+      {
         curs2 = cursd->IndexOfC2();
+      }
       else
+      {
         curs2 = cursd->IndexOfS2();
+      }
       double              tol1   = std::max(curp1.Tolerance(), nextp1.Tolerance());
       ChFiDS_CommonPoint& curp2  = cursd->ChangeVertexLastOnS2();
       ChFiDS_CommonPoint& nextp2 = nextsd->ChangeVertexFirstOnS2();
       double              tol2   = std::max(curp2.Tolerance(), nextp2.Tolerance());
       if (nextsd->IsOnCurve1())
+      {
         nexts1 = nextsd->IndexOfC1();
+      }
       else
+      {
         nexts1 = nextsd->IndexOfS1();
+      }
       if (nextsd->IsOnCurve2())
+      {
         nexts2 = nextsd->IndexOfC2();
+      }
       else
+      {
         nexts2 = nextsd->IndexOfS2();
+      }
 
       if (!curp1.IsOnArc() && nextp1.IsOnArc())
       {
         curp1 = nextp1;
         if ((curs1 == nexts1) && !nextsd->IsOnCurve1())
+        {
           // Case when it is not possible to pass along the border without leaving
           ChangeTransition(nextp1, curp1, nexts1, myDS);
+        }
       }
       else if (curp1.IsOnArc() && !nextp1.IsOnArc())
       {
         nextp1 = curp1;
         if ((curs1 == nexts1) && !cursd->IsOnCurve1())
+        {
           ChangeTransition(curp1, nextp1, curs1, myDS);
+        }
       }
 
       if (!curp2.IsOnArc() && nextp2.IsOnArc())
       {
         curp2 = nextp2;
         if ((curs2 == nexts2) && !nextsd->IsOnCurve2())
+        {
           ChangeTransition(nextp2, curp2, curs2, myDS);
+        }
       }
       else if (curp2.IsOnArc() && !nextp2.IsOnArc())
       {
         nextp2 = curp2;
         if ((curs2 == nexts2) && !cursd->IsOnCurve2())
+        {
           ChangeTransition(curp2, nextp2, curs2, myDS);
+        }
       }
 
       curp1.SetTolerance(tol1);
@@ -3533,7 +3771,9 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
         nwl    = ElCLib::InPeriod(WL, tolesp, period + tolesp);
         IL     = Spine->Index(nwl, false);
         if (nwl < nwf + tolesp)
+        {
           IL += nbed;
+        }
       }
       else
       {
@@ -3545,7 +3785,9 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
         // fast processing
         int IFloc = IF;
         if (periodic)
+        {
           IFloc = (IF - 1) % nbed + 1;
+        }
         const TopoDS_Edge& Ej = Spine->Edges(IFloc);
         for (i = 1; i <= len; i++)
         {
@@ -3553,7 +3795,9 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
           double                        fp    = cursd->FirstSpineParam();
           double                        lp    = cursd->LastSpineParam();
           if (lp < WF + tolesp || fp > WL - tolesp)
+          {
             continue;
+          }
           if (!myEVIMap.IsBound(Ej))
           {
             NCollection_List<int> li;
@@ -3569,10 +3813,14 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
         {
           int iloc = i;
           if (periodic)
+          {
             iloc = (i - 1) % nbed + 1;
+          }
           double wi = Spine->LastParameter(iloc);
           if (periodic)
+          {
             wi = ElCLib::InPeriod(wi, WF, WF + period);
+          }
           gp_Pnt              pv = Spine->Value(wi);
           Extrema_LocateExtPC ext(pv, *curhels, wi, 1.e-8);
           wv(i) = wi;
@@ -3589,24 +3837,32 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
           int                           j;
           int                           jf = 0, jl = 0;
           if (lp < WF + tolesp || fp > WL - tolesp)
+          {
             continue;
+          }
           for (j = IF; j < IL; j++)
           {
             jf = j;
             if (fp < wv(j) - tolesp)
+            {
               break;
+            }
           }
           for (j = IF; j < IL; j++)
           {
             jl = j;
             if (lp < wv(j) + tolesp)
+            {
               break;
+            }
           }
           for (j = jf; j <= jl; j++)
           {
             int jloc = j;
             if (periodic)
+            {
               jloc = (j - 1) % nbed + 1;
+            }
             const TopoDS_Edge& Ej = Spine->Edges(jloc);
             if (!myEVIMap.IsBound(Ej))
             {
@@ -3631,10 +3887,14 @@ void ChFi3d_Builder::PerformSetOfSurf(occ::handle<ChFiDS_Stripe>& Stripe, const 
   int                              SI = ChFi3d_SolidIndex(sp, DStr, myESoMap, myEShMap);
   Stripe->SetSolidIndex(SI);
   if (!sp->SplitDone())
+  {
     PerformSetOfKPart(Stripe, Simul);
+  }
 
   PerformSetOfKGen(Stripe, Simul);
 
   if (!Simul)
+  {
     ChFi3d_MakeExtremities(Stripe, DStr, myEFMap, tolapp3d, tol2d);
+  }
 }

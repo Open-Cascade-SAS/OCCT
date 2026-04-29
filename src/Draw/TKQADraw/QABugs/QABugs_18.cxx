@@ -18,16 +18,11 @@
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <AIS_Shape.hxx>
-
-#include <V3d_View.hxx>
 
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <DDocStd.hxx>
 
-#include <Resource_Manager.hxx>
 #include <TopoDS_Wire.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -37,9 +32,6 @@
 #include <Geom_Curve.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Standard_Assert.hxx>
-
-#define DEFAULT_COLOR Quantity_NOC_GOLDENROD
 
 static int OCC267(Draw_Interpretor& di, int argc, const char** argv)
 {
@@ -51,7 +43,9 @@ static int OCC267(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(argv[1], D))
+  {
     return 1;
+  }
   TCollection_ExtendedString       path(argv[2]);
   occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
 
@@ -63,71 +57,6 @@ static int OCC267(Draw_Interpretor& di, int argc, const char** argv)
   else
   {
     di << "OCC267 : PCDM_StoreStatus = Bad_Store_Status\n";
-  }
-
-  return 0;
-}
-
-static int OCC181(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 5)
-  {
-    di << "ERROR OCC181: Usage : " << argv[0] << " FileName path1 path2 verbose=0/1\n";
-    return 1;
-  }
-  const char* aFileName  = argv[1];
-  const char* aDir1      = argv[2];
-  const char* aDir2      = argv[3];
-  int         verboseInt = Draw::Atoi(argv[4]);
-
-  bool verboseBool = false;
-  if (verboseInt != 0)
-  {
-    verboseBool = true;
-  }
-
-  TCollection_AsciiString Env1, Env2, CSF_ = "set env(CSF_";
-  Env1 = CSF_ + aFileName + "UserDefaults) " + aDir1;
-  Env2 = CSF_ + aFileName + "UserDefaults) " + aDir2;
-
-  di.Eval(Env1.ToCString());
-
-  Resource_Manager aManager(aFileName, verboseBool);
-
-  di.Eval(Env2.ToCString());
-
-  bool aStatus = aManager.Save();
-
-  if (aStatus)
-  {
-    di << "\nOCC181 : Status = TRUE\n";
-  }
-  else
-  {
-    di << "\nOCC181 : Status = FALSE\n";
-  }
-
-  return 0;
-}
-
-static int OCC27849(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " <environment variable name> <resource name>\n";
-    return 1;
-  }
-  const char* aEnvName = argv[1];
-  const char* aResName = argv[2];
-
-  Resource_Manager aManager(aEnvName);
-  if (aManager.Find(aResName))
-  {
-    di << aManager.Value(aResName);
-  }
-  else
-  {
-    di << "Error: could not find resource " << aResName;
   }
 
   return 0;
@@ -177,7 +106,9 @@ static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
     TopoDS_Edge   edge = TopoDS::Edge(wire_exp.Current());
     TopExp::Vertices(edge, ve1, ve2);
     if (vw1.IsSame(ve1) || vw1.IsSame(ve2))
+    {
       vlast = vw1;
+    }
     else
     {
       Standard_ASSERT_RAISE(vw2.IsSame(ve1) || vw2.IsSame(ve2), "Disconnected vertices");
@@ -220,7 +151,9 @@ static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
     curve.Load(acurve);
     algo.Initialize(curve, l, newufirst, newulast);
     if (!algo.IsDone())
+    {
       di << "Not Done!!!" << "\n";
+    }
     int maxIndex = algo.NbPoints();
     for (int Index = 1; Index <= maxIndex; Index++)
     {
@@ -262,17 +195,9 @@ void QABugs::Commands_18(Draw_Interpretor& theCommands)
   const char* group = "QABugs";
 
   theCommands.Add("OCC267", "OCC267 DOC path", __FILE__, OCC267, group);
-  theCommands.Add("OCC181", "OCC181 FileName path1 path2 verbose=0/1", __FILE__, OCC181, group);
-  theCommands.Add("OCC27849",
-                  "OCC27849 <resource env name> <resource name>",
-                  __FILE__,
-                  OCC27849,
-                  group);
   theCommands.Add("OCC367",
                   "OCC367 shape step goodX goodY goodZ percent_tolerance",
                   __FILE__,
                   OCC367,
                   group);
-
-  return;
 }

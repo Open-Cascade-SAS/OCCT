@@ -59,13 +59,19 @@ const char* IGESSelect_SignLevelNumber::Value(
     //    if (level < 0) return (thecountmode ? " NO LEVEL" : "/0/");
     laval.Clear();
     if (thecountmode)
+    {
       Sprintf(carlev, "%7d", level);
+    }
     else
+    {
       Sprintf(carlev, "/%d/", level);
+    }
     laval.AssignCat(carlev);
   }
   else if (thecountmode)
+  {
     return "LEVEL LIST";
+  }
   else
   {
     int i, nblev = levelist->NbLevelNumbers();

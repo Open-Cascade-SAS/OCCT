@@ -39,7 +39,9 @@ void RWStepKinematics_RWGearPair::ReadStep(const occ::handle<StepData_StepReader
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 11, theArch, "gear_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -149,7 +151,9 @@ void RWStepKinematics_RWGearPair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 

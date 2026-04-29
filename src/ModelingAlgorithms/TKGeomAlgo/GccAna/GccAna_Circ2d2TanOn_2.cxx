@@ -118,17 +118,25 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     gp_Dir2d dc1(originL1.XY() - pbid.XY());
     double   sign1 = dc1.Dot(gp_Dir2d(-L1.Direction().Y(), L1.Direction().X()));
     if (sign1 > 0.0)
+    {
       ok = (Qualified1.IsUnqualified() || Qualified1.IsOutside());
+    }
     else
+    {
       ok = (Qualified1.IsUnqualified() || Qualified1.IsEnclosed());
+    }
 
     // solution Outside or Enclosed / L2
     gp_Dir2d dc2(originL2.XY() - pbid.XY());
     double   sign2 = dc2.Dot(gp_Dir2d(-L2.Direction().Y(), L2.Direction().X()));
     if (sign2 > 0.0)
+    {
       ok = ok && (Qualified2.IsUnqualified() || Qualified2.IsOutside());
+    }
     else
+    {
       ok = ok && (Qualified2.IsUnqualified() || Qualified2.IsEnclosed());
+    }
 
     if (ok)
     {
@@ -136,15 +144,23 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
       dc1          = gp_Dir2d(sign1 * gp_XY(-L1.Direction().Y(), L1.Direction().X()));
       pnttg1sol(i) = gp_Pnt2d(pbid.XY() + Radius * dc1.XY());
       if (sign1 > 0.0)
+      {
         qualifier1(i) = GccEnt_outside;
+      }
       else
+      {
         qualifier1(i) = GccEnt_enclosed;
+      }
       dc2          = gp_Dir2d(sign2 * gp_XY(-L2.Direction().Y(), L2.Direction().X()));
       pnttg2sol(i) = gp_Pnt2d(pbid.XY() + Radius * dc2.XY());
       if (sign2 > 0.0)
+      {
         qualifier2(i) = GccEnt_outside;
+      }
       else
+      {
         qualifier2(i) = GccEnt_enclosed;
+      }
       pntcen(i)  = pbid;
       par1sol(i) = ElCLib::Parameter(cirsol(i), pnttg1sol(i));
       pararg1(i) = ElCLib::Parameter(L1, pnttg1sol(i));
@@ -156,7 +172,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     {
       // solution to be rejected
       if (i == NbrSol)
+      {
         NbrSol--;
+      }
       else
       {
         for (int k = i + 1; k <= NbrSol; k++)

@@ -135,14 +135,18 @@ bool Extrema_ExtElSS::IsDone() const
 bool Extrema_ExtElSS::IsParallel() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return myIsPar;
 }
 
 int Extrema_ExtElSS::NbExt() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return myNbExt;
 }
 

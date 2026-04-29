@@ -36,7 +36,9 @@ void RWStepBasic_RWCertificationType::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "certification_type"))
+  {
     return;
+  }
 
   // Own fields of CertificationType
 

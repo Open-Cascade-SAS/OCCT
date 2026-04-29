@@ -80,7 +80,9 @@ static bool IsPlanar(const Adaptor3d_Surface& theS)
   if ((aST == GeomAbs_BSplineSurface) || (aST == GeomAbs_BezierSurface))
   {
     if ((theS.UDegree() != 1) || (theS.VDegree() != 1))
+    {
       return false;
+    }
 
     // Indeed, surfaces with C0-continuity and degree==1, may be
     // represented with set of points. It will be possible made
@@ -133,7 +135,9 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
   }
 
   if (aRetVal == 0)
+  {
     return 0;
+  }
 
   // analyze the faces of the shape on planarity and existence of triangulation
   TopLoc_Location aLoc;
@@ -145,8 +149,10 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
     if (!IsPlanar(anAS))
     {
       if (!theIsTriangulationUsed)
+      {
         // not planar and triangulation usage disabled
         return 0;
+      }
     }
     else
     {
@@ -160,8 +166,10 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
           if (!IsLinear(anAC))
           {
             if (!theIsTriangulationUsed)
+            {
               // not linear and triangulation usage disabled
               return 0;
+            }
 
             break;
           }
@@ -169,8 +177,10 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
       }
 
       if (!anExpE.More())
+      {
         // skip planar face with linear edges as its vertices have already been added
         continue;
+      }
     }
 
     // Use triangulation of the face
@@ -217,12 +227,16 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
     }
 
     if (!theIsTriangulationUsed)
+    {
       // not linear and triangulation usage disabled
       return 0;
+    }
 
     const occ::handle<Poly_Polygon3D>& aPolygon = BRep_Tool::Polygon3D(anE, aLoc);
     if (aPolygon.IsNull())
+    {
       return 0;
+    }
 
     const int                         aCNode    = aPolygon->NbNodes();
     const NCollection_Array1<gp_Pnt>& aNodesArr = aPolygon->Nodes();
@@ -260,13 +274,19 @@ static int IsWCS(const gp_Dir& theDir)
   const double aVx = aY * aY + aZ * aZ, aVy = aX * aX + aZ * aZ, aVz = aX * aX + aY * aY;
 
   if (aVz < aToler)
+  {
     return 3; // Z-axis
+  }
 
   if (aVy < aToler)
+  {
     return 2; // Y-axis
+  }
 
   if (aVx < aToler)
+  {
     return 1; // X-axis
+  }
 
   return 0;
 }
@@ -286,7 +306,9 @@ static bool CheckPoints(const TopoDS_Shape& theS,
   const int aNbPnts = PointsForOBB(theS, theIsTriangulationUsed);
 
   if (aNbPnts < 1)
+  {
     return false;
+  }
 
   NCollection_Array1<gp_Pnt> anArrPnts(0, theOBB.IsVoid() ? aNbPnts - 1 : aNbPnts + 7);
   NCollection_Array1<double> anArrOfTolerances;
@@ -467,7 +489,9 @@ void BRepBndLib::AddOBB(const TopoDS_Shape& theS,
                         const bool          theIsShapeToleranceUsed)
 {
   if (CheckPoints(theS, theIsTriangulationUsed, theIsOptimal, theIsShapeToleranceUsed, theOBB))
+  {
     return;
+  }
 
   ComputePCA(theS, theOBB, theIsTriangulationUsed, theIsOptimal, theIsShapeToleranceUsed);
 }

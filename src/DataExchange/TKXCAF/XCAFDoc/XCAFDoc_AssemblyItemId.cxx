@@ -43,7 +43,9 @@ void XCAFDoc_AssemblyItemId::Init(const TCollection_AsciiString& theString)
   {
     TCollection_AsciiString anEntry = theString.Token("/", iEntry);
     if (anEntry.IsEmpty())
+    {
       break;
+    }
 
     myPath.Append(anEntry);
   }
@@ -62,13 +64,17 @@ void XCAFDoc_AssemblyItemId::Nullify()
 bool XCAFDoc_AssemblyItemId::IsChild(const XCAFDoc_AssemblyItemId& theOther) const
 {
   if (myPath.Size() <= theOther.myPath.Size())
+  {
     return false;
+  }
 
   NCollection_List<TCollection_AsciiString>::Iterator anIt(myPath), anItOther(theOther.myPath);
   for (; anItOther.More(); anIt.Next(), anItOther.Next())
   {
     if (anIt.Value() != anItOther.Value())
+    {
       return false;
+    }
   }
 
   return true;
@@ -82,16 +88,22 @@ bool XCAFDoc_AssemblyItemId::IsDirectChild(const XCAFDoc_AssemblyItemId& theOthe
 bool XCAFDoc_AssemblyItemId::IsEqual(const XCAFDoc_AssemblyItemId& theOther) const
 {
   if (this == &theOther)
+  {
     return true;
+  }
 
   if (myPath.Size() != theOther.myPath.Size())
+  {
     return false;
+  }
 
   NCollection_List<TCollection_AsciiString>::Iterator anIt(myPath), anItOther(theOther.myPath);
   for (; anIt.More() && anItOther.More(); anIt.Next(), anItOther.Next())
   {
     if (anIt.Value() != anItOther.Value())
+    {
       return false;
+    }
   }
 
   return true;

@@ -8,8 +8,10 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_CacheView.hxx
   BRepGraph_Builder.cxx
   BRepGraph_Builder.hxx
-  BRepGraph_BuilderView.cxx
-  BRepGraph_BuilderView.hxx
+  BRepGraph_EditorView.cxx
+  BRepGraph_EditorView.hxx
+  BRepGraph_EditorView_Mut.cxx
+  BRepGraph_EditorView_Setters.cxx
   BRepGraph_DefsIterator.hxx
   BRepGraph_ChildExplorer.cxx
   BRepGraph_ChildExplorer.hxx
@@ -28,19 +30,24 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_LayerRegistry.cxx
   BRepGraph_LayerRegistry.hxx
   BRepGraph_DeferredScope.hxx
+  BRepGraph_MeshCache.cxx
+  BRepGraph_MeshCache.hxx
+  BRepGraph_MeshView.cxx
+  BRepGraph_MeshView.hxx
   BRepGraph_MutGuard.hxx
   BRepGraph_NodeId.hxx
-  BRepGraph_ParamLayer.cxx
-  BRepGraph_ParamLayer.hxx
+  BRepGraph_LayerParam.cxx
+  BRepGraph_LayerParam.hxx
   BRepGraph_ParallelPolicy.hxx
   BRepGraph_RefId.hxx
   BRepGraph_RefUID.hxx
   BRepGraph_RelatedIterator.hxx
+  BRepGraph_ReverseIterator.hxx
   BRepGraph_RefsIterator.hxx
   BRepGraph_RefsView.cxx
   BRepGraph_RefsView.hxx
-  BRepGraph_RegularityLayer.cxx
-  BRepGraph_RegularityLayer.hxx
+  BRepGraph_LayerRegularity.cxx
+  BRepGraph_LayerRegularity.hxx
   BRepGraph_RepId.hxx
   BRepGraph_ShapesView.cxx
   BRepGraph_ShapesView.hxx

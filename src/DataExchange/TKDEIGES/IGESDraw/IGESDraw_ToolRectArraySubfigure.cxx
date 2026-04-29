@@ -56,11 +56,14 @@ void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(
   // clang-format off
   PR.ReadEntity(IR, PR.Current(), "Base Entity", tempBaseEntity); //szv#4:S4163:12Mar99 `st=` not needed
 
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadReal(PR.Current(), "Scale Factor", tempScaleFactor); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     tempScaleFactor = 1.0; // Setting to default value of 1.0
+  }
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadXYZ(PR.CurrentList(1, 3), "Lower Left Coordinate Of Array", tempLowerLeftCorner);
@@ -76,9 +79,13 @@ void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(
   {
     // Initialise HArray1 only if there is no error reading its Length
     if (tempListCount > 0)
+    {
       tempPositions = new NCollection_HArray1<int>(1, tempListCount);
+    }
     else if (tempListCount < 0)
+    {
       PR.AddFail("DO-DONT List Count : Less than Zero");
+    }
   }
 
   // clang-format off
@@ -95,7 +102,9 @@ void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(
       // st = PR.ReadInteger(PR.Current(), "Number Of Position To Process",
       // tempPos); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "Number Of Position To Process", tempPos))
+      {
         tempPositions->SetValue(I, tempPos);
+      }
     }
   }
 
@@ -131,7 +140,9 @@ void IGESDraw_ToolRectArraySubfigure::WriteOwnParams(
   int I;
   int up = ent->ListCount();
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->ListPosition(I));
+  }
 }
 
 void IGESDraw_ToolRectArraySubfigure::OwnShared(const occ::handle<IGESDraw_RectArraySubfigure>& ent,
@@ -161,7 +172,9 @@ void IGESDraw_ToolRectArraySubfigure::OwnCopy(
     tempPositions = new NCollection_HArray1<int>(1, tempListCount);
     int I;
     for (I = 1; I <= tempListCount; I++)
+    {
       tempPositions->SetValue(I, another->ListPosition(I));
+    }
   }
 
   ent->Init(tempBaseEntity,
@@ -217,10 +230,14 @@ void IGESDraw_ToolRectArraySubfigure::OwnDump(const occ::handle<IGESDraw_RectArr
     << "Rotation Angle (in radians)         : " << ent->RotationAngle() << "\n"
     << "Do-Dont Flag : ";
   if (ent->DoDontFlag())
+  {
     S << "(1)Dont  ";
+  }
   else
+  {
     S << "(0)Do  ";
+  }
   S << "Do-Dont List : ";
   IGESData_DumpVals(S, level, 1, ent->ListCount(), ent->ListPosition);
-  S << std::endl;
+  S << '\n';
 }

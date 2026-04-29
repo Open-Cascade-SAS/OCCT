@@ -735,7 +735,9 @@ void OpenGl_GraphicDriver::RemoveZLayer(const Graphic3d_ZLayerId theLayerId)
   {
     OpenGl_Structure* aStruct = aStructIt.ChangeValue();
     if (aStruct->ZLayer() == theLayerId)
+    {
       aStruct->SetZLayer(Graphic3d_ZLayerId_Default);
+    }
   }
 }
 

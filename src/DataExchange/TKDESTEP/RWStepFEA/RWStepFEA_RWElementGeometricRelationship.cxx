@@ -36,7 +36,9 @@ void RWStepFEA_RWElementGeometricRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "element_geometric_relationship"))
+  {
     return;
+  }
 
   // Own fields of ElementGeometricRelationship
 

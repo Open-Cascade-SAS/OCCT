@@ -224,7 +224,7 @@ void OpenGl_LayerList::InsertLayerBefore(const Graphic3d_ZLayerId        theNewL
   }
 
   myLayerIds.Bind(theNewLayerId, aNewLayer);
-  myTransparentToProcess.Allocate(myLayers.Size());
+  myTransparentToProcess.Allocate(myLayers.Length());
 }
 
 //=================================================================================================
@@ -261,7 +261,7 @@ void OpenGl_LayerList::InsertLayerAfter(const Graphic3d_ZLayerId        theNewLa
   }
 
   myLayerIds.Bind(theNewLayerId, aNewLayer);
-  myTransparentToProcess.Allocate(myLayers.Size());
+  myTransparentToProcess.Allocate(myLayers.Length());
 }
 
 //=================================================================================================
@@ -281,7 +281,7 @@ void OpenGl_LayerList::RemoveLayer(const Graphic3d_ZLayerId theLayerId)
   myLayers.Remove(aLayerToRemove);
   myLayerIds.UnBind(theLayerId);
 
-  myTransparentToProcess.Allocate(myLayers.Size());
+  myTransparentToProcess.Allocate(myLayers.Length());
 }
 
 //=================================================================================================

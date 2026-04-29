@@ -251,7 +251,9 @@ const Standard_GUID& TDataStd_RealList::ID() const
 void TDataStd_RealList::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
   Backup();
   myID = theGuid;
 }
@@ -308,7 +310,7 @@ Standard_OStream& TDataStd_RealList::Dump(Standard_OStream& anOS) const
   char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
-  anOS << std::endl;
+  anOS << '\n';
   return anOS;
 }
 

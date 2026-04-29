@@ -127,7 +127,9 @@ void Intrv_Intervals::Subtract(const Intrv_Intervals& Tool)
 {
   int index;
   for (index = 1; index <= Tool.myInter.Length(); index++)
+  {
     Subtract(Tool.myInter(index));
+  }
 }
 
 //=================================================================================================
@@ -211,7 +213,9 @@ void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
     index++;
   }
   if (!Inserted)
+  {
     myInter.Append(Tins);
+  }
 }
 
 //=================================================================================================
@@ -220,7 +224,9 @@ void Intrv_Intervals::Unite(const Intrv_Intervals& Tool)
 {
   int index;
   for (index = 1; index <= Tool.myInter.Length(); index++)
+  {
     Unite(Tool.myInter(index));
+  }
 }
 
 //=================================================================================================

@@ -78,7 +78,9 @@ public:
     {
       OCC_CATCH_SIGNALS
       if (!CheckParameter(theX))
+      {
         return false;
+      }
 
       const gp_Pnt aP1(myCurve1.Value(theX)), aP2(myCurve2.Value(theX));
 
@@ -383,7 +385,7 @@ void GeomLib_CheckCurveOnSurface::Perform(
 
     const int aNbThreads =
       myIsParallel
-        ? std::min(anIntervals.Size(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch())
+        ? std::min(anIntervals.Length(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch())
         : 1;
     Array1OfHCurve aCurveArray(0, aNbThreads - 1);
     Array1OfHCurve aCurveOnSurfaceArray(0, aNbThreads - 1);
@@ -564,7 +566,9 @@ int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
     int anIndex3D = anArrKnots3D->Lower(), anIndex2D = anArrKnots2D->Lower();
 
     if (theSubIntervals)
+    {
       theSubIntervals->ChangeValue(aNbSubIntervals) = theFirst;
+    }
 
     while ((anIndex3D <= anIndMax3D) && (anIndex2D <= anIndMax2D))
     {
@@ -578,7 +582,9 @@ int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
           aNbSubIntervals++;
 
           if (theSubIntervals)
+          {
             theSubIntervals->ChangeValue(aNbSubIntervals) = aVal3D;
+          }
         }
 
         anIndex3D++;
@@ -595,7 +601,9 @@ int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
           aNbSubIntervals++;
 
           if (theSubIntervals)
+          {
             theSubIntervals->ChangeValue(aNbSubIntervals) = aVal2D;
+          }
         }
 
         anIndex2D++;
@@ -603,7 +611,9 @@ int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
     }
 
     if (theSubIntervals)
+    {
       theSubIntervals->ChangeValue(aNbSubIntervals + 1) = theLast;
+    }
 
     if (!aBS3DCurv.IsNull())
     {
@@ -641,7 +651,9 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
 {
   const double aDeltaParam = theParSup(1) - theParInf(1);
   if (aDeltaParam < Precision::PConfusion())
+  {
     return false;
+  }
 
   math_Vector aStepPar(1, 1);
   aStepPar(1) = theEpsilon * aDeltaParam;
@@ -658,12 +670,16 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
   {
     double aVal = RealLast();
     if (!theFunction.Value(aPrm, aVal))
+    {
       continue;
+    }
 
     PSO_Particle* aParticle = aParticles.GetWorstParticle();
 
     if (aVal > aParticle->BestDistance)
+    {
       continue;
+    }
 
     aParticle->Position[0]     = aPrm;
     aParticle->BestPosition[0] = aPrm;

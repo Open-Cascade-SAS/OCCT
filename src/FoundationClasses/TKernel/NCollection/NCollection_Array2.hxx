@@ -39,6 +39,13 @@
  *
  *            for (i = A.LowerRow(); i <= A.UpperRow(); i++)
  *              for (j = A.LowerCol(); j <= A.UpperCol(); j++)
+ *
+ * Zero-based (size_t) construction mode:
+ *   NCollection_Array2(size_t theNbRows, size_t theNbCols) creates a zero-based array
+ *   (LowerRow()==0, LowerCol()==0). In this mode At()/ChangeAt() and STL iterators are
+ *   the preferred access path -- they address elements directly without any offset subtraction.
+ *   Buffer-reuse variant NCollection_Array2(pointer, size_t, size_t) wraps an existing
+ *   flat row-major buffer and does NOT own the memory.
  */
 template <class TheItemType>
 class NCollection_Array2 : public NCollection_Array1<TheItemType>
@@ -111,23 +118,6 @@ public:
   {
   }
 
-  //! Constructor
-  explicit NCollection_Array2(const allocator_type& theAlloc,
-                              const int             theRowLower,
-                              const int             theRowUpper,
-                              const int             theColLower,
-                              const int             theColUpper)
-      : NCollection_Array1<TheItemType>(
-          theAlloc,
-          BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
-          LastPosition(theRowLower, theRowUpper, theColLower, theColUpper)),
-        myLowerRow(theRowLower),
-        mySizeRow(theRowUpper - theRowLower + 1),
-        myLowerCol(theColLower),
-        mySizeCol(theColUpper - theColLower + 1)
-  {
-  }
-
   //! Copy constructor
   NCollection_Array2(const NCollection_Array2& theOther)
       : NCollection_Array1<TheItemType>(theOther),
@@ -169,10 +159,33 @@ public:
   {
   }
 
-  //! Size (number of items)
-  int Size() const noexcept { return Length(); }
+  //! Zero-based constructor: allocates theNbRows x theNbCols elements with lower bounds 0.
+  //! Use At()/ChangeAt() or STL iterators for optimal access (no offset subtraction).
+  explicit NCollection_Array2(const size_t theNbRows, const size_t theNbCols)
+      : NCollection_Array1<TheItemType>(theNbRows * theNbCols),
+        myLowerRow(0),
+        mySizeRow(theNbRows),
+        myLowerCol(0),
+        mySizeCol(theNbCols)
+  {
+  }
 
-  //! Length (number of items)
+  //! Zero-based buffer-reuse constructor: wraps an existing flat row-major C array.
+  //! The array does NOT own the buffer and will NOT free it on destruction.
+  //! Use At()/ChangeAt() or STL iterators for optimal access (no offset subtraction).
+  explicit NCollection_Array2(pointer theBegin, const size_t theNbRows, const size_t theNbCols)
+      : NCollection_Array1<TheItemType>(theBegin, theNbRows * theNbCols),
+        myLowerRow(0),
+        mySizeRow(theNbRows),
+        myLowerCol(0),
+        mySizeCol(theNbCols)
+  {
+  }
+
+  //! Size (number of items).
+  size_t Size() const noexcept { return mySizeRow * mySizeCol; }
+
+  //! Length (legacy int-returning API).
   int Length() const noexcept { return NbRows() * NbColumns(); }
 
   //! Returns number of rows
@@ -305,6 +318,26 @@ public:
     NCollection_Array1<TheItemType>::at(aPos) = std::forward<TheItemType>(theItem);
   }
 
+  //! 0-based checked access independent of LowerRow()/LowerCol().
+  //! @param[in] theRow 0-based row index in [0, NbRows()-1]
+  //! @param[in] theCol 0-based column index in [0, NbColumns()-1]
+  const_reference At(const size_t theRow, const size_t theCol) const
+  {
+    Standard_OutOfRange_Raise_if(theRow >= mySizeRow || theCol >= mySizeCol,
+                                 "NCollection_Array2::At");
+    return NCollection_Array1<TheItemType>::at(theRow * mySizeCol + theCol);
+  }
+
+  //! 0-based checked mutable access independent of LowerRow()/LowerCol().
+  //! @param[in] theRow 0-based row index in [0, NbRows()-1]
+  //! @param[in] theCol 0-based column index in [0, NbColumns()-1]
+  reference ChangeAt(const size_t theRow, const size_t theCol)
+  {
+    Standard_OutOfRange_Raise_if(theRow >= mySizeRow || theCol >= mySizeCol,
+                                 "NCollection_Array2::ChangeAt");
+    return NCollection_Array1<TheItemType>::at(theRow * mySizeCol + theCol);
+  }
+
   //! Emplace value at the specified row and column, constructing it in-place
   //! @param theRow row index at which to emplace the value
   //! @param theCol column index at which to emplace the value
@@ -365,6 +398,34 @@ public:
       return;
     }
     resizeImpl<true>(theRowLower, theRowUpper, theColLower, theColUpper);
+  }
+
+  //! Zero-based Resize: resizes to theNbRows x theNbCols, keeping lower bounds unchanged.
+  //! No re-allocation is done if dimensions are unchanged.
+  //! @param theNbRows new number of rows
+  //! @param theNbCols new number of columns
+  //! @param theToCopyData flag to copy existing data into new array
+  void Resize(const size_t theNbRows, const size_t theNbCols, const bool theToCopyData)
+  {
+    Resize(myLowerRow,
+           myLowerRow + static_cast<int>(theNbRows) - 1,
+           myLowerCol,
+           myLowerCol + static_cast<int>(theNbCols) - 1,
+           theToCopyData);
+  }
+
+  //! Zero-based ResizeWithTrim: resizes preserving 2D layout, keeping lower bounds unchanged.
+  //! No re-allocation is done if dimensions are unchanged.
+  //! @param theNbRows new number of rows
+  //! @param theNbCols new number of columns
+  //! @param theToCopyData flag to copy existing data into new array
+  void ResizeWithTrim(const size_t theNbRows, const size_t theNbCols, const bool theToCopyData)
+  {
+    ResizeWithTrim(myLowerRow,
+                   myLowerRow + static_cast<int>(theNbRows) - 1,
+                   myLowerCol,
+                   myLowerCol + static_cast<int>(theNbCols) - 1,
+                   theToCopyData);
   }
 
 protected:

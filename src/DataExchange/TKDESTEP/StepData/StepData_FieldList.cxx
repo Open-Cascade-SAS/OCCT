@@ -44,17 +44,25 @@ void StepData_FieldList::FillShared(Interface_EntityIterator& iter) const
   {
     const StepData_Field& fi = Field(i);
     if (fi.Kind() != 7)
+    {
       continue; // KindEntity
+    }
     int i1, i2, nb1 = 1, nb2 = 1, ari = fi.Arity();
     if (ari == 1)
+    {
       nb1 = fi.Length();
+    }
     if (ari == 2)
     {
       nb1 = fi.Length(1);
       nb2 = fi.Length(2);
     }
     for (i1 = 1; i1 <= nb1; i1++)
+    {
       for (i2 = 1; i2 <= nb2; i2++)
+      {
         iter.AddItem(fi.Entity(i1, i2));
+      }
+    }
   }
 }

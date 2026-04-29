@@ -66,19 +66,27 @@ ChFi2d_ConstructionError ChFi2d::FindConnectedEdges(const TopoDS_Face&   F,
       iterator.Next();
     } // if ...
     else
+    {
       return ChFi2d_ConnexionError;
+    }
     if (iterator.More())
     {
       E2 = TopoDS::Edge(iterator.Value());
       iterator.Next();
     } // if ...
     else
+    {
       return ChFi2d_ConnexionError;
+    }
 
     if (iterator.More())
+    {
       return ChFi2d_ConnexionError;
+    }
   } // if (isFind)
   else
+  {
     return ChFi2d_ConnexionError;
+  }
   return ChFi2d_IsDone;
 } // FindConnectedEdges

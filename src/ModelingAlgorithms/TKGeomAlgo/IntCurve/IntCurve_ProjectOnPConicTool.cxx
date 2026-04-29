@@ -78,9 +78,13 @@ double IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePCo
   if (ParamInf != ParamSup)
   {
     if (Param < ParamInf)
+    {
       return (ParamInf);
+    }
     if (Param > ParamSup)
+    {
       return (ParamSup);
+    }
   }
   return (Param);
 }

@@ -69,7 +69,9 @@ void CDF_Store::Init()
 occ::handle<TCollection_HExtendedString> CDF_Store::Folder() const
 {
   if (myCurrentDocument->HasRequestedFolder())
+  {
     return new TCollection_HExtendedString(myCurrentDocument->RequestedFolder());
+  }
   return blank;
 }
 
@@ -92,7 +94,9 @@ bool CDF_Store::SetFolder(const TCollection_ExtendedString& aFolder)
 
   // if the last character is the folder separator, remove it.
   if (aLen > 1 && (theFolder.Value(aLen) == '/' || theFolder.Value(aLen) == '\\'))
+  {
     theFolder.Trunc(aLen - 1);
+  }
 
   if (theMetaDataDriver->FindFolder(theFolder))
   {
@@ -115,7 +119,9 @@ CDF_StoreSetNameStatus CDF_Store::SetName(const TCollection_ExtendedString& aNam
   {
     occ::handle<CDM_MetaData> E = myCurrentDocument->MetaData();
     if (E->Folder() == myCurrentDocument->RequestedFolder() && E->Name() == theName)
+    {
       return CDF_SSNS_OK;
+    }
   }
 
   if (myCurrentDocument->HasRequestedFolder())
@@ -123,7 +129,9 @@ CDF_StoreSetNameStatus CDF_Store::SetName(const TCollection_ExtendedString& aNam
     if (theMetaDataDriver->Find(myCurrentDocument->RequestedFolder(), theName))
     {
       if (theMetaDataDriver->MetaData(myCurrentDocument->RequestedFolder(), theName)->IsRetrieved())
+      {
         return CDF_SSNS_OpenDocument;
+      }
       else
       {
         myCurrentDocument->SetRequestedName(theName);
@@ -148,7 +156,9 @@ void CDF_Store::Realize(const Message_ProgressRange& theRange)
   myText   = "";
   myStatus = myList->Store(m, myText, theRange);
   if (myStatus == PCDM_SS_OK)
+  {
     myPath = m->Path();
+  }
 }
 
 const char16_t* CDF_Store::Path() const
@@ -159,14 +169,18 @@ const char16_t* CDF_Store::Path() const
 occ::handle<TCollection_HExtendedString> CDF_Store::MetaDataPath() const
 {
   if (myCurrentDocument->IsStored())
+  {
     return new TCollection_HExtendedString(myCurrentDocument->MetaData()->Path());
+  }
   return blank;
 }
 
 occ::handle<TCollection_HExtendedString> CDF_Store::Description() const
 {
   if (myMainDocument->FindDescription())
+  {
     return new TCollection_HExtendedString(myMainDocument->Description());
+  }
   return blank;
 }
 
@@ -183,7 +197,9 @@ bool CDF_Store::IsModified() const
 bool CDF_Store::CurrentIsConsistent() const
 {
   if (!myCurrentDocument->IsStored())
+  {
     return myCurrentDocument->HasRequestedFolder();
+  }
   return true;
 }
 
@@ -200,7 +216,9 @@ bool CDF_Store::HasAPreviousVersion() const
 occ::handle<TCollection_HExtendedString> CDF_Store::PreviousVersion() const
 {
   if (myCurrentDocument->HasRequestedPreviousVersion())
+  {
     return new TCollection_HExtendedString(myCurrentDocument->RequestedPreviousVersion());
+  }
   return blank;
 }
 
@@ -219,10 +237,14 @@ bool CDF_Store::SetPreviousVersion(const char16_t* const aPreviousVersion)
         return true;
       }
       else
+      {
         return false;
+      }
     }
     else
+    {
       return false;
+    }
   }
   return true;
 }

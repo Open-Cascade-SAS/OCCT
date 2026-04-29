@@ -30,7 +30,9 @@ Transfer_IteratorOfProcessForTransient::Transfer_IteratorOfProcessForTransient(
 
 {
   if (withstarts)
+  {
     thestarts = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  }
 }
 
 //=================================================================================================
@@ -38,8 +40,10 @@ Transfer_IteratorOfProcessForTransient::Transfer_IteratorOfProcessForTransient(
 void Transfer_IteratorOfProcessForTransient::Add(const occ::handle<Transfer_Binder>& binder)
 {
   if (!thestarts.IsNull())
+  {
     throw Standard_NoSuchObject(
       "Transfer_IteratorOfProcessForTransient : Add, Starting Object required not provided");
+  }
   AddItem(binder);
 }
 
@@ -50,7 +54,9 @@ void Transfer_IteratorOfProcessForTransient::Add(const occ::handle<Transfer_Bind
 {
   AddItem(binder);
   if (!thestarts.IsNull())
+  {
     thestarts->Append(start);
+  }
 }
 
 //=================================================================================================
@@ -60,10 +66,14 @@ void Transfer_IteratorOfProcessForTransient::Filter(
   const bool                                                                 keep)
 {
   if (list.IsNull() || thestarts.IsNull())
+  {
     return;
+  }
   int i, j, nb = thestarts->Length();
   if (nb == 0)
+  {
     return;
+  }
   occ::handle<Transfer_Binder>                                                              factice;
   NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Transfer_Binder>> amap(
     nb);
@@ -79,7 +89,9 @@ void Transfer_IteratorOfProcessForTransient::Filter(
   {
     j = amap.FindIndex(list->Value(i));
     if (j > 0)
+    {
       SelectItem(j, keep);
+    }
   }
 }
 
@@ -95,6 +107,8 @@ bool Transfer_IteratorOfProcessForTransient::HasStarting() const
 const occ::handle<Standard_Transient>& Transfer_IteratorOfProcessForTransient::Starting() const
 {
   if (thestarts.IsNull())
+  {
     throw Standard_NoSuchObject("TransferIterator : No Starting defined at all");
+  }
   return thestarts->Value(thecurr);
 }

@@ -197,7 +197,9 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
 
       // if U1 and U2 coincide-->do nothing
       if (std::abs(U1 - U2) <= Precision::PConfusion())
+      {
         continue;
+      }
       occ::handle<Geom2d_TrimmedCurve> TrimPCurve = new Geom2d_TrimmedCurve(PCurve, U1, U2);
       anEdgePCurveMap.Add(TopologicalEdge, TrimPCurve);
     }
@@ -270,7 +272,9 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
       {
         ComputeDomains(Index);
         if (IsDone(Index))
+        {
           myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains(Index);
+        }
       }
     }
 
@@ -281,7 +285,9 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
       {
         ComputeDomains(Index);
         if (IsDone(Index))
+        {
           myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains(Index);
+        }
       }
     }
   }
@@ -309,19 +315,19 @@ void DBRep_IsoBuilder::LoadIsos(const occ::handle<DBRep_Face>& Face) const
         switch (Status(UInd))
         {
           case HatchGen_NoProblem:
-            std::cout << " No Problem" << std::endl;
+            std::cout << " No Problem" << '\n';
             break;
           case HatchGen_TrimFailure:
-            std::cout << " Trim Failure" << std::endl;
+            std::cout << " Trim Failure" << '\n';
             break;
           case HatchGen_TransitionFailure:
-            std::cout << " Transition Failure" << std::endl;
+            std::cout << " Transition Failure" << '\n';
             break;
           case HatchGen_IncoherentParity:
-            std::cout << " Incoherent Parity" << std::endl;
+            std::cout << " Incoherent Parity" << '\n';
             break;
           case HatchGen_IncompatibleStates:
-            std::cout << " Incompatible States" << std::endl;
+            std::cout << " Incompatible States" << '\n';
             break;
         }
       }
@@ -352,19 +358,19 @@ void DBRep_IsoBuilder::LoadIsos(const occ::handle<DBRep_Face>& Face) const
         switch (Status(VInd))
         {
           case HatchGen_NoProblem:
-            std::cout << " No Problem" << std::endl;
+            std::cout << " No Problem" << '\n';
             break;
           case HatchGen_TrimFailure:
-            std::cout << " Trim Failure" << std::endl;
+            std::cout << " Trim Failure" << '\n';
             break;
           case HatchGen_TransitionFailure:
-            std::cout << " Transition Failure" << std::endl;
+            std::cout << " Transition Failure" << '\n';
             break;
           case HatchGen_IncoherentParity:
-            std::cout << " Incoherent Parity" << std::endl;
+            std::cout << " Incoherent Parity" << '\n';
             break;
           case HatchGen_IncompatibleStates:
-            std::cout << " Incompatible States" << std::endl;
+            std::cout << " Incompatible States" << '\n';
             break;
         }
       }
@@ -399,7 +405,9 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
   {
     const TopoDS_Shape& aW = aItW.Value();
     if (aW.ShapeType() != TopAbs_WIRE)
+    {
       continue;
+    }
 
     // Use WireExplorer to iterate on edges of the wire
     // to get the pairs of connected edges.
@@ -408,7 +416,9 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
     BRepTools_WireExplorer aWExp;
     aWExp.Init(TopoDS::Wire(aW), theFace, myUMin, myUMax, myVMin, myVMax);
     if (!aWExp.More())
+    {
       continue;
+    }
 
     // Check the number of edges in the wire, not to
     // miss the wires containing one edge only
@@ -445,13 +455,17 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       }
 
       if (aPrevEdge.IsEqual(aCurrEdge) && !SingleEdge)
+      {
         continue;
+      }
 
       // Get p-curves
       occ::handle<Geom2d_Curve>* pPC1 = theEdgePCurveMap.ChangeSeek(aPrevEdge);
       occ::handle<Geom2d_Curve>* pPC2 = theEdgePCurveMap.ChangeSeek(aCurrEdge);
       if (!pPC1 || !pPC2)
+      {
         continue;
+      }
 
       occ::handle<Geom2d_Curve>& aPrevC2d = *pPC1;
       occ::handle<Geom2d_Curve>& aCurrC2d = *pPC2;
@@ -471,26 +485,38 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       // Get vertex on the previous edge
       TopoDS_Vertex aCVOnPrev = TopExp::LastVertex(aPrevEdge, true);
       if (aCVOnPrev.IsNull())
+      {
         continue;
+      }
 
       // Get parameter of the vertex on the previous edge
       double aTPrev = BRep_Tool::Parameter(aCVOnPrev, aPrevEdge);
       if (aTPrev < fp)
+      {
         aTPrev = fp;
+      }
       else if (aTPrev > lp)
+      {
         aTPrev = lp;
+      }
 
       // Get vertex on the current edge
       TopoDS_Vertex aCVOnCurr = TopExp::FirstVertex(aCurrEdge, true);
       if (aCVOnCurr.IsNull() || !aCVOnPrev.IsSame(aCVOnCurr))
+      {
         continue;
+      }
 
       // Get parameter of the vertex on the current edge
       double aTCurr = BRep_Tool::Parameter(aCVOnCurr, aCurrEdge);
       if (aTCurr < fc)
+      {
         aTCurr = fc;
+      }
       else if (aTCurr > lc)
+      {
         aTCurr = lc;
+      }
 
       // Get bounding points on the edges corresponding to the current vertex
       gp_Pnt2d aPrevP2d = aPrevC2d->Value(aTPrev), aCurrP2d = aCurrC2d->Value(aTCurr);
@@ -509,14 +535,18 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
 
         // Check if the vertex closes the gap
         if (aPV.SquareDistance(aPrevPS) > aTolV2)
+        {
           continue;
+        }
 
         // Convert bounding point on current edge into 3D
         gp_Pnt aCurrPS = aBASurf.Value(aCurrP2d.X(), aCurrP2d.Y());
 
         // Check if the vertex closes the gap
         if (aPV.SquareDistance(aCurrPS) > aTolV2)
+        {
           continue;
+        }
       }
 
       // Create the segment
@@ -528,10 +558,14 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       if (bAddSegment)
       {
         if (aBASurf.IsUPeriodic())
+        {
           bAddSegment = aSegmLen < aBASurf.UPeriod() / 4.;
+        }
 
         if (bAddSegment && aBASurf.IsVPeriodic())
+        {
           bAddSegment = aSegmLen < aBASurf.VPeriod() / 4.;
+        }
       }
 
       // Check that p-curves do not interfere near the vertex.
@@ -557,7 +591,9 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
           // Get intersection points
           aNbInt = anInter.NbPoints();
           for (iP = 1; iP <= aNbInt; ++iP)
+          {
             aLPInt.Append(anInter.Point(iP));
+          }
 
           // Analyze the points and find the one closest to the current vertex
           bool   bPointFound   = false;
@@ -603,7 +639,9 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
               for (TopoDS_Iterator it2(aCurrEdge); it2.More(); it2.Next())
               {
                 if (it1.Value().IsSame(it2.Value()))
+                {
                   ++aNbCV;
+                }
               }
             }
 
@@ -637,7 +675,9 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
 
                 // Trim previous p-curve
                 if (l - f > Precision::PConfusion())
+                {
                   aPrevC2d = new Geom2d_TrimmedCurve(aPrevC2d, f, l);
+                }
 
                 // Prepare trimming parameters for current p-curve
                 if (std::abs(fc - aTCurr) < std::abs(lc - aTCurr))
@@ -653,7 +693,9 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
 
                 // Trim current p-curve
                 if (l - f > Precision::PConfusion())
+                {
                   aCurrC2d = new Geom2d_TrimmedCurve(aCurrC2d, f, l);
+                }
 
                 // Do not create the segment, as we performed the trimming
                 // to the intersection point.

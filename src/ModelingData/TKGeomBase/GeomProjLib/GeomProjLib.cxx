@@ -280,7 +280,9 @@ occ::handle<Geom_Curve> GeomProjLib::Project(const occ::handle<Geom_Curve>&   C,
 
     // ici, on a toujours un type BSpline.
     if (Approx.IsDone() && Approx.HasResult())
+    {
       GC = Approx.Curve3d();
+    }
   }
 
   return GC;

@@ -14,15 +14,8 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_RefsIterator.hxx>
-#include <NCollection_PackedMap.hxx>
 
 #include <shared_mutex>
-
-namespace
-{
-constexpr int THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE = 4;
-
-} // namespace
 
 //=================================================================================================
 
@@ -202,67 +195,79 @@ const BRepGraphInc::OccurrenceRef& BRepGraph::RefsView::OccurrenceOps::Entry(
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_FaceRefId>& BRepGraph::RefsView::FaceOps::IdsOf(
+const NCollection_DynamicArray<BRepGraph_FaceRefId>& BRepGraph::RefsView::FaceOps::IdsOf(
   const BRepGraph_ShellId theShell) const
 {
-  static const NCollection_Vector<BRepGraph_FaceRefId> anEmpty;
+  static const NCollection_DynamicArray<BRepGraph_FaceRefId> anEmpty;
   if (!theShell.IsValid(myGraph->myData->myIncStorage.NbShells()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Shell(theShell).FaceRefIds;
 }
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_WireRefId>& BRepGraph::RefsView::WireOps::IdsOf(
+const NCollection_DynamicArray<BRepGraph_WireRefId>& BRepGraph::RefsView::WireOps::IdsOf(
   const BRepGraph_FaceId theFace) const
 {
-  static const NCollection_Vector<BRepGraph_WireRefId> anEmpty;
+  static const NCollection_DynamicArray<BRepGraph_WireRefId> anEmpty;
   if (!theFace.IsValid(myGraph->myData->myIncStorage.NbFaces()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Face(theFace).WireRefIds;
 }
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_CoEdgeRefId>& BRepGraph::RefsView::CoEdgeOps::IdsOf(
+const NCollection_DynamicArray<BRepGraph_CoEdgeRefId>& BRepGraph::RefsView::CoEdgeOps::IdsOf(
   const BRepGraph_WireId theWire) const
 {
-  static const NCollection_Vector<BRepGraph_CoEdgeRefId> anEmpty;
+  static const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> anEmpty;
   if (!theWire.IsValid(myGraph->myData->myIncStorage.NbWires()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Wire(theWire).CoEdgeRefIds;
 }
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_ShellRefId>& BRepGraph::RefsView::ShellOps::IdsOf(
+const NCollection_DynamicArray<BRepGraph_ShellRefId>& BRepGraph::RefsView::ShellOps::IdsOf(
   const BRepGraph_SolidId theSolid) const
 {
-  static const NCollection_Vector<BRepGraph_ShellRefId> anEmpty;
+  static const NCollection_DynamicArray<BRepGraph_ShellRefId> anEmpty;
   if (!theSolid.IsValid(myGraph->myData->myIncStorage.NbSolids()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Solid(theSolid).ShellRefIds;
 }
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildOps::IdsOf(
+const NCollection_DynamicArray<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildOps::IdsOf(
   const BRepGraph_CompoundId theCompound) const
 {
-  static const NCollection_Vector<BRepGraph_ChildRefId> anEmpty;
+  static const NCollection_DynamicArray<BRepGraph_ChildRefId> anEmpty;
   if (!theCompound.IsValid(myGraph->myData->myIncStorage.NbCompounds()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Compound(theCompound).ChildRefIds;
 }
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::OccurrenceOps::IdsOf(
-  const BRepGraph_ProductId theProduct) const
+const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::OccurrenceOps::
+  IdsOf(const BRepGraph_ProductId theProduct) const
 {
-  static const NCollection_Vector<BRepGraph_OccurrenceRefId> anEmpty;
+  static const NCollection_DynamicArray<BRepGraph_OccurrenceRefId> anEmpty;
   if (!theProduct.IsValid(myGraph->myData->myIncStorage.NbProducts()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Product(theProduct).OccurrenceRefIds;
 }
 
@@ -494,38 +499,15 @@ TopAbs_Orientation BRepGraph::RefsView::Orientation(const BRepGraph_RefId theRef
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidOps::IdsOf(
+const NCollection_DynamicArray<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidOps::IdsOf(
   const BRepGraph_CompSolidId theCompSolid) const
 {
-  static const NCollection_Vector<BRepGraph_SolidRefId> anEmpty;
+  static const NCollection_DynamicArray<BRepGraph_SolidRefId> anEmpty;
   if (!theCompSolid.IsValid(myGraph->myData->myIncStorage.NbCompSolids()))
-    return anEmpty;
-  return myGraph->myData->myIncStorage.CompSolid(theCompSolid).SolidRefIds;
-}
-
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexOps::IdsOf(
-  const BRepGraph_EdgeId                        theEdge,
-  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
-{
-  NCollection_Vector<BRepGraph_VertexRefId> aResult(THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE,
-                                                    theAllocator);
-  const BRepGraphInc_Storage&               aStorage = myGraph->myData->myIncStorage;
-  if (!theEdge.IsValid(aStorage.NbEdges()))
-    return aResult;
-
-  NCollection_PackedMap<int> aSeenRefIds;
-
-  for (BRepGraph_RefsVertexOfEdge aRefIt(*myGraph, theEdge); aRefIt.More(); aRefIt.Next())
   {
-    const BRepGraph_VertexRefId aRefId = aRefIt.CurrentId();
-    if (aSeenRefIds.Add(aRefId.Index))
-    {
-      aResult.Append(aRefId);
-    }
+    return anEmpty;
   }
-  return aResult;
+  return myGraph->myData->myIncStorage.CompSolid(theCompSolid).SolidRefIds;
 }
 
 //=================================================================================================

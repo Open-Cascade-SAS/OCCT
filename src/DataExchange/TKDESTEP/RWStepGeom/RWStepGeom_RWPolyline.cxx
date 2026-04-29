@@ -29,7 +29,9 @@ void RWStepGeom_RWPolyline::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "polyline"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -55,7 +57,9 @@ void RWStepGeom_RWPolyline::ReadStep(const occ::handle<StepData_StepReaderData>&
                            ach,
                            STANDARD_TYPE(StepGeom_CartesianPoint),
                            anent2))
+      {
         aPoints->SetValue(i2, anent2);
+      }
     }
   }
 

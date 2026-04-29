@@ -282,9 +282,13 @@ void math_TrigonometricFunctionRoots::Perform(const double A,
           if ((X >= (-Precision::PConfusion())) && (X <= Delta + Precision::PConfusion()))
           {
             if (Zer(i) < InfBound)
+            {
               Zer(i) = InfBound;
+            }
             if (Zer(i) > SupBound)
+            {
               Zer(i) = SupBound;
+            }
             NbSol++;
             Sol(NbSol) = Zer(i);
           }
@@ -334,9 +338,13 @@ void math_TrigonometricFunctionRoots::Perform(const double A,
           if ((X >= (-Precision::PConfusion())) && (X <= Delta + Precision::PConfusion()))
           {
             if (Zer(i) < InfBound)
+            {
               Zer(i) = InfBound;
+            }
             if (Zer(i) > SupBound)
+            {
               Zer(i) = SupBound;
+            }
             NbSol++;
             Sol(NbSol) = Zer(i);
           }
@@ -440,7 +448,9 @@ void math_TrigonometricFunctionRoots::Perform(const double A,
     }
     Teta += std::trunc(Mod) * Depi;
     if (Teta - MyBorneInf < 0)
+    {
       Teta += Depi;
+    }
 
     X = Teta - MyBorneInf;
     if ((X >= (-Epsilon(Delta))) && (X <= Delta + Epsilon(Delta)))

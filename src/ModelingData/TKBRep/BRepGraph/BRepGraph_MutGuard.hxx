@@ -14,36 +14,36 @@
 #ifndef _BRepGraph_MutGuard_HeaderFile
 #define _BRepGraph_MutGuard_HeaderFile
 
+#include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <Standard_ProgramError.hxx>
 
 #include <type_traits>
 
-//! @brief RAII guard wrapping a mutable topology definition or reference entry.
+class BRepGraph;
+
+//! @brief RAII scope token batching mutation notifications for a single entity.
 //!
-//! Obtained via BRepGraph::Builder().MutEdge(), MutVertex(), MutFaceRef(), etc.
-//! Provides operator-> / operator* for direct field access.
-//! Calls the appropriate markModified() or markRefModified() exactly once
-//! on scope exit (destruction), regardless of how many fields were modified.
+//! Obtained via BRepGraph::Editor().<Ops>().Mut() / MutRef() / MutSurface() etc.
+//! Reads via `operator->()` / `operator*()`; writes via Editor's typed setters
+//! (or `Internal()` for in-tree structural remaps). Any call to `Internal()`
+//! flags the guard dirty and the destructor fires `markModified` /
+//! `markRefModified` / `markRepModified` once on scope exit.
 //!
-//! Move-only; non-copyable. After a move, the source guard
-//! becomes inert and will not trigger notification.
+//! Move-only; non-copyable. After a move, the source guard becomes inert.
 //!
 //! Compile-time dispatch selects the ID type and notification method:
 //! - For types derived from BRepGraphInc::BaseDef: BRepGraph_NodeId + markModified()
 //! - For types derived from BRepGraphInc::BaseRef: BRepGraph_RefId + markRefModified()
 //! - For types derived from BRepGraphInc::BaseRep: BRepGraph_RepId + markRepModified()
 //!
-//! @warning Guarded access is scoped mutation access, not a general transaction.
-//! Callers should not mix `Mut*()` and structural `Add*()` / `Remove*()` edits in
-//! the same logical mutation step, and parallel mutation batches should use
-//! `BRepGraph_DeferredScope`.
-//!
 //! @code
 //!   {
 //!     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
-//!       theGraph.Builder().MutEdge(BRepGraph_EdgeId(42));
-//!     anEdge->Tolerance     = 0.5;
-//!     anEdge->SameParameter = true;
+//!       theGraph.Editor().Edges().Mut(BRepGraph_EdgeId(42));
+//!     theGraph.Editor().Edges().SetTolerance     (anEdge, 0.5);
+//!     theGraph.Editor().Edges().SetSameParameter (anEdge, true);
 //!   } // markModified called once here
 //! @endcode
 template <typename T>
@@ -54,23 +54,24 @@ class BRepGraph_MutGuard
                   || std::is_base_of_v<BRepGraphInc::BaseRep, T>,
                 "BRepGraph_MutGuard<T>: T must derive from BaseDef, BaseRef, or BaseRep");
 
-  //! ID type: BRepGraph_NodeId for definitions, BRepGraph_RefId for references,
-  //! BRepGraph_RepId for representations.
-  using IdType = std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseDef, T>,
-                                    BRepGraph_NodeId,
-                                    std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseRef, T>,
-                                                       BRepGraph_RefId,
-                                                       BRepGraph_RepId>>;
+  //! Entity-provided identifier alias.
+  using TypeId = typename T::TypeId;
 
   //! Call the appropriate notification method on the graph.
   void notify() noexcept
   {
-    if constexpr (std::is_base_of_v<BRepGraphInc::BaseDef, T>)
-      myGraph->markModified(myId, *myEntity);
-    else if constexpr (std::is_base_of_v<BRepGraphInc::BaseRef, T>)
-      myGraph->markRefModified(myId, *myEntity);
-    else
-      myGraph->markRepModified(myId);
+    try
+    {
+      if constexpr (std::is_base_of_v<BRepGraphInc::BaseDef, T>)
+        myGraph->markModified(myId, *myEntity);
+      else if constexpr (std::is_base_of_v<BRepGraphInc::BaseRef, T>)
+        myGraph->markRefModified(myId, *myEntity);
+      else
+        myGraph->markRepModified(myId);
+    }
+    catch (...)
+    {
+    }
   }
 
 public:
@@ -78,42 +79,48 @@ public:
   //! @param[in] theGraph  owning graph (used for notification on destruction)
   //! @param[in] theEntity pointer to the mutable entity
   //! @param[in] theId     identity for notification
-  BRepGraph_MutGuard(BRepGraph* theGraph, T* theEntity, const IdType theId)
+  BRepGraph_MutGuard(BRepGraph* theGraph, T* theEntity, const TypeId theId)
       : myGraph(theGraph),
         myEntity(theEntity),
-        myId(theId)
+        myId(theId),
+        myDirty(false)
   {
   }
 
-  //! Destructor: notifies the graph if the guard still owns the reference.
+  //! Destructor: notifies the graph if the guard owns an entity AND
+  //! at least one setter (or `MarkDirty`) flagged it modified.
   ~BRepGraph_MutGuard()
   {
-    if (myGraph != nullptr)
+    if (myGraph != nullptr && myDirty)
+    {
       notify();
+    }
   }
 
-  //! Move constructor: transfers ownership; source becomes inert.
   BRepGraph_MutGuard(BRepGraph_MutGuard&& theOther) noexcept
       : myGraph(theOther.myGraph),
         myEntity(theOther.myEntity),
-        myId(theOther.myId)
+        myId(theOther.myId),
+        myDirty(theOther.myDirty)
   {
     theOther.myGraph  = nullptr;
     theOther.myEntity = nullptr;
+    theOther.myDirty  = false;
   }
 
-  //! Move assignment: flushes current guard, then transfers ownership.
   BRepGraph_MutGuard& operator=(BRepGraph_MutGuard&& theOther) noexcept
   {
     if (this != &theOther)
     {
-      if (myGraph != nullptr)
+      if (myGraph != nullptr && myDirty)
         notify();
       myGraph           = theOther.myGraph;
       myEntity          = theOther.myEntity;
       myId              = theOther.myId;
+      myDirty           = theOther.myDirty;
       theOther.myGraph  = nullptr;
       theOther.myEntity = nullptr;
+      theOther.myDirty  = false;
     }
     return *this;
   }
@@ -121,8 +128,13 @@ public:
   BRepGraph_MutGuard(const BRepGraph_MutGuard&)            = delete;
   BRepGraph_MutGuard& operator=(const BRepGraph_MutGuard&) = delete;
 
-  //! Access the entity via pointer syntax.
-  [[nodiscard]] T* operator->()
+  //! True when the guard still owns an entity; false after a move or when
+  //! constructed in an inert state.
+  [[nodiscard]] explicit operator bool() const noexcept { return myEntity != nullptr; }
+
+  //! Read-only access via pointer syntax. Field writes go through the
+  //! Editor's typed setters.
+  [[nodiscard]] const T* operator->() const
   {
     Standard_ProgramError_Raise_if(
       myEntity == nullptr,
@@ -130,18 +142,41 @@ public:
     return myEntity;
   }
 
-  //! Dereference to the entity.
-  [[nodiscard]] T& operator*()
+  //! Read-only dereference.
+  [[nodiscard]] const T& operator*() const
   {
     Standard_ProgramError_Raise_if(myEntity == nullptr,
                                    "BRepGraph_MutGuard::operator*(): guard is empty or moved-from");
     return *myEntity;
   }
 
+  //! Identity for notification.
+  [[nodiscard]] TypeId Id() const noexcept { return myId; }
+
+  //! Owning graph pointer (nullptr after move).
+  [[nodiscard]] BRepGraph* Graph() const noexcept { return myGraph; }
+
+  //! Flag the guarded entity as modified without writing through `Internal()`.
+  //! Use when an external mutation (e.g. in-place geometry transform on a shared
+  //! Geom handle) is not visible to the guard.
+  void MarkDirty() noexcept { myDirty = true; }
+
+  //! True if `Internal()` or `MarkDirty()` flagged the entity modified.
+  [[nodiscard]] bool IsDirty() const noexcept { return myDirty; }
+
+  //! INTERNAL USE ONLY. Mutable accessor; auto-flags dirty. External code MUST go
+  //! through Editor's typed setters. Use `operator->()` / `operator*()` for reads.
+  [[nodiscard]] T& Internal() noexcept
+  {
+    myDirty = true;
+    return *myEntity;
+  }
+
 private:
   BRepGraph* myGraph;  //!< Owning graph (nullptr after move).
-  T*         myEntity; //!< Mutable entity pointer.
-  IdType     myId;     //!< Identity for notification.
+  T*         myEntity; //!< Mutable entity pointer; access via Editor setters.
+  TypeId     myId;     //!< Identity for notification.
+  bool       myDirty;  //!< True once a setter has modified the entity in this scope.
 };
 
 #endif // _BRepGraph_MutGuard_HeaderFile

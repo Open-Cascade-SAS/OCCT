@@ -22,11 +22,17 @@ StepVisual_FontSelect::StepVisual_FontSelect() = default;
 int StepVisual_FontSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PreDefinedTextFont)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_ExternallyDefinedTextFont)))
+  {
     return 2;
+  }
   return 0;
 }
 

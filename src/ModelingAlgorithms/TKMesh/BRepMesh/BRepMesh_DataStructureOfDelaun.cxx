@@ -45,7 +45,9 @@ int BRepMesh_DataStructureOfDelaun::AddNode(const BRepMesh_Vertex& theNode, cons
 {
   const int aNodeId = myNodes->Add(theNode, isForceAdd);
   if (!myNodeLinks.IsBound(aNodeId))
+  {
     myNodeLinks.Bind(aNodeId, IMeshData::ListOfInteger(myAllocator));
+  }
 
   return aNodeId;
 }
@@ -56,7 +58,9 @@ bool BRepMesh_DataStructureOfDelaun::SubstituteNode(const int              theIn
                                                     const BRepMesh_Vertex& theNewNode)
 {
   if (myNodes->FindIndex(theNewNode) != 0)
+  {
     return false;
+  }
 
   myNodes->Substitute(theIndex, theNewNode);
   return true;
@@ -80,7 +84,9 @@ int BRepMesh_DataStructureOfDelaun::AddLink(const BRepMesh_Edge& theLink)
     myDelLinks.RemoveFirst();
   }
   else
+  {
     aLinkIndex = myLinks.Add(theLink, aPair);
+  }
 
   const int aLinkId = std::abs(aLinkIndex);
   linksConnectedTo(theLink.FirstNode()).Append(aLinkId);
@@ -104,7 +110,9 @@ bool BRepMesh_DataStructureOfDelaun::SubstituteLink(const int            theInde
   }
 
   if (IndexOf(theNewLink) != 0)
+  {
     return false;
+  }
 
   aLink.SetMovability(BRepMesh_Deleted);
   myLinks.Substitute(theIndex, aLink, aPair);
@@ -162,12 +170,14 @@ void BRepMesh_DataStructureOfDelaun::cleanLink(const int theIndex, const BRepMes
 int BRepMesh_DataStructureOfDelaun::AddElement(const BRepMesh_Triangle& theElement)
 {
   myElements.Append(theElement);
-  int aElementIndex = myElements.Size();
+  int aElementIndex = myElements.Length();
   myElementsOfDomain.Add(aElementIndex);
 
   const int (&e)[3] = theElement.myEdges;
   for (int i = 0; i < 3; ++i)
+  {
     myLinks(e[i]).Append(aElementIndex);
+  }
 
   return aElementIndex;
 }
@@ -178,7 +188,9 @@ void BRepMesh_DataStructureOfDelaun::RemoveElement(const int theIndex)
 {
   BRepMesh_Triangle& aElement = (BRepMesh_Triangle&)GetElement(theIndex);
   if (aElement.Movability() == BRepMesh_Deleted)
+  {
     return;
+  }
 
   cleanElement(theIndex, aElement);
   aElement.SetMovability(BRepMesh_Deleted);
@@ -191,11 +203,15 @@ void BRepMesh_DataStructureOfDelaun::cleanElement(const int                theIn
                                                   const BRepMesh_Triangle& theElement)
 {
   if (theElement.Movability() != BRepMesh_Free)
+  {
     return;
+  }
 
   const int (&e)[3] = theElement.myEdges;
   for (int i = 0; i < 3; ++i)
+  {
     removeElementIndex(theIndex, myLinks(e[i]));
+  }
 }
 
 //=================================================================================================
@@ -231,7 +247,9 @@ bool BRepMesh_DataStructureOfDelaun::SubstituteElement(const int                
 
   const int (&e)[3] = theNewElement.myEdges;
   for (int i = 0; i < 3; ++i)
+  {
     myLinks(e[i]).Append(theIndex);
+  }
 
   return true;
 }
@@ -258,9 +276,13 @@ void BRepMesh_DataStructureOfDelaun::ElementNodes(const BRepMesh_Triangle& theEl
 
   const BRepMesh_Edge& aLink2 = GetLink(e[2]);
   if (o[2])
+  {
     theNodes[2] = aLink2.FirstNode();
+  }
   else
+  {
     theNodes[2] = aLink2.LastNode();
+  }
 }
 
 //=================================================================================================
@@ -277,7 +299,9 @@ void BRepMesh_DataStructureOfDelaun::ClearDomain()
     const int (&e)[3] = aElement.myEdges;
 
     for (int i = 0; i < 3; ++i)
+    {
       aFreeEdges.Add(e[i]);
+    }
 
     cleanElement(aElementId, aElement);
     aElement.SetMovability(BRepMesh_Deleted);
@@ -286,7 +310,9 @@ void BRepMesh_DataStructureOfDelaun::ClearDomain()
 
   IMeshData::IteratorOfMapOfInteger aEdgeIt(aFreeEdges);
   for (; aEdgeIt.More(); aEdgeIt.Next())
+  {
     RemoveLink(aEdgeIt.Key());
+  }
 }
 
 //=================================================================================================
@@ -299,7 +325,9 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
     while (aLastLiveItem > 0)
     {
       if (GetLink(aLastLiveItem).Movability() != BRepMesh_Deleted)
+      {
         break;
+      }
 
       myLinks.RemoveLast();
       --aLastLiveItem;
@@ -309,7 +337,9 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
     myDelLinks.RemoveFirst();
 
     if (aDelItem > aLastLiveItem)
+    {
       continue;
+    }
 
     BRepMesh_Edge         aLink = GetLink(aLastLiveItem);
     BRepMesh_PairOfIndex& aPair = myLinks(aLastLiveItem);
@@ -344,7 +374,8 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
     {
       int                      e[3];
       bool                     o[3];
-      const BRepMesh_Triangle& aElement = GetElement(aPair.Index(j));
+      const int                anElementId = aPair.Index(j);
+      const BRepMesh_Triangle& aElement    = GetElement(anElementId);
       aElement.Edges(e, o);
       for (int i = 0; i < 3; ++i)
       {
@@ -355,7 +386,7 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
         }
       }
 
-      myElements(aLinkIt.Value()) = BRepMesh_Triangle(e, o, aElement.Movability());
+      myElements(anElementId) = BRepMesh_Triangle(e, o, aElement.Movability());
     }
   }
 }
@@ -372,7 +403,9 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
     while (aLastLiveItem > 0)
     {
       if (GetNode(aLastLiveItem).Movability() != BRepMesh_Deleted)
+      {
         break;
+      }
 
       myNodes->RemoveLast();
       --aLastLiveItem;
@@ -382,7 +415,9 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
     aDelNodes.RemoveFirst();
 
     if (aDelItem > aLastLiveItem)
+    {
       continue;
+    }
 
     BRepMesh_Vertex           aNode     = GetNode(aLastLiveItem);
     IMeshData::ListOfInteger& aLinkList = linksConnectedTo(aLastLiveItem);
@@ -403,29 +438,17 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
 
       int v[2] = {aLink.FirstNode(), aLink.LastNode()};
       if (v[0] == aLastLiveItemId)
+      {
         v[0] = aDelItem;
+      }
       else if (v[1] == aLastLiveItemId)
+      {
         v[1] = aDelItem;
+      }
 
       myLinks.Substitute(aLinkId, BRepMesh_Edge(v[0], v[1], aLink.Movability()), aPair);
     }
   }
-}
-
-//=================================================================================================
-
-void BRepMesh_DataStructureOfDelaun::Statistics(Standard_OStream& theStream) const
-{
-  theStream << " Map of nodes : \n";
-  myNodes->Statistics(theStream);
-  theStream << "\n Deleted nodes : " << myNodes->GetListOfDelNodes().Extent() << std::endl;
-
-  theStream << "\n\n Map of Links : \n";
-  myLinks.Statistics(theStream);
-  theStream << "\n Deleted links : " << myDelLinks.Extent() << std::endl;
-
-  theStream << "\n\n Map of elements : \n";
-  theStream << "\n Elements : " << myElements.Size() << std::endl;
 }
 
 //=======================================================================
@@ -447,7 +470,9 @@ const char* BRepMesh_Dump(void* theMeshHandlePtr, const char* theFileNameStr)
     *(occ::handle<BRepMesh_DataStructureOfDelaun>*)theMeshHandlePtr;
 
   if (aMeshData.IsNull())
+  {
     return "Error: mesh data is empty";
+  }
 
   TopoDS_Compound aMesh;
   BRep_Builder    aBuilder;
@@ -483,14 +508,18 @@ const char* BRepMesh_Dump(void* theMeshHandlePtr, const char* theFileNameStr)
         }
 
         if (aPnt[0].SquareDistance(aPnt[1]) < Precision::SquareConfusion())
+        {
           continue;
+        }
 
         aBuilder.Add(aMesh, BRepBuilderAPI_MakeEdge(aPnt[0], aPnt[1]));
       }
     }
 
     if (!BRepTools::Write(aMesh, theFileNameStr))
+    {
       return "Error: write failed";
+    }
   }
   catch (Standard_Failure const& anException)
   {

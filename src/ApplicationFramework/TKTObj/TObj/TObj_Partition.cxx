@@ -63,7 +63,9 @@ void TObj_Partition::SetNamePrefix(const occ::handle<TCollection_HExtendedString
 occ::handle<TCollection_HExtendedString> TObj_Partition::GetNewName(const bool theIsToChangeCount)
 {
   if (myPrefix.IsNull())
+  {
     return nullptr;
+  }
 
   int                                      aRank    = GetLastIndex() + 1;
   int                                      saveRank = aRank;
@@ -77,7 +79,9 @@ occ::handle<TCollection_HExtendedString> TObj_Partition::GetNewName(const bool t
   // actually set; the name requested by the current operation can be
   // dropped later and this will not cause index to be increased
   if (theIsToChangeCount && --aRank > saveRank)
+  {
     SetLastIndex(aRank);
+  }
   return aName;
 }
 
@@ -95,10 +99,14 @@ occ::handle<TObj_Partition> TObj_Partition::GetPartition(const occ::handle<TObj_
     {
       occ::handle<TObj_Object> anObject;
       if (TObj_Object::GetObj(aLabel, anObject, true))
+      {
         aPartition = occ::down_cast<TObj_Partition>(anObject);
+      }
 
       if (aPartition.IsNull())
+      {
         aLabel = aLabel.Father();
+      }
     }
   }
   return aPartition;
@@ -145,7 +153,9 @@ bool TObj_Partition::SetName(const occ::handle<TCollection_HExtendedString>& the
 {
   occ::handle<TCollection_HExtendedString> anOldName = GetName();
   if (!anOldName.IsNull() && theName->String().IsEqual(anOldName->String()))
+  {
     return true;
+  }
 
   TDataStd_Name::Set(GetLabel(), theName->String());
   return true;

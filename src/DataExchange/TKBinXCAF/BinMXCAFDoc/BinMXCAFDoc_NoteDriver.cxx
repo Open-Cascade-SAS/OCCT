@@ -37,11 +37,15 @@ bool BinMXCAFDoc_NoteDriver::Paste(const BinObjMgt_Persistent&       theSource,
 {
   occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theTarget);
   if (aNote.IsNull())
+  {
     return false;
+  }
 
   TCollection_ExtendedString aUserName, aTimeStamp;
   if (!(theSource >> aUserName >> aTimeStamp))
+  {
     return false;
+  }
 
   aNote->Set(aUserName, aTimeStamp);
 
@@ -57,5 +61,7 @@ void BinMXCAFDoc_NoteDriver::Paste(
 {
   occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theSource);
   if (!aNote.IsNull())
+  {
     theTarget << aNote->UserName() << aNote->TimeStamp();
+  }
 }

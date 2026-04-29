@@ -51,7 +51,9 @@ void StepRepr_ConfigurationItem::Init(const occ::handle<TCollection_HAsciiString
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theItemConcept = aItemConcept;
 
@@ -61,7 +63,9 @@ void StepRepr_ConfigurationItem::Init(const occ::handle<TCollection_HAsciiString
     thePurpose = aPurpose;
   }
   else
+  {
     thePurpose.Nullify();
+  }
 }
 
 //=================================================================================================

@@ -15,6 +15,8 @@
 
 #include <SelectMgr_SelectableObjectSet.hxx>
 #include <gp_Trsf.hxx>
+#include <Graphic3d_Flipper.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 #include <NCollection_Mat4.hxx>
 #include <NCollection_Vec3.hxx>
 #include <NCollection_Vec4.hxx>
@@ -46,7 +48,9 @@ public:
     Bnd_Box                                        aBox;
     anObject->BoundingBox(aBox);
     if (aBox.IsVoid())
+    {
       return Select3D_BndBox3d();
+    }
 
     return Select3D_BndBox3d(
       NCollection_Vec3<double>(aBox.CornerMin().X(), aBox.CornerMin().Y(), aBox.CornerMin().Z()),
@@ -76,7 +80,7 @@ public:
   }
 
   //! Returns size of objects set.
-  int Size() const override { return myObjects.Size(); }
+  int Size() const override { return myObjects.Length(); }
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
   void Swap(const int theIndex1, const int theIndex2) override
@@ -111,31 +115,35 @@ public:
                               const NCollection_Vec2<int>&         theWinSize)
       : myObjects(theObjects)
   {
-    myBoundings.ReSize(myObjects.Size());
-    for (int anI = 1; anI <= myObjects.Size(); ++anI)
+    myBoundings.ReSize(myObjects.Length());
+    for (int anI = 1; anI <= myObjects.Length(); ++anI)
     {
       const occ::handle<SelectMgr_SelectableObject>& anObject = myObjects(anI);
 
       Bnd_Box aBoundingBox;
       anObject->BoundingBox(aBoundingBox);
-      if (!aBoundingBox.IsVoid() && !anObject->TransformPersistence().IsNull())
+
+      // MV matrix passed to Graphic3d_Flipper::Apply must match OpenGl_Flipper::Render()
+      // which uses WorldView * ModelWorld. Fold in the object's Transformation(); the
+      // group's own Transformation() is not folded in here (matches the selection side
+      // in SelectMgr_ViewerSelector). Computed once per object, reused for every group.
+      NCollection_Mat4<double> aMVForFlip = theWorldViewMat;
+      if (anObject->HasTransformation())
       {
-        anObject->TransformPersistence()->Apply(theCamera,
-                                                theProjectionMat,
-                                                theWorldViewMat,
-                                                theWinSize.x(),
-                                                theWinSize.y(),
-                                                aBoundingBox);
+        NCollection_Mat4<double> anObjTrsfMat;
+        Graphic3d_TransformUtils::Convert<double>(anObject->Transformation(), anObjTrsfMat);
+        aMVForFlip = theWorldViewMat * anObjTrsfMat;
       }
 
-      // processing presentations with own transform persistence
+      // processing presentations with own flipping and transform persistence
       for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(
              anObject->Presentations());
            aPrsIter.More();
            aPrsIter.Next())
       {
         const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.Value();
-        if (!aPrs3d->CStructure()->HasGroupTransformPersistence())
+        if (!aPrs3d->CStructure()->HasGroupTransformPersistence()
+            && !aPrs3d->CStructure()->HasGroupFlipping())
         {
           continue;
         }
@@ -147,7 +155,8 @@ public:
         {
           const occ::handle<Graphic3d_Group>& aGroup  = aGroupIter.Value();
           const Graphic3d_BndBox4f&           aBndBox = aGroup->BoundingBox();
-          if (aGroup->TransformPersistence().IsNull() || !aBndBox.IsValid())
+          if ((aGroup->Flipper().IsNull() && aGroup->TransformPersistence().IsNull())
+              || !aBndBox.IsValid())
           {
             continue;
           }
@@ -159,14 +168,33 @@ public:
                            aBndBox.CornerMax().x(),
                            aBndBox.CornerMax().y(),
                            aBndBox.CornerMax().z());
-          aGroup->TransformPersistence()->Apply(theCamera,
+
+          if (!aGroup->Flipper().IsNull())
+          {
+            aGroup->Flipper()->Apply(aMVForFlip, aGroupBox);
+          }
+
+          if (!aGroup->TransformPersistence().IsNull())
+          {
+            aGroup->TransformPersistence()->Apply(theCamera,
+                                                  theProjectionMat,
+                                                  theWorldViewMat,
+                                                  theWinSize.x(),
+                                                  theWinSize.y(),
+                                                  aGroupBox);
+          }
+          aBoundingBox.Add(aGroupBox);
+        }
+      }
+
+      if (!aBoundingBox.IsVoid() && !anObject->TransformPersistence().IsNull())
+      {
+        anObject->TransformPersistence()->Apply(theCamera,
                                                 theProjectionMat,
                                                 theWorldViewMat,
                                                 theWinSize.x(),
                                                 theWinSize.y(),
-                                                aGroupBox);
-          aBoundingBox.Add(aGroupBox);
-        }
+                                                aBoundingBox);
       }
 
       if (aBoundingBox.IsVoid())
@@ -210,7 +238,7 @@ public:
   }
 
   //! Returns size of objects set.
-  int Size() const override { return myObjects.Size(); }
+  int Size() const override { return myObjects.Length(); }
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
   void Swap(const int theIndex1, const int theIndex2) override
@@ -278,7 +306,7 @@ bool SelectMgr_SelectableObjectSet::Append(const occ::handle<SelectMgr_Selectabl
   }
 
   // try adding it into the appropriate object subset
-  const int aSize = myObjects[aSubsetIdx].Size();
+  const int aSize = myObjects[aSubsetIdx].Length();
 
   if (aSize < myObjects[aSubsetIdx].Add(theObject))
   {
@@ -301,7 +329,7 @@ bool SelectMgr_SelectableObjectSet::Remove(const occ::handle<SelectMgr_Selectabl
 
     if (anIndex != 0)
     {
-      const int aSize = myObjects[aSubsetIdx].Size();
+      const int aSize = myObjects[aSubsetIdx].Length();
 
       if (anIndex != aSize)
       {

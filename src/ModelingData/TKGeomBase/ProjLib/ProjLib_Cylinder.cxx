@@ -98,7 +98,9 @@ void ProjLib_Cylinder::Project(const gp_Lin& L)
   // In other cases, the projection is wrong.
   if (L.Direction().XYZ().CrossSquareMagnitude(myCylinder.Position().Direction().XYZ())
       > Precision::Angular() * Precision::Angular())
+  {
     return;
+  }
 
   myType = GeomAbs_Line;
 
@@ -125,7 +127,9 @@ void ProjLib_Cylinder::Project(const gp_Circ& C)
   const gp_Ax2& aCircPos = C.Position();
   if (aCylPos.Direction().XYZ().CrossSquareMagnitude(aCircPos.Direction().XYZ())
       > Precision::Angular() * Precision::Angular())
+  {
     return;
+  }
 
   myType = GeomAbs_Line;
 
@@ -139,9 +143,13 @@ void ProjLib_Cylinder::Project(const gp_Circ& C)
   gp_Pnt2d P2d1(U, V);
   gp_Dir2d D2d;
   if (ZCyl.Dot(aCircPos.Direction()) > 0.)
+  {
     D2d.SetCoord(1., 0.);
+  }
   else
+  {
     D2d.SetCoord(-1., 0.);
+  }
 
   myLin  = gp_Lin2d(P2d1, D2d);
   isDone = true;

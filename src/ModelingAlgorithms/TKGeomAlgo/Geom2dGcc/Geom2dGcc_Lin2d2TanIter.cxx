@@ -289,7 +289,9 @@ bool Geom2dGcc_Lin2d2TanIter::IsDone() const
 gp_Lin2d Geom2dGcc_Lin2d2TanIter::ThisSolution() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   return linsol;
 }
 

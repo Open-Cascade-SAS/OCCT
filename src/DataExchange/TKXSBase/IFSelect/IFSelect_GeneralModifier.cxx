@@ -42,9 +42,13 @@ occ::handle<IFSelect_Dispatch> IFSelect_GeneralModifier::Dispatch() const
 bool IFSelect_GeneralModifier::Applies(const occ::handle<IFSelect_Dispatch>& disp) const
 {
   if (thedisp.IsNull())
+  {
     return true;
+  }
   if (thedisp != disp)
+  {
     return false;
+  }
   return true;
 }
 

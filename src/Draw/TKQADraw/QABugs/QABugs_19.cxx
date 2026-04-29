@@ -36,7 +36,7 @@
 #include <Message_PrinterOStream.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_Map.hxx>
-#include <OSD_Parallel.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <OSD_PerfMeter.hxx>
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
@@ -61,17 +61,13 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <Draw.hxx>
 #include <GeomInt_IntSS.hxx>
-#include <IntTools_FaceFace.hxx>
-#include <IntTools_PntOn2Faces.hxx>
 #include <NCollection_Sequence.hxx>
-#include <IntTools_Curve.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Extrema_FuncPSNorm.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 
 #ifdef HAVE_TBB
 Standard_DISABLE_DEPRECATION_WARNINGS
@@ -86,7 +82,6 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <cmath>
 #include <iostream>
 #include <random>
-#include <vector>
 
 #define QCOMPARE(val1, val2)                                                                       \
   di << "Checking " #val1 " == " #val2 << ((val1) == (val2) ? ": OK\n" : ": Error\n")
@@ -97,78 +92,16 @@ Standard_DISABLE_DEPRECATION_WARNINGS
     std::cout << "Error: " #val " is false\n";                                                     \
   }
 
-  // Helper function to create conical surface
-  static occ::handle<Geom_Surface>
-  CreateCone(const gp_Pnt& theApex,
-             const gp_Dir& theDir,
-             const gp_Dir& theXDir,
-             double        theR,
-             double        theSemiAngle,
-             double /*theH*/)
-{
-  gp_Ax3 anAxis(theApex, theDir, theXDir);
-  return new Geom_ConicalSurface(anAxis, theSemiAngle, theR);
-}
-
-static int OCC230(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 4)
-  {
-    di << "ERROR OCC230: Usage : " << argv[0] << " TrimmedCurve Pnt2d Pnt2d\n";
-    return 1;
-  }
-
-  gp_Pnt2d P1, P2;
-  if (!DrawTrSurf::GetPoint2d(argv[2], P1))
-  {
-    di << "ERROR OCC230: " << argv[2] << " is not Pnt2d\n";
-    return 1;
-  }
-  if (!DrawTrSurf::GetPoint2d(argv[3], P2))
-  {
-    di << "ERROR OCC230: " << argv[3] << " is not Pnt2d\n";
-    return 1;
-  }
-
-  GC_MakeSegment2d                        MakeSegment(P1, P2);
-  const occ::handle<Geom2d_TrimmedCurve>& TrimmedCurve = MakeSegment.Value();
-  DrawTrSurf::Set(argv[1], TrimmedCurve);
-  return 0;
-}
-
-#include <ExprIntrp_GenExp.hxx>
-
-int OCC22611(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " string nb\n";
-    return 1;
-  }
-
-  TCollection_AsciiString aToken = argv[1];
-  int                     aNb    = atoi(argv[2]);
-
-  occ::handle<ExprIntrp_GenExp> aGen = ExprIntrp_GenExp::Create();
-  for (int i = 0; i < aNb; i++)
-  {
-    aGen->Process(aToken);
-    occ::handle<Expr_GeneralExpression> aExpr = aGen->Expression();
-  }
-
-  return 0;
-}
-
 #include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepTools.hxx>
 
-static bool OCC23774Test(const TopoDS_Face&  grossPlateFace,
-                         const TopoDS_Shape& originalWire,
-                         Draw_Interpretor&   di)
+  static bool
+  OCC23774Test(const TopoDS_Face&  grossPlateFace,
+               const TopoDS_Shape& originalWire,
+               Draw_Interpretor&   di)
 {
   BRepExtrema_DistShapeShape distShapeShape(grossPlateFace, originalWire, Extrema_ExtFlag_MIN);
   if (!distShapeShape.IsDone())
@@ -183,7 +116,9 @@ static bool OCC23774Test(const TopoDS_Face&  grossPlateFace,
     return false;
   }
   else
+  {
     di << "Dist0 = " << distShapeShape.Value() << "\n";
+  }
 
   //////////////////////////////////////////////////////////////////////////
   /// First Flip Y
@@ -208,14 +143,18 @@ static bool OCC23774Test(const TopoDS_Face&  grossPlateFace,
                                              step1ModifiedShape,
                                              Extrema_ExtFlag_MIN);
   if (!distShapeShape1.IsDone())
+  {
     return false;
+  }
   if (distShapeShape1.Value() > 0.01)
   {
     di << "Dist = " << distShapeShape1.Value() << "\n";
     return false;
   }
   else
+  {
     di << "Dist1 = " << distShapeShape1.Value() << "\n";
+  }
 
   //////////////////////////////////////////////////////////////////////////
   /// Second flip Y
@@ -235,7 +174,9 @@ static bool OCC23774Test(const TopoDS_Face&  grossPlateFace,
   BRepExtrema_DistShapeShape distShapeShape2(grossPlateFace,step2ModifiedShape);//,Extrema_ExtFlag_MIN);
   // clang-format on
   if (!distShapeShape2.IsDone())
+  {
     return false;
+  }
 
   // This last test case give error (the value is 1008.8822038689706)
   if (distShapeShape2.Value() > 0.01)
@@ -244,9 +185,11 @@ static bool OCC23774Test(const TopoDS_Face&  grossPlateFace,
     int N = distShapeShape2.NbSolution();
     di << "Nb = " << N << "\n";
     for (int i = 1; i <= N; i++)
+    {
       di << "Sol(" << i
          << ") = " << distShapeShape2.PointOnShape1(i).Distance(distShapeShape2.PointOnShape2(i))
          << "\n";
+    }
     return false;
   }
   di << "Distance2 = " << distShapeShape2.Value() << "\n";
@@ -272,7 +215,9 @@ static int OCC23774(Draw_Interpretor& di, int n, const char** a)
   }
   const TopoDS_Face& aFace = TopoDS::Face(S1);
   if (!OCC23774Test(aFace, S2, di))
+  {
     di << "Something is wrong\n";
+  }
 
   return 0;
 }
@@ -299,24 +244,24 @@ static void* GeomConvertTest(void* data)
   GeomConvert_ApproxSurface aGAS(info->surf, 1e-4, GeomAbs_C1, GeomAbs_C1, 9, 9, 100, 1);
   if (!aGAS.IsDone())
   {
-    std::cout << "Error: ApproxSurface is not done!" << std::endl;
+    std::cout << "Error: ApproxSurface is not done!" << '\n';
     return nullptr;
   }
   const occ::handle<Geom_BSplineSurface>& aBSurf = aGAS.Surface();
   if (aBSurf.IsNull())
   {
-    std::cout << "Error: BSplineSurface is not created!" << std::endl;
+    std::cout << "Error: BSplineSurface is not created!" << '\n';
     return nullptr;
   }
   std::cout << "Number of UPoles:" << aBSurf->NbUPoles();
   if (aBSurf->NbUPoles() == info->nbupoles)
   {
-    std::cout << ": OK" << std::endl;
+    std::cout << ": OK" << '\n';
     return data; // any non-null pointer
   }
   else
   {
-    std::cout << ": Error, must be " << info->nbupoles << std::endl;
+    std::cout << ": Error, must be " << info->nbupoles << '\n';
     return nullptr;
   }
 }
@@ -325,7 +270,7 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
-    std::cout << "Error: invalid number of arguments" << std::endl;
+    std::cout << "Error: invalid number of arguments" << '\n';
     return 1;
   }
 
@@ -334,7 +279,7 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
   aStorage.surf     = DrawTrSurf::GetSurface(argv[2]);
   if (aStorage.surf.IsNull())
   {
-    std::cout << "Error: " << argv[2] << " is not a DRAW surface!" << std::endl;
+    std::cout << "Error: " << argv[2] << " is not a DRAW surface!" << '\n';
     return 0;
   }
 
@@ -345,7 +290,9 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
   {
     aThread[i].SetFunction(GeomConvertTest);
     if (!aThread[i].Run(&aStorage))
+    {
       di << "Error: Cannot start thread << " << i << "\n";
+    }
   }
 
   // check results
@@ -353,9 +300,13 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
   {
     void* aResult = nullptr;
     if (!aThread[i].Wait(aResult))
+    {
       di << "Error: Failed waiting for thread << " << i << "\n";
+    }
     if (!aResult)
+    {
       di << "Error: wrong number of poles in thread " << i << "!\n";
+    }
   }
 
   return 0;
@@ -379,19 +330,19 @@ static void* GeomIntSSTest(void* data)
   anInter.Perform(info->surf1, info->surf2, Precision::Confusion(), true);
   if (!anInter.IsDone())
   {
-    std::cout << "An intersection is not done!" << std::endl;
+    std::cout << "An intersection is not done!" << '\n';
     return nullptr;
   }
 
   std::cout << "Number of Lines:" << anInter.NbLines();
   if (anInter.NbLines() == info->nbsol)
   {
-    std::cout << ": OK" << std::endl;
+    std::cout << ": OK" << '\n';
     return data; // any non-null pointer
   }
   else
   {
-    std::cout << ": Error, must be " << info->nbsol << std::endl;
+    std::cout << ": Error, must be " << info->nbsol << '\n';
     return nullptr;
   }
 }
@@ -400,7 +351,7 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
   {
-    std::cout << "Error: invalid number of arguments" << std::endl;
+    std::cout << "Error: invalid number of arguments" << '\n';
     return 1;
   }
 
@@ -411,7 +362,7 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
   if (aStorage.surf1.IsNull() || aStorage.surf2.IsNull())
   {
     std::cout << "Error: Either " << argv[2] << " or " << argv[3] << " is not a DRAW surface!"
-              << std::endl;
+              << '\n';
     return 0;
   }
 
@@ -422,7 +373,9 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
   {
     aThread[i].SetFunction(GeomIntSSTest);
     if (!aThread[i].Run(&aStorage))
+    {
       di << "Error: Cannot start thread << " << i << "\n";
+    }
   }
 
   // check results
@@ -430,9 +383,13 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
   {
     void* aResult = nullptr;
     if (!aThread[i].Wait(aResult))
+    {
       di << "Error: Failed waiting for thread << " << i << "\n";
+    }
     if (!aResult)
+    {
       di << "Error: wrong number of intersections in thread " << i << "!\n";
+    }
   }
 
   return 0;
@@ -563,11 +520,15 @@ static int OCC24008(Draw_Interpretor& di, int argc, const char** argv)
 static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> aS = DrawTrSurf::GetSurface(a[1]);
   if (aS.IsNull())
+  {
     return 1;
+  }
 
   GeomAdaptor_Surface GS(aS);
 
@@ -576,7 +537,9 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
 
   bool DrawPoint = (n % 3 == 2);
   if (DrawPoint)
+  {
     n--;
+  }
 
   gp_Pnt P;
   if (n >= 13)
@@ -597,7 +560,9 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
       Draw::Set(a[21], D2UV.Z());
     }
     else
+    {
       GS.D1(U, V, P, DU, DV);
+    }
 
     Draw::Set(a[7], DU.X());
     Draw::Set(a[8], DU.Y());
@@ -607,7 +572,9 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
     Draw::Set(a[12], DV.Z());
   }
   else
+  {
     GS.D0(U, V, P);
+  }
 
   if (n > 6)
   {
@@ -618,92 +585,6 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
   if (DrawPoint)
   {
     DrawTrSurf::Set(a[n], P);
-  }
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC24005(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
-{
-  if (theNArg < 2)
-  {
-    theDI << "Wrong a number of arguments!\n";
-    return 1;
-  }
-
-  occ::handle<Geom_Plane>              plane(new Geom_Plane(
-    gp_Ax3(gp_Pnt(-72.948737453424499, 754.30437716359393, 259.52151854671678),
-           gp_Dir(6.2471473085930200e-007, -0.99999999999980493, 0.00000000000000000),
-           gp_Dir(0.99999999999980493, 6.2471473085930200e-007, 0.00000000000000000))));
-  occ::handle<Geom_CylindricalSurface> cylinder(new Geom_CylindricalSurface(
-    gp_Ax3(gp_Pnt(-6.4812490053250649, 753.39408794522092, 279.16400974257465),
-           gp_Dir(1.0000000000000000, 0.0, 0.00000000000000000),
-           gp_Dir(0.0, 1.0000000000000000, 0.00000000000000000)),
-    19.712534607908712));
-
-  DrawTrSurf::Set("pln", plane);
-  theDI << "pln\n";
-  DrawTrSurf::Set("cyl", cylinder);
-  theDI << "cyl\n";
-
-  BRep_Builder builder;
-  TopoDS_Face  face1, face2;
-  builder.MakeFace(face1, plane, Precision::Confusion());
-  builder.MakeFace(face2, cylinder, Precision::Confusion());
-  IntTools_FaceFace anInters;
-  anInters.SetParameters(false, true, true, Precision::Confusion());
-  anInters.Perform(face1, face2);
-
-  if (!anInters.IsDone())
-  {
-    theDI << "No intersections found!\n";
-
-    return 1;
-  }
-
-  // occ::handle<Geom_Curve> aResult;
-  // gp_Pnt             aPoint;
-
-  const NCollection_Sequence<IntTools_Curve>&       aCvsX  = anInters.Lines();
-  const NCollection_Sequence<IntTools_PntOn2Faces>& aPntsX = anInters.Points();
-
-  char buf[1024];
-  int  aNbCurves, aNbPoints;
-
-  aNbCurves = aCvsX.Length();
-  aNbPoints = aPntsX.Length();
-
-  if (aNbCurves >= 2)
-  {
-    for (int i = 1; i <= aNbCurves; ++i)
-    {
-      Sprintf(buf, "%s_%d", theArgv[1], i);
-      theDI << buf << " ";
-
-      const IntTools_Curve&          aIC  = aCvsX(i);
-      const occ::handle<Geom_Curve>& aC3D = aIC.Curve();
-      DrawTrSurf::Set(buf, aC3D);
-    }
-  }
-  else if (aNbCurves == 1)
-  {
-    const IntTools_Curve&          aIC  = aCvsX(1);
-    const occ::handle<Geom_Curve>& aC3D = aIC.Curve();
-    Sprintf(buf, "%s", theArgv[1]);
-    theDI << buf << " ";
-    DrawTrSurf::Set(buf, aC3D);
-  }
-
-  for (int i = 1; i <= aNbPoints; ++i)
-  {
-    const IntTools_PntOn2Faces& aPi = aPntsX(i);
-    const gp_Pnt&               aP  = aPi.P1().Pnt();
-
-    Sprintf(buf, "%s_p_%d", theArgv[1], i);
-    theDI << buf << " ";
-    DrawTrSurf::Set(buf, aP);
   }
 
   return 0;
@@ -778,12 +659,12 @@ static int OCC24137(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
   const int          aNbIts    = (anArgIter < theNArg) ? Draw::Atoi(theArgv[anArgIter++]) : 100;
   if (aShapeF.IsNull() || aShapeF.ShapeType() != TopAbs_FACE)
   {
-    std::cout << "Error: " << aFaceName << " shape is null / not a face" << std::endl;
+    std::cout << "Error: " << aFaceName << " shape is null / not a face" << '\n';
     return 1;
   }
   if (aShapeV.IsNull() || aShapeV.ShapeType() != TopAbs_VERTEX)
   {
-    std::cout << "Error: " << aVertName << " shape is null / not a vertex" << std::endl;
+    std::cout << "Error: " << aVertName << " shape is null / not a vertex" << '\n';
     return 1;
   }
   const TopoDS_Face   aFace = TopoDS::Face(aShapeF);
@@ -819,35 +700,6 @@ static int OCC24137(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
 
   aSurf.D0(aRoot.Root()(1), aRoot.Root()(2), aRes);
   DBRep::Set("result", BRepBuilderAPI_MakeVertex(aRes));
-  return 0;
-}
-
-//! Check boolean operations on NCollection_Map
-static int OCC23972(Draw_Interpretor& /*theDI*/, int theNArg, const char** theArgs)
-{
-  if (theNArg != 3)
-    return 1;
-
-  // process specific cones, cannot read them from files because
-  // due to rounding the original error in math_FunctionRoots gets hidden
-  const occ::handle<Geom_Surface> aS1 =
-    CreateCone(gp_Pnt(123.694345356663, 789.9, 68.15),
-               gp_Dir(-1, 3.48029791472957e-016, -8.41302743359754e-017),
-               gp_Dir(-3.48029791472957e-016, -1, -3.17572289932207e-016),
-               3.28206830417112,
-               0.780868809443031,
-               0.624695047554424);
-  const occ::handle<Geom_Surface> aS2 =
-    CreateCone(gp_Pnt(123.694345356663, 784.9, 68.15),
-               gp_Dir(-1, -2.5209507537117e-016, -1.49772808948866e-016),
-               gp_Dir(1.49772808948866e-016, 3.17572289932207e-016, -1),
-               3.28206830417112,
-               0.780868809443031,
-               0.624695047554424);
-
-  DrawTrSurf::Set(theArgs[1], aS1);
-  DrawTrSurf::Set(theArgs[2], aS2);
-
   return 0;
 }
 
@@ -943,100 +795,6 @@ struct QABugs_NHandleClass
   }
 };
 
-#include <XCAFDoc_ColorTool.hxx>
-#include <STEPCAFControl_Writer.hxx>
-
-static int OCC23951(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage: " << argv[0] << " invalid number of arguments\n";
-    return 1;
-  }
-  occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
-  TopoDS_Shape                  s1   = BRepPrimAPI_MakeBox(1, 1, 1).Shape();
-  TDF_Label                     lab1 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
-  XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->SetShape(lab1, s1);
-  TDataStd_Name::Set(lab1, "Box1");
-
-  Quantity_Color yellow(Quantity_NOC_YELLOW);
-  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetColor(lab1, yellow, XCAFDoc_ColorGen);
-  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetVisibility(lab1, false);
-
-  STEPControl_StepModelType mode = STEPControl_AsIs;
-  STEPCAFControl_Writer     writer;
-  if (!writer.Transfer(aDoc, mode))
-  {
-    di << "The document cannot be translated or gives no result" << "\n";
-    return 1;
-  }
-
-  const occ::handle<Message_Messenger>&              aMsgMgr = Message::DefaultMessenger();
-  NCollection_Sequence<occ::handle<Message_Printer>> aPrinters;
-  aPrinters.Append(aMsgMgr->ChangePrinters());
-  aMsgMgr->AddPrinter(new Draw_Printer(di));
-
-  writer.Write(argv[1]);
-
-  aMsgMgr->RemovePrinters(STANDARD_TYPE(Draw_Printer));
-  aMsgMgr->ChangePrinters().Append(aPrinters);
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC23950(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " step_file\n";
-    return 1;
-  }
-
-  occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
-  TopoDS_Shape                  s6   = BRepBuilderAPI_MakeVertex(gp_Pnt(75, 0, 0));
-  gp_Trsf                       t0;
-  TopLoc_Location               location0(t0);
-
-  TDF_Label lab1 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
-  XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->SetShape(lab1, s6);
-  TDataStd_Name::Set(lab1, "Point1");
-
-  TDF_Label labelA0 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
-  TDataStd_Name::Set(labelA0, "ASSEMBLY");
-
-  TDF_Label component01 =
-    XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->AddComponent(labelA0, lab1, location0);
-  XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->UpdateAssemblies();
-
-  Quantity_Color yellow(Quantity_NOC_YELLOW);
-  XCAFDoc_DocumentTool::ColorTool(labelA0)->SetColor(component01, yellow, XCAFDoc_ColorGen);
-  XCAFDoc_DocumentTool::ColorTool(labelA0)->SetVisibility(component01, false);
-
-  STEPControl_StepModelType mode = STEPControl_AsIs;
-  STEPCAFControl_Writer     writer;
-  if (!writer.Transfer(aDoc, mode))
-  {
-    di << "The document cannot be translated or gives no result\n";
-    return 1;
-  }
-
-  const occ::handle<Message_Messenger>&              aMsgMgr = Message::DefaultMessenger();
-  NCollection_Sequence<occ::handle<Message_Printer>> aPrinters;
-  aPrinters.Append(aMsgMgr->ChangePrinters());
-  aMsgMgr->AddPrinter(new Draw_Printer(di));
-
-  writer.Write(argv[1]);
-
-  aMsgMgr->RemovePrinters(STANDARD_TYPE(Draw_Printer));
-  aMsgMgr->ChangePrinters().Append(aPrinters);
-
-  return 0;
-}
-
-//=================================================================================================
-
 static int OCC24667(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 1)
@@ -1050,29 +808,41 @@ static int OCC24667(Draw_Interpretor& di, int n, const char** a)
   }
 
   if (n > 1 && n < 4)
+  {
     return 1;
+  }
 
   TopoDS_Shape Spine = DBRep::Get(a[2], TopAbs_WIRE);
   if (Spine.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Shape Profile = DBRep::Get(a[3]);
   if (Profile.IsNull())
+  {
     return 1;
+  }
 
   GeomFill_Trihedron Mode = GeomFill_IsCorrectedFrenet;
   if (n >= 5)
   {
     int iMode = atoi(a[4]);
     if (iMode == 1)
+    {
       Mode = GeomFill_IsFrenet;
+    }
     else if (iMode == 2)
+    {
       Mode = GeomFill_IsDiscreteTrihedron;
+    }
   }
 
   bool ForceApproxC1 = false;
   if (n >= 6)
+  {
     ForceApproxC1 = true;
+  }
 
   BRepOffsetAPI_MakePipe aPipe(TopoDS::Wire(Spine), Profile, Mode, ForceApproxC1);
 
@@ -1208,7 +978,7 @@ static int OCC24834(Draw_Interpretor& di, int n, const char** a)
   }
   catch (...)
   {
-    di << "skept out of memory for large blocks: Error\n";
+    di << "skipped out of memory for large blocks: Error\n";
   }
 
   // allocate small blocks
@@ -1225,7 +995,7 @@ static int OCC24834(Draw_Interpretor& di, int n, const char** a)
   }
   catch (...)
   {
-    di << "skept out of memory for small blocks: Error\n";
+    di << "skipped out of memory for small blocks: Error\n";
   }
 
   // release all allocated blocks
@@ -1233,156 +1003,6 @@ static int OCC24834(Draw_Interpretor& di, int n, const char** a)
   {
     Standard::Free(it.Value().ptr);
   }
-  return 0;
-}
-
-#include <math_GlobOptMin.hxx>
-#include <math_MultipleVarFunctionWithHessian.hxx>
-
-//=======================================================================
-// function : OCC25004
-// purpose  : Check extremaCC on Branin function.
-//=======================================================================
-// Function is:
-// f(u,v) = a*(v - b*u^2 + c*u-r)^2+s(1-t)*cos(u)+s
-// Standard borders are:
-// -5 <= u <= 10
-//  0 <= v <= 15
-class BraninFunction : public math_MultipleVarFunctionWithHessian
-{
-public:
-  BraninFunction()
-  {
-    a = 1.0;
-    b = 5.1 / (4.0 * M_PI * M_PI);
-    c = 5.0 / M_PI;
-    r = 6.0;
-    s = 10.0;
-    t = 1.0 / (8.0 * M_PI);
-  }
-
-  int NbVariables() const override { return 2; }
-
-  bool Value(const math_Vector& X, double& F) override
-  {
-    double u = X(1);
-    double v = X(2);
-
-    double aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
-    double aLnPt = s * (1 - t) * cos(u);        // Linear part of funcrtion.
-    F            = a * aSqPt * aSqPt + aLnPt + s;
-    return true;
-  }
-
-  bool Gradient(const math_Vector& X, math_Vector& G) override
-  {
-    double u = X(1);
-    double v = X(2);
-
-    double aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
-    G(1)         = 2 * a * aSqPt * (c - 2 * b * u) - s * (1 - t) * sin(u);
-    G(2)         = 2 * a * aSqPt;
-
-    return true;
-  }
-
-  bool Values(const math_Vector& X, double& F, math_Vector& G) override
-  {
-    Value(X, F);
-    Gradient(X, G);
-
-    return true;
-  }
-
-  bool Values(const math_Vector& X, double& F, math_Vector& G, math_Matrix& H) override
-  {
-    Value(X, F);
-    Gradient(X, G);
-
-    double u = X(1);
-    double v = X(2);
-
-    double aSqPt  = (v - b * u * u + c * u - r); // Square Part of function.
-    double aTmpPt = c - 2 * b * u;               // Tmp part.
-    H(1, 1)       = 2 * a * aTmpPt * aTmpPt - 4 * a * b * aSqPt - s * (1 - t) * cos(u);
-    H(1, 2)       = 2 * a * aTmpPt;
-    H(2, 1)       = H(1, 2);
-    H(2, 2)       = 2 * a;
-
-    return true;
-  }
-
-private:
-  // Standard parameters.
-  double a, b, c, r, s, t;
-};
-
-static int OCC25004(Draw_Interpretor& theDI, int /*theNArg*/, const char** /*theArgs*/)
-{
-  BraninFunction aFunc;
-
-  math_Vector aLower(1, 2), aUpper(1, 2);
-  aLower(1) = -5;
-  aLower(2) = 0;
-  aUpper(1) = 10;
-  aUpper(2) = 15;
-
-  int         aGridOrder = 16;
-  math_Vector aFuncValues(1, aGridOrder * aGridOrder);
-
-  double      aLipConst = 0;
-  math_Vector aCurrPnt1(1, 2), aCurrPnt2(1, 2);
-
-  // Get Lipshitz constant estimation on regular grid.
-  int i, j, idx = 1;
-  for (i = 1; i <= aGridOrder; i++)
-  {
-    for (j = 1; j <= aGridOrder; j++)
-    {
-      aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
-      aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
-
-      aFunc.Value(aCurrPnt1, aFuncValues(idx));
-      idx++;
-    }
-  }
-
-  int k, l;
-  int idx1, idx2;
-  for (i = 1; i <= aGridOrder; i++)
-    for (j = 1; j <= aGridOrder; j++)
-      for (k = 1; k <= aGridOrder; k++)
-        for (l = 1; l <= aGridOrder; l++)
-        {
-          if (i == k && j == l)
-            continue;
-
-          aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
-          aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
-          idx1         = (i - 1) * aGridOrder + j;
-
-          aCurrPnt2(1) = aLower(1) + (aUpper(1) - aLower(1)) * (k - 1) / (aGridOrder - 1.0);
-          aCurrPnt2(2) = aLower(2) + (aUpper(2) - aLower(2)) * (l - 1) / (aGridOrder - 1.0);
-          idx2         = (k - 1) * aGridOrder + l;
-
-          aCurrPnt1.Add(-aCurrPnt2);
-          double dist = aCurrPnt1.Norm();
-
-          double C = std::abs(aFuncValues(idx1) - aFuncValues(idx2)) / dist;
-          if (C > aLipConst)
-            aLipConst = C;
-        }
-
-  math_GlobOptMin aFinder(&aFunc, aLower, aUpper, aLipConst);
-  aFinder.Perform();
-  //(-pi , 12.275), (pi , 2.275), (9.42478, 2.475)
-
-  double anExtValue = aFinder.GetF();
-  theDI << "F = " << anExtValue << "\n";
-
-  int aNbExt = aFinder.NbExtrema();
-  theDI << "NbExtrema = " << aNbExt << "\n";
-
   return 0;
 }
 
@@ -1518,7 +1138,9 @@ static int OCC25043(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         for (; anExp.More() && !anIsFaultyShapeFound; anExp.Next())
         {
           if (anExp.Current().IsEqual(aFaultyShape))
+          {
             anIsFaultyShapeFound = true;
+          }
         }
 
         if (!anIsFaultyShapeFound)
@@ -1555,7 +1177,7 @@ static int OCC24606(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
   occ::handle<V3d_View> aView = ViewerTest::CurrentView();
   if (aView.IsNull())
   {
-    std::cerr << "Errro: no active view, please call 'vinit'.\n";
+    std::cerr << "Error: no active view, please call 'vinit'.\n";
     return 1;
   }
 
@@ -1681,334 +1303,6 @@ static int OCC25340(Draw_Interpretor& /*theDI*/, int /*theArgNb*/, const char** 
   return 0;
 }
 
-//=================================================================================================
-
-class ParallelTest_Saxpy
-{
-public:
-  //! Constructor
-  ParallelTest_Saxpy(const NCollection_Array1<double>& theX,
-                     NCollection_Array1<double>&       theY,
-                     double                            theScalar)
-      : myX(theX),
-        myY(theY),
-        myScalar(theScalar)
-  {
-  }
-
-  int Begin() const { return 0; }
-
-  int End() const { return myX.Size(); }
-
-  //! Dummy calculation
-  void operator()(int theIndex) const { myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex); }
-
-  //! Dummy calculation
-  void operator()(int theThreadIndex, int theIndex) const
-  {
-    (void)theThreadIndex;
-    myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex);
-  }
-
-private:
-  ParallelTest_Saxpy(const ParallelTest_Saxpy&)      = delete;
-  ParallelTest_Saxpy& operator=(ParallelTest_Saxpy&) = delete;
-
-protected:
-  const NCollection_Array1<double>& myX;
-  NCollection_Array1<double>&       myY;
-  const double                      myScalar;
-};
-
-class ParallelTest_SaxpyBatch : private ParallelTest_Saxpy
-{
-public:
-  static const int THE_BATCH_SIZE = 10000000;
-
-  ParallelTest_SaxpyBatch(const NCollection_Array1<double>& theX,
-                          NCollection_Array1<double>&       theY,
-                          double                            theScalar)
-      : ParallelTest_Saxpy(theX, theY, theScalar),
-        myNbBatches((int)std::ceil((double)theX.Size() / THE_BATCH_SIZE))
-  {
-  }
-
-  int Begin() const { return 0; }
-
-  int End() const { return myNbBatches; }
-
-  void operator()(int theBatchIndex) const
-  {
-    const int aLower  = theBatchIndex * THE_BATCH_SIZE;
-    const int anUpper = std::min(aLower + THE_BATCH_SIZE - 1, myX.Upper());
-    for (int i = aLower; i <= anUpper; ++i)
-    {
-      myY(i) = myScalar * myX(i) + myY(i);
-    }
-  }
-
-  void operator()(int theThreadIndex, int theBatchIndex) const
-  {
-    (void)theThreadIndex;
-    (*this)(theBatchIndex);
-  }
-
-private:
-  int myNbBatches;
-};
-
-//---------------------------------------------------------------------
-static int OCC24826(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
-{
-  if (theArgc != 2)
-  {
-    theDI << "Usage: " << theArgv[0] << " vec_length\n";
-    return 1;
-  }
-
-  // Generate data;
-  int aLength = Draw::Atoi(theArgv[1]);
-
-  NCollection_Array1<double> aX(0, aLength - 1);
-  NCollection_Array1<double> anY(0, aLength - 1);
-  for (int i = 0; i < aLength; ++i)
-  {
-    aX(i) = anY(i) = (double)i;
-  }
-
-  //! Serial processing
-  NCollection_Array1<double> anY1     = anY;
-  double                     aTimeSeq = 0.0;
-  {
-    OSD_Timer aTimer;
-    aTimer.Start();
-    const ParallelTest_Saxpy aFunctor(aX, anY1, 1e-6);
-    for (int i = 0; i < aLength; ++i)
-    {
-      aFunctor(i);
-    }
-
-    aTimer.Stop();
-    std::cout << "  Processing time (sequential mode): 1x [reference]\n";
-    aTimeSeq = aTimer.ElapsedTime();
-    aTimer.Show(std::cout);
-  }
-
-  // Parallel processing
-  for (int aMode = 0; aMode <= 4; ++aMode)
-  {
-    NCollection_Array1<double> anY2 = anY;
-    OSD_Timer                  aTimer;
-    aTimer.Start();
-    const char*                   aModeDesc = nullptr;
-    const ParallelTest_Saxpy      aFunctor1(aX, anY2, 1e-6);
-    const ParallelTest_SaxpyBatch aFunctor2(aX, anY2, 1e-6);
-    switch (aMode)
-    {
-      case 0: {
-        aModeDesc = "OSD_Parallel::For()";
-        OSD_Parallel::For(aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
-        break;
-      }
-      case 1: {
-        aModeDesc = "OSD_ThreadPool::Launcher";
-        OSD_ThreadPool::Launcher aLauncher(*OSD_ThreadPool::DefaultPool());
-        aLauncher.Perform(aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
-        break;
-      }
-      case 2: {
-        aModeDesc = "OSD_Parallel::Batched()";
-        OSD_Parallel::For(aFunctor2.Begin(), aFunctor2.End(), aFunctor2);
-        break;
-      }
-      case 3: {
-        aModeDesc = "OSD_ThreadPool::Launcher, Batched";
-        OSD_ThreadPool::Launcher aLauncher(*OSD_ThreadPool::DefaultPool());
-        aLauncher.Perform(aFunctor2.Begin(), aFunctor2.End(), aFunctor2);
-        break;
-      }
-      case 4: {
-#ifdef HAVE_TBB
-        aModeDesc = "tbb::parallel_for";
-        tbb::parallel_for(aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
-        break;
-#else
-        continue;
-#endif
-      }
-    }
-    aTimer.Stop();
-    std::cout << "  " << aModeDesc << ": " << aTimeSeq / aTimer.ElapsedTime() << "x "
-              << (aTimer.ElapsedTime() < aTimeSeq ? "[boost]" : "[slow-down]") << "\n";
-    aTimer.Show(std::cout);
-
-    for (int i = 0; i < aLength; ++i)
-    {
-      if (anY2(i) != anY1(i))
-      {
-        std::cerr << "Error: Parallel algorithm produced invalid result!\n";
-        break;
-      }
-    }
-  }
-  return 0;
-}
-
-//! Initializes the given square matrix with values that are generated by the given generator
-//! function.
-template <class GeneratorT>
-void initRandMatrix(NCollection_Array2<double>& theMat, GeneratorT& theGen)
-{
-  for (int i = theMat.LowerRow(); i <= theMat.UpperRow(); ++i)
-  {
-    for (int j = theMat.LowerCol(); j <= theMat.UpperCol(); ++j)
-    {
-      theMat(i, j) = static_cast<double>(theGen());
-    }
-  }
-}
-
-//! Compute the product of two square matrices in parallel.
-class ParallelTest_MatMult
-{
-public:
-  ParallelTest_MatMult(const NCollection_Array2<double>& theMat1,
-                       const NCollection_Array2<double>& theMat2,
-                       NCollection_Array2<double>&       theResult,
-                       int                               theSize)
-      : myMat1(theMat1),
-        myMat2(theMat2),
-        myResult(theResult),
-        mySize(theSize)
-  {
-  }
-
-  int Begin() const { return 0; }
-
-  int End() const { return mySize; }
-
-  void operator()(int theIndex) const
-  {
-    for (int j = 0; j < mySize; ++j)
-    {
-      double aTmp = 0;
-      for (int k = 0; k < mySize; ++k)
-      {
-        aTmp += myMat1(theIndex, k) * myMat2(k, j);
-      }
-      myResult(theIndex, j) = aTmp;
-    }
-  }
-
-  void operator()(int theThreadIndex, int theIndex) const
-  {
-    (void)theThreadIndex;
-    (*this)(theIndex);
-  }
-
-private:
-  ParallelTest_MatMult(const ParallelTest_MatMult&)      = delete;
-  ParallelTest_MatMult& operator=(ParallelTest_MatMult&) = delete;
-
-protected:
-  const NCollection_Array2<double>& myMat1;
-  const NCollection_Array2<double>& myMat2;
-  NCollection_Array2<double>&       myResult;
-  int                               mySize;
-};
-
-//---------------------------------------------------------------------
-static int OCC29935(Draw_Interpretor&, int theArgc, const char** theArgv)
-{
-  if (theArgc != 2)
-  {
-    std::cout << "Syntax error: wrong number of arguments\n";
-    return 1;
-  }
-
-  // Generate data;
-  int aSize = Draw::Atoi(theArgv[1]);
-
-  std::mt19937               aGen(42);
-  NCollection_Array2<double> aMat1(0, aSize - 1, 0, aSize - 1);
-  NCollection_Array2<double> aMat2(0, aSize - 1, 0, aSize - 1);
-  NCollection_Array2<double> aMatResRef(0, aSize - 1, 0, aSize - 1);
-  NCollection_Array2<double> aMatRes(0, aSize - 1, 0, aSize - 1);
-  initRandMatrix(aMat1, aGen);
-  initRandMatrix(aMat2, aGen);
-
-  //! Serial processing
-  double aTimeSeq = 0.0;
-  {
-    OSD_Timer aTimer;
-    aTimer.Start();
-    ParallelTest_MatMult aFunctor(aMat1, aMat2, aMatResRef, aSize);
-    for (int i = aFunctor.Begin(); i < aFunctor.End(); ++i)
-    {
-      aFunctor(i);
-    }
-
-    aTimer.Stop();
-    std::cout << "  Processing time (sequential mode): 1x [reference]\n";
-    aTimeSeq = aTimer.ElapsedTime();
-    aTimer.Show(std::cout);
-  }
-
-  // Parallel processing
-  for (int aMode = 0; aMode <= 2; ++aMode)
-  {
-    aMatRes.Init(0.0);
-
-    OSD_Timer aTimer;
-    aTimer.Start();
-    const char*          aModeDesc = nullptr;
-    ParallelTest_MatMult aFunctor1(aMat1, aMat2, aMatRes, aSize);
-    switch (aMode)
-    {
-      case 0: {
-        aModeDesc = "OSD_Parallel::For()";
-        OSD_Parallel::For(aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
-        break;
-      }
-      case 1: {
-        aModeDesc = "OSD_ThreadPool::Launcher";
-        OSD_ThreadPool::Launcher aLauncher(*OSD_ThreadPool::DefaultPool());
-        aLauncher.Perform(aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
-        break;
-      }
-      case 2: {
-#ifdef HAVE_TBB
-        aModeDesc = "tbb::parallel_for";
-        tbb::parallel_for(aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
-        break;
-#else
-        continue;
-#endif
-      }
-    }
-    aTimer.Stop();
-    std::cout << "  " << aModeDesc << ": " << aTimeSeq / aTimer.ElapsedTime() << "x "
-              << (aTimer.ElapsedTime() < aTimeSeq ? "[boost]" : "[slow-down]") << "\n";
-    aTimer.Show(std::cout);
-
-    for (int i = 0; i < aSize; ++i)
-    {
-      for (int j = 0; j < aSize; ++j)
-      {
-        if (aMatRes(i, j) != aMatResRef(i, j))
-        {
-          std::cerr << "Error: Parallel algorithm produced invalid result!\n";
-          i = aSize;
-          break;
-        }
-      }
-    }
-  }
-  return 0;
-}
-
-/*****************************************************************************/
-
 #include <GeomAPI_IntSS.hxx>
 
 //=================================================================================================
@@ -2074,12 +1368,14 @@ static int OCC25413(Draw_Interpretor& di, int narg, const char** a)
   double    zStep = (zMax - zMin) / N;
 
   for (double x = xMin; x <= xMax; x += xStep)
+  {
     for (double z = zMin; z <= zMax; z += zStep)
     {
       gp_Pnt aPoint(x, 0.0, z);
       gp_Lin aLine(aPoint, aDir);
       Inter.PerformNearest(aLine, -100., 100.);
     }
+  }
   return 0;
 }
 
@@ -2315,11 +1611,17 @@ static ShapeExtend_Status getStatusGap(const occ::handle<ShapeFix_Wire>& theFix,
   {
     bool isFound;
     if (theIs3d)
+    {
       isFound = theFix->StatusGaps3d((ShapeExtend_Status)i);
+    }
     else
+    {
       isFound = theFix->StatusGaps2d((ShapeExtend_Status)i);
+    }
     if (isFound)
+    {
       return ShapeExtend_Status(i);
+    }
   }
   return ShapeExtend_OK;
 }
@@ -2368,21 +1670,29 @@ static int OCC24881(Draw_Interpretor& di, int narg, const char** a)
           // not fixed, why?
           aStatus = getStatusGap(aWireFix, true);
           if (aStatus == ShapeExtend_OK)
+          {
             wasOk = true;
+          }
           else
           {
             // keep 3d fail status
             if (aStatusNbDMap.IsBound(aStatus))
+            {
               aStatusNbDMap(aStatus)++;
+            }
             else
+            {
               aStatusNbDMap.Bind(aStatus, 1);
+            }
             continue;
           }
         }
 
         // fix 2d
         if (aWireFix->FixGaps2d())
+        {
           nbFixed++;
+        }
         else
         {
           aStatus = getStatusGap(aWireFix, false);
@@ -2394,16 +1704,22 @@ static int OCC24881(Draw_Interpretor& di, int narg, const char** a)
               continue;
             }
             else
+            {
               nbFixed++;
+            }
           }
           else
           {
             // keep 2d fail status
             int aStatus2d = aStatus + ShapeExtend_FAIL;
             if (aStatusNbDMap.IsBound(aStatus2d))
+            {
               aStatusNbDMap(aStatus2d)++;
+            }
             else
+            {
               aStatusNbDMap.Bind(aStatus2d, 1);
+            }
             continue;
           }
         }
@@ -2545,331 +1861,6 @@ int xprojponf(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-//=================================================================================================
-
-#include <BRepMesh_CircleTool.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-
-static bool inspect_point(const gp_XY& thePoint, const gp_XY& theCenter, const double theRadius)
-{
-  static double aPrecision   = Precision::PConfusion();
-  static double aSqPrecision = aPrecision * aPrecision;
-  const gp_XY   aDistVec     = thePoint - theCenter;
-  return aDistVec.SquareModulus() - (theRadius * theRadius) < aSqPrecision;
-}
-
-static int OCC24923(Draw_Interpretor& theDI, int argc, const char** argv)
-{
-  srand(static_cast<unsigned int>(time(nullptr)));
-
-  const double  aMaxDeviation = (argc > 1) ? Draw::Atof(argv[1]) : 0.01;
-  const int     aPointsNb     = 10000000;
-  const double  aMinAngle     = 5 * M_PI / 180.;
-  static double aSqPrecision  = Precision::PConfusion() * Precision::PConfusion();
-
-  int aFailedNb = 0;
-  for (int i = 0; i < aPointsNb; ++i)
-  {
-    gp_XY p[3];
-    for (int j = 0; j < 3; ++j)
-      p[j].SetCoord(((double)rand()) / RAND_MAX, ((double)rand()) / RAND_MAX);
-
-    // Check that points do not compose degenerated triangle.
-    gp_XY aVec1 = p[1] - p[0];
-    gp_XY aVec2 = p[2] - p[0];
-    if (aVec1.SquareModulus() > aSqPrecision && aVec2.SquareModulus() > aSqPrecision
-        && (aVec1 ^ aVec2) > aMinAngle)
-    {
-      gp_XY  aCenter;
-      double aRadius;
-      if (BRepMesh_CircleTool::MakeCircle(p[0], p[1], p[2], aCenter, aRadius))
-      {
-        if (!inspect_point(p[0], aCenter, aRadius) || !inspect_point(p[1], aCenter, aRadius)
-            || !inspect_point(p[2], aCenter, aRadius))
-        {
-          /* theDI << "Missed: " <<
-             "p1=(" << p1.X() << ", " << p1.Y() << "), " <<
-             "p2=(" << p2.X() << ", " << p2.Y() << "), " <<
-             "p3=(" << p3.X() << ", " << p3.Y() << "), " <<
-             "c=(" << aCenter.X() << ", " << aCenter.Y() << "), " <<
-             "r=" << aRadius << "\n";*/
-
-          ++aFailedNb;
-        }
-
-        continue;
-      }
-    }
-
-    // Ensure that aPointsNb suitable for tests are generated
-    --i;
-  }
-
-  const double aDeviation = 1. - (double)(aPointsNb - aFailedNb) / (double)aPointsNb;
-
-  theDI << "Number of incorrect cases: " << aFailedNb << " (Total " << aPointsNb << ")\n";
-  if (aDeviation > aMaxDeviation)
-  {
-    theDI << "Failed. Number of incorrect results is too huge: " << aDeviation * 100 << "% (Max "
-          << aMaxDeviation * 100 << "%)\n";
-    return 1;
-  }
-
-  theDI << "Deviation of incorrect results is: " << aDeviation * 100 << "% (Max "
-        << aMaxDeviation * 100 << "%)\n";
-  theDI << "Test completed\n";
-  return 0;
-}
-
-//=======================================================================
-// function : OCC25574
-// purpose  : check implementation of Euler angles in gp_Quaternion
-//=======================================================================
-
-static int OCC25574(Draw_Interpretor& theDI, int /*argc*/, const char** /*argv*/)
-{
-  bool isTestOk = true;
-
-  // Check consistency of Get and Set operations for Euler angles
-  gp_Quaternion aQuat;
-  aQuat.Set(0.06766916507860499, 0.21848101129786085, 0.11994599260380681, 0.9660744746954637);
-  double alpha, beta, gamma;
-  gp_Mat aRinv = aQuat.GetMatrix().Inverted();
-  gp_Mat aI;
-  aI.SetIdentity();
-  const char* names[] = {"Extrinsic_XYZ", "Extrinsic_XZY", "Extrinsic_YZX", "Extrinsic_YXZ",
-                         "Extrinsic_ZXY", "Extrinsic_ZYX", "Intrinsic_XYZ", "Intrinsic_XZY",
-                         "Intrinsic_YZX", "Intrinsic_YXZ", "Intrinsic_ZXY", "Intrinsic_ZYX",
-                         "Extrinsic_XYX", "Extrinsic_XZX", "Extrinsic_YZY", "Extrinsic_YXY",
-                         "Extrinsic_ZYZ", "Extrinsic_ZXZ", "Intrinsic_XYX", "Intrinsic_XZX",
-                         "Intrinsic_YZY", "Intrinsic_YXY", "Intrinsic_ZXZ", "Intrinsic_ZYZ"};
-  for (int i = gp_Extrinsic_XYZ; i <= gp_Intrinsic_ZYZ; i++)
-  {
-    aQuat.GetEulerAngles(gp_EulerSequence(i), alpha, beta, gamma);
-
-    gp_Quaternion aQuat2;
-    aQuat2.SetEulerAngles(gp_EulerSequence(i), alpha, beta, gamma);
-
-    gp_Mat aR    = aQuat2.GetMatrix();
-    gp_Mat aDiff = aR * aRinv - aI;
-    if (aDiff.Determinant() > 1e-5)
-    {
-      theDI << "Error: Euler angles conversion incorrect for sequence "
-            << names[i - gp_Extrinsic_XYZ] << "\n";
-      isTestOk = false;
-    }
-  }
-
-  // Check conversion between intrinsic and extrinsic rotations
-  // Any extrinsic rotation is equivalent to an intrinsic rotation
-  // by the same angles but with inverted order of elemental rotations, and vice versa
-  // For instance:
-  //    Extrinsic_XZY = Incrinsic_XZY
-  //    R = X(A)Z(B)Y(G) --> R = Y(G)Z(B)X(A)
-  alpha = 0.1517461713131;
-  beta  = 1.5162198410141;
-  gamma = 1.9313156236541;
-  double           alpha2, beta2, gamma2;
-  gp_EulerSequence pairs[][2] = {{gp_Extrinsic_XYZ, gp_Intrinsic_ZYX},
-                                 {gp_Extrinsic_XZY, gp_Intrinsic_YZX},
-                                 {gp_Extrinsic_YZX, gp_Intrinsic_XZY},
-                                 {gp_Extrinsic_YXZ, gp_Intrinsic_ZXY},
-                                 {gp_Extrinsic_ZXY, gp_Intrinsic_YXZ},
-                                 {gp_Extrinsic_ZYX, gp_Intrinsic_XYZ}};
-  for (int i = 0; i < 6; i++)
-  {
-    aQuat.SetEulerAngles(pairs[i][0], alpha, beta, gamma);
-    aQuat.GetEulerAngles(pairs[i][1], gamma2, beta2, alpha2);
-
-    if (std::abs(alpha - alpha2) > 1e-5 || std::abs(beta - beta2) > 1e-5
-        || std::abs(gamma - gamma2) > 1e-5)
-    {
-      theDI << "Error: intrinsic and extrinsic conversion incorrect for sequence " << names[i]
-            << "\n";
-      isTestOk = false;
-    }
-  }
-
-  // Check correspondence of enumeration and actual rotation it defines,
-  // by rotation by one axis and checking that it does not change a point on that axis
-  for (int i = gp_Extrinsic_XYZ; i <= gp_Intrinsic_ZYZ; i++)
-  {
-    // Iterate over rotations R(A)R(B)R(G) for each Euler angle Alpha, Beta, Gamma
-    // There are three ordered axes corresponding to three rotations.
-    // Each rotation applied with current angle around current axis.
-    for (int j = 0; j < 3; j++)
-    {
-      // note that current axis index is obtained by parsing of enumeration name!
-      int anAxis = names[i - gp_Extrinsic_XYZ][10 + j] - 'X';
-      Standard_ASSERT_RETURN(anAxis >= 0 && anAxis <= 2,
-                             "Incorrect parsing of enumeration name",
-                             1);
-
-      // Set 90 degrees to current Euler angle
-      double anAngles[3] = {0., 0., 0.};
-      anAngles[j]        = 0.5 * M_PI;
-
-      gp_Quaternion q2;
-      q2.SetEulerAngles(gp_EulerSequence(i), anAngles[0], anAngles[1], anAngles[2]);
-
-      // Set point on axis corresponding to current rotation
-      // We will apply rotation around this axis
-      gp_XYZ v(0., 0., 0.);
-      v.SetCoord(anAxis + 1, 1.);
-
-      // Apply rotation to point
-      gp_Trsf aT;
-      aT.SetRotation(q2);
-      gp_XYZ v2 = v;
-      aT.Transforms(v2);
-
-      // Check that point is still on origin position
-      if ((v - v2).SquareModulus() > Precision::SquareConfusion())
-      {
-        // avoid reporting small coordinates
-        for (int k = 1; k <= 3; k++)
-          if (std::abs(v2.Coord(k)) < Precision::Confusion())
-            v2.SetCoord(k, 0.);
-
-        isTestOk = false;
-        theDI << "Error: Euler sequence " << names[i - gp_Extrinsic_XYZ] << " is incorrect:\n";
-        theDI << "rotating by angle 90 deg around "
-              << (anAxis == 0   ? "X"
-                  : anAxis == 1 ? "Y"
-                                : "Z")
-              << " converts vector (" << v.X() << ", " << v.Y() << ", " << v.Z() << ") to ("
-              << v2.X() << ", " << v2.Y() << ", " << v2.Z() << ")\n";
-      }
-    }
-  }
-
-  // Check correspondence of enumeration and actual rotation it defines,
-  // by comparing cumulative rotation matrix with sequence of rotations by axes
-  const double anAngle[3] = {0.1, 0.2, 0.3};
-  for (int i = gp_Extrinsic_XYZ; i <= gp_Intrinsic_ZYZ; i++)
-  {
-    // Sequence of rotations
-    gp_Mat aR[3];
-    for (int j = 0; j < 3; j++)
-    {
-      // note that current axis index is obtained by parsing of enumeration name!
-      int anAxis = names[i - gp_Extrinsic_XYZ][10 + j] - 'X';
-      Standard_ASSERT_RETURN(anAxis >= 0 && anAxis <= 2,
-                             "Incorrect parsing of enumeration name",
-                             1);
-
-      // Set point on axis corresponding to current rotation
-      // We will apply rotation around this axis
-      gp_XYZ v(0., 0., 0.);
-      v.SetCoord(anAxis + 1, 1.);
-      aR[j].SetRotation(v, anAngle[j]);
-    }
-
-    // construct cumulative transformation (differently for extrinsic and intrinsic rotations);
-    // note that we parse first symbol of the enum name to identify its type
-    gp_Mat aRot;
-    if (names[i - gp_Extrinsic_XYZ][0] == 'E') // extrinsic
-    {
-      aRot = aR[2] * aR[1] * aR[0];
-    }
-    else // intrinsic
-    {
-      aRot = aR[0] * aR[1] * aR[2];
-    }
-
-    // set the same angles in quaternion
-    aQuat.SetEulerAngles(gp_EulerSequence(i), anAngle[0], anAngle[1], anAngle[2]);
-
-    gp_Mat aRQ   = aQuat.GetMatrix();
-    gp_Mat aDiff = aRQ * aRot.Inverted() - aI;
-    if (aDiff.Determinant() > 1e-5)
-    {
-      theDI << "Error: Euler angles conversion does not correspond to sequential rotations for "
-            << names[i - gp_Extrinsic_XYZ] << "\n";
-      isTestOk = false;
-    }
-  }
-
-  // similar checkfor YawPitchRoll sequence as defined in description of #25574
-  {
-    // Start with world coordinate system
-    gp_Ax2 world;
-
-    // Perform three rotations using the yaw-pitch-roll convention.
-    // This means: rotate around the original z axis with angle alpha,
-    // then rotate around the new y axis with angle beta,
-    // then rotate around the new x axis with angle gamma.
-    alpha = 0.0 / 180.0 * M_PI;
-    beta  = -35.0 / 180.0 * M_PI;
-    gamma = 90.0 / 180.0 * M_PI;
-
-    const gp_Quaternion rotationZ(world.Direction(), alpha);
-    const gp_Vec        rotY = rotationZ.Multiply(world.YDirection());
-    const gp_Vec        rotX = rotationZ.Multiply(world.XDirection());
-
-    const gp_Quaternion rotationY(rotY, beta);
-    const gp_Vec        rotZ    = rotationY.Multiply(world.Direction());
-    const gp_Vec        rotRotX = rotationY.Multiply(rotX);
-
-    const gp_Quaternion rotationX(rotRotX, gamma);
-    const gp_Vec        rotRotZ = rotationX.Multiply(rotZ);
-
-    gp_Ax2 result(gp_Pnt(0.0, 0.0, 0.0), rotRotZ, rotRotX);
-
-    // Now compute the Euler angles
-    gp_Trsf transformation;
-    transformation.SetDisplacement(gp_Ax2(), result);
-
-    double computedAlpha;
-    double computedBeta;
-    double computedGamma;
-
-    transformation.GetRotation().GetEulerAngles(gp_YawPitchRoll,
-                                                computedAlpha,
-                                                computedBeta,
-                                                computedGamma);
-
-    // We expect now to get the same angles as we have used for our rotations
-    if (std::abs(alpha - computedAlpha) > 1e-5 || std::abs(beta - computedBeta) > 1e-5
-        || std::abs(gamma - computedGamma) > 1e-5)
-    {
-      theDI << "Error: unexpected values of Euler angles for YawPitchRoll sequence:\n";
-      theDI << "alpha: " << alpha / M_PI * 180.0
-            << " and computed alpha: " << computedAlpha / M_PI * 180.0 << "\n";
-      theDI << "beta: " << beta / M_PI * 180.0
-            << " and computed beta: " << computedBeta / M_PI * 180.0 << "\n";
-      theDI << "gamma: " << gamma / M_PI * 180.0
-            << " and computed gamma: " << computedGamma / M_PI * 180.0 << "\n";
-      isTestOk = false;
-    }
-  }
-
-  // test from #25946
-  {
-    gp_Quaternion q;
-    q.Set(0.06766916507860499, 0.21848101129786085, 0.11994599260380681, 0.9660744746954637);
-
-    q.GetEulerAngles(gp_Intrinsic_ZYX, alpha, beta, gamma);
-    q.GetEulerAngles(gp_Extrinsic_XYZ, alpha2, beta2, gamma2);
-
-    // gp_Intrinsic_ZYX and gp_Extrinsic_XYZ should produce the same values of angles but in
-    // opposite order
-    if (std::abs(alpha - gamma2) > 1e-5 || std::abs(beta - beta2) > 1e-5
-        || std::abs(gamma - alpha2) > 1e-5)
-    {
-      theDI
-        << "Error: Euler angles computed for gp_Intrinsic_ZYX and gp_Extrinsic_XYZ do not match:\n";
-      theDI << "alpha: " << alpha / M_PI * 180.0 << " and " << alpha2 / M_PI * 180.0 << "\n";
-      theDI << "beta: " << beta / M_PI * 180.0 << " and " << beta2 / M_PI * 180.0 << "\n";
-      theDI << "gamma: " << gamma / M_PI * 180.0 << " and " << gamma2 / M_PI * 180.0 << "\n";
-      isTestOk = false;
-    }
-  }
-
-  theDI << (isTestOk ? "Test completed" : "Test failed") << "\n";
-  return 0;
-}
-
 #include <NCollection_Array1.hxx>
 #include <GeomConvert.hxx>
 
@@ -2922,80 +1913,6 @@ int OCC26446(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
-#include <TCollection_AsciiString.hxx>
-
-static int OCC26407(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
-{
-  if (theArgNb != 2)
-  {
-    std::cerr << "Error: wrong number of arguments! See usage:\n";
-    theDI.PrintHelp(theArgVec[0]);
-    return 1;
-  }
-
-  // Construct vertices.
-  std::vector<TopoDS_Vertex> wire_vertices;
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(587.90000000000009094947, 40.6758179230516248026106, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(807.824182076948432040808, 260.599999999999965893949, 88.5)));
-  wire_vertices.push_back(BRepBuilderAPI_MakeVertex(
-    gp_Pnt(644.174182076948454778176, 424.249999999999943156581, 88.5000000000000142108547)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(629.978025792618950617907, 424.25, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(793.628025792618700506864, 260.599999999999852207111, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(587.900000000000204636308, 54.8719742073813492311274, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(218.521974207381418864315, 424.250000000000056843419, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(204.325817923051886282337, 424.249999999999943156581, 88.5)));
-
-  // Construct wire.
-  BRepBuilderAPI_MakeWire wire_builder;
-  for (size_t i = 0; i < wire_vertices.size(); i++)
-  {
-    const TopoDS_Vertex& v = wire_vertices[i];
-    const TopoDS_Vertex& w = wire_vertices[(i + 1) % wire_vertices.size()];
-
-    wire_builder.Add(BRepBuilderAPI_MakeEdge(v, w));
-  }
-
-  // Create face and triangulate it.
-  // Construct face.
-  gp_Pnt v0 = BRep_Tool::Pnt(wire_vertices[0]);
-  gp_Pnt v1 = BRep_Tool::Pnt(wire_vertices[1]);
-  gp_Pnt v2 = BRep_Tool::Pnt(wire_vertices[wire_vertices.size() - 1]);
-
-  gp_Vec face_normal = gp_Vec(v0, v1).Crossed(gp_Vec(v0, v2));
-
-  TopoDS_Face              face = BRepBuilderAPI_MakeFace(gp_Pln(v0, face_normal), wire_builder);
-  BRepMesh_IncrementalMesh m(face, 1e-7);
-
-  if (m.GetStatusFlags() != 0)
-  {
-    theDI << "Failed. Status for face constructed from vertices: " << m.GetStatusFlags() << "\n";
-    return 1;
-  }
-  DBRep::Set(theArgVec[1], face);
-  char buf[256];
-  Sprintf(buf, "isos %s 0", theArgVec[1]);
-  theDI.Eval(buf);
-
-  Sprintf(buf, "triangles %s", theArgVec[1]);
-  theDI.Eval(buf);
-
-  theDI.Eval("smallview; fit");
-
-  theDI << "Test completed\n";
-  return 0;
-}
-
-//=================================================================================================
-
 #include <Poly.hxx>
 
 static int OCC26485(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
@@ -3023,7 +1940,9 @@ static int OCC26485(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     const occ::handle<Poly_Triangulation>& aT    = BRep_Tool::Triangulation(aFace, L);
 
     if (aT.IsNull())
+    {
       continue;
+    }
 
     Poly::ComputeNormals(aT);
 
@@ -3273,7 +2192,9 @@ static int OCC26462(Draw_Interpretor& theDI, int /*theArgNb*/, const char** /*th
 static int OCC26313(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
 
   gp_Trsf  T;
   gp_GTrsf GT(T);
@@ -3390,245 +2311,6 @@ int OCC26525(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-//=======================================================================
-// function : OCC24537
-// purpose  : Puts inverted numbers (in the sense of little/big endian inversion)
-//           from predefined arrays.
-//=======================================================================
-#include <FSD_BinaryFile.hxx>
-
-template <int size>
-inline const unsigned char* SizeRef();
-
-template <>
-inline const unsigned char* SizeRef<8>()
-{
-  static const unsigned char aSizeRef[] = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  return aSizeRef;
-}
-
-template <>
-inline const unsigned char* SizeRef<4>()
-{
-  static const unsigned char aSizeRef[] = {
-    0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00,
-    0x00, 0x04, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x07,
-    0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00};
-  return aSizeRef;
-}
-
-static int OCC24537(Draw_Interpretor& theDI, int argc, const char** argv)
-{
-  std::ofstream aF;
-  if (argc > 1)
-  {
-    aF.open(argv[1]);
-    if (!aF.is_open())
-    {
-      std::cout << "cannot create file " << argv[1] << std::endl;
-      return 1;
-    }
-  }
-  bool isErr = false;
-  // 1. InverseInt
-  const unsigned char anIntRef[] = {0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00,
-                                    0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x05,
-                                    0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00,
-                                    0x00, 0x08, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00};
-  int                 anIntArr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
-  if (aF.is_open())
-  {
-    for (int i = 0; i < 10; ++i)
-    {
-      int anInv = FSD_BinaryFile::InverseInt(anIntArr[i]);
-      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
-    }
-  }
-  else
-  {
-    int anInv[10];
-    for (int i = 0; i < 10; ++i)
-      anInv[i] = FSD_BinaryFile::InverseInt(anIntArr[i]);
-    if (memcmp(anInv, anIntRef, sizeof(anIntRef)) != 0)
-    {
-      theDI << "Error: incorrect conversion of an integer value\n";
-      isErr = true;
-    }
-  }
-
-  // 1a. Random InverseInt
-  const unsigned char aRndIntRef[] = {0xFF, 0xC2, 0xF7, 0x00, 0xFF, 0xFF, 0xFB, 0x2E, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x04, 0xD2,
-                                      0x00, 0x00, 0x04, 0xD3, 0xFF, 0xFF, 0xFD, 0x1E, 0xFF, 0xFF,
-                                      0xFF, 0xFB, 0x00, 0x00, 0x03, 0x8D, 0x00, 0x3D, 0x09, 0x00};
-  int                 aRndIntArr[] = {-4000000, -1234, 0, 1, 1234, 1235, -738, -5, 909, 4000000};
-  if (aF.is_open())
-  {
-    for (int i = 0; i < 10; ++i)
-    {
-      int anInv = FSD_BinaryFile::InverseInt(aRndIntArr[i]);
-      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
-    }
-  }
-  else
-  {
-    int anInv[10];
-    for (int i = 0; i < 10; ++i)
-      anInv[i] = FSD_BinaryFile::InverseInt(aRndIntArr[i]);
-    if (memcmp(anInv, aRndIntRef, sizeof(aRndIntRef)) != 0)
-    {
-      theDI << "Error: incorrect conversion of a dispersed integer value\n";
-      isErr = true;
-    }
-  }
-
-  // 2. InverseReal
-  const unsigned char aRealRef[] = {
-    0x3F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x40, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x40, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x40, 0x1C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x40, 0x22, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  const double aRealArr[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 0.0};
-  if (aF.is_open())
-  {
-    for (int i = 0; i < 10; ++i)
-    {
-      double anInv = FSD_BinaryFile::InverseReal(aRealArr[i]);
-      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
-    }
-  }
-  else
-  {
-    double anInv[10];
-    for (int i = 0; i < 10; ++i)
-      anInv[i] = FSD_BinaryFile::InverseReal(aRealArr[i]);
-    if (memcmp(anInv, aRealRef, sizeof(aRealRef)) != 0)
-    {
-      theDI << "Error: incorrect conversion of a real value\n";
-      isErr = true;
-    }
-  }
-
-  // 2a. Random InverseReal
-  const unsigned char aRndRealRef[] = {
-    0xFE, 0x37, 0xE4, 0x3C, 0x88, 0x00, 0x75, 0x9C, 0xBE, 0x11, 0x2E, 0x0B, 0xE8, 0x26, 0xD6, 0x95,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3E, 0x11, 0x2E, 0x0B, 0xE8, 0x26, 0xD6, 0x95,
-    0x3F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x09, 0x21, 0xDA, 0x45, 0x5B, 0x53, 0xE4,
-    0x54, 0xB2, 0x49, 0xAD, 0x25, 0x94, 0xC3, 0x7D, 0x40, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0xC0, 0x23, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCD, 0x40, 0x23, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCD};
-  const double aRndRealArr[] = {-1e300, -1.e-9, 0., 1.e-9, 1., 3.1415296, 1.e100, 8.0, -9.9, 9.9};
-  if (aF.is_open())
-  {
-    for (int i = 0; i < 10; ++i)
-    {
-      double anInv = FSD_BinaryFile::InverseReal(aRndRealArr[i]);
-      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
-    }
-  }
-  else
-  {
-    double anInv[10];
-    for (int i = 0; i < 10; ++i)
-      anInv[i] = FSD_BinaryFile::InverseReal(aRndRealArr[i]);
-    if (memcmp(anInv, aRndRealRef, sizeof(aRndRealRef)) != 0)
-    {
-      theDI << "Error: incorrect conversion of a dispersed real value\n";
-      isErr = true;
-    }
-  }
-
-  // 3. InverseShortReal
-  const unsigned char aShortRealRef[] = {
-    0x3F, 0x80, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x40, 0x40, 0x00, 0x00, 0x40, 0x80,
-    0x00, 0x00, 0x40, 0xA0, 0x00, 0x00, 0x40, 0xC0, 0x00, 0x00, 0x40, 0xE0, 0x00, 0x00,
-    0x41, 0x00, 0x00, 0x00, 0x41, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  const float aShortRealArr[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 0.0f};
-  if (aF.is_open())
-  {
-    for (int i = 0; i < 10; ++i)
-    {
-      float anInv = FSD_BinaryFile::InverseShortReal(aShortRealArr[i]);
-      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
-    }
-  }
-  else
-  {
-    float anInv[10];
-    for (int i = 0; i < 10; ++i)
-      anInv[i] = FSD_BinaryFile::InverseShortReal(aShortRealArr[i]);
-    if (memcmp(anInv, aShortRealRef, sizeof(aShortRealRef)) != 0)
-    {
-      theDI << "Error: incorrect conversion of a short real value\n";
-      isErr = true;
-    }
-  }
-
-  // 3a. Random InverseShortReal
-  const unsigned char aRndShortRealRef[] = {
-    0xB0, 0x89, 0x70, 0x5F, 0x00, 0x00, 0x00, 0x00, 0x30, 0x89, 0x70, 0x5F, 0x3F, 0x80,
-    0x00, 0x00, 0x40, 0x49, 0x0E, 0x56, 0xC0, 0xD6, 0x66, 0x66, 0x40, 0xD6, 0x66, 0x66,
-    0x42, 0xC5, 0xCC, 0xCD, 0xC2, 0xC7, 0xCC, 0xCD, 0x42, 0xC7, 0xCC, 0xCD};
-  const float aRndShortRealArr[] =
-    {-1.e-9f, 0.f, 1.e-9f, 1.f, 3.1415f, -6.7f, 6.7f, 98.9f, -99.9f, 99.9f};
-  if (aF.is_open())
-  {
-    for (int i = 0; i < 10; ++i)
-    {
-      float anInv = FSD_BinaryFile::InverseShortReal(aRndShortRealArr[i]);
-      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
-    }
-  }
-  else
-  {
-    float anInv[10];
-    for (int i = 0; i < 10; ++i)
-      anInv[i] = FSD_BinaryFile::InverseShortReal(aRndShortRealArr[i]);
-    if (memcmp(anInv, aRndShortRealRef, sizeof(aRndShortRealRef)) != 0)
-    {
-      theDI << "Error: incorrect conversion of a dispersed short real value\n";
-      isErr = true;
-    }
-  }
-
-  // 4. InverseSize
-  const size_t aSizeArr[] = {1ul, 2ul, 3ul, 4ul, 5ul, 6ul, 7ul, 8ul, 9ul, 0ul};
-  if (aF.is_open())
-  {
-    for (int i = 0; i < 10; ++i)
-    {
-      size_t anInv = FSD_BinaryFile::InverseSize(aSizeArr[i]);
-      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
-    }
-  }
-  else
-  {
-    size_t               anInv[10];
-    const unsigned char* aSizeRef = SizeRef<sizeof(size_t)>();
-    for (int i = 0; i < 10; ++i)
-      anInv[i] = FSD_BinaryFile::InverseSize(aSizeArr[i]);
-    if (memcmp(anInv, aSizeRef, sizeof(size_t) * 10) != 0)
-    {
-      theDI << "Error: incorrect conversion of a size value\n";
-      isErr = true;
-    }
-  }
-
-  if (!aF.is_open() && !isErr)
-    theDI << "Conversion was done OK";
-  if (aF.is_open())
-  {
-    std::cout << "the file " << argv[1] << " has been created" << std::endl;
-    aF.close();
-  }
-  return 0;
-}
-
 #include <BRepOffsetAPI_DraftAngle.hxx>
 
 static TopoDS_Shape taper(const TopoDS_Shape& shape,
@@ -3653,7 +2335,7 @@ static TopoDS_Shape taper(const TopoDS_Shape& shape,
   return drafter.Shape();
 }
 
-static void dumpShapeVertices(const TopoDS_Shape& shape, std::vector<double>& coords)
+static void dumpShapeVertices(const TopoDS_Shape& shape, NCollection_LinearVector<double>& coords)
 {
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shape_vertices;
   TopExp::MapShapes(shape, TopAbs_VERTEX, shape_vertices);
@@ -3661,13 +2343,13 @@ static void dumpShapeVertices(const TopoDS_Shape& shape, std::vector<double>& co
   for (int i = 1; i <= shape_vertices.Extent(); i++)
   {
     gp_Pnt p = BRep_Tool::Pnt(TopoDS::Vertex(shape_vertices(i)));
-    coords.push_back(p.X());
-    coords.push_back(p.Y());
-    coords.push_back(p.Z());
+    coords.Append(p.X());
+    coords.Append(p.Y());
+    coords.Append(p.Z());
   }
 }
 
-static void GetCoords(const char* const path_to_file, std::vector<double>& coords)
+static void GetCoords(const char* const path_to_file, NCollection_LinearVector<double>& coords)
 {
   TopoDS_Shape shape;
   BRep_Builder builder;
@@ -3689,168 +2371,39 @@ static int OCC26396(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
   const int maxInd = 50;
 
-  std::vector<double> ref_coords;
-  ref_coords.reserve(100);
+  NCollection_LinearVector<double> ref_coords;
+  ref_coords.Reserve(100);
   bool Stat = true;
 
   GetCoords(theArgv[1], ref_coords);
 
-  std::vector<double> coords;
-  coords.reserve(100);
+  NCollection_LinearVector<double> coords;
+  coords.Reserve(100);
   for (int i = 1; i < maxInd; i++)
   {
     GetCoords(theArgv[1], coords);
-    if (coords.size() != ref_coords.size())
+    if (coords.Size() != ref_coords.Size())
     {
       Stat = false;
       break;
     }
-    for (size_t j = 0; j < coords.size(); j++)
+    for (size_t j = 0; j < coords.Size(); j++)
+    {
       if (std::abs(ref_coords[j] - coords[j]) > RealEpsilon())
       {
         Stat = false;
         break;
       }
-    coords.clear();
+    }
+    coords.Clear();
   }
   if (!Stat)
+  {
     theDI << "Error: unstable results";
+  }
   else
+  {
     theDI << "test OK";
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC26750(Draw_Interpretor& theDI, int /*theNArg*/, const char** /*theArgVal*/)
-{
-  const gp_Vec2d aVec1(1.0, 0.0);
-  const gp_Vec2d aVec2(0.0, -1.0);
-
-  if (aVec1.IsNormal(aVec2, Precision::Angular()))
-  {
-    theDI << "gp_Vec2d OK. Vectors are normal.\n";
-  }
-  else
-  {
-    theDI << "Error in gp_Vec2d. Vectors should be normal.\n";
-  }
-
-  const gp_Dir2d aD1(gp_Dir2d::D::X);
-  const gp_Dir2d aD2(gp_Dir2d::D::NY);
-
-  if (aD1.IsNormal(aD2, Precision::Angular()))
-  {
-    theDI << "gp_Dir2d OK. Vectors are normal.\n";
-  }
-  else
-  {
-    theDI << "Error in gp_Dir2d. Vectors should be normal.\n";
-  }
-
-  return 0;
-}
-
-//=======================================================================
-// function : OCC26746
-// purpose  : Checks if coefficients of the torus are computed properly.
-//=======================================================================
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
-
-static int OCC26746(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
-{
-  if (theNArg < 2)
-  {
-    theDI << "Use: OCC26746 torus [toler NbCheckedPoints]\n";
-    return 1;
-  }
-
-  const occ::handle<Geom_ToroidalSurface> aGtor =
-    occ::down_cast<Geom_ToroidalSurface>(DrawTrSurf::GetSurface(theArgVal[1]));
-
-  const double aToler     = (theNArg >= 3) ? Draw::Atof(theArgVal[2]) : 1.0e-7;
-  const int    aNbPntsMax = (theNArg >= 4) ? Draw::Atoi(theArgVal[3]) : 5;
-
-  const int    aLowIndex = 5;
-  const double aStep     = 2.0 * M_PI / aNbPntsMax;
-
-  NCollection_Array1<double> anArrCoeffs(aLowIndex, aLowIndex + 34);
-  aGtor->Torus().Coefficients(anArrCoeffs);
-
-  double aUpar = 0.0, aVpar = 0.0;
-  for (int aUind = 0; aUind <= aNbPntsMax; aUind++)
-  {
-    for (int aVind = 0; aVind <= aNbPntsMax; aVind++)
-    {
-      const gp_Pnt aPt(aGtor->Value(aUpar, aVpar));
-      const double aX1 = aPt.X();
-      const double aX2 = aX1 * aX1;
-      const double aX3 = aX2 * aX1;
-      const double aX4 = aX2 * aX2;
-      const double aY1 = aPt.Y();
-      const double aY2 = aY1 * aY1;
-      const double aY3 = aY2 * aY1;
-      const double aY4 = aY2 * aY2;
-      const double aZ1 = aPt.Z();
-      const double aZ2 = aZ1 * aZ1;
-      const double aZ3 = aZ2 * aZ1;
-      const double aZ4 = aZ2 * aZ2;
-
-      int i = aLowIndex;
-
-      double aDelta = anArrCoeffs(i++) * aX4;       // 1
-      aDelta += anArrCoeffs(i++) * aY4;             // 2
-      aDelta += anArrCoeffs(i++) * aZ4;             // 3
-      aDelta += anArrCoeffs(i++) * aX3 * aY1;       // 4
-      aDelta += anArrCoeffs(i++) * aX3 * aZ1;       // 5
-      aDelta += anArrCoeffs(i++) * aY3 * aX1;       // 6
-      aDelta += anArrCoeffs(i++) * aY3 * aZ1;       // 7
-      aDelta += anArrCoeffs(i++) * aZ3 * aX1;       // 8
-      aDelta += anArrCoeffs(i++) * aZ3 * aY1;       // 9
-      aDelta += anArrCoeffs(i++) * aX2 * aY2;       // 10
-      aDelta += anArrCoeffs(i++) * aX2 * aZ2;       // 11
-      aDelta += anArrCoeffs(i++) * aY2 * aZ2;       // 12
-      aDelta += anArrCoeffs(i++) * aX2 * aY1 * aZ1; // 13
-      aDelta += anArrCoeffs(i++) * aX1 * aY2 * aZ1; // 14
-      aDelta += anArrCoeffs(i++) * aX1 * aY1 * aZ2; // 15
-      aDelta += anArrCoeffs(i++) * aX3;             // 16
-      aDelta += anArrCoeffs(i++) * aY3;             // 17
-      aDelta += anArrCoeffs(i++) * aZ3;             // 18
-      aDelta += anArrCoeffs(i++) * aX2 * aY1;       // 19
-      aDelta += anArrCoeffs(i++) * aX2 * aZ1;       // 20
-      aDelta += anArrCoeffs(i++) * aY2 * aX1;       // 21
-      aDelta += anArrCoeffs(i++) * aY2 * aZ1;       // 22
-      aDelta += anArrCoeffs(i++) * aZ2 * aX1;       // 23
-      aDelta += anArrCoeffs(i++) * aZ2 * aY1;       // 24
-      aDelta += anArrCoeffs(i++) * aX1 * aY1 * aZ1; // 25
-      aDelta += anArrCoeffs(i++) * aX2;             // 26
-      aDelta += anArrCoeffs(i++) * aY2;             // 27
-      aDelta += anArrCoeffs(i++) * aZ2;             // 28
-      aDelta += anArrCoeffs(i++) * aX1 * aY1;       // 29
-      aDelta += anArrCoeffs(i++) * aX1 * aZ1;       // 30
-      aDelta += anArrCoeffs(i++) * aY1 * aZ1;       // 31
-      aDelta += anArrCoeffs(i++) * aX1;             // 32
-      aDelta += anArrCoeffs(i++) * aY1;             // 33
-      aDelta += anArrCoeffs(i++) * aZ1;             // 34
-      aDelta += anArrCoeffs(i++);                   // 35
-
-      if (std::abs(aDelta) > aToler)
-      {
-        theDI << "(" << aUpar << ", " << aVpar
-              << "): Error in torus coefficients computation (Delta = " << aDelta << ").\n";
-      }
-      else
-      {
-        theDI << "(" << aUpar << ", " << aVpar << "): OK (Delta = " << aDelta << ").\n";
-      }
-
-      aVpar = (aVind == aNbPntsMax) ? 2.0 * M_PI : aVpar + aStep;
-    }
-
-    aVpar = 0.0;
-    aUpar = (aUind == aNbPntsMax) ? 2.0 * M_PI : aUpar + aStep;
   }
 
   return 0;
@@ -3864,7 +2417,7 @@ static int OCC27048(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 5)
   {
-    std::cout << "Incorrect number of arguments. See usage:" << std::endl;
+    std::cout << "Incorrect number of arguments. See usage:" << '\n';
     theDI.PrintHelp(theArgv[0]);
     return 1;
   }
@@ -3877,7 +2430,9 @@ static int OCC27048(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   int    aN = Draw::Atoi(theArgv[4]);
 
   for (; aN > 0; --aN)
+  {
     anAdaptor.Value(aU, aV);
+  }
 
   return 0;
 }
@@ -4027,7 +2582,7 @@ static int OCC27700(Draw_Interpretor& /*theDI*/, int /*theArgNb*/, const char** 
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
-    std::cout << "Error: no view available, call 'vinit' before!" << std::endl;
+    std::cout << "Error: no view available, call 'vinit' before!" << '\n';
     return 1;
   }
   occ::handle<OCC27700_Text> aPresentation = new OCC27700_Text();
@@ -4237,8 +2792,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   &QABugs_NHandleClass::NHandleProc,
                   group);
 
-  theCommands.Add("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
-  theCommands.Add("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
   theCommands.Add("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
   theCommands.Add("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
   theCommands.Add("OCC23952sweep", "OCC23952sweep nbupoles shape", __FILE__, OCC23952sweep, group);
@@ -4255,9 +2808,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   OCC23945,
                   group);
   theCommands.Add("OCC24008", "OCC24008 curve surface", __FILE__, OCC24008, group);
-  theCommands.Add("OCC24005", "OCC24005 result", __FILE__, OCC24005, group);
   theCommands.Add("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
-  theCommands.Add("OCC23972", "OCC23972", __FILE__, OCC23972, group);
   theCommands.Add("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
   theCommands.Add("OCC24086", "OCC24086 face wire", __FILE__, OCC24086, group);
   theCommands.Add("OCC24667",
@@ -4266,10 +2817,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   OCC24667,
                   group);
   theCommands.Add("OCC24834", "OCC24834", __FILE__, OCC24834, group);
-  theCommands.Add("OCC23951", "OCC23951 path to saved step file", __FILE__, OCC23951, group);
   theCommands.Add("OCC24931", "OCC24931 path to saved xml file", __FILE__, OCC24931, group);
-  theCommands.Add("OCC23950", "OCC23950 step_file", __FILE__, OCC23950, group);
-  theCommands.Add("OCC25004", "OCC25004", __FILE__, OCC25004, group);
   theCommands.Add("OCC24925",
                   "OCC24925 filename [pluginLib=TKXml storageGuid retrievalGuid]"
                   "\nOCAF persistence without setting environment variables",
@@ -4277,18 +2825,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   OCC24925,
                   group);
   theCommands.Add("OCC25043", "OCC25043 shape", __FILE__, OCC25043, group);
-  theCommands.Add(
-    "OCC24826,",
-    "This test performs simple saxpy test using multiple threads.\n Usage: OCC24826 length",
-    __FILE__,
-    OCC24826,
-    group);
-  theCommands.Add("OCC29935,",
-                  "This test performs product of two square matrices using multiple threads.\n "
-                  "Usage: OCC29935 size",
-                  __FILE__,
-                  OCC29935,
-                  group);
   theCommands.Add("OCC24606",
                   "OCC24606 : Tests ::FitAll for V3d view ('vfit' is for NIS view)",
                   __FILE__,
@@ -4306,7 +2842,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC25446", "OCC25446 res b1 b2 op", __FILE__, OCC25446, group);
   theCommands.Add("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
   theCommands.Add("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
-  theCommands.Add("OCC24923", "OCC24923", __FILE__, OCC24923, group);
   theCommands.Add("OCC26139",
                   "OCC26139 [-boxsize value] [-boxgrid value] [-compgrid value]",
                   __FILE__,
@@ -4314,7 +2849,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
   theCommands.Add("OCC26284", "OCC26284", __FILE__, OCC26284, group);
   theCommands.Add("OCC26446", "OCC26446 r c1 c2", __FILE__, OCC26446, group);
-  theCommands.Add("OCC26407", "OCC26407 result_name", __FILE__, OCC26407, group);
   theCommands.Add("OCC26485", "OCC26485 shape", __FILE__, OCC26485, group);
   theCommands.Add("OCC26553", "OCC26553 file_path", __FILE__, OCC26553, group);
   theCommands.Add(
@@ -4338,11 +2872,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC26313", "OCC26313 result shape", __FILE__, OCC26313, group);
   theCommands.Add("OCC26396", "OCC26396 shape_file_path", __FILE__, OCC26396, group);
   theCommands.Add("OCC26525", "OCC26525 result edge face ", __FILE__, OCC26525, group);
-
-  theCommands.Add("OCC24537", "OCC24537 [file]", __FILE__, OCC24537, group);
-  theCommands.Add("OCC26750", "OCC26750", __FILE__, OCC26750, group);
-  theCommands.Add("OCC25574", "OCC25574", __FILE__, OCC25574, group);
-  theCommands.Add("OCC26746", "OCC26746 torus [toler NbCheckedPoints] ", __FILE__, OCC26746, group);
 
   theCommands.Add("OCC27048",
                   "OCC27048 surf U V N\nCalculate value of surface N times in the point (U, V)",
@@ -4392,5 +2921,4 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC29412,
                   group);
-  return;
 }

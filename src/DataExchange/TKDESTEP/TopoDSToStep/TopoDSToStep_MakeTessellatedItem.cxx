@@ -124,7 +124,9 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Face&                  
 {
   done = false;
   if (theProgress.UserBreak())
+  {
     return;
+  }
   TopLoc_Location                        aLoc;
   const occ::handle<Poly_Triangulation>& aMesh = BRep_Tool::Triangulation(theFace, aLoc);
   if (aMesh.IsNull())
@@ -206,7 +208,9 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell&                 
   theTessellatedItem.Nullify();
 
   if (theProgress.UserBreak())
+  {
     return;
+  }
 
   TopExp_Explorer anExp;
   int             aNbFaces = 0;
@@ -242,7 +246,7 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell&                 
 
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> anItems =
     new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1,
-                                                                               aTessFaces.Size());
+                                                                               aTessFaces.Length());
   for (int anIndx =
          NCollection_Sequence<opencascade::handle<StepVisual_TessellatedStructuredItem>>::Lower();
        anIndx <= aTessFaces.Upper();

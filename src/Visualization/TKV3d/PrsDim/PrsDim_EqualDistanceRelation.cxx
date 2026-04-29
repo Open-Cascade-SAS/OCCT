@@ -83,12 +83,17 @@ void PrsDim_EqualDistanceRelation::Compute(const occ::handle<PrsMgr_Presentation
     gp_Pnt aMiddle34((myPoint3.XYZ() + myPoint4.XYZ()) * 0.5);
 
     if (myPosition.Distance(aMiddle12) > myPosition.Distance(aMiddle34))
+    {
       Position12.SetXYZ((myPoint1.XYZ() + myPoint2.XYZ()) * 0.5);
+    }
     else
+    {
       Position34.SetXYZ((myPoint3.XYZ() + myPoint4.XYZ()) * 0.5);
+    }
   }
 
   if (myFShape.ShapeType() == TopAbs_EDGE && mySShape.ShapeType() == TopAbs_EDGE)
+  {
     PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(aPresentation,
                                                         myDrawer,
                                                         myArrowSize,
@@ -104,8 +109,9 @@ void PrsDim_EqualDistanceRelation::Compute(const occ::handle<PrsMgr_Presentation
                                                         myPoint1,
                                                         myPoint2,
                                                         mySymbolPrs);
-
+  }
   else if (myFShape.ShapeType() == TopAbs_VERTEX && mySShape.ShapeType() == TopAbs_VERTEX)
+  {
     PrsDim_EqualDistanceRelation::ComputeTwoVerticesLength(aPresentation,
                                                            myDrawer,
                                                            myArrowSize,
@@ -122,7 +128,9 @@ void PrsDim_EqualDistanceRelation::Compute(const occ::handle<PrsMgr_Presentation
                                                            myPoint1,
                                                            myPoint2,
                                                            mySymbolPrs);
+  }
   else
+  {
     PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(aPresentation,
                                                                 myDrawer,
                                                                 myArrowSize,
@@ -138,8 +146,10 @@ void PrsDim_EqualDistanceRelation::Compute(const occ::handle<PrsMgr_Presentation
                                                                 myPoint1,
                                                                 myPoint2,
                                                                 mySymbolPrs);
+  }
 
   if (myShape3.ShapeType() == TopAbs_EDGE && myShape4.ShapeType() == TopAbs_EDGE)
+  {
     PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(aPresentation,
                                                         myDrawer,
                                                         myArrowSize,
@@ -155,8 +165,9 @@ void PrsDim_EqualDistanceRelation::Compute(const occ::handle<PrsMgr_Presentation
                                                         myPoint3,
                                                         myPoint4,
                                                         mySymbolPrs);
-
+  }
   else if (myShape3.ShapeType() == TopAbs_VERTEX && myShape4.ShapeType() == TopAbs_VERTEX)
+  {
     PrsDim_EqualDistanceRelation::ComputeTwoVerticesLength(aPresentation,
                                                            myDrawer,
                                                            myArrowSize,
@@ -173,8 +184,9 @@ void PrsDim_EqualDistanceRelation::Compute(const occ::handle<PrsMgr_Presentation
                                                            myPoint3,
                                                            myPoint4,
                                                            mySymbolPrs);
-
+  }
   else
+  {
     PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(aPresentation,
                                                                 myDrawer,
                                                                 myArrowSize,
@@ -190,6 +202,7 @@ void PrsDim_EqualDistanceRelation::Compute(const occ::handle<PrsMgr_Presentation
                                                                 myPoint3,
                                                                 myPoint4,
                                                                 mySymbolPrs);
+  }
 
   DsgPrs_EqualDistancePresentation::Add(aPresentation,
                                         myDrawer,
@@ -247,7 +260,9 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(
       double                   FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint1),
              LastPar                    = ElCLib::Parameter(aCircle->Circ(), myPoint1);
       if (LastPar < FirstPar)
+      {
         LastPar += M_PI * 2;
+      }
       occ::handle<Select3D_SensitivePoly> circ =
         new Select3D_SensitivePoly(own, aCircle->Circ(), FirstPar, LastPar);
       aSelection->Add(circ);
@@ -274,7 +289,9 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(
       double                   FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint2),
              LastPar                    = ElCLib::Parameter(aCircle->Circ(), myPoint2);
       if (LastPar < FirstPar)
+      {
         LastPar += M_PI * 2;
+      }
       occ::handle<Select3D_SensitivePoly> circ =
         new Select3D_SensitivePoly(own, aCircle->Circ(), FirstPar, LastPar);
       aSelection->Add(circ);
@@ -301,7 +318,9 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(
       double                   FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint3),
              LastPar                    = ElCLib::Parameter(aCircle->Circ(), myPoint3);
       if (LastPar < FirstPar)
+      {
         LastPar += M_PI * 2;
+      }
       occ::handle<Select3D_SensitivePoly> circ =
         new Select3D_SensitivePoly(own, aCircle->Circ(), FirstPar, LastPar);
       aSelection->Add(circ);
@@ -333,7 +352,9 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(
       double                   FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint4),
              LastPar                    = ElCLib::Parameter(aCircle->Circ(), myPoint4);
       if (LastPar < FirstPar)
+      {
         LastPar += M_PI * 2;
+      }
       occ::handle<Select3D_SensitivePoly> circ =
         new Select3D_SensitivePoly(own, aCircle->Circ(), FirstPar, LastPar);
       aSelection->Add(circ);
@@ -387,7 +408,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
                                isInfinite1,
                                isInPlane1,
                                Plane))
+  {
     return;
+  }
   if (!PrsDim::ComputeGeometry(SecondEdge,
                                geom2,
                                ptat21,
@@ -396,7 +419,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
                                isInfinite2,
                                isInPlane2,
                                Plane))
+  {
     return;
+  }
 
   aPresentation->SetInfiniteState(isInfinite1 || isInfinite2);
 
@@ -444,7 +469,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
         curpos.SetXYZ((ptat11.XYZ() + p2.XYZ()) * 0.5);
       }
       else
+      {
         curpos.SetXYZ((l1.Location().XYZ() + l2.Location().XYZ()) * 0.5);
+      }
 
       // compute  offset
       gp_Vec offset(DirAttach);
@@ -461,9 +488,13 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
     if (!isInfinite1)
     {
       if (Position.Distance(ptat11) > Position.Distance(ptat12))
+      {
         FirstAttach = ptat12;
+      }
       else
+      {
         FirstAttach = ptat11;
+      }
     }
     else
     {
@@ -473,9 +504,13 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
     if (!isInfinite2)
     {
       if (Position.Distance(ptat21) > Position.Distance(ptat22))
+      {
         SecondAttach = ptat22;
+      }
       else
+      {
         SecondAttach = ptat21;
+      }
     }
     else
     {
@@ -484,7 +519,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
 
     constexpr double confusion(Precision::Confusion());
     if (arrsize < confusion)
+    {
       arrsize = Val * 0.1;
+    }
     if (std::abs(Val) <= confusion)
     {
       arrsize = 0.;
@@ -497,7 +534,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
     arr->SetLength(arrsize);
 
     if (AutomaticPos && IsSetBndBox)
+    {
       Position = PrsDim::TranslatePointToBound(Position, DirAttach, BndBox);
+    }
 
     DsgPrs_EqualDistancePresentation::AddInterval(aPresentation,
                                                   aDrawer,
@@ -545,7 +584,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
         gp_Dir aDir1(PrPnt12.XYZ() - PrCenter.XYZ());
         double anAngle = aDir1.Angle(XDir); // Get the angle in range [0, M_PI]
         if (aDir1.Dot(YDir) < 0)
+        {
           anAngle = 2 * M_PI - anAngle;
+        }
         par1 = anAngle;
       }
 
@@ -554,7 +595,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
         gp_Dir aDir2(PrPnt22.XYZ() - PrCenter.XYZ());
         double anAngle = aDir2.Angle(XDir); // Get the angle in range [0, M_PI]
         if (aDir2.Dot(YDir) < 0)
+        {
           anAngle = 2 * M_PI - anAngle;
+        }
         par2 = anAngle;
       }
 
@@ -595,7 +638,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
   }
 
   if (arrsize < Precision::Confusion())
+  {
     arrsize = Val * 0.1;
+  }
   if (std::abs(Val) <= Precision::Confusion())
   {
     arrsize = 0.;
@@ -641,9 +686,13 @@ void PrsDim_EqualDistanceRelation::ComputeTwoVerticesLength(
   bool             samePoint(FirstAttach.IsEqual(SecondAttach, confusion));
 
   if (TypeDist == PrsDim_TypeOfDist_Vertical)
+  {
     DirAttach = Plane->Pln().XAxis().Direction();
+  }
   else if (TypeDist == PrsDim_TypeOfDist_Horizontal)
+  {
     DirAttach = Plane->Pln().YAxis().Direction();
+  }
   else
   {
     if (!samePoint)
@@ -687,7 +736,9 @@ void PrsDim_EqualDistanceRelation::ComputeTwoVerticesLength(
   arr->SetLength(ArrowSize);
 
   if (AutomaticPos && IsSetBndBox)
+  {
     Position = PrsDim::TranslatePointToBound(Position, DirAttach, BndBox);
+  }
 
   DsgPrs_EqualDistancePresentation::AddInterval(aPresentation,
                                                 aDrawer,
@@ -701,9 +752,13 @@ void PrsDim_EqualDistanceRelation::ComputeTwoVerticesLength(
 
   // Compute projection
   if (!isOnPlane1)
+  {
     PrsDim::ComputeProjVertexPresentation(aPresentation, aDrawer, FirstVertex, FirstAttach);
+  }
   if (!isOnPlane2)
+  {
     PrsDim::ComputeProjVertexPresentation(aPresentation, aDrawer, SecondVertex, SecondAttach);
+  }
 }
 
 //=================================================================================================
@@ -756,7 +811,9 @@ void PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(
                                isInfinite,
                                isOnPlanEdge,
                                Plane))
+  {
     return;
+  }
   aPresentation->SetInfiniteState(isInfinite);
   PrsDim::ComputeGeometry(thevertex, FirstAttach, Plane, isOnPlanVertex);
 
@@ -794,9 +851,13 @@ void PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(
     if (!isInfinite)
     {
       if (Position.Distance(ptonedge1) > Position.Distance(ptonedge2))
+      {
         SecondAttach = ptonedge2;
+      }
       else
+      {
         SecondAttach = ptonedge1;
+      }
     }
     else
     {
@@ -810,7 +871,9 @@ void PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(
     arr->SetLength(arrsize);
 
     if (AutomaticPos && IsSetBndBox)
+    {
       Position = PrsDim::TranslatePointToBound(Position, DirAttach, BndBox);
+    }
     DsgPrs_EqualDistancePresentation::AddInterval(aPresentation,
                                                   aDrawer,
                                                   FirstAttach,

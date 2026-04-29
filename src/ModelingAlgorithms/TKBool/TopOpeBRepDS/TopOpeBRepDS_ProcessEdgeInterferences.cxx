@@ -40,12 +40,14 @@ Standard_EXPORT bool FUN_vertexofedge
   bool            isv = false;
   TopExp_Explorer ex;
   for (ex.Init(E, TopAbs_VERTEX); ex.More(); ex.Next())
+  {
     //  for (TopExp_Explorer ex(E,TopAbs_VERTEX); ex.More(); ex.Next())
     if (ex.Current().IsSame(V))
     {
       isv = true;
       break;
     }
+  }
   return isv;
 }
 
@@ -120,7 +122,9 @@ static bool FUN_keepEinterference
     double f, l;
     BRep_Tool::Range(TopoDS::Edge(E), f, l);
     if (std::abs(par - f) < eps || std::abs(par - l) < eps)
+    {
       res = false;
+    }
   }
 
   return res;
@@ -253,7 +257,9 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
   isEd = BRep_Tool::Degenerated(TopoDS::Edge(E));
 
   if (isEd)
+  {
     return;
+  }
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1;
 
@@ -308,9 +314,13 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
 
         bool sym;
         if (newV)
+        {
           sym = idshape && oppostate;
+        }
         else
+        {
           sym = idshape && !idstate;
+        }
 
         if (sym)
         { // les 2 interferences ne different que leurs etats (symetriques)
@@ -318,10 +328,14 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
           it1toremove = true;
         }
         else
+        {
           it2.Next();
+        }
       }
       else
+      {
         it2.Next();
+      }
     }
     if (it1toremove)
     {
@@ -374,9 +388,13 @@ Standard_EXPORT void FUN_orderFFsamedomain
     }
 
     if (ffsd)
+    {
       LIffsd.Append(I1);
+    }
     else
+    {
       LIother.Append(I1);
+    }
 
     LI.Remove(it1);
   } // it1.More()
@@ -417,9 +435,13 @@ Standard_EXPORT void FUN_orderSTATETRANSonG
 
     bool steq = (tsb1 == tsa1 && isb1 == isa1 && stab1 == staa1);
     if (steq)
+    {
       L1.Append(I1);
+    }
     else
+    {
       L2.Append(I1);
+    }
 
     it1.Next();
   } // it1.More()
@@ -484,7 +506,9 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     const TopOpeBRepDS_Transition&          T1    = I1->Transition();
     bool                                    isunk = T1.IsUnknown();
     if (!isunk)
+    {
       continue;
+    }
 
     TopOpeBRepDS_Kind GT1, ST1;
     int               G1, S1;
@@ -496,16 +520,22 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     bool idi  = (isb1 == S1 && isa1 == S1);
     bool etgf = idt && idi; // edge tangent a une face en 1 point
     if (!etgf)
+    {
       continue;
+    }
 
     occ::handle<TopOpeBRepDS_CurvePointInterference> cpi = MAKECPI(I1);
     if (cpi.IsNull())
+    {
       continue;
+    }
 
     double                  bid;
     occ::handle<Geom_Curve> CE = BRep_Tool::Curve(EE, bid, bid);
     if (CE.IsNull())
+    {
       continue; // NYI : get points from 2d curve
+    }
 
     double parcpi = cpi->Parameter();
     double ttb    = 0.8;
@@ -531,7 +561,9 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     PSC.StateP3DReference(Pa);
     TopAbs_State statea = PSC.State();
     if (stateb == TopAbs_UNKNOWN || statea == TopAbs_UNKNOWN)
+    {
       continue;
+    }
 
     TopOpeBRepDS_Transition& newT1 = I1->ChangeTransition();
     newT1.Set(stateb, statea, tsb1, tsa1);
@@ -559,7 +591,9 @@ Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructu
   int                         rkSE = BDS.AncestorRank(SE);
   bool                        isse = BDS.IsSectionEdge(SE);
   if (!isse)
+  {
     return;
+  }
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> fsdmFancSE;
   // ---------------
@@ -572,12 +606,16 @@ Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructu
       const TopoDS_Shape& sdmf  = itsdm.Value();
       int                 sdmrk = BDS.AncestorRank(sdmf);
       if (sdmrk == rkSE)
+      {
         continue;
+      }
       fsdmFancSE.Add(sdmf);
     }
   }
   if (fsdmFancSE.IsEmpty())
+  {
     return;
+  }
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> newLI;
   // ---------
@@ -631,9 +669,13 @@ Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructu
       const TopoDS_Shape& f       = BDS.Shape(isb);
       bool                isbound = fsdmFancSE.Contains(f);
       if (isbound)
+      {
         LIface.Append(I);
+      }
       else
+      {
         newLI.Append(I);
+      }
     }
     //    newLI.Append(loi);
   } // tki

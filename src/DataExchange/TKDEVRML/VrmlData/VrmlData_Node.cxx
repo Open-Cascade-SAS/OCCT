@@ -40,7 +40,9 @@ bool IsEqual(const occ::handle<VrmlData_Node>& theOne, const occ::handle<VrmlDat
 {
   bool aResult(false);
   if (theOne->Name() != nullptr && theTwo->Name() != nullptr)
+  {
     aResult = (strcmp(theOne->Name(), theTwo->Name()) == 0);
+  }
   return aResult;
 }
 
@@ -58,7 +60,9 @@ VrmlData_Node::VrmlData_Node(const VrmlData_Scene& theScene, const char* theName
     : myScene(&theScene)
 {
   if (theName == nullptr)
+  {
     theName = "";
+  }
   setName(theName);
 }
 
@@ -69,11 +73,17 @@ occ::handle<VrmlData_Node> VrmlData_Node::Clone(const occ::handle<VrmlData_Node>
   if (!theOther.IsNull())
   {
     if (!theOther->IsKind(DynamicType()))
+    {
       return nullptr;
+    }
     if (&theOther->Scene() == myScene)
+    {
       theOther->myName = myName;
+    }
     else
+    {
       theOther->setName(myName);
+    }
   }
   return theOther;
 }
@@ -84,12 +94,16 @@ void VrmlData_Node::setName(const char* theName, const char* theSuffix)
 {
   size_t len[2] = {strlen(theName) + 1, 0};
   if (theSuffix)
+  {
     len[1] = strlen(theSuffix);
+  }
   char* aName = (char*)Scene().Allocator()->Allocate(len[0] + len[1]);
   myName      = aName;
   memcpy(aName, theName, len[0]);
   if (len[1])
+  {
     memcpy(&aName[len[0] - 1], theSuffix, len[1] + 1);
+  }
 }
 
 //=================================================================================================
@@ -112,7 +126,9 @@ VrmlData_ErrorStatus VrmlData_Node::WriteClosing() const
 {
   VrmlData_ErrorStatus aResult = Scene().Status();
   if (aResult == VrmlData_StatusOK || aResult == VrmlData_NotImplemented)
+  {
     aResult = Scene().WriteLine("}", nullptr, -GlobalIndent());
+  }
   return aResult;
 }
 
@@ -124,9 +140,13 @@ VrmlData_ErrorStatus VrmlData_Node::readBrace(VrmlData_InBuffer& theBuffer)
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (theBuffer.LinePtr[0] == '}')
+    {
       theBuffer.LinePtr++;
+    }
     else
+    {
       aStatus = VrmlData_VrmlFormatError;
+    }
   }
   return aStatus;
 }
@@ -139,11 +159,17 @@ VrmlData_ErrorStatus VrmlData_Node::ReadBoolean(VrmlData_InBuffer& theBuffer, bo
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "TRUE"))
+    {
       theResult = true;
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "FALSE"))
+    {
       theResult = false;
+    }
     else
+    {
       aStatus = VrmlData_BooleanInputError;
+    }
   }
   return aStatus;
 }
@@ -159,7 +185,9 @@ VrmlData_ErrorStatus VrmlData_Node::ReadInteger(VrmlData_InBuffer& theBuffer, lo
     long  aResult;
     aResult = strtol(theBuffer.LinePtr, &endptr, 10);
     if (endptr == theBuffer.LinePtr)
+    {
       aStatus = VrmlData_NumericInputError;
+    }
     else
     {
       theResult         = aResult;
@@ -178,14 +206,20 @@ VrmlData_ErrorStatus VrmlData_Node::ReadString(VrmlData_InBuffer&       theBuffe
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (theBuffer.LinePtr[0] != '\"')
+    {
       aStatus = VrmlData_StringInputError;
+    }
     else
     {
       char* ptr = &theBuffer.LinePtr[1];
       while (*ptr != '\0' && *ptr != '\"')
+      {
         ptr++;
+      }
       if (*ptr == '\0')
+      {
         aStatus = VrmlData_StringInputError;
+      }
       else
       {
         *ptr              = '\0';
@@ -222,19 +256,27 @@ VrmlData_ErrorStatus VrmlData_Node::ReadMultiString(
       }
       TCollection_AsciiString aString;
       if (!OK(aStatus, ReadString(theBuffer, aString)))
+      {
         break;
+      }
       theResult.Append(aString);
       if (!isBracketed || !OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+      {
         break;
+      }
       if (theBuffer.LinePtr[0] == ',')
       {
         theBuffer.LinePtr++;
         continue;
       }
-      else if (theBuffer.LinePtr[0] == ']') // closing bracket
+      else if (theBuffer.LinePtr[0] == ']')
+      { // closing bracket
         theBuffer.LinePtr++;
+      }
       else
+      {
         aStatus = VrmlData_VrmlFormatError;
+      }
       break;
     }
   }
@@ -260,7 +302,9 @@ VrmlData_ErrorStatus VrmlData_Node::ReadNode(VrmlData_InBuffer&                t
       {
         aNode = myScene->FindNode(aName.ToCString(), theType);
         if (aNode.IsNull())
+        {
           aStatus = VrmlData_NodeNameUnknown;
+        }
         //         else
         //           aNode = aNode->Clone(0L);
       }
@@ -269,12 +313,18 @@ VrmlData_ErrorStatus VrmlData_Node::ReadNode(VrmlData_InBuffer&                t
     // We create a relevant node using the line with the type ID
     else if (OK(aStatus,
                 const_cast<VrmlData_Scene*>(myScene)->createNode(theBuffer, aNode, theType)))
+    {
       if (!aNode.IsNull())
+      {
         // The node data are read here, including the final closing brace
         aStatus = aNode->Read(theBuffer);
+      }
+    }
 
     if (aStatus == VrmlData_StatusOK)
+    {
       theNode = aNode;
+    }
   }
   return aStatus;
 }
@@ -287,7 +337,9 @@ occ::handle<VrmlData_Node> VrmlData_ShapeNode::Clone(
   occ::handle<VrmlData_ShapeNode> aResult =
     occ::down_cast<VrmlData_ShapeNode>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_ShapeNode(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   if (&aResult->Scene() == &Scene())
   {
     aResult->SetAppearance(myAppearance);
@@ -298,9 +350,13 @@ occ::handle<VrmlData_Node> VrmlData_ShapeNode::Clone(
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
     if (!myAppearance.IsNull())
+    {
       aResult->SetAppearance(occ::down_cast<VrmlData_Appearance>(myAppearance->Clone(aDummyNode)));
+    }
     if (!myGeometry.IsNull())
+    {
       aResult->SetGeometry(occ::down_cast<VrmlData_Geometry>(myGeometry->Clone(aDummyNode)));
+    }
   }
   return aResult;
 }
@@ -328,15 +384,21 @@ VrmlData_ErrorStatus VrmlData_ShapeNode::Read(VrmlData_InBuffer& theBuffer)
       //                          STANDARD_TYPE(VrmlData_Geometry));
     }
     else
+    {
       break;
+    }
 
     if (!OK(aStatus))
+    {
       break;
+    }
   }
 
   // Read the terminating (closing) brace
   if (OK(aStatus))
+  {
     aStatus = readBrace(theBuffer);
+  }
   return aStatus;
 }
 
@@ -350,9 +412,13 @@ VrmlData_ErrorStatus VrmlData_ShapeNode::Write(const char* thePrefix) const
   if (OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
     if (!myAppearance.IsNull())
+    {
       aStatus = aScene.WriteNode("appearance", myAppearance);
+    }
     if (!myGeometry.IsNull() && OK(aStatus))
+    {
       aStatus = aScene.WriteNode("geometry", myGeometry);
+    }
 
     aStatus = WriteClosing();
   }
@@ -365,7 +431,9 @@ bool VrmlData_ShapeNode::IsDefault() const
 {
   bool aResult(true);
   if (!myGeometry.IsNull())
+  {
     aResult = myGeometry->IsDefault();
+  }
   return aResult;
 }
 
@@ -414,7 +482,9 @@ occ::handle<VrmlData_Node> VrmlData_Appearance::Clone(
   occ::handle<VrmlData_Appearance> aResult =
     occ::down_cast<VrmlData_Appearance>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Appearance(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   if (&aResult->Scene() == &Scene())
   {
     aResult->SetMaterial(myMaterial);
@@ -426,12 +496,18 @@ occ::handle<VrmlData_Node> VrmlData_Appearance::Clone(
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
     if (!myMaterial.IsNull())
+    {
       aResult->SetMaterial(occ::down_cast<VrmlData_Material>(myMaterial->Clone(aDummyNode)));
+    }
     if (!myTexture.IsNull())
+    {
       aResult->SetTexture(occ::down_cast<VrmlData_Texture>(myTexture->Clone(aDummyNode)));
+    }
     if (!myTTransform.IsNull())
+    {
       aResult->SetTextureTransform(
         occ::down_cast<VrmlData_TextureTransform>(myTTransform->Clone(aDummyNode)));
+    }
   }
   return aResult;
 }
@@ -463,15 +539,21 @@ VrmlData_ErrorStatus VrmlData_Appearance::Read(VrmlData_InBuffer& theBuffer)
       myTexture = occ::down_cast<VrmlData_Texture>(aNode);
     }
     else
+    {
       break;
+    }
 
     if (!OK(aStatus))
+    {
       break;
+    }
   }
 
   // Read the terminating (closing) brace
   if (OK(aStatus))
+  {
     aStatus = readBrace(theBuffer);
+  }
   return aStatus;
 }
 
@@ -485,11 +567,17 @@ VrmlData_ErrorStatus VrmlData_Appearance::Write(const char* thePrefix) const
   if (OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
     if (!myMaterial.IsNull())
+    {
       aStatus = aScene.WriteNode("material", myMaterial);
+    }
     if (!myTexture.IsNull() && OK(aStatus))
+    {
       aStatus = aScene.WriteNode("texture", myTexture);
+    }
     if (!myTTransform.IsNull() && OK(aStatus))
+    {
       aStatus = aScene.WriteNode("textureTransform", myTTransform);
+    }
 
     aStatus = WriteClosing();
   }
@@ -502,11 +590,17 @@ bool VrmlData_Appearance::IsDefault() const
 {
   bool aResult(true);
   if (!myMaterial.IsNull())
+  {
     aResult = myMaterial->IsDefault();
+  }
   if (aResult && !myTexture.IsNull())
+  {
     aResult = myTexture->IsDefault();
+  }
   if (aResult && !myTTransform.IsNull())
+  {
     aResult = myTTransform->IsDefault();
+  }
   return aResult;
 }
 
@@ -531,7 +625,9 @@ occ::handle<VrmlData_Node> VrmlData_ImageTexture::Clone(
   occ::handle<VrmlData_ImageTexture> aResult =
     occ::down_cast<VrmlData_ImageTexture>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_ImageTexture(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   aResult->myURL = myURL;
   return aResult;
 }
@@ -546,16 +642,26 @@ VrmlData_ErrorStatus VrmlData_ImageTexture::Read(VrmlData_InBuffer& theBuffer)
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "url"))
+    {
       aStatus = ReadMultiString(theBuffer, myURL);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "repeatS"))
+    {
       aStatus = ReadBoolean(theBuffer, aRepeatS);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "repeatT"))
+    {
       aStatus = ReadBoolean(theBuffer, aRepeatT);
+    }
     else
+    {
       break;
+    }
 
     if (!OK(aStatus))
+    {
       break;
+    }
   }
   if (OK(aStatus) && OK(aStatus, readBrace(theBuffer)))
   {

@@ -278,7 +278,7 @@ public:
   bool Init(EAGLContext* theGContext, const bool theIsCoreProfile = false)
   {
     return Init((Aspect_Drawable)0,
-                (Aspect_Display)0,
+                (Aspect_Display) nullptr,
                 (Aspect_RenderingContext)theGContext,
                 theIsCoreProfile);
   }
@@ -288,7 +288,7 @@ public:
   bool Init(NSOpenGLContext* theGContext, const bool theIsCoreProfile = false)
   {
     return Init((Aspect_Drawable)0,
-                (Aspect_Display)0,
+                (Aspect_Display) nullptr,
                 (Aspect_RenderingContext)theGContext,
                 theIsCoreProfile);
   }

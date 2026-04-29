@@ -48,17 +48,23 @@ void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const occ::handle<IGESDimen_Gene
   occ::handle<IGESDimen_GeneralNote>                                   tempNote;
 
   if ((ent->FormNumber() == 0) && (!PR.IsParamEntity(PR.CurrentNumber())))
+  {
     PR.SetCurrentNumber(PR.CurrentNumber() + 1);
+  }
   else
+  {
     PR.ReadEntity(IR,
                   PR.Current(),
                   "General Note Entity",
                   STANDARD_TYPE(IGESDimen_GeneralNote),
                   tempNote); // szv#4:S4163:12Mar99 `st=` not needed
+  }
 
   bool st = PR.ReadInteger(PR.Current(), "Number of Geometries", num);
   if (!st || num <= 0)
+  {
     PR.AddFail("Number of Geometries: Not Positive");
+  }
   if (num > 0)
   {
     // clang-format off
@@ -80,10 +86,15 @@ void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const occ::handle<IGESDimen_Gene
   }
   st = PR.ReadInteger(PR.Current(), "Number of Leaders", num);
   if (st && num > 0)
+  {
     tempLeaders = new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, num);
+  }
   else if (num < 0)
+  {
     PR.AddFail("Number of Leaders: Less than zero");
+  }
   if (!tempLeaders.IsNull())
+  {
     for (i = 1; i <= num; i++)
     {
       occ::handle<IGESDimen_LeaderArrow> tempEnt;
@@ -94,8 +105,11 @@ void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const occ::handle<IGESDimen_Gene
                         "Leader Entity",
                         STANDARD_TYPE(IGESDimen_LeaderArrow),
                         tempEnt))
+      {
         tempLeaders->SetValue(i, tempEnt);
+      }
     }
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNote, tempGeoms, tempLeaders);
@@ -108,10 +122,14 @@ void IGESDimen_ToolGeneralSymbol::WriteOwnParams(const occ::handle<IGESDimen_Gen
   IW.Send(ent->Note());
   IW.Send(ent->NbGeomEntities());
   for (num = ent->NbGeomEntities(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->GeomEntity(i));
+  }
   IW.Send(ent->NbLeaders());
   for (num = ent->NbLeaders(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->LeaderArrow(i));
+  }
 }
 
 void IGESDimen_ToolGeneralSymbol::OwnShared(const occ::handle<IGESDimen_GeneralSymbol>& ent,
@@ -120,9 +138,13 @@ void IGESDimen_ToolGeneralSymbol::OwnShared(const occ::handle<IGESDimen_GeneralS
   int i, num;
   iter.GetOneItem(ent->Note());
   for (num = ent->NbGeomEntities(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->GeomEntity(i));
+  }
   for (num = ent->NbLeaders(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->LeaderArrow(i));
+  }
 }
 
 void IGESDimen_ToolGeneralSymbol::OwnCopy(const occ::handle<IGESDimen_GeneralSymbol>& another,
@@ -173,10 +195,16 @@ void IGESDimen_ToolGeneralSymbol::OwnCheck(const occ::handle<IGESDimen_GeneralSy
 {
   if ((ent->FormNumber() < 0 || ent->FormNumber() > 3)
       && (ent->FormNumber() < 5001 || ent->FormNumber() > 9999))
+  {
     ach->AddFail("Invalid Form Number");
+  }
   if (ent->FormNumber() != 0)
+  {
     if (ent->Note().IsNull())
+    {
       ach->AddFail("No General Note defined for form number non 0");
+    }
+  }
 }
 
 void IGESDimen_ToolGeneralSymbol::OwnDump(const occ::handle<IGESDimen_GeneralSymbol>& ent,
@@ -192,5 +220,5 @@ void IGESDimen_ToolGeneralSymbol::OwnDump(const occ::handle<IGESDimen_GeneralSym
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbGeomEntities(), ent->GeomEntity);
   S << "\nLeader Arrows : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbLeaders(), ent->LeaderArrow);
-  S << std::endl;
+  S << '\n';
 }

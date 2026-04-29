@@ -45,6 +45,8 @@ StepAP214_PresentedItemSelect StepAP214_AppliedPresentedItem::ItemsValue(const i
 int StepAP214_AppliedPresentedItem::NbItems() const
 {
   if (items.IsNull())
+  {
     return 0;
+  }
   return items->Length();
 }

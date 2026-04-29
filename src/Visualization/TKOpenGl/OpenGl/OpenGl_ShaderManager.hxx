@@ -254,6 +254,10 @@ public:
   //! Generates shader program to render correctly colored quad.
   Standard_EXPORT const occ::handle<Graphic3d_ShaderProgram>& GetColoredQuadProgram();
 
+  //! Compile (once) and bind the infinite-grid shader program.
+  //! Returns FALSE if shader compilation fails or the GAPI is not supported.
+  Standard_EXPORT bool BindGridProgram();
+
   //! Resets PBR shading models to corresponding non-PBR ones if PBR is not allowed.
   static Graphic3d_TypeOfShadingModel PBRShadingModelFallback(
     Graphic3d_TypeOfShadingModel theShadingModel,
@@ -803,6 +807,7 @@ protected:
   occ::handle<Graphic3d_ShaderProgram>    myBgCubeMapProgram;       //!< program for background cubemap rendering
   occ::handle<Graphic3d_ShaderProgram>    myBgSkydomeProgram;       //!< program for background cubemap rendering
   occ::handle<Graphic3d_ShaderProgram>    myColoredQuadProgram;     //!< program for correct quad rendering
+  occ::handle<OpenGl_ShaderProgram>       myGridProgram;            //!< shader program for infinite grid
 
   occ::handle<OpenGl_ShaderProgram>       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs
 

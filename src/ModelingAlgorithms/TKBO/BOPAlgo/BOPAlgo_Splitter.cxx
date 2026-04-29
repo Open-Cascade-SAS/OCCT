@@ -112,7 +112,9 @@ void BOPAlgo_Splitter::BuildResult(const TopAbs_ShapeEnum theType)
         const TopoDS_Shape& aSFirst = it.Value();
         it.Next();
         if (!it.More())
+        {
           myShape = aSFirst;
+        }
       }
     }
   }

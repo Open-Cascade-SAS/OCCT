@@ -123,7 +123,9 @@ bool BlendFunc_Corde::IsTangencyPoint() const
 const gp_Vec& BlendFunc_Corde::TangentOnS() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_Corde::TangentOnS");
+  }
   return tgs;
 }
 
@@ -132,7 +134,9 @@ const gp_Vec& BlendFunc_Corde::TangentOnS() const
 const gp_Vec2d& BlendFunc_Corde::Tangent2dOnS() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_Corde::Tangent2dOnS");
+  }
   return tg2d;
 }
 

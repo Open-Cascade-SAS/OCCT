@@ -25,9 +25,13 @@ StepBasic_SizeSelect::StepBasic_SizeSelect() = default;
 int StepBasic_SizeSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_SizeMember)))
+  {
     return 1;
+  }
   return 0;
 }
 
@@ -43,12 +47,16 @@ occ::handle<StepData_SelectMember> StepBasic_SizeSelect::NewMember() const
 int StepBasic_SizeSelect::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   // skl  Interface_ParamType type = ent->ParamType();
   //  Void : on admet "non defini" (en principe, on ne devrait pas)
   // skl  if (type != Interface_ParamVoid && type != Interface_ParamReal) return 0;
   if (ent->Matches("POSITIVE_LENGTH_MEASURE"))
+  {
     return 1;
+  }
   return 0;
 }
 

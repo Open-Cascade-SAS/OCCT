@@ -9523,7 +9523,6 @@ void AdvApp2Var_MathBase::mmwprcs_(double* epsil1,
   mmprcsn_.eps4   = *epsil4;
   mmprcsn_.niterm = *niter1;
   mmprcsn_.niterr = *niter2;
-  return;
 } /* mmwprcs_  */
 
 //=================================================================================================

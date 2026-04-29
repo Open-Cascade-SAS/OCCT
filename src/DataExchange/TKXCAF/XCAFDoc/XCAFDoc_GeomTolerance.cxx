@@ -103,8 +103,10 @@ void XCAFDoc_GeomTolerance::SetObject(
     TDataStd_Integer::Set(Label().FindChild(ChildLab_Type), theObject->GetType());
 
   if (theObject->GetTypeOfValue() != XCAFDimTolObjects_GeomToleranceTypeValue_None)
+  {
     occ::handle<TDataStd_Integer> aTypeOfValue =
       TDataStd_Integer::Set(Label().FindChild(ChildLab_TypeOfValue), theObject->GetTypeOfValue());
+  }
 
   occ::handle<TDataStd_Real> aValue =
     TDataStd_Real::Set(Label().FindChild(ChildLab_Value), theObject->GetValue());
@@ -112,36 +114,48 @@ void XCAFDoc_GeomTolerance::SetObject(
   occ::handle<TDataStd_Integer> aMatReqModif;
   if (theObject->GetMaterialRequirementModifier()
       != XCAFDimTolObjects_GeomToleranceMatReqModif_None)
+  {
     aMatReqModif = TDataStd_Integer::Set(Label().FindChild(ChildLab_MatReqModif),
                                          theObject->GetMaterialRequirementModifier());
+  }
 
   if (theObject->GetZoneModifier() != XCAFDimTolObjects_GeomToleranceZoneModif_None)
+  {
     occ::handle<TDataStd_Integer> aZoneModif =
       TDataStd_Integer::Set(Label().FindChild(ChildLab_ZoneModif), theObject->GetZoneModifier());
+  }
 
   if (theObject->GetValueOfZoneModifier() > 0)
+  {
     occ::handle<TDataStd_Real> aValueOfZoneModif =
       TDataStd_Real::Set(Label().FindChild(ChildLab_ValueOfZoneModif),
                          theObject->GetValueOfZoneModifier());
+  }
 
   if (theObject->GetModifiers().Length() > 0)
   {
     occ::handle<NCollection_HArray1<int>> anArr =
       new NCollection_HArray1<int>(1, theObject->GetModifiers().Length());
     for (int i = 1; i <= theObject->GetModifiers().Length(); i++)
+    {
       anArr->SetValue(i, theObject->GetModifiers().Value(i));
+    }
     occ::handle<TDataStd_IntegerArray> aModifiers =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Modifiers),
                                  1,
                                  theObject->GetModifiers().Length());
     if (!aModifiers.IsNull())
+    {
       aModifiers->ChangeArray(anArr);
+    }
   }
 
   if (theObject->GetMaxValueModifier() > 0)
+  {
     occ::handle<TDataStd_Real> aMaxValueModif =
       TDataStd_Real::Set(Label().FindChild(ChildLab_aMaxValueModif),
                          theObject->GetMaxValueModifier());
+  }
 
   if (theObject->HasAxis())
   {
@@ -149,27 +163,39 @@ void XCAFDoc_GeomTolerance::SetObject(
 
     occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aLocArr->SetValue(i, anAx.Location().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisLoc), 1, 3);
     if (!aLoc.IsNull())
+    {
       aLoc->ChangeArray(aLocArr);
+    }
 
     occ::handle<NCollection_HArray1<double>> aNArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aNArr->SetValue(i, anAx.Direction().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aN =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisN), 1, 3);
     if (!aN.IsNull())
+    {
       aN->ChangeArray(aNArr);
+    }
 
     occ::handle<NCollection_HArray1<double>> aRArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aRArr->SetValue(i, anAx.XDirection().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aR =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisRef), 1, 3);
     if (!aR.IsNull())
+    {
       aR->ChangeArray(aRArr);
+    }
   }
 
   if (theObject->HasPlane())
@@ -178,27 +204,39 @@ void XCAFDoc_GeomTolerance::SetObject(
 
     occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aLocArr->SetValue(i, anAx.Location().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneLoc), 1, 3);
     if (!aLoc.IsNull())
+    {
       aLoc->ChangeArray(aLocArr);
+    }
 
     occ::handle<NCollection_HArray1<double>> aNArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aNArr->SetValue(i, anAx.Direction().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aN =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneN), 1, 3);
     if (!aN.IsNull())
+    {
       aN->ChangeArray(aNArr);
+    }
 
     occ::handle<NCollection_HArray1<double>> aRArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aRArr->SetValue(i, anAx.XDirection().Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aR =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneRef), 1, 3);
     if (!aR.IsNull())
+    {
       aR->ChangeArray(aRArr);
+    }
   }
 
   if (theObject->HasPoint())
@@ -207,11 +245,15 @@ void XCAFDoc_GeomTolerance::SetObject(
 
     occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aLocArr->SetValue(i, aPnt.Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_Pnt), 1, 3);
     if (!aLoc.IsNull())
+    {
       aLoc->ChangeArray(aLocArr);
+    }
   }
 
   if (theObject->HasPointText())
@@ -220,11 +262,15 @@ void XCAFDoc_GeomTolerance::SetObject(
 
     occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
     for (int i = 1; i <= 3; i++)
+    {
       aLocArr->SetValue(i, aPntText.Coord(i));
+    }
     occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PntText), 1, 3);
     if (!aLoc.IsNull())
+    {
       aLoc->ChangeArray(aLocArr);
+    }
   }
 
   TopoDS_Shape aPresentation = theObject->GetPresentation();
@@ -262,7 +308,9 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
   {
     const TCollection_ExtendedString& aName = aSemanticNameAttr->Get();
     if (!aName.IsEmpty())
+    {
       aSemanticName = new TCollection_HAsciiString(aName);
+    }
   }
   anObj->SetSemanticName(aSemanticName);
 
@@ -315,7 +363,9 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
   {
     NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> aModifiers;
     for (int i = 1; i <= anArr->Length(); i++)
+    {
       aModifiers.Append((XCAFDimTolObjects_GeomToleranceModif)anArr->Value(i));
+    }
     anObj->SetModifiers(aModifiers);
   }
 
@@ -397,7 +447,9 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
         const TCollection_ExtendedString& aName = aNameAtrr->Get();
 
         if (!aName.IsEmpty())
+        {
           aPresentName = new TCollection_HAsciiString(aName);
+        }
       }
 
       anObj->SetPresentation(aPresentation, aPresentName);

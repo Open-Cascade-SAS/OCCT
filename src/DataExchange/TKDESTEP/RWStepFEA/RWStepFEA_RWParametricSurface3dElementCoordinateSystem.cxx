@@ -36,7 +36,9 @@ void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "parametric_surface3d_element_coordinate_system"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

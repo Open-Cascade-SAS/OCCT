@@ -432,7 +432,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
 
 //=================================================================================================
 
-GeomFill_Gordon::GeomFill_Gordon() {}
+GeomFill_Gordon::GeomFill_Gordon() = default;
 
 //=================================================================================================
 
@@ -1035,7 +1035,9 @@ bool GeomFill_Gordon::sortNetwork()
   // Helper lambdas for swapping.
   auto swapProfiles = [this, aNbGuid](int aProfileIdx1, int aProfileIdx2) {
     if (aProfileIdx1 == aProfileIdx2)
+    {
       return;
+    }
     std::swap(myProfiles(aProfileIdx1), myProfiles(aProfileIdx2));
     for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
@@ -1046,7 +1048,9 @@ bool GeomFill_Gordon::sortNetwork()
 
   auto swapGuides = [this, aNbProf](int aGuideIdx1, int aGuideIdx2) {
     if (aGuideIdx1 == aGuideIdx2)
+    {
       return;
+    }
     std::swap(myGuides(aGuideIdx1), myGuides(aGuideIdx2));
     for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
     {

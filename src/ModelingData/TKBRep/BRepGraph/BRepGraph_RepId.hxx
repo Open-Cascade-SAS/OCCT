@@ -18,12 +18,15 @@
 #include <Standard_HashUtils.hxx>
 
 #include <cstddef>
+#include <cstdint>
 #include <functional>
+#include <limits>
+#include <utility>
 
 //! Lightweight typed index into a per-kind representation vector inside BRepGraph.
 //!
 //! The pair (Kind, Index) forms a unique representation identifier within one
-//! graph instance.  Default-constructed RepId has Index = -1 (invalid).
+//! graph instance.  Default-constructed RepId has Index = UINT32_MAX (invalid).
 //!
 //! Representations are NOT topology nodes - they hold geometry or mesh data
 //! referenced by topology entities.  They do not participate in BFS traversal,
@@ -73,29 +76,59 @@ struct BRepGraph_RepId
   template <Kind TheKind>
   struct Typed
   {
-    int Index;
+    static constexpr uint32_t THE_START_INDEX   = 0u;
+    static constexpr uint32_t THE_INVALID_INDEX = std::numeric_limits<uint32_t>::max();
 
-    //! Default: invalid (Index = -1).
+    uint32_t Index;
+
+    //! Default: invalid (Index = UINT32_MAX).
     Typed()
-        : Index(-1)
+        : Index(THE_INVALID_INDEX)
     {
     }
 
     //! Construct from index.
-    explicit Typed(const int theIdx)
+    explicit Typed(const uint32_t theIdx)
         : Index(theIdx)
     {
-      Standard_ASSERT_VOID(theIdx >= -1, "index must be >= -1");
     }
 
+    //! Construct from an untyped representation id of the same kind.
+    explicit Typed(const BRepGraph_RepId theId)
+        : Typed(FromRepId(theId))
+    {
+    }
+
+    template <Kind OtherKind, typename std::enable_if_t<OtherKind != TheKind, int> = 0>
+    Typed(const Typed<OtherKind>&) = delete;
+
+    //! First valid id in a dense per-kind sequence.
+    [[nodiscard]] static Typed Start() { return Typed(THE_START_INDEX); }
+
+    //! Invalid sentinel id.
+    [[nodiscard]] static Typed Invalid() { return Typed(); }
+
     //! True if this id points to an allocated representation slot.
-    [[nodiscard]] bool IsValid() const { return Index >= 0; }
+    [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
 
     //! True if this id points to an allocated slot within [0, theMaxCount).
-    [[nodiscard]] bool IsValid(const int theMaxCount) const
+    //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
+    [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
+
+    //! True if this id is within the dense range exposed by a provider with Nb().
+    template <typename CountProviderT>
+    [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+      -> decltype(theProvider.Nb(), bool())
     {
-      Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-      return Index >= 0 && Index < theMaxCount;
+      return IsValid(theProvider.Nb());
+    }
+
+    //! True if this id is within the dense range exposed by a provider with Length().
+    template <typename CountProviderT>
+    [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+      -> decltype(theProvider.Size(), bool())
+    {
+      return IsValid(static_cast<uint32_t>(theProvider.Size()));
     }
 
     //! Implicit conversion to untyped RepId.
@@ -125,7 +158,7 @@ struct BRepGraph_RepId
     //! Pre-increment (++id).
     Typed& operator++()
     {
-      Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "pre-increment on invalid id");
       ++Index;
       return *this;
     }
@@ -133,17 +166,25 @@ struct BRepGraph_RepId
     //! Post-increment (id++).
     Typed operator++(int)
     {
-      Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "post-increment on invalid id");
       Typed aPrev = *this;
       ++Index;
       return aPrev;
     }
 
     //! Advance by offset.
-    [[nodiscard]] Typed operator+(const int theOffset) const { return Typed(Index + theOffset); }
+    [[nodiscard]] Typed operator+(const uint32_t theOffset) const
+    {
+      return Typed(Index + theOffset);
+    }
 
     //! Retreat by offset.
-    [[nodiscard]] Typed operator-(const int theOffset) const { return Typed(Index - theOffset); }
+    [[nodiscard]] Typed operator-(const uint32_t theOffset) const
+    {
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX && Index >= theOffset,
+                           "retreat underflows index");
+      return Typed(Index - theOffset);
+    }
 
     //! Comparison with untyped RepId (checks both Kind and Index).
     bool operator==(const BRepGraph_RepId& theOther) const
@@ -165,58 +206,59 @@ struct BRepGraph_RepId
     }
   };
 
-  Kind RepKind;
-  int  Index;
+  static constexpr uint32_t THE_START_INDEX   = 0u;
+  static constexpr uint32_t THE_INVALID_INDEX = std::numeric_limits<uint32_t>::max();
 
-  //! Default: invalid RepId (Index = -1).
+  Kind     RepKind;
+  uint32_t Index;
+
+  //! Default: invalid RepId (Index = UINT32_MAX).
   //! RepKind is set to Kind::Surface but is meaningless when !IsValid().
   BRepGraph_RepId()
       : RepKind(Kind::Surface),
-        Index(-1)
+        Index(THE_INVALID_INDEX)
   {
   }
 
-  BRepGraph_RepId(const Kind theKind, const int theIdx)
+  BRepGraph_RepId(const Kind theKind, const uint32_t theIdx)
       : RepKind(theKind),
         Index(theIdx)
   {
   }
 
+  //! First valid id in a dense sequence for the specified kind.
+  [[nodiscard]] static BRepGraph_RepId Start(const Kind theKind)
+  {
+    return BRepGraph_RepId(theKind, THE_START_INDEX);
+  }
+
+  //! Invalid sentinel id for the specified kind.
+  [[nodiscard]] static BRepGraph_RepId Invalid(const Kind theKind = Kind::Surface)
+  {
+    return BRepGraph_RepId(theKind, THE_INVALID_INDEX);
+  }
+
   //! True if this id points to an allocated representation slot.
-  [[nodiscard]] bool IsValid() const { return Index >= 0; }
+  [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
 
   //! True if this id points to an allocated slot within [0, theMaxCount).
-  [[nodiscard]] bool IsValid(const int theMaxCount) const
+  //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
+  [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
+
+  //! True if this id is within the dense range exposed by a provider with Nb().
+  template <typename CountProviderT>
+  [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+    -> decltype(theProvider.Nb(), bool())
   {
-    Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-    return Index >= 0 && Index < theMaxCount;
+    return IsValid(theProvider.Nb());
   }
 
-  //! @name Static factory methods returning typed RepIds.
-  static Typed<Kind::Surface> Surface(const int theIdx) { return Typed<Kind::Surface>(theIdx); }
-
-  static Typed<Kind::Curve3D> Curve3D(const int theIdx) { return Typed<Kind::Curve3D>(theIdx); }
-
-  static Typed<Kind::Curve2D> Curve2D(const int theIdx) { return Typed<Kind::Curve2D>(theIdx); }
-
-  static Typed<Kind::Triangulation> Triangulation(const int theIdx)
+  //! True if this id is within the dense range exposed by a provider with Size().
+  template <typename CountProviderT>
+  [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+    -> decltype(theProvider.Size(), bool())
   {
-    return Typed<Kind::Triangulation>(theIdx);
-  }
-
-  static Typed<Kind::Polygon3D> Polygon3D(const int theIdx)
-  {
-    return Typed<Kind::Polygon3D>(theIdx);
-  }
-
-  static Typed<Kind::Polygon2D> Polygon2D(const int theIdx)
-  {
-    return Typed<Kind::Polygon2D>(theIdx);
-  }
-
-  static Typed<Kind::PolygonOnTri> PolygonOnTri(const int theIdx)
-  {
-    return Typed<Kind::PolygonOnTri>(theIdx);
+    return IsValid(static_cast<uint32_t>(theProvider.Size()));
   }
 
   bool operator==(const BRepGraph_RepId& theOther) const
@@ -236,7 +278,7 @@ struct BRepGraph_RepId
   //! Pre-increment (++id).
   BRepGraph_RepId& operator++()
   {
-    Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "pre-increment on invalid id");
     ++Index;
     return *this;
   }
@@ -244,26 +286,55 @@ struct BRepGraph_RepId
   //! Post-increment (id++).
   BRepGraph_RepId operator++(int)
   {
-    Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "post-increment on invalid id");
     BRepGraph_RepId aPrev = *this;
     ++Index;
     return aPrev;
   }
 
   //! Advance by offset.
-  [[nodiscard]] BRepGraph_RepId operator+(const int theOffset) const
+  [[nodiscard]] BRepGraph_RepId operator+(const uint32_t theOffset) const
   {
     return BRepGraph_RepId(RepKind, Index + theOffset);
   }
 
   //! Retreat by offset.
-  [[nodiscard]] BRepGraph_RepId operator-(const int theOffset) const
+  [[nodiscard]] BRepGraph_RepId operator-(const uint32_t theOffset) const
   {
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX && Index >= theOffset,
+                         "retreat underflows index");
     return BRepGraph_RepId(RepKind, Index - theOffset);
+  }
+
+  //! Dispatch a generic rep id to a callable taking the matching typed rep id.
+  template <typename FuncT>
+  static auto Visit(const BRepGraph_RepId theRepId, FuncT&& theFunc)
+    -> decltype(std::forward<FuncT>(theFunc)(Typed<Kind::Surface>()))
+  {
+    switch (theRepId.RepKind)
+    {
+      case Kind::Surface:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Surface>::FromRepId(theRepId));
+      case Kind::Curve3D:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Curve3D>::FromRepId(theRepId));
+      case Kind::Curve2D:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Curve2D>::FromRepId(theRepId));
+      case Kind::Triangulation:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Triangulation>::FromRepId(theRepId));
+      case Kind::Polygon3D:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Polygon3D>::FromRepId(theRepId));
+      case Kind::Polygon2D:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Polygon2D>::FromRepId(theRepId));
+      case Kind::PolygonOnTri:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::PolygonOnTri>::FromRepId(theRepId));
+    }
+
+    Standard_ASSERT_VOID(false, "BRepGraph_RepId::Visit: unhandled Kind");
+    return std::forward<FuncT>(theFunc)(Typed<Kind::Surface>());
   }
 };
 
-//! @name Convenience type aliases for typed RepIds.
+// Convenience type aliases for typed RepIds.
 using BRepGraph_SurfaceRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Surface>;
 using BRepGraph_Curve3DRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Curve3D>;
 using BRepGraph_Curve2DRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Curve2D>;

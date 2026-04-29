@@ -472,6 +472,7 @@ void Geom2dAPI_Interpolate::PerformPeriodic()
     degree             = 3;
     num_poles += 2;
     if (myTangentRequest)
+    {
       for (ii = myTangentFlags->Lower() + 1; ii <= myTangentFlags->Upper(); ii++)
       {
         if (myTangentFlags->Value(ii))
@@ -479,6 +480,7 @@ void Geom2dAPI_Interpolate::PerformPeriodic()
           num_poles += 1;
         }
       }
+    }
 
     NCollection_Array1<double>   parameters(1, num_poles);
     NCollection_Array1<double>   flatknots(1, num_poles + degree + 1);
@@ -634,6 +636,7 @@ void Geom2dAPI_Interpolate::PerformNonPeriodic()
     degree = 3;
     num_poles += 2;
     if (myTangentRequest)
+    {
       for (ii = myTangentFlags->Lower() + 1; ii < myTangentFlags->Upper(); ii++)
       {
         if (myTangentFlags->Value(ii))
@@ -641,6 +644,7 @@ void Geom2dAPI_Interpolate::PerformNonPeriodic()
           num_poles += 1;
         }
       }
+    }
   }
 
   NCollection_Array1<double>   parameters(1, num_poles);
@@ -813,7 +817,9 @@ void Geom2dAPI_Interpolate::PerformNonPeriodic()
 const occ::handle<Geom2d_BSplineCurve>& Geom2dAPI_Interpolate::Curve() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone(" ");
+  }
   return myCurve;
 }
 

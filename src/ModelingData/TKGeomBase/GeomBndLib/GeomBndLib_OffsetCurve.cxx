@@ -180,17 +180,29 @@ Bnd_Box GeomBndLib_OffsetCurve::Box(double theU1, double theU2, double theTol) c
   }
 
   if (isOpenXmin)
+  {
     aBox.OpenXmin();
+  }
   if (isOpenXmax)
+  {
     aBox.OpenXmax();
+  }
   if (isOpenYmin)
+  {
     aBox.OpenYmin();
+  }
   if (isOpenYmax)
+  {
     aBox.OpenYmax();
+  }
   if (isOpenZmin)
+  {
     aBox.OpenZmin();
+  }
   if (isOpenZmax)
+  {
     aBox.OpenZmax();
+  }
 
   aBox.Enlarge(theTol);
   return aBox;

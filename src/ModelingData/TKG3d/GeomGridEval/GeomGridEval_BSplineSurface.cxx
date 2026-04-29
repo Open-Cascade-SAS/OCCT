@@ -45,7 +45,9 @@ struct SurfaceData
 bool extractSurfaceData(const occ::handle<Geom_BSplineSurface>& theGeom, SurfaceData& theData)
 {
   if (theGeom.IsNull())
+  {
     return false;
+  }
 
   theData.UFlatKnots  = &theGeom->UKnotSequence();
   theData.VFlatKnots  = &theGeom->VKnotSequence();
@@ -89,7 +91,7 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
                          int                               theTargetSpan)
 {
   const int aLower = theParams.Lower();
-  const int aNb    = theParams.Size();
+  const int aNb    = theParams.Length();
   int       aCount = 1;
 
   if (!theIsPeriodic)
@@ -104,7 +106,9 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
     for (int i = theStartIdx + 1; i < aNb; ++i)
     {
       if (theParams.Value(aLower + i) >= aNextKnot)
+      {
         break;
+      }
       ++aCount;
     }
     return aCount;
@@ -124,9 +128,13 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
                               aSpan,
                               aAdjusted);
     if (aSpan == theTargetSpan)
+    {
       ++aCount;
+    }
     else
+    {
       break;
+    }
   }
   return aCount;
 }
@@ -153,8 +161,8 @@ NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&               
                                                CacheEvalF                        theCacheEval,
                                                DirectEvalF                       theDirectEval)
 {
-  const int aNbU  = theUParams.Size();
-  const int aNbV  = theVParams.Size();
+  const int aNbU  = theUParams.Length();
+  const int aNbV  = theVParams.Length();
   const int aLowU = theUParams.Lower();
   const int aLowV = theVParams.Lower();
 
@@ -278,8 +286,8 @@ NCollection_Array2<ResultT> evaluateGridDirect(const SurfaceData&               
                                                const NCollection_Array1<double>& theVParams,
                                                EvalF                             theEval)
 {
-  const int aNbU  = theUParams.Size();
-  const int aNbV  = theVParams.Size();
+  const int aNbU  = theUParams.Length();
+  const int aNbV  = theVParams.Length();
   const int aLowU = theUParams.Lower();
   const int aLowV = theVParams.Lower();
 
@@ -577,8 +585,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(
     return NCollection_Array2<gp_Vec>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   // Derivatives beyond degree are zero
   if (theNU > aData.UDegree || theNV > aData.VDegree)

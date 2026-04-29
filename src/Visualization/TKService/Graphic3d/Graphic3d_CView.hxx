@@ -14,9 +14,11 @@
 #ifndef _Graphic3d_CView_HeaderFile
 #define _Graphic3d_CView_HeaderFile
 
+#include <Aspect_GridParams.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_SkydomeBackground.hxx>
 #include <Aspect_Window.hxx>
+#include <gp_Ax3.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_CubeMap.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
@@ -437,6 +439,20 @@ public:
   //! Has no effect if PBR is not used.
   //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
   virtual void SetImageBasedLighting(bool theToEnableIBL) = 0;
+
+  //! Display a shader-rendered infinite grid on the given plane.
+  //! The default implementation is a no-op; drivers with shader support override it.
+  //! @param[in] theParams appearance parameters
+  //! @param[in] thePlane  grid plane in world coordinates (origin + X/Y directions)
+  virtual void GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+  {
+    (void)theParams;
+    (void)thePlane;
+  }
+
+  //! Erase the shader-rendered infinite grid.
+  //! The default implementation is a no-op; drivers with shader support override it.
+  virtual void GridErase() {}
 
   //! Returns environment texture set for the view.
   const occ::handle<Graphic3d_TextureEnv>& TextureEnv() const { return myTextureEnvData; }

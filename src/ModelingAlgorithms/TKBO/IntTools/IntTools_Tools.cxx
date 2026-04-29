@@ -192,7 +192,9 @@ int IntTools_Tools::SplitCurve(const IntTools_Curve& IC, NCollection_Sequence<In
 {
   const occ::handle<Geom_Curve>& aC3D = IC.Curve();
   if (aC3D.IsNull())
+  {
     return 0;
+  }
   //
   const occ::handle<Geom2d_Curve>& aC2D1 = IC.FirstCurve2d();
   const occ::handle<Geom2d_Curve>& aC2D2 = IC.SecondCurve2d();

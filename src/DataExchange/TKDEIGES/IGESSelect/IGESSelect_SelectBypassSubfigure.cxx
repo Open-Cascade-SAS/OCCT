@@ -40,7 +40,9 @@ bool IGESSelect_SelectBypassSubfigure::Explore(const int /*level*/,
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return false;
+  }
   int igt = igesent->TypeNumber();
 
   //  SingularSubfigure
@@ -48,10 +50,14 @@ bool IGESSelect_SelectBypassSubfigure::Explore(const int /*level*/,
   {
     DeclareAndCast(IGESBasic_SubfigureDef, subf, ent);
     if (subf.IsNull())
+    {
       return true;
+    }
     int i, nb = subf->NbEntities();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(subf->AssociatedEntity(i));
+    }
     return true;
   }
   if (igt == 408)
@@ -65,10 +71,14 @@ bool IGESSelect_SelectBypassSubfigure::Explore(const int /*level*/,
   {
     DeclareAndCast(IGESDraw_NetworkSubfigureDef, subf, ent);
     if (subf.IsNull())
+    {
       return true;
+    }
     int i, nb = subf->NbEntities();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(subf->Entity(i));
+    }
     return true;
   }
   if (igt == 420)

@@ -211,7 +211,9 @@ TEST(TopoDS_Iterator_Test, ReInitialization)
   // Count first compound
   int aCount1 = 0;
   for (; anIt.More(); anIt.Next())
+  {
     ++aCount1;
+  }
   EXPECT_EQ(aCount1, 3);
 
   // Re-initialize with second compound
@@ -220,7 +222,9 @@ TEST(TopoDS_Iterator_Test, ReInitialization)
   // Count second compound
   int aCount2 = 0;
   for (; anIt.More(); anIt.Next())
+  {
     ++aCount2;
+  }
   EXPECT_EQ(aCount2, 5);
 }
 

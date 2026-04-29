@@ -37,6 +37,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
+#include <Precision.hxx>
 
 static TopAbs_ShapeEnum TypeToExplore(const int theDim);
 //
@@ -169,9 +170,13 @@ void BOPAlgo_BOP::CheckData()
       BOPTools_AlgoTools::Dimensions(aS, iDMin, iDMax);
 
       if (iDMin < iDimMin[i])
+      {
         iDimMin[i] = iDMin;
+      }
       if (iDMax > iDimMax[i])
+      {
         iDimMax[i] = iDMax;
+      }
 
       if (bFuse && (iDimMin[i] != iDimMax[i]))
       {
@@ -264,8 +269,10 @@ bool BOPAlgo_BOP::TreatEmptyShape()
   {
     case BOPAlgo_FUSE: {
       if (aLValidObjs.Extent() + aLValidTools.Extent() > 1)
+      {
         // The arguments must be split before adding into result
         return false;
+      }
 
       // Add not empty shapes into result
       pLResult = bHasValidObj ? &aLValidObjs : &aLValidTools;
@@ -273,8 +280,10 @@ bool BOPAlgo_BOP::TreatEmptyShape()
     }
     case BOPAlgo_CUT: {
       if (aLValidObjs.Extent() > 1)
+      {
         // The objects must be split before adding into result
         return false;
+      }
 
       // Add objects into result
       pLResult = &aLValidObjs;
@@ -282,8 +291,10 @@ bool BOPAlgo_BOP::TreatEmptyShape()
     }
     case BOPAlgo_CUT21: {
       if (aLValidTools.Extent() > 1)
+      {
         // The tools must be split before adding into result
         return false;
+      }
 
       // Add tools into result
       pLResult = &aLValidTools;
@@ -624,7 +635,9 @@ void BOPAlgo_BOP::BuildRC(const Message_ProgressRange& theRange)
         const TopoDS_Shape& aSS = itList.Value();
         iDim                    = BOPTools_AlgoTools::Dimension(aSS);
         if (iDim < 0)
+        {
           continue;
+        }
         aType = TypeToExplore(iDim);
         TopExp::MapShapes(aSS, aType, aMS);
       }
@@ -1065,11 +1078,15 @@ void BOPAlgo_BOP::BuildShape(const Message_ProgressRange& theRange)
       {
         const TopoDS_Shape& aSIm = aItLSIm.Value();
         if (aMSRC.Contains(aSIm) && aMSResult.Add(aSIm))
+        {
           aBB.Add(aResult, aSIm);
+        }
       }
     }
     else if (aMSRC.Contains(aS) && aMSResult.Add(aS))
+    {
       aBB.Add(aResult, aS);
+    }
   }
 
   myShape = aResult;
@@ -1374,7 +1391,9 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
     {
       const occ::handle<Standard_Type>& aType = aIt.Value()->DynamicType();
       if (aType != STANDARD_TYPE(BOPAlgo_AlertSolidBuilderUnusedFaces))
+      {
         continue;
+      }
 
       occ::handle<TopoDS_AlertWithShape> aShapeAlert =
         occ::down_cast<TopoDS_AlertWithShape>(aIt.Value());
@@ -1385,7 +1404,9 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
         {
           TopExp_Explorer expS(aWarnShape, TopAbs_SOLID);
           for (; expS.More(); expS.Next())
+          {
             aFailedSolids.Add(expS.Current());
+          }
         }
       }
     }
@@ -1402,7 +1423,9 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_SOLID)
+    {
       continue;
+    }
 
     const TopoDS_Shape& aSolid = aSI.Shape();
 
@@ -1418,7 +1441,9 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
     {
       const TopoDS_Shape& aSh = itSh.Value();
       if (aSh.ShapeType() != TopAbs_SHELL)
+      {
         continue;
+      }
 
       for (TopoDS_Iterator itF(aSh); itF.More(); itF.Next())
       {
@@ -1430,13 +1455,19 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
           {
             NCollection_List<TopoDS_Shape>::Iterator itLFIm(*pLFIm);
             for (; itLFIm.More(); itLFIm.Next())
+            {
               aMFInternal.Add(itLFIm.Value());
+            }
           }
           else
+          {
             aMFInternal.Add(aF);
+          }
         }
         else
+        {
           TopExp::MapShapesAndAncestors(aF, TopAbs_EDGE, TopAbs_FACE, aMEF);
+        }
       }
     }
 
@@ -1447,8 +1478,10 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
     {
       const TopoDS_Edge& aE = TopoDS::Edge(aMEF.FindKey(j));
       if (BRep_Tool::Degenerated(aE))
+      {
         // Skip degenerated edges
         continue;
+      }
 
       isClosed = (aMEF(j).Extent() > 1);
       if (!isClosed)
@@ -1472,18 +1505,24 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
     }
 
     if (isClosed)
+    {
       continue;
+    }
 
     // Not closed solid is found
 
     if (aFailedSolids.Contains(aSolid))
+    {
       // Warning has been generated for this solid, return positive result right away.
       return true;
+    }
 
     // Check the splits not to acquire new INTERNAL faces
     const NCollection_List<TopoDS_Shape>* pLSIm = myImages.Seek(aSolid);
     if (!pLSIm)
+    {
       continue;
+    }
 
     NCollection_List<TopoDS_Shape>::Iterator itLSIm(*pLSIm);
     for (; itLSIm.More(); itLSIm.Next())
@@ -1493,7 +1532,9 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
       {
         const TopoDS_Shape& aSh = itSh.Value();
         if (aSh.ShapeType() != TopAbs_SHELL)
+        {
           continue;
+        }
 
         for (TopoDS_Iterator itF(aSh); itF.More(); itF.Next())
         {
@@ -1501,8 +1542,10 @@ bool BOPAlgo_BOP::CheckArgsForOpenSolid()
           if (aF.Orientation() == TopAbs_INTERNAL)
           {
             if (!aMFInternal.Contains(aF))
+            {
               // New internal face is found
               return true;
+            }
           }
         }
       }

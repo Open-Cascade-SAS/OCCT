@@ -753,7 +753,9 @@ bool PrsDim::GetPlaneFromFace(const TopoDS_Face&         aFace,
     isOffset = true;
   }
   else
+  {
     surf2 = new BRepAdaptor_Surface(surf1);
+  }
 
   aSurf = surf1.GeomSurfaceTransformed();
 
@@ -804,19 +806,33 @@ bool PrsDim::GetPlaneFromFace(const TopoDS_Face&         aFace,
     }
     occ::handle<Standard_Type> TheType = aSurf->DynamicType();
     if (TheType == STANDARD_TYPE(Geom_CylindricalSurface))
+    {
       aSurfType = PrsDim_KOS_Cylinder;
+    }
     else if (TheType == STANDARD_TYPE(Geom_ConicalSurface))
+    {
       aSurfType = PrsDim_KOS_Cone;
+    }
     else if (TheType == STANDARD_TYPE(Geom_SphericalSurface))
+    {
       aSurfType = PrsDim_KOS_Sphere;
+    }
     else if (TheType == STANDARD_TYPE(Geom_ToroidalSurface))
+    {
       aSurfType = PrsDim_KOS_Torus;
+    }
     else if (TheType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
+    {
       aSurfType = PrsDim_KOS_Revolution;
+    }
     else if (TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
+    {
       aSurfType = PrsDim_KOS_Extrusion;
+    }
     else
+    {
       aSurfType = PrsDim_KOS_OtherSurface;
+    }
   }
   return Result;
 }
@@ -1183,7 +1199,9 @@ gp_Pnt PrsDim::TranslatePointToBound(const gp_Pnt&  aPoint,
                                      const Bnd_Box& aBndBox)
 {
   if (aBndBox.IsOut(aPoint))
+  {
     return aPoint;
+  }
   else
   {
     gp_Pnt                     Result(0.0, 0.0, 0.0);
@@ -1203,12 +1221,16 @@ gp_Pnt PrsDim::TranslatePointToBound(const gp_Pnt&  aPoint,
     for (int i = 1; i <= 3; i++)
     {
       if (std::abs(Dir(i)) <= gp::Resolution())
+      {
         continue;
+      }
       for (int j = 1; j <= 2; j++)
       {
         t = (Bound(i, j) - Origin(i)) / Dir(i);
         if (t < 0.0e0)
+        {
           continue;
+        }
         Result = aPoint.Translated(gp_Vec(aDir) * t);
         if (!EnlargedBox.IsOut(Result))
         {
@@ -1217,7 +1239,9 @@ gp_Pnt PrsDim::TranslatePointToBound(const gp_Pnt&  aPoint,
         }
       }
       if (IsFound)
+      {
         break;
+      }
     }
     return Result;
   }
@@ -1230,7 +1254,9 @@ bool PrsDim::InDomain(const double fpar, const double lpar, const double para)
   if (fpar >= 0.)
   {
     if (lpar > fpar)
+    {
       return ((para >= fpar) && (para <= lpar));
+    }
     else
     { // fpar > lpar
       double delta = 2 * M_PI - fpar;
@@ -1238,17 +1264,25 @@ bool PrsDim::InDomain(const double fpar, const double lpar, const double para)
       lp  = lpar + delta;
       par = para + delta;
       while (lp > 2 * M_PI)
+      {
         lp -= 2 * M_PI;
+      }
       while (par > 2 * M_PI)
+      {
         par -= 2 * M_PI;
+      }
       fp = 0.;
       return ((par >= fp) && (par <= lp));
     }
   }
   if (para >= (fpar + 2 * M_PI))
+  {
     return true;
+  }
   if (para <= lpar)
+  {
     return true;
+  }
   return false;
 }
 
@@ -1262,36 +1296,52 @@ double PrsDim::DistanceFromApex(const gp_Elips& elips, const gp_Pnt& Apex, const
   double dist;
   double parApex = ElCLib::Parameter(elips, Apex);
   if (parApex == 0.0 || parApex == M_PI)
-  {                     // Major case
-    if (parApex == 0.0) // pos Apex
+  { // Major case
+    if (parApex == 0.0)
+    { // pos Apex
       dist = (par < M_PI) ? par : (2 * M_PI - par);
-    else // neg Apex
+    }
+    else
+    { // neg Apex
       dist = (par < M_PI) ? (M_PI - par) : (par - M_PI);
+    }
   }
   else
   {                          // Minor case
     if (parApex == M_PI / 2) // pos Apex
     {
-      if (par <= parApex + M_PI && par > parApex) // 3/2*M_PI < par < M_PI/2
+      if (par <= parApex + M_PI && par > parApex)
+      { // 3/2*M_PI < par < M_PI/2
         dist = par - parApex;
+      }
       else
       {
-        if (par > parApex + M_PI) // 3/2*M_PI < par < 2*M_PI
+        if (par > parApex + M_PI)
+        { // 3/2*M_PI < par < 2*M_PI
           dist = 2 * M_PI - par + parApex;
+        }
         else
+        {
           dist = parApex - par;
+        }
       }
     }
     else // neg Apex == 3/2*M_PI
     {
-      if (par <= parApex && par >= M_PI / 2) // M_PI/2 < par < 3/2*M_PI
+      if (par <= parApex && par >= M_PI / 2)
+      { // M_PI/2 < par < 3/2*M_PI
         dist = parApex - par;
+      }
       else
       {
-        if (par > parApex) // 3/2*M_PI < par < 2*M_PI
+        if (par > parApex)
+        { // 3/2*M_PI < par < 2*M_PI
           dist = par - parApex;
+        }
         else
+        {
           dist = par + M_PI / 2; // 0 < par < M_PI/2
+        }
       }
     }
   }
@@ -1312,12 +1362,16 @@ gp_Pnt PrsDim::NearestApex(const gp_Elips& elips,
   IsInDomain = true;
   parP       = ElCLib::Parameter(elips, pApex);
   if (InDomain(fpara, lpara, parP))
+  {
     EndOfArrow = pApex;
+  }
   else
   {
     parN = ElCLib::Parameter(elips, nApex);
     if (InDomain(fpara, lpara, parN))
+    {
       EndOfArrow = nApex;
+    }
     else
     {
       IsInDomain = false;
@@ -1326,9 +1380,13 @@ gp_Pnt PrsDim::NearestApex(const gp_Elips& elips,
       double negd =
         std::min(DistanceFromApex(elips, nApex, fpara), DistanceFromApex(elips, nApex, lpara));
       if (posd < negd)
+      {
         EndOfArrow = pApex;
+      }
       else
+      {
         EndOfArrow = nApex;
+      }
     }
   }
   return EndOfArrow;

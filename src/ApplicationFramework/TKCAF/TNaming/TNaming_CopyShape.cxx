@@ -42,7 +42,9 @@ void TNaming_CopyShape::Translate(const TopoDS_Shape& aShape,
   aResult.Nullify();
 
   if (aShape.IsNull())
+  {
     return;
+  }
 
   if (aMap.Contains(aShape.TShape()))
   {
@@ -151,7 +153,9 @@ static occ::handle<TopLoc_Datum3D> TranslateDatum3D(
 {
   occ::handle<TopLoc_Datum3D> TD;
   if (aMap.Contains(D))
+  {
     TD = occ::down_cast<TopLoc_Datum3D>(aMap.FindFromKey(D));
+  }
   else
   {
     TD = new TopLoc_Datum3D(D->Transformation());

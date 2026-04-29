@@ -373,7 +373,9 @@ bool BRepBlend_SurfRstConstRad::IsSolution(const math_Vector& Sol, const double 
         istangent = false;
       }
       else
+      {
         istangent = true;
+      }
     }
 
     if (!istangent)
@@ -389,7 +391,9 @@ bool BRepBlend_SurfRstConstRad::IsSolution(const math_Vector& Sol, const double 
 
     // update of maxang
     if (ray > 0.)
+    {
       ns.Reverse();
+    }
     ns2 = -resul.Normalized();
 
     Cosa = ns.Dot(ns2);
@@ -532,7 +536,9 @@ bool BRepBlend_SurfRstConstRad::Decroch(const math_Vector& Sol, gp_Vec& NS, gp_V
 
   Center.SetXYZ(bid.XYZ() + ray * NSInPlane.XYZ());
   if (choix > 2)
+  {
     NSInPlane.Reverse();
+  }
   TgS = nplan.Crossed(gp_Vec(Center, bid));
   if (choix % 2 == 1)
   {
@@ -547,7 +553,9 @@ bool BRepBlend_SurfRstConstRad::Decroch(const math_Vector& Sol, gp_Vec& NS, gp_V
   NRstInPlane.SetLinearForm(nplan.Dot(NRst) * unsurnorm, nplan, -unsurnorm, NRst);
   gp_Vec centptrst(Center, bid);
   if (centptrst.Dot(NRstInPlane) < 0.)
+  {
     NRstInPlane.Reverse();
+  }
   TgRst = nplan.Crossed(centptrst);
   if (choix % 2 == 1)
   {
@@ -644,7 +652,9 @@ void BRepBlend_SurfRstConstRad::Section(const double Param,
     Pfin = ElCLib::Parameter(C, ptrst);
   }
   if (Pfin < Precision::PConfusion())
+  {
     Pfin += Precision::PConfusion();
+  }
 }
 
 //=================================================================================================
@@ -776,7 +786,9 @@ void BRepBlend_SurfRstConstRad::Section(const Blend_Point&            P,
 
   ns2 = gp_Vec(Center, ptrst).Normalized();
   if (ray > 0)
+  {
     ns.Reverse();
+  }
   if (choix % 2 != 0)
   {
     nplan.Reverse();
@@ -878,7 +890,9 @@ bool BRepBlend_SurfRstConstRad::Section(const Blend_Point&            P,
       istgt = false;
     }
     else
+    {
       istgt = true;
+    }
   }
 
   if (!istgt)

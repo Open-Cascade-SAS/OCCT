@@ -83,7 +83,9 @@ void ShapeAnalysis_TransferParametersProj::Init(const TopoDS_Edge& E, const Topo
   }
 
   if (F.IsNull())
+  {
     return;
+  }
 
   double             f2d, l2d;
   ShapeAnalysis_Edge sae;
@@ -109,7 +111,9 @@ occ::handle<NCollection_HSequence<double>> ShapeAnalysis_TransferParametersProj:
   // pdn
   if (!myInitOK
       || (!myForceProj && myPrecision < myMaxTolerance && BRep_Tool::SameParameter(myEdge)))
+  {
     return ShapeAnalysis_TransferParameters::Perform(Knots, To2d);
+  }
 
   occ::handle<NCollection_HSequence<double>> resKnots = new NCollection_HSequence<double>;
 
@@ -128,30 +132,44 @@ occ::handle<NCollection_HSequence<double>> ShapeAnalysis_TransferParametersProj:
     double par = PreformSegment(Knots->Value(j), To2d, prevPar, lastPar);
     prevPar    = par;
     if (prevPar > lastPar)
+    {
       prevPar -= preci;
+    }
     resKnots->Append(par);
     if (par > maxPar)
+    {
       maxPar = par;
+    }
   }
 
   // pdn correcting on periodic
   if (myCurve->IsClosed())
   {
     for (j = len; j >= 1; j--)
+    {
       if (resKnots->Value(j) < maxPar)
+      {
         resKnots->SetValue(j,
                            (To2d ? myAC3d.LastParameter() : myCurve->LastParameter())
                              - (len - j) * preci);
+      }
       else
+      {
         break;
+      }
+    }
   }
   // pdn correction on range
   for (j = 1; j <= len; j++)
   {
     if (resKnots->Value(j) < first)
+    {
       resKnots->SetValue(j, first);
+    }
     if (resKnots->Value(j) > last)
+    {
       resKnots->SetValue(j, last);
+    }
   }
 
   return resKnots;
@@ -167,7 +185,9 @@ double ShapeAnalysis_TransferParametersProj::PreformSegment(const double Param,
   double linPar = ShapeAnalysis_TransferParameters::Perform(Param, To2d);
   if (!myInitOK
       || (!myForceProj && myPrecision < myMaxTolerance && BRep_Tool::SameParameter(myEdge)))
+  {
     return linPar;
+  }
 
   double linDev, projDev;
 
@@ -191,7 +211,9 @@ double ShapeAnalysis_TransferParametersProj::PreformSegment(const double Param,
   }
 
   if (linDev <= projDev || (linDev < myPrecision && linDev <= 2 * projDev))
+  {
     ppar = linPar;
+  }
   return ppar;
 }
 
@@ -201,21 +223,31 @@ double ShapeAnalysis_TransferParametersProj::Perform(const double Knot, const bo
 {
   if (!myInitOK
       || (!myForceProj && myPrecision < myMaxTolerance && BRep_Tool::SameParameter(myEdge)))
+  {
     return ShapeAnalysis_TransferParameters::Perform(Knot, To2d);
+  }
 
   double res;
   if (To2d)
+  {
     res = PreformSegment(Knot, To2d, myAC3d.FirstParameter(), myAC3d.LastParameter());
+  }
   else
+  {
     res = PreformSegment(Knot, To2d, myFirst, myLast);
+  }
 
   // pdn correction on range
   double first = (To2d ? myAC3d.FirstParameter() : myFirst);
   double last  = (To2d ? myAC3d.LastParameter() : myLast);
   if (res < first)
+  {
     res = first;
+  }
   if (res > last)
+  {
     res = last;
+  }
   return res;
 }
 
@@ -240,7 +272,9 @@ static double CorrectParameter(const occ::handle<Geom2d_Curve>& crv, const doubl
     {
       double valknot = bspline->Knot(j);
       if (std::abs(valknot - param) < Precision::PConfusion())
+      {
         return valknot;
+      }
     }
   }
   return param;
@@ -340,7 +374,9 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
   {
     toGC = occ::down_cast<BRep_GCurve>(toitcr.Value());
     if (toGC.IsNull())
+    {
       continue;
+    }
     TopLoc_Location loc = (EdgeLoc * toGC->Location()).Inverted();
     if (toGC->IsCurve3D())
     {
@@ -353,7 +389,9 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
       {
         occ::handle<Geom_Curve> C3d = toGC->Curve3D();
         if (C3d.IsNull())
+        {
           continue;
+        }
         double            first = toGC->First();
         double            last  = toGC->Last();
         double            len   = last - first;
@@ -373,9 +411,13 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
         double d01  = pos1.Distance(ploc1);
         double d02  = pos2.Distance(ploc2);
         if (useLinearFirst || useLinear || d01 <= dist1 || (d01 < myPrecision && d01 <= 2 * dist1))
+        {
           ppar1 = linFirst;
+        }
         if (useLinearLast || useLinear || d02 <= dist2 || (d02 < myPrecision && d02 <= 2 * dist2))
+        {
           ppar2 = linLast;
+        }
       }
       if (ppar1 > ppar2)
       {
@@ -386,9 +428,13 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
       if (ppar2 - ppar1 < preci)
       {
         if (ppar1 - toGC->First() < preci)
+        {
           ppar2 += 2 * preci;
+        }
         else if (toGC->Last() - ppar2 < preci)
+        {
           ppar1 -= 2 * preci;
+        }
         else
         {
           ppar1 -= preci;
@@ -399,7 +445,9 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
       // if(fabs(ppar1- firstPar) > Precision::PConfusion() ||
       //     fabs(ppar2 - lastPar) >Precision::PConfusion()) // by LSS
       if (ppar1 != firstPar || ppar2 != lastPar)
+      {
         samerange = false;
+      }
     }
     else if (toGC->IsCurveOnSurface())
     { // continue;  ||
@@ -429,18 +477,26 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
       bool isLastOnEnd  = (last - ppar2) / len < Precision::PConfusion();
       bool useLinear    = std::abs(ppar1 - ppar2) < Precision::PConfusion();
       if (isFirstOnEnd && !localLinearFirst)
+      {
         localLinearFirst = true;
+      }
       if (isLastOnEnd && !localLinearLast)
+      {
         localLinearLast = true;
+      }
 
       gp_Pnt pos1 = Ad1.Value(linFirst);
       gp_Pnt pos2 = Ad1.Value(linLast);
       double d01  = pos1.Distance(ploc1);
       double d02  = pos2.Distance(ploc2);
       if (localLinearFirst || useLinear || d01 <= dist1 || (d01 < myPrecision && d01 <= 2 * dist1))
+      {
         ppar1 = linFirst;
+      }
       if (localLinearLast || useLinear || d02 <= dist2 || (d02 < myPrecision && d02 <= 2 * dist2))
+      {
         ppar2 = linLast;
+      }
 
       if (ppar1 > ppar2)
       {
@@ -453,9 +509,13 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
       if (ppar2 - ppar1 < preci)
       {
         if (ppar1 - toGC->First() < preci)
+        {
           ppar2 += 2 * preci;
+        }
         else if (toGC->Last() - ppar2 < preci)
+        {
           ppar1 -= 2 * preci;
+        }
         else
         {
           ppar1 -= preci;
@@ -466,7 +526,9 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
       // if(fabs(ppar1 - firstPar) > Precision::PConfusion() ||
       //    fabs(ppar2 -lastPar) > Precision::PConfusion())// by LSS
       if (ppar1 != firstPar || ppar2 != lastPar)
+      {
         samerange = false;
+      }
     }
   }
   B.SameRange(newEdge, samerange);
@@ -479,9 +541,13 @@ bool ShapeAnalysis_TransferParametersProj::IsSameRange() const
 
   if (!myInitOK
       || (!myForceProj && myPrecision < myMaxTolerance && BRep_Tool::SameParameter(myEdge)))
+  {
     return ShapeAnalysis_TransferParameters::IsSameRange();
+  }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================
@@ -499,7 +565,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
 {
   TopoDS_Vertex anewV;
   if (theV.Orientation() != TopAbs_INTERNAL && theV.Orientation() != TopAbs_EXTERNAL)
+  {
     return anewV;
+  }
 
   TopLoc_Location                fromLoc;
   double                         f1, l1;
@@ -524,7 +592,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
   {
     const occ::handle<BRep_PointRepresentation>& pr = itpr.Value();
     if (pr.IsNull())
+    {
       continue;
+    }
     if (pr->IsPointOnCurve(C1, fromLoc))
     {
       aOldPar = pr->Parameter();
@@ -551,7 +621,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
       {
         occ::handle<BRep_GCurve> fromGC = occ::down_cast<BRep_GCurve>(fromitcr.Value());
         if (fromGC.IsNull() || !fromGC->IsCurveOnSurface())
+        {
           continue;
+        }
 
         TopLoc_Location           aL       = fromGC->Location().Predivided(theV.Location());
         occ::handle<Geom_Surface> surface1 = fromGC->Surface();
@@ -566,7 +638,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
         }
       }
       if (found)
+      {
         continue;
+      }
     }
     if (pr->IsPointOnCurve())
     {
@@ -593,7 +667,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
     ShapeAnalysis_Curve sae;
     double              adist = sae.Project(C2, apv, Precision::Confusion(), projP, apar);
     if (aTol < adist)
+    {
       aTol = adist;
+    }
   }
   BRep_Builder aB;
   aB.UpdateVertex(anewV, apar, toedge, aTol);
@@ -609,7 +685,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
   {
     occ::handle<BRep_GCurve> toGC = occ::down_cast<BRep_GCurve>(toitcr.Value());
     if (toGC.IsNull() || !toGC->IsCurveOnSurface())
+    {
       continue;
+    }
 
     TopLoc_Location aL = (toLoc * toGC->Location()).Predivided(theV.Location());
     // aL.Predivided(theV.Location());
@@ -626,7 +704,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
     }
   }
   if (needUpdate)
+  {
     aB.UpdateVertex(anewV, aTol);
+  }
   return anewV;
 }
 
@@ -638,7 +718,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
 {
   TopoDS_Vertex anewV;
   if (theV.Orientation() != TopAbs_INTERNAL && theV.Orientation() != TopAbs_EXTERNAL)
+  {
     return anewV;
+  }
 
   TopLoc_Location           fromLoc;
   TopLoc_Location           toLoc;
@@ -661,7 +743,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
   {
     const occ::handle<BRep_PointRepresentation>& pr = itpr.Value();
     if (pr.IsNull())
+    {
       continue;
+    }
     TopLoc_Location aLoc = pr->Location();
     if (pr->IsPointOnCurveOnSurface())
     {
@@ -705,7 +789,9 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex(const TopoDS_Ve
     apar2                                   = aP2d.Y();
 
     if (aTol < aSurfTool->Gap())
+    {
       aTol = aSurfTool->Gap() + 0.1 * Precision::Confusion();
+    }
     // occ::handle<BRep_PointOnSurface> aPS = new
     // BRep_PointOnSurface(aP2d.X(),aP2d.Y(),toSurf,toLoc); alistrep.Append(aPS);
   }

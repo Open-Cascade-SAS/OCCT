@@ -55,9 +55,12 @@ bool XSControl_SelectForTransfer::Sort(const int /*rank*/,
 {
   occ::handle<Transfer_ActorOfTransientProcess> act = theAC;
   if (act.IsNull() && !theTR.IsNull())
+  {
     act = theTR->Actor();
+  }
   // clang-format off
-  if (!act.IsNull()) return act->Recognize(ent);//,theTR->TransientProcess());//act->Recognize(ent);
+  if (!act.IsNull()) { return act->Recognize(ent);//,theTR->TransientProcess());//act->Recognize(ent);
+}
   // clang-format on
   return false;
 }
@@ -65,6 +68,8 @@ bool XSControl_SelectForTransfer::Sort(const int /*rank*/,
 TCollection_AsciiString XSControl_SelectForTransfer::ExtractLabel() const
 {
   if (!theTR.IsNull())
+  {
     return TCollection_AsciiString("Recognized for Transfer (current actor)");
+  }
   return TCollection_AsciiString("Recognized for Transfer");
 }

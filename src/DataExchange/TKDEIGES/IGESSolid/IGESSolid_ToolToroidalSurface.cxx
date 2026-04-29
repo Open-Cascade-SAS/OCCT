@@ -59,10 +59,10 @@ void IGESSolid_ToolToroidalSurface::ReadOwnParams(const occ::handle<IGESSolid_To
 
   PR.ReadReal(PR.Current(), "Minor Radius", minRad); // szv#4:S4163:12Mar99 `st=` not needed
 
-  if (ent->FormNumber() == 1)  // Parametrised surface
-                               // clang-format off
-    PR.ReadEntity(IR, PR.Current(), "Reference direction", tempRefdir); //szv#4:S4163:12Mar99 `st=` not needed
-                               // clang-format on
+  if (ent->FormNumber() == 1)
+  { // Parametrised surface
+    PR.ReadEntity(IR, PR.Current(), "Reference direction", tempRefdir);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempCenter, tempAxis, majRad, minRad, occ::down_cast<IGESGeom_Direction>(tempRefdir));
@@ -77,7 +77,9 @@ void IGESSolid_ToolToroidalSurface::WriteOwnParams(
   IW.Send(ent->MajorRadius());
   IW.Send(ent->MinorRadius());
   if (ent->IsParametrised())
+  {
     IW.Send(ent->ReferenceDir());
+  }
 }
 
 void IGESSolid_ToolToroidalSurface::OwnShared(const occ::handle<IGESSolid_ToroidalSurface>& ent,
@@ -128,16 +130,26 @@ void IGESSolid_ToolToroidalSurface::OwnCheck(const occ::handle<IGESSolid_Toroida
                                              occ::handle<Interface_Check>& ach) const
 {
   if (ent->MajorRadius() <= 0.0)
+  {
     ach->AddFail("Major Radius : Not Positive");
+  }
   if (ent->MinorRadius() <= 0.0)
+  {
     ach->AddFail("Minor Radius : Not Positive");
+  }
   if (ent->MinorRadius() >= ent->MajorRadius())
+  {
     ach->AddFail("Minor Radius : Value not < Major radius");
+  }
   int fn = 0;
   if (ent->IsParametrised())
+  {
     fn = 1;
+  }
   if (fn != ent->FormNumber())
+  {
     ach->AddFail("Parametrised Status Mismatches with Form Number");
+  }
 }
 
 void IGESSolid_ToolToroidalSurface::OwnDump(const occ::handle<IGESSolid_ToroidalSurface>& ent,
@@ -154,14 +166,16 @@ void IGESSolid_ToolToroidalSurface::OwnDump(const occ::handle<IGESSolid_Toroidal
     << "Axis direction : ";
   dumper.Dump(ent->Axis(), S, sublevel);
   S << "\n"
-    << "Major Radius : " << ent->MajorRadius() << "  "
-    << "Minor Radius : " << ent->MinorRadius() << "\n";
+    << "Major Radius : " << ent->MajorRadius() << "  " << "Minor Radius : " << ent->MinorRadius()
+    << "\n";
   if (ent->IsParametrised())
   {
     S << "Surface is Parametrised  -  Reference direction : ";
     dumper.Dump(ent->ReferenceDir(), S, sublevel);
-    S << std::endl;
+    S << '\n';
   }
   else
-    S << "Surface is UnParametrised" << std::endl;
+  {
+    S << "Surface is UnParametrised" << '\n';
+  }
 }

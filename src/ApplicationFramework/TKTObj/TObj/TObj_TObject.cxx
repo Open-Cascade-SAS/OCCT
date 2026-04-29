@@ -116,7 +116,9 @@ void TObj_TObject::BeforeForget()
       {
         aSubLabel = aLI.Value();
         if (!aSubLabel.IsNull())
+        {
           aSubLabel.ForgetAllAttributes(true);
+        }
       }
     }
     // remove back references before document die
@@ -143,10 +145,14 @@ bool TObj_TObject::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
     occ::handle<TDF_Attribute> me;
     me = this;
     if (!aLabel.IsNull() && aLabel.FindAttribute(GetID(), anAttr))
+    {
       aTObject = occ::down_cast<TObj_TObject>(anAttr);
+    }
 
     if (!aTObject.IsNull() && aTObject->Get() == myElem)
+    {
       myElem->myLabel = aLabel;
+    }
     else
     {
       TDF_Label aNullLabel;

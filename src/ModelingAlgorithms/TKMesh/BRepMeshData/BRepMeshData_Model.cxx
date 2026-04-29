@@ -41,7 +41,7 @@ BRepMeshData_Model::~BRepMeshData_Model() = default;
 
 int BRepMeshData_Model::FacesNb() const
 {
-  return myDFaces.Size();
+  return myDFaces.Length();
 }
 
 //=================================================================================================
@@ -63,7 +63,7 @@ const IMeshData::IFaceHandle& BRepMeshData_Model::GetFace(const int theIndex) co
 
 int BRepMeshData_Model::EdgesNb() const
 {
-  return myDEdges.Size();
+  return myDEdges.Length();
 }
 
 //=================================================================================================

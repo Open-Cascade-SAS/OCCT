@@ -53,6 +53,8 @@ occ::handle<StepBasic_Approval> StepAP214_AutoDesignSecurityClassificationAssign
 int StepAP214_AutoDesignSecurityClassificationAssignment::NbItems() const
 {
   if (items.IsNull())
+  {
     return 0;
+  }
   return items->Length();
 }

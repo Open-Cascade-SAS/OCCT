@@ -106,7 +106,6 @@ bool BRepMesh_BaseMeshAlgo::initDataStructure()
                                               false);
 
           aPCurve->GetIndex(aPointIndex) = aNodeIndex;
-          myUsedNodes->Bind(aNodeIndex, aNodeIndex);
 
           if (aPrevNodeIndex != -1 && aPrevNodeIndex != aNodeIndex)
           {
@@ -137,11 +136,21 @@ int BRepMesh_BaseMeshAlgo::registerNode(const gp_Pnt&                  thePoint,
                                         const bool                     isForceAdd)
 {
   const int aNodeIndex =
-    addNodeToStructure(thePoint2d, myNodesMap->Size(), theMovability, isForceAdd);
+    addNodeToStructure(thePoint2d, myNodesMap->Length(), theMovability, isForceAdd);
 
-  if (aNodeIndex > myNodesMap->Size())
+  if (aNodeIndex > myNodesMap->Length())
   {
     myNodesMap->Append(thePoint);
+    // Pre-bind frontier and fixed nodes with identity mapping so that
+    // pcurve indices (set in initDataStructure as raw structure indices)
+    // remain valid as compact Poly_Triangulation indices. Free (internal)
+    // nodes are NOT pre-bound: they enter myUsedNodes only via
+    // collectTriangles() when actually referenced by a triangle, which
+    // prevents unreferenced internal nodes from appearing as free nodes.
+    if (theMovability != BRepMesh_Free)
+    {
+      myUsedNodes->Bind(aNodeIndex, aNodeIndex);
+    }
   }
 
   return aNodeIndex;
@@ -166,13 +175,19 @@ int BRepMesh_BaseMeshAlgo::addLinkToMesh(const int                theFirstNodeId
 {
   int aLinkIndex;
   if (theOrientation == TopAbs_REVERSED)
+  {
     aLinkIndex =
       myStructure->AddLink(BRepMesh_Edge(theLastNodeId, theFirstNodeId, BRepMesh_Frontier));
+  }
   else if (theOrientation == TopAbs_INTERNAL)
+  {
     aLinkIndex = myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Fixed));
+  }
   else
+  {
     aLinkIndex =
       myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Frontier));
+  }
 
   return std::abs(aLinkIndex);
 }
@@ -249,7 +264,7 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
     {
       if (!myUsedNodes->IsBound(aNode[i]))
       {
-        myUsedNodes->Bind(aNode[i], myUsedNodes->Size() + 1);
+        myUsedNodes->Bind(aNode[i], myUsedNodes->Length() + 1);
       }
 
       aNode[i] = myUsedNodes->Find(aNode[i]);
@@ -266,7 +281,7 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
 
 void BRepMesh_BaseMeshAlgo::collectNodes(const occ::handle<Poly_Triangulation>& theTriangulation)
 {
-  for (int i = 1; i <= myNodesMap->Size(); ++i)
+  for (int i = 1; i <= myNodesMap->Length(); ++i)
   {
     if (myUsedNodes->IsBound(i))
     {

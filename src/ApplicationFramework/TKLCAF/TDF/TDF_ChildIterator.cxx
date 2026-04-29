@@ -67,7 +67,9 @@ void TDF_ChildIterator::Next()
   else
   {
     if (myNode->FirstChild())
+    {
       myNode = myNode->FirstChild();
+    }
     else
       ChildIterator_UpToBrother;
   }
@@ -78,7 +80,9 @@ void TDF_ChildIterator::Next()
 void TDF_ChildIterator::NextBrother()
 {
   if ((myFirstLevel == -1) || myNode->Brother())
+  {
     myNode = myNode->Brother();
+  }
   else
     ChildIterator_UpToBrother;
 }

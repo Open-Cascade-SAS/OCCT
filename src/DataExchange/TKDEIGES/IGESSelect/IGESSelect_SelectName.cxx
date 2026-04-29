@@ -41,11 +41,17 @@ bool IGESSelect_SelectName::Sort(const int /*rank*/,
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return false;
+  }
   if (!igesent->HasName())
+  {
     return false;
+  }
   if (thename.IsNull())
+  {
     return false;
+  }
   occ::handle<TCollection_HAsciiString> name = igesent->NameValue();
   //  std::cout<<"SelectName:"<<thename->ToCString()<<",with:"<<name->ToCString()<<",IsSameString="<<thename->IsSameString
   //  (name,false)<<std::endl;
@@ -57,14 +63,20 @@ bool IGESSelect_SelectName::Sort(const int /*rank*/,
   for (i = 1; i <= nbf; i++)
   {
     if (name->Value(i) != thename->Value(i))
+    {
       return false;
+    }
   }
   if (nb0 > nb1)
+  {
     name = thename;
+  }
   for (i = nbf + 1; i <= nbt; i++)
   {
     if (name->Value(i) != ' ')
+    {
       return false;
+    }
   }
   return true;
 }
@@ -78,5 +90,7 @@ TCollection_AsciiString IGESSelect_SelectName::ExtractLabel() const
     return TCollection_AsciiString(labl);
   }
   else
+  {
     return TCollection_AsciiString("IGES Entity, Name : (undefined)");
+  }
 }

@@ -52,12 +52,18 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
                                  const occ::handle<Standard_Transient>& item) const
 {
   if (item.IsNull())
+  {
     return false;
+  }
   occ::handle<Standard_Type> type = item->DynamicType();
   if (type == STANDARD_TYPE(IGESSelect_DispPerSingleView))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_DispPerDrawing))
+  {
     return true;
+  }
   /*  if (type == STANDARD_TYPE(IGESSelect_SelectIGESTypeForm)) {
       DeclareAndCast(IGESSelect_SelectIGESTypeForm,sf,item);
       bool exact = sf->IsExact();
@@ -68,7 +74,9 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
       return true;
     } */
   if (type == STANDARD_TYPE(IGESSelect_SelectVisibleStatus))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_SelectLevelNumber))
   {
     DeclareAndCast(IGESSelect_SelectLevelNumber, sl, item);
@@ -84,15 +92,25 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
     return true;
   }
   if (type == STANDARD_TYPE(IGESSelect_SelectFromSingleView))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_SelectFromDrawing))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_SelectSingleViewFrom))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_SelectDrawingFrom))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_SelectBypassGroup))
+  {
     return true;
+  }
 
   if (type == STANDARD_TYPE(IGESSelect_FloatFormat))
   {
@@ -116,11 +134,17 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
   }
 
   if (type == STANDARD_TYPE(IGESSelect_UpdateCreationDate))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_UpdateLastChange))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_SetVersion5))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_SetGlobalParameter))
   {
     DeclareAndCast(IGESSelect_SetGlobalParameter, sp, item);
@@ -133,13 +157,21 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
     return true;
   }
   if (type == STANDARD_TYPE(IGESSelect_AutoCorrect))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_ComputeStatus))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_RebuildDrawings))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_RebuildGroups))
+  {
     return true;
+  }
   if (type == STANDARD_TYPE(IGESSelect_ChangeLevelList))
   {
     DeclareAndCast(IGESSelect_ChangeLevelList, cl, item);
@@ -182,11 +214,15 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
   if (type.IsEqual("IGESSelect_SelectIGESTypeForm"))
   {
     if (file.NbParams() < 2)
+    {
       return false;
+    }
     // bool exact; //szv#4:S4163:12Mar99 not needed
     const TCollection_AsciiString& exname = file.ParamValue(1);
     if (exname.Length() < 1)
+    {
       return false;
+    }
     if (exname.Value(1) == 'e')
     {
     } // szv#4:S4163:12Mar99 `exact = true` not needed
@@ -194,13 +230,19 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
     {
     } // szv#4:S4163:12Mar99 `exact = false` not needed
     else
+    {
       return false;
+    }
     // Attention, 2 termes possibles pour la signature
     char sig[40];
     if (file.NbParams() == 2)
+    {
       Sprintf(sig, "%s", file.ParamValue(2).ToCString());
+    }
     else
+    {
       Sprintf(sig, "%s %s", file.ParamValue(2).ToCString(), file.ParamValue(3).ToCString());
+    }
     //    item = new IGESSelect_SelectIGESTypeForm(sig,exact);
     //    return true;
   }
@@ -213,7 +255,9 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
   if (type.IsEqual("IGESSelect_SelectLevelNumber"))
   {
     if (file.NbParams() < 1)
+    {
       return false;
+    }
     occ::handle<IGESSelect_SelectLevelNumber> sl = new IGESSelect_SelectLevelNumber;
     DeclareAndCast(IFSelect_IntParam, lev, file.ItemValue(1));
     sl->SetLevelNumber(lev);
@@ -223,7 +267,9 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
   if (type.IsEqual("IGESSelect_SelectName"))
   {
     if (file.NbParams() < 1)
+    {
       return false;
+    }
     occ::handle<IGESSelect_SelectName>    sn   = new IGESSelect_SelectName;
     occ::handle<TCollection_HAsciiString> name = sn->Name();
     item                                       = sn;
@@ -258,18 +304,28 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
   if (type.IsEqual("IGESSelect_FloatFormat"))
   {
     if (file.NbParams() < 2)
+    {
       return false;
+    }
     occ::handle<IGESSelect_FloatFormat> ff = new IGESSelect_FloatFormat;
     bool                                zerosup;
     const TCollection_AsciiString&      zsup = file.ParamValue(1);
     if (zsup.Length() < 1)
+    {
       return false;
+    }
     if (zsup.Value(1) == 'z')
+    {
       zerosup = true;
+    }
     else if (zsup.Value(1) == 'n')
+    {
       zerosup = false;
+    }
     else
+    {
       return false;
+    }
     ff->SetFormat(file.ParamValue(2).ToCString());
     ff->SetZeroSuppress(zerosup);
     if (file.NbParams() >= 5)
@@ -302,7 +358,9 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
   if (type.IsEqual("IGESSelect_SetGlobalParameter"))
   {
     if (file.NbParams() < 2)
+    {
       return false;
+    }
     int np = atoi(file.ParamValue(1).ToCString());
     DeclareAndCast(TCollection_HAsciiString, val, file.ItemValue(2));
     occ::handle<IGESSelect_SetGlobalParameter> sp = new IGESSelect_SetGlobalParameter(np);
@@ -335,7 +393,9 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
   if (type.IsEqual("IGESSelect_ChangeLevelList"))
   {
     if (file.NbParams() < 2)
+    {
       return false;
+    }
     occ::handle<IGESSelect_ChangeLevelList> cl = new IGESSelect_ChangeLevelList;
     DeclareAndCast(IFSelect_IntParam, oldpar, file.ItemValue(1));
     DeclareAndCast(IFSelect_IntParam, newpar, file.ItemValue(2));
@@ -347,7 +407,9 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
   if (type.IsEqual("IGESSelect_ChangeLevelNumber"))
   {
     if (file.NbParams() < 2)
+    {
       return false;
+    }
     occ::handle<IGESSelect_ChangeLevelNumber> cl = new IGESSelect_ChangeLevelNumber;
     DeclareAndCast(IFSelect_IntParam, oldpar, file.ItemValue(1));
     DeclareAndCast(IFSelect_IntParam, newpar, file.ItemValue(2));
@@ -360,17 +422,27 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
   if (type.IsEqual("IGESSelect_SplineToBSpline"))
   {
     if (file.NbParams() < 1)
+    {
       return false;
+    }
     bool                           tryc2;
     const TCollection_AsciiString& tc2 = file.ParamValue(1);
     if (tc2.Length() < 1)
+    {
       return false;
+    }
     if (tc2.Value(1) == 'T')
+    {
       tryc2 = true;
+    }
     else if (tc2.Value(1) == 'N')
+    {
       tryc2 = false;
+    }
     else
+    {
       return false;
+    }
     item = new IGESSelect_SplineToBSpline(tryc2);
     return true;
   }

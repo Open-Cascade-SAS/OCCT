@@ -35,7 +35,9 @@ void RWStepFEA_RWFeaShellShearStiffness::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_shell_shear_stiffness"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

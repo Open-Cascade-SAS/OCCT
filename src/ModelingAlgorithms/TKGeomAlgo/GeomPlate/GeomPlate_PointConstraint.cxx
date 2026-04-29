@@ -42,7 +42,9 @@ GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt& Pt,
       hasPnt2dOnSurf(false)
 {
   if ((myOrder > 1) || (myOrder < -1))
+  {
     throw Standard_Failure("GeomPlate_PointConstraint : the constraint must 0 or -1 with a point");
+  }
 }
 
 //---------------------------------------------------------

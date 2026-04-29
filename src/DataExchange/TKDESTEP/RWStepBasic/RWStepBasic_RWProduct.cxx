@@ -32,7 +32,9 @@ void RWStepBasic_RWProduct::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "product"))
+  {
     return;
+  }
 
   // --- own field : id ---
 
@@ -72,7 +74,9 @@ void RWStepBasic_RWProduct::ReadStep(const occ::handle<StepData_StepReaderData>&
                            ach,
                            STANDARD_TYPE(StepBasic_ProductContext),
                            anent4))
+      {
         aFrameOfReference->SetValue(i4, anent4);
+      }
     }
   }
 

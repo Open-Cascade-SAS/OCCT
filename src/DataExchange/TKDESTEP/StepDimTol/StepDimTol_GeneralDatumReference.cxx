@@ -39,7 +39,11 @@ void StepDimTol_GeneralDatumReference::Init(
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);
   myBase = theBase;
   if (theHasModifiers)
+  {
     myModifiers = theModifiers;
+  }
   else
+  {
     myModifiers.Nullify();
+  }
 }

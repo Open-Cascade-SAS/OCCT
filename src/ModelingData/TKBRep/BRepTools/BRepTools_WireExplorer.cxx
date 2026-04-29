@@ -96,7 +96,9 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W, const TopoDS_Face& F)
   myDoubles.Clear();
 
   if (W.IsNull())
+  {
     return;
+  }
 
   double UMin(0.0), UMax(0.0), VMin(0.0), VMax(0.0);
   if (!F.IsNull())
@@ -129,7 +131,9 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
   myDoubles.Clear();
 
   if (W.IsNull())
+  {
     return;
+  }
 
   myFace             = F;
   double dfVertToler = 0.;
@@ -150,11 +154,15 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
     {
       // Use tolerance of edges
       for (TopoDS_Iterator it(W); it.More(); it.Next())
+      {
         dfVertToler = std::max(BRep_Tool::Tolerance(TopoDS::Edge(it.Value())), dfVertToler);
+      }
 
       if (dfVertToler < Precision::Confusion())
+      {
         // empty wire
         return;
+      }
     }
     myTolU = 2. * aGAS.UResolution(dfVertToler);
     myTolV = 2. * aGAS.VResolution(dfVertToler);
@@ -169,16 +177,24 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
       double a = aD1U.Magnitude();
 
       if (a <= Precision::Confusion())
+      {
         tol1 = maxtol;
+      }
       else
+      {
         tol1 = std::min(maxtol, dfVertToler / a);
+      }
 
       aGAS.D1(UMin, VMax, aP, aD1U, aD1V);
       a = aD1U.Magnitude();
       if (a <= Precision::Confusion())
+      {
         tol2 = maxtol;
+      }
       else
+      {
         tol2 = std::min(maxtol, dfVertToler / a);
+      }
 
       myTolU = 2. * std::max(tol1, tol2);
     }
@@ -228,7 +244,9 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
     if (!V1.IsNull())
     {
       if (!myMap.IsBound(V1))
+      {
         myMap.Bind(V1, empty);
+      }
       myMap(V1).Append(E);
 
       // add or remove in the vertex map
@@ -258,12 +276,16 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
       if (Eori == TopAbs_FORWARD)
       {
         if (aF == -Precision::Infinite())
+        {
           anInfEmap.Add(E);
+        }
       }
       else
       { // Eori == TopAbs_REVERSED
         if (aL == Precision::Infinite())
+        {
           anInfEmap.Add(E);
+        }
       }
     }
     it.Next();
@@ -275,7 +297,9 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
   while (it2.More())
   {
     if (!emap.Add(it2.Value()))
+    {
       myDoubles.Add(it2.Value());
+    }
     it2.Next();
   }
 
@@ -343,9 +367,13 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
   }
 
   if (V1.IsNull())
+  {
     return;
+  }
   if (!myMap.IsBound(V1))
+  {
     return;
+  }
 
   NCollection_List<TopoDS_Shape>& l = myMap(V1);
   myEdge                            = TopoDS::Edge(l.First());
@@ -417,9 +445,13 @@ void BRepTools_WireExplorer::Next()
       }
 
       if (myEdge.Orientation() == TopAbs_FORWARD)
+      {
         aPrevPar = aPar12;
+      }
       else
+      {
         aPrevPar = aPar11;
+      }
 
       if (aNextEdge.Orientation() == TopAbs_FORWARD)
       {
@@ -506,9 +538,13 @@ void BRepTools_WireExplorer::Next()
       // Get 2D point equals to < myVertex > in 2D for current edge.
       gp_Pnt2d PRef;
       if (myEdge.Orientation() == TopAbs_REVERSED)
+      {
         aPCurve->D0(dfFPar, PRef);
+      }
       else
+      {
         aPCurve->D0(dfLPar, PRef);
+      }
 
       // Get next 2D point from current edge's PCurve with parameter
       // F + dP (REV) or L - dP (FOR)
@@ -569,9 +605,13 @@ void BRepTools_WireExplorer::Next()
           if (aVert1.IsSame(aVert2) == isDegenerated)
           {
             if (E.Orientation() == TopAbs_REVERSED)
+            {
               aPCurve->D0(dfLPar, aPEb);
+            }
             else
+            {
               aPCurve->D0(dfFPar, aPEb);
+            }
 
             if (std::abs(dfLPar - dfFPar) > Precision::PConfusion())
             {
@@ -587,9 +627,13 @@ void BRepTools_WireExplorer::Next()
                 gp_Vec2d aD;
                 aPCurve->D1(aEPm, aPEe, aD);
                 if (E.Orientation() == TopAbs_REVERSED)
+                {
                   aPEe.SetXY(aPEb.XY() - aD.XY());
+                }
                 else
+                {
                   aPEe.SetXY(aPEb.XY() + aD.XY());
+                }
 
                 if (aPEb.SquareDistance(aPEe) <= gp::Resolution())
                 {
@@ -606,7 +650,9 @@ void BRepTools_WireExplorer::Next()
             {
               double d = PRef.SquareDistance(aPEb);
               if (d <= Precision::PConfusion())
+              {
                 d = 0.;
+              }
               if (std::abs(aPEb.X() - PRef.X()) < myTolU && std::abs(aPEb.Y() - PRef.Y()) < myTolV)
               {
                 if (d <= dmin)
@@ -629,7 +675,9 @@ void BRepTools_WireExplorer::Next()
           dmin          = RealLast();
         }
         else
+        {
           break;
+        }
       } // for iDone
 
       if (kMin == 0)
@@ -678,7 +726,9 @@ TopAbs_Orientation BRepTools_WireExplorer::Orientation() const
   while (it.More())
   {
     if (myVertex.IsSame(it.Value()))
+    {
       return it.Value().Orientation();
+    }
     it.Next();
   }
   throw Standard_NoSuchObject("BRepTools_WireExplorer::Orientation");
@@ -766,7 +816,9 @@ double GetNextParamOnPC(const occ::handle<Geom2d_Curve>& aPC,
       startPar += dP;
       aPC->D0(startPar, pnt);
       if (std::abs(aPRef.X() - pnt.X()) < tolU && std::abs(aPRef.Y() - pnt.Y()) < tolV)
+      {
         continue;
+      }
       else
       {
         result        = startPar;
@@ -776,10 +828,14 @@ double GetNextParamOnPC(const occ::handle<Geom2d_Curve>& aPC,
     }
 
     if (!nextPntOnEdge)
+    {
       result = lP;
+    }
 
     if (result > lP)
+    {
       result = lP;
+    }
   }
   else
   {
@@ -791,7 +847,9 @@ double GetNextParamOnPC(const occ::handle<Geom2d_Curve>& aPC,
       startPar -= dP;
       aPC->D0(startPar, pnt);
       if (std::abs(aPRef.X() - pnt.X()) < tolU && std::abs(aPRef.Y() - pnt.Y()) < tolV)
+      {
         continue;
+      }
       else
       {
         result        = startPar;
@@ -801,10 +859,14 @@ double GetNextParamOnPC(const occ::handle<Geom2d_Curve>& aPC,
     }
 
     if (!nextPntOnEdge)
+    {
       result = fP;
+    }
 
     if (result < fP)
+    {
       result = fP;
+    }
   }
 
   return result;

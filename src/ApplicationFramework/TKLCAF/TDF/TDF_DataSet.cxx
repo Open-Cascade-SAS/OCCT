@@ -44,28 +44,28 @@ void TDF_DataSet::Clear()
 
 Standard_OStream& TDF_DataSet::Dump(Standard_OStream& anOS) const
 {
-  anOS << "\t\t=====< TDF_DataSet dump >=====" << std::endl;
-  anOS << "Root Labels :" << std::endl << "=============" << std::endl;
+  anOS << "\t\t=====< TDF_DataSet dump >=====" << '\n';
+  anOS << "Root Labels :" << '\n' << "=============" << '\n';
   for (NCollection_List<TDF_Label>::Iterator itr1(myRootLabels); itr1.More(); itr1.Next())
   {
     itr1.Value().EntryDump(anOS);
     anOS << " | ";
   }
-  anOS << std::endl << "Labels :" << std::endl << "========" << std::endl;
+  anOS << '\n' << "Labels :" << '\n' << "========" << '\n';
   for (NCollection_Map<TDF_Label>::Iterator itr2(myLabelMap); itr2.More(); itr2.Next())
   {
     itr2.Key().EntryDump(anOS);
     anOS << " | ";
   }
-  anOS << std::endl << "Attributes :" << std::endl << "============" << std::endl << std::endl;
+  anOS << '\n' << "Attributes :" << '\n' << "============" << '\n' << '\n';
   for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator itr3(myAttributeMap); itr3.More();
        itr3.Next())
   {
     itr3.Key()->Label().EntryDump(anOS);
     anOS << " \t";
     itr3.Key()->Dump(anOS);
-    anOS << std::endl;
+    anOS << '\n';
   }
-  anOS << std::endl;
+  anOS << '\n';
   return anOS;
 }

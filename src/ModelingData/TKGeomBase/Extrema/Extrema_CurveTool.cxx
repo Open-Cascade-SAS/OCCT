@@ -27,9 +27,13 @@ bool Extrema_CurveTool::IsPeriodic(const Adaptor3d_Curve& C)
 {
   GeomAbs_CurveType aType = GetType(C);
   if (aType == GeomAbs_Circle || aType == GeomAbs_Ellipse)
+  {
     return true;
+  }
   else
+  {
     return C.IsPeriodic();
+  }
 }
 
 //=================================================================================================

@@ -35,7 +35,9 @@ void RWStepAP214_RWRepItemGroup::ReadStep(const occ::handle<StepData_StepReaderD
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "rep_item_group"))
+  {
     return;
+  }
 
   // Inherited fields of Group
 
@@ -77,7 +79,9 @@ void RWStepAP214_RWRepItemGroup::WriteStep(StepData_StepWriter&                 
     SW.Send(ent->StepBasic_Group::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   // Inherited fields of RepresentationItem
 

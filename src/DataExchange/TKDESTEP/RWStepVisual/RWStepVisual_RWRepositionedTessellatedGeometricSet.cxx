@@ -35,14 +35,18 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::ReadStep(
   int aNum = 0;
   theData->NamedForComplex("REPOSITIONED_TESSELLATED_ITEM", theNum, aNum, theAch);
   if (!theData->CheckNbParams(aNum, 1, theAch, "location"))
+  {
     return;
+  }
   occ::handle<StepGeom_Axis2Placement3d> aLocation;
   theData
     ->ReadEntity(aNum, 1, "location", theAch, STANDARD_TYPE(StepGeom_Axis2Placement3d), aLocation);
 
   theData->NamedForComplex("REPRESENTATION_ITEM", theNum, aNum, theAch);
   if (!theData->CheckNbParams(aNum, 1, theAch, "name"))
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> aName;
   theData->ReadString(aNum, 1, "name", theAch, aName);
 
@@ -62,7 +66,9 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::ReadStep(
                               theAch,
                               STANDARD_TYPE(StepVisual_TessellatedItem),
                               anItem))
+      {
         anItems->SetValue(i2, anItem);
+      }
     }
   }
   theEnt->Init(aName, anItems, aLocation);
@@ -100,6 +106,8 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::Share(
 {
   // Own field : children
   for (int i = 1; i <= theEnt->Items()->Length(); i++)
+  {
     theIter.AddItem(theEnt->Items()->Value(i));
+  }
   theIter.AddItem(theEnt->Location());
 }

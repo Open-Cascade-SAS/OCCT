@@ -35,7 +35,9 @@ void RWStepRepr_RWMaterialProperty::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "material_property"))
+  {
     return;
+  }
 
   // Inherited fields of PropertyDefinition
 
@@ -83,7 +85,9 @@ void RWStepRepr_RWMaterialProperty::WriteStep(
     SW.Send(ent->StepRepr_PropertyDefinition::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepRepr_PropertyDefinition::Definition().Value());
 }

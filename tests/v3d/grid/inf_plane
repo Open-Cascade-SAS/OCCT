@@ -1,0 +1,20 @@
+puts "==========================================================="
+puts "0030979: shader infinite grid follows non-default privileged"
+puts "plane (YZ plane: normal +X)."
+puts "==========================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vaxo
+box b 1 2 3
+vdisplay b -dispMode 1
+vfit
+vzoom 0.2
+
+vpriviledgedplane 0 0 0 1 0 0 0 1 0
+vgrid -type inf -color 0.2 0.8 0.3
+vdump $imagedir/${casename}_yz.png
+
+vgrid off

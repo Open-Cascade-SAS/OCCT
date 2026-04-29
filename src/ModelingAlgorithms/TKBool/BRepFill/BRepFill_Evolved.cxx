@@ -230,7 +230,9 @@ static bool IsVertical(const TopoDS_Edge& E)
     double                  f, l;
     occ::handle<Geom_Curve> GC = BRep_Tool::Curve(E, Loc, f, l);
     if (GC->DynamicType() == STANDARD_TYPE(Geom_Line))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -251,7 +253,9 @@ static bool IsPlanar(const TopoDS_Edge& E)
     double                  f, l;
     occ::handle<Geom_Curve> GC = BRep_Tool::Curve(E, Loc, f, l);
     if (GC->DynamicType() == STANDARD_TYPE(Geom_Line))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -282,13 +286,21 @@ static int Side(const TopoDS_Wire& Profil, const double Tol)
   gp_Pnt P2 = BRep_Tool::Pnt(V2);
 
   if (P1.Y() < -Tol || P2.Y() < -Tol)
+  {
     TheSide = 4;
+  }
   else
+  {
     TheSide = 1;
+  }
   if (IsVertical(E))
+  {
     TheSide += 2;
+  }
   else if (IsPlanar(E))
+  {
     TheSide++;
+  }
   return TheSide;
 }
 
@@ -371,11 +383,17 @@ void BRepFill_Evolved::PrivatePerform(const TopoDS_Face&     Spine,
   {
     SP = TopoDS::Wire(WPIte.Value());
     if (Side(SP, Tol) < 4)
+    {
       YaLeft = true;
+    }
     else
+    {
       YaRight = true;
+    }
     if (YaLeft && YaRight)
+    {
       break;
+    }
   }
 
   TopoDS_Face              Face;
@@ -490,7 +508,9 @@ void BRepFill_Evolved::PrivatePerform(const TopoDS_Face&     Spine,
   }
 
   if (Solid)
+  {
     CutVevo.AddTopAndBottom(Glue);
+  }
 
   //-------------------------------------------------------------------------
   // Gluing of regularites on parallel edges generate4d by vertices of the
@@ -513,7 +533,9 @@ void BRepFill_Evolved::PrivatePerform(const TopoDS_Face&     Spine,
 
   // Orientation of the solid.
   if (Solid)
+  {
     MakeSolid();
+  }
 
   //  modified by NIZHNY-EAP Mon Jan 24 11:26:48 2000 ___BEGIN___
   BRepLib::UpdateTolerances(myShape, false);
@@ -531,7 +553,9 @@ static void IsInversed(const TopoDS_Shape& S,
 
   Inverse[0] = Inverse[1] = false;
   if (S.ShapeType() != TopAbs_EDGE)
+  {
     return;
+  }
 
   gp_Pnt            P;
   gp_Vec            DS, DC1, DC2;
@@ -561,7 +585,9 @@ static void IsInversed(const TopoDS_Shape& S,
     Inverse[0] = (DS.Dot(DC1) < 0.);
   }
   else
+  {
     Inverse[0] = true;
+  }
 
   if (!BRep_Tool::Degenerated(E2))
   {
@@ -578,7 +604,9 @@ static void IsInversed(const TopoDS_Shape& S,
     Inverse[1] = (DS.Dot(DC2) < 0.);
   }
   else
+  {
     Inverse[1] = true;
+  }
 }
 
 //=================================================================================================
@@ -600,7 +628,9 @@ static bool ConcaveSide(const TopoDS_Shape& S, const TopoDS_Face& F)
 {
 
   if (S.ShapeType() == TopAbs_VERTEX)
+  {
     return false;
+  }
 
   if (S.ShapeType() == TopAbs_EDGE)
   {
@@ -613,7 +643,9 @@ static bool ConcaveSide(const TopoDS_Shape& S, const TopoDS_Face& F)
     {
       bool Direct = AC.Circle().IsDirect();
       if (S.Orientation() == TopAbs_REVERSED)
+      {
         Direct = (!Direct);
+      }
       return Direct;
     }
   }
@@ -762,9 +794,13 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
 
       Inv0[0] = Inv0[1] = Inv1[0] = Inv1[1] = false;
       if (Concave0)
+      {
         IsInversed(S[0], E[0], E[1], Inv0);
+      }
       if (Concave1)
+      {
         IsInversed(S[1], E[2], E[3], Inv1);
+      }
 
       //---------------------------------------------
       // Construction of geometries.
@@ -881,13 +917,17 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
       // Test if the Bissectrice is not projected on the face
       //------------------------------------------------------
       if ((StartOnF == 0) && (EndOnF == 0) && VOnL.IsEmpty() && VOnF.IsEmpty())
+      {
         // No trace of the bisectrice on the face.
         continue;
+      }
 
       if ((StartOnF == 0) && (EndOnF == 0) && (VOnL.Length() + VOnF.Length() == 1))
+      {
         // the first or last node of the arc is on the edge
         // but the arc is not on the face.
         continue;
+      }
 
       //---------------------------------------------------------
       // determine the intervals of the bissectrice that are
@@ -990,9 +1030,13 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
             {
               MapBis(E[k]).Append(VOnF.Value(ii));
               if (k == 0)
+              {
                 MapVerPar(E[k]).Append(ParOnF.Value(ii).Y());
+              }
               else
+              {
                 MapVerPar(E[k]).Append(ParOnF.Value(ii).Z());
+              }
             }
           }
         }
@@ -1013,9 +1057,13 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
             {
               MapBis(E[k]).Append(VOnL.Value(ii));
               if (k == 1)
+              {
                 MapVerPar(E[k]).Append(ParOnL.Value(ii).Y());
+              }
               else
+              {
                 MapVerPar(E[k]).Append(ParOnL.Value(ii).Z());
+              }
             }
           }
         }
@@ -1272,16 +1320,22 @@ void BRepFill_Evolved::PlanarPerform(const TopoDS_Face&              Sp,
           const TopoDS_Edge&  WC = TopoDS::Edge(Exp.Current());
           const TopoDS_Shape& GS = OffAnc.Ancestor(WC);
           if (!myMap.IsBound(GS))
+          {
             myMap.Bind(GS, EmptyMap);
+          }
           if (!myMap(GS).IsBound(V[i]))
+          {
             myMap(GS).Bind(V[i], Paral.GeneratedShapes(GS));
+          }
         }
       }
       TopoDS_Shape Rest = MapVP(V[i]);
 
       bool ToReverse = false;
       if ((IsMinV1 && (i == 1)) || (!IsMinV1 && (i == 0)))
+      {
         ToReverse = true;
+      }
 
       if (!Rest.IsNull())
       {
@@ -1294,7 +1348,9 @@ void BRepFill_Evolved::PlanarPerform(const TopoDS_Face&              Sp,
             FR.Add(aWire);
           }
           else
+          {
             FR.Add(TopoDS::Wire(Rest));
+          }
         }
         else
         {
@@ -1309,7 +1365,9 @@ void BRepFill_Evolved::PlanarPerform(const TopoDS_Face&              Sp,
               FR.Add(bWire);
             }
             else
+            {
               FR.Add(WCop);
+            }
           }
         }
       }
@@ -1341,9 +1399,13 @@ void BRepFill_Evolved::PlanarPerform(const TopoDS_Face&              Sp,
         {
           const TopoDS_Shape& InitE = OffAnc.Ancestor(CE);
           if (!myMap.IsBound(InitE))
+          {
             myMap.Bind(InitE, EmptyMap);
+          }
           if (!myMap(InitE).IsBound(E))
+          {
             myMap(InitE).Bind(E, EmptyList);
+          }
           myMap(InitE)(E).Append(F);
         }
       }
@@ -1539,9 +1601,13 @@ void BRepFill_Evolved::PrepareProfile(
         MapProf.Bind(NE, E);
         EdgeVertices(NE, V1, V2);
         if (!MapProf.IsBound(V1))
+        {
           MapProf.Bind(V1, E);
+        }
         if (!MapProf.IsBound(V2))
+        {
           MapProf.Bind(V2, E);
+        }
 
         B.Add(W, NE);
         Cuts.RemoveFirst();
@@ -1694,9 +1760,13 @@ void BRepFill_Evolved::PrepareSpine(
           MapSpine.Bind(NE, E);
           EdgeVertices(NE, V1, V2);
           if (!MapSpine.IsBound(V1))
+          {
             MapSpine.Bind(V1, E);
+          }
           if (!MapSpine.IsBound(V2))
+          {
             MapSpine.Bind(V2, E);
+          }
         }
       }
     }
@@ -1762,7 +1832,9 @@ static TopAbs_Orientation Compare(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
   gp_Pnt P2 = BRep_Tool::Pnt(V2[0]);
   gp_Pnt P3 = BRep_Tool::Pnt(V2[1]);
   if (P1.Distance(P3) < P1.Distance(P2))
+  {
     OO = TopAbs_REVERSED;
+  }
 
   return OO;
 }
@@ -1785,7 +1857,9 @@ void BRepFill_Evolved::Add(BRepFill_Evolved& Vevo, const TopoDS_Wire& Prof, BRep
   TopoDS_Shape                         CurrentSpine, CurrentProf;
 
   if (Vevo.Shape().IsNull())
+  {
     return;
+  }
 
   //-------------------------------------------------
   // Find wires common to <me> and <Vevo>.
@@ -1867,9 +1941,13 @@ void BRepFill_Evolved::Add(BRepFill_Evolved& Vevo, const TopoDS_Wire& Prof, BRep
         {
           // during Glue.Add the shared shapes are recreated.
           if (Glue.IsCopied(itl.Value()))
+          {
             myMap(CurrentSpine)(CurrentProf).Append(Glue.Copy(itl.Value()));
+          }
           else
+          {
             myMap(CurrentSpine)(CurrentProf).Append(itl.Value());
+          }
         }
       }
     }
@@ -2003,7 +2081,9 @@ void BRepFill_Evolved::AddTopAndBottom(BRepTools_Quilt& Glue)
   TopoDS_Vertex V[2];
   TopExp::Vertices(myProfile, V[0], V[1]);
   if (V[0].IsSame(V[1]))
+  {
     return;
+  }
 
   NCollection_List<TopoDS_Shape>::Iterator itL;
   bool                                     ToReverse = false;
@@ -2048,7 +2128,9 @@ void BRepFill_Evolved::AddTopAndBottom(BRepTools_Quilt& Glue)
 
         TopAbs_Orientation Or = ES.Orientation();
         if (ToReverse)
+        {
           Or = TopAbs::Reverse(Or);
+        }
         TopoDS_Shape aLocalShape = E.Oriented(Or);
         Loop.AddConstEdge(TopoDS::Edge(aLocalShape));
         //	Loop.AddConstEdge(TopoDS::Edge(E.Oriented(Or)));
@@ -2091,7 +2173,9 @@ void BRepFill_Evolved::AddTopAndBottom(BRepTools_Quilt& Glue)
             }
             TopAbs_Orientation Or = TopAbs_FORWARD;
             if (ToReverse)
+            {
               Or = TopAbs_REVERSED;
+            }
             TopoDS_Shape aLocalShape = E.Oriented(Or);
             Loop.AddConstEdge(TopoDS::Edge(aLocalShape));
             //	    Loop.AddConstEdge(TopoDS::Edge(E.Oriented(Or)));
@@ -2117,15 +2201,23 @@ void BRepFill_Evolved::AddTopAndBottom(BRepTools_Quilt& Glue)
       j++;
       Glue.Add(anIterL.Value());
       if (j == 1 && i == 0)
+      {
         myTop = anIterL.Value();
+      }
       if (j == 1 && i == 1)
+      {
         myBottom = anIterL.Value();
+      }
       B.Add(Bouchon, anIterL.Value());
     }
     if (i == 0 && j > 1)
+    {
       myTop = Bouchon;
+    }
     if (i == 1 && j > 1)
+    {
       myBottom = Bouchon;
+    }
   }
 }
 
@@ -2324,11 +2416,15 @@ TopLoc_Location BRepFill_Evolved::FindLocation(const TopoDS_Face& Face) const
       L = FS.Location();
     }
     else
+    {
       throw Standard_NoSuchObject("BRepFill_Evolved : The Face is not planar");
+    }
   }
 
   if (!L.IsIdentity())
+  {
     S = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
+  }
 
   occ::handle<Geom_Plane> P    = occ::down_cast<Geom_Plane>(S);
   gp_Ax3                  Axis = P->Position();
@@ -2369,7 +2465,9 @@ void BRepFill_Evolved::ContinuityOnOffsetEdge(const NCollection_List<TopoDS_Shap
   PrecE  = FirstE;
   EdgeVertices(FirstE, VF, V);
   if (WExp.More())
+  {
     WExp.Next();
+  }
 
   for (; WExp.More(); WExp.Next())
   {
@@ -2397,10 +2495,12 @@ void BRepFill_Evolved::ContinuityOnOffsetEdge(const NCollection_List<TopoDS_Shap
           {
             if (!myMap(SP)(V).IsEmpty() && !myMap(SP)(CurE).IsEmpty()
                 && !myMap(SP)(PrecE).IsEmpty())
+            {
               B.Continuity(TopoDS::Edge(myMap(SP)(V).First()),
                            TopoDS::Face(myMap(SP)(CurE).First()),
                            TopoDS::Face(myMap(SP)(PrecE).First()),
                            Continuity);
+            }
           }
         }
       }
@@ -2431,10 +2531,12 @@ void BRepFill_Evolved::ContinuityOnOffsetEdge(const NCollection_List<TopoDS_Shap
         {
           if (!myMap(SP)(VF).IsEmpty() && !myMap(SP)(CurE).IsEmpty()
               && !myMap(SP)(FirstE).IsEmpty())
+          {
             B.Continuity(TopoDS::Edge(myMap(SP)(VF).First()),
                          TopoDS::Face(myMap(SP)(CurE).First()),
                          TopoDS::Face(myMap(SP)(FirstE).First()),
                          Continuity);
+          }
         }
       }
     }
@@ -2486,9 +2588,13 @@ static void AddDegeneratedEdge(TopoDS_Face& F, TopoDS_Wire& W)
       const TopoDS_Edge& CE = WE.Current();
       EdgeVertices(CE, V1, V2);
       if (CE.Orientation() == TopAbs_REVERSED)
+      {
         BRep_Tool::UVPoints(CE, F, P2, P1);
+      }
       else
+      {
         BRep_Tool::UVPoints(CE, F, P1, P2);
+      }
       if (VF.IsNull())
       {
         VF = V1;
@@ -2627,17 +2733,25 @@ const TopoDS_Wire PutProfilAt(const TopoDS_Wire& ProfRef,
   if (E.Orientation() == TopAbs_REVERSED)
   {
     if (!AtStart)
+    {
       C2d->D1(First, P, D1);
+    }
     else
+    {
       C2d->D1(Last, P, D1);
+    }
     D1.Reverse();
   }
   else
   {
     if (!AtStart)
+    {
       C2d->D1(Last, P, D1);
+    }
     else
+    {
       C2d->D1(First, P, D1);
+    }
   }
   gp_Pnt P3d(P.X(), P.Y(), 0.);
   gp_Vec V3d(D1.X(), D1.Y(), 0.);
@@ -2877,10 +2991,14 @@ static TopAbs_Orientation Relative(const TopoDS_Wire&   W1,
   TopoDS_Wire WW1 = BRepLib_MakeWire(E1);
   TopoDS_Wire WW2 = BRepLib_MakeWire(E2);
   double      Tol = BRepFill_Confusion();
-  if (Side(WW1, Tol) < 4 && Side(WW2, Tol) < 4) // two to the left
+  if (Side(WW1, Tol) < 4 && Side(WW2, Tol) < 4)
+  { // two to the left
     return TopAbs_FORWARD;
-  if (Side(WW1, Tol) > 4 && Side(WW2, Tol) > 4) // two to the right
+  }
+  if (Side(WW1, Tol) > 4 && Side(WW2, Tol) > 4)
+  { // two to the right
     return TopAbs_FORWARD;
+  }
 
   return TopAbs_REVERSED;
 }
@@ -2899,19 +3017,27 @@ static TopAbs_Orientation Relative(const TopoDS_Wire&   W1,
 int PosOnFace(double d1, double d2, double d3)
 {
   if (std::abs(d1 - d2) <= BRepFill_Confusion())
+  {
     return 1;
+  }
   if (std::abs(d1 - d3) <= BRepFill_Confusion())
+  {
     return 3;
+  }
 
   if (d2 < d3)
   {
     if (d1 > (d2 + BRepFill_Confusion()) && d1 < (d3 - BRepFill_Confusion()))
+    {
       return 2;
+    }
   }
   else
   {
     if (d1 > (d3 + BRepFill_Confusion()) && d1 < (d2 - BRepFill_Confusion()))
+    {
       return 2;
+    }
   }
   return 0;
 }
@@ -2933,16 +3059,24 @@ bool DoubleOrNotInFace(const NCollection_Sequence<TopoDS_Shape>& EC, const TopoD
     if (V1.IsSame(V))
     {
       if (Vu)
+      {
         return true;
+      }
       else
+      {
         Vu = true;
+      }
     }
     if (V2.IsSame(V))
     {
       if (Vu)
+      {
         return true;
+      }
       else
+      {
         Vu = true;
+      }
     }
   }
   return !Vu;
@@ -3105,9 +3239,13 @@ void CutEdgeProf(
         TopoDS_Edge EE = BRepLib_MakeEdge(C, Vf, VV);
         EE.Orientation(E.Orientation());
         if (EE.Orientation() == TopAbs_FORWARD)
+        {
           Cuts.Append(EE);
+        }
         else
+        {
           Cuts.Prepend(EE);
+        }
 
         // reinitialize
         CurParam = Param;
@@ -3119,9 +3257,13 @@ void CutEdgeProf(
   TopoDS_Edge EE = BRepLib_MakeEdge(C, Vf, Vl);
   EE.Orientation(E.Orientation());
   if (EE.Orientation() == TopAbs_FORWARD)
+  {
     Cuts.Append(EE);
+  }
   else
+  {
     Cuts.Prepend(EE);
+  }
 }
 
 //=======================================================================
@@ -3266,11 +3408,17 @@ int VertexFromNode(
     Status = PosOnFace(aNode->Distance(), DistanceToOZ(VF), DistanceToOZ(VL));
   }
   if (Status == 2)
+  {
     ShapeOnNode = E;
+  }
   else if (Status == 1)
+  {
     ShapeOnNode = VF;
+  }
   else if (Status == 3)
+  {
     ShapeOnNode = VL;
+  }
 
   if (!ShapeOnNode.IsNull())
   {

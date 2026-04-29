@@ -110,9 +110,13 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const TCollection_ExtendedSt
   occ::handle<CDM_MetaData> theMetaData;
 
   if (aVersion.Length() == 0)
+  {
     theMetaData = myMetaDataDriver->MetaData(aFolder, aName);
+  }
   else
+  {
     theMetaData = myMetaDataDriver->MetaData(aFolder, aName, aVersion);
+  }
 
   CDF_TypeOfActivation      theTypeOfActivation = TypeOfActivation(theMetaData);
   occ::handle<CDM_Document> theDocument =
@@ -144,9 +148,13 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
 {
 
   if (!myMetaDataDriver->Find(theFolder, theName, theVersion))
+  {
     return PCDM_RS_UnknownDocument;
+  }
   else if (!myMetaDataDriver->HasReadPermission(theFolder, theName, theVersion))
+  {
     return PCDM_RS_PermissionDenied;
+  }
   else
   {
     occ::handle<CDM_MetaData> theMetaData =
@@ -174,7 +182,9 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
           theFormat = UTL::Value(Resources(), ResourceName);
         }
         else
+        {
           return PCDM_RS_UnrecognizedFileFormat;
+        }
       }
 
       // check actual availability of the driver
@@ -182,7 +192,9 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
       {
         occ::handle<PCDM_Reader> aReader = ReaderFromFormat(theFormat);
         if (aReader.IsNull())
+        {
           return PCDM_RS_NoDriver;
+        }
       }
       catch (Standard_Failure const&)
       {
@@ -216,7 +228,9 @@ bool CDF_Application::SetDefaultFolder(const char16_t* const aFolder)
 {
   bool found = myMetaDataDriver->FindFolder(aFolder);
   if (found)
+  {
     myDefaultFolder = aFolder;
+  }
   return found;
 }
 
@@ -250,28 +264,34 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
     {
       case PCDM_RS_UnknownDocument:
         aMsg << "could not find the referenced document: " << aMetaData->Path() << "; not found."
-             << (char)0 << std::endl;
+             << (char)0 << '\n';
         break;
       case PCDM_RS_PermissionDenied:
         aMsg << "Could not find the referenced document: " << aMetaData->Path()
-             << "; permission denied. " << (char)0 << std::endl;
+             << "; permission denied. " << (char)0 << '\n';
         break;
       case PCDM_RS_NoDocument:
-        aMsg << "Document for appending is not defined." << (char)0 << std::endl;
+        aMsg << "Document for appending is not defined." << (char)0 << '\n';
         break;
       default:
         myRetrievableStatus = PCDM_RS_OK;
     }
     if (myRetrievableStatus != PCDM_RS_OK)
+    {
       throw Standard_Failure(aMsg.str().c_str());
+    }
     myRetrievableStatus = PCDM_RS_DriverFailure;
   }
   bool AlreadyRetrieved = aMetaData->IsRetrieved();
   if (AlreadyRetrieved)
+  {
     myRetrievableStatus = PCDM_RS_AlreadyRetrieved;
+  }
   bool Modified = AlreadyRetrieved && aMetaData->Document()->IsModified();
   if (Modified)
+  {
     myRetrievableStatus = PCDM_RS_AlreadyRetrievedAndModified;
+  }
   if (!AlreadyRetrieved || Modified || isAppendMode)
   {
     TCollection_ExtendedString aFormat;
@@ -289,7 +309,9 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
     {
       aDocument = aMetaData->Document();
       if (!isAppendMode)
+      {
         aDocument->RemoveAllReferences();
+      }
     }
     else
     {
@@ -313,7 +335,7 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
       if (myRetrievableStatus > PCDM_RS_AlreadyRetrieved)
       {
         Standard_SStream aMsg;
-        aMsg << anException << std::endl;
+        aMsg << anException << '\n';
         throw Standard_Failure(aMsg.str().c_str());
       }
     }
@@ -327,7 +349,9 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
     theDocumentToReturn = aDocument;
   }
   else
+  {
     theDocumentToReturn = aMetaData->Document();
+  }
 
   return theDocumentToReturn;
 }
@@ -351,13 +375,19 @@ CDF_TypeOfActivation CDF_Application::TypeOfActivation(const occ::handle<CDM_Met
     if (theDocument->IsOpened())
     {
       if (theDocument->IsModified())
+      {
         return CDF_TOA_Modified;
+      }
       else
+      {
         return CDF_TOA_Unchanged;
+      }
     }
 
     else
+    {
       return CDF_TOA_New;
+    }
   }
   return CDF_TOA_New;
 }
@@ -384,7 +414,7 @@ void CDF_Application::Read(Standard_IStream&                     theIStream,
     myRetrievableStatus = PCDM_RS_FormatFailure;
 
     Standard_SStream aMsg;
-    aMsg << anException << std::endl;
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 
@@ -429,7 +459,7 @@ void CDF_Application::Read(Standard_IStream&                     theIStream,
     if (myRetrievableStatus > PCDM_RS_AlreadyRetrieved)
     {
       Standard_SStream aMsg;
-      aMsg << anException << std::endl;
+      aMsg << anException << '\n';
       throw Standard_Failure(aMsg.str().c_str());
     }
   }
@@ -445,7 +475,9 @@ occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
   // check map of readers
   occ::handle<PCDM_RetrievalDriver> aReader;
   if (myReaders.FindFromKey(theFormat, aReader))
+  {
     return aReader;
+  }
 
   // support of legacy method of loading reader as plugin
   TCollection_ExtendedString aResourceName = theFormat;
@@ -463,7 +495,9 @@ occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
 
   // If the GUID (as a string) contains blanks, remove them.
   if (strPluginId.Search(' ') != -1)
+  {
     strPluginId.RemoveAll(' ');
+  }
 
   // Convert to GUID.
   Standard_GUID aPluginId = UTL::GUID(strPluginId);
@@ -500,7 +534,9 @@ occ::handle<PCDM_StorageDriver> CDF_Application::WriterFromFormat(
   // check map of writers
   occ::handle<PCDM_StorageDriver> aDriver;
   if (myWriters.FindFromKey(theFormat, aDriver))
+  {
     return aDriver;
+  }
 
   // support of legacy method of loading reader as plugin
   TCollection_ExtendedString aResourceName = theFormat;
@@ -518,7 +554,9 @@ occ::handle<PCDM_StorageDriver> CDF_Application::WriterFromFormat(
 
   // If the GUID (as a string) contains blanks, remove them.
   if (strPluginId.Search(' ') != -1)
+  {
     strPluginId.RemoveAll(' ');
+  }
 
   // Convert to GUID.
   Standard_GUID aPluginId = UTL::GUID(strPluginId);
@@ -567,7 +605,9 @@ bool CDF_Application::Format(const TCollection_ExtendedString& aFileName,
       theFormat = UTL::Value(Resources(), ResourceName);
     }
     else
+    {
       return false;
+    }
   }
   return true;
 }
@@ -578,9 +618,13 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const occ::handle<CDM_MetaData>& 
                                                const bool                       theAppendMode)
 {
   if (aMetaData->HasVersion())
+  {
     return CanRetrieve(aMetaData->Folder(), aMetaData->Name(), aMetaData->Version(), theAppendMode);
+  }
   else
+  {
     return CanRetrieve(aMetaData->Folder(), aMetaData->Name(), theAppendMode);
+  }
 }
 
 //=================================================================================================

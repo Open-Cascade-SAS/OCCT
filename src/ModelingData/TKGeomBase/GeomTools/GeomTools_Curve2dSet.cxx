@@ -76,7 +76,9 @@ int GeomTools_Curve2dSet::Add(const occ::handle<Geom2d_Curve>& S)
 occ::handle<Geom2d_Curve> GeomTools_Curve2dSet::Curve2d(const int I) const
 {
   if (I <= 0 || I > myMap.Extent())
+  {
     return occ::handle<Geom2d_Curve>();
+  }
 
   return occ::down_cast<Geom2d_Curve>(myMap(I));
 }
@@ -94,7 +96,9 @@ static void Print(const gp_Pnt2d P, Standard_OStream& OS, const bool compact)
 {
   OS << P.X();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << P.Y();
   OS << " ";
@@ -106,7 +110,9 @@ static void Print(const gp_Dir2d D, Standard_OStream& OS, const bool compact)
 {
   OS << D.X();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << D.Y();
   OS << " ";
@@ -117,19 +123,29 @@ static void Print(const gp_Dir2d D, Standard_OStream& OS, const bool compact)
 static void Print(const occ::handle<Geom2d_Line>& L, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << LINE << " ";
+  }
   else
+  {
     OS << "Line";
+  }
 
   gp_Lin2d C2d = L->Lin2d();
   if (!compact)
+  {
     OS << "\n  Origin :";
+  }
   Print(C2d.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(C2d.Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -138,25 +154,39 @@ static void Print(const occ::handle<Geom2d_Line>& L, Standard_OStream& OS, const
 static void Print(const occ::handle<Geom2d_Circle>& C, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << CIRCLE << " ";
+  }
   else
+  {
     OS << "Circle";
+  }
 
   gp_Circ2d C2d = C->Circ2d();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(C2d.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(C2d.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(C2d.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radius :";
+  }
   OS << C2d.Radius();
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -165,29 +195,45 @@ static void Print(const occ::handle<Geom2d_Circle>& C, Standard_OStream& OS, con
 static void Print(const occ::handle<Geom2d_Ellipse>& E, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << ELLIPSE << " ";
+  }
   else
+  {
     OS << "Ellipse";
+  }
 
   gp_Elips2d C2d = E->Elips2d();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(C2d.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(C2d.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(C2d.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radii  :";
+  }
   OS << C2d.MajorRadius();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << C2d.MinorRadius();
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -196,25 +242,39 @@ static void Print(const occ::handle<Geom2d_Ellipse>& E, Standard_OStream& OS, co
 static void Print(const occ::handle<Geom2d_Parabola>& P, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << PARABOLA << " ";
+  }
   else
+  {
     OS << "Parabola";
+  }
 
   gp_Parab2d C2d = P->Parab2d();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(C2d.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(C2d.Axis().XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(C2d.Axis().YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Focal  :";
+  }
   OS << C2d.Focal();
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -223,29 +283,45 @@ static void Print(const occ::handle<Geom2d_Parabola>& P, Standard_OStream& OS, c
 static void Print(const occ::handle<Geom2d_Hyperbola>& H, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << HYPERBOLA << " ";
+  }
   else
+  {
     OS << "Hyperbola";
+  }
 
   gp_Hypr2d C2d = H->Hypr2d();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(C2d.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(C2d.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(C2d.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radii  :";
+  }
   OS << C2d.MajorRadius();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << C2d.MinorRadius();
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -256,37 +332,55 @@ static void Print(const occ::handle<Geom2d_BezierCurve>& B,
                   const bool                             compact)
 {
   if (compact)
+  {
     OS << BEZIER << " ";
+  }
   else
+  {
     OS << "BezierCurve";
+  }
 
   bool rational = B->IsRational();
   if (compact)
+  {
     OS << (rational ? 1 : 0) << " ";
+  }
   else
   {
     if (rational)
+    {
       OS << " rational";
+    }
   }
 
   // poles and weights
   int i, degree = B->Degree();
   if (!compact)
+  {
     OS << "\n  Degree :";
+  }
   OS << degree << " ";
 
   for (i = 1; i <= degree + 1; i++)
   {
     if (!compact)
+    {
       OS << "\n  " << std::setw(2) << i << " : ";
+    }
     Print(B->Pole(i), OS, compact);
     if (rational)
+    {
       OS << " " << B->Weight(i);
+    }
     if (compact)
+    {
       OS << " ";
+    }
   }
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -297,26 +391,38 @@ static void Print(const occ::handle<Geom2d_BSplineCurve>& B,
                   const bool                              compact)
 {
   if (compact)
+  {
     OS << BSPLINE << " ";
+  }
   else
+  {
     OS << "BSplineCurve";
+  }
 
   bool rational = B->IsRational();
   if (compact)
+  {
     OS << (rational ? 1 : 0) << " ";
+  }
   else
   {
     if (rational)
+    {
       OS << " rational";
+    }
   }
 
   bool periodic = B->IsPeriodic();
   if (compact)
+  {
     OS << (periodic ? 1 : 0) << " ";
+  }
   else
   {
     if (periodic)
+    {
       OS << " periodic";
+    }
   }
 
   // poles and weights
@@ -325,47 +431,73 @@ static void Print(const occ::handle<Geom2d_BSplineCurve>& B,
   nbpoles = B->NbPoles();
   nbknots = B->NbKnots();
   if (!compact)
+  {
     OS << "\n  Degree ";
+  }
   else
+  {
     OS << " ";
+  }
   OS << degree;
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << nbpoles;
   if (!compact)
+  {
     OS << " Poles,";
+  }
   OS << " ";
   OS << nbknots << " ";
   if (!compact)
+  {
     OS << " Knots";
+  }
 
   if (!compact)
+  {
     OS << "Poles :\n";
+  }
   for (i = 1; i <= nbpoles; i++)
   {
     if (!compact)
+    {
       OS << "\n  " << std::setw(2) << i << " : ";
+    }
     else
+    {
       OS << " ";
+    }
     Print(B->Pole(i), OS, compact);
     if (rational)
+    {
       OS << " " << B->Weight(i);
+    }
   }
   OS << "\n";
 
   if (!compact)
+  {
     OS << "Knots :\n";
+  }
   for (i = 1; i <= nbknots; i++)
   {
     if (!compact)
+    {
       OS << "\n  " << std::setw(2) << i << " : ";
+    }
     else
+    {
       OS << " ";
+    }
     OS << B->Knot(i) << " " << B->Multiplicity(i);
   }
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -376,14 +508,22 @@ static void Print(const occ::handle<Geom2d_TrimmedCurve>& C,
                   const bool                              compact)
 {
   if (compact)
+  {
     OS << TRIMMED << " ";
+  }
   else
+  {
     OS << "Trimmed curve\n";
+  }
   if (!compact)
+  {
     OS << "Parameters : ";
+  }
   OS << C->FirstParameter() << " " << C->LastParameter() << "\n";
   if (!compact)
+  {
     OS << "Basis curve :\n";
+  }
   GeomTools_Curve2dSet::PrintCurve2d(C->BasisCurve(), OS, compact);
 }
 
@@ -394,14 +534,22 @@ static void Print(const occ::handle<Geom2d_OffsetCurve>& C,
                   const bool                             compact)
 {
   if (compact)
+  {
     OS << OFFSET << " ";
+  }
   else
+  {
     OS << "OffsetCurve";
+  }
   if (!compact)
+  {
     OS << "Offset : ";
+  }
   OS << C->Offset() << "\n";
   if (!compact)
+  {
     OS << "Basis curve :\n";
+  }
   GeomTools_Curve2dSet::PrintCurve2d(C->BasisCurve(), OS, compact);
 }
 
@@ -597,13 +745,19 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Bez
   {
     IS >> poles(i);
     if (rational)
+    {
       GeomTools::GetReal(IS, weights(i));
+    }
   }
 
   if (rational)
+  {
     B = new Geom2d_BezierCurve(poles, weights);
+  }
   else
+  {
     B = new Geom2d_BezierCurve(poles);
+  }
 
   return IS;
 }
@@ -626,7 +780,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
   {
     IS >> poles(i);
     if (rational)
+    {
       GeomTools::GetReal(IS, weights(i));
+    }
   }
 
   NCollection_Array1<double> knots(1, nbknots);
@@ -639,9 +795,13 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
   }
 
   if (rational)
+  {
     B = new Geom2d_BSplineCurve(poles, weights, knots, mults, degree, periodic);
+  }
   else
+  {
     B = new Geom2d_BSplineCurve(poles, knots, mults, degree, periodic);
+  }
 
   return IS;
 }
@@ -773,7 +933,7 @@ void GeomTools_Curve2dSet::Read(Standard_IStream& IS, const Message_ProgressRang
   IS >> buffer;
   if (strcmp(buffer, "Curve2ds"))
   {
-    std::cout << "Not a Curve2d table" << std::endl;
+    std::cout << "Not a Curve2d table" << '\n';
     return;
   }
 

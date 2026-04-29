@@ -23,12 +23,14 @@
 #include <gp_Trsf.hxx>
 #include <Standard_Type.hxx>
 
+#ifdef _WIN32
+extern Draw_Viewer dout;
+#endif
+
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Grid, Draw_Drawable3D)
 
 static double MinimumStep = 1.e-3;
 static double Ratio       = 200.0;
-
-extern Draw_Viewer dout;
 
 //=================================================================================================
 
@@ -58,7 +60,9 @@ void Draw_Grid::Steps(const double StepX, const double StepY, const double StepZ
 void Draw_Grid::DrawOn(Draw_Display& Out) const
 {
   if (!myIsActive)
+  {
     return;
+  }
 
   int     xmin, xmax, ymin, ymax;
   int     IndexX, IndexY;
@@ -74,7 +78,9 @@ void Draw_Grid::DrawOn(Draw_Display& Out) const
 
   IdtView = Out.ViewId();
   if (!dout.HasView(IdtView))
+  {
     return;
+  }
   Type = dout.GetType(IdtView);
   switch (*(Type + 1))
   {

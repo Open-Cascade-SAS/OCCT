@@ -34,9 +34,13 @@ TCollection_AsciiString Interface_SignLabel::Text(
   TCollection_AsciiString               atext;
   occ::handle<Interface_InterfaceModel> model = occ::down_cast<Interface_InterfaceModel>(context);
   if (ent.IsNull() || model.IsNull())
+  {
     return atext;
+  }
   occ::handle<TCollection_HAsciiString> lab = model->StringLabel(ent);
   if (!lab.IsNull())
+  {
     atext = lab->String();
+  }
   return atext;
 }

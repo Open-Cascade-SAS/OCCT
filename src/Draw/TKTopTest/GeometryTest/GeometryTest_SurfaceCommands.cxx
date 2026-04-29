@@ -61,7 +61,9 @@ static int sweep(Draw_Interpretor& di, int n, const char** a)
   double             Tol = 1.e-4;
 
   if (n < 4)
+  {
     return 1;
+  }
 
   if (!strcmp(a[2], "-FX"))
   {
@@ -98,15 +100,21 @@ static int sweep(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<Geom2d_Curve> path = DrawTrSurf::GetCurve2d(a[ipath]);
     if (path.IsNull())
+    {
       return 1;
+    }
 
     occ::handle<Geom_Surface> Support = DrawTrSurf::GetSurface(a[ipath + 1]);
     if (Support.IsNull())
+    {
       return 1;
+    }
 
     occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[ipath + 2]);
     if (firstS.IsNull())
+    {
       return 1;
+    }
 
     Pipe.Init(path, Support, firstS);
   }
@@ -121,11 +129,15 @@ static int sweep(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<Geom_Curve> path = DrawTrSurf::GetCurve(a[ipath]);
     if (path.IsNull())
+    {
       return 1;
+    }
 
     occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[ipath + 1]);
     if (firstS.IsNull())
+    {
       return 1;
+    }
 
     Pipe.Init(path, firstS, Option);
   }
@@ -134,7 +146,9 @@ static int sweep(Draw_Interpretor& di, int n, const char** a)
   {
     MaxDegree = Draw::Atoi(a[isection + 1]);
     if (n > isection + 2)
+    {
       NbSeg = Draw::Atoi(a[isection + 2]);
+    }
   }
 
   Pipe.Perform(Tol, false, GeomAbs_C2, MaxDegree, NbSeg);
@@ -157,7 +171,9 @@ static int sweep(Draw_Interpretor& di, int n, const char** a)
 static int tuyau(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   GeomAbs_Shape Cont = GeomAbs_C2;
   GeomFill_Pipe Pipe;
@@ -173,7 +189,9 @@ static int tuyau(Draw_Interpretor& di, int n, const char** a)
   }
   occ::handle<Geom_Curve> path = DrawTrSurf::GetCurve(a[indice_path]);
   if (path.IsNull())
+  {
     return 1;
+  }
 
   int                     isect  = indice_path + 1;
   occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[isect]);
@@ -185,7 +203,9 @@ static int tuyau(Draw_Interpretor& di, int n, const char** a)
       Pipe.Init(path, Draw::Atof(a[isect]));
     }
     else
+    {
       return 1;
+    }
   }
   else
   {
@@ -254,7 +274,9 @@ static int tuyau(Draw_Interpretor& di, int n, const char** a)
 static int ruled(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Curve> C1 = DrawTrSurf::GetCurve(a[2]);
   if (C1.IsNull())
@@ -271,7 +293,9 @@ static int ruled(Draw_Interpretor& di, int n, const char** a)
 
   occ::handle<Geom_Surface> S = GeomFill::Surface(C1, C2);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   DrawTrSurf::Set(a[1], S);
   return 0;
@@ -282,7 +306,9 @@ static int ruled(Draw_Interpretor& di, int n, const char** a)
 static int appsurf(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   GeomFill_SectionGenerator Section;
   int                       i;
@@ -291,7 +317,9 @@ static int appsurf(Draw_Interpretor& di, int n, const char** a)
   {
     C = DrawTrSurf::GetCurve(a[i]);
     if (C.IsNull())
+    {
       return 1;
+    }
     Section.AddCurve(C);
   }
 
@@ -327,7 +355,9 @@ static int appsurf(Draw_Interpretor& di, int n, const char** a)
 static int fillcurves(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
 
   int                            i;
   occ::handle<Geom_Curve>        aC;
@@ -336,21 +366,31 @@ static int fillcurves(Draw_Interpretor& /*di*/, int n, const char** a)
   {
     aC = DrawTrSurf::GetCurve(a[i]);
     if (aC.IsNull())
+    {
       return 1;
+    }
     C[i - 2] = GeomConvert::CurveToBSplineCurve(aC, Convert_RationalC1);
   }
 
   int                   ist   = 2;
   GeomFill_FillingStyle Style = GeomFill_CoonsStyle;
   if (n > 6)
+  {
     ist = Draw::Atoi(a[6]);
+  }
 
   if (ist == 1)
+  {
     Style = GeomFill_StretchStyle;
+  }
   if (ist == 2)
+  {
     Style = GeomFill_CoonsStyle;
+  }
   if (ist == 3)
+  {
     Style = GeomFill_CurvedStyle;
+  }
 
   GeomFill_BSplineCurves aFilling(C[0], C[1], C[2], C[3], Style);
 
@@ -397,7 +437,9 @@ void GeometryTest::SurfaceCommands(Draw_Interpretor& theCommands)
 {
   static bool loaded = false;
   if (loaded)
+  {
     return;
+  }
   loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);

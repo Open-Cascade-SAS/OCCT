@@ -92,7 +92,9 @@ bool ShapeFix_Edge::FixRemovePCurve(const TopoDS_Edge&               edge,
   ShapeAnalysis_Edge EA;
   bool               result = EA.CheckVerticesWithPCurve(edge, surface, location);
   if (result)
+  {
     ShapeBuild_Edge().RemovePCurve(edge, surface, location);
+  }
   return result;
 }
 
@@ -104,7 +106,9 @@ bool ShapeFix_Edge::FixRemoveCurve3d(const TopoDS_Edge& edge)
   ShapeAnalysis_Edge EA;
   bool               result = EA.CheckVerticesWithCurve3d(edge);
   if (result)
+  {
     ShapeBuild_Edge().RemoveCurve3d(edge);
+  }
   return result;
 }
 
@@ -185,9 +189,13 @@ static occ::handle<Geom2d_Curve> TranslatePCurve(const occ::handle<Geom_Surface>
     if (std::abs(theDir.X()) <= aTol && std::abs(theDir.Y()) >= aTol)
     {
       if (std::abs(theLoc.X() - uf) < std::abs(theLoc.X() - ul))
+      {
         newLoc.SetCoord(theLoc.X() + (ul - uf), theLoc.Y());
+      }
       else
+      {
         newLoc.SetCoord(theLoc.X() - (ul - uf), theLoc.Y());
+      }
       theNewL2d = new Geom2d_Line(newLoc, theDir);
     }
     /*    // case UClosed and line in U = UFirst
@@ -213,9 +221,13 @@ static occ::handle<Geom2d_Curve> TranslatePCurve(const occ::handle<Geom_Surface>
     if (std::abs(theDir.X()) >= aTol && std::abs(theDir.Y()) <= aTol)
     {
       if (std::abs(theLoc.Y() - vf) < std::abs(theLoc.Y() - vl))
+      {
         newLoc.SetCoord(theLoc.X(), theLoc.Y() + (vl - vf));
+      }
       else
+      {
         newLoc.SetCoord(theLoc.X(), theLoc.Y() - (vl - vf));
+      }
       theNewL2d = new Geom2d_Line(newLoc, theDir);
     }
     /*    // case VClosed and line in V = VFirst
@@ -266,9 +278,13 @@ static occ::handle<Geom2d_Curve> TranslatePCurve(const occ::handle<Geom_Surface>
     if (theVector.IsParallel(VectIsoUF, aTol))
     {
       if (std::abs(FirstPoint.X() - uf) < std::abs(FirstPoint.X() - ul))
+      {
         T.SetTranslation(p00, p10);
+      }
       else
+      {
         T.SetTranslation(p10, p00);
+      }
       newC->Transform(T);
       return newC;
     }
@@ -293,9 +309,13 @@ static occ::handle<Geom2d_Curve> TranslatePCurve(const occ::handle<Geom_Surface>
     else if (theVector.IsParallel(VectIsoVF, aTol))
     {
       if (std::abs(FirstPoint.Y() - vf) < std::abs(FirstPoint.Y() - vl))
+      {
         T.SetTranslation(p00, p01);
+      }
       else
+      {
         T.SetTranslation(p01, p00);
+      }
       newC->Transform(T);
       return newC;
     }
@@ -328,7 +348,9 @@ static void TempSameRange(const TopoDS_Edge& AnEdge, const double Tolerance)
 
   const occ::handle<Geom_Curve> C = BRep_Tool::Curve(AnEdge, LocalLoc, current_first, current_last);
   if (!C.IsNull())
+  {
     first_time_in = false;
+  }
 
   while (an_Iterator.More())
   {
@@ -456,11 +478,15 @@ bool ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                        edge,
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if ((!isSeam && sae.HasPCurve(edge, surf, location))
       || (isSeam && sae.IsSeam(edge, surf, location)))
+  {
     return false;
+  }
 
   // PCurve on Plane not computed
   if (surf->IsKind(STANDARD_TYPE(Geom_Plane)))
+  {
     return false;
+  }
 
   //  double step = 0;
   try
@@ -496,15 +522,21 @@ bool ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                        edge,
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(edge, V1, V2);
       if (!V1.IsNull())
+      {
         TolFirst = BRep_Tool::Tolerance(V1);
+      }
       if (!V2.IsNull())
+      {
         TolLast = BRep_Tool::Tolerance(V2);
+      }
 
       myProjector->Init(sas, preci);
       myProjector->Perform(c3d, First, Last, c2d, TolFirst, TolLast);
       //  stat = 2 : reinterpoler la c3d ?
       if (myProjector->Status(ShapeExtend_DONE4))
+      {
         myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+      }
       a1 = First;
       b1 = Last;
     }
@@ -588,9 +620,13 @@ bool ShapeFix_Edge::FixAddCurve3d(const TopoDS_Edge& edge)
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   ShapeAnalysis_Edge EA;
   if (BRep_Tool::Degenerated(edge) || EA.HasCurve3d(edge))
+  {
     return false;
+  }
   if (!BRep_Tool::SameRange(edge))
+  {
     TempSameRange(edge, Precision::PConfusion());
+  }
 
   if (!ShapeBuild_Edge().BuildCurve3d(edge))
   {
@@ -610,16 +646,28 @@ bool ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge, const TopoDS_Fac
   ShapeAnalysis_Edge sae;
   if (!Context().IsNull())
   {
-    anEdgeCopy = TopoDS::Edge(Context()->Apply(edge));
+    const TopoDS_Shape& aShape = Context()->Apply(edge);
+    if (aShape.IsNull() || aShape.ShapeType() != TopAbs_EDGE)
+    {
+      return false;
+    }
+
+    anEdgeCopy = TopoDS::Edge(aShape);
   }
 
   double toler1, toler2;
   if (!sae.CheckVertexTolerance(anEdgeCopy, face, toler1, toler2))
+  {
     return false;
+  }
   if (sae.Status(ShapeExtend_DONE1))
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   if (sae.Status(ShapeExtend_DONE2))
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
   BRep_Builder  B;
   TopoDS_Vertex V1 = sae.FirstVertex(anEdgeCopy);
   TopoDS_Vertex V2 = sae.LastVertex(anEdgeCopy);
@@ -645,15 +693,27 @@ bool ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge)
   ShapeAnalysis_Edge sae;
   if (!Context().IsNull())
   {
-    anEdgeCopy = TopoDS::Edge(Context()->Apply(edge));
+    const TopoDS_Shape& aShape = Context()->Apply(edge);
+    if (aShape.IsNull() || aShape.ShapeType() != TopAbs_EDGE)
+    {
+      return false;
+    }
+
+    anEdgeCopy = TopoDS::Edge(aShape);
   }
   double toler1, toler2;
   if (!sae.CheckVertexTolerance(anEdgeCopy, toler1, toler2))
+  {
     return false;
+  }
   if (sae.Status(ShapeExtend_DONE1))
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   if (sae.Status(ShapeExtend_DONE2))
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
   BRep_Builder  B;
   TopoDS_Vertex V1 = sae.FirstVertex(anEdgeCopy);
   TopoDS_Vertex V2 = sae.LastVertex(anEdgeCopy);
@@ -690,11 +750,17 @@ bool ShapeFix_Edge::FixReversed2d(const TopoDS_Edge&               edge,
   ShapeAnalysis_Edge EA;
   EA.CheckCurve3dWithPCurve(edge, surface, location);
   if (EA.Status(ShapeExtend_FAIL1))
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+  }
   if (EA.Status(ShapeExtend_FAIL2))
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+  }
   if (!EA.Status(ShapeExtend_DONE))
+  {
     return false;
+  }
 
   occ::handle<Geom2d_Curve> c2d;
   double                    f, l;
@@ -739,7 +805,9 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
   {
     BRep_Builder B;
     if (!BRep_Tool::SameRange(edge))
+    {
       TempSameRange(edge, Precision::PConfusion());
+    }
     B.SameParameter(edge, true);
     return false;
   }
@@ -761,7 +829,9 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
     {
       OCC_CATCH_SIGNALS
       if (!BRep_Tool::SameRange(edge))
+      {
         TempSameRange(edge, Precision::PConfusion());
+      }
       // #81 rln 15.03.99 S4135: for not SP edge choose the best result (either BRepLib or deviation
       // only)
       if (!wasSP)
@@ -780,7 +850,9 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
         BRepLib::SameParameter(copyedge, (tolerance >= Precision::Confusion() ? tolerance : tol));
         SP = BRep_Tool::SameParameter(copyedge);
         if (!SP)
+        {
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+        }
       }
     }
     catch (Standard_Failure const& anException)
@@ -809,7 +881,9 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
 
   sae.CheckSameParameter(edge, aFace, maxdev);
   if (sae.Status(ShapeExtend_FAIL2))
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+  }
 
   // if BRepLib was OK, compare and select the best variant
   if (SP)
@@ -818,13 +892,17 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
     sae.CheckSameParameter(copyedge, BRLDev);
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
     if (BRLTol < BRLDev)
+    {
       BRLTol = BRLDev;
+    }
 
     // chose the best result
     if (BRLTol < maxdev)
     {
       if (sae.Status(ShapeExtend_FAIL2))
+      {
         myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+      }
       // copy pcurves and tolerances from copyedge
       ShapeBuild_Edge().CopyPCurves(edge, copyedge);
       maxdev = BRLTol;
@@ -835,9 +913,13 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
 
   // restore tolerances because they could be modified by BRepLib
   if (!V1.IsNull())
+  {
     SFST.SetTolerance(V1, std::max(maxdev, TolFV), TopAbs_VERTEX);
+  }
   if (!V2.IsNull())
+  {
     SFST.SetTolerance(V2, std::max(maxdev, TolLV), TopAbs_VERTEX);
+  }
 
   if (maxdev > tol)
   {
@@ -847,7 +929,9 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
   }
 
   if (!wasSP && !SP)
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
   return Status(ShapeExtend_DONE);
 }
 

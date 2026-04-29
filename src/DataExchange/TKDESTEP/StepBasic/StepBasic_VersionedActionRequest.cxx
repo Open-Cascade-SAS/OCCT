@@ -50,7 +50,9 @@ void StepBasic_VersionedActionRequest::Init(
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 }
 
 //=================================================================================================

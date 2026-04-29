@@ -35,7 +35,9 @@ void RWStepRepr_RWAllAroundShapeAspect::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "all_around_shape_aspect"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

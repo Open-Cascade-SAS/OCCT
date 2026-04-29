@@ -14,20 +14,20 @@
 //! @file Interface_VectorOfFileParameter.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<Interface_FileParameter> directly instead.
+//!             Use NCollection_DynamicArray<Interface_FileParameter> directly instead.
 
 #ifndef _Interface_VectorOfFileParameter_hxx
 #define _Interface_VectorOfFileParameter_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Interface_FileParameter.hxx>
 
 Standard_HEADER_DEPRECATED("Interface_VectorOfFileParameter.hxx is deprecated since OCCT 8.0.0. "
-                           "Use NCollection_Vector<Interface_FileParameter> directly.")
+                           "Use NCollection_DynamicArray<Interface_FileParameter> directly.")
 
   Standard_DEPRECATED("Interface_VectorOfFileParameter is deprecated, use "
-                      "NCollection_Vector<Interface_FileParameter> directly")
-typedef NCollection_Vector<Interface_FileParameter> Interface_VectorOfFileParameter;
+                      "NCollection_DynamicArray<Interface_FileParameter> directly")
+typedef NCollection_DynamicArray<Interface_FileParameter> Interface_VectorOfFileParameter;
 
 #endif // _Interface_VectorOfFileParameter_hxx

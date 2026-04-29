@@ -95,10 +95,14 @@ static void CheckSurfaceData(const NCollection_Array2<gp_Pnt>& SPoles,
   }
 
   if (SPoles.ColLength() != BSplCLib::NbPoles(UDegree, UPeriodic, SUMults))
+  {
     throw Standard_ConstructionError("Geom_BSplineSurface: # U Poles and degree mismatch");
+  }
 
   if (SPoles.RowLength() != BSplCLib::NbPoles(VDegree, VPeriodic, SVMults))
+  {
     throw Standard_ConstructionError("Geom_BSplineSurface: # V Poles and degree mismatch");
+  }
 }
 
 //=================================================================================================
@@ -240,12 +244,16 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
   // check weights
 
   if (Weights.ColLength() != Poles.ColLength())
+  {
     throw Standard_ConstructionError(
       "Geom_BSplineSurface: U Weights and Poles array size mismatch");
+  }
 
   if (Weights.RowLength() != Poles.RowLength())
+  {
     throw Standard_ConstructionError(
       "Geom_BSplineSurface: V Weights and Poles array size mismatch");
+  }
 
   int i, j;
   for (i = Weights.LowerRow(); i <= Weights.UpperRow(); i++)
@@ -253,7 +261,9 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
     for (j = Weights.LowerCol(); j <= Weights.UpperCol(); j++)
     {
       if (Weights(i, j) <= gp::Resolution())
+      {
         throw Standard_ConstructionError("Geom_BSplineSurface: Weights values too small");
+      }
     }
   }
 
@@ -357,7 +367,9 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
   if (UDegree != myUDeg)
   {
     if (UDegree < myUDeg || UDegree > Geom_BSplineSurface::MaxDegree())
+    {
       throw Standard_ConstructionError("Geom_BSplineSurface::IncreaseDegree: bad U degree value");
+    }
 
     ClearEvalRepresentation();
 
@@ -420,7 +432,9 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
   if (VDegree != myVDeg)
   {
     if (VDegree < myVDeg || VDegree > Geom_BSplineSurface::MaxDegree())
+    {
       throw Standard_ConstructionError("Geom_BSplineSurface::IncreaseDegree: bad V degree value");
+    }
 
     ClearEvalRepresentation();
 
@@ -499,7 +513,9 @@ void Geom_BSplineSurface::IncreaseUMultiplicity(const int FromI1, const int ToI2
   NCollection_Array1<double> k(myUKnots(FromI1), FromI1, ToI2);
   NCollection_Array1<int>    m(FromI1, ToI2);
   for (int i = FromI1; i <= ToI2; i++)
+  {
     m(i) = M - myUMults.Value(i);
+  }
   InsertUKnots(k, m, Epsilon(1.), true);
 }
 
@@ -521,7 +537,9 @@ void Geom_BSplineSurface::IncreaseVMultiplicity(const int FromI1, const int ToI2
   NCollection_Array1<double> k(myVKnots(FromI1), FromI1, ToI2);
   NCollection_Array1<int>    m(FromI1, ToI2);
   for (int i = FromI1; i <= ToI2; i++)
+  {
     m(i) = M - myVMults.Value(i);
+  }
   InsertVKnots(k, m, Epsilon(1.), true);
 }
 
@@ -542,9 +560,13 @@ void Geom_BSplineSurface::segment(const double U1,
   {
     double aUPeriod = myUKnots.Last() - myUKnots.First();
     if (deltaU - aUPeriod > Precision::PConfusion())
+    {
       throw Standard_DomainError("Geom_BSplineSurface::Segment");
+    }
     if (deltaU > aUPeriod)
+    {
       deltaU = aUPeriod;
+    }
   }
 
   double deltaV = V2 - V1;
@@ -552,9 +574,13 @@ void Geom_BSplineSurface::segment(const double U1,
   {
     double aVPeriod = myVKnots.Last() - myVKnots.First();
     if (deltaV - aVPeriod > Precision::PConfusion())
+    {
       throw Standard_DomainError("Geom_BSplineSurface::Segment");
+    }
     if (deltaV > aVPeriod)
+    {
       deltaV = aVPeriod;
+    }
   }
 
   double NewU1, NewU2, NewV1, NewV2;
@@ -638,7 +664,9 @@ void Geom_BSplineSurface::segment(const double U1,
                               index,
                               U);
     if (std::abs(myUKnots.Value(index + 1) - U) <= EpsU)
+    {
       index++;
+    }
     SetUOrigin(index);
     SetUNotPeriodic();
   }
@@ -657,7 +685,9 @@ void Geom_BSplineSurface::segment(const double U1,
                             index1U,
                             U);
   if (std::abs(myUKnots.Value(index1U + 1) - U) <= EpsU)
+  {
     index1U++;
+  }
   BSplCLib::LocateParameter(myUDeg,
                             myUKnots,
                             myUMults,
@@ -668,7 +698,9 @@ void Geom_BSplineSurface::segment(const double U1,
                             index2U,
                             U);
   if (std::abs(myUKnots.Value(index2U + 1) - U) <= EpsU || index2U == index1U)
+  {
     index2U++;
+  }
 
   int nbuknots = index2U - index1U + 1;
 
@@ -701,7 +733,9 @@ void Geom_BSplineSurface::segment(const double U1,
                               index,
                               V);
     if (std::abs(myVKnots.Value(index + 1) - V) <= EpsV)
+    {
       index++;
+    }
     SetVOrigin(index);
     SetVNotPeriodic();
   }
@@ -720,7 +754,9 @@ void Geom_BSplineSurface::segment(const double U1,
                             index1V,
                             V);
   if (std::abs(myVKnots.Value(index1V + 1) - V) <= EpsV)
+  {
     index1V++;
+  }
   BSplCLib::LocateParameter(myVDeg,
                             myVKnots,
                             myVMults,
@@ -731,7 +767,9 @@ void Geom_BSplineSurface::segment(const double U1,
                             index2V,
                             V);
   if (std::abs(myVKnots.Value(index2V + 1) - V) <= EpsV || index2V == index1V)
+  {
     index2V++;
+  }
 
   int nbvknots = index2V - index1V + 1;
 
@@ -824,7 +862,9 @@ void Geom_BSplineSurface::Segment(const double U1,
                                   const double theVTolerance)
 {
   if ((U2 < U1) || (V2 < V1))
+  {
     throw Standard_DomainError("Geom_BSplineSurface::Segment");
+  }
 
   double aMaxU = std::max(std::abs(U2), std::abs(U1));
   double EpsU  = std::max(Epsilon(aMaxU), theUTolerance);
@@ -846,7 +886,9 @@ void Geom_BSplineSurface::CheckAndSegment(const double U1,
 {
 
   if ((U2 < U1) || (V2 < V1))
+  {
     throw Standard_DomainError("Geom_BSplineSurface::CheckAndSegment");
+  }
 
   double aMaxU = std::max(std::abs(U2), std::abs(U1));
   double EpsU  = std::max(Epsilon(aMaxU), theUTolerance);
@@ -869,14 +911,18 @@ void Geom_BSplineSurface::CheckAndSegment(const double U1,
 void Geom_BSplineSurface::SetUKnot(const int UIndex, const double K)
 {
   if (UIndex < 1 || UIndex > myUKnots.Length())
+  {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetUKnot: Index and #knots mismatch");
+  }
 
   int    NewIndex = UIndex;
   double DU       = std::abs(Epsilon(K));
   if (UIndex == 1)
   {
     if (K >= myUKnots.Value(2) - DU)
+    {
       throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnot: K out of range");
+    }
   }
   else if (UIndex == myUKnots.Length())
   {
@@ -959,7 +1005,9 @@ void Geom_BSplineSurface::SetUKnot(const int UIndex, const double K, const int M
 void Geom_BSplineSurface::SetVKnot(const int VIndex, const double K)
 {
   if (VIndex < 1 || VIndex > myVKnots.Length())
+  {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetVKnot: Index and #knots mismatch");
+  }
   int    NewIndex = VIndex + myVKnots.Lower() - 1;
   double DV       = std::abs(Epsilon(K));
   if (VIndex == 1)
@@ -1117,7 +1165,9 @@ void Geom_BSplineSurface::updateUKnots()
   }
 
   if (MaxKnotMult == 0)
+  {
     myUSmooth = GeomAbs_CN;
+  }
   else
   {
     switch (myUDeg - MaxKnotMult)
@@ -1163,7 +1213,9 @@ void Geom_BSplineSurface::updateVKnots()
   }
 
   if (MaxKnotMult == 0)
+  {
     myVSmooth = GeomAbs_CN;
+  }
   else
   {
     switch (myVDeg - MaxKnotMult)
@@ -1201,8 +1253,10 @@ void Geom_BSplineSurface::PeriodicNormalization(double& Uparameter, double& Vpar
     Period     = aMaxVal - aMinVal;
 
     if (Period <= eps)
+    {
       throw Standard_OutOfRange(
         "Geom_BSplineSurface::PeriodicNormalization: Uparameter is too great number");
+    }
 
     bool isLess, isGreater;
     isLess    = aMinVal - Uparameter > 0;
@@ -1223,8 +1277,10 @@ void Geom_BSplineSurface::PeriodicNormalization(double& Uparameter, double& Vpar
     Period     = aMaxVal - aMinVal;
 
     if (Period <= eps)
+    {
       throw Standard_OutOfRange(
         "Geom_BSplineSurface::PeriodicNormalization: Vparameter is too great number");
+    }
 
     bool isLess, isGreater;
     isLess    = aMinVal - Vparameter > 0;
@@ -1244,7 +1300,9 @@ void Geom_BSplineSurface::PeriodicNormalization(double& Uparameter, double& Vpar
 void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const double Weight)
 {
   if (Weight <= gp::Resolution())
+  {
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeight: Weight too small");
+  }
   if (UIndex < 1 || UIndex > myPoles.ColLength() || VIndex < 1 || VIndex > myPoles.RowLength())
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetWeight: Index and #pole mismatch");
@@ -1258,7 +1316,9 @@ void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const do
   myWeights(UIndex + myWeights.LowerRow() - 1, VIndex + myWeights.LowerCol() - 1) = Weight;
   Rational(myWeights, myURational, myVRational);
   if (!myURational && !myVRational)
+  {
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
+  }
   myMaxDerivInvOk = false;
 }
 
@@ -1295,7 +1355,9 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
   // Check if it is rational
   Rational(myWeights, myURational, myVRational);
   if (!myURational && !myVRational)
+  {
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
+  }
   myMaxDerivInvOk = false;
 }
 
@@ -1334,7 +1396,9 @@ void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
   // Check if it is rational
   Rational(myWeights, myURational, myVRational);
   if (!myURational && !myVRational)
+  {
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
+  }
   myMaxDerivInvOk = false;
 }
 

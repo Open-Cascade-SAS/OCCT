@@ -47,7 +47,9 @@ void StepBasic_Document::Init(const occ::handle<TCollection_HAsciiString>& aId,
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theKind = aKind;
 }

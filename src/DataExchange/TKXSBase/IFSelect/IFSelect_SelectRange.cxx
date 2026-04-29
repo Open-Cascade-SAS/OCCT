@@ -60,7 +60,9 @@ occ::handle<IFSelect_IntParam> IFSelect_SelectRange::Lower() const
 int IFSelect_SelectRange::LowerValue() const
 {
   if (thelower.IsNull())
+  {
     return 0;
+  }
   return thelower->Value();
 }
 
@@ -77,7 +79,9 @@ occ::handle<IFSelect_IntParam> IFSelect_SelectRange::Upper() const
 int IFSelect_SelectRange::UpperValue() const
 {
   if (theupper.IsNull())
+  {
     return 0;
+  }
   return theupper->Value();
 }
 
@@ -87,10 +91,14 @@ bool IFSelect_SelectRange::Sort(const int rank,
 {
   int rankfrom = 0;
   if (!thelower.IsNull())
+  {
     rankfrom = thelower->Value();
+  }
   int rankto = 0;
   if (!theupper.IsNull())
+  {
     rankto = theupper->Value();
+  }
   return (rank >= rankfrom && (rankto == 0 || rankto >= rank));
 }
 
@@ -99,18 +107,30 @@ TCollection_AsciiString IFSelect_SelectRange::ExtractLabel() const
   char lab[30];
   int  rankfrom = 0;
   if (!thelower.IsNull())
+  {
     rankfrom = thelower->Value();
+  }
   int rankto = 0;
   if (!theupper.IsNull())
+  {
     rankto = theupper->Value();
+  }
   if (rankfrom == rankto)
+  {
     Sprintf(lab, "Rank no %d", rankfrom);
+  }
   else if (rankfrom == 0)
+  {
     Sprintf(lab, "Until no %d", rankto);
+  }
   else if (rankto == 0)
+  {
     Sprintf(lab, "From no %d", rankto);
+  }
   else
+  {
     Sprintf(lab, "From %d Until %d", rankfrom, rankto);
+  }
 
   return TCollection_AsciiString(lab);
 }

@@ -93,7 +93,9 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
   bool vperiodic = GS.IsVPeriodic();
 
   if (nu == 0 || nv == 0)
+  {
     return;
+  }
 
   // arrays of parameters and pcurves
   NCollection_Array1<double>                    upars(1, nu + 1);
@@ -109,7 +111,9 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
   {
     double u = upars(iu);
     if (!Precision::IsInfinite(u))
+    {
       uisos(iu) = new Geom2d_Line(gp_Pnt2d(u, 0.), dv);
+    }
   }
 
   GS.VIntervals(vpars, GeomAbs_C2);
@@ -118,7 +122,9 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
   {
     double v = vpars(iv);
     if (!Precision::IsInfinite(v))
+    {
       visos(iv) = new Geom2d_Line(gp_Pnt2d(0., v), du);
+    }
   }
 
   // create row by row
@@ -144,7 +150,9 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
   if (!Precision::IsInfinite(vpars(1)))
   {
     if (!Precision::IsInfinite(upars(1)))
+    {
       B.MakeVertex(vrt, S->Value(upars(1), vpars(1)), tol);
+    }
     fbotvertices(1) = botvertices(1) = vrt;
 
     for (iu = 1; iu <= nu; iu++)
@@ -152,9 +160,13 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
       vlt = vrt;
 
       if (uperiodic && iu == nu)
+      {
         vrt = TopoDS::Vertex(botvertices(1));
+      }
       else if (!Precision::IsInfinite(upars(iu + 1)))
+      {
         B.MakeVertex(vrt, S->Value(upars(iu + 1), vpars(1)), tol);
+      }
 
       fbotvertices(iu + 1) = botvertices(iu + 1) = vrt;
       B.MakeEdge(etop);
@@ -188,7 +200,9 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
       if (!Precision::IsInfinite(vpars(iv + 1)))
       {
         if (!Precision::IsInfinite(upars(1)))
+        {
           B.MakeVertex(vrt, S->Value(upars(1), vpars(iv + 1)), tol);
+        }
       }
     }
 
@@ -240,14 +254,18 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
       vlt = vrt;
 
       if (uperiodic && iu == nu)
+      {
         vrt = fvlt;
+      }
       else
       {
         vrt.Nullify();
         if (!Precision::IsInfinite(vpars(iv + 1)))
         {
           if (!Precision::IsInfinite(upars(iu + 1)))
+          {
             B.MakeVertex(vrt, S->Value(upars(iu + 1), vpars(iv + 1)), tol);
+          }
         }
       }
 
@@ -259,7 +277,9 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
       eleft = eright;
 
       if (uperiodic && iu == nu)
+      {
         eright = feleft;
+      }
       else
       {
         eright.Nullify();
@@ -304,7 +324,9 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
       ebot = TopoDS::Edge(botedges(iu));
 
       if (vperiodic && iv == nv)
+      {
         etop = TopoDS::Edge(fbotedges(iu));
+      }
       else
       {
         etop.Nullify();

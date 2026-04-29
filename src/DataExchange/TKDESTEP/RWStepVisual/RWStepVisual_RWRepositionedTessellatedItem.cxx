@@ -29,7 +29,9 @@ void RWStepVisual_RWRepositionedTessellatedItem::ReadStep(
 {
   // --- Number of Parameter Control ---
   if (!theData->CheckNbParams(theNum, 2, theAch, "tessellated_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
   occ::handle<TCollection_HAsciiString> aName;

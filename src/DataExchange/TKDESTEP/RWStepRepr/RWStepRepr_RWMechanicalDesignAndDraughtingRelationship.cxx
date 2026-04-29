@@ -30,7 +30,9 @@ void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::ReadStep(
 {
   // Number of Parameter Control
   if (!theData->CheckNbParams(theNum, 4, theAch, "mechanical_design_and_draughting_relationship"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;

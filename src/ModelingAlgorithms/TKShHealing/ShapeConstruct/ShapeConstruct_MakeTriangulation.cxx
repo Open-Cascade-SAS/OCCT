@@ -43,12 +43,16 @@ bool IsRightContour(const NCollection_Sequence<gp_Pnt>& pts, const double prec)
 {
   int len = pts.Length();
   if (len < 4)
+  {
     return true;
+  }
 
   NCollection_Array1<gp_Pnt> thePts(1, len);
   int                        i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= len; i++)
+  {
     thePts(i) = pts(i);
+  }
 
   gp_XYZ Norm(0, 0, 0);
   if (ShapeAnalysis_Curve::IsPlanar(thePts, Norm, prec))
@@ -57,7 +61,9 @@ bool IsRightContour(const NCollection_Sequence<gp_Pnt>& pts, const double prec)
     // Make polygonal wire from points
     BRepBuilderAPI_MakePolygon mkPoly;
     for (i = 1; i <= len; i++)
+    {
       mkPoly.Add(thePts(i));
+    }
     mkPoly.Close();
     mkPoly.Build();
     if (mkPoly.IsDone())
@@ -66,7 +72,9 @@ bool IsRightContour(const NCollection_Sequence<gp_Pnt>& pts, const double prec)
       // Create mean plane
       gp_XYZ center(0, 0, 0);
       for (i = 1; i <= len; i++)
+      {
         center += thePts(i).XYZ();
+      }
       center /= len;
       gp_Pnt                  pc(center);
       gp_Dir                  pd(Norm);
@@ -92,12 +100,16 @@ gp_Vec MeanNormal(const NCollection_Array1<gp_Pnt>& pts)
 {
   int len = pts.Length();
   if (len < 3)
+  {
     return gp_Vec(0, 0, 0);
+  }
 
   int    i;
   gp_XYZ theCenter(0, 0, 0);
   for (i = 1; i <= len; i++)
+  {
     theCenter += pts(i).XYZ();
+  }
   theCenter /= len;
 
   gp_XYZ theNorm(0, 0, 0);
@@ -121,7 +133,9 @@ ShapeConstruct_MakeTriangulation::ShapeConstruct_MakeTriangulation(
   // Make polygonal wire from points
   BRepBuilderAPI_MakePolygon mkPoly;
   for (int i = pnts.Lower(); i <= pnts.Upper(); i++)
+  {
     mkPoly.Add(pnts(i));
+  }
   mkPoly.Close();
   mkPoly.Build();
   if (mkPoly.IsDone())
@@ -149,7 +163,9 @@ void ShapeConstruct_MakeTriangulation::Build(const Message_ProgressRange& /*theR
   {
     // Triangulate polygonal wire
     if (!myWire.IsNull())
+    {
       Triangulate(myWire);
+    }
   }
 }
 
@@ -168,11 +184,15 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
   occ::handle<NCollection_HSequence<TopoDS_Shape>> theEdges =
     new NCollection_HSequence<TopoDS_Shape>;
   for (TopoDS_Iterator ite(wire); ite.More(); ite.Next())
+  {
     theEdges->Append(ite.Value());
+  }
   int NbEdges = theEdges->Length();
 
   if (NbEdges < 4)
+  {
     AddFacet(wire);
+  }
   else
   {
 
@@ -180,14 +200,18 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
     ShapeAnalysis_Edge                       sae;
     occ::handle<NCollection_HArray1<gp_Pnt>> theAPnt = new NCollection_HArray1<gp_Pnt>(1, NbEdges);
     for (int i = 1; i <= NbEdges; i++)
+    {
       theAPnt->SetValue(i, BRep_Tool::Pnt(sae.FirstVertex(TopoDS::Edge(theEdges->Value(i)))));
+    }
 
     TopoDS_Wire theNewWire;
 
     // Check planarity on array of points
     gp_XYZ Norm(0, 0, 0);
     if (ShapeAnalysis_Curve::IsPlanar(theAPnt->Array1(), Norm, myPrecision))
+    {
       AddFacet(wire);
+    }
     else
     {
 
@@ -206,11 +230,15 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
         int llimit = llimits(seqFlag);
         int rlimit = rlimits(seqFlag);
         if (rlimit <= llimit)
+        {
           rlimit += NbEdges;
+        }
 
         // Check stop condition
         if ((rlimit - llimit) > (NbEdges - 2))
+        {
           break;
+        }
 
         NCollection_Sequence<gp_Pnt> theSPnt;
 
@@ -233,17 +261,25 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
           }
           int cid = cindex;
           if (rlimit > NbEdges && cid <= llimit)
+          {
             cid += NbEdges;
+          }
           if (cid > llimit && cid < rlimit)
+          {
             isGood = false;
+          }
           if (isGood)
           {
             theSPnt.Prepend(theAPnt->Value(cindex));
             isGood = IsRightContour(theSPnt, myPrecision);
             if (isGood)
+            {
               lindex = cindex;
+            }
             else
+            {
               theSPnt.Remove(1);
+            }
           }
         }
 
@@ -259,17 +295,25 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
           }
           int cid = cindex;
           if (rlimit > NbEdges && cid <= llimit)
+          {
             cid += NbEdges;
+          }
           if (cid > llimit && cid < rlimit)
+          {
             isGood = false;
+          }
           if (isGood)
           {
             theSPnt.Append(theAPnt->Value(cindex));
             isGood = IsRightContour(theSPnt, myPrecision);
             if (isGood)
+            {
               rindex = cindex;
+            }
             else
+            {
               theSPnt.Remove(theSPnt.Length());
+            }
           }
         }
 
@@ -281,7 +325,9 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
         cindex           = rindex;
         rlimits(seqFlag) = rindex;
         if (llimit > NbEdges)
+        {
           llimits(seqFlag) = lindex;
+        }
 
         // Set up sequence index
         seqFlag = (seqFlag == 1) ? 2 : 1;
@@ -308,13 +354,19 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
             theArr(j) = theAPnt->Value(lindex);
             lindex++;
             if (lindex > NbEdges)
+            {
               lindex = 1;
+            }
           }
           theC = theBaseNorm * MeanNormal(theArr);
           if (ii % 2)
+          {
             theC2 += theC;
+          }
           else
+          {
             theC1 += theC;
+          }
         }
         int best1 = ((theC1 > theC2) ? 0 : 2);
 
@@ -355,25 +407,35 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
             TopoDS_Edge theNEdge = TopoDS::Edge(theEdges->Value(cur_edge));
             B.Add(theFacetWire, theNEdge);
             if (cur_edge == NbEdges)
+            {
               cur_edge = 1;
+            }
             else
+            {
               cur_edge++;
+            }
           }
           AddFacet(theFacetWire);
           if (!special)
           {
             // Add edges to the new wire
             if (theNewWire.IsNull())
+            {
               B.MakeWire(theNewWire);
+            }
             cur_edge = pindex;
             while (cur_edge != lindex)
             {
               TopoDS_Edge theNEdge = TopoDS::Edge(theEdges->Value(cur_edge));
               B.Add(theNewWire, theNEdge);
               if (cur_edge == NbEdges)
+              {
                 cur_edge = 1;
+              }
               else
+              {
                 cur_edge++;
+              }
             }
             B.Add(theNewWire, theLEdge);
             pindex = rindex;
@@ -387,7 +449,9 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
 
       // Triangulate the rest of edges
       if (!theNewWire.IsNull())
+      {
         Triangulate(theNewWire);
+      }
     }
   }
 }
@@ -397,16 +461,22 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
 void ShapeConstruct_MakeTriangulation::AddFacet(const TopoDS_Wire& wire)
 {
   if (wire.IsNull())
+  {
     return;
+  }
 
   // Fill sequence of points
   ShapeAnalysis_Edge           sae;
   NCollection_Sequence<gp_Pnt> pts;
   for (TopoDS_Iterator ite(wire); ite.More(); ite.Next())
+  {
     pts.Append(BRep_Tool::Pnt(sae.FirstVertex(TopoDS::Edge(ite.Value()))));
+  }
   int i, nbp = pts.Length();
   if (nbp < 3)
+  {
     return;
+  }
 
   // Create mean plane
   double cMod, maxMod = 0.0;
@@ -417,7 +487,9 @@ void ShapeConstruct_MakeTriangulation::AddFacet(const TopoDS_Wire& wire)
     gp_XYZ v1(pts(i == nbp ? 1 : i + 1).XYZ() - vb);
     cMod = v1.SquareModulus();
     if (cMod == 0.0)
+    {
       continue;
+    }
     else if (cMod > maxMod)
     {
       maxMod = cMod;
@@ -426,7 +498,9 @@ void ShapeConstruct_MakeTriangulation::AddFacet(const TopoDS_Wire& wire)
     gp_XYZ v2(pts(i == 1 ? nbp : i - 1).XYZ() - vb);
     cMod = v2.SquareModulus();
     if (cMod == 0.0)
+    {
       continue;
+    }
     else if (cMod > maxMod)
     {
       maxMod = cMod;
@@ -437,13 +511,21 @@ void ShapeConstruct_MakeTriangulation::AddFacet(const TopoDS_Wire& wire)
   if (Normal.SquareModulus() == 0.0)
   {
     if (maxMod == 0.0)
+    {
       Normal = gp_XYZ(0, 0, 1);
+    }
     else if (maxVec.X() != 0.0)
+    {
       Normal = gp_XYZ(-maxVec.Y() / maxVec.X(), 1, 0);
+    }
     else if (maxVec.Y() != 0.0)
+    {
       Normal = gp_XYZ(0, -maxVec.Z() / maxVec.Y(), 1);
+    }
     else
+    {
       Normal = gp_XYZ(1, 0, 0);
+    }
   }
 
   gp_Pln                  Pln(pts(1), gp_Dir(Normal));
@@ -457,7 +539,9 @@ void ShapeConstruct_MakeTriangulation::AddFacet(const TopoDS_Wire& wire)
 
   // Add new face to the shell
   if (myShape.IsNull())
+  {
     myShape = theFace;
+  }
   else
   {
     if (myShape.ShapeType() == TopAbs_FACE)

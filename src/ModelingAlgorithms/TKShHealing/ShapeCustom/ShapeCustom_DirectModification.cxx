@@ -53,7 +53,9 @@ static int IsIndirectSurface(occ::handle<Geom_Surface>& S, TopLoc_Location& L)
 
   occ::handle<Geom_Surface> TS = S;
   while (TS->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  {
     TS = occ::down_cast<Geom_RectangularTrimmedSurface>(TS)->BasisSurface();
+  }
 
   occ::handle<Geom_ElementarySurface> ES = occ::down_cast<Geom_ElementarySurface>(TS);
   if (!ES.IsNull())
@@ -64,16 +66,22 @@ static int IsIndirectSurface(occ::handle<Geom_Surface>& S, TopLoc_Location& L)
     bool    det = (t.VectorialPart().Determinant() < 0.0);
     bool    dir = ES->Position().Direct();
     if ((neg != det) == dir)
+    {
       result = 1;
+    }
     occ::handle<Geom_ConicalSurface> CS = occ::down_cast<Geom_ConicalSurface>(ES);
     if (!CS.IsNull())
     {
       // does the cone have negative semiangle ?
       if (CS->SemiAngle() < 0.0)
+      {
         result += 2;
+      }
     }
     if (result)
+    {
       S = TS;
+    }
   }
 
   return result;
@@ -141,15 +149,21 @@ bool ShapeCustom_DirectModification::NewCurve(const TopoDS_Edge&       E,
   {
     occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (GC.IsNull() || !GC->IsCurveOnSurface())
+    {
       continue;
+    }
     occ::handle<Geom_Surface> S   = GC->Surface();
     TopLoc_Location           Loc = GC->Location();
     if (!IsIndirectSurface(S, Loc))
+    {
       continue;
+    }
     double f, l;
     C = BRep_Tool::Curve(E, L, f, l);
     if (!C.IsNull())
+    {
       C = occ::down_cast<Geom_Curve>(C->Copy());
+    }
     Tol = BRep_Tool::Tolerance(E);
     return true;
   }
@@ -180,7 +194,9 @@ bool ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&         E,
 
   int result = IsIndirectSurface(S, L);
   if (!result && E.IsSame(NewE))
+  {
     return false;
+  }
 
   double f, l;
   C   = BRep_Tool::CurveOnSurface(E, F, f, l);
@@ -235,7 +251,9 @@ bool ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&         E,
   {
     //: p5 abv 26 Feb 99: force copying of pcurves if edge was copied
     if (!C.IsNull())
+    {
       C = occ::down_cast<Geom2d_Curve>(C->Copy());
+    }
   }
 
   return true;

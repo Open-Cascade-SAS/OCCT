@@ -36,7 +36,9 @@
 static void CopyString(occ::handle<TCollection_HAsciiString>& astr)
 {
   if (astr.IsNull())
+  {
     return; // do nothing if String not defined !
+  }
   occ::handle<TCollection_HAsciiString> S = new TCollection_HAsciiString("");
   S->AssignCat(astr);
   astr = S;
@@ -47,16 +49,24 @@ static void MakeHollerith(const occ::handle<TCollection_HAsciiString>& astr, cha
   lt      = 0;
   text[0] = '\0';
   if (astr.IsNull())
+  {
     return;
+  }
   int ln = astr->Length();
   if (ln == 0)
+  {
     return;
+  }
   Sprintf(text, "%dH%s", ln, astr->ToCString());
   lt = ln + 2;
   if (ln >= 10)
+  {
     lt++;
+  }
   if (ln >= 100)
+  {
     lt++; // strlen text
+  }
 }
 
 //=================================================================================================
@@ -89,19 +99,29 @@ occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::TranslatedFromHoll
 {
   occ::handle<TCollection_HAsciiString> res;
   if (astr.IsNull())
+  {
     return res;
+  }
   int n = astr->Search("H");
   if (n > 1)
   {
     if (!astr->Token("H")->IsIntegerValue())
+    {
       n = 0;
+    }
   }
   if (n > 1 && n < astr->Length())
+  {
     res = astr->SubString(n + 1, astr->Length());
+  }
   else if (astr->ToCString() == nullptr)
+  {
     res = new TCollection_HAsciiString;
+  }
   else
+  {
     res = new TCollection_HAsciiString(astr->ToCString());
+  }
   return res;
 }
 
@@ -160,14 +180,18 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
     const char*         val = params->Param(i).CValue();
     Interface_ParamType fpt = params->Param(i).ParamType();
     if (fpt == Interface_ParamVoid)
+    {
       continue;
+    }
 
     // if the param is an Integer
     if (fpt == Interface_ParamInteger)
     {
       // but a real is expected
       if (i == 13 || i == 17 || i == 19 || i == 20)
+      {
         realval = Atof(val);
+      }
       intval = atoi(val);
     }
 
@@ -179,11 +203,17 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
       for (k = 0; k < 50; k++)
       {
         if (val[k] == 'D' || val[k] == 'd')
+        {
           text[j++] = 'e';
+        }
         else
+        {
           text[j++] = val[k];
+        }
         if (val[k] == '\0')
+        {
           break;
+        }
       }
       realval = Atof(text);
     }
@@ -197,10 +227,16 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
         int nhol = strval->Search("H");
         int lhol = strval->Length();
         if (nhol > 1)
+        {
           if (!strval->Token("H")->IsIntegerValue())
+          {
             nhol = 0;
+          }
+        }
         if (nhol > 1 && nhol < lhol)
+        {
           strval = strval->SubString(nhol + 1, lhol);
+        }
       }
     }
 
@@ -208,20 +244,28 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
     if (i < 3)
     {
       if (val[0] != '\0')
+      {
         sepend = val[0];
+      }
       if (val[1] == 'H')
+      {
         sepend = val[2]; // prioritaire
+      }
     }
 
     switch (i)
     {
       case 1:
         if (sepend != '\0')
+        {
           theSeparator = sepend;
+        }
         break;
       case 2:
         if (sepend != '\0')
+        {
           theEndMark = sepend;
+        }
         break;
       case 3:
         theSendName = strval;
@@ -312,9 +356,13 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
       Msg39.Arg(24);
       Msg39.Arg(25);
       if (nbp < 24)
+      {
         ach->SendFail(Msg39);
+      }
       else
+      {
         ach->SendWarning(Msg39);
+      }
     }
   }
   // Version 5.3
@@ -325,9 +373,13 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
     Msg39.Arg(25);
     Msg39.Arg(26);
     if (nbp < 25)
+    {
       ach->SendFail(Msg39);
+    }
     else
+    {
       ach->SendWarning(Msg39);
+    }
   }
 
   //: 45 by abv 11.12.97: if UnitFlag is not defined in the file,
@@ -336,12 +388,18 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
   {
     int corrected = 0;
     if (theUnitName.IsNull())
+    {
       // default (inches) value taken
       corrected = 1;
+    }
     else
+    {
       corrected = IGESData_BasicEditor::UnitNameFlag(theUnitName->ToCString());
+    }
     if (corrected > 0)
+    {
       theUnitFlag = corrected;
+    }
     else if (theUnitFlag == 3)
     {
       Message_Msg Msg49("XSTEP_49");
@@ -385,7 +443,9 @@ occ::handle<Interface_ParamSet> IGESData_GlobalSection::Params() const
   uncar[0]                            = ',';
   occ::handle<Interface_ParamSet> res = new Interface_ParamSet(26); // gka 19.01.99
   if (theSeparator == ',')
+  {
     res->Append(vide, 0, Interface_ParamVoid, 0);
+  }
   else
   {
     uncar[0] = theSeparator;
@@ -393,7 +453,9 @@ occ::handle<Interface_ParamSet> IGESData_GlobalSection::Params() const
   }
 
   if (theEndMark == ';')
+  {
     res->Append(vide, 0, Interface_ParamVoid, 0);
+  }
   else
   {
     uncar[0] = theEndMark;
@@ -455,10 +517,14 @@ occ::handle<Interface_ParamSet> IGESData_GlobalSection::Params() const
   res->Append(nombre, (int)strlen(nombre), Interface_ParamReal, 0);
 
   if (hasMaxCoord)
+  {
     Interface_FloatWriter::Convert(theMaxCoord, nombre, true, 0., 0., "%f", "%f");
-  //  Sprintf(nombre,"%f",theMaxCoord);
+    //  Sprintf(nombre,"%f",theMaxCoord);
+  }
   else
+  {
     nombre[0] = '\0';
+  }
   res->Append(nombre, (int)strlen(nombre), Interface_ParamReal, 0);
 
   MakeHollerith(theAuthorName, text, lt);
@@ -692,17 +758,23 @@ bool IGESData_GlobalSection::HasLastChangeDate() const
 void IGESData_GlobalSection::SetLastChangeDate()
 {
   if (HasLastChangeDate())
+  {
     return;
+  }
   int           mois, jour, annee, heure, minute, seconde, millisec, microsec;
   OSD_Process   system;
   Quantity_Date ladate = system.SystemDate();
   ladate.Values(mois, jour, annee, heure, minute, seconde, millisec, microsec);
   if (annee < 2000)
+  {
     // #65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000)
     theLastChangeDate = NewDateString(annee, mois, jour, heure, minute, seconde, 0);
+  }
   else
+  {
     // #65 rln 12.02.99 S4151 (explicitly force YYYYMMDD.HHMMSS after Y2000)
     theLastChangeDate = NewDateString(annee, mois, jour, heure, minute, seconde, -1);
+  }
 }
 
 //=================================================================================================
@@ -745,7 +817,9 @@ occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::NewDateString(cons
     int  an      = anne % 100;
     bool dizaine = (an >= 10);
     if (!dizaine)
+    {
       an += 10;
+    }
     if (mode < 0)
     {
       an      = anne;
@@ -756,7 +830,9 @@ occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::NewDateString(cons
     Sprintf(madate, "%d%d", date1, date2);
     madate[(mode == 0 ? 6 : 8)] = '.';
     if (!dizaine)
+    {
       madate[0] = '0';
+    }
   }
   else if (mode == 1)
   {
@@ -773,20 +849,30 @@ occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::NewDateString(
 {
   int anne, moi, jou, heur, minut, second;
   if (date.IsNull())
+  {
     return date;
+  }
   int i0 = 0;
   if (date->Length() == 15)
+  {
     i0 = 2;
+  }
   else if (date->Length() != 13)
+  {
     return date;
+  }
   if (date->Value(i0 + 7) != '.')
+  {
     return date;
+  }
   anne = (date->Value(i0 + 1) - 48) * 10 + (date->Value(i0 + 2) - 48);
   if (i0 == 0)
   {
     anne = anne + 1900;
     if (anne < 1980)
+    {
       anne += 100;
+    }
   }
   else
   {
@@ -922,10 +1008,14 @@ void IGESData_GlobalSection::MaxMaxCoord(const double val)
   if (hasMaxCoord)
   {
     if (aval > theMaxCoord)
+    {
       theMaxCoord = aval;
+    }
   }
   else
+  {
     SetMaxCoord(aval);
+  }
 }
 
 void IGESData_GlobalSection::MaxMaxCoords(const gp_XYZ& xyz)

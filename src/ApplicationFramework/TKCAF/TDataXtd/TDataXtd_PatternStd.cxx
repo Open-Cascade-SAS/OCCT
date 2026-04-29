@@ -68,7 +68,9 @@ void TDataXtd_PatternStd::Signature(const int signature)
 {
   // OCC2932 correction
   if (mySignature == signature)
+  {
     return;
+  }
 
   Backup();
   mySignature = signature;
@@ -80,8 +82,12 @@ void TDataXtd_PatternStd::Axis1(const occ::handle<TNaming_NamedShape>& Axis1)
 {
   // OCC2932 correction
   if (!myAxis1.IsNull())
+  {
     if (myAxis1->Get() == Axis1->Get())
+    {
       return;
+    }
+  }
 
   Backup();
   myAxis1 = Axis1;
@@ -93,8 +99,12 @@ void TDataXtd_PatternStd::Axis2(const occ::handle<TNaming_NamedShape>& Axis2)
 {
   // OCC2932 correction
   if (!myAxis2.IsNull())
+  {
     if (myAxis2->Get() == Axis2->Get())
+    {
       return;
+    }
+  }
 
   Backup();
   myAxis2 = Axis2;
@@ -106,7 +116,9 @@ void TDataXtd_PatternStd::Axis1Reversed(const bool Axis1Reversed)
 {
   // OCC2932 correction
   if (myAxis1Reversed == Axis1Reversed)
+  {
     return;
+  }
 
   Backup();
   myAxis1Reversed = Axis1Reversed;
@@ -118,7 +130,9 @@ void TDataXtd_PatternStd::Axis2Reversed(const bool Axis2Reversed)
 {
   // OCC2932 correction
   if (myAxis2Reversed == Axis2Reversed)
+  {
     return;
+  }
 
   Backup();
   myAxis2Reversed = Axis2Reversed;
@@ -130,8 +144,12 @@ void TDataXtd_PatternStd::Value1(const occ::handle<TDataStd_Real>& value)
 {
   // OCC2932 correction
   if (!myValue1.IsNull())
+  {
     if (myValue1->Get() == value->Get())
+    {
       return;
+    }
+  }
 
   Backup();
   myValue1 = value;
@@ -143,8 +161,12 @@ void TDataXtd_PatternStd::Value2(const occ::handle<TDataStd_Real>& value)
 {
   // OCC2932 correction
   if (!myValue2.IsNull())
+  {
     if (myValue2->Get() == value->Get())
+    {
       return;
+    }
+  }
 
   Backup();
   myValue2 = value;
@@ -156,8 +178,12 @@ void TDataXtd_PatternStd::NbInstances1(const occ::handle<TDataStd_Integer>& NbIn
 {
   // OCC2932 correction
   if (!myNb1.IsNull())
+  {
     if (myNb1->Get() == NbInstances1->Get())
+    {
       return;
+    }
+  }
 
   Backup();
   myNb1 = NbInstances1;
@@ -169,8 +195,12 @@ void TDataXtd_PatternStd::NbInstances2(const occ::handle<TDataStd_Integer>& NbIn
 {
   // OCC2932 correction
   if (!myNb2.IsNull())
+  {
     if (myNb2->Get() == NbInstances2->Get())
+    {
       return;
+    }
+  }
 
   Backup();
   myNb2 = NbInstances2;
@@ -184,7 +214,9 @@ void TDataXtd_PatternStd::Mirror(const occ::handle<TNaming_NamedShape>& plane)
   if (!myMirror.IsNull())
   {
     if (myMirror->Get() == plane->Get())
+    {
       return;
+    }
   }
 
   Backup();
@@ -199,9 +231,13 @@ int TDataXtd_PatternStd::NbTrsfs() const
   if (mySignature < 5)
   {
     if (!myNb1.IsNull())
+    {
       nb = myNb1->Get();
+    }
     if (!myNb2.IsNull())
+    {
       nb = nb * myNb2->Get();
+    }
     nb--;
   }
   return nb;
@@ -221,7 +257,9 @@ void TDataXtd_PatternStd::ComputeTrsfs(NCollection_Array1<gp_Trsf>& Trsfs) const
     gp_Ax1 axis1;
     TDataXtd_Geometry::Axis(myAxis1, axis1);
     if (myAxis1Reversed)
+    {
       axis1.Reverse();
+    }
 
     double value1 = myValue1->Get();
 
@@ -246,7 +284,9 @@ void TDataXtd_PatternStd::ComputeTrsfs(NCollection_Array1<gp_Trsf>& Trsfs) const
       gp_Ax1 axis2;
       TDataXtd_Geometry::Axis(myAxis2, axis2);
       if (myAxis2Reversed)
+      {
         axis2.Reverse();
+      }
 
       double value2 = myValue2->Get();
 

@@ -32,7 +32,7 @@
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_Parallel.hxx>
@@ -160,7 +160,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge;
+typedef NCollection_DynamicArray<BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge;
 
 //=================================================================================================
 
@@ -244,7 +244,9 @@ public:
           iErr = BOPTools_AlgoTools2D::AttachExistingPCurve(aSpz, aCopyE, myF, myContext);
         }
         if (iErr)
+        {
           BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(aCopyE, myF, myContext);
+        }
 
         myNewC2d = BRep_Tool::CurveOnSurface(aCopyE, myF, f, l);
         if (myNewC2d.IsNull())
@@ -253,7 +255,9 @@ public:
           return;
         }
         else
+        {
           myNewTol = BRep_Tool::Tolerance(aCopyE);
+        }
       }
       else
       {
@@ -267,9 +271,13 @@ public:
                                                    aC2d,
                                                    myNewC2d);
           if (myNewC2d != aC2d)
+          {
             myNewTol = BRep_Tool::Tolerance(aCopyE);
+          }
           else
+          {
             myNewC2d.Nullify();
+          }
         }
       }
 
@@ -305,7 +313,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_MPC> BOPAlgo_VectorOfMPC;
+typedef NCollection_DynamicArray<BOPAlgo_MPC> BOPAlgo_VectorOfMPC;
 
 //=================================================================================================
 
@@ -356,13 +364,13 @@ private:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_BPC> BOPAlgo_VectorOfBPC;
+typedef NCollection_DynamicArray<BOPAlgo_BPC> BOPAlgo_VectorOfBPC;
 
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::MakeSplitEdges(const Message_ProgressRange& theRange)
 {
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
+  NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->ChangePaveBlocksPool();
   int                   aNbPBP = aPBP.Length();
   Message_ProgressScope aPSOuter(theRange, nullptr, 1);
@@ -408,7 +416,9 @@ void BOPAlgo_PaveFiller::MakeSplitEdges(const Message_ProgressRange& theRange)
       const occ::handle<BOPDS_CommonBlock>& aCB = myDS->CommonBlock(aPB);
       bool                                  bCB = !aCB.IsNull();
       if (bCB && !aMCB.Add(aCB))
+      {
         continue;
+      }
 
       aPB->Indices(nV1, nV2);
       // Check if it is necessary to make the split of the edge
@@ -429,7 +439,9 @@ void BOPAlgo_PaveFiller::MakeSplitEdges(const Message_ProgressRange& theRange)
               {
                 nE = it.Value()->OriginalEdge();
                 if (myDS->PaveBlocks(nE).Extent() == 1)
+                {
                   break;
+                }
               }
               if (it.More())
               {
@@ -448,7 +460,9 @@ void BOPAlgo_PaveFiller::MakeSplitEdges(const Message_ProgressRange& theRange)
               aPB->SetEdge(nE);
             }
             if (!bToSplit)
+            {
               continue;
+            }
           }
         }
       }
@@ -576,7 +590,9 @@ void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPSOuter(theRange, nullptr, 1);
   if (myAvoidBuildPCurve || (!mySectionAttribute.PCurveOnS1() && !mySectionAttribute.PCurveOnS2()))
+  {
     return;
+  }
   bool                                                     bHasPC;
   int                                                      i, nF1, aNbC, k, nE, aNbFF, aNbFI, nEx;
   int                                                      j, aNbPBIn, aNbPBOn;
@@ -585,7 +601,7 @@ void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
   BOPAlgo_VectorOfMPC                                      aVMPC;
   //
   // 1. Process Common Blocks
-  const NCollection_Vector<BOPDS_FaceInfo>& aFIP = myDS->FaceInfoPool();
+  const NCollection_DynamicArray<BOPDS_FaceInfo>& aFIP = myDS->FaceInfoPool();
   //
   aNbFI = aFIP.Length();
   for (i = 0; i < aNbFI; ++i)
@@ -692,16 +708,18 @@ void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
   if (bPCurveOnS[0] || bPCurveOnS[1])
   {
     // container to remember already added edge-face pairs
-    NCollection_Map<BOPDS_Pair>         anEFPairs;
-    NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-    aNbFF                                    = aFFs.Length();
+    NCollection_Map<BOPDS_Pair>               anEFPairs;
+    NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
+    aNbFF                                          = aFFs.Length();
     for (i = 0; i < aNbFF; ++i)
     {
-      const BOPDS_InterfFF&                  aFF  = aFFs(i);
-      const NCollection_Vector<BOPDS_Curve>& aVNC = aFF.Curves();
-      aNbC                                        = aVNC.Length();
+      const BOPDS_InterfFF&                        aFF  = aFFs(i);
+      const NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.Curves();
+      aNbC                                              = aVNC.Length();
       if (aNbC == 0)
+      {
         continue;
+      }
       int nF[2];
       aFF.Indices(nF[0], nF[1]);
       //
@@ -775,7 +793,9 @@ void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
       // if aNewPC is null we do not need to update the edge because it already contains
       // valid p-curve, and only vertices have been updated.
       if (!aNewPC.IsNull())
+      {
         BRep_Builder().UpdateEdge(aMPC.Edge(), aNewPC, aMPC.Face(), aMPC.GetNewTolerance());
+      }
     }
   }
 }

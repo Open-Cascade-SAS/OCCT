@@ -46,7 +46,9 @@ void IFSelect_GraphCounter::AddWithGraph(
     return;
   }
   if (list.IsNull())
+  {
     return;
+  }
   int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
   {

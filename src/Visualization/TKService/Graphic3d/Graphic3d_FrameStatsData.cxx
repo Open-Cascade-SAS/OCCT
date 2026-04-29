@@ -13,6 +13,8 @@
 
 #include <Graphic3d_FrameStatsData.hxx>
 
+#include <algorithm>
+
 //=================================================================================================
 
 Graphic3d_FrameStatsData::Graphic3d_FrameStatsData()
@@ -21,10 +23,10 @@ Graphic3d_FrameStatsData::Graphic3d_FrameStatsData()
       myFpsImmediate(-1.0),
       myFpsCpuImmediate(-1.0)
 {
-  myCounters.resize(Graphic3d_FrameStatsCounter_NB, 0);
-  myTimers.resize(Graphic3d_FrameStatsTimer_NB, 0.0);
-  myTimersMin.resize(Graphic3d_FrameStatsTimer_NB, RealLast());
-  myTimersMax.resize(Graphic3d_FrameStatsTimer_NB, 0.0);
+  myCounters.Resize(Graphic3d_FrameStatsCounter_NB);
+  myTimers.Resize(Graphic3d_FrameStatsTimer_NB);
+  myTimersMin.Resize(Graphic3d_FrameStatsTimer_NB, RealLast());
+  myTimersMax.Resize(Graphic3d_FrameStatsTimer_NB);
   Reset();
 }
 
@@ -96,10 +98,10 @@ void Graphic3d_FrameStatsData::Reset()
   myFpsCpu          = -1.0;
   myFpsImmediate    = -1.0;
   myFpsCpuImmediate = -1.0;
-  myCounters.assign(myCounters.size(), 0);
-  myTimers.assign(myTimers.size(), 0.0);
-  myTimersMin.assign(myTimersMin.size(), RealLast());
-  myTimersMax.assign(myTimersMax.size(), 0.0);
+  std::fill(myCounters.begin(), myCounters.end(), (size_t)0);
+  std::fill(myTimers.begin(), myTimers.end(), 0.0);
+  std::fill(myTimersMin.begin(), myTimersMin.end(), RealLast());
+  std::fill(myTimersMax.begin(), myTimersMax.end(), 0.0);
 }
 
 //=================================================================================================
@@ -110,13 +112,13 @@ void Graphic3d_FrameStatsData::FillMax(const Graphic3d_FrameStatsData& theOther)
   myFpsCpu          = std::max(myFpsCpu, theOther.myFpsCpu);
   myFpsImmediate    = std::max(myFpsImmediate, theOther.myFpsImmediate);
   myFpsCpuImmediate = std::max(myFpsCpuImmediate, theOther.myFpsCpuImmediate);
-  for (size_t aCounterIter = 0; aCounterIter < myCounters.size(); ++aCounterIter)
+  for (size_t aCounterIter = 0; aCounterIter < myCounters.Size(); ++aCounterIter)
   {
     myCounters[aCounterIter] = myCounters[aCounterIter] > theOther.myCounters[aCounterIter]
                                  ? myCounters[aCounterIter]
                                  : theOther.myCounters[aCounterIter];
   }
-  for (size_t aTimerIter = 0; aTimerIter < myTimers.size(); ++aTimerIter)
+  for (size_t aTimerIter = 0; aTimerIter < myTimers.Size(); ++aTimerIter)
   {
     myTimersMax[aTimerIter] = std::max(myTimersMax[aTimerIter], theOther.myTimersMax[aTimerIter]);
     myTimersMin[aTimerIter] = std::min(myTimersMin[aTimerIter], theOther.myTimersMin[aTimerIter]);
@@ -128,15 +130,19 @@ void Graphic3d_FrameStatsData::FillMax(const Graphic3d_FrameStatsData& theOther)
 
 Graphic3d_FrameStatsDataTmp::Graphic3d_FrameStatsDataTmp()
 {
-  myOsdTimers.resize(Graphic3d_FrameStatsTimer_NB, OSD_Timer(true));
-  myTimersPrev.resize(Graphic3d_FrameStatsTimer_NB, 0.0);
+  myOsdTimers.Reserve(Graphic3d_FrameStatsTimer_NB);
+  for (int i = 0; i < Graphic3d_FrameStatsTimer_NB; ++i)
+  {
+    myOsdTimers.Append(OSD_Timer(true));
+  }
+  myTimersPrev.Resize(Graphic3d_FrameStatsTimer_NB);
 }
 
 //=================================================================================================
 
 void Graphic3d_FrameStatsDataTmp::FlushTimers(size_t theNbFrames, bool theIsFinal)
 {
-  for (size_t aTimerIter = 0; aTimerIter < myTimers.size(); ++aTimerIter)
+  for (size_t aTimerIter = 0; aTimerIter < myTimers.Size(); ++aTimerIter)
   {
     const double aFrameTime  = myTimers[aTimerIter] - myTimersPrev[aTimerIter];
     myTimersMax[aTimerIter]  = std::max(myTimersMax[aTimerIter], aFrameTime);
@@ -147,7 +153,7 @@ void Graphic3d_FrameStatsDataTmp::FlushTimers(size_t theNbFrames, bool theIsFina
   if (theIsFinal)
   {
     const double aNbFrames = (double)theNbFrames;
-    for (size_t aTimerIter = 0; aTimerIter < myTimers.size(); ++aTimerIter)
+    for (size_t aTimerIter = 0; aTimerIter < myTimers.Size(); ++aTimerIter)
     {
       myTimers[aTimerIter] /= aNbFrames;
     }
@@ -159,8 +165,8 @@ void Graphic3d_FrameStatsDataTmp::FlushTimers(size_t theNbFrames, bool theIsFina
 void Graphic3d_FrameStatsDataTmp::Reset()
 {
   Graphic3d_FrameStatsData::Reset();
-  myTimersPrev.assign(myTimersPrev.size(), 0.0);
-  for (size_t aTimerIter = 0; aTimerIter < myOsdTimers.size(); ++aTimerIter)
+  std::fill(myTimersPrev.begin(), myTimersPrev.end(), 0.0);
+  for (size_t aTimerIter = 0; aTimerIter < myOsdTimers.Size(); ++aTimerIter)
   {
     myOsdTimers[aTimerIter].Reset();
   }

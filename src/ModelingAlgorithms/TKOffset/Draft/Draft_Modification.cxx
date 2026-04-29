@@ -141,7 +141,9 @@ void Draft_Modification::Remove(const TopoDS_Face& F)
   {
     const TopoDS_Edge& theE = myEMap.FindKey(i);
     if (myEMap.FindFromKey(theE).RootFace().IsSame(curFace))
+    {
       conneF.Append(theE);
+    }
   }
   ltod.Initialize(conneF);
   while (ltod.More())
@@ -266,11 +268,15 @@ bool Draft_Modification::NewCurve(const TopoDS_Edge&       E,
   }
 
   if (!myEMap.Contains(E))
+  {
     return false;
+  }
 
   const Draft_EdgeInfo& Einf = myEMap.FindFromKey(E);
   if (!myEMap.FindFromKey(E).NewGeometry())
+  {
     return false;
+  }
 
   Tol = Einf.Tolerance();
   Tol = std::max(Tol, BRep_Tool::Tolerance(E));
@@ -372,7 +378,9 @@ bool Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
     occ::handle<Geom_Curve>    aC = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(SB)->BasisCurve();
     occ::handle<Standard_Type> typc = aC->DynamicType();
     if (typc == STANDARD_TYPE(Geom_Circle))
+    {
       JeRecadre = true;
+    }
   }
 
   JeRecadre = JeRecadre || (typs == STANDARD_TYPE(Geom_CylindricalSurface))
@@ -466,7 +474,9 @@ bool Draft_Modification::NewParameter(const TopoDS_Vertex& V,
       paramf = FirstPar;
       FV.Orientation(E.Orientation());
       if (V.IsEqual(FV))
+      {
         P = paramf;
+      }
     }
 
     FV.Orientation(E.Orientation());

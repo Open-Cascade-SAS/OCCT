@@ -41,7 +41,9 @@ static occ::handle<Units_Token> CreateTokenForNumber(const char* const str)
       IsPoint = true;
     }
     else
+    {
       break;
+    }
   }
   return new Units_Token(tstr.ToCString(), "0");
 }
@@ -59,7 +61,9 @@ Units_Sentence::Units_Sentence(const occ::handle<Units_Lexicon>& alexicon,
   thesequenceoftokens = new NCollection_HSequence<occ::handle<Units_Token>>();
   occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> lstlexicon = alexicon->Sequence();
   if (lstlexicon.IsNull())
+  {
     throw Units_NoSuchType("BAD LEXICON descriptor");
+  }
   limchain = strlen(astring);
   i        = 0;
 
@@ -179,7 +183,9 @@ static occ::handle<Units_Token> CalculateLocal(
   if (aSeq->Length() == 2)
   {
     if (aSeq->Value(1)->Word() == "+")
+    {
       aSeq->Remove(1);
+    }
     if (aSeq->Value(1)->Word() == "-")
     {
       tok2                          = aSeq->Value(2);
@@ -208,13 +214,21 @@ static occ::handle<Units_Token> CalculateLocal(
         for (j = i + 1; j <= aSeq->Length(); j++)
         {
           if (aSeq->Value(j)->Word() == ")")
+          {
             NbBrackets--;
+          }
           if (aSeq->Value(j)->Word() == "(")
+          {
             NbBrackets++;
+          }
           if (NbBrackets > 0)
+          {
             TmpSeq->Append(aSeq->Value(j));
+          }
           else
+          {
             break;
+          }
         }
         tok1 = CalculateLocal(TmpSeq);
         aSeq->Remove(i + 1, j);
@@ -248,9 +262,13 @@ static occ::handle<Units_Token> CalculateLocal(
           tok1 = aSeq->Value(i - 1);
           tok2 = aSeq->Value(i + 1);
           if (aSeq->Value(i)->Word() == "/")
+          {
             tok1 = tok1 / tok2;
+          }
           else
+          {
             tok1 = tok1 * tok2;
+          }
           aSeq->Remove(i);
           aSeq->Remove(i);
           aSeq->SetValue(i - 1, tok1);
@@ -269,7 +287,9 @@ occ::handle<Units_Token> Units_Sentence::Evaluate()
 {
   occ::handle<Units_Token> rtoken, ktoken;
   if (thesequenceoftokens->Length() == 0)
+  {
     return rtoken;
+  }
 
   /* old variant
     int index;

@@ -41,7 +41,9 @@ gp_Vec IGESGeom_Direction::Value() const
 gp_Vec IGESGeom_Direction::TransformedValue() const
 {
   if (!HasTransf())
+  {
     return gp_Vec(theDirection);
+  }
   gp_XYZ   xyz(theDirection);
   gp_GTrsf loc = Location();
   loc.SetTranslationPart(gp_XYZ(0., 0., 0.));

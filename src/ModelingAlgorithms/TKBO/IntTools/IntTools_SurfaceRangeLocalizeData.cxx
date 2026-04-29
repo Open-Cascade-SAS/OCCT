@@ -78,13 +78,19 @@ IntTools_SurfaceRangeLocalizeData& IntTools_SurfaceRangeLocalizeData::Assign(
   myVIndMax    = Other.myVIndMax;
 
   if (!Other.myUParams.IsNull())
+  {
     myUParams = Other.myUParams;
+  }
 
   if (!Other.myVParams.IsNull())
+  {
     myVParams = Other.myVParams;
+  }
 
   if (!Other.myGridPoints.IsNull())
+  {
     myGridPoints = Other.myGridPoints;
+  }
   //  Modified by skv - Thu Nov  3 11:58:24 2005 Optimization End
   return *(this);
 }
@@ -125,7 +131,9 @@ void IntTools_SurfaceRangeLocalizeData::ListRangeOut(
   NCollection_Map<IntTools_SurfaceRangeSample>::Iterator anIt(myMapRangeOut);
 
   for (; anIt.More(); anIt.Next())
+  {
     theList.Append(anIt.Key());
+  }
 }
 
 void IntTools_SurfaceRangeLocalizeData::RemoveRangeOutAll()
@@ -193,16 +201,22 @@ void IntTools_SurfaceRangeLocalizeData::SetFrame(const double theUMin,
   for (i = 1; i <= aLen; i++)
   {
     if (myUIndMin == 0 && theUMin < myUParams->Value(i))
+    {
       myUIndMin = i;
+    }
 
     aLmI = aLen - i + 1;
 
     if (myUIndMax == 0 && theUMax > myUParams->Value(aLmI))
+    {
       myUIndMax = aLmI;
+    }
   }
 
   if (myUIndMin == 0)
+  {
     myUIndMin = aLen + 1;
+  }
 
   // Compute frame along V.
   aLen = myVParams->Length();
@@ -210,16 +224,22 @@ void IntTools_SurfaceRangeLocalizeData::SetFrame(const double theUMin,
   for (i = 1; i <= aLen; i++)
   {
     if (myVIndMin == 0 && theVMin < myVParams->Value(i))
+    {
       myVIndMin = i;
+    }
 
     aLmI = aLen - i + 1;
 
     if (myVIndMax == 0 && theVMax > myVParams->Value(aLmI))
+    {
       myVIndMax = aLmI;
+    }
   }
 
   if (myVIndMin == 0)
+  {
     myVIndMin = aLen + 1;
+  }
 }
 
 const gp_Pnt& IntTools_SurfaceRangeLocalizeData::GetPointInFrame(const int theUIndex,
@@ -229,7 +249,9 @@ const gp_Pnt& IntTools_SurfaceRangeLocalizeData::GetPointInFrame(const int theUI
   int aFrmVInd = theVIndex + myVIndMin - 1;
 
   if (myGridPoints.IsNull() || aFrmUInd > myUIndMax || aFrmVInd > myVIndMax)
+  {
     return gp::Origin();
+  }
 
   return myGridPoints->Value(aFrmUInd, aFrmVInd);
 }
@@ -239,7 +261,9 @@ double IntTools_SurfaceRangeLocalizeData::GetUParamInFrame(const int theIndex) c
   int aFrmInd = theIndex + myUIndMin - 1;
 
   if (myUParams.IsNull() || aFrmInd > myUIndMax)
+  {
     return Precision::Infinite();
+  }
 
   return myUParams->Value(aFrmInd);
 }
@@ -249,7 +273,9 @@ double IntTools_SurfaceRangeLocalizeData::GetVParamInFrame(const int theIndex) c
   int aFrmInd = theIndex + myVIndMin - 1;
 
   if (myVParams.IsNull() || aFrmInd > myVIndMax)
+  {
     return Precision::Infinite();
+  }
 
   return myVParams->Value(aFrmInd);
 }
@@ -263,13 +289,19 @@ void IntTools_SurfaceRangeLocalizeData::ClearGrid()
   myVIndMax    = 0;
 
   if (!myUParams.IsNull())
+  {
     myUParams.Nullify();
+  }
 
   if (!myVParams.IsNull())
+  {
     myVParams.Nullify();
+  }
 
   if (!myGridPoints.IsNull())
+  {
     myGridPoints.Nullify();
+  }
 }
 
 //  Modified by skv - Thu Nov  3 11:58:24 2005 Optimization End

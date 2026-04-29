@@ -50,7 +50,9 @@ void StdLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&
   Storage_HeaderData                aHeaderData;
   occ::handle<StdObjMgt_Persistent> aPDocument = read(theFileName, aHeaderData);
   if (aPDocument.IsNull())
+  {
     return;
+  }
 
   // Import transient document from the persistent one
   aPDocument->ImportDocument(occ::down_cast<TDocStd_Document>(theNewDocument));
@@ -89,30 +91,36 @@ occ::handle<StdObjMgt_Persistent> StdLDrivers_DocumentRetrievalDriver::read(
     myReaderStatus = PCDM_RS_OpenError;
 
     Standard_SStream aMsg;
-    aMsg << anException << std::endl;
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 
   // Read header section
   if (!theHeaderData.Read(aFileDriver))
+  {
     raiseOnStorageError(theHeaderData.ErrorStatus());
+  }
 
   // Read type section
   Storage_TypeData aTypeData;
   if (!aTypeData.Read(aFileDriver))
+  {
     raiseOnStorageError(aTypeData.ErrorStatus());
+  }
 
   // Read root section
   Storage_RootData aRootData;
   if (!aRootData.Read(aFileDriver))
+  {
     raiseOnStorageError(aRootData.ErrorStatus());
+  }
 
   if (aRootData.NumberOfRoots() < 1)
   {
     myReaderStatus = PCDM_RS_NoDocument;
 
     Standard_SStream aMsg;
-    aMsg << "could not find any document in this file" << std::endl;
+    aMsg << "could not find any document in this file" << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 
@@ -145,9 +153,13 @@ occ::handle<StdObjMgt_Persistent> StdLDrivers_DocumentRetrievalDriver::read(
       }
       StdObjMgt_Persistent::Instantiator anInstantiator;
       if (aMapOfInst.Find(aCurTypeName, anInstantiator))
+      {
         anInstantiators(aCurTypeNum) = anInstantiator;
+      }
       else
+      {
         anUnknownTypes.Append(aCurTypeName);
+      }
     }
 
     if (!anUnknownTypes.IsEmpty())
@@ -161,9 +173,13 @@ occ::handle<StdObjMgt_Persistent> StdLDrivers_DocumentRetrievalDriver::read(
       {
         aMsg << anUnknownTypes(i);
         if (i < anUnknownTypes.Length())
+        {
           aMsg << ",";
+        }
         else
-          aMsg << std::endl;
+        {
+          aMsg << '\n';
+        }
       }
 
       throw Standard_Failure(aMsg.str().c_str());
@@ -264,37 +280,37 @@ void StdLDrivers_DocumentRetrievalDriver::raiseOnStorageError(Storage_Error theE
     case Storage_VSNotOpen:
     case Storage_VSAlreadyOpen:
       myReaderStatus = PCDM_RS_OpenError;
-      aMsg << "Stream Open Error" << std::endl;
+      aMsg << "Stream Open Error" << '\n';
       throw Standard_Failure(aMsg.str().c_str());
 
     case Storage_VSModeError:
       myReaderStatus = PCDM_RS_WrongStreamMode;
-      aMsg << "Stream is opened with a wrong mode for operation" << std::endl;
+      aMsg << "Stream is opened with a wrong mode for operation" << '\n';
       throw Standard_Failure(aMsg.str().c_str());
 
     case Storage_VSSectionNotFound:
       myReaderStatus = PCDM_RS_FormatFailure;
-      aMsg << "Section is not found" << std::endl;
+      aMsg << "Section is not found" << '\n';
       throw Standard_Failure(aMsg.str().c_str());
 
     case Storage_VSFormatError:
       myReaderStatus = PCDM_RS_FormatFailure;
-      aMsg << "Wrong format error" << std::endl;
+      aMsg << "Wrong format error" << '\n';
       throw Standard_Failure(aMsg.str().c_str());
 
     case Storage_VSUnknownType:
       myReaderStatus = PCDM_RS_TypeFailure;
-      aMsg << "Try to read an unknown type" << std::endl;
+      aMsg << "Try to read an unknown type" << '\n';
       throw Standard_Failure(aMsg.str().c_str());
 
     case Storage_VSTypeMismatch:
       myReaderStatus = PCDM_RS_TypeFailure;
-      aMsg << "Try to read a wrong primitive type" << std::endl;
+      aMsg << "Try to read a wrong primitive type" << '\n';
       throw Standard_Failure(aMsg.str().c_str());
 
     default:
       myReaderStatus = PCDM_RS_DriverFailure;
-      aMsg << "Retrieval Driver Failure" << std::endl;
+      aMsg << "Retrieval Driver Failure" << '\n';
       throw Standard_Failure(aMsg.str().c_str());
   }
 }

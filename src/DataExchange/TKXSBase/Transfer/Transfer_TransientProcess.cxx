@@ -50,9 +50,13 @@ void Transfer_TransientProcess::SetGraph(const occ::handle<Interface_HGraph>& HG
 {
   thegraph = HG;
   if (!thegraph.IsNull())
+  {
     SetModel(thegraph->Graph().Model());
+  }
   else
+  {
     themodel.Nullify();
+  }
 }
 
 //=================================================================================================
@@ -91,16 +95,26 @@ bool Transfer_TransientProcess::GetContext(const char* const                 nam
                                            occ::handle<Standard_Transient>&  ctx) const
 {
   if (thectx.IsEmpty())
+  {
     return false;
+  }
   if (!thectx.Find(name, ctx))
+  {
     ctx.Nullify();
+  }
 
   if (ctx.IsNull())
+  {
     return false;
+  }
   if (type.IsNull())
+  {
     return true;
+  }
   if (!ctx->IsKind(type))
+  {
     ctx.Nullify();
+  }
   return !ctx.IsNull();
 }
 
@@ -127,7 +141,9 @@ void Transfer_TransientProcess::PrintTrace(const occ::handle<Standard_Transient>
       //      S<<" Type:"<<themodel->TypeName (start);
     }
     else
+    {
       S << "Entity Type:" << Interface_InterfaceModel::ClassName(start->DynamicType()->Name());
+    }
     //  << start (handle)  ??
   }
 }
@@ -147,7 +163,9 @@ Interface_EntityIterator Transfer_TransientProcess::TypedSharings(
 {
   Interface_EntityIterator iter;
   if (thegraph.IsNull())
+  {
     return iter;
+  }
   return thegraph->Graph().TypedSharings(start, type);
 }
 
@@ -156,12 +174,18 @@ Interface_EntityIterator Transfer_TransientProcess::TypedSharings(
 bool Transfer_TransientProcess::IsDataLoaded(const occ::handle<Standard_Transient>& start) const
 {
   if (themodel.IsNull())
+  {
     return true;
+  }
   int num = themodel->Number(start);
   if (num == 0)
+  {
     return true;
+  }
   if (themodel->IsUnknownEntity(num))
+  {
     return false;
+  }
   return !themodel->IsRedefinedContent(num);
 }
 
@@ -170,12 +194,18 @@ bool Transfer_TransientProcess::IsDataLoaded(const occ::handle<Standard_Transien
 bool Transfer_TransientProcess::IsDataFail(const occ::handle<Standard_Transient>& start) const
 {
   if (themodel.IsNull())
+  {
     return false;
+  }
   int num = themodel->Number(start);
   if (num == 0)
+  {
     return false;
+  }
   if (themodel->IsErrorEntity(num))
+  {
     return true;
+  }
   const occ::handle<Interface_Check> ach = themodel->Check(num, false); // semantic
   return ach->HasFailed();
 }
@@ -186,46 +216,64 @@ void Transfer_TransientProcess::PrintStats(const int /*mode*/, Standard_OStream&
 {
   S << "\n*******************************************************************\n";
   //  if (mode == 1) {    //  Basic statistics
-  S << "********                 Basic Statistics                  ********" << std::endl;
+  S << "********                 Basic Statistics                  ********" << '\n';
 
   occ::handle<Interface_InterfaceModel> model = Model();
   if (model.IsNull())
-    S << "****        Model unknown" << std::endl;
+  {
+    S << "****        Model unknown" << '\n';
+  }
   else
-    S << "****        Nb Entities         : " << model->NbEntities() << std::endl;
+  {
+    S << "****        Nb Entities         : " << model->NbEntities() << '\n';
+  }
 
   int nbr = 0, nbe = 0, nbw = 0;
   int i, max = NbMapped(), nbroots = NbRoots();
-  S << "****        Nb Final Results    : " << nbroots << std::endl;
+  S << "****        Nb Final Results    : " << nbroots << '\n';
 
   for (i = 1; i <= max; i++)
   {
     const occ::handle<Transfer_Binder>& binder = MapItem(i);
     if (binder.IsNull())
+    {
       continue;
+    }
     const occ::handle<Interface_Check> ach  = binder->Check();
     Transfer_StatusExec                stat = binder->StatusExec();
     if (stat != Transfer_StatusInitial && stat != Transfer_StatusDone)
+    {
       nbe++;
+    }
     else
     {
       if (ach->NbWarnings() > 0)
+      {
         nbw++;
+      }
       if (binder->HasResult())
+      {
         nbr++;
+      }
     }
   }
   if (nbr > nbroots)
+  {
     S << "****      ( Itermediate Results : " << nbr - nbroots << " )\n";
+  }
   if (nbe > 0)
+  {
     S << "****                  Errors on : " << Interface_MSG::Blanks(nbe, 4) << nbe
       << " Entities\n";
+  }
   if (nbw > 0)
+  {
     S << "****                Warnings on : " << Interface_MSG::Blanks(nbw, 4) << nbw
       << " Entities\n";
+  }
   S << "*******************************************************************";
   //  }
-  S << std::endl;
+  S << '\n';
 }
 
 //=================================================================================================

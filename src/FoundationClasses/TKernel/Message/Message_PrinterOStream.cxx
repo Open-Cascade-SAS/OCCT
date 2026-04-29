@@ -95,7 +95,9 @@ Message_PrinterOStream::Message_PrinterOStream(const char* const     theFileName
 void Message_PrinterOStream::Close()
 {
   if (!myStream)
+  {
     return;
+  }
   Standard_OStream* ostr = (Standard_OStream*)myStream;
   myStream               = nullptr;
 
@@ -158,7 +160,7 @@ void Message_PrinterOStream::send(const TCollection_AsciiString& theString,
   {
     *aStream << theString;
   }
-  (*aStream) << std::endl;
+  (*aStream) << '\n';
 }
 
 //=================================================================================================
@@ -218,7 +220,7 @@ void Message_PrinterOStream::SetConsoleTextColor(Standard_OStream*    theOStream
     return;
   }
 
-  const char* aCode;
+  const char* aCode = "";
   switch (theTextColor)
   {
     case Message_ConsoleColor_Default:

@@ -22,8 +22,10 @@ bool OSD::RealToCString(const double aReal, Standard_PCharacter& aString)
 {
   char *p, *q;
 
-  if (Sprintf(aString, "%.17e", aReal) <= 0) // BUC60808
+  if (Sprintf(aString, "%.17e", aReal) <= 0)
+  { // BUC60808
     return false;
+  }
 
   // Suppress "e+00" and insignificant 0's
 
@@ -31,15 +33,23 @@ bool OSD::RealToCString(const double aReal, Standard_PCharacter& aString)
   if (p)
   {
     if (!strcmp(p, "e+00"))
+    {
       *p = 0;
+    }
     for (q = p - 1; *q == '0'; q--)
+    {
       ;
+    }
     if (q != p - 1)
     {
       if (*q != '.')
+      {
         q++;
+      }
       while (*p)
+      {
         *q++ = *p++;
+      }
       *q = 0;
     }
   }

@@ -41,17 +41,23 @@ bool STEPSelections_SelectAssembly::Explore(const int /*level*/,
                                             Interface_EntityIterator&              explored) const
 {
   if (start.IsNull())
+  {
     return false;
+  }
 
   if (start->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation)))
   {
     DeclareAndCast(StepShape_ContextDependentShapeRepresentation, sdsr, start);
     occ::handle<StepRepr_ProductDefinitionShape> pds = sdsr->RepresentedProductRelation();
     if (pds.IsNull())
+    {
       return false;
+    }
     occ::handle<Standard_Transient> ent = pds->Definition().ProductDefinitionRelationship();
     if (ent.IsNull())
+    {
       return false;
+    }
     return (ent->IsKind(STANDARD_TYPE(StepRepr_NextAssemblyUsageOccurrence)));
   }
 
@@ -61,26 +67,42 @@ bool STEPSelections_SelectAssembly::Explore(const int /*level*/,
     Interface_EntityIterator                   subs = G.Sharings(mapped);
     occ::handle<StepShape_ShapeRepresentation> shrep;
     for (subs.Start(); subs.More() && shrep.IsNull(); subs.Next())
+    {
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+      {
         shrep = occ::down_cast<StepShape_ShapeRepresentation>(subs.Value());
+      }
+    }
     if (shrep.IsNull())
+    {
       return false;
+    }
 
     subs = G.Sharings(shrep);
     occ::handle<StepShape_ShapeDefinitionRepresentation> shdefrep;
     for (subs.Start(); subs.More() && shdefrep.IsNull(); subs.Next())
+    {
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+      {
         shdefrep = occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs.Value());
+      }
+    }
     if (shdefrep.IsNull())
+    {
       return false;
+    }
 
     occ::handle<StepRepr_ProductDefinitionShape> pds =
       occ::down_cast<StepRepr_ProductDefinitionShape>(shdefrep->Definition().PropertyDefinition());
     if (pds.IsNull())
+    {
       return false;
+    }
     occ::handle<Standard_Transient> ent = pds->Definition().ProductDefinitionRelationship();
     if (ent.IsNull())
+    {
       return false;
+    }
     return (ent->IsKind(STANDARD_TYPE(StepRepr_NextAssemblyUsageOccurrence)));
   }
 
@@ -88,7 +110,9 @@ bool STEPSelections_SelectAssembly::Explore(const int /*level*/,
   subs.Start();
   bool isSome = subs.More();
   for (; subs.More(); subs.Next())
+  {
     explored.AddItem(subs.Value());
+  }
 
   return isSome;
 }

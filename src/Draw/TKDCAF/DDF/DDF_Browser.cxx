@@ -69,7 +69,7 @@ occ::handle<Draw_Drawable3D> DDF_Browser::Copy() const
 
 void DDF_Browser::Dump(Standard_OStream& S) const
 {
-  S << "DDF_Browser on a DF:" << std::endl;
+  S << "DDF_Browser on a DF:" << '\n';
   S << myDF;
 }
 
@@ -113,7 +113,9 @@ TCollection_AsciiString DDF_Browser::OpenRoot() const
   list.AssignCat("\"");
   list.AssignCat(TDF_BrowserSeparator2);
   if (!root.MayBeModified())
+  {
     list.AssignCat("Not");
+  }
   list.AssignCat("Modified");
   list.AssignCat(TDF_BrowserSeparator2);
   list.AssignCat((root.HasAttribute() || root.HasChild()) ? "1" : "0");
@@ -140,7 +142,9 @@ TCollection_AsciiString DDF_Browser::OpenLabel(const TDF_Label& aLab) const
     list.AssignCat("AttributeList");
     list.AssignCat(TDF_BrowserSeparator2);
     if (!aLab.AttributesModified())
+    {
       list.AssignCat("Not");
+    }
     list.AssignCat("Modified");
     split = true;
   }
@@ -148,7 +152,9 @@ TCollection_AsciiString DDF_Browser::OpenLabel(const TDF_Label& aLab) const
   for (TDF_ChildIterator itr(aLab); itr.More(); itr.Next())
   {
     if (split)
+    {
       list.AssignCat(TDF_BrowserSeparator1);
+    }
     TDF_Tool::Entry(itr.Value(), entry);
     list.AssignCat(entry);
     list.AssignCat(TDF_BrowserSeparator2);
@@ -162,7 +168,9 @@ TCollection_AsciiString DDF_Browser::OpenLabel(const TDF_Label& aLab) const
     list.AssignCat("\"");
     list.AssignCat(TDF_BrowserSeparator2);
     if (!itr.Value().MayBeModified())
+    {
       list.AssignCat("Not");
+    }
     list.AssignCat("Modified");
     list.AssignCat(TDF_BrowserSeparator2);
     // May be open.
@@ -187,7 +195,9 @@ TCollection_AsciiString DDF_Browser::OpenAttributeList(const TDF_Label& aLab)
   for (TDF_AttributeIterator itr(aLab, false); itr.More(); itr.Next())
   {
     if (split1)
+    {
       list.AssignCat(TDF_BrowserSeparator1);
+    }
     const occ::handle<TDF_Attribute>& att   = itr.Value();
     const int                         index = myAttMap.Add(att);
     TCollection_AsciiString           indexStr(index);
@@ -199,17 +209,23 @@ TCollection_AsciiString DDF_Browser::OpenAttributeList(const TDF_Label& aLab)
     // Valid.
     list.AssignCat(TDF_BrowserSeparator2);
     if (!att->IsValid())
+    {
       list.AssignCat("Not");
+    }
     list.AssignCat("Valid");
     // Forgotten.
     list.AssignCat(TDF_BrowserSeparator2);
     if (!att->IsForgotten())
+    {
       list.AssignCat("Not");
+    }
     list.AssignCat("Forgotten");
     // Backuped.
     list.AssignCat(TDF_BrowserSeparator2);
     if (!att->IsBackuped())
+    {
       list.AssignCat("Not");
+    }
     list.AssignCat("Backuped");
     // May be open.
     list.AssignCat(TDF_BrowserSeparator2);
@@ -231,7 +247,9 @@ TCollection_AsciiString DDF_Browser::OpenAttribute(const int anIndex)
   occ::handle<TDF_Attribute> att = myAttMap.FindKey(anIndex);
   DDF_AttributeBrowser*      br  = DDF_AttributeBrowser::FindBrowser(att);
   if (br)
+  {
     list = br->Open(att);
+  }
   return list;
 }
 

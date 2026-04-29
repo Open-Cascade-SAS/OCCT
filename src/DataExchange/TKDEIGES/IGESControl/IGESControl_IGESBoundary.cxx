@@ -78,9 +78,13 @@ void IGESControl_IGESBoundary::Check(const bool result,
       saw->Load(mysewd3d);
       saw->CheckConnected(1);
       if (saw->LastCheckStatus(ShapeExtend_FAIL))
+      {
         okCurve3d = false;
+      }
       else
+      {
         okCurve2d = false;
+      }
       Result = false;
     }
   }
@@ -175,7 +179,9 @@ bool IGESControl_IGESBoundary::Transfer(
   int                                                                 len3d = 0, len2d = 0;
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seq3d, seq2d;
   if (usescurve)
+  {
     len3d = scurve3d->NbEdges();
+  }
   else
   {
     IGESToBRep::IGESCurveToSequenceOfIGESCurve(icurve3d, seq3d);
@@ -184,29 +190,45 @@ bool IGESControl_IGESBoundary::Transfer(
   if (!curves2d.IsNull())
   {
     for (int i = 1; i <= curves2d->Length(); i++)
+    {
       IGESToBRep::IGESCurveToSequenceOfIGESCurve(curves2d->Value(i), seq2d);
+    }
     len2d = seq2d->Length();
   }
 
   int surfcurv = myCS.GetSurfaceCurve();
   if ((surfcurv == -2 && len2d > 0) || len3d == 0)
+  {
     GTranslate3d = false;
+  }
   else if ((surfcurv == -3 && len3d > 0) || len2d == 0)
+  {
     GTranslate2d = false;
+  }
 
   if (GTranslate3d && GTranslate2d)
   {
     // Setting preference in the case of inconsistency between 3D and 2D
     if (surfcurv == 2)
+    {
       Preferred3d = false;
+    }
     else if (surfcurv == 3)
+    {
       Preferred2d = false;
+    }
     else if (myfilepreference == 2)
+    {
       Preferred3d = false;
+    }
     else if (myfilepreference == 3)
+    {
       Preferred2d = false;
+    }
     else
+    {
       Preferred3d = false;
+    }
   }
   if (GTranslate3d && GTranslate2d && len3d != len2d)
   {
@@ -234,8 +256,10 @@ bool IGESControl_IGESBoundary::Transfer(
           Gsewd->Add(Gsewd3d->Wire());
         }
         else
+        {
           Gsewd->Add(
             Sh); // Gsewd = Gsewd3d is impossible to avoid sharing of sewd (UK1.igs entity 7)
+        }
       }
     }
   }
@@ -245,7 +269,9 @@ bool IGESControl_IGESBoundary::Transfer(
     {
       TopoDS_Shape Sh = TC.Transfer2dTopoCurve(curves2d->Value(i), myface, mytrsf, myuFact);
       if (!Sh.IsNull())
+      {
         Gsewd2d->Add(Sh);
+      }
     }
     if (toreverse2d)
     {
@@ -264,7 +290,9 @@ bool IGESControl_IGESBoundary::Transfer(
       occ::handle<ShapeExtend_WireData> Lsewd3d = new ShapeExtend_WireData;
       TC.SetBadCase(false); //: 27
       if (usescurve)
+      {
         Lsewd3d->Add(scurve3d->Edge(i));
+      }
       else
       {
         TopoDS_Shape shape3d =
@@ -278,7 +306,9 @@ bool IGESControl_IGESBoundary::Transfer(
           }
         }
         else
+        {
           LTranslate3d = false;
+        }
       }
       bool bad3d = TC.BadCase(); //: 27
       okCurve3d  = okCurve3d
@@ -305,14 +335,18 @@ bool IGESControl_IGESBoundary::Transfer(
                          ->ConnectNextWire(saw2d, Lsewd2d, maxtol, distmin, revsewd, revnextsewd);
       }
       else
+      {
         LTranslate2d = false;
+      }
 
       //     if (LTranslate3d && LTranslate2d && (Lsewd3d->NbEdges() != Lsewd2d->NbEdges() || bad3d
       //     || bad2d)) {
       bool isBSpline = false;
       if (!usescurve && !seq3d->Value(i).IsNull() && !seq2d->Value(i).IsNull())
+      {
         isBSpline = seq3d->Value(i)->IsKind(STANDARD_TYPE(IGESGeom_BSplineCurve))
                     && seq2d->Value(i)->IsKind(STANDARD_TYPE(IGESGeom_BSplineCurve));
+      }
 
       if (LTranslate3d && LTranslate2d
           && ((isBSpline && (Lsewd3d->NbEdges() != Lsewd2d->NbEdges()))
@@ -325,9 +359,13 @@ bool IGESControl_IGESBoundary::Transfer(
       }
       occ::handle<ShapeExtend_WireData> Lsewd; // Lsewd3d or Lsewd2d or Lsewd3d+pcurve
       if (LTranslate3d && !LTranslate2d)
+      {
         Lsewd = Lsewd3d;
+      }
       else if (!LTranslate3d && LTranslate2d)
+      {
         Lsewd = Lsewd2d;
+      }
       else
       {
         Lsewd = Lsewd3d;
@@ -337,7 +375,9 @@ bool IGESControl_IGESBoundary::Transfer(
         {
           TopoDS_Edge edge3d = Lsewd3d->Edge(iedge), edge2d = Lsewd2d->Edge(iedge);
           if (!IGESToBRep::TransferPCurve(edge2d, edge3d, myface))
+          {
             continue;
+          }
           if (sfe->FixReversed2d(edge3d, myface))
           {
 #ifdef OCCT_DEBUG
@@ -358,7 +398,9 @@ bool IGESControl_IGESBoundary::Transfer(
             sfe->FixSameParameter(edge3d, SPTol);
           }
           else
+          {
             sfe->FixSameParameter(edge3d);
+          }
           double maxdev = BRep_Tool::Tolerance(edge3d);
           // pdn 08.04.99 S4135 recomputing only if deviation is greater than maxtol
           if (maxdev > maxtol)
@@ -368,7 +410,9 @@ bool IGESControl_IGESBoundary::Transfer(
 #endif
             ShapeFix_ShapeTolerance().SetTolerance(edge3d, Precision::Confusion());
             for (int ie = 1; ie <= iedge; ie++)
+            {
               ShapeBuild_Edge().RemovePCurve(Lsewd3d->Edge(ie), myface);
+            }
             if (Preferred3d)
             {
 #ifdef OCCT_DEBUG
@@ -403,13 +447,17 @@ bool IGESControl_IGESBoundary::Transfer(
         for (int j = 1; j <= len3d; j++)
         {
           if (usescurve)
+          {
             Gsewd3d->Add(scurve3d->Edge(j));
+          }
           else
           {
             TopoDS_Shape Sh =
               TC.TransferTopoCurve(occ::down_cast<IGESData_IGESEntity>(seq3d->Value(j)));
             if (!Sh.IsNull())
+            {
               Gsewd3d->Add(Sh);
+            }
           }
         }
         if (toreverse3d)
@@ -425,7 +473,9 @@ bool IGESControl_IGESBoundary::Transfer(
                                    mytrsf,
                                    myuFact);
           if (!Sh.IsNull())
+          {
             Gsewd2d->Add(Sh);
+          }
         }
         if (toreverse2d)
         {
@@ -445,9 +495,13 @@ bool IGESControl_IGESBoundary::Transfer(
         Gsewd3d->Add(w3);
         Gsewd2d->Add(w3);
         if (tol3 < tol2)
+        {
           Gsewd->Add(w3);
+        }
         else
+        {
           Gsewd->Add(w2);
+        }
         okCurve   = true;
         okCurve2d = true;
         okCurve3d = true;

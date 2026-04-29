@@ -98,7 +98,9 @@ void TDataStd_Real::Set(const double v)
 {
   // OCC2932 correction
   if (myValue == v)
+  {
     return;
+  }
 
   Backup();
   myValue = v;
@@ -117,7 +119,9 @@ void TDataStd_Real::SetDimension(const TDataStd_RealEnum DIM)
 {
   // OCC2932 correction
   if (myDimension == DIM)
+  {
     return;
+  }
 
   Backup();
   myDimension = DIM;
@@ -142,7 +146,9 @@ const Standard_GUID& TDataStd_Real::ID() const
 void TDataStd_Real::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
 
   Backup();
   myID = theGuid;

@@ -38,7 +38,9 @@ void UnitsAPI::CheckLoading(const UnitsAPI_SystemUnits aSystemUnits)
     {
       case UnitsAPI_DEFAULT:
         if (!CurrentUnits.IsNull())
+        {
           break;
+        }
         [[fallthrough]];
       case UnitsAPI_SI:
         currentSystem = UnitsAPI_SI;
@@ -288,7 +290,9 @@ double UnitsAPI::AnyToLS(const double aData, const char* const aUnit)
   occ::handle<Units_Dimensions> aDim;
   aValue = Units::ToSI(aValue, aUnit, aDim);
   if (aDim.IsNull())
+  {
     return aValue;
+  }
   const char* quantity = aDim->Quantity();
   if (quantity)
   {
@@ -314,7 +318,9 @@ double UnitsAPI::AnyToLS(const double                   aData,
   aValue               = Units::ToSI(aValue, aUnit, aDim);
   const char* quantity = aDim->Quantity();
   if (aDim.IsNull())
+  {
     return aValue;
+  }
   if (quantity)
   {
     aValue = LocalSystemUnits.ConvertSIValueToUserSystem(quantity, aValue);

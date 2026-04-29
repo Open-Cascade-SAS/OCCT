@@ -34,7 +34,9 @@ void StdPrs_Plane::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
   //  aPresentation->NewGroup();
   occ::handle<Graphic3d_Group> TheGroup = aPresentation->CurrentGroup();
   if (aPlane.GetType() != GeomAbs_Plane)
+  {
     return;
+  }
   occ::handle<Geom_Plane> thegeom = new Geom_Plane(aPlane.Plane());
 
   occ::handle<Prs3d_PlaneAspect> theaspect = aDrawer->PlaneAspect();
@@ -145,5 +147,7 @@ bool StdPrs_Plane::Match(const double             X,
     return (std::abs(theplane.Distance(thepoint)) <= aDistance);
   }
   else
+  {
     return false;
+  }
 }

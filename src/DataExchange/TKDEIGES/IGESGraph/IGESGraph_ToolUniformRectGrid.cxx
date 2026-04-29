@@ -52,7 +52,9 @@ void IGESGraph_ToolUniformRectGrid::ReadOwnParams(
   // Reading nbPropertyValues(Integer)
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues);
   if (nbPropertyValues != 9)
+  {
     PR.AddFail("No. of Property values : Value is not 9");
+  }
 
   // Reading finite(Integer)
   PR.ReadInteger(PR.Current(), "Finite/infinite grid flag", finite);
@@ -71,11 +73,15 @@ void IGESGraph_ToolUniformRectGrid::ReadOwnParams(
 
   // Reading nbPointsX(Integer)  ?? even if not IsFinite ?
   if (finite != 0 || PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(), "No. of points/lines in X direction", nbPointsX);
+  }
 
   // Reading nbPointsY(Integer)
   if (finite != 0 || PR.DefinedElseSkip())
+  {
     PR.ReadInteger(PR.Current(), "No. of points/lines in Y direction", nbPointsY);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(nbPropertyValues, finite, line, weighted, gridPoint, gridSpacing, nbPointsX, nbPointsY);
@@ -121,6 +127,7 @@ bool IGESGraph_ToolUniformRectGrid::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 9);
   if (res)
+  {
     ent->Init(9,
               (ent->IsFinite() ? 1 : 0),
               (ent->IsLine() ? 1 : 0),
@@ -129,6 +136,7 @@ bool IGESGraph_ToolUniformRectGrid::OwnCorrect(
               ent->GridSpacing().XY(),
               ent->NbPointsX(),
               ent->NbPointsY()); // nbpropertyvalues=9
+  }
   return res;
 }
 
@@ -151,13 +159,21 @@ void IGESGraph_ToolUniformRectGrid::OwnCheck(const occ::handle<IGESGraph_Uniform
                                              occ::handle<Interface_Check>& ach) const
 {
   if (ent->IsFinite() != 0 && ent->IsFinite() != 1)
+  {
     ach->AddFail("Finite/infinite grid flag : Value != 0/1");
+  }
   if (ent->IsLine() != 0 && ent->IsLine() != 1)
+  {
     ach->AddFail("Line/point grid flag : Value != 0/1");
+  }
   if (ent->IsWeighted() != 0 && ent->IsWeighted() != 1)
+  {
     ach->AddFail("Weighted/unweighted grid flag : Value != 0/1");
+  }
   if (ent->NbPropertyValues() != 9)
+  {
     ach->AddFail("No. of Property values : Value != 9");
+  }
 }
 
 void IGESGraph_ToolUniformRectGrid::OwnDump(const occ::handle<IGESGraph_UniformRectGrid>& ent,
@@ -176,6 +192,8 @@ void IGESGraph_ToolUniformRectGrid::OwnDump(const occ::handle<IGESGraph_UniformR
   IGESData_DumpXY(S, ent->GridSpacing());
   S << "\n";
   if (ent->IsFinite())
+  {
     S << "No. of points/lines in direction :  X : " << ent->NbPointsX()
-      << "  -  Y : " << ent->NbPointsY() << std::endl;
+      << "  -  Y : " << ent->NbPointsY() << '\n';
+  }
 }

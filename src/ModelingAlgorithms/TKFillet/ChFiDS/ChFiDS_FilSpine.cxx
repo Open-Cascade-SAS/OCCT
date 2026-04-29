@@ -52,7 +52,9 @@ void ChFiDS_FilSpine::Reset(const bool AllData)
   ChFiDS_Spine::Reset(AllData);
   laws.Clear();
   if (AllData)
+  {
     parandrad.Clear();
+  }
   else // Complete parandrad
   {
     double spinedeb = FirstParameter();
@@ -72,7 +74,9 @@ void ChFiDS_FilSpine::Reset(const bool AllData)
     }
 
     if (IsPeriodic())
+    {
       parandrad(parandrad.Length()).SetY(parandrad(1).Y());
+    }
   }
 }
 
@@ -100,12 +104,18 @@ void ChFiDS_FilSpine::UnSetRadius(const TopoDS_Edge& E)
   for (int i = 1; i <= parandrad.Length(); i++)
   {
     if (std::abs(parandrad(i).X() - Uf) <= gp::Resolution())
+    {
       ifirst = i;
+    }
     if (std::abs(parandrad(i).X() - Ul) <= gp::Resolution())
+    {
       ilast = i;
+    }
   }
   if (ifirst != 0 && ilast != 0)
+  {
     parandrad.Remove(ifirst, ilast);
+  }
 }
 
 //=================================================================================================
@@ -134,7 +144,9 @@ void ChFiDS_FilSpine::SetRadius(const gp_XY& UandR, const int IinC)
 {
   double W;
   if (IinC == 0)
+  {
     W = UandR.X();
+  }
   else
   {
     double Uf = FirstParameter(IinC);
@@ -150,21 +162,31 @@ void ChFiDS_FilSpine::SetRadius(const gp_XY& UandR, const int IinC)
     {
       parandrad.ChangeValue(i).SetY(UandR.Y());
       if (!splitdone)
+      {
         return;
+      }
       else
+      {
         break;
+      }
     }
     else if (parandrad.Value(i).X() > W)
     {
       parandrad.InsertBefore(i, pr);
       if (!splitdone)
+      {
         return;
+      }
       else
+      {
         break;
+      }
     }
   }
   if (i == parandrad.Length() + 1)
+  {
     parandrad.Append(pr);
+  }
 
   // si le split est done il faut rejouer la law
   // correspondant au parametre W
@@ -174,7 +196,9 @@ void ChFiDS_FilSpine::SetRadius(const gp_XY& UandR, const int IinC)
     NCollection_List<occ::handle<Law_Function>>::Iterator   Itl(laws);
     occ::handle<ChFiDS_ElSpine>                             Els = It.Value();
     if (Els->IsPeriodic())
+    {
       Itl.ChangeValue() = ComputeLaw(Els);
+    }
     else
     {
       for (; It.More(); It.Next(), Itl.Next())
@@ -222,16 +246,20 @@ void ChFiDS_FilSpine::SetRadius(const occ::handle<Law_Function>& C, const int /*
 bool ChFiDS_FilSpine::IsConstant() const
 {
   if (parandrad.IsEmpty())
+  {
     return false;
+  }
 
   bool   isconst = true;
   double Radius  = parandrad(1).Y();
   for (int i = 2; i <= parandrad.Length(); i++)
+  {
     if (std::abs(Radius - parandrad(i).Y()) > Precision::Confusion())
     {
       isconst = false;
       break;
     }
+  }
   return isconst;
 }
 
@@ -261,11 +289,17 @@ bool ChFiDS_FilSpine::IsConstant(const int IE) const
     par = parandrad(i).X();
     rad = parandrad(i).Y();
     if (std::abs(rad - StartRad) > Precision::Confusion())
+    {
       return false;
+    }
     if (std::abs(Ul - par) <= gp::Resolution())
+    {
       return true;
+    }
     if (par > Ul)
+    {
       return true;
+    }
   }
   return true;
 }
@@ -304,11 +338,17 @@ double ChFiDS_FilSpine::Radius(const int IE) const
     par = parandrad(i).X();
     rad = parandrad(i).Y();
     if (std::abs(rad - StartRad) > Precision::Confusion())
+    {
       throw Standard_DomainError("Edge is not constant");
+    }
     if (std::abs(Ul - par) <= gp::Resolution())
+    {
       return StartRad;
+    }
     if (par > Ul)
+    {
       return StartRad;
+    }
   }
   return StartRad;
 }
@@ -318,7 +358,9 @@ double ChFiDS_FilSpine::Radius(const int IE) const
 double ChFiDS_FilSpine::Radius() const
 {
   if (!IsConstant())
+  {
     throw Standard_DomainError("Spine is not constant");
+  }
   return parandrad(1).Y();
 }
 
@@ -360,7 +402,9 @@ static void mklaw(NCollection_List<occ::handle<Law_Function>>& res,
       const gp_XY& cur  = pr.Value(i);
       double       wcur = cur.X();
       if (recadre)
+      {
         wcur = ElCLib::InPeriod(wcur, deb, fin);
+      }
       if (curdeb - tol3d <= wcur && wcur <= curfin + tol3d)
       {
         if (wcur - curdeb < tol3d)
@@ -368,7 +412,9 @@ static void mklaw(NCollection_List<occ::handle<Law_Function>>& res,
           yaunpointsurledeb = true;
           gp_XY ncur        = cur;
           if (Rdeb < 0.)
+          {
             rad = cur.Y();
+          }
           ncur.SetCoord(curdeb, rad);
           npr.Append(ncur);
         }
@@ -377,12 +423,16 @@ static void mklaw(NCollection_List<occ::handle<Law_Function>>& res,
           yaunpointsurlefin = true;
           gp_XY ncur        = cur;
           if (Rfin < 0.)
+          {
             raf = cur.Y();
+          }
           ncur.SetCoord(curfin, raf);
           npr.Append(ncur);
         }
         else
+        {
           npr.Append(gp_XY(wcur, cur.Y()));
+        }
       }
     }
   }
@@ -390,7 +440,9 @@ static void mklaw(NCollection_List<occ::handle<Law_Function>>& res,
   if (npr.IsEmpty())
   {
     if (Rdeb < 0. && Rfin < 0.)
+    {
       throw Standard_DomainError("Impossible to create the law");
+    }
     else if (Rdeb < 0. || Rfin < 0.)
     {
       double                    r   = (Rfin < 0.) ? Rdeb : Rfin;
@@ -408,9 +460,13 @@ static void mklaw(NCollection_List<occ::handle<Law_Function>>& res,
   else
   {
     if (!yaunpointsurledeb && Rdeb >= 0.)
+    {
       npr.Append(gp_XY(curdeb, Rdeb));
+    }
     if (!yaunpointsurlefin && Rfin >= 0.)
+    {
       npr.Append(gp_XY(curfin, Rfin));
+    }
     int nbp = npr.Length();
     //    for(int i = 1; i < nbp; i++){
     int i;
@@ -437,7 +493,9 @@ static void mklaw(NCollection_List<occ::handle<Law_Function>>& res,
         nbp--;
       }
       else
+      {
         i++;
+      }
       fini = (i >= nbp);
     }
 
@@ -496,9 +554,13 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
   if (IsPeriodic())
   {
     if (deb < 0 && ideb > ifin)
+    {
       bidfin += len;
+    }
     else if (fin > LastParameter(len) && ideb > ifin)
+    {
       bidfin += len;
+    }
     nbed = bidfin - ideb + 1;
   }
   NCollection_Array1<int> ind(1, nbed);
@@ -530,9 +592,13 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
         Rdeb = Rfin = Radius(k);
         icur++;
         if (len == 1)
+        {
           curfin = LastParameter(k); // because InPeriod will make 0.!!!
+        }
         else
+        {
           curfin = ElCLib::InPeriod(LastParameter(k), spinedeb, spinefin);
+        }
         occ::handle<Law_Constant> curloi = new Law_Constant();
         curloi->Set(Rdeb, curdeb, curfin);
         list.Append(curloi);
@@ -543,17 +609,23 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
     if (k > len)
     { // no !
       if (parandrad.IsEmpty())
+      {
         throw Standard_DomainError("Radius not defined");
+      }
       int nbp = parandrad.Length();
       if (nbp > 1)
       {
         deb = parandrad.First().X();
         fin = deb + Period();
         if (parandrad.Last().X() - fin < -tol3d)
+        {
           nbp++;
+        }
       }
       else
+      {
         nbp++;
+      }
       NCollection_Array1<gp_Pnt2d> pr(1, nbp);
       for (int l = 1; l < nbp; l++)
       {
@@ -586,30 +658,40 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
       // There is inevitably kpart right before!
       int iprec = (ind(1) - 1);
       if (iprec == 0)
+      {
         iprec = len;
+      }
       if (IsConstant(iprec))
       {
         Rdeb = Radius(iprec);
       }
       else
+      {
         throw Standard_DomainError("AppendLaw : previous constant is missing!");
+      }
       lawencours = true;
     }
     // the raduis at end.
     if (IsConstant(ind(nbed)))
+    {
       Rfin = Radius(ind(nbed));
+    }
     else
     {
       // There is inevitably kpart right after!
       int isuiv = (ind(nbed) + 1);
       if (isuiv == len + 1)
+      {
         isuiv = 1;
+      }
       if (IsConstant(isuiv))
       {
         Rfin = Radius(isuiv);
       }
       else
+      {
         throw Standard_DomainError("AppendLaw : next constant is missing!");
+      }
     }
   }
   else
@@ -634,34 +716,46 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
           Rdeb = Radius(ind(1) - 1);
         }
         else
+        {
           throw Standard_DomainError("AppendLaw : previous constant is missing");
+        }
       }
       else if (parandrad.IsEmpty())
       {
         throw Standard_DomainError("AppendLaw : no radius on vertex");
       }
       else
+      {
         Rdeb = -1.;
+      }
       lawencours = true;
     }
     // the radius at end.
     if (IsConstant(ind(nbed)))
+    {
       Rfin = Radius(ind(nbed));
+    }
     else
     {
       if (ind(nbed) < len)
       {
         if (IsConstant(ind(nbed) + 1))
+        {
           Rfin = Radius(ind(nbed) + 1);
+        }
         else
+        {
           throw Standard_DomainError("AppendLaw : next constant is missing");
+        }
       }
       else if (parandrad.IsEmpty())
       {
         throw Standard_DomainError("AppendLaw : no radius on vertex");
       }
       else
+      {
         Rfin = -1.;
+      }
     }
   }
 
@@ -691,12 +785,18 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
           double biddeb = FirstParameter(ind(icur));
           biddeb        = ElCLib::InPeriod(biddeb, spinedeb + tol3d, spinefin + tol3d);
           if (biddeb >= curfin)
+          {
             curfin = fin;
+          }
           else
+          {
             curfin = std::min(fin, curfin);
+          }
         }
         else
+        {
           curfin = std::min(fin, curfin);
+        }
       }
       if ((curfin - curdeb) > tol3d)
       {
@@ -711,7 +811,9 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
     {
       curfin = LastParameter(ind(icur));
       if (IsPeriodic())
+      {
         curfin = ElCLib::InPeriod(curfin, spinedeb + tol3d, spinefin + tol3d);
+      }
       curfin     = std::min(fin, curfin);
       lawencours = true;
       if (ind(icur) == ind(nbed))
@@ -725,13 +827,19 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
           biddeb        = ElCLib::InPeriod(biddeb, spinedeb + tol3d, spinefin + tol3d);
           curfin        = ElCLib::InPeriod(curfin, spinedeb + tol3d, spinefin + tol3d);
           if (biddeb >= curfin)
+          {
             curfin = fin;
+          }
           else
+          {
             curfin = std::min(fin, curfin);
+          }
         }
         // or if it is the end of spine with extension.
         else if (ind(icur) == len)
+        {
           curfin = fin;
+        }
         NCollection_List<occ::handle<Law_Function>> temp;
         mklaw(temp, parandrad, curdeb, curfin, Rdeb, Rfin, IsPeriodic(), spinedeb, spinefin, tol3d);
         list.Append(temp);
@@ -739,7 +847,9 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
     }
   }
   if (!lastloi.IsNull())
+  {
     list.Append(lastloi);
+  }
   return loi;
 }
 
@@ -785,8 +895,12 @@ double ChFiDS_FilSpine::MaxRadFromSeqAndLaws() const
   double MaxRad = 0.;
 
   for (int i = 1; i <= parandrad.Length(); i++)
+  {
     if (parandrad(i).Y() > MaxRad)
+    {
       MaxRad = parandrad(i).Y();
+    }
+  }
 
   NCollection_List<occ::handle<Law_Function>>::Iterator itl(laws);
   for (; itl.More(); itl.Next())
@@ -800,11 +914,15 @@ double ChFiDS_FilSpine::MaxRadFromSeqAndLaws() const
       par = fpar + i * delta;
       rad = law->Value(par);
       if (rad > MaxRad)
+      {
         MaxRad = rad;
+      }
     }
     rad = law->Value(lpar);
     if (rad > MaxRad)
+    {
       MaxRad = rad;
+    }
   }
 
   return MaxRad;

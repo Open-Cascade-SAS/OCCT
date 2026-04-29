@@ -71,7 +71,9 @@ TDF_Label XCAFDoc_LayerTool::BaseLabel() const
 const occ::handle<XCAFDoc_ShapeTool>& XCAFDoc_LayerTool::ShapeTool()
 {
   if (myShapeTool.IsNull())
+  {
     myShapeTool = XCAFDoc_DocumentTool::ShapeTool(Label());
+  }
   return myShapeTool;
 }
 
@@ -88,7 +90,9 @@ bool XCAFDoc_LayerTool::IsLayer(const TDF_Label& lab) const
 bool XCAFDoc_LayerTool::GetLayer(const TDF_Label& lab, TCollection_ExtendedString& aLayer) const
 {
   if (lab.Father() != Label())
+  {
     return false;
+  }
   //   occ::handle<XCAFDoc_GraphNode> aGN;
   //   if (! lab.FindAttribute (XCAFDoc::LayerRefGUID(), aGN))
   //     return false;
@@ -139,7 +143,9 @@ TDF_Label XCAFDoc_LayerTool::AddLayer(const TCollection_ExtendedString& theLayer
 {
   TDF_Label lab;
   if (FindLayer(theLayer, lab))
+  {
     return lab;
+  }
   TDF_TagSource              aTag;
   TDF_Label                  aLabel = TDF_TagSource::NewChild(Label());
   occ::handle<TDataStd_Name> aName  = new TDataStd_Name;
@@ -154,7 +160,9 @@ TDF_Label XCAFDoc_LayerTool::AddLayer(const TCollection_ExtendedString& theLayer
 {
   TDF_Label lab = FindLayer(theLayer, true, theToFindVisible);
   if (!lab.IsNull())
+  {
     return lab;
+  }
   TDF_TagSource              aTag;
   TDF_Label                  aLabel = TDF_TagSource::NewChild(Label());
   occ::handle<TDataStd_Name> aName  = new TDataStd_Name;
@@ -179,7 +187,9 @@ void XCAFDoc_LayerTool::GetLayerLabels(NCollection_Sequence<TDF_Label>& Labels) 
   {
     TDF_Label L = ChildIterator.Value();
     if (IsLayer(L))
+    {
       Labels.Append(L);
+    }
   }
 }
 
@@ -190,7 +200,9 @@ void XCAFDoc_LayerTool::SetLayer(const TDF_Label& L,
                                  const bool       shapeInOneLayer) const
 {
   if (shapeInOneLayer)
+  {
     UnSetLayers(L);
+  }
   occ::handle<XCAFDoc_GraphNode> FGNode;
   occ::handle<XCAFDoc_GraphNode> ChGNode;
   if (!LayerL.FindAttribute(XCAFDoc::LayerRefGUID(), FGNode))
@@ -241,7 +253,9 @@ bool XCAFDoc_LayerTool::UnSetOneLayer(const TDF_Label&                  L,
 {
   TDF_Label alab;
   if (!FindLayer(aLayer, alab))
+  {
     return false;
+  }
   return UnSetOneLayer(L, alab);
 }
 
@@ -251,9 +265,13 @@ bool XCAFDoc_LayerTool::UnSetOneLayer(const TDF_Label& L, const TDF_Label& aLaye
 {
   occ::handle<XCAFDoc_GraphNode> FGNode, ChGNode;
   if (!L.FindAttribute(XCAFDoc::LayerRefGUID(), ChGNode))
+  {
     return false;
+  }
   if (!aLayerL.FindAttribute(XCAFDoc::LayerRefGUID(), FGNode))
+  {
     return false;
+  }
   ChGNode->UnSetFather(FGNode);
   return true;
 }
@@ -272,7 +290,9 @@ bool XCAFDoc_LayerTool::IsSet(const TDF_Label& L, const TCollection_ExtendedStri
     {
       lab = Node->GetFather(i)->Label();
       if (lab.FindAttribute(TDataStd_Name::GetID(), aName) && (aName->Get().IsEqual(aLayer)))
+      {
         return true;
+      }
     }
   }
   return false;
@@ -292,7 +312,9 @@ bool XCAFDoc_LayerTool::IsSet(const TDF_Label& L, const TDF_Label& aLayerL) cons
     {
       lab = Node->GetFather(i)->Label();
       if (lab == aLayerL)
+      {
         return true;
+      }
     }
   }
   return false;
@@ -384,7 +406,9 @@ void XCAFDoc_LayerTool::SetVisibility(const TDF_Label& layerL, const bool isvisi
     }
   }
   else
+  {
     layerL.ForgetAttribute(XCAFDoc::InvisibleGUID());
+  }
 }
 
 //=================================================================================================
@@ -396,7 +420,9 @@ bool XCAFDoc_LayerTool::SetLayer(const TopoDS_Shape& Sh,
   TDF_Label aLab;
   // PTV 22.01.2003 set layer for shape with location if it is necessary
   if (!myShapeTool->Search(Sh, aLab))
+  {
     return false;
+  }
   SetLayer(aLab, LayerL, shapeInOneLayer);
   return true;
 }
@@ -417,7 +443,9 @@ bool XCAFDoc_LayerTool::UnSetLayers(const TopoDS_Shape& Sh)
 {
   TDF_Label aLab;
   if (!myShapeTool->Search(Sh, aLab))
+  {
     return false;
+  }
   UnSetLayers(aLab);
   return true;
 }
@@ -429,7 +457,9 @@ bool XCAFDoc_LayerTool::UnSetOneLayer(const TopoDS_Shape&               Sh,
 {
   TDF_Label aLab;
   if (!myShapeTool->Search(Sh, aLab))
+  {
     return false;
+  }
   return UnSetOneLayer(aLab, aLayer);
 }
 
@@ -439,7 +469,9 @@ bool XCAFDoc_LayerTool::UnSetOneLayer(const TopoDS_Shape& Sh, const TDF_Label& a
 {
   TDF_Label aLab;
   if (!myShapeTool->Search(Sh, aLab))
+  {
     return false;
+  }
   return UnSetOneLayer(aLab, aLayerL);
 }
 
@@ -449,7 +481,9 @@ bool XCAFDoc_LayerTool::IsSet(const TopoDS_Shape& Sh, const TCollection_Extended
 {
   TDF_Label aLab;
   if (!myShapeTool->Search(Sh, aLab))
+  {
     return false;
+  }
   return IsSet(aLab, aLayer);
 }
 
@@ -459,7 +493,9 @@ bool XCAFDoc_LayerTool::IsSet(const TopoDS_Shape& Sh, const TDF_Label& aLayerL)
 {
   TDF_Label aLab;
   if (!myShapeTool->Search(Sh, aLab))
+  {
     return false;
+  }
   return IsSet(aLab, aLayerL);
 }
 
@@ -471,7 +507,9 @@ bool XCAFDoc_LayerTool::GetLayers(
 {
   TDF_Label aLab;
   if (!myShapeTool->Search(Sh, aLab))
+  {
     return false;
+  }
   return GetLayers(aLab, aLayerS);
 }
 
@@ -481,7 +519,9 @@ bool XCAFDoc_LayerTool::GetLayers(const TopoDS_Shape& Sh, NCollection_Sequence<T
 {
   TDF_Label aLab;
   if (!myShapeTool->Search(Sh, aLab))
+  {
     return false;
+  }
   return GetLayers(aLab, aLayerLS);
 }
 
@@ -494,7 +534,9 @@ occ::handle<NCollection_HSequence<TCollection_ExtendedString>> XCAFDoc_LayerTool
     new NCollection_HSequence<TCollection_ExtendedString>;
   TDF_Label aLab;
   if (myShapeTool->Search(Sh, aLab))
+  {
     aLayerS = GetLayers(aLab);
+  }
   return aLayerS;
 }
 

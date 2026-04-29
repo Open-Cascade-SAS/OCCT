@@ -33,7 +33,9 @@ void RWStepRepr_RWAssemblyComponentUsageSubstitute::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "assembly_component_usage_substitute"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -47,15 +47,7 @@ BOPTools_Set::BOPTools_Set(const occ::handle<NCollection_BaseAllocator>& theAllo
 
 //=================================================================================================
 
-BOPTools_Set::BOPTools_Set(const BOPTools_Set& theOther)
-    : myAllocator(theOther.myAllocator),
-      myShapes(theOther.myShapes),
-      myShape(theOther.myShape),
-      myNbShapes(theOther.myNbShapes),
-      mySum(theOther.mySum),
-      myUpper(theOther.myUpper)
-{
-}
+BOPTools_Set::BOPTools_Set(const BOPTools_Set& theOther) = default;
 
 //=================================================================================================
 
@@ -111,12 +103,12 @@ bool BOPTools_Set::IsEqual(const BOPTools_Set& theOther) const
   //
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aM1;
   //
-  for (int i = 0; i < myShapes.Size(); ++i)
+  for (int i = 0; i < myShapes.Length(); ++i)
   {
     aM1.Add(myShapes(i));
   }
   //
-  for (int i = 0; i < theOther.myShapes.Size(); ++i)
+  for (int i = 0; i < theOther.myShapes.Length(); ++i)
   {
     if (!aM1.Contains(theOther.myShapes(i)))
     {
@@ -172,13 +164,13 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType)
     }
   }
   //
-  myNbShapes = myShapes.Size();
+  myNbShapes = myShapes.Length();
   if (!myNbShapes)
   {
     return;
   }
   //
-  for (int i = 0; i < myShapes.Size(); ++i)
+  for (int i = 0; i < myShapes.Length(); ++i)
   {
     const TopoDS_Shape& aSx = myShapes(i);
     aId                     = TopTools_ShapeMapHasher{}(aSx) % myUpper + 1;

@@ -153,7 +153,9 @@ int BOPTools_AlgoTools2D::AttachExistingPCurve(const TopoDS_Edge&               
   double          aNewTol = BRep_Tool::Tolerance(aE1T);
   TopoDS_Iterator it(aE1);
   for (; it.More(); it.Next())
+  {
     aBB.UpdateVertex(TopoDS::Vertex(it.Value()), aNewTol);
+  }
   return iRet;
 }
 

@@ -132,7 +132,7 @@ int StdStorage_RootData::NumberOfRoots() const
 void StdStorage_RootData::AddRoot(const occ::handle<StdStorage_Root>& aRoot)
 {
   myObjects.Add(aRoot->Name(), aRoot);
-  aRoot->myRef = myObjects.Size();
+  aRoot->myRef = myObjects.Length();
 }
 
 occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> StdStorage_RootData::Roots() const
@@ -177,7 +177,9 @@ void StdStorage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
            anIt(myObjects);
          anIt.More();
          anIt.Next(), ++aRef)
+    {
       anIt.ChangeValue()->myRef = aRef;
+    }
   }
 }
 
@@ -187,7 +189,9 @@ void StdStorage_RootData::Clear()
          anIt(myObjects);
        anIt.More();
        anIt.Next())
+  {
     anIt.ChangeValue()->myRef = 0;
+  }
 
   myObjects.Clear();
 }

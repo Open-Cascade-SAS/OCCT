@@ -56,7 +56,9 @@ static void AdjustUPeriodic(const occ::handle<Geom_Surface>& aS,
                             const occ::handle<Geom2d_Curve>& aC2D)
 {
   if (aC2D.IsNull() || !aS->IsUPeriodic())
+  {
     return;
+  }
   //
   constexpr double aEps     = Precision::PConfusion(); // 1.e-9
   const double     aEpsilon = Epsilon(10.);            // 1.77e-15
@@ -72,9 +74,13 @@ static void AdjustUPeriodic(const occ::handle<Geom_Surface>& aS,
   //
   double aUx = aPx.X();
   if (fabs(aUx) < aEpsilon)
+  {
     aUx = 0.;
+  }
   if (fabs(aUx - aPeriod) < aEpsilon)
+  {
     aUx = aPeriod;
+  }
   //
   double dU = 0.;
   while (aUx < (umin - aEps))
@@ -147,7 +153,9 @@ static bool ParametersOfNearestPointOnSurface(const Extrema_ExtPS& theExtr,
                                               double&              theV)
 {
   if (!theExtr.IsDone() || !theExtr.NbExt())
+  {
     return false;
+  }
 
   int    anIndex    = 1;
   double aMinSQDist = theExtr.SquareDistance(anIndex);
@@ -170,7 +178,7 @@ static bool ParametersOfNearestPointOnSurface(const Extrema_ExtPS& theExtr,
 
 static void GetSegmentBoundary(const IntRes2d_IntersectionSegment& theSegm,
                                const occ::handle<Geom2d_Curve>&    theCurve,
-                               NCollection_Vector<double>&         theArrayOfParameters)
+                               NCollection_DynamicArray<double>&   theArrayOfParameters)
 {
   double aU1 = theCurve->FirstParameter(), aU2 = theCurve->LastParameter();
 
@@ -196,22 +204,28 @@ static void IntersectCurveAndBoundary(const occ::handle<Geom2d_Curve>&       the
                                       const occ::handle<Geom2d_Curve>* const theArrBounds,
                                       const int                              theNumberOfCurves,
                                       const double                           theTol,
-                                      NCollection_Vector<double>&            theArrayOfParameters)
+                                      NCollection_DynamicArray<double>&      theArrayOfParameters)
 {
   if (theC2d.IsNull())
+  {
     return;
+  }
 
   Geom2dAdaptor_Curve anAC1(theC2d);
   for (int aCurID = 0; aCurID < theNumberOfCurves; aCurID++)
   {
     if (theArrBounds[aCurID].IsNull())
+    {
       continue;
+    }
 
     Geom2dAdaptor_Curve anAC2(theArrBounds[aCurID]);
     Geom2dInt_GInter    anIntCC2d(anAC1, anAC2, theTol, theTol);
 
     if (!anIntCC2d.IsDone() || anIntCC2d.IsEmpty())
+    {
       continue;
+    }
 
     for (int aPntID = 1; aPntID <= anIntCC2d.NbPoints(); aPntID++)
     {
@@ -246,7 +260,9 @@ static bool isDegenerated(const occ::handle<GeomAdaptor_Surface>& theGAHS,
   theGAHS->D0(aP2d.X(), aP2d.Y(), aP2);
 
   if (aP1.SquareDistance(aP2) > aSqTol)
+  {
     return false;
+  }
 
   theAHC2d->D0(0.5 * (theFirstPar + theLastPar), aP2d);
   theGAHS->D0(aP2d.X(), aP2d.Y(), aP2);
@@ -926,7 +942,9 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
                 {
                   // Avoid creating B-splines containing two coincident poles only
                   if (mbspc.Degree() == 1 && nbpoles == 2)
+                  {
                     continue;
+                  }
 
                   if (!BS->IsClosed() && !BS->IsPeriodic())
                   {
@@ -994,7 +1012,9 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
       TreatRLine(RL, myHS1, myHS2, aC3d, aC2d1, aC2d2, aTolReached);
 
       if (aC3d.IsNull())
+      {
         break;
+      }
 
       Bnd_Box2d aBox1, aBox2;
 
@@ -1008,7 +1028,7 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
       aBox2.Add(gp_Pnt2d(aU2f, aV2f));
       aBox2.Add(gp_Pnt2d(aU2l, aV2l));
 
-      NCollection_Vector<double> anArrayOfParameters;
+      NCollection_DynamicArray<double> anArrayOfParameters;
 
       // We consider here that the intersection line is same-parameter-line
       anArrayOfParameters.Append(aC3d->FirstParameter());
@@ -1024,7 +1044,9 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
         const double aParF = anArrayOfParameters(anInd), aParL = anArrayOfParameters(anInd + 1);
 
         if ((aParL - aParF) <= Precision::PConfusion())
+        {
           continue;
+        }
 
         const double aPar = 0.5 * (aParF + aParL);
         gp_Pnt2d     aPt;
@@ -1035,10 +1057,14 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
           aC2d1->D0(aPar, aPt);
 
           if (aBox1.IsOut(aPt))
+          {
             continue;
+          }
 
           if (myApprox1)
+          {
             aCurv2d1 = new Geom2d_TrimmedCurve(aC2d1, aParF, aParL);
+          }
         }
 
         if (!aC2d2.IsNull())
@@ -1046,10 +1072,14 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
           aC2d2->D0(aPar, aPt);
 
           if (aBox2.IsOut(aPt))
+          {
             continue;
+          }
 
           if (myApprox2)
+          {
             aCurv2d2 = new Geom2d_TrimmedCurve(aC2d2, aParF, aParL);
+          }
         }
 
         occ::handle<Geom_Curve> aCurv3d = new Geom_TrimmedCurve(aC3d, aParF, aParL);
@@ -1105,7 +1135,9 @@ void GeomInt_IntSS::TreatRLine(const occ::handle<IntPatch_RLine>&      theRL,
   // Restriction line can correspond to a degenerated edge.
   // In this case we return null-curve.
   if (isDegenerated(aGAHS, anAHC2d, tf, tl))
+  {
     return;
+  }
 
   //
   // To provide sameparameter it is necessary to get 3d curve as
@@ -1115,7 +1147,9 @@ void GeomInt_IntSS::TreatRLine(const occ::handle<IntPatch_RLine>&      theRL,
   Approx_CurveOnSurface anApp(anAHC2d, aGAHS, tf, tl, Precision::Confusion());
   anApp.Perform(aMaxSeg, aMaxDeg, GeomAbs_C1, true, false);
   if (!anApp.HasResult())
+  {
     return;
+  }
 
   theC3d        = anApp.Curve3d();
   theTolReached = anApp.MaxError3d();
@@ -1296,11 +1330,12 @@ void GeomInt_IntSS::BuildPCurves(const double                     f,
 //            surface boundaries and fills theArrayOfParameters by parameters
 //            along the given curves corresponding of these points.
 //=======================================================================
-void GeomInt_IntSS::TrimILineOnSurfBoundaries(const occ::handle<Geom2d_Curve>& theC2d1,
-                                              const occ::handle<Geom2d_Curve>& theC2d2,
-                                              const Bnd_Box2d&                 theBound1,
-                                              const Bnd_Box2d&                 theBound2,
-                                              NCollection_Vector<double>&      theArrayOfParameters)
+void GeomInt_IntSS::TrimILineOnSurfBoundaries(
+  const occ::handle<Geom2d_Curve>&  theC2d1,
+  const occ::handle<Geom2d_Curve>&  theC2d2,
+  const Bnd_Box2d&                  theBound1,
+  const Bnd_Box2d&                  theBound2,
+  NCollection_DynamicArray<double>& theArrayOfParameters)
 {
   // Rectangular boundaries of two surfaces: [0]:U=Ufirst, [1]:U=Ulast,
   //                                         [2]:V=Vfirst, [3]:V=Vlast
@@ -1322,14 +1357,18 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const occ::handle<Geom2d_Curve>& t
       aCurS1Bounds[0] = new Geom2d_Line(gp_Pnt2d(aU1f, aV1f), gp_Dir2d(gp_Dir2d::D::Y));
 
       if (!Precision::IsInfinite(aDelta))
+      {
         aCurS1Bounds[0] = new Geom2d_TrimmedCurve(aCurS1Bounds[0], 0, aDelta);
+      }
     }
 
     if (!Precision::IsInfinite(aU1l))
     {
       aCurS1Bounds[1] = new Geom2d_Line(gp_Pnt2d(aU1l, aV1f), gp_Dir2d(gp_Dir2d::D::Y));
       if (!Precision::IsInfinite(aDelta))
+      {
         aCurS1Bounds[1] = new Geom2d_TrimmedCurve(aCurS1Bounds[1], 0, aDelta);
+      }
     }
   }
 
@@ -1340,14 +1379,18 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const occ::handle<Geom2d_Curve>& t
     {
       aCurS1Bounds[2] = new Geom2d_Line(gp_Pnt2d(aU1f, aV1f), gp_Dir2d(gp_Dir2d::D::X));
       if (!Precision::IsInfinite(aDelta))
+      {
         aCurS1Bounds[2] = new Geom2d_TrimmedCurve(aCurS1Bounds[2], 0, aDelta);
+      }
     }
 
     if (!Precision::IsInfinite(aV1l))
     {
       aCurS1Bounds[3] = new Geom2d_Line(gp_Pnt2d(aU1f, aV1l), gp_Dir2d(gp_Dir2d::D::X));
       if (!Precision::IsInfinite(aDelta))
+      {
         aCurS1Bounds[3] = new Geom2d_TrimmedCurve(aCurS1Bounds[3], 0, aDelta);
+      }
     }
   }
 
@@ -1358,14 +1401,18 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const occ::handle<Geom2d_Curve>& t
     {
       aCurS2Bounds[0] = new Geom2d_Line(gp_Pnt2d(aU2f, aV2f), gp_Dir2d(gp_Dir2d::D::Y));
       if (!Precision::IsInfinite(aDelta))
+      {
         aCurS2Bounds[0] = new Geom2d_TrimmedCurve(aCurS2Bounds[0], 0, aDelta);
+      }
     }
 
     if (!Precision::IsInfinite(aU2l))
     {
       aCurS2Bounds[1] = new Geom2d_Line(gp_Pnt2d(aU2l, aV2f), gp_Dir2d(gp_Dir2d::D::Y));
       if (!Precision::IsInfinite(aDelta))
+      {
         aCurS2Bounds[1] = new Geom2d_TrimmedCurve(aCurS2Bounds[1], 0, aDelta);
+      }
     }
   }
 
@@ -1376,14 +1423,18 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const occ::handle<Geom2d_Curve>& t
     {
       aCurS2Bounds[2] = new Geom2d_Line(gp_Pnt2d(aU2f, aV2f), gp_Dir2d(gp_Dir2d::D::X));
       if (!Precision::IsInfinite(aDelta))
+      {
         aCurS2Bounds[2] = new Geom2d_TrimmedCurve(aCurS2Bounds[2], 0, aDelta);
+      }
     }
 
     if (!Precision::IsInfinite(aV2l))
     {
       aCurS2Bounds[3] = new Geom2d_Line(gp_Pnt2d(aU2f, aV2l), gp_Dir2d(gp_Dir2d::D::X));
       if (!Precision::IsInfinite(aDelta))
+      {
         aCurS2Bounds[3] = new Geom2d_TrimmedCurve(aCurS2Bounds[3], 0, aDelta);
+      }
     }
   }
 
@@ -1434,9 +1485,13 @@ occ::handle<Geom2d_BSplineCurve> GeomInt_IntSS::MakeBSpline2d(
   {
     double U, V;
     if (onFirst)
+    {
       theWLine->Point(ipidebm1).ParametersOnS1(U, V);
+    }
     else
+    {
       theWLine->Point(ipidebm1).ParametersOnS2(U, V);
+    }
     poles(i).SetCoord(U, V);
     mults(i) = 1;
     knots(i) = i - 1;

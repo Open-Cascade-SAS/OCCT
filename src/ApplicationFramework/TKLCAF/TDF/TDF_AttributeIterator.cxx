@@ -37,7 +37,9 @@ TDF_AttributeIterator::TDF_AttributeIterator(const TDF_Label& aLabel, const bool
 {
   const occ::handle<TDF_Attribute>& aFirstAttribute = aLabel.myLabelNode->FirstAttribute();
   if (!aFirstAttribute.IsNull())
+  {
     goToNext(aFirstAttribute);
+  }
 }
 
 //=================================================================================================
@@ -49,7 +51,9 @@ TDF_AttributeIterator::TDF_AttributeIterator(const TDF_LabelNodePtr aLabelNode,
 {
   const occ::handle<TDF_Attribute>& aFirstAttribute = aLabelNode->FirstAttribute();
   if (!aFirstAttribute.IsNull())
+  {
     goToNext(aFirstAttribute);
+  }
 }
 
 //=================================================================================================
@@ -59,9 +63,13 @@ void TDF_AttributeIterator::Initialize(const TDF_Label& aLabel, const bool witho
   myWithoutForgotten                                = withoutForgotten;
   const occ::handle<TDF_Attribute>& aFirstAttribute = aLabel.myLabelNode->FirstAttribute();
   if (aFirstAttribute.IsNull())
+  {
     myValue = nullptr;
+  }
   else
+  {
     goToNext(aFirstAttribute);
+  }
 }
 
 //=================================================================================================
@@ -74,9 +82,13 @@ void TDF_AttributeIterator::Next()
   {
     const occ::handle<TDF_Attribute>& anAttribute = myValue->myNext;
     if (anAttribute.IsNull())
+    {
       myValue = nullptr;
+    }
     else
+    {
       goToNext(anAttribute);
+    }
   }
 }
 

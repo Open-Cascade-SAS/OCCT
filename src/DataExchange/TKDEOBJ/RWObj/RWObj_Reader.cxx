@@ -52,7 +52,7 @@ static bool isClockwisePolygon(const occ::handle<BRepMesh_DataStructureOfDelaun>
                                const IMeshData::VectorOfInteger&                  theIndexes)
 {
   double    aPtSum       = 0;
-  const int aNbElemNodes = theIndexes.Size();
+  const int aNbElemNodes = theIndexes.Length();
   for (int aNodeIter = theIndexes.Lower(); aNodeIter <= theIndexes.Upper(); ++aNodeIter)
   {
     int                    aNodeNext = theIndexes.Lower() + ((aNodeIter + 1) % aNbElemNodes);
@@ -102,7 +102,7 @@ bool RWObj_Reader::read(std::istream&                  theStream,
   // determine file location to load associated files
   TCollection_AsciiString aFileName;
   OSD_Path::FolderAndFileFromPath(theFile, myFolder, aFileName);
-  myCurrElem.resize(1024, -1);
+  myCurrElem.Resize(1024, -1);
 
   Standard_CLocaleSentry aLocaleSentry;
   if (!theStream.good())
@@ -397,9 +397,9 @@ void RWObj_Reader::pushIndices(const char* thePos)
       }
     }
 
-    if (myCurrElem.size() < size_t(aNode))
+    if (myCurrElem.Size() < size_t(aNode))
     {
-      myCurrElem.resize(aNode * 2, -1);
+      myCurrElem.Resize(aNode * 2, -1);
     }
     myCurrElem[aNode] = anIndex;
     aNbElemNodes      = aNode + 1;
@@ -447,7 +447,7 @@ void RWObj_Reader::pushIndices(const char* thePos)
 
 int RWObj_Reader::triangulatePolygonFan(const NCollection_Array1<int>& theIndices)
 {
-  const int aNbElemNodes = theIndices.Size();
+  const int aNbElemNodes = theIndices.Length();
   for (int aNodeIter = 0; aNodeIter < aNbElemNodes - 2; ++aNodeIter)
   {
     NCollection_Vec4<int> aTriNodes(-1, -1, -1, -1);
@@ -465,11 +465,11 @@ int RWObj_Reader::triangulatePolygonFan(const NCollection_Array1<int>& theIndice
 
 gp_XYZ RWObj_Reader::polygonCenter(const NCollection_Array1<int>& theIndices)
 {
-  if (theIndices.Size() < 3)
+  if (theIndices.Length() < 3)
   {
     return gp_XYZ(0.0, 0.0, 0.0);
   }
-  else if (theIndices.Size() == 4)
+  else if (theIndices.Length() == 4)
   {
     gp_XYZ aCenter = getNode(theIndices.Value(theIndices.Lower() + 0)).XYZ()
                      + getNode(theIndices.Value(theIndices.Lower() + 2)).XYZ();
@@ -483,7 +483,7 @@ gp_XYZ RWObj_Reader::polygonCenter(const NCollection_Array1<int>& theIndices)
     aCenter += getNode(aPntIter.Value()).XYZ();
   }
 
-  aCenter /= (double)theIndices.Size();
+  aCenter /= (double)theIndices.Length();
   return aCenter;
 }
 
@@ -523,7 +523,7 @@ gp_XYZ RWObj_Reader::polygonNormal(const NCollection_Array1<int>& theIndices)
 
 int RWObj_Reader::triangulatePolygon(const NCollection_Array1<int>& theIndices)
 {
-  const int aNbElemNodes = theIndices.Size();
+  const int aNbElemNodes = theIndices.Length();
   if (aNbElemNodes < 3)
   {
     return 0;

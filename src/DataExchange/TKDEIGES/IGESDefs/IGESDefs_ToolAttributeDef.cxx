@@ -58,8 +58,10 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
   int                                                               fn = ent->FormNumber();
 
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadText(PR.Current(), "Attribute Table Name", aName); //szv#4:S4163:12Mar99 `st=` not needed
+}
 
   PR.ReadInteger(PR.Current(), "Attribute List Type", aListType); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
@@ -71,14 +73,21 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
     attrValueDataTypes = new NCollection_HArray1<int>(1, nbval);
     attrValueCounts    = new NCollection_HArray1<int>(1, nbval);
     if (fn > 0)
+    {
       attrValues = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nbval);
+    }
     if (fn > 1)
+    {
       attrValuePointers = new IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(1, nbval);
+    }
   }
   else
+  {
     PR.AddFail("Number of Attributes: Not Positive");
+  }
 
   if (!attrTypes.IsNull())
+  {
     for (int i = 1; i <= nbval; i++)
     {
       int attrType;
@@ -90,26 +99,37 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
       // st = PR.ReadInteger(PR.Current(), "Attribute Type", attrType); //szv#4:S4163:12Mar99 moved
       // in if
       if (PR.ReadInteger(PR.Current(), "Attribute Type", attrType))
+      {
         attrTypes->SetValue(i, attrType);
+      }
 
       st = PR.ReadInteger(PR.Current(), "Attribute Data Type", attrValueDataType);
       if (st)
+      {
         attrValueDataTypes->SetValue(i, attrValueDataType);
+      }
 
       if (PR.DefinedElseSkip())
+      {
         st = PR.ReadInteger(PR.Current(), "Attribute Value Count", avc);
+      }
       else
+      {
         avc = 1;
+      }
 
       if (st)
       {
         attrValueCounts->SetValue(i, avc);
         if (fn > 1)
+        {
           attrValuePointer =
             new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, avc);
+        }
       }
 
       if (!attrValues.IsNull())
+      {
         if (fn > 0)
         {
           occ::handle<NCollection_HArray1<int>>                                   attrInt;
@@ -155,7 +175,9 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
                 // st = PR.ReadInteger(PR.Current(), "Attribute Value", temp); //szv#4:S4163:12Mar99
                 // moved in if
                 if (PR.ReadInteger(PR.Current(), "Attribute Value", temp))
+                {
                   attrInt->SetValue(j, temp);
+                }
               }
               break;
               case 2: {
@@ -163,7 +185,9 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
                 // st = PR.ReadReal(PR.Current(), "Attribute Value", temp); //szv#4:S4163:12Mar99
                 // moved in if
                 if (PR.ReadReal(PR.Current(), "Attribute Value", temp))
+                {
                   attrReal->SetValue(j, temp);
+                }
               }
               break;
               case 3: {
@@ -171,7 +195,9 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
                 // st = PR.ReadText(PR.Current(), "Attribute Value", temp); //szv#4:S4163:12Mar99
                 // moved in if
                 if (PR.ReadText(PR.Current(), "Attribute Value", temp))
+                {
                   attrStr->SetValue(j, temp);
+                }
               }
               break;
               case 4: {
@@ -179,7 +205,9 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
                 // st = PR.ReadEntity(IR, PR.Current(), "Attribute Value", temp);
                 // //szv#4:S4163:12Mar99 moved in if
                 if (PR.ReadEntity(IR, PR.Current(), "Attribute Value", temp))
+                {
                   attrEnt->SetValue(j, temp);
+                }
               }
               break;
               case 5:
@@ -190,7 +218,9 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
                 // st = PR.ReadBoolean(PR.Current(), "Attribute Value", temp); //szv#4:S4163:12Mar99
                 // moved in if
                 if (PR.ReadBoolean(PR.Current(), "Attribute Value", temp))
+                {
                   attrInt->SetValue(j, (temp ? 1 : 0));
+                }
               }
               break;
             }
@@ -205,13 +235,19 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
                                 "Attribute Val. Pointer",
                                 STANDARD_TYPE(IGESGraph_TextDisplayTemplate),
                                 tempText))
+              {
                 attrValuePointer->SetValue(j, tempText);
+              }
             }
           }
           if (fn == 2)
+          {
             attrValuePointers->SetValue(i, attrValuePointer);
+          }
         }
+      }
     }
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(aName,
@@ -227,9 +263,13 @@ void IGESDefs_ToolAttributeDef::WriteOwnParams(const occ::handle<IGESDefs_Attrib
                                                IGESData_IGESWriter&                      IW) const
 {
   if (ent->HasTableName())
+  {
     IW.Send(ent->TableName());
+  }
   else
+  {
     IW.SendVoid();
+  }
   IW.Send(ent->ListType());
   int upper = ent->NbAttributes();
   IW.Send(upper);
@@ -272,7 +312,9 @@ void IGESDefs_ToolAttributeDef::WriteOwnParams(const occ::handle<IGESDefs_Attrib
             break;
         }
         if (ent->FormNumber() == 2)
+        {
           IW.Send(ent->AttributeTextDisplay(i, j));
+        }
       }
     }
   }
@@ -291,9 +333,13 @@ void IGESDefs_ToolAttributeDef::OwnShared(const occ::handle<IGESDefs_AttributeDe
       for (int j = 1; j <= count; j++)
       {
         if (check == 4)
+        {
           iter.GetOneItem(ent->AttributeAsEntity(i, j));
+        }
         if (ent->FormNumber() == 2)
+        {
           iter.GetOneItem(ent->AttributeTextDisplay(i, j));
+        }
       }
     }
   }
@@ -305,7 +351,9 @@ void IGESDefs_ToolAttributeDef::OwnCopy(const occ::handle<IGESDefs_AttributeDef>
 {
   occ::handle<TCollection_HAsciiString> aName;
   if (!another->TableName().IsNull())
+  {
     aName = new TCollection_HAsciiString(another->TableName());
+  }
   int aListType = another->ListType();
 
   occ::handle<NCollection_HArray1<int>>                             attrTypes;
@@ -319,9 +367,13 @@ void IGESDefs_ToolAttributeDef::OwnCopy(const occ::handle<IGESDefs_AttributeDef>
   attrValueDataTypes = new NCollection_HArray1<int>(1, nbval);
   attrValueCounts    = new NCollection_HArray1<int>(1, nbval);
   if (another->HasValues())
+  {
     attrValues = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nbval);
+  }
   if (another->HasTextDisplay())
+  {
     attrValuePointers = new IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(1, nbval);
+  }
 
   for (int i = 1; i <= nbval; i++)
   {
@@ -334,8 +386,10 @@ void IGESDefs_ToolAttributeDef::OwnCopy(const occ::handle<IGESDefs_AttributeDef>
     occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> attrValuePointer;
 
     if (another->HasTextDisplay())
+    {
       attrValuePointer =
         new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, avc);
+    }
 
     if (another->HasValues())
     {
@@ -407,7 +461,9 @@ void IGESDefs_ToolAttributeDef::OwnCopy(const occ::handle<IGESDefs_AttributeDef>
         }
       }
       if (another->HasTextDisplay())
+      {
         attrValuePointers->SetValue(i, attrValuePointer);
+      }
     }
   }
   ent->Init(aName,
@@ -455,18 +511,24 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const occ::handle<IGESDefs_AttributeDef
       ach->AddFail(mess);
     }
     if (ent->AttributeValueCount(i) <= 0)
+    {
       continue;
+    }
     occ::handle<Standard_Transient> list = ent->AttributeList(i);
     if (fn > 0 && ent.IsNull())
     {
       if (aty == 0 || aty == 5)
+      {
         continue;
+      }
       Sprintf(mess, "Form Number > 0 and Attribute Value List n0.%d undefined", aty);
       ach->AddFail(mess);
       continue;
     }
     else if (fn == 0)
+    {
       continue;
+    }
     mess[0] = '\0';
     switch (aty)
     {
@@ -505,7 +567,9 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const occ::handle<IGESDefs_AttributeDef
         break;
     }
     if (mess[0] != '\0')
+    {
       ach->AddFail(mess);
+    }
   }
 }
 
@@ -526,9 +590,13 @@ void IGESDefs_ToolAttributeDef::OwnDump(const occ::handle<IGESDefs_AttributeDef>
     << "Attribute Value Data Types :\n"
     << "Attribute Value Counts :\n";
   if (ent->HasValues())
+  {
     S << "Attribute Values :\n";
+  }
   if (ent->HasTextDisplay())
+  {
     S << "Attribute Value Entities :\n";
+  }
   IGESData_DumpVals(S, -level, 1, ent->NbAttributes(), ent->AttributeType);
   S << "\n";
   if (level > 4)
@@ -609,10 +677,10 @@ void IGESDefs_ToolAttributeDef::OwnDump(const occ::handle<IGESDefs_AttributeDef>
             S << "  Attribute Value Pointer : ";
             dumper.Dump(ent->AttributeTextDisplay(i, j), S, sublevel);
           }
-          S << std::endl;
+          S << '\n';
         }
       }
     }
   }
-  S << std::endl;
+  S << '\n';
 }

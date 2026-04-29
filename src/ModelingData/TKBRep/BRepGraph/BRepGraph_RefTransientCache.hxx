@@ -17,7 +17,7 @@
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_TransientCache.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <atomic>
 #include <shared_mutex>
@@ -36,8 +36,8 @@
 //! differs from the reference's current OwnGen the cached value is considered stale.
 //!
 //! ## Lifecycle
-//! NOT a Layer. Cleared on Build() and Compact(). No explicit removal callback -
-//! stale data is auto-detected by OwnGen mismatch.
+//! NOT a Layer. Cleared on BRepGraph_Builder::Add() and Compact(). No explicit removal callback
+//! - stale data is auto-detected by OwnGen mismatch.
 //!
 //! ## Thread safety
 //! After Reserve(), Get() and Set() for in-range indices bypass the mutex entirely.
@@ -48,7 +48,7 @@ public:
   //! Number of BRepGraph_RefId::Kind enum values (Shell..Occurrence = 0..7).
   static constexpr int THE_REF_KIND_COUNT = 8;
 
-  //! Default number of cache-kind slots reserved after Build().
+  //! Default number of cache-kind slots reserved after BRepGraph_Builder::Add().
   static constexpr int THE_DEFAULT_RESERVED_KIND_COUNT = 16;
 
   //! Per-slot storage: cached value handle + OwnGen stamp.
@@ -114,7 +114,7 @@ public:
     return myIsReserved.load(std::memory_order_acquire);
   }
 
-  //! Clear all cached data. Called on Build() and Compact().
+  //! Clear all cached data. Called on BRepGraph_Builder::Add() and Compact().
   Standard_EXPORT void Clear() noexcept;
 
   //! Move constructor: transfers data, creates fresh mutex.
@@ -146,7 +146,7 @@ private:
   //! Per-ref-kind dense vector of cache slots.
   struct RefKindStore
   {
-    NCollection_Vector<CacheSlot> mySlots;
+    NCollection_DynamicArray<CacheSlot> mySlots;
   };
 
   //! Per-cache-kind storage: one ref-kind store per reference kind.
@@ -165,7 +165,7 @@ private:
   const CacheSlot* seekSlot(const BRepGraph_RefId theRef, const int theKindSlot) const;
 
   //! Outer vector indexed by cache-kind slot.
-  NCollection_Vector<CacheKindSlot> myKinds;
+  NCollection_DynamicArray<CacheKindSlot> myKinds;
 
   //! True after Reserve() - enables lock-free access for in-range slots.
   std::atomic<bool> myIsReserved{false};

@@ -207,9 +207,13 @@ void AdvApp2Var_ApproxAFunc2Var::Init()
   ndu = std::max(myMaxDegInU + 1, 2 * iu + 2);
   ndv = std::max(myMaxDegInV + 1, 2 * iv + 2);
   if (ndu < 2 * iu + 2)
+  {
     throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : UMaxDegree Error");
+  }
   if (ndv < 2 * iv + 2)
+  {
     throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : VMaxDegree Error");
+  }
   myPrecisionCode = std::max(0, std::min(myPrecisionCode, 3));
   AdvApp2Var_Context Conditions(ifav,
                                 iu,
@@ -386,26 +390,42 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
 
     NumDec = 0;
     if (((NbPatch + NbV) <= myMaxPatches) && ((NbPatch + NbU) > myMaxPatches) && (Umore))
+    {
       NumDec = 1;
+    }
     if (((NbPatch + NbV) > myMaxPatches) && ((NbPatch + NbU) <= myMaxPatches) && (Vmore))
+    {
       NumDec = 2;
+    }
     if (((NbPatch + NbV) <= myMaxPatches) && ((NbPatch + NbU) <= myMaxPatches))
     {
       if (Umore)
+      {
         NumDec = 3;
+      }
       if ((NbV > NbU) && Vmore)
+      {
         NumDec = 4;
+      }
     }
     if ((NbU + 1) * (NbV + 1) <= myMaxPatches)
     {
       if (!Umore && !Vmore)
+      {
         NumDec = 0;
+      }
       if (Umore && !Vmore)
+      {
         NumDec = 3;
+      }
       if (!Umore && Vmore)
+      {
         NumDec = 4;
+      }
       if (Umore && Vmore)
+      {
         NumDec = 5;
+      }
     }
 
     // approximation of the square
@@ -495,26 +515,42 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
 
     NumDec = 0;
     if (((NbPatch + NbV) <= myMaxPatches) && ((NbPatch + NbU) > myMaxPatches) && (Umore))
+    {
       NumDec = 1;
+    }
     if (((NbPatch + NbV) > myMaxPatches) && ((NbPatch + NbU) <= myMaxPatches) && (Vmore))
+    {
       NumDec = 2;
+    }
     if (((NbPatch + NbV) <= myMaxPatches) && ((NbPatch + NbU) <= myMaxPatches))
     {
       if (Umore)
+      {
         NumDec = 3;
+      }
       if ((NbV > NbU) && Vmore)
+      {
         NumDec = 4;
+      }
     }
     if ((NbU + 1) * (NbV + 1) <= myMaxPatches)
     {
       if (!Umore && !Vmore)
+      {
         NumDec = 0;
+      }
       if (Umore && !Vmore)
+      {
         NumDec = 1;
+      }
       if (!Umore && Vmore)
+      {
         NumDec = 2;
+      }
       if (Umore && Vmore)
+      {
         NumDec = 5;
+      }
     }
 
     // approximation of the square
@@ -527,7 +563,9 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
       myResult(FirstNA).MakeApprox(myConditions, myConstraints, NumDec);
     }
     if (NumDec >= 3)
+    {
       NumDec = NumDec - 2;
+    }
 
     // evaluation of the criterion on the square
     if (myResult(FirstNA).HasResult())
@@ -535,7 +573,9 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
       Crit.Value(myResult(FirstNA), myConditions);
       CritValue = myResult(FirstNA).CritValue();
       if (m1 < CritValue)
+      {
         m1 = CritValue;
+      }
     }
     // is it necessary to cut ?
     decision     = myResult(FirstNA).CutSense(Crit, NumDec);
@@ -1117,54 +1157,51 @@ double AdvApp2Var_ApproxAFunc2Var::CritError(const int Dimension, const int SSPI
 void AdvApp2Var_ApproxAFunc2Var::Dump(Standard_OStream& o) const
 {
   int iesp = 1, NbKU, NbKV, ik;
-  o << std::endl;
+  o << '\n';
   if (!myHasResult)
   {
-    o << "No result" << std::endl;
+    o << "No result" << '\n';
   }
   else
   {
     o << "There is a result";
     if (myDone)
     {
-      o << " within the requested tolerance " << my3DTolerances->Value(iesp) << std::endl;
+      o << " within the requested tolerance " << my3DTolerances->Value(iesp) << '\n';
     }
     else if (my3DMaxError->Value(iesp) > my3DTolerances->Value(iesp))
     {
-      o << " WITHOUT the requested tolerance " << my3DTolerances->Value(iesp) << std::endl;
+      o << " WITHOUT the requested tolerance " << my3DTolerances->Value(iesp) << '\n';
     }
     else
     {
-      o << " WITHOUT the requested continuities " << std::endl;
+      o << " WITHOUT the requested continuities " << '\n';
     }
-    o << std::endl;
-    o << "Result max error :" << my3DMaxError->Value(iesp) << std::endl;
-    o << "Result average error :" << my3DAverageError->Value(iesp) << std::endl;
-    o << "Result max error on U frontiers :" << my3DUFrontError->Value(iesp) << std::endl;
-    o << "Result max error on V frontiers :" << my3DVFrontError->Value(iesp) << std::endl;
-    o << std::endl;
-    o << "Degree of Bezier patches in U : " << myDegreeInU << "  in V : " << myDegreeInV
-      << std::endl;
-    o << std::endl;
+    o << '\n';
+    o << "Result max error :" << my3DMaxError->Value(iesp) << '\n';
+    o << "Result average error :" << my3DAverageError->Value(iesp) << '\n';
+    o << "Result max error on U frontiers :" << my3DUFrontError->Value(iesp) << '\n';
+    o << "Result max error on V frontiers :" << my3DVFrontError->Value(iesp) << '\n';
+    o << '\n';
+    o << "Degree of Bezier patches in U : " << myDegreeInU << "  in V : " << myDegreeInV << '\n';
+    o << '\n';
     occ::handle<Geom_BSplineSurface> S =
       occ::down_cast<Geom_BSplineSurface>(mySurfaces->Value(iesp));
-    o << "Number of poles in U : " << S->NbUPoles() << "  in V : " << S->NbVPoles() << std::endl;
-    o << std::endl;
+    o << "Number of poles in U : " << S->NbUPoles() << "  in V : " << S->NbVPoles() << '\n';
+    o << '\n';
     NbKU = S->NbUKnots();
     NbKV = S->NbVKnots();
-    o << "Number of knots in U : " << NbKU << std::endl;
+    o << "Number of knots in U : " << NbKU << '\n';
     for (ik = 1; ik <= NbKU; ik++)
     {
-      o << "   " << ik << " : " << S->UKnot(ik) << "   mult : " << S->UMultiplicity(ik)
-        << std::endl;
+      o << "   " << ik << " : " << S->UKnot(ik) << "   mult : " << S->UMultiplicity(ik) << '\n';
     }
-    o << std::endl;
-    o << "Number of knots in V : " << NbKV << std::endl;
+    o << '\n';
+    o << "Number of knots in V : " << NbKV << '\n';
     for (ik = 1; ik <= NbKV; ik++)
     {
-      o << "   " << ik << " : " << S->VKnot(ik) << "   mult : " << S->VMultiplicity(ik)
-        << std::endl;
+      o << "   " << ik << " : " << S->VKnot(ik) << "   mult : " << S->VMultiplicity(ik) << '\n';
     }
-    o << std::endl;
+    o << '\n';
   }
 }

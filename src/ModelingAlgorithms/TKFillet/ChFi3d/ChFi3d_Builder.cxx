@@ -157,11 +157,15 @@ void ChFi3d_Builder::ExtentAnalyse()
         break;
       case 2:
         if (nbedges <= 3)
+        {
           ExtentTwoCorner(Vtx, myVDataMap.FindFromIndex(iv));
+        }
         break;
       case 3:
         if (nbedges <= 3)
+        {
           ExtentThreeCorner(Vtx, myVDataMap.FindFromIndex(iv));
+        }
         break;
       default:
         break;
@@ -219,7 +223,9 @@ void ChFi3d_Builder::Compute()
   UpdateTolesp();
 
   if (myListStripe.IsEmpty())
+  {
     throw Standard_Failure("There are no suitable edges for chamfer or fillet");
+  }
 
   Reset();
   myDS                             = new TopOpeBRepDS_HDataStructure();
@@ -233,13 +239,21 @@ void ChFi3d_Builder::Compute()
   for (itel.Initialize(myListStripe); itel.More(); itel.Next())
   {
     if ((itel.Value()->Spine()->FirstStatus() <= ChFiDS_BreakPoint))
+    {
       myVDataMap.Add(itel.Value()->Spine()->FirstVertex(), itel.Value());
+    }
     else if (itel.Value()->Spine()->FirstStatus() == ChFiDS_FreeBoundary)
+    {
       ExtentOneCorner(itel.Value()->Spine()->FirstVertex(), itel.Value());
+    }
     if ((itel.Value()->Spine()->LastStatus() <= ChFiDS_BreakPoint))
+    {
       myVDataMap.Add(itel.Value()->Spine()->LastVertex(), itel.Value());
+    }
     else if (itel.Value()->Spine()->LastStatus() == ChFiDS_FreeBoundary)
+    {
       ExtentOneCorner(itel.Value()->Spine()->LastVertex(), itel.Value());
+    }
   }
   // preanalysis to evaluate the extensions.
   ExtentAnalyse();
@@ -267,10 +281,14 @@ void ChFi3d_Builder::Compute()
       badstripes.Append(itel.Value());
       done = true;
       if (itel.Value()->Spine()->ErrorStatus() == ChFiDS_Ok)
+      {
         itel.Value()->Spine()->SetErrorStatus(ChFiDS_Error);
+      }
     }
     if (!done)
+    {
       badstripes.Append(itel.Value());
+    }
     done = true;
   }
   done = (badstripes.IsEmpty());
@@ -302,11 +320,15 @@ void ChFi3d_Builder::Compute()
         done      = true;
       }
       if (!done)
+      {
         badvertices.Append(myVDataMap.FindKey(j));
+      }
       done = true;
     }
     if (!hasresult)
+    {
       done = badvertices.IsEmpty();
+    }
   }
 
 #ifdef OCCT_DEBUG // perf
@@ -342,8 +364,10 @@ void ChFi3d_Builder::Compute()
       for (itel1.Initialize(myListStripe), i2 = 0; itel1.More(); itel1.Next(), i2++)
       {
         if (i2 <= i1)
+        {
           // Do not twice intersect the stripes
           continue;
+        }
         occ::handle<ChFiDS_Stripe> aCheckStripe = itel1.Value();
         try
         {
@@ -366,7 +390,9 @@ void ChFi3d_Builder::Compute()
       int solidindex = st->SolidIndex();
       ChFi3d_FilDS(solidindex, st, DStr, myRegul, tolapp3d, tol2d);
       if (!done)
+      {
         break;
+      }
     }
 
 #ifdef OCCT_DEBUG // perf
@@ -387,7 +413,9 @@ void ChFi3d_Builder::Compute()
         double              tolc  = 0.;
         bool                degen = c.Curve().IsNull();
         if (!degen)
+        {
           tolc = c.Tolerance();
+        }
         int                        ic = cex.Index();
         TopOpeBRepDS_PointIterator It(myDS->CurvePoints(ic));
         for (; It.More(); It.Next())
@@ -395,7 +423,9 @@ void ChFi3d_Builder::Compute()
           occ::handle<TopOpeBRepDS_CurvePointInterference> II;
           II = occ::down_cast<TopOpeBRepDS_CurvePointInterference>(It.Value());
           if (II.IsNull())
+          {
             continue;
+          }
           TopOpeBRepDS_Kind gk = II->GeometryType();
           int               gi = II->Geometry();
           if (gk == TopOpeBRepDS_VERTEX)
@@ -406,25 +436,37 @@ void ChFi3d_Builder::Compute()
             {
               tolv += 0.0003;
               if (tolc < tolv)
+              {
                 tolc = tolv + 0.00001;
+              }
             }
             if (degen && tolc < tolv)
+            {
               tolc = tolv;
+            }
             else if (tolc > tolv)
+            {
               B1.UpdateVertex(v, tolc);
+            }
           }
           else if (gk == TopOpeBRepDS_POINT)
           {
             TopOpeBRepDS_Point& p    = DStr.ChangePoint(gi);
             double              tolp = p.Tolerance();
             if (degen && tolc < tolp)
+            {
               tolc = tolp;
+            }
             else if (tolc > tolp)
+            {
               p.Tolerance(tolc);
+            }
           }
         }
         if (degen)
+        {
           c.Tolerance(tolc);
+        }
       }
       myCoup->Perform(myDS);
       NCollection_Map<int>::Iterator It(MapIndSo);
@@ -440,10 +482,14 @@ void ChFi3d_Builder::Compute()
       {
         const TopoDS_Shape S = DStr.Shape(i);
         if (S.ShapeType() != TopAbs_EDGE)
+        {
           continue;
+        }
         bool issplitIN = myCoup->IsSplit(S, TopAbs_IN);
         if (!issplitIN)
+        {
           continue;
+        }
         NCollection_List<TopoDS_Shape>::Iterator it(myCoup->Splits(S, TopAbs_IN));
         for (; it.More(); it.Next())
         {
@@ -455,7 +501,9 @@ void ChFi3d_Builder::Compute()
             const TopoDS_Vertex& v    = TopoDS::Vertex(exv.Current());
             double               tolv = BRep_Tool::Tolerance(v);
             if (tole > tolv)
+            {
               B1.UpdateVertex(v, tole);
+            }
           }
         }
       }
@@ -468,7 +516,9 @@ void ChFi3d_Builder::Compute()
           const TopoDS_Shape&                      curshape = DStr.Shape(indsol);
           NCollection_List<TopoDS_Shape>::Iterator its      = myCoup->Merged(curshape, TopAbs_IN);
           if (!its.More())
+          {
             B1.Add(myShapeResult, curshape);
+          }
           else
           {
             // If the old type of Shape is Shell, Shell is placed instead of Solid,
@@ -502,7 +552,9 @@ void ChFi3d_Builder::Compute()
           const TopoDS_Shape&                      curshape = DStr.Shape(indsol);
           NCollection_List<TopoDS_Shape>::Iterator its      = myCoup->Merged(curshape, TopAbs_IN);
           if (!its.More())
+          {
             B1.Add(badShape, curshape);
+          }
           else
           {
             while (its.More())
@@ -653,7 +705,9 @@ void ChFi3d_Builder::PerformSingularCorner(const int Index)
       // if yes the vertex is stored in the stripe
       // and the edge at end is created
       if (i == 0)
+      {
         Ivtx = ChFi3d_IndexPointInDS(CV1, DStr);
+      }
       double                    tolreached;
       double                    Pardeb, Parfin;
       gp_Pnt2d                  VOnS1, VOnS2;
@@ -728,9 +782,13 @@ void ChFi3d_Builder::PerformFilletOnVertex(const int Index)
     const ChFiDS_CommonPoint& CV2 = Fd->Vertex(isfirst, 2);
     // Is it always degenerated ?
     if (CV1.Point().IsEqual(CV2.Point(), 0))
+    {
       nondegenere = false;
+    }
     else
+    {
       toujoursdegenere = false;
+    }
   }
 
   // calcul du nombre de faces = nombre d'aretes
@@ -759,7 +817,9 @@ void ChFi3d_Builder::PerformFilletOnVertex(const int Index)
     {
       case 1: {
         if (sp->Status(isfirst) == ChFiDS_FreeBoundary)
+        {
           return;
+        }
         if (nba > 3)
         {
 #ifdef OCCT_DEBUG // perf
@@ -776,9 +836,13 @@ void ChFi3d_Builder::PerformFilletOnVertex(const int Index)
           ChFi3d_InitChron(cl_perform1corner);
 #endif
           if (MoreSurfdata(Index))
+          {
             PerformMoreSurfdata(Index);
+          }
           else
+          {
             PerformOneCorner(Index);
+          }
 #ifdef OCCT_DEBUG // perf
           ChFi3d_ResultChron(cl_perform1corner, t_perform1corner);
 #endif
@@ -845,9 +909,13 @@ void ChFi3d_Builder::PerformFilletOnVertex(const int Index)
   else
   { // Single case processing
     if (toujoursdegenere)
+    {
       PerformSingularCorner(Index);
+    }
     else
+    {
       PerformMoreThreeCorner(Index, i); // Last chance...
+    }
   }
 }
 
@@ -871,7 +939,9 @@ void ChFi3d_Builder::Reset()
       itel.Next();
     }
     else
+    {
       myListStripe.Remove(itel);
+    }
   }
 }
 
@@ -881,9 +951,13 @@ const NCollection_List<TopoDS_Shape>& ChFi3d_Builder::Generated(const TopoDS_Sha
 {
   myGenerated.Clear();
   if (EouV.IsNull())
+  {
     return myGenerated;
+  }
   if (EouV.ShapeType() != TopAbs_EDGE && EouV.ShapeType() != TopAbs_VERTEX)
+  {
     return myGenerated;
+  }
   if (myEVIMap.IsBound(EouV))
   {
     const NCollection_List<int>&    L = myEVIMap.Find(EouV);

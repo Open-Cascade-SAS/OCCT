@@ -35,7 +35,9 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "applied_security_classification_assignment"))
+  {
     return;
+  }
 
   // --- inherited field : assignedSecurityClassification ---
 
@@ -60,7 +62,9 @@ void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
     {
       bool stat2 = data->ReadEntity(nsub2, i2, "items", ach, anent2);
       if (stat2)
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

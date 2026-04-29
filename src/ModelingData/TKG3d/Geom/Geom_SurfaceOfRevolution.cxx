@@ -334,7 +334,9 @@ gp_Vec Geom_SurfaceOfRevolution::EvalDN(const double U,
                                         const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative();
+  }
   gp_Vec aEvalRepResult;
   if (GeomEval_RepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
@@ -399,10 +401,14 @@ occ::handle<Geom_Curve> Geom_SurfaceOfRevolution::VIso(const double V) const
       Rep      = gp_Ax2(C, direction, D);
     }
     else
+    {
       Rep = gp_Ax2(C, direction);
+    }
   }
   else
+  {
     Rep = gp_Ax2(Pc, direction);
+  }
 
   Circ = new Geom_Circle(Rep, Rad);
   return Circ;
@@ -417,7 +423,9 @@ void Geom_SurfaceOfRevolution::Transform(const Trsf& T)
   direction.Transform(T);
   basisCurve->Transform(T);
   if (T.ScaleFactor() * T.HVectorialPart().Determinant() < 0.)
+  {
     UReverse();
+  }
 }
 
 //=================================================================================================

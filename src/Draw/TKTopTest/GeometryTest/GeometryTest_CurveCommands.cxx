@@ -108,7 +108,9 @@ static int polelaw(Draw_Interpretor&, int n, const char** a)
   int k, jj, qq, i;
 
   if (n < 3)
+  {
     return 1;
+  }
   bool periodic = false;
   int  deg      = Draw::Atoi(a[2]);
   int  nbk      = Draw::Atoi(a[3]);
@@ -160,26 +162,36 @@ static int polelaw(Draw_Interpretor&, int n, const char** a)
 static int to2d(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   // get the curve
   occ::handle<Geom_Curve> C = DrawTrSurf::GetCurve(a[2]);
   if (C.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> S;
   if (n >= 4)
   {
     S = DrawTrSurf::GetSurface(a[3]);
     if (S.IsNull())
+    {
       return 1;
+    }
   }
   else
+  {
     S = new Geom_Plane(gp::XOY());
+  }
 
   occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(S);
   if (P.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom2d_Curve> r = GeomAPI::To2d(C, P->Pln());
   DrawTrSurf::Set(a[1], r);
   return 0;
@@ -190,25 +202,35 @@ static int to2d(Draw_Interpretor&, int n, const char** a)
 static int to3d(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   occ::handle<Geom2d_Curve> C = DrawTrSurf::GetCurve2d(a[2]);
   if (C.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> S;
   if (n >= 4)
   {
     S = DrawTrSurf::GetSurface(a[3]);
     if (S.IsNull())
+    {
       return 1;
+    }
   }
   else
+  {
     S = new Geom_Plane(gp::XOY());
+  }
 
   occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(S);
   if (P.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom_Curve> r = GeomAPI::To3d(C, P->Pln());
 
   DrawTrSurf::Set(a[1], r);
@@ -233,7 +255,9 @@ static int gproject(Draw_Interpretor& di, int n, const char** a)
   occ::handle<Geom_Curve>   Cur = DrawTrSurf::GetCurve(a[2]);
   occ::handle<Geom_Surface> Sur = DrawTrSurf::GetSurface(a[3]);
   if (Cur.IsNull() || Sur.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<GeomAdaptor_Curve>   hcur = new GeomAdaptor_Curve(Cur);
   occ::handle<GeomAdaptor_Surface> hsur = new GeomAdaptor_Surface(Sur);
@@ -266,7 +290,9 @@ static int gproject(Draw_Interpretor& di, int n, const char** a)
   while (index + 1 < n)
   {
     if (a[index][0] != '-')
+    {
       return 1;
+    }
 
     if (a[index][1] == 'c')
     {
@@ -368,14 +394,20 @@ static int project(Draw_Interpretor& di, int n, const char** a)
   }
 
   if (n < 4)
+  {
     return 1;
+  }
   occ::handle<Geom_Surface> GS = DrawTrSurf::GetSurface(a[3]);
   if (GS.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Curve> GC = DrawTrSurf::GetCurve(a[2]);
   if (GC.IsNull())
+  {
     return 1;
+  }
 
   double tolerance = Precision::Confusion();
 
@@ -389,7 +421,9 @@ static int project(Draw_Interpretor& di, int n, const char** a)
   while (index + 1 < n)
   {
     if (a[index][0] != '-')
+    {
       return 1;
+    }
 
     if (a[index][1] == 'e')
     {
@@ -448,7 +482,9 @@ static int project(Draw_Interpretor& di, int n, const char** a)
       Dist = P1.Distance(P2);
       di << " Parameter = " << U << "\tDistance = " << Dist << "\n";
       if (Dist > DistMax)
+      {
         DistMax = Dist;
+      }
     }
     di << " **** Distance Maximale : " << DistMax << "\n";
   }
@@ -461,11 +497,15 @@ static int project(Draw_Interpretor& di, int n, const char** a)
 int projonplane(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> S = DrawTrSurf::GetSurface(a[3]);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Plane> Pl = occ::down_cast<Geom_Plane>(S);
   if (Pl.IsNull())
@@ -476,11 +516,15 @@ int projonplane(Draw_Interpretor& di, int n, const char** a)
 
   occ::handle<Geom_Curve> C = DrawTrSurf::GetCurve(a[2]);
   if (C.IsNull())
+  {
     return 1;
+  }
 
   bool Param = true;
   if ((n == 5 && Draw::Atoi(a[4]) == 0) || (n == 8 && Draw::Atoi(a[7]) == 0))
+  {
     Param = false;
+  }
 
   gp_Dir D;
 
@@ -505,9 +549,13 @@ static void solution(const occ::handle<GccInt_Bisec>& Bis, const char* name, con
 {
   char solname[200];
   if (i == 0)
+  {
     Sprintf(solname, "%s", name);
+  }
   else
+  {
     Sprintf(solname, "%s_%d", name, i);
+  }
   const char* temp = solname; // pour portage WNT
 
   switch (Bis->ArcType())
@@ -536,7 +584,9 @@ static void solution(const occ::handle<GccInt_Bisec>& Bis, const char* name, con
 static int bisec(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   occ::handle<Geom2d_Curve> C1 = DrawTrSurf::GetCurve2d(a[2]);
   occ::handle<Geom2d_Curve> C2 = DrawTrSurf::GetCurve2d(a[3]);
@@ -581,7 +631,9 @@ static int bisec(Draw_Interpretor& di, int n, const char** a)
         {
           NbSol = Bis.NbSolutions();
           if (NbSol >= 2)
+          {
             Compt = 1;
+          }
           for (i = 1; i <= NbSol; i++)
           {
             solution(Bis.ThisSolution(i), a[1], Compt);
@@ -603,7 +655,9 @@ static int bisec(Draw_Interpretor& di, int n, const char** a)
           //	  char solname[200];
           NbSol = Bis.NbSolutions();
           if (NbSol >= 2)
+          {
             Compt = 1;
+          }
           for (i = 1; i <= NbSol; i++)
           {
             solution(Bis.ThisSolution(i), a[1], Compt);
@@ -625,7 +679,9 @@ static int bisec(Draw_Interpretor& di, int n, const char** a)
           //	  char solname[200];
           NbSol = Bis.NbSolutions();
           if (NbSol >= 2)
+          {
             Compt = 1;
+          }
           for (i = 1; i <= NbSol; i++)
           {
             solution(Bis.ThisSolution(i), a[1], Compt);
@@ -653,7 +709,9 @@ static int bisec(Draw_Interpretor& di, int n, const char** a)
         {
           NbSol = Bis.NbSolutions();
           if (NbSol >= 2)
+          {
             Compt = 1;
+          }
           for (i = 1; i <= NbSol; i++)
           {
             solution(Bis.ThisSolution(i), a[1], Compt);
@@ -698,7 +756,9 @@ static int bisec(Draw_Interpretor& di, int n, const char** a)
         {
           NbSol = Bis.NbSolutions();
           if (NbSol >= 2)
+          {
             Compt = 1;
+          }
           for (i = 1; i <= Bis.NbSolutions(); i++)
           {
             solution(Bis.ThisSolution(i), a[1], Compt);
@@ -1013,10 +1073,14 @@ static int crvtpoints(Draw_Interpretor& di, int n, const char** a)
   defl = Draw::Atof(a[3]);
 
   if (n > 4)
+  {
     angle = Draw::Atof(a[4]);
+  }
 
   if (n > 5)
+  {
     aMinPntsNb = Draw::Atoi(a[5]);
+  }
 
   GCPnts_TangentialDeflection PntGen(*aHCurve, angle, defl, aMinPntsNb);
 
@@ -1065,7 +1129,9 @@ static int crvtpoints(Draw_Interpretor& di, int n, const char** a)
 static int uniformAbscissa(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 3)
+  {
     return 1;
+  }
 
   /*occ::handle<Geom_BSplineCurve> ellip;
   ellip = DrawTrSurf::GetBSplineCurve(a[1]);
@@ -1086,7 +1152,9 @@ static int uniformAbscissa(Draw_Interpretor& di, int n, const char** a)
   int nocp;
   nocp = Draw::Atoi(a[2]);
   if (nocp < 2)
+  {
     return 1;
+  }
 
   // test nbPoints for Geom_Ellipse
 
@@ -1110,7 +1178,9 @@ static int uniformAbscissa(Draw_Interpretor& di, int n, const char** a)
     {
       di << " CasCurve  - nbpoints " << myAlgo.NbPoints() << "\n";
       for (int i = 1; i <= myAlgo.NbPoints(); i++)
+      {
         di << i << " points = " << myAlgo.Parameter(i) << "\n";
+      }
     }
   }
 
@@ -1128,7 +1198,9 @@ static int uniformAbscissa(Draw_Interpretor& di, int n, const char** a)
 static int EllipsUniformAbscissa(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 4)
+  {
     return 1;
+  }
 
   double R1;
   R1 = Draw::Atof(a[1]);
@@ -1138,7 +1210,9 @@ static int EllipsUniformAbscissa(Draw_Interpretor& di, int n, const char** a)
   int nocp;
   nocp = Draw::Atoi(a[3]);
   if (nocp < 2)
+  {
     return 1;
+  }
 
   // test nbPoints for Geom_Ellipse
   occ::handle<Geom_Ellipse> ellip;
@@ -1186,7 +1260,9 @@ static int EllipsUniformAbscissa(Draw_Interpretor& di, int n, const char** a)
     {
       di << " CasCurve  - nbpoints " << myAlgo.NbPoints() << "\n";
       for (int i = 1; i <= myAlgo.NbPoints(); i++)
+      {
         di << i << " points = " << myAlgo.Parameter(i) << "\n";
+      }
     }
   }
 
@@ -1308,7 +1384,9 @@ static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
   occ::handle<Geom_BSplineCurve> aBS(occ::down_cast<Geom_BSplineCurve>(C));
 
   if (aBS.IsNull())
+  {
     return 1;
+  }
 
   int ui1 = aBS->FirstUKnotIndex();
   int ui2 = aBS->LastUKnotIndex();
@@ -1364,12 +1442,16 @@ static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
       for (l = j + 1; l < k; ++l)
       {
         if (anUFlg(l))
+        {
           continue;
+        }
         gp_Pnt pp = aBS->Value(anUPars(l));
         double d  = lin.SquareDistance(pp);
 
         if (d <= defl)
+        {
           continue;
+        }
 
         ok = false;
         break;
@@ -1384,14 +1466,18 @@ static int mypoints(Draw_Interpretor& di, int /*n*/, const char** a)
     }
 
     if (k >= nbsu)
+    {
       bCont = false;
+    }
   }
 
   nbp = 0;
   for (i = 1; i <= nbsu; ++i)
   {
     if (anUFlg(i))
+    {
       nbp++;
+    }
   }
 
   NCollection_Array1<gp_Pnt> aPoles(1, nbp);
@@ -1496,7 +1582,9 @@ static int surfpoints(Draw_Interpretor& /*di*/, int /*n*/, const char** a)
 static int intersection(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   //
   occ::handle<Geom_Curve>   GC1;
@@ -1505,18 +1593,24 @@ static int intersection(Draw_Interpretor& di, int n, const char** a)
   {
     GC1 = DrawTrSurf::GetCurve(a[2]);
     if (GC1.IsNull())
+    {
       return 1;
+    }
   }
 
   //
   occ::handle<Geom_Surface> GS2 = DrawTrSurf::GetSurface(a[3]);
   if (GS2.IsNull())
+  {
     return 1;
+  }
 
   //
   double tol = Precision::Confusion();
   if (n == 5 || n == 9 || n == 13 || n == 17)
+  {
     tol = Draw::Atof(a[n - 1]);
+  }
 
   //
   occ::handle<Geom_Curve> Result;
@@ -1573,7 +1667,9 @@ static int intersection(Draw_Interpretor& di, int n, const char** a)
       {
         double UVbnd[8];
         for (int i = ibnd1; i <= ibnd2; i++)
+        {
           UVbnd[i - ibnd1] = Draw::Atof(a[i]);
+        }
 
         AS1 = new GeomAdaptor_Surface(GS1, UVbnd[0], UVbnd[1], UVbnd[2], UVbnd[3]);
         AS2 = new GeomAdaptor_Surface(GS2, UVbnd[4], UVbnd[5], UVbnd[6], UVbnd[7]);
@@ -1666,7 +1762,9 @@ static int intersection(Draw_Interpretor& di, int n, const char** a)
       int Compt = 1;
 
       if (nblines >= 1)
-        std::cout << "   Lines: " << std::endl;
+      {
+        std::cout << "   Lines: " << '\n';
+      }
 
       for (i = 1; i <= nblines; i++, Compt++)
       {
@@ -1678,7 +1776,9 @@ static int intersection(Draw_Interpretor& di, int n, const char** a)
       }
 
       if (nbpoints >= 1)
-        std::cout << "   Points: " << std::endl;
+      {
+        std::cout << "   Points: " << '\n';
+      }
 
       const int imax = nblines + nbpoints;
 
@@ -1761,7 +1861,9 @@ void GeometryTest::CurveCommands(Draw_Interpretor& theCommands)
 
   static bool loaded = false;
   if (loaded)
+  {
     return;
+  }
   loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);

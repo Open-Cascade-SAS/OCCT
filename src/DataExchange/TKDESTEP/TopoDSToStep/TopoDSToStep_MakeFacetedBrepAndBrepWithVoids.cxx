@@ -77,8 +77,12 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
   {
     int nbshapes = 0;
     for (It.Initialize(aSolid); It.More(); It.Next())
+    {
       if (It.Value().ShapeType() == TopAbs_SHELL)
+      {
         nbshapes++;
+      }
+    }
     Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
     for (It.Initialize(aSolid); It.More() && aPS.More(); It.Next())
     {
@@ -97,9 +101,13 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
           {
             aCShell = occ::down_cast<StepShape_ClosedShell>(StepB.Value());
             if (aOutShell.IsEqual(It.Value()))
+            {
               aOuter = aCShell;
+            }
             else
+            {
               S.Append(aCShell);
+            }
             occ::handle<StepVisual_TessellatedItem> aTessShell = StepB.TessellatedValue();
             if (!aTessShell.IsNull())
             {
@@ -124,7 +132,9 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
       }
     }
     if (!aPS.More())
+    {
       return;
+    }
   }
   int N = S.Length();
   if (N >= 1)

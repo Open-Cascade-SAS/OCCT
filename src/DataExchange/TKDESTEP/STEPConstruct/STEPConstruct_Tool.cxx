@@ -38,19 +38,25 @@ bool STEPConstruct_Tool::SetWS(const occ::handle<XSControl_WorkSession>& WS)
   myFinderProcess.Nullify();
 
   if (WS.IsNull())
+  {
     return false;
+  }
   myWS     = WS;
   myHGraph = myWS->HGraph();
 
   // collect data on reading process
   const occ::handle<XSControl_TransferReader>& TR = WS->TransferReader();
   if (!TR.IsNull())
+  {
     myTransientProcess = TR->TransientProcess();
+  }
 
   // collect data on writing process
   const occ::handle<XSControl_TransferWriter>& TW = myWS->TransferWriter();
   if (!TW.IsNull())
+  {
     myFinderProcess = TW->FinderProcess();
+  }
 
   return !myTransientProcess.IsNull() && !myFinderProcess.IsNull();
 }

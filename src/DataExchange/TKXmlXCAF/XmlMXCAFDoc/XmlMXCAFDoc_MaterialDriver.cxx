@@ -102,13 +102,21 @@ void XmlMXCAFDoc_MaterialDriver::Paste(const occ::handle<TDF_Attribute>& theSour
 
   XmlObjMgt_DOMString aNameString, aDescrString, aDensNameStr, aDensTypeStr;
   if (!anAtt->GetName().IsNull())
+  {
     aNameString = anAtt->GetName()->String().ToCString();
+  }
   if (!anAtt->GetDescription().IsNull())
+  {
     aDescrString = anAtt->GetDescription()->String().ToCString();
+  }
   if (!anAtt->GetDensName().IsNull())
+  {
     aDensNameStr = anAtt->GetDensName()->String().ToCString();
+  }
   if (!anAtt->GetDensValType().IsNull())
+  {
     aDensTypeStr = anAtt->GetDensValType()->String().ToCString();
+  }
 
   TCollection_AsciiString aDensityStr(anAtt->GetDensity());
   XmlObjMgt::SetStringValue(theTarget, aDensityStr.ToCString());

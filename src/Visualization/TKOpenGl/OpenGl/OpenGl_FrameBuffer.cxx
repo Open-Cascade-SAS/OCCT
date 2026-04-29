@@ -26,17 +26,21 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_NamedResource)
 namespace
 {
 //! Checks whether two format arrays are equal or not.
-static bool operator==(const NCollection_Vector<int>& theFmt1,
-                       const NCollection_Vector<int>& theFmt2)
+static bool operator==(const NCollection_DynamicArray<int>& theFmt1,
+                       const NCollection_DynamicArray<int>& theFmt2)
 {
   if (theFmt1.Length() != theFmt2.Length())
+  {
     return false;
-  NCollection_Vector<int>::Iterator anIt1(theFmt1);
-  NCollection_Vector<int>::Iterator anIt2(theFmt1);
+  }
+  NCollection_DynamicArray<int>::Iterator anIt1(theFmt1);
+  NCollection_DynamicArray<int>::Iterator anIt2(theFmt1);
   for (; anIt1.More(); anIt1.Next(), anIt2.Next())
   {
     if (anIt1.Value() != anIt2.Value())
+    {
       return false;
+    }
   }
   return true;
 }
@@ -206,7 +210,7 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
                               const int                          theDepthFormat,
                               const int                          theNbSamples)
 {
-  NCollection_Vector<int> aColorFormats;
+  NCollection_DynamicArray<int> aColorFormats;
   if (theColorFormat != 0)
   {
     aColorFormats.Append(theColorFormat);
@@ -216,11 +220,11 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
 
 //=================================================================================================
 
-bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
-                              const NCollection_Vec2<int>&       theSize,
-                              const NCollection_Vector<int>&     theColorFormats,
-                              const occ::handle<OpenGl_Texture>& theDepthStencilTexture,
-                              const int                          theNbSamples)
+bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>&   theGlContext,
+                              const NCollection_Vec2<int>&         theSize,
+                              const NCollection_DynamicArray<int>& theColorFormats,
+                              const occ::handle<OpenGl_Texture>&   theDepthStencilTexture,
+                              const int                            theNbSamples)
 {
   myColorFormats = theColorFormats;
 
@@ -354,11 +358,11 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
 
 //=================================================================================================
 
-bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
-                              const NCollection_Vec2<int>&       theSize,
-                              const NCollection_Vector<int>&     theColorFormats,
-                              const int                          theDepthFormat,
-                              const int                          theNbSamples)
+bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>&   theGlContext,
+                              const NCollection_Vec2<int>&         theSize,
+                              const NCollection_DynamicArray<int>& theColorFormats,
+                              const int                            theDepthFormat,
+                              const int                            theNbSamples)
 {
   myColorFormats = theColorFormats;
 
@@ -579,18 +583,18 @@ bool OpenGl_FrameBuffer::InitLazy(const occ::handle<OpenGl_Context>& theGlContex
                                   const int                          theDepthFormat,
                                   const int                          theNbSamples)
 {
-  NCollection_Vector<int> aColorFormats;
+  NCollection_DynamicArray<int> aColorFormats;
   aColorFormats.Append(theColorFormat);
   return InitLazy(theGlContext, theViewportSize, aColorFormats, theDepthFormat, theNbSamples);
 }
 
 //=================================================================================================
 
-bool OpenGl_FrameBuffer::InitLazy(const occ::handle<OpenGl_Context>& theGlContext,
-                                  const NCollection_Vec2<int>&       theViewportSize,
-                                  const NCollection_Vector<int>&     theColorFormats,
-                                  const int                          theDepthFormat,
-                                  const int                          theNbSamples)
+bool OpenGl_FrameBuffer::InitLazy(const occ::handle<OpenGl_Context>&   theGlContext,
+                                  const NCollection_Vec2<int>&         theViewportSize,
+                                  const NCollection_DynamicArray<int>& theColorFormats,
+                                  const int                            theDepthFormat,
+                                  const int                            theNbSamples)
 {
   if (myVPSizeX == theViewportSize.x() && myVPSizeY == theViewportSize.y()
       && myColorFormats == theColorFormats && myDepthFormat == theDepthFormat
@@ -610,7 +614,7 @@ bool OpenGl_FrameBuffer::InitWithRB(const occ::handle<OpenGl_Context>& theGlCtx,
                                     const int                          theDepthFormat,
                                     const unsigned int                 theColorRBufferFromWindow)
 {
-  NCollection_Vector<int> aColorFormats;
+  NCollection_DynamicArray<int> aColorFormats;
   if (theColorFormat != 0)
   {
     aColorFormats.Append(theColorFormat);
@@ -625,11 +629,11 @@ bool OpenGl_FrameBuffer::InitWithRB(const occ::handle<OpenGl_Context>& theGlCtx,
 
 //=================================================================================================
 
-bool OpenGl_FrameBuffer::initRenderBuffer(const occ::handle<OpenGl_Context>& theGlCtx,
-                                          const NCollection_Vec2<int>&       theSize,
-                                          const NCollection_Vector<int>&     theColorFormats,
-                                          const int                          theDepthFormat,
-                                          const int                          theNbSamples,
+bool OpenGl_FrameBuffer::initRenderBuffer(const occ::handle<OpenGl_Context>&   theGlCtx,
+                                          const NCollection_Vec2<int>&         theSize,
+                                          const NCollection_DynamicArray<int>& theColorFormats,
+                                          const int                            theDepthFormat,
+                                          const int                            theNbSamples,
                                           const unsigned int theColorRBufferFromWindow)
 {
   myColorFormats = theColorFormats;

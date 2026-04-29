@@ -48,15 +48,21 @@ bool ShapeConstruct_Curve::AdjustCurve(const occ::handle<Geom_Curve>& C3D,
                                        const bool                     take2) const
 {
   if (!take1 && !take2)
+  {
     return true;
+  }
 
   if (C3D->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
     occ::handle<Geom_BSplineCurve> BSPL = occ::down_cast<Geom_BSplineCurve>(C3D);
     if (take1)
+    {
       BSPL->SetPole(1, P1);
+    }
     if (take2)
+    {
       BSPL->SetPole(BSPL->NbPoles(), P2);
+    }
     return true;
   }
 
@@ -90,7 +96,9 @@ bool ShapeConstruct_Curve::AdjustCurveSegment(const occ::handle<Geom_Curve>& C3D
     //    Forcer l extremite c est bien
     //    Propager sur le reste, c est pas mal non plus
     if (U1 >= U2)
+    {
       return false;
+    }
     double UU1 = std::max(U1, BSPL->FirstParameter());
     double UU2 = std::min(U2, BSPL->LastParameter());
     BSPL->Segment(UU1, UU2);
@@ -125,15 +133,21 @@ bool ShapeConstruct_Curve::AdjustCurve2d(const occ::handle<Geom2d_Curve>& C2D,
                                          const bool                       take2) const
 {
   if (!take1 && !take2)
+  {
     return true;
+  }
 
   if (C2D->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
     occ::handle<Geom2d_BSplineCurve> BSPL = occ::down_cast<Geom2d_BSplineCurve>(C2D);
     if (take1)
+    {
       BSPL->SetPole(1, P1);
+    }
     if (take2)
+    {
       BSPL->SetPole(BSPL->NbPoles(), P2);
+    }
     return true;
   }
 
@@ -202,7 +216,9 @@ occ::handle<Geom_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
       segment = true;
     }
     if (!segment)
+    {
       return bspl;
+    }
     try
     {
       OCC_CATCH_SIGNALS
@@ -233,7 +249,9 @@ occ::handle<Geom_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
     OCC_CATCH_SIGNALS
     Approx_Curve3d Conv(new GeomAdaptor_Curve(newc, first, last), prec, GeomAbs_C1, 9, 1000);
     if (Conv.IsDone() || Conv.HasResult())
+    {
       bspl = Conv.Curve();
+    }
   }
   catch (Standard_Failure const& anException)
   {
@@ -297,7 +315,9 @@ occ::handle<Geom2d_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
       segment = true;
     }
     if (!segment)
+    {
       return bspl;
+    }
     try
     {
       OCC_CATCH_SIGNALS
@@ -335,7 +355,9 @@ occ::handle<Geom2d_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
                         9,
                         1000);
     if (Conv.IsDone() || Conv.HasResult())
+    {
       bspl = Conv.Curve();
+    }
   }
   catch (Standard_Failure const& anException)
   {

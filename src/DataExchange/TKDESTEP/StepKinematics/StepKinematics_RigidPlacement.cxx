@@ -27,11 +27,17 @@ StepKinematics_RigidPlacement::StepKinematics_RigidPlacement() = default;
 int StepKinematics_RigidPlacement::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_SuParameters)))
+  {
     return 2;
+  }
   return 0;
 }
 

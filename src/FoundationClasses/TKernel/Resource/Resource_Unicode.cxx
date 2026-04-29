@@ -264,7 +264,9 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
         currentch++;
       }
       else
+      {
         return false;
+      }
     }
   }
   return true;
@@ -334,7 +336,9 @@ bool Resource_Unicode::ConvertBig5ToUnicode(const char* const           fromstr,
                 NCollection_UtfString<char16_t> aStr16 = aStr32.ToUtf16();
 
                 if (aStr16.Size() != 4)
+                {
                   return false; // not a surrogate pair
+                }
                 const char16_t* aChar16 = aStr16.ToCString();
                 tostr.Insert(aLength + 1, (char16_t)(*aChar16));
                 aChar16++;
@@ -372,7 +376,9 @@ bool Resource_Unicode::ConvertBig5ToUnicode(const char* const           fromstr,
         currentch++;
       }
       else
+      {
         return false;
+      }
     }
   }
   return true;

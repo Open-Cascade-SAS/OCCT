@@ -38,7 +38,9 @@ Poly_Polygon3D::Poly_Polygon3D(const NCollection_Array1<gp_Pnt>& Nodes)
 {
   int i, j = 1;
   for (i = Nodes.Lower(); i <= Nodes.Upper(); i++)
+  {
     myNodes(j++) = Nodes(i);
+  }
 }
 
 //=================================================================================================
@@ -65,9 +67,13 @@ occ::handle<Poly_Polygon3D> Poly_Polygon3D::Copy() const
 {
   occ::handle<Poly_Polygon3D> aCopy;
   if (myParameters.IsNull())
+  {
     aCopy = new Poly_Polygon3D(myNodes);
+  }
   else
+  {
     aCopy = new Poly_Polygon3D(myNodes, myParameters->Array1());
+  }
   aCopy->Deflection(myDeflection);
   return aCopy;
 }

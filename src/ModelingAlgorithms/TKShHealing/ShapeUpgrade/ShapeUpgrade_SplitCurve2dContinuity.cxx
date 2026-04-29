@@ -77,9 +77,13 @@ void ShapeUpgrade_SplitCurve2dContinuity::SetTolerance(const double Tol)
 void ShapeUpgrade_SplitCurve2dContinuity::Compute()
 {
   if (myCurve->Continuity() < myCriterion)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
   if (mySplitValues->Length() > 2)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   constexpr double precision = Precision::PConfusion();
   double           First     = mySplitValues->Value(1);
   double           Last      = mySplitValues->Value(mySplitValues->Length());
@@ -162,9 +166,13 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
     {
       double valknot = MyBSpline->Knot(iknot);
       if (valknot <= First + precision)
+      {
         continue;
+      }
       if (valknot >= Last - precision)
+      {
         break;
+      }
       int Continuity = Deg - MyBSpline->Multiplicity(iknot);
       // double tt = MyBSpline->Knot(iknot); // tt not used (skl)
       if (Continuity < myCont)
@@ -173,7 +181,9 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
         bool corrected       = false;
         int  newMultiplicity = Deg - myCont;
         if (newMultiplicity < 0)
+        {
           newMultiplicity = 0;
+        }
         {
           try
           {
@@ -211,5 +221,7 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
   }
 
   if (mySplitValues->Length() > 2)
+  {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
 }

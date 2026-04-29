@@ -41,7 +41,9 @@ void RWStepDimTol_RWAngularityTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "angularity_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

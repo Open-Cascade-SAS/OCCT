@@ -30,7 +30,9 @@ void RWStepGeom_RWVector::ReadStep(const occ::handle<StepData_StepReaderData>& d
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "vector"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

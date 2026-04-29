@@ -110,7 +110,7 @@ void OSD_ThreadPool::Init(int theNbThreads)
 {
   const int aNbThreads =
     std::max(0, (theNbThreads > 0 ? theNbThreads : OSD_Parallel::NbLogicalProcessors()) - 1);
-  if (myThreads.Size() == aNbThreads)
+  if (myThreads.Length() == aNbThreads)
   {
     return;
   }

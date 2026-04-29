@@ -35,7 +35,9 @@ void RWStepAP214_RWAppliedDateAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "applied_date_assignment"))
+  {
     return;
+  }
 
   // --- inherited field : assignedDate ---
 
@@ -60,7 +62,9 @@ void RWStepAP214_RWAppliedDateAssignment::ReadStep(
     {
       bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
       if (stat3)
+      {
         aItems->SetValue(i3, aItemsItem);
+      }
     }
   }
 

@@ -59,7 +59,9 @@ void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
     // Add to Origins map
     NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aVSD);
     if (!pLOr)
+    {
       pLOr = myOrigins.Bound(aVSD, NCollection_List<TopoDS_Shape>());
+    }
     pLOr->Append(aV);
   }
 }
@@ -136,14 +138,18 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
   {
     const TopoDS_Shape& aS = aItA.Value();
     if (aS.ShapeType() != theType)
+    {
       continue;
+    }
     // Get images
     const NCollection_List<TopoDS_Shape>* pLSIm = myImages.Seek(aS);
     if (!pLSIm)
     {
       // No images -> add the argument shape itself into result
       if (aMFence.Add(aS))
+      {
         BRep_Builder().Add(myShape, aS);
+      }
     }
     else
     {
@@ -153,7 +159,9 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
       {
         const TopoDS_Shape& aSIm = aItIm.Value();
         if (aMFence.Add(aSIm))
+        {
           BRep_Builder().Add(myShape, aSIm);
+        }
       }
     }
   }
@@ -219,7 +227,9 @@ void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs
     const TopoDS_Shape&                   aSS   = aIt.Value();
     const NCollection_List<TopoDS_Shape>* pLFIm = myImages.Seek(aSS);
     if (pLFIm && ((pLFIm->Extent() != 1) || !pLFIm->First().IsSame(aSS)))
+    {
       break;
+    }
   }
 
   if (!aIt.More())

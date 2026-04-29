@@ -162,15 +162,19 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
             dummypnt = UDP.Value(i);
             P2.SetCoord(dummypnt.X(), dummypnt.Y());
             if (Orient == TopAbs_FORWARD)
+            {
               isobuild.Trim(P1, P2);
+            }
             else
+            {
               isobuild.Trim(P2, P1);
+            }
           }
         }
       }
       else
       {
-        std::cout << "Cannot evaluate curve on surface" << std::endl;
+        std::cout << "Cannot evaluate curve on surface" << '\n';
       }
     }
     else
@@ -180,9 +184,13 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
       P1 = TheRCurve->Value(U1);
       P2 = TheRCurve->Value(U2);
       if (Orient == TopAbs_FORWARD)
+      {
         isobuild.Trim(P1, P2);
+      }
       else
+      {
         isobuild.Trim(P2, P1);
+      }
     }
   }
 

@@ -46,7 +46,9 @@ static void LastModif(TNaming_NewShapeIterator&                                 
   {
     const TDF_Label& Lab = it.Label();
     if (!Updated.Contains(Lab))
+    {
       continue;
+    }
 
     if (it.IsModification())
     {
@@ -65,11 +67,15 @@ static void LastModif(TNaming_NewShapeIterator&                                 
         }
       }
       else
+      {
         LastModif(it2, it.Shape(), MS, Updated, Deleted);
+      }
     }
   }
   if (!YaModif)
+  {
     MS.Add(S);
+  }
 }
 
 //=================================================================================================
@@ -100,11 +106,15 @@ static void LastModif(TNaming_NewShapeIterator&                                 
         }
       }
       else
+      {
         LastModif(it2, MS, it.Shape(), Deleted);
+      }
     }
   }
   if (!YaModif)
+  {
     MS.Add(S);
+  }
 }
 
 //=================================================================================================
@@ -180,22 +190,32 @@ TopoDS_Shape TNaming_Tool::GetShape(const occ::handle<TNaming_NamedShape>& NS)
               MS.Add(aS);
             }
             else
+            {
               MS.Add(itL.NewShape());
+            }
           }
           else
+          {
             MS.Add(itL.NewShape());
+          }
         } //
         else
+        {
           MS.Add(itL.NewShape());
+        }
       }
     }
   }
   else
+  {
     for (; itL.More(); itL.Next())
     {
       if (!itL.NewShape().IsNull())
+      {
         MS.Add(itL.NewShape());
+      }
     }
+  }
   return MakeShape(MS);
 }
 
@@ -234,7 +254,9 @@ TopoDS_Shape TNaming_Tool::CurrentShape(const occ::handle<TNaming_NamedShape>& A
   {
     const TopoDS_Shape& S = itL.NewShape();
     if (S.IsNull())
+    {
       continue;
+    }
     // OR-N
     bool               YaOrientationToApply(false);
     TopAbs_Orientation OrientationToApply(TopAbs_FORWARD);
@@ -269,7 +291,9 @@ TopoDS_Shape TNaming_Tool::CurrentShape(const occ::handle<TNaming_NamedShape>& A
             }
           }
           if (OrientationToApply == TopAbs_FORWARD || OrientationToApply == TopAbs_REVERSED)
+          {
             YaOrientationToApply = true;
+          }
         }
       }
     } //
@@ -284,9 +308,13 @@ TopoDS_Shape TNaming_Tool::CurrentShape(const occ::handle<TNaming_NamedShape>& A
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS2; // to be optimized later
       LastModif(it, MS2, S, Deleted);
       if (YaOrientationToApply)
+      {
         ApplyOrientation(MS2, OrientationToApply);
+      }
       for (int anItMS2 = 1; anItMS2 <= MS2.Extent(); ++anItMS2)
+      {
         MS.Add(MS2(anItMS2));
+      }
     }
   }
   return MakeShape(MS);
@@ -312,7 +340,9 @@ TopoDS_Shape TNaming_Tool::CurrentShape(const occ::handle<TNaming_NamedShape>& A
   {
     const TopoDS_Shape& S = itL.NewShape();
     if (S.IsNull())
+    {
       continue;
+    }
     // OR-N
     bool               YaOrientationToApply(false);
     TopAbs_Orientation OrientationToApply(TopAbs_FORWARD);
@@ -347,7 +377,9 @@ TopoDS_Shape TNaming_Tool::CurrentShape(const occ::handle<TNaming_NamedShape>& A
             }
           }
           if (OrientationToApply == TopAbs_FORWARD || OrientationToApply == TopAbs_REVERSED)
+          {
             YaOrientationToApply = true;
+          }
         }
       }
     } //
@@ -362,9 +394,13 @@ TopoDS_Shape TNaming_Tool::CurrentShape(const occ::handle<TNaming_NamedShape>& A
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS2; // to be optimized later
       LastModif(it, S, MS2, Updated, Deleted);
       if (YaOrientationToApply)
+      {
         ApplyOrientation(MS2, OrientationToApply);
+      }
       for (int anItMS2 = 1; anItMS2 <= MS2.Extent(); ++anItMS2)
+      {
         MS.Add(MS2(anItMS2));
+      }
     }
   }
   return MakeShape(MS);
@@ -477,7 +513,9 @@ void TNaming_Tool::FirstOlds(const occ::handle<TNaming_UsedShapes>&             
     }
   }
   if (!YaModif)
+  {
     MS.Add(S);
+  }
 }
 
 //=================================================================================================
@@ -491,7 +529,9 @@ TopoDS_Shape TNaming_Tool::InitialShape(const TopoDS_Shape&          S,
   TopoDS_Shape Res;
 
   if (!TNaming_Tool::HasLabel(US, S))
+  {
     return Res;
+  }
 
   int Transdef;
   Label(US, S, Transdef);
@@ -516,7 +556,9 @@ static void Back(const occ::handle<TNaming_NamedShape>&            NS,
   for (TNaming_Iterator it(NS); it.More(); it.Next())
   {
     if (it.NewShape().IsNull())
+    {
       continue;
+    }
     for (TNaming_OldShapeIterator Oldit(it); Oldit.More(); Oldit.Next())
     {
       const TopoDS_Shape& OS = Oldit.Shape();
@@ -527,7 +569,9 @@ static void Back(const occ::handle<TNaming_NamedShape>&            NS,
         if (!NOS.IsNull())
         {
           if (MNS.Add(NOS))
+          {
             Back(NOS, MNS);
+          }
         }
       }
     }
@@ -546,7 +590,9 @@ void TNaming_Tool::Collect(const occ::handle<TNaming_NamedShape>&            NS,
   for (TNaming_Iterator it(NS); it.More(); it.Next())
   {
     if (it.NewShape().IsNull())
+    {
       continue;
+    }
     for (TNaming_NewShapeIterator NewIt(it); NewIt.More(); NewIt.Next())
     {
       if (!OnlyModif || NewIt.IsModification())
@@ -589,9 +635,13 @@ void TNaming_Tool::FindShape(const NCollection_Map<TDF_Label>& Valid,
                              TopoDS_Shape&                          S)
 {
   if (!Valid.IsEmpty() && !Valid.Contains(Arg->Label()))
+  {
     return;
+  }
   if (Arg.IsNull() || Arg->IsEmpty())
+  {
     return;
+  }
 
   // Which type of shape is being expected?
   occ::handle<TNaming_Naming> aNaming;
@@ -608,7 +658,9 @@ void TNaming_Tool::FindShape(const NCollection_Map<TDF_Label>& Valid,
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> subShapes;
   TopExp_Explorer anExpl(Arg->Get(), (TopAbs_ShapeEnum)((int)(aNaming->GetName().ShapeType()) + 1));
   for (; anExpl.More(); anExpl.Next())
+  {
     subShapes.Add(anExpl.Current());
+  }
 #ifdef OCCT_DEBUG
 //  std::cout<<"TNaming_Tool::FindShape(): Nb of sub shapes = "<<subShapes.Extent()<<std::endl;
 #endif
@@ -635,7 +687,9 @@ void TNaming_Tool::FindShape(const NCollection_Map<TDF_Label>& Valid,
       const occ::handle<TNaming_NamedShape>& aCurrentExtArg =
         TNaming_Tool::CurrentNamedShape(anExtArg);
       if (!aCurrentExtArg.IsNull() && !aCurrentExtArg->IsEmpty())
+      {
         extArgs.Append(aCurrentExtArg);
+      }
 #ifdef OCCT_DEBUG
 //      if (extArgs.Extent() - 1 == nbExtArgs) {
 //	std::cout<<"TNaming_Tool::FindShape(): An external reference has been found at ";
@@ -684,7 +738,9 @@ void TNaming_Tool::FindShape(const NCollection_Map<TDF_Label>& Valid,
         subShapesOfResult.Add(explSubC.Current());
       }
       if (subShapesOfResult.Extent() != subShapes.Extent())
+      {
         continue;
+      }
       for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itrR(subShapesOfResult);
            itrR.More();
            itrR.Next())
@@ -711,7 +767,9 @@ void TNaming_Tool::FindShape(const NCollection_Map<TDF_Label>& Valid,
     }
 
     if (!S.IsNull())
+    {
       break;
+    }
 #ifdef OCCT_DEBUG
 //    std::cout<<std::endl;
 #endif

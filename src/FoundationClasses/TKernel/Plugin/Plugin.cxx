@@ -66,9 +66,11 @@ occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const b
     {
       Standard_SStream aMsg;
       aMsg << "could not find the resource:";
-      aMsg << theResource.ToCString() << std::endl;
+      aMsg << theResource.ToCString() << '\n';
       if (theVerbose)
-        std::cout << "could not find the resource:" << theResource.ToCString() << std::endl;
+      {
+        std::cout << "could not find the resource:" << theResource.ToCString() << '\n';
+      }
       throw Plugin_Failure(aMsg.str().c_str());
     }
 
@@ -96,8 +98,10 @@ occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const b
       aMsg << "; reason:";
       aMsg << error.ToCString();
       if (theVerbose)
+      {
         std::cout << "could not open: " << PluginResource->Value(theResource.ToCString())
-                  << " ; reason: " << error.ToCString() << std::endl;
+                  << " ; reason: " << error.ToCString() << '\n';
+      }
       throw Plugin_Failure(aMsg.str().c_str());
     }
     f = theSharedLibrary.DlSymb("PLUGINFACTORY");

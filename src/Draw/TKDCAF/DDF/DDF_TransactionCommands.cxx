@@ -41,7 +41,9 @@ static occ::handle<TDF_Delta>                         DDF_LastDelta;
 static int OpenTran(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
   if (DDF::GetDF(a[1], DF))
@@ -58,7 +60,9 @@ static int OpenTran(Draw_Interpretor& di, int n, const char** a)
 static int AbortTran(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
   if (DDF::GetDF(a[1], DF))
@@ -83,7 +87,9 @@ static int AbortTran(Draw_Interpretor& di, int n, const char** a)
 static int CommitTran(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
   if (DDF::GetDF(a[1], DF))
@@ -94,7 +100,9 @@ static int CommitTran(Draw_Interpretor& di, int n, const char** a)
       di << "Commit transaction # " << tr->Transaction() << " # " << DF->Transaction() << "\n";
       bool withDelta = false;
       if (n > 2)
+      {
         withDelta = (Draw::Atoi(a[2]) != 0);
+      }
       DDF_LastDelta = tr->Commit(withDelta);
       DDF_TStack.RemoveFirst();
     }
@@ -111,15 +119,21 @@ static int CommitTran(Draw_Interpretor& di, int n, const char** a)
 static int CurrentTran(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
   if (DDF::GetDF(a[1], DF))
   {
     di << "# " << DF->Transaction() << "\n";
     if (!DDF_TStack.IsEmpty())
+    {
       if (DF->Transaction() != DDF_TStack.First()->Transaction())
+      {
         di << "Transaction object said # " << DDF_TStack.First()->Transaction() << "\n";
+      }
+    }
   }
   return 0;
 }
@@ -133,14 +147,18 @@ static int CurrentTran(Draw_Interpretor& di, int n, const char** a)
 static int Undo(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
   if (DDF::GetDF(a[1], DF))
   {
     bool withDelta = false;
     if (n > 2)
+    {
       withDelta = (Draw::Atoi(a[2]) != 0);
+    }
     if (!DDF_LastDelta.IsNull())
     {
       if (DF->IsApplicable(DDF_LastDelta))
@@ -176,7 +194,9 @@ void DDF::TransactionCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "DF transaction and undo commands";

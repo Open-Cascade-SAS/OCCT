@@ -47,7 +47,9 @@ void IGESSelect_AutoCorrect::Performing(IFSelect_ContextModif&                 c
     DeclareAndCast(IGESData_IGESEntity, ent, ctx.ValueResult());
     bool done = corrector.AutoCorrect(ent);
     if (done)
+    {
       ctx.Trace();
+    }
   }
 }
 

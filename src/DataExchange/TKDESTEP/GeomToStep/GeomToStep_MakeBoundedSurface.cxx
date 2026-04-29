@@ -88,7 +88,9 @@ GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface(
     theBoundedSurface = MkRTSurf.Value();
   }
   else
+  {
     done = false;
+  }
 }
 
 //=============================================================================

@@ -32,14 +32,15 @@
 //! - CompSolid children use SolidRef
 //!
 //! For lightweight read-only projections without lifecycle fields, see
-//! BRepGraphInc_Usage.hxx (Usage structs carry only DefId + Orientation + Location).
+//! BRepGraphInc_Instance.hxx (Instance structs carry only DefId + Orientation + Location).
 namespace BRepGraphInc
 {
 
 //! Fields shared by every reference entry.
 struct BaseRef
 {
-  BRepGraph_RefId  RefId;             //!< Typed address (kind + per-kind index)
+  using TypeId = BRepGraph_RefId;
+
   BRepGraph_NodeId ParentId;          //!< Parent topology node owning this reference usage
   uint32_t         OwnGen    = 0;     //!< Per-reference mutation counter
   bool             IsRemoved = false; //!< Soft-removal flag
@@ -48,6 +49,8 @@ struct BaseRef
 //! Shell reference storage entry.
 struct ShellRef : public BaseRef
 {
+  using TypeId = BRepGraph_ShellRefId;
+
   BRepGraph_ShellId  ShellDefId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
@@ -56,6 +59,8 @@ struct ShellRef : public BaseRef
 //! Face reference storage entry.
 struct FaceRef : public BaseRef
 {
+  using TypeId = BRepGraph_FaceRefId;
+
   BRepGraph_FaceId   FaceDefId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
@@ -64,6 +69,8 @@ struct FaceRef : public BaseRef
 //! Wire reference storage entry.
 struct WireRef : public BaseRef
 {
+  using TypeId = BRepGraph_WireRefId;
+
   BRepGraph_WireId   WireDefId;
   bool               IsOuter     = false;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
@@ -76,6 +83,8 @@ struct WireRef : public BaseRef
 //! create a second competing source of truth.
 struct CoEdgeRef : public BaseRef
 {
+  using TypeId = BRepGraph_CoEdgeRefId;
+
   BRepGraph_CoEdgeId CoEdgeDefId;
   TopLoc_Location    LocalLocation;
 };
@@ -83,6 +92,8 @@ struct CoEdgeRef : public BaseRef
 //! Vertex reference storage entry.
 struct VertexRef : public BaseRef
 {
+  using TypeId = BRepGraph_VertexRefId;
+
   BRepGraph_VertexId VertexDefId;
   TopAbs_Orientation Orientation =
     TopAbs_INTERNAL; //!< INTERNAL: B-Rep vertex classification convention
@@ -92,6 +103,8 @@ struct VertexRef : public BaseRef
 //! Solid reference storage entry.
 struct SolidRef : public BaseRef
 {
+  using TypeId = BRepGraph_SolidRefId;
+
   BRepGraph_SolidId  SolidDefId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
@@ -100,18 +113,22 @@ struct SolidRef : public BaseRef
 //! Child reference storage entry.
 struct ChildRef : public BaseRef
 {
+  using TypeId = BRepGraph_ChildRefId;
+
   BRepGraph_NodeId   ChildDefId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
 
 //! Occurrence reference storage entry.
-//! Unlike other ref types, OccurrenceRef omits Orientation and LocalLocation.
-//! Placement is owned by OccurrenceDef::Placement; this ref is a lightweight
-//! pointer from the parent Product's OccurrenceRefIds to the OccurrenceDef slot.
+//! Like ChildRef but without Orientation - placement is a reference property.
+//! Structurally parallel to other ref types: definitions carry no location.
 struct OccurrenceRef : public BaseRef
 {
+  using TypeId = BRepGraph_OccurrenceRefId;
+
   BRepGraph_OccurrenceId OccurrenceDefId;
+  TopLoc_Location        LocalLocation; //!< Placement relative to parent product
 };
 
 } // namespace BRepGraphInc

@@ -74,16 +74,22 @@ static double CosAngle(const gp_Vec& theV1, const gp_Vec& theV2)
   const double aTol = gp::Resolution();
 
   const double m1 = theV1.Magnitude(), m2 = theV2.Magnitude();
-  if ((m1 <= aTol) || (m2 <= aTol)) // Vectors are codirectional
+  if ((m1 <= aTol) || (m2 <= aTol))
+  { // Vectors are codirectional
     return 1.0;
+  }
 
   double aCAng = theV1.Dot(theV2) / (m1 * m2);
 
   if (aCAng > 1.0)
+  {
     aCAng = 1.0;
+  }
 
   if (aCAng < -1.0)
+  {
     aCAng = -1.0;
+  }
 
   return aCAng;
 }
@@ -101,7 +107,9 @@ occ::handle<GeomFill_TrihedronLaw> GeomFill_Frenet::Copy() const
 {
   occ::handle<GeomFill_Frenet> copy = new (GeomFill_Frenet)();
   if (!myCurve.IsNull())
+  {
     copy->SetCurve(myCurve);
+  }
   return copy;
 }
 
@@ -165,7 +173,9 @@ void GeomFill_Frenet::Init()
     {
       Func.D0(myC2Disc->Value(i) + (j - 1) * Step, C);
       if (j == 1)
+      {
         C1 = C;
+      }
       modulus = C.XYZ().Modulus();
       if (modulus > Tol)
       {
@@ -217,26 +227,36 @@ void GeomFill_Frenet::Init()
       {
         NCollection_Array1<double> anArray(1, SeqArray[i - 1].Length());
         for (j = 1; j <= anArray.Length(); j++)
+        {
           anArray(j) = SeqArray[i - 1](j);
+        }
         std::sort(anArray.begin(), anArray.end());
         for (j = 1; j <= anArray.Length(); j++)
+        {
           SeqArray[i - 1](j) = anArray(j);
+        }
       }
     }
   }
   // Filling SnglSeq by first sets of roots
   for (i = 0; i < NbIntC2; i++)
+  {
     for (j = 1; j <= SeqArray[i].Length(); j++)
+    {
       SnglSeq.Append(SeqArray[i](j));
+    }
+  }
 
   // Extrema works bad, need to pass second time
   for (i = 0; i < NbIntC2; i++)
+  {
     if (!SeqArray[i].IsEmpty())
     {
       SeqArray[i].Prepend(myC2Disc->Value(i + 1));
       SeqArray[i].Append(myC2Disc->Value(i + 2));
       Func.SetRatio(1. / AveFunc(i + 1)); // Normalization
       for (j = 1; j < SeqArray[i].Length(); j++)
+      {
         if (SeqArray[i](j + 1) - SeqArray[i](j) > PTol)
         {
           Ext.Initialize(Func, SeqArray[i](j), SeqArray[i](j + 1), TolF);
@@ -250,12 +270,16 @@ void GeomFill_Frenet::Init()
               {
                 t = Ext.Point(k).Parameter();
                 if (t - SeqArray[i](j) > PTol && SeqArray[i](j + 1) - t > PTol)
+                {
                   SnglSeq.Append(t);
+                }
               }
             }
           }
         }
+      }
     }
+  }
 
   delete[] SeqArray;
 
@@ -264,10 +288,14 @@ void GeomFill_Frenet::Init()
     // sorting
     NCollection_Array1<double> anArray(1, SnglSeq.Length());
     for (i = 1; i <= SnglSeq.Length(); i++)
+    {
       anArray(i) = SnglSeq(i);
+    }
     std::sort(anArray.begin(), anArray.end());
     for (i = 1; i <= SnglSeq.Length(); i++)
+    {
       SnglSeq(i) = anArray(i);
+    }
 
     // discard repeating elements
     bool found = true;
@@ -276,6 +304,7 @@ void GeomFill_Frenet::Init()
     {
       found = false;
       for (i = j; i < SnglSeq.Length(); i++)
+      {
         if (SnglSeq(i + 1) - SnglSeq(i) <= PTol)
         {
           SnglSeq.Remove(i + 1);
@@ -283,11 +312,14 @@ void GeomFill_Frenet::Init()
           found = true;
           break;
         }
+      }
     }
 
     mySngl = new NCollection_HArray1<double>(1, SnglSeq.Length());
     for (i = 1; i <= mySngl->Length(); i++)
+    {
       mySngl->ChangeValue(i) = SnglSeq(i);
+    }
 
     // computation of length of singular interval
     mySnglLen = new NCollection_HArray1<double>(1, mySngl->Length());
@@ -297,11 +329,17 @@ void GeomFill_Frenet::Init()
     {
       Func.D2(mySngl->Value(i), C, SnglDer, SnglDer2);
       if ((norm = SnglDer.Magnitude()) > gp::Resolution())
+      {
         mySnglLen->ChangeValue(i) = std::min(NullTol / norm, MaxSingular);
+      }
       else if ((norm = SnglDer2.Magnitude()) > gp::Resolution())
+      {
         mySnglLen->ChangeValue(i) = std::min(std::sqrt(2 * NullTol / norm), MaxSingular);
+      }
       else
+      {
         mySnglLen->ChangeValue(i) = MaxSingular;
+      }
     }
 #ifdef OCCT_DEBUG
     for (i = 1; i <= mySngl->Length(); i++)
@@ -327,7 +365,9 @@ void GeomFill_Frenet::Init()
           tmpSeq.ChangeValue(tmpSeq.Length()) = gp_Pnt2d((U11 + U22) / 2, (U22 - U11) / 2);
         }
         else
+        {
           tmpSeq.Append(gp_Pnt2d(mySngl->Value(i), mySnglLen->Value(i)));
+        }
       }
       mySngl    = new NCollection_HArray1<double>(1, tmpSeq.Length());
       mySnglLen = new NCollection_HArray1<double>(1, tmpSeq.Length());
@@ -348,7 +388,9 @@ void GeomFill_Frenet::Init()
     isSngl = true;
   }
   else
+  {
     isSngl = false;
+  }
 }
 
 //=======================================================================
@@ -368,10 +410,14 @@ bool GeomFill_Frenet::RotateTrihedron(gp_Vec&       Tangent,
   gp_Vec       anAxis = Tangent.Crossed(NewTangent);
   const double NT     = anAxis.Magnitude();
   if (NT <= aTol)
+  {
     // No rotation required
     return true;
+  }
   else
+  {
     anAxis /= NT; // Normalization
+  }
 
   const double aPx = anAxis.X(), aPy = anAxis.Y(), aPz = anAxis.Z();
   const double aCAng = CosAngle(Tangent, NewTangent); // cosine
@@ -433,8 +479,12 @@ bool GeomFill_Frenet::D0(const double theParam, gp_Vec& Tangent, gp_Vec& Normal,
   int    Index;
   double Delta = 0.;
   if (IsSingular(theParam, Index))
+  {
     if (SingularD0(theParam, Index, Tangent, Normal, BiNormal, Delta))
+    {
       return true;
+    }
+  }
 
   double aParam = theParam + Delta;
   myTrimmed->D2(aParam, P, Tangent, BiNormal);
@@ -466,9 +516,13 @@ bool GeomFill_Frenet::D0(const double theParam, gp_Vec& Tangent, gp_Vec& Normal,
       double u;
 
       if (theParam - anUinfium < aDelta)
+      {
         u = theParam + aDelta;
+      }
       else
+      {
         u = theParam - aDelta;
+      }
 
       gp_Pnt P1, P2;
       myTrimmed->D0(std::min(theParam, u), P1);
@@ -478,7 +532,9 @@ bool GeomFill_Frenet::D0(const double theParam, gp_Vec& Tangent, gp_Vec& Normal,
       double aDirFactor = aTn.Dot(V1);
 
       if (aDirFactor < 0.0)
+      {
         aTn = -aTn;
+      }
     } // if(IsDeriveFound)
     else
     {
@@ -506,9 +562,13 @@ bool GeomFill_Frenet::D0(const double theParam, gp_Vec& Tangent, gp_Vec& Normal,
       gp_Vec V1(Ptemp, P1), V2(Ptemp, P2), V3(Ptemp, P3);
 
       if (IsParameterGrown)
+      {
         aTn = -3 * V1 + 4 * V2 - V3;
+      }
       else
+      {
         aTn = V1 - 4 * V2 + 3 * V3;
+      }
     } // else of "if(IsDeriveFound)" condition
     Ndu         = aTn.Magnitude();
     gp_Pnt Pt   = P;
@@ -519,12 +579,16 @@ bool GeomFill_Frenet::D0(const double theParam, gp_Vec& Tangent, gp_Vec& Normal,
     if (theParam - anUinfium < dPar)
     {
       if (!D0(aParam + dPar, Tangent, Normal, BiNormal))
+      {
         return false;
+      }
     }
     else
     {
       if (!D0(aParam - dPar, Tangent, Normal, BiNormal))
+      {
         return false;
+      }
     }
 
     P = Pt;
@@ -548,7 +612,9 @@ bool GeomFill_Frenet::D0(const double theParam, gp_Vec& Tangent, gp_Vec& Normal,
       BiNormal.SetXYZ(Axe.YDirection().XYZ());
     }
     else
+    {
       BiNormal.Normalize();
+    }
 
     Normal = BiNormal;
     Normal.Cross(Tangent);
@@ -570,8 +636,12 @@ bool GeomFill_Frenet::D1(const double Param,
   int    Index;
   double Delta = 0.;
   if (IsSingular(Param, Index))
+  {
     if (SingularD1(Param, Index, Tangent, DTangent, Normal, DNormal, BiNormal, DBiNormal, Delta))
+    {
       return true;
+    }
+  }
 
   //  double Norma;
   double theParam = Param + Delta;
@@ -591,7 +661,9 @@ bool GeomFill_Frenet::D1(const double Param,
     return true;
   }
   else
+  {
     BiNormal = Tangent.Crossed(DC2).Normalized();
+  }
 
   Normal = BiNormal.Crossed(Tangent);
 
@@ -622,6 +694,7 @@ bool GeomFill_Frenet::D2(const double Param,
   int    Index;
   double Delta = 0.;
   if (IsSingular(Param, Index))
+  {
     if (SingularD2(Param,
                    Index,
                    Tangent,
@@ -634,7 +707,10 @@ bool GeomFill_Frenet::D2(const double Param,
                    DBiNormal,
                    D2BiNormal,
                    Delta))
+    {
       return true;
+    }
+  }
 
   //  double Norma;
   double theParam = Param + Delta;
@@ -659,7 +735,9 @@ bool GeomFill_Frenet::D2(const double Param,
     return true;
   }
   else
+  {
     BiNormal = Tangent.Crossed(DC2).Normalized();
+  }
 
   Normal = BiNormal.Crossed(Tangent);
 
@@ -707,7 +785,9 @@ int GeomFill_Frenet::NbIntervals(const GeomAbs_Shape S) const
   NbTrimmed = myCurve->NbIntervals(tmpS);
 
   if (!isSngl)
+  {
     return NbTrimmed;
+  }
 
   NCollection_Array1<double> TrimInt(1, NbTrimmed + 1);
   myCurve->Intervals(TrimInt, tmpS);
@@ -755,7 +835,9 @@ void GeomFill_Frenet::Intervals(NCollection_Array1<double>& T, const GeomAbs_Sha
   GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), true);
 
   for (int i = 1; i <= Fusion.Length(); i++)
+  {
     T.ChangeValue(i) = Fusion.Value(i);
+  }
 }
 
 void GeomFill_Frenet::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
@@ -771,7 +853,9 @@ void GeomFill_Frenet::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& A
   {
     Param = myTrimmed->FirstParameter() + i * Step;
     if (Param > myTrimmed->LastParameter())
+    {
       Param = myTrimmed->LastParameter();
+    }
     D0(Param, T, N, BN);
     ATangent += T;
     ANormal += N;
@@ -805,7 +889,9 @@ bool GeomFill_Frenet::IsSingular(const double U, int& Index) const
 {
   int i;
   if (!isSngl)
+  {
     return false;
+  }
   for (i = 1; i <= mySngl->Length(); i++)
   {
     if (std::abs(U - mySngl->Value(i)) < mySnglLen->Value(i))
@@ -840,15 +926,21 @@ bool GeomFill_Frenet::DoSingular(const double U,
   BNFlag = 1;
   GetInterval(A, B);
   if (U >= (A + B) / 2)
+  {
     h = -h;
+  }
   for (i = 1; i <= MaxN; i++)
   {
     Tangent = myTrimmed->DN(U, i);
     if (Tangent.Magnitude() > Precision::Confusion())
+    {
       break;
+    }
   }
   if (i > MaxN)
+  {
     return false;
+  }
   Tangent.Normalize();
   n = i;
 
@@ -882,9 +974,13 @@ bool GeomFill_Frenet::DoSingular(const double U,
   D0(U + h, T, N, BN);
 
   if (Tangent.Angle(T) > M_PI / 2)
+  {
     TFlag = -1;
+  }
   if (BiNormal.Angle(BN) > M_PI / 2)
+  {
     BNFlag = -1;
+  }
 
   return true;
 }
@@ -898,7 +994,9 @@ bool GeomFill_Frenet::SingularD0(const double Param,
 {
   int n, k, TFlag, BNFlag;
   if (!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag, Delta))
+  {
     return false;
+  }
 
   Tangent *= TFlag;
   BiNormal *= BNFlag;
@@ -920,7 +1018,9 @@ bool GeomFill_Frenet::SingularD1(const double Param,
 {
   int n, k, TFlag, BNFlag;
   if (!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag, Delta))
+  {
     return false;
+  }
 
   gp_Vec F, DF, Dtmp;
   F        = myTrimmed->DN(Param, n);
@@ -965,7 +1065,9 @@ bool GeomFill_Frenet::SingularD2(const double Param,
 {
   int n, k, TFlag, BNFlag;
   if (!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag, Delta))
+  {
     return false;
+  }
 
   gp_Vec F, DF, D2F, Dtmp1, Dtmp2;
   F         = myTrimmed->DN(Param, n);

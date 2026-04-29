@@ -59,9 +59,13 @@ static bool InDomain(const double fpar, const double lpar, const double para)
     return ((para >= fpar) && (para <= lpar));
   }
   if (para >= (fpar + 2 * M_PI))
+  {
     return true;
+  }
   if (para <= lpar)
+  {
     return true;
+  }
   return false;
 }
 
@@ -135,16 +139,22 @@ void PrsDim_FixRelation::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   // point of attach of the segment on the shape
   gp_Pnt curpos;
   if (myFShape.ShapeType() == TopAbs_VERTEX)
+  {
     ComputeVertex(TopoDS::Vertex(myFShape), curpos);
+  }
   else if (myFShape.ShapeType() == TopAbs_EDGE)
+  {
     ComputeEdge(TopoDS::Edge(myFShape), curpos);
+  }
 
   const gp_Dir& nor = myPlane->Axis().Direction();
 
   // calculate presentation
   // definition of the symbol size
   if (!myArrowSizeIsDefined)
+  {
     myArrowSize = 5.;
+  }
 
   // creation of the presentation
   DsgPrs_FixPresentation::Add(aPresentation, myDrawer, myPntAttach, curpos, nor, myArrowSize);
@@ -240,7 +250,9 @@ gp_Pnt PrsDim_FixRelation::ComputePosition(const occ::handle<Geom_Curve>& curv1,
   {
     occ::handle<Geom_Circle> gcirc = occ::down_cast<Geom_Circle>(curv1);
     if (gcirc.IsNull())
+    {
       gcirc = occ::down_cast<Geom_Circle>(curv2);
+    }
     gp_Dir dir(gcirc->Location().XYZ() + myPntAttach.XYZ());
     gp_Vec transvec = gp_Vec(dir) * myArrowSize;
     curpos          = myPntAttach.Translated(transvec);
@@ -256,9 +268,13 @@ gp_Pnt PrsDim_FixRelation::ComputePosition(const occ::handle<Geom_Curve>& curv1,
       gp_Dir           dir;
       constexpr double conf = Precision::Confusion();
       if (lastp1.IsEqual(firstp2, conf) || firstp1.IsEqual(lastp2, conf))
+      {
         dir.SetXYZ(vec1.XYZ() - vec2.XYZ());
+      }
       else
+      {
         dir.SetXYZ(vec1.XYZ() + vec2.XYZ());
+      }
       gp_Vec transvec = gp_Vec(dir) * myArrowSize;
       curpos          = myPntAttach.Translated(transvec);
     }
@@ -329,7 +345,9 @@ void PrsDim_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
   occ::handle<Geom_Curve> curEdge;
   gp_Pnt                  ptbeg, ptend;
   if (!PrsDim::ComputeGeometry(FixEdge, curEdge, ptbeg, ptend))
+  {
     return;
+  }
 
   //---------------------------------------------------------
   // compute the positioning point for the 'fix' symbol
@@ -355,7 +373,9 @@ void PrsDim_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
   }
 
   else
+  {
     return;
+  }
 }
 
 //=======================================================================
@@ -390,18 +410,24 @@ void PrsDim_FixRelation::ComputeLinePosition(const gp_Lin& glin,
     // case if the projection of position is located between 2 vertices
     // de l'edge
     if ((linparam >= pfirst) && (linparam <= plast))
+    {
       myPntAttach = ElCLib::Value(linparam, glin);
 
-    // case if the projection of Position is outside of the limits
-    // of the edge : the point closest to the projection is chosen
-    // as the attach point
+      // case if the projection of Position is outside of the limits
+      // of the edge : the point closest to the projection is chosen
+      // as the attach point
+    }
     else
     {
       double pOnLin;
       if (linparam > plast)
+      {
         pOnLin = plast;
+      }
       else
+      {
         pOnLin = pfirst;
+      }
       myPntAttach = ElCLib::Value(pOnLin, glin);
       gp_Dir norm = myPlane->Axis().Direction();
 
@@ -445,7 +471,9 @@ void PrsDim_FixRelation::ComputeCirclePosition(const gp_Circ& gcirc,
     {
       double otherpar = circparam + M_PI;
       if (otherpar > 2 * M_PI)
+      {
         otherpar -= 2 * M_PI;
+      }
       circparam = otherpar;
     }
 
@@ -472,7 +500,9 @@ void PrsDim_FixRelation::ComputeCirclePosition(const gp_Circ& gcirc,
     {
       double otherpar = circparam + M_PI;
       if (otherpar > 2 * M_PI)
+      {
         otherpar -= 2 * M_PI;
+      }
       circparam = otherpar;
     }
 

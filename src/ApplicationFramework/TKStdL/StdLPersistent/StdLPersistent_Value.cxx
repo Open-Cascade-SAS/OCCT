@@ -52,7 +52,9 @@ void StdLPersistent_Value::string<TDF_Reference>::ImportAttribute()
   {
     TDF_Label aLabel = myData->Label(this->myTransient->Label().Data());
     if (!aLabel.IsNull())
+    {
       this->myTransient->Set(aLabel);
+    }
     this->myData.Nullify();
   }
 }
@@ -78,7 +80,9 @@ occ::handle<TDF_Attribute> StdLPersistent_Value::UAttribute::CreateAttribute()
   {
     occ::handle<TCollection_HExtendedString> aString = this->myData->ExtString();
     if (aString)
+    {
       this->myTransient->SetID(Standard_GUID(aString->String().ToExtString()));
+    }
     this->myData.Nullify();
   }
 

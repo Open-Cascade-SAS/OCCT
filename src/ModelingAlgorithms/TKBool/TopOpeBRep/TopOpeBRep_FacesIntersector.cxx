@@ -175,7 +175,9 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
 
   ResetIntersection();
   if (!myForceTolerances)
+  {
     ShapeTolerances(F1, F2);
+  }
 
   myFace1 = TopoDS::Face(F1);
   myFace1.Orientation(TopAbs_FORWARD);
@@ -231,7 +233,9 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
   // xpu180998 : cto900Q1
   bool done = myIntersector.IsDone();
   if (!done)
+  {
     return;
+  }
 
   PrepareLines();
   myIntersectionDone = true;
@@ -272,11 +276,15 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1, const TopoDS_S
 bool TopOpeBRep_FacesIntersector::IsEmpty()
 {
   if (!myIntersectionDone)
+  {
     return false;
+  }
   bool done  = myIntersector.IsDone();
   bool empty = myIntersector.IsEmpty();
   if (!done || empty)
+  {
     return true;
+  }
   else
   {
     // ElemIntersector is done and is not empty
@@ -286,7 +294,9 @@ bool TopOpeBRep_FacesIntersector::IsEmpty()
     {
       empty = (CurrentLine().NbVPoint() == 0);
       if (!empty)
+      {
         break;
+      }
     }
     return empty;
   }
@@ -304,7 +314,9 @@ bool TopOpeBRep_FacesIntersector::IsDone() const
 bool TopOpeBRep_FacesIntersector::SameDomain() const
 {
   if (!myIntersectionDone)
+  {
     throw Standard_ProgramError("FacesIntersector : bad SameDomain");
+  }
 
   bool sd = myIntersector.TangentFaces();
 
@@ -319,11 +331,17 @@ bool TopOpeBRep_FacesIntersector::SameDomain() const
 const TopoDS_Shape& TopOpeBRep_FacesIntersector::Face(const int Index) const
 {
   if (Index == 1)
+  {
     return myFace1;
+  }
   else if (Index == 2)
+  {
     return myFace2;
+  }
   else
+  {
     throw Standard_ProgramError("TopOpeBRep_FacesIntersector::Face");
+  }
 }
 
 //=================================================================================================
@@ -365,7 +383,9 @@ void TopOpeBRep_FacesIntersector::PrepareLines()
 
   // modified by NIZHNY-MKK  Mon Apr  2 12:14:58 2001.BEGIN
   if (n == 0)
+  {
     return;
+  }
   // modified by NIZHNY-MKK  Mon Apr  2 12:15:09 2001.END
 
   bool newV = true;
@@ -490,16 +510,22 @@ void TopOpeBRep_FacesIntersector::FindLine()
 {
   myLineFound = false;
   if (!myIntersectionDone)
+  {
     return;
+  }
 
   while (myLineIndex <= myLineNb)
   {
     const TopOpeBRep_LineInter& L = myHAL->Value(myLineIndex);
     myLineFound                   = L.OK();
     if (myLineFound)
+    {
       break;
+    }
     else
+    {
       myLineIndex++;
+    }
   }
 }
 
@@ -604,12 +630,16 @@ double TopOpeBRep_FacesIntersector::ToleranceMax(const TopoDS_Shape&    S,
 {
   TopExp_Explorer e(S, T);
   if (!e.More())
+  {
     return Precision::Intersection();
+  }
   else
   {
     double tol = RealFirst();
     for (; e.More(); e.Next())
+    {
       tol = std::max(tol, TopOpeBRepTool_ShapeTool::Tolerance(e.Current()));
+    }
     return tol;
   }
 }
@@ -633,9 +663,13 @@ static bool TestWLineAlongRestriction(const occ::handle<IntPatch_WLine>&      th
     const IntSurf_PntOn2S& Pmid = theWLine->Point(i);
     double                 u = 0., v = 0.;
     if (theRank == 1)
+    {
       Pmid.ParametersOnS1(u, v);
+    }
     else
+    {
       Pmid.ParametersOnS2(u, v);
+    }
     //------------------------------------------
     gp_Pnt ap;
     gp_Vec ad1u, ad1v;
@@ -654,11 +688,15 @@ static bool TestWLineAlongRestriction(const occ::handle<IntPatch_WLine>&      th
     // }
 
     if (theDomain->IsThePointOn(gp_Pnt2d(u, v), theTolArc))
+    {
       along++;
+    }
     // if(along!=i) break;
   }
   if (along == NbPnts)
+  {
     result = true;
+  }
   return result;
 }
 
@@ -672,7 +710,9 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(
   occ::handle<IntPatch_RLine> anRLine;
 
   if ((theRank != 1) && (theRank != 2))
+  {
     return anRLine;
+  }
 
   gp_Pnt2d              aPOnLine;
   double                u = 0., v = 0.;
@@ -706,7 +746,9 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(
   double tol = (Vtx1.Tolerance() > Vtx2.Tolerance()) ? Vtx1.Tolerance() : Vtx2.Tolerance();
 
   if (std::abs(par1 - par2) < theArc->Resolution(tol))
+  {
     return anRLine;
+  }
 
   bool IsOnFirst = (theRank == 1);
 
@@ -848,7 +890,9 @@ static occ::handle<IntPatch_RLine> BuildRLine(
 
   // avoid closed and degenerated edges
   if (aV1->IsSame(aV2))
+  {
     return anRLine;
+  }
 
   for (theDomain->Init(); theDomain->More(); theDomain->Next())
   {
@@ -862,9 +906,13 @@ static occ::handle<IntPatch_RLine> BuildRLine(
     {
 
       if (!foundVertex1 && aV1->IsSame(theDomain->Vertex()))
+      {
         foundVertex1 = true;
+      }
       if (!foundVertex2 && aV2->IsSame(theDomain->Vertex()))
+      {
         foundVertex2 = true;
+      }
     }
 
     if (foundVertex1 && foundVertex2)
@@ -878,7 +926,9 @@ static occ::handle<IntPatch_RLine> BuildRLine(
 
         int indexpnt = aWLine->NbPnts() / 2;
         if (indexpnt < 1)
+        {
           buildrline = false;
+        }
         else
         {
           double                 u = RealLast(), v = RealLast();
@@ -903,13 +953,21 @@ static occ::handle<IntPatch_RLine> BuildRLine(
           nad1u = ad1u.Magnitude();
           nad1v = ad1v.Magnitude();
           if (nad1u > 1e-12)
+          {
             tolu = theTolArc / nad1u;
+          }
           else
+          {
             tolu = 0.1;
+          }
           if (nad1v > 1e-12)
+          {
             tolv = theTolArc / nad1v;
+          }
           else
+          {
             tolv = 0.1;
+          }
           double aTolerance = (tolu > tolv) ? tolv : tolu;
 
           if (aPOnArc.Distance(aPOnLine) > aTolerance)
@@ -1018,7 +1076,9 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
     for (int i = 1; i <= slin.Length(); i++)
     {
       if (slin.Value(i)->ArcType() != IntPatch_Walking)
+      {
         continue;
+      }
       const occ::handle<IntPatch_WLine>& aWLine = *((occ::handle<IntPatch_WLine>*)&(slin.Value(i)));
       int                                nbvtx  = aWLine->NbVertex();
       const IntPatch_Point&              Vtx1   = aWLine->Vertex(1);
@@ -1026,9 +1086,13 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
       bool                               isvertex = false, wlineWasAppended = false;
 
       if (rank == 1)
+      {
         isvertex = Vtx1.IsVertexOnS1();
+      }
       else
+      {
         isvertex = Vtx1.IsVertexOnS2();
+      }
 
       if (isvertex)
       {
@@ -1051,12 +1115,16 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
         }
         wlineWasAppended = appendwline;
         if (appendwline)
+        {
           aSeqOfWLine.Append(aWLine);
+        }
       }
       else
       {
         if (aSeqOfWLine.Length() == 0)
+        {
           continue;
+        }
         const occ::handle<IntPatch_WLine>& aLastWLine =
           *((occ::handle<IntPatch_WLine>*)&(aSeqOfWLine.Value(aSeqOfWLine.Length())));
         const IntPatch_Point& aLastPoint = aLastWLine->Vertex(aLastWLine->NbVertex());
@@ -1083,7 +1151,9 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
           }
           wlineWasAppended = appendwline;
           if (appendwline)
+          {
             aSeqOfWLine.Append(aWLine);
+          }
         }
         else
         {
@@ -1093,9 +1163,13 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
 
       isvertex = false;
       if (rank == 1)
+      {
         isvertex = Vtx2.IsVertexOnS1();
+      }
       else
+      {
         isvertex = Vtx2.IsVertexOnS2();
+      }
 
       if (wlineWasAppended && isvertex)
       {
@@ -1170,7 +1244,9 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(
     for (i = 1; i <= theSlin.Length(); i++)
     {
       if (theSlin.Value(i)->ArcType() != IntPatch_Walking)
+      {
         continue;
+      }
       NbWLines++;
       const occ::handle<IntPatch_WLine>& aWLine =
         *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
@@ -1182,32 +1258,48 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(
         sqVertexPoints.Append(Vtx1.Value());
         sqVertexPoints.Append(Vtx2.Value());
         if (TestWLineAlongRestriction(aWLine, rank, theSurface1, theDomain1, theTolArc))
+        {
           WLOnRS1++;
+        }
       }
       else
       {
         if (TestWLineAlongRestriction(aWLine, rank, theSurface2, theDomain2, theTolArc))
+        {
           WLOnRS2++;
+        }
       }
     }
     if (NbWLines == WLOnRS1 || NbWLines == WLOnRS2)
+    {
       break;
+    }
   }
 
   int WLineRank = 0; // not possible to merge WLines
 
   if (WLOnRS1 == NbWLines)
+  {
     WLineRank = 1; // create merged WLine based on arc of S1
+  }
   else if (WLOnRS2 == NbWLines)
+  {
     WLineRank = 2; // create merged WLine based on arc of S2
+  }
   else
+  {
     return;
+  }
 
   // avoid closed (degenerated) edges
   if (sqVertexPoints.Length() <= 2)
+  {
     return;
+  }
   if (sqVertexPoints.Value(1).IsEqual(sqVertexPoints.Value(sqVertexPoints.Length()), tol))
+  {
     return;
+  }
 
   double TolVrtx        = 1.e-5;
   int    testPointIndex = (sqVertexPoints.Length() > 3) ? ((int)sqVertexPoints.Length() / 2) : 2;
@@ -1286,12 +1378,16 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
     void* anEAddress = theDomainObj->Edge();
 
     if (anEAddress == nullptr)
+    {
       continue;
+    }
 
     TopoDS_Edge*            anE    = (TopoDS_Edge*)anEAddress;
     occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, firstES1, lastES1);
-    if (aCEdge.IsNull()) // e.g. degenerated edge, see OCC21770
+    if (aCEdge.IsNull())
+    { // e.g. degenerated edge, see OCC21770
       continue;
+    }
     GeomAdaptor_Curve CE;
     CE.Load(aCEdge);
     Extrema_ExtPC epc(theTestPoint, CE, 1.e-7);
@@ -1310,7 +1406,9 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
   }
 
   if (ArcNumber == 0)
+  {
     return 0;
+  }
 
   // 2. load parameters of founded edge and its arc.
   CurArc = 0;
@@ -1325,14 +1423,18 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
   {
     CurArc++;
     if (CurArc != ArcNumber)
+    {
       continue;
+    }
 
     arc = theDomainObj->Value();
 
     for (i = 1; i <= theSlin.Length(); i++)
     {
       if (theSlin.Value(i)->ArcType() != IntPatch_Walking)
+      {
         continue;
+      }
 
       const occ::handle<IntPatch_WLine>& aWLine =
         *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
@@ -1369,7 +1471,9 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
       for (j = i; j <= WLVertexParameters.Length(); j++)
       {
         if (j == i)
+        {
           continue;
+        }
 
         if (WLVertexParameters.Value(i) > WLVertexParameters.Value(j))
         {
@@ -1446,7 +1550,9 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
     }
 
     if (!classifyOK)
+    {
       break;
+    }
 
     // if classification gaps OK, fill sequence by the points from arc (edge)
     double ParamFirst = WLVertexParameters.Value(1);
@@ -1456,7 +1562,9 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
     for (i = 0; i < 100; i++)
     {
       if (i == 99)
+      {
         cParam = ParamLast;
+      }
 
       gp_Pnt cPnt;
       aCEdge->D0(cParam, cPnt);
@@ -1468,7 +1576,9 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
   }
 
   if (!classifyOK)
+  {
     return 0;
+  }
 
   // Initialize extrema projectors for both surfaces
   Extrema_ExtPS anExtPSObj;
@@ -1533,7 +1643,9 @@ static bool IsPointOK(Extrema_ExtPS& theExtPS, const gp_Pnt& theTestPnt, const d
       }
     }
     if (MinDist2 <= theTol * theTol)
+    {
       result = true;
+    }
   }
   return result;
 }
@@ -1595,15 +1707,21 @@ static occ::handle<IntPatch_WLine> GetMergedWLineOnRestriction(
   for (i = 1; i <= theSlin.Length(); i++)
   {
     if (theSlin.Value(i)->ArcType() != IntPatch_Walking)
+    {
       continue;
+    }
 
     const occ::handle<IntPatch_WLine>& aWLine =
       *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
 
     if (aWLine->TransitionOnS1() != IntSurf_Undecided && aWLine->TransitionOnS1() != IntSurf_Touch)
+    {
       trans1 = aWLine->TransitionOnS1();
+    }
     if (aWLine->TransitionOnS2() != IntSurf_Undecided && aWLine->TransitionOnS2() != IntSurf_Touch)
+    {
       trans2 = aWLine->TransitionOnS2();
+    }
   }
 
   mWLine = new IntPatch_WLine(theLineOn2S, false, trans1, trans2);

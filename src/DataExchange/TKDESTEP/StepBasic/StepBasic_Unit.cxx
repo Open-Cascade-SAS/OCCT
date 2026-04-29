@@ -29,11 +29,17 @@ StepBasic_Unit::StepBasic_Unit() = default;
 int StepBasic_Unit::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_NamedUnit)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_DerivedUnit)))
+  {
     return 2;
+  }
   return 0;
 }
 

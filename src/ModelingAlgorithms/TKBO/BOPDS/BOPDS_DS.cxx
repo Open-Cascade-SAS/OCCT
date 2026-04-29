@@ -46,7 +46,6 @@
 
 #include <algorithm>
 #include <numeric>
-#include <set>
 
 namespace
 {
@@ -186,7 +185,7 @@ const occ::handle<NCollection_BaseAllocator>& BOPDS_DS::Allocator() const
 
 int BOPDS_DS::NbShapes() const
 {
-  return myLines.Size();
+  return myLines.Length();
 }
 
 //=================================================================================================
@@ -200,7 +199,7 @@ int BOPDS_DS::NbSourceShapes() const
 
 int BOPDS_DS::NbRanges() const
 {
-  return myRanges.Size();
+  return myRanges.Length();
 }
 
 //=================================================================================================
@@ -290,7 +289,7 @@ void BOPDS_DS::Init(const double theFuzz)
   {
     return;
   }
-  myRanges.SetIncrement(myArguments.Size());
+  myRanges.SetIncrement(myArguments.Length());
   myLines.SetIncrement(THE_INITIAL_LINES_INCREMENT);
 
   int i1 = 0;
@@ -387,15 +386,16 @@ bool BOPDS_DS::HasInterfSubShapes(const int theIndex1, const int theIndex2) cons
 
 //=================================================================================================
 
-const NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::PaveBlocksPool()
-  const
+const NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::
+  PaveBlocksPool() const
 {
   return myPaveBlocksPool;
 }
 
 //=================================================================================================
 
-NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::ChangePaveBlocksPool()
+NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::
+  ChangePaveBlocksPool()
 {
   return myPaveBlocksPool;
 }
@@ -464,15 +464,19 @@ void BOPDS_DS::InitPaveBlocks(const int theEdgeIndex)
 
       aVertexIndex = GetSameDomainIndex(aVertexIndex);
       BOPDS_Pave aPave(aVertexIndex, aVertexParam);
-      if (anEdgeInfo.HasFlag()) // for a degenerated edge append pave unconditionally
+      if (anEdgeInfo.HasFlag())
+      { // for a degenerated edge append pave unconditionally
         aPaveBlock->AppendExtPave1(aPave);
+      }
       else
+      {
         aPaveBlock->AppendExtPave(aPave);
+      }
 
       // Handle closed edges (seam edges) that have a single vertex shared by both ends.
       // In this case, we need to add two paves: one for the start and one for the end
       // of the edge, even though they reference the same vertex.
-      if (aVertexIndices.Size() == 1)
+      if (aVertexIndices.Length() == 1)
       {
         aVertex.Reverse();
         aPaveBlock->AppendExtPave1(BOPDS_Pave(aVertexIndex, BRep_Tool::Parameter(aVertex, anEdge)));
@@ -663,7 +667,7 @@ occ::handle<BOPDS_PaveBlock> BOPDS_DS::RealPaveBlock(
 bool BOPDS_DS::IsCommonBlockOnEdge(const occ::handle<BOPDS_PaveBlock>& thePaveBlock) const
 {
   const occ::handle<BOPDS_CommonBlock>& aCommonBlock = CommonBlock(thePaveBlock);
-  return aCommonBlock && aCommonBlock->PaveBlocks().Size() > 1;
+  return aCommonBlock && aCommonBlock->PaveBlocks().Length() > 1;
 }
 
 //=================================================================================================
@@ -692,7 +696,7 @@ void BOPDS_DS::SetCommonBlock(const occ::handle<BOPDS_PaveBlock>&   thePaveBlock
 
 //=================================================================================================
 
-const NCollection_Vector<BOPDS_FaceInfo>& BOPDS_DS::FaceInfoPool() const
+const NCollection_DynamicArray<BOPDS_FaceInfo>& BOPDS_DS::FaceInfoPool() const
 {
   return myFaceInfoPool;
 }
@@ -975,7 +979,7 @@ void BOPDS_DS::RefineFaceInfoOn()
     UpdateFaceInfoOn(aFaceInfo.Index());
     NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aPaveBlocksOn =
       aFaceInfo.ChangePaveBlocksOn();
-    for (int aPaveBlockIndex = aPaveBlocksOn.Size(); aPaveBlockIndex >= 1; --aPaveBlockIndex)
+    for (int aPaveBlockIndex = aPaveBlocksOn.Length(); aPaveBlockIndex >= 1; --aPaveBlockIndex)
     {
       const occ::handle<BOPDS_PaveBlock>& aPaveBlock = aPaveBlocksOn(aPaveBlockIndex);
       if (!aPaveBlock->HasEdge())
@@ -1008,7 +1012,7 @@ void BOPDS_DS::RefineFaceInfoIn()
       continue;
     }
 
-    for (int aPaveBlockIndex = aPaveBlocksIn.Size(); aPaveBlockIndex >= 1; --aPaveBlockIndex)
+    for (int aPaveBlockIndex = aPaveBlocksIn.Length(); aPaveBlockIndex >= 1; --aPaveBlockIndex)
     {
       const occ::handle<BOPDS_PaveBlock>& aPaveBlock = aPaveBlocksIn(aPaveBlockIndex);
       if (aPaveBlocksOn.Contains(aPaveBlock))
@@ -1033,7 +1037,7 @@ void BOPDS_DS::AloneVertices(const int theFaceIndex, NCollection_List<int>& theV
 
   for (const auto& aPaveBlocks : {aFaceInfo.PaveBlocksIn(), aFaceInfo.PaveBlocksSc()})
   {
-    for (int aPaveBlockIndex = 1; aPaveBlockIndex <= aPaveBlocks.Size(); ++aPaveBlockIndex)
+    for (int aPaveBlockIndex = 1; aPaveBlockIndex <= aPaveBlocks.Length(); ++aPaveBlockIndex)
     {
       const occ::handle<BOPDS_PaveBlock>& aPaveBlock = aPaveBlocks(aPaveBlockIndex);
       int                                 nV1, nV2;
@@ -1080,7 +1084,7 @@ void BOPDS_DS::SubShapesOnIn(
   // Helper lambda to process pave blocks from a map
   auto processMap =
     [&thePBOnIn, &theMVOnIn](const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMap) {
-      for (int anIdx = 1; anIdx <= theMap.Size(); ++anIdx)
+      for (int anIdx = 1; anIdx <= theMap.Length(); ++anIdx)
       {
         const occ::handle<BOPDS_PaveBlock>& aPaveBlock = theMap(anIdx);
         thePBOnIn.Add(aPaveBlock);
@@ -1100,7 +1104,7 @@ void BOPDS_DS::SubShapesOnIn(
   // Find common pave blocks (those in Face1 that are also in Face2)
   auto findCommon = [&theCommonPaveBlocks, &theMVCommon, &aPBOn2, &aPBIn2](
                       const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMap) {
-    for (int anIdx = 1; anIdx <= theMap.Size(); ++anIdx)
+    for (int anIdx = 1; anIdx <= theMap.Length(); ++anIdx)
     {
       const occ::handle<BOPDS_PaveBlock>& aPaveBlock = theMap(anIdx);
       if (aPBOn2.Contains(aPaveBlock) || aPBIn2.Contains(aPaveBlock))
@@ -1356,7 +1360,7 @@ void BOPDS_DS::Paves(const int theEdge, NCollection_List<BOPDS_Pave>& theResultP
     return;
   }
 
-  NCollection_Array1<BOPDS_Pave> pPaves(1, aPaveBlocks.Size() + 1);
+  NCollection_Array1<BOPDS_Pave> pPaves(1, aPaveBlocks.Length() + 1);
   int                            i = 1;
   NCollection_Map<BOPDS_Pave>    aVisitedPaves;
   for (const auto& aPaveBlock : aPaveBlocks)
@@ -1371,7 +1375,8 @@ void BOPDS_DS::Paves(const int theEdge, NCollection_List<BOPDS_Pave>& theResultP
     }
   }
 
-  Standard_ASSERT_VOID(aPaveBlocks.Size() + 1 == aVisitedPaves.Size(), "Abnormal number of paves");
+  Standard_ASSERT_VOID(aPaveBlocks.Length() + 1 == aVisitedPaves.Length(),
+                       "Abnormal number of paves");
 
   std::sort(pPaves.begin(), pPaves.end());
   for (const auto& aPave : pPaves)
@@ -1509,7 +1514,7 @@ void BOPDS_DS::ReleasePaveBlocks()
 
   for (auto& aPaveBlockList : ChangePaveBlocksPool())
   {
-    if (aPaveBlockList.Size() != 1)
+    if (aPaveBlockList.Length() != 1)
     {
       continue;
     }
@@ -1781,7 +1786,7 @@ int BOPDS_DS::prepareSolids()
 
   // For the check mode we need to compute the bounding box for solid.
   // Otherwise, it will be computed on the building stage
-  if (myArguments.Size() != 1)
+  if (myArguments.Length() != 1)
   {
     return 0;
   }

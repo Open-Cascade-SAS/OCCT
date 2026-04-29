@@ -38,15 +38,19 @@ Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* the
     const occ::handle<BRepMesh_DataStructureOfDelaun>& aMeshData =
       *(occ::handle<BRepMesh_DataStructureOfDelaun>*)theDataStruct;
     if (aMeshData.IsNull())
+    {
       return "Null mesh data structure";
+    }
     int nbLinks = aMeshData->NbLinks();
-    std::cout << "nblink=" << nbLinks << std::endl;
+    std::cout << "nblink=" << nbLinks << '\n';
     TCollection_AsciiString aName(theNameStr);
     for (int i = 1; i <= nbLinks; i++)
     {
       const BRepMesh_Edge& aLink = aMeshData->GetLink(i);
       if (aLink.Movability() == BRepMesh_Deleted)
+      {
         continue;
+      }
       int                         n1  = aLink.FirstNode();
       int                         n2  = aLink.LastNode();
       const BRepMesh_Vertex&      aV1 = aMeshData->GetNode(n1);
@@ -81,15 +85,19 @@ Standard_EXPORT const char* MeshTest_DrawTriangles(const char* theNameStr, void*
       *(occ::handle<BRepMesh_DataStructureOfDelaun>*)theDataStruct;
 
     if (aMeshData.IsNull())
+    {
       return "Null mesh data structure";
+    }
     int nbElem = aMeshData->NbElements();
-    std::cout << "nbelem=" << nbElem << std::endl;
+    std::cout << "nbelem=" << nbElem << '\n';
     TCollection_AsciiString aName(theNameStr);
     for (int i = 1; i <= nbElem; i++)
     {
       const BRepMesh_Triangle& aTri = aMeshData->GetElement(i);
       if (aTri.Movability() == BRepMesh_Deleted)
+      {
         continue;
+      }
       int n[3];
       aMeshData->ElementNodes(aTri, n);
       const BRepMesh_Vertex&            aV1   = aMeshData->GetNode(n[0]);

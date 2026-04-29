@@ -24,15 +24,25 @@ StepShape_GeometricSetSelect::StepShape_GeometricSetSelect() = default;
 int StepShape_GeometricSetSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Point)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Curve)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Surface)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)))
+  {
     return 4;
+  }
   return 0;
 }
 

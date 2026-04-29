@@ -494,7 +494,9 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
       if (VTXi.Tolerance() > Tol)
+      {
         Tol = VTXi.Tolerance(); //-- 9 oct 97
+      }
       if ((VTXi.IsOnDomS1()) && (!VTXi.IsOnDomS2()))
       {
         for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
@@ -513,12 +515,16 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                   if (lapt)
                   {
                     if (indl >= j)
+                    {
                       indl--;
+                    }
                   }
                   if (fipt)
                   {
                     if (indf >= j)
+                    {
                       indf--;
+                    }
                   }
                   APointDeleted = true;
                 }
@@ -554,12 +560,16 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                   if (lapt)
                   {
                     if (indl >= j)
+                    {
                       indl--;
+                    }
                   }
                   if (fipt)
                   {
                     if (indf >= j)
+                    {
                       indf--;
+                    }
                   }
                   APointDeleted = true;
                 }
@@ -1071,12 +1081,16 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                       if (lapt)
                       {
                         if (indl >= j)
+                        {
                           indl--;
+                        }
                       }
                       if (fipt)
                       {
                         if (indf >= j)
+                        {
                           indf--;
+                        }
                       }
                       APointDeleted = true;
                     }
@@ -1125,12 +1139,16 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                       if (lapt)
                       {
                         if (indl >= j)
+                        {
                           indl--;
+                        }
                       }
                       if (fipt)
                       {
                         if (indf >= j)
+                        {
                           indf--;
+                        }
                       }
                       APointDeleted = true;
                     }
@@ -1227,7 +1245,7 @@ const occ::handle<Adaptor2d_Curve2d>& IntPatch_WLine::GetArcOnS2() const
 
 void IntPatch_WLine::Dump(const int theMode) const
 {
-  std::cout << " ----------- D u m p    I n t P a t c h  _  W L i n e  -(begin)------" << std::endl;
+  std::cout << " ----------- D u m p    I n t P a t c h  _  W L i n e  -(begin)------" << '\n';
   const int aNbPoints = NbPnts();
   const int aNbVertex = NbVertex();
 
@@ -1260,7 +1278,7 @@ void IntPatch_WLine::Dump(const int theMode) const
         {
           std::cout << "----> IntSurf_PntOn2S : " << polr << ", Pnt (" << Vertex(pol).Value().X()
                     << "," << Vertex(pol).Value().Y() << "," << Vertex(pol).Value().Z() << ")"
-                    << std::endl;
+                    << '\n';
         }
       }
 
@@ -1297,5 +1315,5 @@ void IntPatch_WLine::Dump(const int theMode) const
 
       break;
   }
-  std::cout << "\n--------------------------------------------------- (end) -------" << std::endl;
+  std::cout << "\n--------------------------------------------------- (end) -------" << '\n';
 }

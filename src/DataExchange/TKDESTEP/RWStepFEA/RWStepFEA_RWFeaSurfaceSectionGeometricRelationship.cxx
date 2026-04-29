@@ -38,7 +38,9 @@ void RWStepFEA_RWFeaSurfaceSectionGeometricRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_surface_section_geometric_relationship"))
+  {
     return;
+  }
 
   // Own fields of FeaSurfaceSectionGeometricRelationship
 

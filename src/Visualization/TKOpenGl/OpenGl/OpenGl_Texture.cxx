@@ -842,7 +842,7 @@ bool OpenGl_Texture::InitCompressed(const occ::handle<OpenGl_Context>& theCtx,
   mySizedFormat = aFormat.Internal();
   myIsTopDown   = theImage.IsTopDown();
   mySize.SetValues(theImage.SizeX(), theImage.SizeY(), 1);
-  myMaxMipLevel = std::max(theImage.MipMaps().Size() - 1, 0);
+  myMaxMipLevel = std::max(theImage.MipMaps().Length() - 1, 0);
   if (myMaxMipLevel > 0 && !theImage.IsCompleteMipMapSet())
   {
     const NCollection_Vec2<int> aMipSize = computeSmallestMipMapSize(mySize.xy(), myMaxMipLevel);
@@ -1233,7 +1233,7 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
         theToGenMipmap = false;
         theSize        = aCompImage->SizeX();
         theFormat      = aCompImage->BaseFormat();
-        myMaxMipLevel  = std::max(aCompImage->MipMaps().Size() - 1, 0);
+        myMaxMipLevel  = std::max(aCompImage->MipMaps().Length() - 1, 0);
         if (myMaxMipLevel > 0 && !aCompImage->IsCompleteMipMapSet())
         {
           const NCollection_Vec2<int> aMipSize = computeSmallestMipMapSize(

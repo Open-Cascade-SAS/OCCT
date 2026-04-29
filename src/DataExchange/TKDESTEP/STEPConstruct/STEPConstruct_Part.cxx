@@ -202,7 +202,9 @@ occ::handle<StepShape_ShapeDefinitionRepresentation> STEPConstruct_Part::SDRValu
 occ::handle<StepShape_ShapeRepresentation> STEPConstruct_Part::SRValue() const
 {
   if (!myDone)
+  {
     return nullptr;
+  }
   return occ::down_cast<StepShape_ShapeRepresentation>(mySDR->UsedRepresentation());
 }
 

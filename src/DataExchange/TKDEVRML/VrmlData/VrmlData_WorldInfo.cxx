@@ -40,12 +40,16 @@ VrmlData_WorldInfo::VrmlData_WorldInfo(const VrmlData_Scene& theScene,
 void VrmlData_WorldInfo::SetTitle(const char* theString)
 {
   if (theString == nullptr)
+  {
     myTitle = nullptr;
+  }
   else
   {
     const size_t len = strlen(theString) + 1;
     if (len == 1)
+    {
       myTitle = nullptr;
+    }
     else
     {
       myTitle = static_cast<const char*>(Scene().Allocator()->Allocate(len));
@@ -62,6 +66,7 @@ void VrmlData_WorldInfo::SetTitle(const char* theString)
 void VrmlData_WorldInfo::AddInfo(const char* theString)
 {
   if (theString != nullptr)
+  {
     if (*theString != '\0')
     {
       const size_t len  = strlen(theString) + 1;
@@ -69,6 +74,7 @@ void VrmlData_WorldInfo::AddInfo(const char* theString)
       memcpy(aStr, theString, len);
       myInfo.Append(aStr);
     }
+  }
 }
 
 //=================================================================================================
@@ -79,7 +85,9 @@ occ::handle<VrmlData_Node> VrmlData_WorldInfo::Clone(
   occ::handle<VrmlData_WorldInfo> aResult =
     occ::down_cast<VrmlData_WorldInfo>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_WorldInfo(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
 
   if (&aResult->Scene() == &Scene())
   {
@@ -91,7 +99,9 @@ occ::handle<VrmlData_Node> VrmlData_WorldInfo::Clone(
     aResult->SetTitle(myTitle);
     NCollection_List<const char*>::Iterator anIter(myInfo);
     for (; anIter.More(); anIter.Next())
+    {
       aResult->AddInfo(anIter.Value());
+    }
   }
   return aResult;
 }
@@ -111,7 +121,9 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Read(VrmlData_InBuffer& theBuffer)
     {
       TCollection_AsciiString aTitleString;
       if (OK(aStatus, ReadString(theBuffer, aTitleString)))
+      {
         SetTitle(aTitleString.ToCString());
+      }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "info"))
     {
@@ -120,16 +132,22 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Read(VrmlData_InBuffer& theBuffer)
       {
         NCollection_List<TCollection_AsciiString>::Iterator anIter(lstInfo);
         for (; anIter.More(); anIter.Next())
+        {
           AddInfo(anIter.Value().ToCString());
+        }
       }
     }
     else
+    {
       break;
+    }
   }
 
   // Read the terminating (closing) brace
   if (OK(aStatus))
+  {
     aStatus = readBrace(theBuffer);
+  }
   return aStatus;
 }
 
@@ -162,9 +180,13 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Write(const char* thePrefix) const
           Sprintf(buf, "\"%s\"", anIter.Value());
           anIter.Next();
           if (anIter.More())
+          {
             aStatus = aScene.WriteLine(buf, ",");
+          }
           else
+          {
             aStatus = aScene.WriteLine(buf);
+          }
         }
       }
       aStatus = aScene.WriteLine("]", nullptr, -GlobalIndent());

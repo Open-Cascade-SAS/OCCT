@@ -60,7 +60,9 @@ bool FairCurve_DistributionOfSagging::Value(const math_Vector& TParam, math_Vect
                                    FirstNonZero,
                                    Base);
   if (ier != 0)
+  {
     return false;
+  }
   LastZero     = FirstNonZero - 1;
   FirstNonZero = 2 * LastZero + 1;
 
@@ -80,7 +82,9 @@ bool FairCurve_DistributionOfSagging::Value(const math_Vector& TParam, math_Vect
 
   Ok = MyLaw.Value(TParam(TParam.Lower()), Hauteur);
   if (!Ok)
+  {
     return Ok;
+  }
 
   Mesure                   = pow(Hauteur, 3) / 12;
   WVal                     = Numerateur / Denominateur;

@@ -52,12 +52,16 @@ bool TPrsStd_PlaneDriver::Update(const TDF_Label&                    aLabel,
   //  Update AIS
   occ::handle<AIS_Plane> aisplane;
   if (anAISObject.IsNull())
+  {
     aisplane = new AIS_Plane(apt, pln.Location());
+  }
   else
   {
     aisplane = occ::down_cast<AIS_Plane>(anAISObject);
     if (aisplane.IsNull())
+    {
       aisplane = new AIS_Plane(apt, pln.Location());
+    }
     else
     {
       aisplane->SetComponent(apt);

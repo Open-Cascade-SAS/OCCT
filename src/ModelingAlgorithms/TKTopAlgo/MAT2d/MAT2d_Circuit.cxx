@@ -77,9 +77,13 @@ void MAT2d_Circuit::Perform(
   occ::handle<MAT2d_Connexion>                       ConnexionNul;
 
   if (Trigo)
+  {
     direction = 1.;
+  }
   else
+  {
     direction = -1.;
+  }
 
   //---------------------
   // Reinitialisation SD.
@@ -103,11 +107,17 @@ void MAT2d_Circuit::Perform(
     //     if ( P1.IsEqual(P2,Precision::Confusion()))  Open(i) = false;
     //     else                                         Open(i) = true;
     if (IsClosed(i))
+    {
       Open(i) = false;
+    }
     else if (P1.IsEqual(P2, Precision::Confusion()))
+    {
       Open(i) = false;
+    }
     else
+    {
       Open(i) = true;
+    }
     //  Modified by Sergey KHROMOV - Wed Mar  6 16:59:04 2002 End
   }
 
@@ -164,9 +174,13 @@ void MAT2d_Circuit::Perform(
     {
       occ::handle<MAT2d_Connexion> CF;
       if (Road.IsRoot(i))
+      {
         CF = ConnexionNul;
+      }
       else
+      {
         CF = Road.Father(i);
+      }
       if (Road.IsConnexionsFrom(i))
       {
         DoubleLine(FigItem.ChangeValue(i), Road.ConnexionsFrom(i), CF, direction);
@@ -233,9 +247,13 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
     while (NbTest <= 10)
     {
       if ((ProVec)*Direction < -TolAng)
+      {
         return true; // Saillant.
+      }
       if ((ProVec)*Direction > TolAng)
+      {
         return false; // Rentrant.
+      }
       else
       {
         if (DotProd > 0)
@@ -270,7 +288,9 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
     D /= 10;
 
     if (Direction < 0.)
+    {
       D = -D;
+    }
 
     occ::handle<Geom2dAdaptor_Curve> HC1 = new Geom2dAdaptor_Curve(C1);
     occ::handle<Geom2dAdaptor_Curve> HC2 = new Geom2dAdaptor_Curve(C2);
@@ -301,16 +321,22 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
         DotProd = Dir1.Dot(Dir2);
         ProVec  = Dir1 ^ Dir2;
         if ((ProVec)*Direction < -TolAng)
+        {
           return true; // Saillant.
+        }
         if ((ProVec)*Direction > TolAng)
+        {
           return false; // Rentrant.
+        }
 
         NbTest++;
       }
       return false;
     }
     else
+    {
       return false;
+    }
   }
   return false;
 }
@@ -612,7 +638,9 @@ void MAT2d_Circuit::DoubleLine(NCollection_Sequence<occ::handle<Geom2d_Geometry>
     for (i = 1; i < 2 * NbItems - 2; i++)
     {
       if (Corres(i) == 0)
+      {
         Corres(i) = Corres(2 * NbItems - i);
+      }
     }
 
 #ifdef OCCT_DEBUG
@@ -714,7 +742,9 @@ void MAT2d_Circuit::SortRefToEqui(const MAT2d_BiInt& BiRef)
   for (i = 1; i <= S.Length(); i++)
   {
     if (!ConnexionOn(S.Value(i)))
+    {
       break;
+    }
   }
   if (i > 1 && i <= S.Length())
   {
@@ -750,9 +780,13 @@ double MAT2d_Circuit::Side(const occ::handle<MAT2d_Connexion>&                  
   Curve          = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(C1->IndexItemOnFirst()));
   gp_Vec2d Vect2 = Curve->DN(C1->ParameterOnFirst(), 1);
   if ((Vect1 ^ Vect2) > 0.)
+  {
     return -1.;
+  }
   else
+  {
     return 1.;
+  }
 }
 
 //=================================================================================================

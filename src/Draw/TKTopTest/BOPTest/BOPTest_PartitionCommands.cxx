@@ -44,7 +44,9 @@ void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
@@ -281,7 +283,9 @@ int bbuild(Draw_Interpretor& di, int n, const char** a)
 
   // Set history of GF operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aPF.Arguments(), aBuilder);
+  }
 
   if (aBuilder.HasErrors())
   {
@@ -407,7 +411,9 @@ int bbop(Draw_Interpretor& di, int n, const char** a)
 
   // Set history of Boolean operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aPF.Arguments(), *pBuilder);
+  }
 
   if (pBuilder->HasErrors())
   {
@@ -486,7 +492,9 @@ int bsplit(Draw_Interpretor& di, int n, const char** a)
 
   // Set history of Split operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aPF.Arguments(), *pSplitter);
+  }
 
   if (pSplitter->HasErrors())
   {
@@ -600,7 +608,9 @@ int buildbop(Draw_Interpretor& di, int n, const char** a)
       }
       // End of arguments is reached
       if (j == n)
+      {
         break;
+      }
     }
     else if (!strcmp(a[i], "-op"))
     {
@@ -612,13 +622,21 @@ int buildbop(Draw_Interpretor& di, int n, const char** a)
 
       ++i;
       if (!strcasecmp(a[i], "common"))
+      {
         anOp = BOPAlgo_COMMON;
+      }
       else if (!strcasecmp(a[i], "fuse"))
+      {
         anOp = BOPAlgo_FUSE;
+      }
       else if (!strcasecmp(a[i], "cut"))
+      {
         anOp = BOPAlgo_CUT;
+      }
       else if (!strcasecmp(a[i], "tuc"))
+      {
         anOp = BOPAlgo_CUT21;
+      }
       else
       {
         di << "Error: unknown operation type";
@@ -662,7 +680,9 @@ int buildbop(Draw_Interpretor& di, int n, const char** a)
 
   // Set history of Split operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(pDS->Arguments(), *pBuilder);
+  }
 
   // Result shape
   const TopoDS_Shape& aR = pBuilder->Shape();

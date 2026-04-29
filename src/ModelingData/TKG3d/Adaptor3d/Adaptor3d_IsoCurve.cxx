@@ -228,7 +228,9 @@ GeomAbs_Shape Adaptor3d_IsoCurve::Continuity() const
 int Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
 {
   if (myIso == GeomAbs_NoneIso)
+  {
     throw Standard_NoSuchObject();
+  }
   bool UIso = (myIso == GeomAbs_IsoU);
 
   int nbInter = UIso ? mySurface->NbVIntervals(S) : mySurface->NbUIntervals(S);
@@ -236,19 +238,29 @@ int Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
   NCollection_Array1<double> T(1, nbInter + 1);
 
   if (UIso)
+  {
     mySurface->VIntervals(T, S);
+  }
   else
+  {
     mySurface->UIntervals(T, S);
+  }
 
   if (nbInter == 1)
+  {
     return nbInter;
+  }
 
   int first = 1;
   while (T(first) <= myFirst)
+  {
     first++;
+  }
   int last = nbInter + 1;
   while (T(last) >= myLast)
+  {
     last--;
+  }
   return (last - first + 2);
 }
 
@@ -257,7 +269,9 @@ int Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
 void Adaptor3d_IsoCurve::Intervals(NCollection_Array1<double>& TI, const GeomAbs_Shape S) const
 {
   if (myIso == GeomAbs_NoneIso)
+  {
     throw Standard_NoSuchObject();
+  }
   bool UIso = (myIso == GeomAbs_IsoU);
 
   int nbInter = UIso ? mySurface->NbVIntervals(S) : mySurface->NbUIntervals(S);
@@ -265,9 +279,13 @@ void Adaptor3d_IsoCurve::Intervals(NCollection_Array1<double>& TI, const GeomAbs
   NCollection_Array1<double> T(1, nbInter + 1);
 
   if (UIso)
+  {
     mySurface->VIntervals(T, S);
+  }
   else
+  {
     mySurface->UIntervals(T, S);
+  }
 
   if (nbInter == 1)
   {
@@ -278,10 +296,14 @@ void Adaptor3d_IsoCurve::Intervals(NCollection_Array1<double>& TI, const GeomAbs
 
   int first = 1;
   while (T(first) <= myFirst)
+  {
     first++;
+  }
   int last = nbInter + 1;
   while (T(last) >= myLast)
+  {
     last--;
+  }
 
   int i = TI.Lower(), j;
   for (j = first - 1; j <= last + 1; j++)

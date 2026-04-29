@@ -39,17 +39,23 @@ bool IGESSelect_SelectFaces::Explore(const int /*level*/,
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return false;
+  }
   int igt = igesent->TypeNumber();
 
   //   Cas clairs et nets : Faces typees comme telles
 
   if (igt == 510 || igt == 144 || igt == 143)
+  {
     return true;
+  }
 
   //   Surfaces Libres
   if (igt == 114 || igt == 118 || igt == 120 || igt == 122 || igt == 128 || igt == 140)
+  {
     return true;
+  }
 
   //   Cas du Plane
   if (igt == 108)
@@ -65,11 +71,15 @@ bool IGESSelect_SelectFaces::Explore(const int /*level*/,
   {
     DeclareAndCast(IGESBasic_SingleParent, sp, ent);
     if (sp.IsNull())
+    {
       return false;
+    }
     explored.AddItem(sp->SingleParent());
     int i, nb = sp->NbChildren();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(sp->Child(i));
+    }
     return true;
   }
 
@@ -78,10 +88,14 @@ bool IGESSelect_SelectFaces::Explore(const int /*level*/,
   {
     DeclareAndCast(IGESBasic_Group, gr, ent);
     if (gr.IsNull())
+    {
       return false;
+    }
     int i, nb = gr->NbEntities();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(gr->Entity(i));
+    }
     return true;
   }
 
@@ -92,7 +106,9 @@ bool IGESSelect_SelectFaces::Explore(const int /*level*/,
     explored.AddItem(msb->Shell());
     int i, nb = msb->NbVoidShells();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(msb->VoidShell(i));
+    }
     return true;
   }
 
@@ -102,7 +118,9 @@ bool IGESSelect_SelectFaces::Explore(const int /*level*/,
     DeclareAndCast(IGESSolid_Shell, sh, ent);
     int i, nb = sh->NbFaces();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(sh->Face(i));
+    }
     return true;
   }
 

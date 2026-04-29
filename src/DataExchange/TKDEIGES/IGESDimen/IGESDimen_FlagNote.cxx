@@ -36,8 +36,12 @@ void IGESDimen_FlagNote::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders)
 {
   if (!someLeaders.IsNull())
+  {
     if (someLeaders->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDimen_FlagNote : Init");
+    }
+  }
   theLowerLeftcorner = leftCorner;
   theAngle           = anAngle;
   theNote            = aNote;
@@ -55,7 +59,9 @@ gp_Pnt IGESDimen_FlagNote::TransformedLowerLeftCorner() const
 {
   gp_XYZ tempXYZ = theLowerLeftcorner;
   if (HasTransf())
+  {
     Location().Transforms(tempXYZ);
+  }
   return gp_Pnt(tempXYZ);
 }
 
@@ -90,7 +96,9 @@ double IGESDimen_FlagNote::CharacterHeight() const
   for (int i = 2; i <= theNote->NbStrings(); i++)
   {
     if (Max < theNote->BoxHeight(i))
+    {
       Max = theNote->BoxHeight(i);
+    }
   }
   return (Max);
 }
@@ -104,7 +112,9 @@ double IGESDimen_FlagNote::TextWidth() const
 {
   double width = 0;
   for (int i = 1; i <= theNote->NbStrings(); i++)
+  {
     width += theNote->BoxWidth(i);
+  }
   return (width);
 }
 

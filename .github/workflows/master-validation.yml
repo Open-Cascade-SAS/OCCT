@@ -140,6 +140,84 @@ jobs:
         use-vtk: "OFF"
         use-tbb: "OFF"
 
+  # Windows ARM64 test lane moved from PR validation.
+  windows-arm64-prepare-build:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
+    name: Windows ARM64 build
+    runs-on: windows-11-arm
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Build OCCT
+      uses: ./.github/actions/build-occt
+      with:
+        platform: windows
+        compiler: msvc
+        target-arch: arm64
+        artifact-name: install-windows-arm64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  windows-arm64-test:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
+    name: Test on Windows (arm64)
+    runs-on: windows-11-arm
+    needs: windows-arm64-prepare-build
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run tests
+      uses: ./.github/actions/run-tests
+      with:
+        platform: windows
+        compiler: msvc
+        target-arch: arm64
+        install-artifact-name: install-windows-arm64
+        test-directory-name: windows-arm64
+        test-script: .github/actions/testgrid/testwindowsarm.tcl
+
+  windows-arm64-retest:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
+    name: Regression Test on Windows (arm64)
+    runs-on: windows-11-arm
+    needs: windows-arm64-test
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run retest
+      uses: ./.github/actions/retest-failures
+      with:
+        platform: windows
+        compiler: msvc
+        target-arch: arm64
+        install-artifact-name: install-windows-arm64
+        results-artifact-name: results-windows-arm64
+        test-directory-name: windows-arm64
+
+  windows-arm64-gtest:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
+    name: Run GTest on Windows with MSVC (arm64)
+    needs: windows-arm64-prepare-build
+    runs-on: windows-11-arm
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: windows
+        compiler: msvc
+        target-arch: arm64
+        install-artifact-name: install-windows-arm64
+        artifact-suffix: arm64
+
   # Ubuntu builds
   ubuntu:
     if: github.repository == 'Open-Cascade-SAS/OCCT'

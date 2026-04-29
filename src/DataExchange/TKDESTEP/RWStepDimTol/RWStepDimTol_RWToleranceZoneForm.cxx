@@ -33,7 +33,9 @@ void RWStepDimTol_RWToleranceZoneForm::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "tolerance_zone_form"))
+  {
     return;
+  }
 
   // Own fields of ToleranceZoneForm
 

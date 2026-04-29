@@ -43,9 +43,13 @@ const gp_Trsf& TopLoc_Location::Transformation() const
 {
   static const gp_Trsf THE_IDENTITY_TRSF;
   if (IsIdentity())
+  {
     return THE_IDENTITY_TRSF;
+  }
   else
+  {
     return myItems.Value().myTrsf;
+  }
 }
 
 TopLoc_Location::operator gp_Trsf() const
@@ -58,7 +62,9 @@ TopLoc_Location::operator gp_Trsf() const
 TopLoc_Location TopLoc_Location::Inverted() const
 {
   if (IsIdentity())
+  {
     return *this;
+  }
 
   //
   // the inverse of a Location is a chain in revert order
@@ -85,10 +91,14 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
   // cancelling null exponents
 
   if (IsIdentity())
+  {
     return Other;
+  }
 
   if (Other.IsIdentity())
+  {
     return *this;
+  }
 
   // prepend the queue of Other
   TopLoc_Location result = Multiplied(Other.NextLocation());
@@ -104,7 +114,9 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
     }
   }
   if (p != 0)
+  {
     result.myItems.Construct(TopLoc_ItemLocation(Other.FirstDatum(), p));
+  }
   return result;
 }
 
@@ -145,11 +157,17 @@ TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
 TopLoc_Location TopLoc_Location::Powered(const int pwr) const
 {
   if (IsIdentity())
+  {
     return *this;
+  }
   if (pwr == 1)
+  {
     return *this;
+  }
   if (pwr == 0)
+  {
     return TopLoc_Location();
+  }
 
   // optimisation when just one element
   if (myItems.Tail().IsEmpty())
@@ -160,9 +178,13 @@ TopLoc_Location TopLoc_Location::Powered(const int pwr) const
   }
 
   if (pwr > 0)
+  {
     return Multiplied(Powered(pwr - 1));
+  }
   else
+  {
     return Inverted().Powered(-pwr);
+  }
 }
 
 //=================================================================================================
@@ -182,11 +204,13 @@ void TopLoc_Location::ShallowDump(Standard_OStream& S) const
   S << "TopLoc_Location : ";
   TopLoc_SListOfItemLocation items = myItems;
   if (items.IsEmpty())
-    S << "Identity" << std::endl;
+  {
+    S << "Identity" << '\n';
+  }
   while (items.More())
   {
     S << "\n";
-    S << "       Exponent : " << items.Value().myPower << std::endl;
+    S << "       Exponent : " << items.Value().myPower << '\n';
     items.Value().myDatum->ShallowDump(S);
     items.Next();
   }

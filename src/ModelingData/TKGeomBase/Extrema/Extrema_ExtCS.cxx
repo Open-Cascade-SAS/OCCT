@@ -139,7 +139,9 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C, const double Uinf, const d
         case GeomAbs_Plane:
           myExtElCS.Perform(C.Line(), myS->Plane());
           if (myExtElCS.IsParallel())
+          {
             break;
+          }
           [[fallthrough]];
 
         case GeomAbs_Torus:
@@ -192,9 +194,13 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C, const double Uinf, const d
           }
 
           if (myS->IsUPeriodic())
+          {
             NbU = 13;
+          }
           if (myS->IsVPeriodic())
+          {
             NbV = 13;
+          }
 
           if (clast - cfirst <= Precision::Confusion())
           {
@@ -322,7 +328,9 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C, const double Uinf, const d
           for (i = 0; i < 2; ++i)
           {
             if (Precision::IsInfinite(aT[i]))
+            {
               continue;
+            }
 
             aPOnC[i] = C.Value(aT[i]);
             switch (myStype)
@@ -367,26 +375,38 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C, const double Uinf, const d
             double aDiff = aDist[0] - aDist[1];
             // Both computed -> take only minimal
             if (std::abs(aDiff) < Precision::Confusion())
+            {
               // Add both
               bAdd[0] = bAdd[1] = true;
+            }
             else if (aDiff < 0)
+            {
               // Add first
               bAdd[0] = true;
+            }
             else
+            {
               // Add second
               bAdd[1] = true;
+            }
           }
           else if (aDist[0] >= 0.)
+          {
             // Add first
             bAdd[0] = true;
+          }
           else if (aDist[1] >= 0.)
+          {
             // Add second
             bAdd[1] = true;
+          }
 
           for (i = 0; i < 2; ++i)
           {
             if (bAdd[i])
+            {
               AddSolution(C, aT[i], U[i], V[i], aPOnC[i], aPOnS[i], aDist[i]);
+            }
           }
         }
       }
@@ -451,7 +471,9 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C, const double Uinf, const d
       gp_Pnt aPnt = C.Value(T);
       aProjPS.Perform(aPnt);
       if (!aProjPS.IsDone())
+      {
         continue;
+      }
       int    NbProj = aProjPS.NbExt(), jmin = 0;
       double MinSqDist = RealLast();
       for (j = 1; j <= NbProj; j++)
@@ -474,9 +496,13 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C, const double Uinf, const d
     for (i = SolNumber + 1; i <= mySqDist.Length(); i++)
     {
       if (mySqDist(i) < mySqDist(imin))
+      {
         imin = i;
+      }
       if (mySqDist(i) > mySqDist(imax))
+      {
         imax = i;
+      }
     }
     if (mySqDist.Length() > SolNumber + 2)
     {
@@ -560,11 +586,17 @@ bool Extrema_ExtCS::AddSolution(const Adaptor3d_Curve& theCurve,
   double T = aT, U = aU, V = aV;
 
   if (theCurve.IsPeriodic())
+  {
     T = ElCLib::InPeriod(T, myucinf, myucinf + theCurve.Period());
+  }
   if (myS->IsUPeriodic())
+  {
     U = ElCLib::InPeriod(U, myuinf, myuinf + myS->UPeriod());
+  }
   if (myS->IsVPeriodic())
+  {
     V = ElCLib::InPeriod(V, myvinf, myvinf + myS->VPeriod());
+  }
 
   Extrema_POnCurv aPC;
   Extrema_POnSurf aPS;

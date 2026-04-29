@@ -37,7 +37,9 @@ void RWStepVisual_RWAnnotationFillArea::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 2, ach, "annotation_fill_area"))
+  {
     return;
+  }
 
   // Inherited field : name
 
@@ -55,7 +57,9 @@ void RWStepVisual_RWAnnotationFillArea::ReadStep(
     for (int i = 1; i <= nb; i++)
     {
       if (data->ReadEntity(nsub, i, "boundaries", ach, aElementsItem))
+      {
         aElements->SetValue(i, aElementsItem);
+      }
     }
   }
 

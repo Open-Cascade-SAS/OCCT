@@ -33,7 +33,9 @@ BRepExtrema_ExtCC::BRepExtrema_ExtCC(const TopoDS_Edge& E1, const TopoDS_Edge& E
 void BRepExtrema_ExtCC::Initialize(const TopoDS_Edge& E2)
 {
   if (!BRep_Tool::IsGeometric(E2))
+  {
     return; // protect against non-geometric type (e.g. polygon)
+  }
   double            V1, V2;
   BRepAdaptor_Curve Curv(E2);
   myHC       = new BRepAdaptor_Curve(Curv);
@@ -49,7 +51,9 @@ void BRepExtrema_ExtCC::Initialize(const TopoDS_Edge& E2)
 void BRepExtrema_ExtCC::Perform(const TopoDS_Edge& E1)
 {
   if (!BRep_Tool::IsGeometric(E1))
+  {
     return; // protect against non-geometric type (e.g. polygon)
+  }
   double                         U1, U2;
   BRepAdaptor_Curve              Curv(E1);
   occ::handle<BRepAdaptor_Curve> HC  = new BRepAdaptor_Curve(Curv);

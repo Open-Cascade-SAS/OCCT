@@ -49,23 +49,31 @@ const char* Interface_GTool::SignValue(const occ::handle<Standard_Transient>&   
                                        const occ::handle<Interface_InterfaceModel>& model) const
 {
   if (ent.IsNull())
+  {
     return "";
+  }
   if (thesign.IsNull())
+  {
     return Interface_SignType::ClassName(ent->DynamicType()->Name());
+  }
   return thesign->Value(ent, model);
 }
 
 const char* Interface_GTool::SignName() const
 {
   if (thesign.IsNull())
+  {
     return "Class Name";
+  }
   return thesign->Name();
 }
 
 void Interface_GTool::SetProtocol(const occ::handle<Interface_Protocol>& proto, const bool enforce)
 {
   if (proto == theproto && !enforce)
+  {
     return;
+  }
   theproto = proto;
   thelib.Clear();
   thelib.AddProtocol(proto);
@@ -83,11 +91,13 @@ Interface_GeneralLib& Interface_GTool::Lib()
 
 void Interface_GTool::Reservate(const int nb, const bool enforce)
 {
-  int n = thentnum.NbBuckets();
-  if (n < nb && !enforce)
+  const size_t aNbBuckets = thentnum.NbBuckets();
+  if (aNbBuckets < static_cast<size_t>(nb) && !enforce)
+  {
     return;
-  thentnum.ReSize(nb);
-  thentmod.ReSize(nb);
+  }
+  thentnum.ReSize(static_cast<size_t>(nb));
+  thentmod.ReSize(static_cast<size_t>(nb));
 }
 
 void Interface_GTool::ClearEntities()

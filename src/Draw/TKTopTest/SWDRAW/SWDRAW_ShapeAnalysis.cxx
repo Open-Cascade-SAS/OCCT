@@ -120,7 +120,9 @@ static int tolerance(Draw_Interpretor& di, int argc, const char** argv)
     char             opt     = argv[2][0];
     TopAbs_ShapeEnum type    = TopAbs_SHAPE;
     if (opt == 'a')
+    {
       nextarg = 3;
+    }
     else if (opt == 'c')
     {
       nextarg = 3;
@@ -142,13 +144,19 @@ static int tolerance(Draw_Interpretor& di, int argc, const char** argv)
       type    = TopAbs_VERTEX;
     }
     if (nextarg < 3)
+    {
       opt = 'a';
+    }
 
     double tol1 = 0., tol2 = 0.;
     if (nextarg < argc)
+    {
       tol1 = Draw::Atof(argv[nextarg]);
+    }
     if (nextarg < argc - 1)
+    {
       tol2 = Draw::Atof(argv[nextarg + 1]);
+    }
     //    double tol = Draw::Atof (argv[2]);
     occ::handle<NCollection_HSequence<TopoDS_Shape>> list =
       sat.InTolerance(Shape, tol1, tol2, type);
@@ -171,15 +179,25 @@ static int tolerance(Draw_Interpretor& di, int argc, const char** argv)
         di << "Analysing all sub-shapes gives ";
     }
     if (tol1 == 0)
+    {
       di << nb << " Shapes below tol=" << tol2;
+    }
     else if (tol2 == 0)
+    {
       di << nb << " Shapes over tol=" << tol1;
+    }
     else
+    {
       di << nb << " Shapes between tol1=" << tol1 << " and tol2=" << tol2;
+    }
     if (nb == 1)
+    {
       di << " , named tol_1";
+    }
     if (nb > 1)
+    {
       di << " , named tol_1 to tol_" << nb;
+    }
     di << "\n";
     char nomsh[30];
     for (i = 1; i <= nb; i++)
@@ -226,13 +244,21 @@ static int projface(Draw_Interpretor& di, int argc, const char** argv)
     thesurf->Bounds(uf, ul, vf, vl);
 
     if (Precision::IsInfinite(uf))
+    {
       uf = -1000;
+    }
     if (Precision::IsInfinite(ul))
+    {
       ul = 1000;
+    }
     if (Precision::IsInfinite(vf))
+    {
       vf = -1000;
+    }
     if (Precision::IsInfinite(vl))
+    {
       vl = 1000;
+    }
     double du = std::abs(ul - uf) / 10;
     double dv = std::abs(vl - vf) / 10;
 
@@ -246,7 +272,9 @@ static int projface(Draw_Interpretor& di, int argc, const char** argv)
       proj.Parameters(sol, U, V);
       TopAbs_State aStatus = aClassifier.Perform(gp_Pnt2d(U, V));
       if (aStatus == TopAbs_OUT)
+      {
         continue;
+      }
 
       anIndSol++;
       double aDist = proj.Distance(sol);
@@ -279,7 +307,9 @@ static int projface(Draw_Interpretor& di, int argc, const char** argv)
     di << " Point UV  U = " << U << "  V = " << V << "\n";
     TopAbs_State aStatus = aClassifier.Perform(gp_Pnt2d(U, V));
     if (aStatus == TopAbs_OUT)
+    {
       di << "does not belong to the face" << "\n";
+    }
     else
     {
       gp_Pnt P3D = thesurf->Value(U, V);
@@ -465,9 +495,13 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
     nbe = 0;
     di << "WIRE " << nbw;
     if (Wire.Orientation() == TopAbs_FORWARD)
+    {
       di << " (FWD)\n";
+    }
     else
+    {
       di << " (REV)\n";
+    }
     gp_Pnt        fin, debut;
     gp_Pnt2d      finuv, debuv;
     gp_XY         baseuv;
@@ -492,21 +526,31 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
 
       di << "Wire " << nbw << ", Edge " << nbe;
       if (Edge.Orientation() == TopAbs_FORWARD)
+      {
         di << " (FWD";
+      }
       else
+      {
         di << " (REV";
+      }
       di << " , Tol= " << BRep_Tool::Tolerance(Edge) << " )\n";
       double                    f3d, l3d, f2d, l2d;
       occ::handle<Geom_Curve>   curve3d = BRep_Tool::Curve(Edge, f3d, l3d);
       occ::handle<Geom2d_Curve> curve2d;
       if (iasurf)
+      {
         curve2d = BRep_Tool::CurveOnSurface(Edge, Face, f2d, l2d);
+      }
       bool ia2d = !curve2d.IsNull();
       iaw2d |= ia2d;
       if (!ia2d)
+      {
         di << "--  No PCurve\n";
+      }
       if (curve3d.IsNull())
+      {
         di << "-- no Curve 3d\n";
+      }
 
       //      On va tacher de calculer les positions et les comparer
       gp_Pnt2d fuv, luv;
@@ -514,13 +558,17 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
       {
         TopExp::Vertices(Edge, fv, lv);
         if (ia2d)
+        {
           BRep_Tool::UVPoints(Edge, Face, fuv, luv);
+        }
       }
       else
       {
         TopExp::Vertices(Edge, lv, fv);
         if (ia2d)
+        {
           BRep_Tool::UVPoints(Edge, Face, luv, fuv);
+        }
       }
       gp_Pnt fp = BRep_Tool::Pnt(fv);
       gp_Pnt lp = BRep_Tool::Pnt(lv);
@@ -585,7 +633,9 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
         maxvtx = std::max(maxvtx, dvtx);
         di << "   Fin(" << nbe - 1 << ")-Debut(" << nbe << "): DISTANCE=" << dvtx;
         if (ia2d)
+        {
           di << " DeltaUV=" << duv;
+        }
         di << " Tol(Fin)=" << BRep_Tool::Tolerance(lv) << "\n";
       }
       fin   = lxyz;
@@ -607,12 +657,16 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
     }
     di << "   Fin(" << nbe << ")-Debut(1): DISTANCE=" << dvtx;
     if (iaw2d)
+    {
       di << " DeltaUV=" << duv;
+    }
     di << " Tol(Fin)=" << BRep_Tool::Tolerance(lv) << "\n";
 
     di << "   Wire " << nbw << " Max :  Dist.Vertex=" << maxvtx;
     if (iaw2d)
+    {
       di << "  Ecart UV/3D=" << maxp3d << "  DeltaUV=" << maxuv;
+    }
     di << "\n";
     //  Min Max
     if (iaw2d)
@@ -624,34 +678,54 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
       GProp_GProps G;
       BRepGProp::SurfaceProperties(Face, G);
       if (G.Mass() > 0)
+      {
         di << "GProps:Mass Out\n";
+      }
       else
+      {
         di << "GProps:Mass In\n";
+      }
       ///  return (G.Mass() > 0);
       BRepTopAdaptor_FClass2d fcl(Face, BRep_Tool::Tolerance(Face));
       if (fcl.PerformInfinitePoint() == TopAbs_OUT)
+      {
         di << "Classifier Infinite : Out\n";
+      }
       else
+      {
         di << "Classifier Infinite : In\n";
+      }
       gp_Pnt2d pcl;
       pcl.SetCoord(umin - difu, vmin - difv);
       if (fcl.Perform(pcl) == TopAbs_OUT)
+      {
         di << "Classifier UMin-VMin : Out\n";
+      }
       pcl.SetCoord(umin - difu, vmax + difv);
       if (fcl.Perform(pcl) == TopAbs_OUT)
+      {
         di << "Classifier UMin-VMax : Out\n";
+      }
       pcl.SetCoord(umax + difu, vmin - difv);
       if (fcl.Perform(pcl) == TopAbs_OUT)
+      {
         di << "Classifier UMax-VMin : Out\n";
+      }
       pcl.SetCoord(umax + difu, vmax + difv);
       if (fcl.Perform(pcl) == TopAbs_OUT)
+      {
         di << "Classifier UMax-VMax : Out\n";
+      }
     }
   }
   if (ShapeAnalysis::IsOuterBound(Face))
+  {
     di << "ShapeAnalysis: Outer Bound\n";
+  }
   else
+  {
     di << "ShapeAnalysis: Not Outer Bound\n";
+  }
   di << " Total " << nbw << " Wire(s)\n";
   return 0;
 }
@@ -667,9 +741,13 @@ static int XSHAPE_statshape(Draw_Interpretor& di, int argc, const char** argv)
   const char* arg2 = nullptr;
   const char* arg3 = nullptr;
   if (argc > 2)
+  {
     arg2 = argv[2];
+  }
   if (argc > 3)
+  {
     arg3 = argv[3];
+  }
   TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
@@ -694,88 +772,144 @@ static int XSHAPE_statshape(Draw_Interpretor& di, int argc, const char** argv)
   di << "Count    Item\n-----    ----\n";
   nb = analyzer.NbEdges();
   if (nb > 0)
+  {
     di << nb << "	 EDGE (Oriented)\n";
+  }
   nb = analyzer.NbSharedEdges();
   if (nb > 0)
+  {
     di << nb << "	 EDGE (Shared)\n";
+  }
   nb = analyzer.NbFreeEdges();
   if (nb > 0)
+  {
     di << nb << "	 EDGE (Free)\n";
+  }
   nb = analyzer.NbFaces();
   if (nb > 0)
+  {
     di << nb << "	 FACE\n";
+  }
   nb = analyzer.NbFreeFaces();
   if (nb > 0)
+  {
     di << nb << "	 FACE (Free)\n";
+  }
   nb = analyzer.NbFreeWires();
   if (nb > 0)
+  {
     di << nb << "	 WIRE (Free)\n";
+  }
   nb = analyzer.NbShells();
   if (nb > 0)
+  {
     di << nb << "	 SHELL\n";
+  }
   nb = analyzer.NbSolids();
   if (nb > 0)
+  {
     di << nb << "	 SOLID\n";
+  }
   nb = analyzer.NbVertices();
   if (nb > 0)
+  {
     di << nb << "	 VERTEX (Oriented)\n";
+  }
   nb = analyzer.NbSharedVertices();
   if (nb > 0)
+  {
     di << nb << "	 VERTEX (Shared)\n";
+  }
   nb = analyzer.NbWires();
   if (nb > 0)
+  {
     di << nb << "	 WIRE\n";
+  }
   nb = analyzer.NbFaceWithSevWires();
   if (nb > 0)
+  {
     di << nb << "	Face with more than one wire\n";
+  }
   nb = analyzer.NbNoPCurve();
   if (nb > 0)
+  {
     di << nb << "	No pcurve\n";
+  }
   nb = analyzer.NbSolidsWithVoids();
   if (nb > 0)
+  {
     di << nb << "	SOLID with voids\n";
+  }
   nb = analyzer.NbWireWitnSeam();
   if (nb > 0)
+  {
     di << nb << "	Wire(s) with one seam edge\n";
+  }
   nb = analyzer.NbWireWithSevSeams();
   if (nb > 0)
+  {
     di << nb << "	Wire(s) with several seam edges\n";
+  }
   nb = analyzer.NbBigSplines();
   if (nb > 0)
+  {
     di << nb << "	bigspl : BSpline > 8192 poles\n";
+  }
   nb = analyzer.NbBezierSurf();
   if (nb > 0)
+  {
     di << nb << "	bezsur : BezierSurface\n";
+  }
   nb = analyzer.NbBSplibeSurf();
   if (nb > 0)
+  {
     di << nb << "	bspsur : BSplineSurface\n";
+  }
   nb = analyzer.NbC0Curves();
   if (nb > 0)
+  {
     di << nb << "	c0curv : Curve Only C0\n";
+  }
   nb = analyzer.NbC0Surfaces();
   if (nb > 0)
+  {
     di << nb << "	c0surf : Surface Only C0\n";
+  }
   nb = analyzer.NbIndirectSurf();
   if (nb > 0)
+  {
     di << nb << "	indsur : Indirect Surface\n";
+  }
   nb = analyzer.NbOffsetCurves();
   if (nb > 0)
+  {
     di << nb << "	ofcur  : Offset Curve(s)\n";
+  }
   nb = analyzer.NbOffsetSurf();
   if (nb > 0)
+  {
     di << nb << "	ofsur  : Offset Surface\n";
+  }
   nb = analyzer.NbTrimmedCurve2d();
   if (nb > 0)
+  {
     di << nb << "	trc2d  : Trimmed Curve2d\n";
+  }
   nb = analyzer.NbTrimmedCurve3d();
   if (nb > 0)
+  {
     di << nb << "	trc3d  : Trimmed Curve3d\n";
+  }
   nb = analyzer.NbTrimSurf();
   if (nb > 0)
+  {
     di << nb << "	trimsu : RectangularTrimmedSurface\n";
+  }
 
   if (arg3 == nullptr)
+  {
     return 0;
+  }
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> sec;
   if (analyzer.ModifyBigSplineMode())
@@ -864,12 +998,18 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
     {
       nbpnts = Draw::Atoi(argv[2]);
       if (nbpnts < 2)
+      {
         nbpnts = 2;
+      }
       if (argc > 3)
+      {
         prefix = argv[3];
+      }
     }
     else
+    {
       prefix = argv[2];
+    }
   }
 
   int                num = 0;
@@ -900,14 +1040,18 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
         edmax = edge;
       }
       if (min > tol)
+      {
         min = tol;
+      }
       if (relmax < rel)
       {
         relmax   = rel;
         edmaxrel = edge;
       }
       if (relmin > rel)
+      {
         relmin = rel;
+      }
     }
     num++;
   }
@@ -931,7 +1075,9 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
     DBRep::Set(name, edmax);
     di << "Edge with max tolerance saved to " << name;
     if (edmax.IsSame(edmaxrel))
+    {
       di << "\n";
+    }
     else
     {
       Sprintf(name, "%.10s_edge_rel", prefix);
@@ -948,7 +1094,9 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
         if (edge.IsSame(edmax) || edge.IsSame(edmaxrel))
         {
           if (!num1)
+          {
             di << "Concerned faces saved to shapes ";
+          }
           Sprintf(name, "%.10s_%d", prefix, num1 + 1);
           DBRep::Set(name, face);
           // std::cout << ( num1 ? ", " : "" ) << name;
@@ -966,7 +1114,9 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
       }
     }
     if (num1 > 0)
+    {
       di << "\n";
+    }
   }
   return 0;
 }
@@ -976,22 +1126,34 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
 static int freebounds(Draw_Interpretor& di, int n, const char** a)
 {
   if ((n < 3) || (n > 5))
+  {
     return 1;
+  }
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
+  {
     return 1;
+  }
   double toler       = Draw::Atof(a[2]);
   bool   splitclosed = false, splitopen = false;
   if (n > 3)
+  {
     splitclosed = Draw::Atoi(a[3]) != 0;
+  }
   if (n > 4)
+  {
     splitopen = Draw::Atoi(a[4]) != 0;
+  }
 
   ShapeAnalysis_FreeBounds F;
   if (toler <= 0)
+  {
     F = ShapeAnalysis_FreeBounds(shape, splitclosed, splitopen);
+  }
   else
+  {
     F = ShapeAnalysis_FreeBounds(shape, toler, splitclosed, splitopen);
+  }
 
   char         name[100];
   TopoDS_Shape wires = F.GetClosedWires();
@@ -1043,16 +1205,26 @@ static int FreeBoundsProps(Draw_Interpretor& di, int n, const char** a)
   double toler       = 0.;
   bool   splitclosed = false, splitopen = false;
   if (n > 2)
+  {
     toler = Draw::Atof(a[2]);
+  }
   if (n > 3)
+  {
     splitclosed = Draw::Atoi(a[3]) != 0;
+  }
   if (n > 4)
+  {
     splitopen = Draw::Atoi(a[4]) != 0;
+  }
   ShapeAnalysis_FreeBoundsProperties analyzer;
   if (toler > 0)
+  {
     analyzer.Init(source, toler, splitclosed, splitopen);
+  }
   else
+  {
     analyzer.Init(source, splitclosed, splitopen);
+  }
   analyzer.Perform();
   TopoDS_Compound closed, open;
   BRep_Builder    B;
@@ -1100,22 +1272,34 @@ static int FreeBoundsProps(Draw_Interpretor& di, int n, const char** a)
 static int closefreebounds(Draw_Interpretor& di, int n, const char** a)
 {
   if ((n < 4) || (n > 6))
+  {
     return 1;
+  }
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
+  {
     return 1;
+  }
   double sewtoler = Draw::Atof(a[2]), closetoler = Draw::Atof(a[3]);
   bool   splitclosed = false, splitopen = false;
   if (n > 4)
+  {
     splitclosed = Draw::Atoi(a[3]) != 0;
+  }
   if (n > 5)
+  {
     splitopen = Draw::Atoi(a[4]) != 0;
+  }
 
   ShapeFix_FreeBounds F;
   if (sewtoler <= 0)
+  {
     F = ShapeFix_FreeBounds(shape, closetoler, splitclosed, splitopen);
+  }
   else
+  {
     F = ShapeFix_FreeBounds(shape, sewtoler, closetoler, splitclosed, splitopen);
+  }
 
   char         name[100];
   TopoDS_Shape wires = F.GetClosedWires();
@@ -1133,7 +1317,9 @@ static int closefreebounds(Draw_Interpretor& di, int n, const char** a)
 static int getareacontour(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
   {
@@ -1186,7 +1372,9 @@ static int checkselfintersection(Draw_Interpretor& di, int argc, const char** ar
   {
     BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(wire), true);
     if (mkFace.IsDone())
+    {
       face = mkFace.Face();
+    }
     else
     {
       di << "Can't make a face for the wire. Provide please a face for analysis.\n";
@@ -1198,9 +1386,13 @@ static int checkselfintersection(Draw_Interpretor& di, int argc, const char** ar
   bool               result = analyser.CheckSelfIntersection();
 
   if (result)
+  {
     di << "A self-intersecting wire.\n";
+  }
   else
+  {
     di << "Not self-intersecting wire.\n";
+  }
   return 0;
 }
 
@@ -1276,7 +1468,9 @@ static int checkedge(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   if (isOk)
+  {
     di << "Edge seems OK.\n";
+  }
 
   return 0;
 }
@@ -1299,7 +1493,9 @@ static int getanasurf(Draw_Interpretor& di, int n, const char** a)
   }
   TopoDS_Shape sh = DBRep::Get(a[2]);
   if (sh.IsNull())
+  {
     return 1;
+  }
   TopAbs_ShapeEnum aShType = sh.ShapeType();
   if (aShType != TopAbs_SHELL && aShType != TopAbs_FACE && aShType != TopAbs_EDGE
       && aShType != TopAbs_WIRE)
@@ -1313,18 +1509,28 @@ static int getanasurf(Draw_Interpretor& di, int n, const char** a)
   if (n > 3)
   {
     if (strcmp(a[3], "pln") == 0)
+    {
       isurf = 0;
+    }
     else if (strcmp(a[3], "cyl") == 0)
+    {
       isurf = 1;
+    }
     else if (strcmp(a[3], "con") == 0)
+    {
       isurf = 2;
+    }
     else if (strcmp(a[3], "sph") == 0)
+    {
       isurf = 3;
+    }
   }
 
   double tol = 1.e-7;
   if (n > 4)
+  {
     tol = Draw::Atof(a[4]);
+  }
 
   // get sample target for edge and wire
   GeomAdaptor_Surface aSampleSurf;
@@ -1352,33 +1558,49 @@ static int getanasurf(Draw_Interpretor& di, int n, const char** a)
     case GeomAbs_Plane: {
       gp_Pln aPln;
       if (aSampleSurf.GetType() == GeomAbs_Plane)
+      {
         aPln = aSampleSurf.Plane();
+      }
       if (aCanonRec.IsPlane(tol, aPln))
+      {
         aRes = new Geom_Plane(aPln);
+      }
       break;
     }
     case GeomAbs_Cylinder: {
       gp_Cylinder aCyl;
       if (aSampleSurf.GetType() == GeomAbs_Cylinder)
+      {
         aCyl = aSampleSurf.Cylinder();
+      }
       if (aCanonRec.IsCylinder(tol, aCyl))
+      {
         aRes = new Geom_CylindricalSurface(aCyl);
+      }
       break;
     }
     case GeomAbs_Cone: {
       gp_Cone aCon;
       if (aSampleSurf.GetType() == GeomAbs_Cone)
+      {
         aCon = aSampleSurf.Cone();
+      }
       if (aCanonRec.IsCone(tol, aCon))
+      {
         aRes = new Geom_ConicalSurface(aCon);
+      }
       break;
     }
     case GeomAbs_Sphere: {
       gp_Sphere aSph;
       if (aSampleSurf.GetType() == GeomAbs_Sphere)
+      {
         aSph = aSampleSurf.Sphere();
+      }
       if (aCanonRec.IsSphere(tol, aSph))
+      {
         aRes = new Geom_SphericalSurface(aSph);
+      }
       break;
     }
     default:
@@ -1410,7 +1632,9 @@ int getanacurve(Draw_Interpretor& di, int n, const char** a)
   }
   TopoDS_Shape sh = DBRep::Get(a[2]);
   if (sh.IsNull())
+  {
     return 1;
+  }
   TopAbs_ShapeEnum aShType = sh.ShapeType();
   if (aShType != TopAbs_WIRE && aShType != TopAbs_EDGE)
   {
@@ -1423,16 +1647,24 @@ int getanacurve(Draw_Interpretor& di, int n, const char** a)
   if (n > 3)
   {
     if (strcmp(a[3], "lin") == 0)
+    {
       icurv = 0;
+    }
     else if (strcmp(a[3], "cir") == 0)
+    {
       icurv = 1;
+    }
     else if (strcmp(a[3], "ell") == 0)
+    {
       icurv = 2;
+    }
   }
 
   double tol = Precision::Confusion();
   if (n > 4)
+  {
     tol = Draw::Atof(a[4]);
+  }
 
   ShapeAnalysis_CanonicalRecognition aCanonRec(sh);
   occ::handle<Geom_Curve>            aRes;
@@ -1441,19 +1673,25 @@ int getanacurve(Draw_Interpretor& di, int n, const char** a)
     case GeomAbs_Line: {
       gp_Lin aLin;
       if (aCanonRec.IsLine(tol, aLin))
+      {
         aRes = new Geom_Line(aLin);
+      }
       break;
     }
     case GeomAbs_Circle: {
       gp_Circ aCirc;
       if (aCanonRec.IsCircle(tol, aCirc))
+      {
         aRes = new Geom_Circle(aCirc);
+      }
       break;
     }
     case GeomAbs_Ellipse: {
       gp_Elips anElips;
       if (aCanonRec.IsEllipse(tol, anElips))
+      {
         aRes = new Geom_Ellipse(anElips);
+      }
       break;
     }
     default:

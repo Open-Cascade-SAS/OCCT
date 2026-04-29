@@ -2271,12 +2271,16 @@ int AdvApp2Var_SysBase::mcrfill_(int* size, void* tin, void* tout)
   char* jmin  = static_cast<char*>(tin);
   char* jmout = static_cast<char*>(tout);
   if (mcrfill_ABS(jmout - jmin) >= *size)
+  {
     memcpy(tout, tin, *size);
+  }
   else if (tin > tout)
   {
     int n = *size;
     while (n-- > 0)
+    {
       *jmout++ = *jmin++;
+    }
   }
   else
   {
@@ -2284,7 +2288,9 @@ int AdvApp2Var_SysBase::mcrfill_(int* size, void* tin, void* tout)
     jmin += n;
     jmout += n;
     while (n-- > 0)
+    {
       *--jmout = *--jmin;
+    }
   }
   return 0;
 }
@@ -2359,7 +2365,9 @@ int mcrgetv_(int* sz, intptr_t* iad, int* ier)
   *ier = 0;
   *iad = (intptr_t)Standard::Allocate(*sz);
   if (!*iad)
+  {
     *ier = 1;
+  }
   return 0;
 }
 

@@ -141,7 +141,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 
               // pop : if the coordinates are too great, no creation
               if (Center.X() > 1e10 || Center.Y() > 1e10)
+              {
                 break;
+              }
 
               double dist1 = Center.Distance(C1.Location());
               double dist2 = Center.Distance(C2.Location());
@@ -149,7 +151,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 
               // pop : if the coordinates are too great, no creation
               if (dist3 > 1e10)
+              {
                 break;
+              }
 
               int  nbsol1 = 0;
               int  nbsol2 = 0;
@@ -347,14 +351,22 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                     // POP for protection if cirsol(NbrSol).Location == pnttg1sol(NbrSol)
                     if (cirsol(NbrSol).Location().IsEqual(pnttg1sol(NbrSol),
                                                           Precision::Confusion()))
+                    {
                       par1sol(NbrSol) = 1;
+                    }
                     else
+                    {
                       par1sol(NbrSol) = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
+                    }
                     // POP for protection if C1.Location == pnttg1sol(NbrSol)
                     if (C1.Location().IsEqual(pnttg1sol(NbrSol), Precision::Confusion()))
+                    {
                       pararg1(NbrSol) = 1;
+                    }
                     else
+                    {
                       pararg1(NbrSol) = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
+                    }
                   }
                   if (Center.Distance(C2.Location()) <= Tolerance
                       && std::abs(Radius(ind3) - R2) <= Tolerance)
@@ -369,14 +381,22 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                     // POP for protection if cirsol(NbrSol).Location == pnttg1sol(NbrSol)
                     if (cirsol(NbrSol).Location().IsEqual(pnttg1sol(NbrSol),
                                                           Precision::Confusion()))
+                    {
                       par1sol(NbrSol) = 1;
+                    }
                     else
+                    {
                       par2sol(NbrSol) = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
+                    }
                     // POP for protection if C2.Location == pnttg2sol(NbrSol)
                     if (C2.Location().IsEqual(pnttg2sol(NbrSol), Precision::Confusion()))
+                    {
                       pararg2(NbrSol) = 1;
+                    }
                     else
+                    {
                       pararg2(NbrSol) = ElCLib::Parameter(C2, pnttg2sol(NbrSol));
+                    }
                   }
                   TheSame3(NbrSol) = 0;
                   gp_Dir2d dc(L3.Location().XY() - Center.XY());

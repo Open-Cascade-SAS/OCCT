@@ -277,7 +277,11 @@ if("${VTK_RENDERING_BACKEND}" STREQUAL "OpenGL2" OR IS_VTK_9XX)
       if (${VTK_EXCLUDE_LIBRARY} STREQUAL vtkRenderingOpenGL)
         list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT vtkRenderingOpenGL2)
         if(VTK_MAJOR_VERSION GREATER 6)
-          list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT vtkRenderingGL2PSOpenGL2)
+          # VTK omits RenderingGL2PSOpenGL2 on Android/iOS and under GLES (Emscripten);
+          # only add the dependency when the target is actually provided.
+          if (TARGET VTK::RenderingGL2PSOpenGL2 OR TARGET vtkRenderingGL2PSOpenGL2)
+            list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT vtkRenderingGL2PSOpenGL2)
+          endif()
         endif()
       endif()
     endif()

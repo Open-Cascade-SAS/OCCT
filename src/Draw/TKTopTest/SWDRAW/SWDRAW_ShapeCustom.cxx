@@ -127,7 +127,9 @@ static int ckeckKnots(const NCollection_Array1<double>& theKnots, double theFirs
     {
       double aDL = theKnots(i) - theLast;
       if (fabs(aDL) <= Precision::PConfusion() || aDL > Precision::PConfusion())
+      {
         break;
+      }
       aNum++;
     }
   }
@@ -143,7 +145,9 @@ static void expcurv2d(const occ::handle<Geom2d_Curve>& aCurve,
                       double                           theLast)
 {
   if (aCurve.IsNull())
+  {
     return;
+  }
 
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
@@ -164,17 +168,25 @@ static void expcurv2d(const occ::handle<Geom2d_Curve>& aCurve,
   {
     occ::handle<Geom2d_BSplineCurve> Bs = occ::down_cast<Geom2d_BSplineCurve>(aCurve);
     if (Bs->Degree() > Degree)
+    {
       Nb.ChangeValue(1, 1)++;
+    }
     if (Bs->NbKnots() - 1 > MaxSeg)
+    {
       Nb.ChangeValue(1, 2)++;
+    }
     if (Bs->IsRational())
+    {
       Nb.ChangeValue(1, 3)++;
+    }
     if (aCont < theCont && Bs->NbKnots() > 2)
     {
       const NCollection_Array1<double>& aKnots = Bs->Knots();
       int                               nbInt  = ckeckKnots(aKnots, theFirst, theLast);
       if (nbInt > 1)
+      {
         Nb.ChangeValue(1, 4)++;
+      }
     }
     return;
   }
@@ -182,9 +194,13 @@ static void expcurv2d(const occ::handle<Geom2d_Curve>& aCurve,
   {
     occ::handle<Geom2d_BezierCurve> Bs = occ::down_cast<Geom2d_BezierCurve>(aCurve);
     if (Bs->Degree() > Degree)
+    {
       Nb.ChangeValue(2, 1)++;
+    }
     if (Bs->IsRational())
+    {
       Nb.ChangeValue(2, 3)++;
+    }
     if (aCont < theCont)
     {
 
@@ -193,8 +209,9 @@ static void expcurv2d(const occ::handle<Geom2d_Curve>& aCurve,
     return;
   }
   else
+  {
     Nb.ChangeValue(1, 5)++;
-  return;
+  }
 }
 
 static void expcurv(const occ::handle<Geom_Curve>& aCurve,
@@ -206,7 +223,9 @@ static void expcurv(const occ::handle<Geom_Curve>& aCurve,
                     double                         theLast)
 {
   if (aCurve.IsNull())
+  {
     return;
+  }
   if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> tmp      = occ::down_cast<Geom_TrimmedCurve>(aCurve);
@@ -227,17 +246,25 @@ static void expcurv(const occ::handle<Geom_Curve>& aCurve,
   {
     occ::handle<Geom_BSplineCurve> Bs = occ::down_cast<Geom_BSplineCurve>(aCurve);
     if (Bs->Degree() > Degree)
+    {
       Nb.ChangeValue(1, 1)++;
+    }
     if (Bs->NbKnots() - 1 > MaxSeg)
+    {
       Nb.ChangeValue(1, 2)++;
+    }
     if (Bs->IsRational())
+    {
       Nb.ChangeValue(1, 3)++;
+    }
     if (aCont < theCont && Bs->NbKnots() > 2)
     {
       const NCollection_Array1<double>& aKnots = Bs->Knots();
       int                               nbInt  = ckeckKnots(aKnots, theFirst, theLast);
       if (nbInt > 1)
+      {
         Nb.ChangeValue(1, 4)++;
+      }
     }
     return;
   }
@@ -245,16 +272,23 @@ static void expcurv(const occ::handle<Geom_Curve>& aCurve,
   {
     occ::handle<Geom_BezierCurve> Bs = occ::down_cast<Geom_BezierCurve>(aCurve);
     if (Bs->Degree() > Degree)
+    {
       Nb.ChangeValue(2, 1)++;
+    }
     if (Bs->IsRational())
+    {
       Nb.ChangeValue(2, 3)++;
+    }
     if (aCont < theCont)
+    {
       Nb.ChangeValue(2, 4)++;
+    }
     return;
   }
   else
+  {
     Nb.ChangeValue(1, 5)++;
-  return;
+  }
 }
 
 static void expsurf(const occ::handle<Geom_Surface>& aSurface,
@@ -264,7 +298,9 @@ static void expsurf(const occ::handle<Geom_Surface>& aSurface,
                     const int                        theCont)
 {
   if (aSurface.IsNull())
+  {
     return;
+  }
   if (aSurface->IsKind(STANDARD_TYPE(Geom_SweptSurface)))
   {
     occ::handle<Geom_SweptSurface> aSurf    = occ::down_cast<Geom_SweptSurface>(aSurface);
@@ -299,24 +335,38 @@ static void expsurf(const occ::handle<Geom_Surface>& aSurface,
   {
     occ::handle<Geom_BSplineSurface> BS = occ::down_cast<Geom_BSplineSurface>(aSurface);
     if (BS->UDegree() > Degree || BS->VDegree() > Degree)
+    {
       NbSurf.ChangeValue(1, 1)++;
+    }
     if (((BS->NbUKnots() - 1) * (BS->NbVKnots() - 1)) > MaxSeg)
+    {
       NbSurf.ChangeValue(1, 2)++;
+    }
     if (BS->IsURational() || BS->IsVRational())
+    {
       NbSurf.ChangeValue(1, 3)++;
+    }
     if (aCont < theCont)
+    {
       NbSurf.ChangeValue(1, 4)++;
+    }
     return;
   }
   if (aSurface->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
   {
     occ::handle<Geom_BezierSurface> BS = occ::down_cast<Geom_BezierSurface>(aSurface);
     if (BS->UDegree() > Degree || BS->VDegree() > Degree)
+    {
       NbSurf.ChangeValue(2, 1)++;
+    }
     if (BS->IsURational() || BS->IsVRational())
+    {
       NbSurf.ChangeValue(2, 3)++;
+    }
     if (aCont < theCont)
+    {
       NbSurf.ChangeValue(2, 4)++;
+    }
     return;
   }
   if (aSurface->IsKind(STANDARD_TYPE(Geom_Plane)))
@@ -324,7 +374,9 @@ static void expsurf(const occ::handle<Geom_Surface>& aSurface,
     NbSurf.ChangeValue(1, 5)++;
   }
   else
+  {
     NbSurf.ChangeValue(2, 5)++;
+  }
 }
 
 static int expshape(Draw_Interpretor& di, int argc, const char** argv)
@@ -343,19 +395,33 @@ static int expshape(Draw_Interpretor& di, int argc, const char** argv)
   if (argc > k)
   {
     if (strcmp(argv[k], "C0") == 0)
+    {
       aCont3 = GeomAbs_C0;
+    }
     else if (strcmp(argv[k], "C1") == 0)
+    {
       aCont3 = GeomAbs_C1;
+    }
     else if (strcmp(argv[k], "C2") == 0)
+    {
       aCont3 = GeomAbs_C2;
+    }
     else if (strcmp(argv[k], "C3") == 0)
+    {
       aCont3 = GeomAbs_C3;
+    }
     else if (strcmp(argv[k], "CN") == 0)
+    {
       aCont3 = GeomAbs_CN;
+    }
     else if (strcmp(argv[k], "G1") == 0)
+    {
       aCont3 = GeomAbs_C0;
+    }
     else if (strcmp(argv[k], "G2") == 0)
+    {
       aCont3 = GeomAbs_C1;
+    }
     else
     {
       di << "Invalid argument Cont3e\n";
@@ -392,7 +458,9 @@ static int expshape(Draw_Interpretor& di, int argc, const char** argv)
     {
       TopoDS_Edge E = TopoDS::Edge(exp.Current());
       if (BRep_Tool::IsClosed(E, F))
+      {
         nbSeam++;
+      }
       double                  First, Last;
       occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(E, L, First, Last);
       expcurv(aCurve, NbCurv, Degree, MaxSeg, aCont, First, Last);
@@ -517,19 +585,33 @@ static int BSplRes(Draw_Interpretor& di, int argc, const char** argv)
   }
   GeomAbs_Shape aCont3;
   if (strcmp(argv[7], "C0") == 0)
+  {
     aCont3 = GeomAbs_C0;
+  }
   else if (strcmp(argv[7], "C1") == 0)
+  {
     aCont3 = GeomAbs_C1;
+  }
   else if (strcmp(argv[7], "C2") == 0)
+  {
     aCont3 = GeomAbs_C2;
+  }
   else if (strcmp(argv[7], "C3") == 0)
+  {
     aCont3 = GeomAbs_C3;
+  }
   else if (strcmp(argv[7], "CN") == 0)
+  {
     aCont3 = GeomAbs_CN;
+  }
   else if (strcmp(argv[7], "G1") == 0)
+  {
     aCont3 = GeomAbs_C0;
+  }
   else if (strcmp(argv[7], "G2") == 0)
+  {
     aCont3 = GeomAbs_C1;
+  }
   else
   {
     di << "Invalid argument Cont3e\n";
@@ -537,19 +619,33 @@ static int BSplRes(Draw_Interpretor& di, int argc, const char** argv)
   }
   GeomAbs_Shape aCont2;
   if (strcmp(argv[8], "C0") == 0)
+  {
     aCont2 = GeomAbs_C0;
+  }
   else if (strcmp(argv[8], "C1") == 0)
+  {
     aCont2 = GeomAbs_C1;
+  }
   else if (strcmp(argv[8], "C2") == 0)
+  {
     aCont2 = GeomAbs_C2;
+  }
   else if (strcmp(argv[8], "C3") == 0)
+  {
     aCont2 = GeomAbs_C3;
+  }
   else if (strcmp(argv[8], "CN") == 0)
+  {
     aCont2 = GeomAbs_CN;
+  }
   else if (strcmp(argv[8], "G1") == 0)
+  {
     aCont2 = GeomAbs_C0;
+  }
   else if (strcmp(argv[8], "G2") == 0)
+  {
     aCont2 = GeomAbs_C1;
+  }
   else
   {
     di << "Invalid argument Cont3e\n";

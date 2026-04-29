@@ -114,9 +114,13 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                      
         P1 = P2;
         P2 = TheRCurve->Value(U);
         if (Orient == TopAbs_FORWARD)
+        {
           isobuild.Trim(P1, P2);
+        }
         else
+        {
           isobuild.Trim(P2, P1);
+        }
       }
     }
     else
@@ -124,9 +128,13 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                      
       P1 = TheRCurve->Value(U1);
       P2 = TheRCurve->Value(U2);
       if (Orient == TopAbs_FORWARD)
+      {
         isobuild.Trim(P1, P2);
+      }
       else
+      {
         isobuild.Trim(P2, P1);
+      }
     }
   }
 

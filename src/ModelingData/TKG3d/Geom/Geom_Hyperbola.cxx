@@ -131,9 +131,13 @@ void Geom_Hyperbola::SetMajorRadius(const double MajorRadius)
 {
 
   if (MajorRadius < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   else
+  {
     majorRadius = MajorRadius;
+  }
 }
 
 //=================================================================================================
@@ -142,9 +146,13 @@ void Geom_Hyperbola::SetMinorRadius(const double MinorRadius)
 {
 
   if (MinorRadius < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   else
+  {
     minorRadius = MinorRadius;
+  }
 }
 
 //=================================================================================================
@@ -261,7 +269,9 @@ Geom_Curve::ResD3 Geom_Hyperbola::EvalD3(const double U) const
 gp_Vec Geom_Hyperbola::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom_UndefinedDerivative();
+  }
   return ElCLib::HyperbolaDN(U, pos, majorRadius, minorRadius, N);
 }
 

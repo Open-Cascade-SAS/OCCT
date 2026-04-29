@@ -174,7 +174,9 @@ bool Extrema_GlobOptFuncConicS::Value(const math_Vector& X, double& F)
 {
   double su, sv;
   if (!checkInputData(X, su, sv))
+  {
     return false;
+  }
 
   value(su, sv, F);
   return !Precision::IsInfinite(F);

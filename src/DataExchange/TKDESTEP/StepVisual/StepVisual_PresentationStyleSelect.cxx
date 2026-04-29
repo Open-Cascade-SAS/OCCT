@@ -25,18 +25,28 @@ StepVisual_PresentationStyleSelect::StepVisual_PresentationStyleSelect() = defau
 int StepVisual_PresentationStyleSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PointStyle)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_CurveStyle)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleUsage)))
+  {
     return 3;
+  }
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_SymbolStyle))) return 4;
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_FillAreaStyle))) return 5;
   //	if (ent->IsKind(STANDARD_TYPE(StepVisual_TextStyle))) return 6;
   if (ent->IsKind(STANDARD_TYPE(StepVisual_NullStyleMember)))
+  {
     return 7;
+  }
   return 0;
 }
 

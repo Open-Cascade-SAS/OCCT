@@ -97,7 +97,9 @@ gp_GTrsf2d GeomPlate_Surface::ParametricTransformation(const gp_Trsf&) const
 void GeomPlate_Surface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
   if (mySurfinit->DynamicType() == STANDARD_TYPE(GeomPlate_Surface))
+  {
     mySurfinit->Bounds(U1, U2, V1, V2);
+  }
   else
   {
     U1 = myUmin;
@@ -279,9 +281,13 @@ void GeomPlate_Surface::SetBounds(const double Umin,
                                   const double Vmax)
 {
   if ((Umin > Umax) || (Vmin > Vmax))
+  {
     throw Standard_Failure("Bounds haven't the good sense");
+  }
   if ((Umin == Umax) || (Vmin == Vmax))
+  {
     throw Standard_Failure("Bounds are equal");
+  }
   myUmin = Umin;
   myUmax = Umax;
   myVmin = Vmin;

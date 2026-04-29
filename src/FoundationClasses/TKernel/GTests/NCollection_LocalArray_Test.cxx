@@ -198,14 +198,18 @@ TEST(NCollection_LocalArrayTest, ReallocateStackToStack_WithCopy)
 {
   NCollection_LocalArray<int, 64> anArray(10);
   for (size_t i = 0; i < 10; ++i)
+  {
     anArray[i] = static_cast<int>(i * 100);
+  }
 
   anArray.Reallocate(32, true);
   EXPECT_EQ(32u, anArray.Size());
 
   // Original elements should be preserved
   for (size_t i = 0; i < 10; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 100), anArray[i]);
+  }
 }
 
 // Test Reallocate with copy (stack to heap)
@@ -213,7 +217,9 @@ TEST(NCollection_LocalArrayTest, ReallocateStackToHeap_WithCopy)
 {
   NCollection_LocalArray<int, 8> anArray(8);
   for (size_t i = 0; i < 8; ++i)
+  {
     anArray[i] = static_cast<int>(i + 1);
+  }
 
   // Force heap allocation
   anArray.Reallocate(16, true);
@@ -221,7 +227,9 @@ TEST(NCollection_LocalArrayTest, ReallocateStackToHeap_WithCopy)
 
   // Original elements should be preserved
   for (size_t i = 0; i < 8; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i + 1), anArray[i]);
+  }
 }
 
 // Test Reallocate with copy (heap to larger heap)
@@ -229,13 +237,17 @@ TEST(NCollection_LocalArrayTest, ReallocateHeapToHeap_WithCopy)
 {
   NCollection_LocalArray<int, 4> anArray(8); // starts on heap
   for (size_t i = 0; i < 8; ++i)
+  {
     anArray[i] = static_cast<int>(i * 10);
+  }
 
   anArray.Reallocate(16, true);
   EXPECT_EQ(16u, anArray.Size());
 
   for (size_t i = 0; i < 8; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 10), anArray[i]);
+  }
 }
 
 // Test Reallocate without copy
@@ -243,7 +255,9 @@ TEST(NCollection_LocalArrayTest, ReallocateNoCopy)
 {
   NCollection_LocalArray<int, 8> anArray(8);
   for (size_t i = 0; i < 8; ++i)
+  {
     anArray[i] = static_cast<int>(i + 1);
+  }
 
   anArray.Reallocate(16, false);
   EXPECT_EQ(16u, anArray.Size());
@@ -255,14 +269,18 @@ TEST(NCollection_LocalArrayTest, ReallocateShrink)
 {
   NCollection_LocalArray<int, 8> anArray(16); // starts on heap
   for (size_t i = 0; i < 16; ++i)
+  {
     anArray[i] = static_cast<int>(i * 5);
+  }
 
   // Shrink - should only update logical size, data preserved
   anArray.Reallocate(4, true);
   EXPECT_EQ(4u, anArray.Size());
 
   for (size_t i = 0; i < 4; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 5), anArray[i]);
+  }
 }
 
 // Test move constructor from stack-allocated source
@@ -270,14 +288,18 @@ TEST(NCollection_LocalArrayTest, MoveConstructor_FromStack)
 {
   NCollection_LocalArray<int, 64> aSrc(10);
   for (size_t i = 0; i < 10; ++i)
+  {
     aSrc[i] = static_cast<int>(i * 7);
+  }
 
   NCollection_LocalArray<int, 64> aDst(std::move(aSrc));
 
   // Destination has the data
   EXPECT_EQ(10u, aDst.Size());
   for (size_t i = 0; i < 10; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 7), aDst[i]);
+  }
 
   // Source is empty
   EXPECT_EQ(0u, aSrc.Size());
@@ -288,14 +310,18 @@ TEST(NCollection_LocalArrayTest, MoveConstructor_FromHeap)
 {
   NCollection_LocalArray<int, 4> aSrc(16); // exceeds stack buffer, goes to heap
   for (size_t i = 0; i < 16; ++i)
+  {
     aSrc[i] = static_cast<int>(i * 3);
+  }
 
   NCollection_LocalArray<int, 4> aDst(std::move(aSrc));
 
   // Destination has the data
   EXPECT_EQ(16u, aDst.Size());
   for (size_t i = 0; i < 16; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 3), aDst[i]);
+  }
 
   // Source is empty
   EXPECT_EQ(0u, aSrc.Size());
@@ -306,17 +332,23 @@ TEST(NCollection_LocalArrayTest, MoveAssignment)
 {
   NCollection_LocalArray<int, 8> aSrc(8);
   for (size_t i = 0; i < 8; ++i)
+  {
     aSrc[i] = static_cast<int>(i + 100);
+  }
 
   NCollection_LocalArray<int, 8> aDst(4);
   for (size_t i = 0; i < 4; ++i)
+  {
     aDst[i] = -1;
+  }
 
   aDst = std::move(aSrc);
 
   EXPECT_EQ(8u, aDst.Size());
   for (size_t i = 0; i < 8; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i + 100), aDst[i]);
+  }
 
   EXPECT_EQ(0u, aSrc.Size());
 }
@@ -331,7 +363,9 @@ TEST(NCollection_LocalArrayTest, ReallocateAsGrowableStack)
   for (int i = 0; i < 20; ++i)
   {
     if (aTop >= static_cast<int>(aStack.Size()))
+    {
       aStack.Reallocate(aStack.Size() * 2, true);
+    }
     aStack[aTop++] = i * 3;
   }
 
@@ -419,10 +453,14 @@ TEST(NCollection_LocalArrayTest, NonTrivial_HeapAllocation)
     EXPECT_EQ(8u, anArr.Size());
 
     for (size_t i = 0; i < 8; ++i)
+    {
       anArr[i].Value = static_cast<int>(i * 100);
+    }
 
     for (size_t i = 0; i < 8; ++i)
+    {
       EXPECT_EQ(static_cast<int>(i * 100), anArr[i].Value);
+    }
   }
   EXPECT_EQ(THE_CTOR_COUNT + THE_MOVE_COUNT, THE_DTOR_COUNT);
 }
@@ -431,40 +469,52 @@ TEST(NCollection_LocalArrayTest, NonTrivial_ReallocateWithCopy_InlineToInline)
 {
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 16> anArr(4);
   for (size_t i = 0; i < 4; ++i)
+  {
     anArr[i].Value = static_cast<int>(i + 1);
+  }
 
   anArr.Reallocate(8, true);
   EXPECT_EQ(8u, anArr.Size());
 
   // Original elements preserved.
   for (size_t i = 0; i < 4; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i + 1), anArr[i].Value);
+  }
 }
 
 TEST(NCollection_LocalArrayTest, NonTrivial_ReallocateWithCopy_InlineToHeap)
 {
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> anArr(4);
   for (size_t i = 0; i < 4; ++i)
+  {
     anArr[i].Value = static_cast<int>(i * 10);
+  }
 
   anArr.Reallocate(16, true);
   EXPECT_EQ(16u, anArr.Size());
 
   for (size_t i = 0; i < 4; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 10), anArr[i].Value);
+  }
 }
 
 TEST(NCollection_LocalArrayTest, NonTrivial_ReallocateWithCopy_HeapToHeap)
 {
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> anArr(8);
   for (size_t i = 0; i < 8; ++i)
+  {
     anArr[i].Value = static_cast<int>(i * 5);
+  }
 
   anArr.Reallocate(16, true);
   EXPECT_EQ(16u, anArr.Size());
 
   for (size_t i = 0; i < 8; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 5), anArr[i].Value);
+  }
 }
 
 TEST(NCollection_LocalArrayTest, NonTrivial_Shrink_DestroysExcess)
@@ -487,13 +537,17 @@ TEST(NCollection_LocalArrayTest, NonTrivial_MoveConstructor_FromInline)
 {
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> aSrc(4);
   for (size_t i = 0; i < 4; ++i)
+  {
     aSrc[i].Value = static_cast<int>(i * 7);
+  }
 
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> aDst(std::move(aSrc));
 
   EXPECT_EQ(4u, aDst.Size());
   for (size_t i = 0; i < 4; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 7), aDst[i].Value);
+  }
 
   EXPECT_EQ(0u, aSrc.Size());
 }
@@ -502,13 +556,17 @@ TEST(NCollection_LocalArrayTest, NonTrivial_MoveConstructor_FromHeap)
 {
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> aSrc(8);
   for (size_t i = 0; i < 8; ++i)
+  {
     aSrc[i].Value = static_cast<int>(i * 3);
+  }
 
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> aDst(std::move(aSrc));
 
   EXPECT_EQ(8u, aDst.Size());
   for (size_t i = 0; i < 8; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i * 3), aDst[i].Value);
+  }
 
   EXPECT_EQ(0u, aSrc.Size());
 }
@@ -517,14 +575,18 @@ TEST(NCollection_LocalArrayTest, NonTrivial_MoveAssignment)
 {
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> aSrc(4);
   for (size_t i = 0; i < 4; ++i)
+  {
     aSrc[i].Value = static_cast<int>(i + 100);
+  }
 
   NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> aDst(2);
   aDst = std::move(aSrc);
 
   EXPECT_EQ(4u, aDst.Size());
   for (size_t i = 0; i < 4; ++i)
+  {
     EXPECT_EQ(static_cast<int>(i + 100), aDst[i].Value);
+  }
 
   EXPECT_EQ(0u, aSrc.Size());
 }

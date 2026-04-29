@@ -29,11 +29,17 @@ int StepVisual_CameraModelD3MultiClippingInterectionSelect::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Plane)))
+  {
     return 1;
+  }
   if (ent->IsInstance(STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingUnion)))
+  {
     return 2;
+  }
   return 0;
 }
 

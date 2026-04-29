@@ -15,6 +15,7 @@
 
 #include <SelectMgr_SensitiveEntitySet.hxx>
 
+#include <Graphic3d_Flipper.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
@@ -25,9 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntitySet, BVH_PrimitiveSet3d)
 
 SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet(
   const occ::handle<Select3D_BVHBuilder3d>& theBuilder)
-    : BVH_PrimitiveSet3d(theBuilder)
+    : BVH_PrimitiveSet3d(theBuilder),
+      myNbEntityWithPersistence(0),
+      myNbEntityWithFlipping(0)
 {
-  myNbEntityWithPersistence = 0;
 }
 
 //=======================================================================
@@ -50,6 +52,10 @@ void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_SensitiveE
   {
     ++myNbEntityWithPersistence;
   }
+  if (!theEntity->BaseSensitive()->Flipper().IsNull())
+  {
+    ++myNbEntityWithFlipping;
+  }
   MarkDirty();
 }
 
@@ -60,7 +66,7 @@ void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_SensitiveE
 //=======================================================================
 void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -81,6 +87,10 @@ void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_Selection>
     {
       ++myNbEntityWithPersistence;
     }
+    if (!aSensEnt->BaseSensitive()->Flipper().IsNull())
+    {
+      ++myNbEntityWithFlipping;
+    }
   }
   MarkDirty();
 }
@@ -92,7 +102,7 @@ void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_Selection>
 //=======================================================================
 void SelectMgr_SensitiveEntitySet::Remove(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -104,13 +114,17 @@ void SelectMgr_SensitiveEntitySet::Remove(const occ::handle<SelectMgr_Selection>
       continue;
     }
 
-    if (anEntIdx != mySensitives.Size())
+    if (anEntIdx != mySensitives.Length())
     {
-      Swap(anEntIdx - 1, mySensitives.Size() - 1);
+      Swap(anEntIdx - 1, mySensitives.Length() - 1);
     }
     if (!aSensEnt->BaseSensitive()->TransformPersistence().IsNull())
     {
       --myNbEntityWithPersistence;
+    }
+    if (!aSensEnt->BaseSensitive()->Flipper().IsNull())
+    {
+      --myNbEntityWithFlipping;
     }
 
     mySensitives.RemoveLast();
@@ -167,7 +181,7 @@ void SelectMgr_SensitiveEntitySet::Swap(const int theIndex1, const int theIndex2
 //=======================================================================
 int SelectMgr_SensitiveEntitySet::Size() const
 {
-  return mySensitives.Size();
+  return mySensitives.Length();
 }
 
 //=======================================================================

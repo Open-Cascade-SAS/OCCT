@@ -143,32 +143,52 @@ static void DumpTransition(const IntSurf_Transition& T)
 {
   IntSurf_TypeTrans typetrans = T.TransitionType();
   if (typetrans == IntSurf_In)
+  {
     std::cout << " In  ";
+  }
   else if (typetrans == IntSurf_Out)
+  {
     std::cout << " Out ";
+  }
   else if (typetrans == IntSurf_Undecided)
+  {
     std::cout << " Und.";
+  }
   else if (typetrans == IntSurf_Touch)
   {
     std::cout << " Touch ";
     if (T.Situation() == IntSurf_Inside)
+    {
       std::cout << " Inside ";
+    }
     else if (T.Situation() == IntSurf_Outside)
+    {
       std::cout << " Outside";
+    }
     else
+    {
       std::cout << " Unknown";
+    }
     if (T.IsOpposite())
+    {
       std::cout << "     Opposite ";
+    }
     else
+    {
       std::cout << " Non_Opposite ";
+    }
   }
 
   if (typetrans != IntSurf_Undecided)
   {
     if (T.IsTangent())
+    {
       std::cout << " Tangent    ";
+    }
     else
+    {
       std::cout << " Non_Tangent";
+    }
   }
 }
 
@@ -176,7 +196,7 @@ static void DumpTransition(const IntSurf_Transition& T)
 
 void IntPatch_Point::Dump() const
 {
-  std::cout << "----------- IntPatch_Point : " << std::endl;
+  std::cout << "----------- IntPatch_Point : " << '\n';
   double u1, v1, u2, v2;
   pt.Parameters(u1, v1, u2, v2);
 
@@ -191,18 +211,30 @@ void IntPatch_Point::Dump() const
          (double)v2,
          (double)para);
   if (onS1)
+  {
     printf("*OnS1*  par=%+10.20f arc1=%10p", (double)prm1, (void*)arcS1.operator->());
+  }
   if (vtxonS1)
+  {
     printf(" *Vtx1*  vtx1=%10p", (void*)vS1.operator->());
+  }
   if (onS1 || vtxonS1)
+  {
     printf("\n");
+  }
   if (onS2)
+  {
     printf("*OnS2*  par=%+10.20f arc2=%10p", (double)prm2, (void*)arcS2.operator->());
+  }
   if (vtxonS2)
+  {
     printf(" *Vtx2*  vtx2=%10p", (void*)vS2.operator->());
+  }
 
   if (onS2 || vtxonS2)
+  {
     printf("\n");
+  }
   fflush(stdout);
 
   if (onS1 || onS2)
@@ -222,8 +254,8 @@ void IntPatch_Point::Dump() const
       std::cout << "  -tra2  : ";
       DumpTransition(tra2);
     }
-    std::cout << std::endl;
+    std::cout << '\n';
   }
   std::cout << "\nToler = " << Tolerance();
-  std::cout << std::endl;
+  std::cout << '\n';
 }

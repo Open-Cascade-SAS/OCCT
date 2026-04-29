@@ -18,7 +18,7 @@
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
@@ -156,7 +156,7 @@ protected:
   Message_ProgressRange         myRange;
 };
 
-typedef NCollection_Vector<BOPAlgo_WS_ConnexityBlock> BOPAlgo_VectorOfConnexityBlock;
+typedef NCollection_DynamicArray<BOPAlgo_WS_ConnexityBlock> BOPAlgo_VectorOfConnexityBlock;
 
 //=================================================================================================
 

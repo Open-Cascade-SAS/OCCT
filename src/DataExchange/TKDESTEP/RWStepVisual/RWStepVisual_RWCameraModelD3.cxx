@@ -30,7 +30,9 @@ void RWStepVisual_RWCameraModelD3::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "camera_model_d3"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

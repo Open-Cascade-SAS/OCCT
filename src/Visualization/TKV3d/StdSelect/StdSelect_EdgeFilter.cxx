@@ -56,11 +56,15 @@ bool StdSelect_EdgeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) co
 {
   occ::handle<StdSelect_BRepOwner> aBO(occ::down_cast<StdSelect_BRepOwner>(EO));
   if (aBO.IsNull())
+  {
     return false;
+  }
 
   const TopoDS_Shape& sh = aBO->Shape();
   if (sh.ShapeType() != TopAbs_EDGE)
+  {
     return false;
+  }
 
   switch (mytype)
   {

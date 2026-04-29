@@ -453,7 +453,9 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range&                 theR
       bStop = true;
     }
     else
+    {
       BndBuildBox(myCurve1, aT11, aT12, myTol1, aB1);
+    }
 
   } while (!bStop);
   //
@@ -540,7 +542,9 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range&                 theR
     const IntTools_Range& aR1 = aSegments1(i);
     BndBuildBox(myCurve1, aR1.First(), aR1.Last(), myTol1, aB1);
     if (!aB1.IsOut(aB2) && (aNb1 == 1 || aB1.SquareExtent() < aB1SqExtent))
+    {
       FindSolutions(aR1, aB1, aR2, aB2, theRanges1, theRanges2);
+    }
   }
 }
 
@@ -910,7 +914,9 @@ void IntTools_EdgeEdge::ComputeLineLine()
   if (IsCoincide)
   {
     if (aL1.SquareDistance(aL2.Location()) > aTol)
+    {
       return;
+    }
   }
 
   double aT11, aT12, aT21, aT22;
@@ -924,7 +930,9 @@ void IntTools_EdgeEdge::ComputeLineLine()
   {
     gp_Pnt O2(aL2.Location());
     if (!Precision::IsInfinite(aT21) && !Precision::IsInfinite(aT22))
+    {
       O2 = ElCLib::Value((aT21 + aT22) / 2., aL2);
+    }
 
     gp_Vec aVec1 = gp_Vec(O2, aP11).Crossed(aD2);
     gp_Vec aVec2 = gp_Vec(O2, aP12).Crossed(aD2);
@@ -935,8 +943,10 @@ void IntTools_EdgeEdge::ComputeLineLine()
     IsCoincide = (aSqDist1 <= aTol && aSqDist2 <= aTol);
 
     if (!IsCoincide && aVec1.Dot(aVec2) > 0)
+    {
       // the lines do not intersect
       return;
+    }
   }
 
   IntTools_CommonPrt aCommonPrt;
@@ -949,11 +959,15 @@ void IntTools_EdgeEdge::ComputeLineLine()
     double t22 = ElCLib::Parameter(aL2, aP12);
 
     if ((t21 > aT22 && t22 > aT22) || (t21 < aT21 && t22 < aT21))
+    {
       // projections are out of range
       return;
+    }
 
     if (t21 > t22)
+    {
       std::swap(t21, t22);
+    }
 
     if (t21 >= aT21)
     {
@@ -983,7 +997,9 @@ void IntTools_EdgeEdge::ComputeLineLine()
   gp_XYZ aCross  = aD1.XYZ().Crossed(aD2.XYZ());
   double aDistLL = O1O2.Dot(gp_Vec(aCross.Normalized()));
   if (std::abs(aDistLL) > myTol)
+  {
     return;
+  }
 
   {
     // Fast check that no intersection needs to be added
@@ -992,7 +1008,9 @@ void IntTools_EdgeEdge::ComputeLineLine()
       for (TopoDS_Iterator it2(myEdge2); it2.More(); it2.Next())
       {
         if (it1.Value().IsSame(it2.Value()))
+        {
           return;
+        }
       }
     }
   }
@@ -1002,22 +1020,28 @@ void IntTools_EdgeEdge::ComputeLineLine()
   aT2 /= aSqSin;
 
   if (aT2 < aT21 || aT2 > aT22)
+  {
     // out of range
     return;
+  }
 
   gp_Pnt aP2 = ElCLib::Value(aT2, aL2);
   double aT1 = gp_Vec(aL1.Location(), aP2).Dot(aD1);
 
   if (aT1 < aT11 || aT1 > aT12)
+  {
     // out of range
     return;
+  }
 
   gp_Pnt aP1   = ElCLib::Value(aT1, aL1);
   double aDist = aP1.SquareDistance(aP2);
 
   if (aDist > aTol)
+  {
     // no intersection
     return;
+  }
 
   // compute correct range on the edges
   double aDt1 = IntTools_Tools::ComputeIntRange(myTol1, myTol2, anAngle);

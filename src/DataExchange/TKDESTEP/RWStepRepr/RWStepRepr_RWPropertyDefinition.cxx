@@ -35,7 +35,9 @@ void RWStepRepr_RWPropertyDefinition::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "property_definition"))
+  {
     return;
+  }
 
   // Own fields of PropertyDefinition
 
@@ -76,7 +78,9 @@ void RWStepRepr_RWPropertyDefinition::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->Definition().Value());
 }

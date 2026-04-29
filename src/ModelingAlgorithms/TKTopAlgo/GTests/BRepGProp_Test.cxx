@@ -11,13 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepAlgoAPI_Cut.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepGProp.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <GProp_GProps.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <Standard_Handle.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -114,4 +122,76 @@ TEST(BRepGPropTest, LinearProperties_SkipShared)
   // So total = 240
   EXPECT_NEAR(aPropsNotSkipped.Mass(), 240.0, Precision::Confusion())
     << "Total edge length with SkipShared=false should be double";
+}
+
+// Test OCC49: GProp_PrincipalProps::HasSymmetryAxis - cylinder has symmetry, cut does not.
+// Migrated from QABugs_16.cxx OCC49
+TEST(BRepGPropTest, OCC49_CylinderHasSymmetryAxis)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10., 20.).Shape();
+
+  GProp_GProps aProps;
+  BRepGProp::VolumeProperties(aCylinder, aProps);
+  const GProp_PrincipalProps aPrincipal = aProps.PrincipalProperties();
+  EXPECT_TRUE(aPrincipal.HasSymmetryAxis());
+}
+
+TEST(BRepGPropTest, OCC49_CutShapeHasNoSymmetryAxis)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10., 20.).Shape();
+  const TopoDS_Shape aBox      = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
+
+  BRepAlgoAPI_Cut aCut(aCylinder, aBox);
+  ASSERT_TRUE(aCut.IsDone());
+
+  GProp_GProps aProps;
+  BRepGProp::VolumeProperties(aCut.Shape(), aProps);
+  const GProp_PrincipalProps aPrincipal = aProps.PrincipalProperties();
+  EXPECT_FALSE(aPrincipal.HasSymmetryAxis());
+}
+
+// OCC8797: Verify that GCPnts_AbscissaPoint::Length and BRepGProp::LinearProperties
+// produce consistent arc-length values for a degree-3 BSpline curve with 7 poles.
+// Both methods must agree within a tight relative tolerance.
+
+TEST(BRepGPropTest, OCC8797_BSplineLengthConsistencyAbscissaVsLinearProperties)
+{
+  NCollection_Array1<gp_Pnt> aPoles(0, 6);
+  aPoles(0) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(1) = gp_Pnt(1.0, 1.0, 0.0);
+  aPoles(2) = gp_Pnt(2.0, 1.0, 0.0);
+  aPoles(3) = gp_Pnt(3.0, 0.0, 0.0);
+  aPoles(4) = gp_Pnt(4.0, 1.0, 0.0);
+  aPoles(5) = gp_Pnt(5.0, 1.0, 0.0);
+  aPoles(6) = gp_Pnt(6.0, 0.0, 0.0);
+
+  NCollection_Array1<double> aKnots(0, 2);
+  aKnots(0) = 0.0;
+  aKnots(1) = 0.5;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(0, 2);
+  aMults(0) = 4;
+  aMults(1) = 3;
+  aMults(2) = 4;
+
+  occ::handle<Geom_BSplineCurve> aSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  ASSERT_FALSE(aSpline.IsNull());
+  EXPECT_EQ(aSpline->NbPoles(), 7);
+  EXPECT_EQ(aSpline->NbKnots(), 3);
+
+  // Method 1: GCPnts_AbscissaPoint::Length
+  GeomAdaptor_Curve anAdaptor(aSpline);
+  const double      aLengthAbscissa = GCPnts_AbscissaPoint::Length(anAdaptor);
+  EXPECT_GT(aLengthAbscissa, 0.0);
+
+  // Method 2: BRepGProp::LinearProperties on the equivalent edge
+  const TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge(aSpline);
+  GProp_GProps      aEdgeProps;
+  BRepGProp::LinearProperties(aEdge, aEdgeProps);
+  const double aLengthGProp = aEdgeProps.Mass();
+  EXPECT_GT(aLengthGProp, 0.0);
+
+  // Both methods must agree within 0.1 %
+  EXPECT_NEAR(aLengthAbscissa, aLengthGProp, aLengthGProp * 1e-3);
 }

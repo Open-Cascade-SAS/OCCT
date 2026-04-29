@@ -15,6 +15,7 @@
 #include <RWGltf_TriangulationReader.hxx>
 
 #include <Message.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <OSD_FileSystem.hxx>
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
 #include <RWGltf_GltfPrimArrayData.hxx>
@@ -247,9 +248,9 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
   }
 
 #ifdef HAVE_DRACO
-  std::vector<char> aReadData;
-  aReadData.resize((size_t)theGltfData.StreamLength);
-  aSharedStream->read(aReadData.data(), (std::streamsize)theGltfData.StreamLength);
+  NCollection_LinearVector<char> aReadData;
+  aReadData.Resize((size_t)theGltfData.StreamLength);
+  aSharedStream->read(aReadData.begin(), (std::streamsize)theGltfData.StreamLength);
   if (!aSharedStream->good())
   {
     reportError(TCollection_AsciiString("Buffer '") + aName
@@ -258,7 +259,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
   }
 
   draco::DecoderBuffer aDracoBuf;
-  aDracoBuf.Init(aReadData.data(), aReadData.size());
+  aDracoBuf.Init(aReadData.begin(), aReadData.Size());
 
   draco::Decoder                                aDracoDecoder;
   draco::StatusOr<std::unique_ptr<draco::Mesh>> aDracoStat =

@@ -74,7 +74,9 @@ void IGESGeom_ToolCompositeCurve::WriteOwnParams(const occ::handle<IGESGeom_Comp
   int i;
   IW.Send(num);
   for (num = ent->NbCurves(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->Curve(i));
+  }
 }
 
 void IGESGeom_ToolCompositeCurve::OwnShared(const occ::handle<IGESGeom_CompositeCurve>& ent,
@@ -82,7 +84,9 @@ void IGESGeom_ToolCompositeCurve::OwnShared(const occ::handle<IGESGeom_Composite
 {
   int num = ent->NbCurves();
   for (int i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->Curve(i));
+  }
 }
 
 void IGESGeom_ToolCompositeCurve::OwnCopy(const occ::handle<IGESGeom_CompositeCurve>& another,
@@ -126,5 +130,5 @@ void IGESGeom_ToolCompositeCurve::OwnDump(const occ::handle<IGESGeom_CompositeCu
   S << "IGESGeom_CompositeCurve\n"
     << "Curve Entities :\n";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbCurves(), ent->Curve);
-  S << std::endl;
+  S << '\n';
 }

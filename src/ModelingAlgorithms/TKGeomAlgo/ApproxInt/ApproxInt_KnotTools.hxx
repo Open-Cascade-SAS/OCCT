@@ -18,7 +18,7 @@
 #include <NCollection_List.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Integer.hxx>
@@ -69,7 +69,7 @@ public:
                                          const bool                          theApproxU1V1,
                                          const bool                          theApproxU2V2,
                                          const int                           theMinNbPnts,
-                                         NCollection_Vector<int>&            theKnots);
+                                         NCollection_DynamicArray<int>&      theKnots);
 
   //! Builds discrete curvature
   Standard_EXPORT static void BuildCurvature(const NCollection_LocalArray<double>& theCoords,
@@ -126,9 +126,9 @@ private:
   //! II: Filter points with too small amount of points per knot interval.
   //!
   //! III: Fill Last Knot.
-  static void FilterKnots(NCollection_Sequence<int>& theInds,
-                          const int                  theMinNbPnts,
-                          NCollection_Vector<int>&   theLKnots);
+  static void FilterKnots(NCollection_Sequence<int>&     theInds,
+                          const int                      theMinNbPnts,
+                          NCollection_DynamicArray<int>& theLKnots);
 };
 
 #endif

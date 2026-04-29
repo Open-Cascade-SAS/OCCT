@@ -49,9 +49,13 @@ void IGESGeom_Plane::SetFormNumber(const int form)
 {
   int fn = 0;
   if (form < 0)
+  {
     fn = -1;
+  }
   if (form > 0)
+  {
     fn = 1;
+  }
   InitTypeAndForm(108, fn);
 }
 
@@ -98,7 +102,9 @@ gp_Pnt IGESGeom_Plane::TransformedSymbolAttach() const
     return gp_Pnt(Symbol);
   }
   else
+  {
     return gp_Pnt(0, 0, 0);
+  }
 }
 
 double IGESGeom_Plane::SymbolSize() const

@@ -34,7 +34,9 @@ void RWStepVisual_RWAnnotationPlane::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 4, ach, "annotation_plane"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -56,7 +58,9 @@ void RWStepVisual_RWAnnotationPlane::ReadStep(
                            ach,
                            STANDARD_TYPE(StepVisual_PresentationStyleAssignment),
                            anent2))
+      {
         aStyles->SetValue(i2, anent2);
+      }
     }
   }
 
@@ -75,7 +79,9 @@ void RWStepVisual_RWAnnotationPlane::ReadStep(
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "content", ach, anEnt))
+      {
         anElements->SetValue(i, anEnt);
+      }
     }
   }
 
@@ -129,5 +135,7 @@ void RWStepVisual_RWAnnotationPlane::Share(const occ::handle<StepVisual_Annotati
   // Own field: contents
   int i, nb = ent->NbElements();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->ElementsValue(i).Value());
+  }
 }

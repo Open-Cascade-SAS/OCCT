@@ -34,7 +34,9 @@ void StdLPersistent_Dependency::instance<AttribClass>::Import(
   const occ::handle<AttribClass>& theAttribute) const
 {
   if (myName)
+  {
     ImportName(theAttribute, myName->Value()->String());
+  }
 
   if (myVariables)
   {
@@ -43,7 +45,9 @@ void StdLPersistent_Dependency::instance<AttribClass>::Import(
     {
       const occ::handle<StdObjMgt_Persistent>& aPersistent = anIter.Value();
       if (aPersistent)
+      {
         theAttribute->GetVariables().Append(aPersistent->GetAttribute());
+      }
     }
   }
 }

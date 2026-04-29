@@ -128,13 +128,21 @@ bool TopOpeBRepBuild_Builder::GTakeCommonOfSame(const TopOpeBRepBuild_GTopo& G)
   G.StatesON(t1, t2);
   bool sam = false;
   if (t1 == TopAbs_OUT && t2 == TopAbs_OUT)
+  {
     sam = true;
+  }
   else if (t1 == TopAbs_OUT && t2 == TopAbs_IN)
+  {
     sam = false;
+  }
   else if (t1 == TopAbs_IN && t2 == TopAbs_OUT)
+  {
     sam = false;
+  }
   else if (t1 == TopAbs_IN && t2 == TopAbs_IN)
+  {
     sam = true;
+  }
 
   return sam;
 }
@@ -147,13 +155,21 @@ bool TopOpeBRepBuild_Builder::GTakeCommonOfDiff(const TopOpeBRepBuild_GTopo& G)
   G.StatesON(t1, t2);
   bool dif = false;
   if (t1 == TopAbs_OUT && t2 == TopAbs_OUT)
+  {
     dif = false;
+  }
   else if (t1 == TopAbs_OUT && t2 == TopAbs_IN)
+  {
     dif = true;
+  }
   else if (t1 == TopAbs_IN && t2 == TopAbs_OUT)
+  {
     dif = true;
+  }
   else if (t1 == TopAbs_IN && t2 == TopAbs_IN)
+  {
     dif = false;
+  }
 
   return dif;
 }
@@ -259,7 +275,9 @@ void TopOpeBRepBuild_Builder::GFindSamDomSODO(NCollection_List<TopoDS_Shape>& LS
   NCollection_List<TopoDS_Shape>::Iterator it;
   it.Initialize(LSO);
   if (!it.More())
+  {
     return;
+  }
   const TopoDS_Shape& sref = it.Value();
 #ifdef OCCT_DEBUG
 //  int  iref = myDataStructure->SameDomainReference(sref);
@@ -291,9 +309,13 @@ void TopOpeBRepBuild_Builder::GFindSamDomSODO(NCollection_List<TopoDS_Shape>& LS
 //    int iS = myDataStructure->Shape(s);
 #endif
     if (o == oref && !GContains(s, LLSO))
+    {
       LLSO.Append(s);
+    }
     else if (o != oref && !GContains(s, LLDO))
+    {
       LLDO.Append(s);
+    }
   }
 
   for (it.Initialize(LDO); it.More(); it.Next())
@@ -304,9 +326,13 @@ void TopOpeBRepBuild_Builder::GFindSamDomSODO(NCollection_List<TopoDS_Shape>& LS
 //    int iS = myDataStructure->Shape(s);
 #endif
     if (o == oref && !GContains(s, LLSO))
+    {
       LLSO.Append(s);
+    }
     else if (o != oref && !GContains(s, LLDO))
+    {
       LLDO.Append(s);
+    }
   }
 
   LSO = LLSO;
@@ -321,9 +347,13 @@ void TopOpeBRepBuild_Builder::GMapShapes(const TopoDS_Shape& S1, const TopoDS_Sh
   bool S2null = S2.IsNull();
   GClearMaps();
   if (!S1null)
+  {
     TopExp::MapShapes(S1, myMAP1);
+  }
   if (!S2null)
+  {
     TopExp::MapShapes(S2, myMAP2);
+  }
 }
 
 //=================================================================================================
@@ -369,12 +399,18 @@ int TopOpeBRepBuild_Builder::GShapeRank(const TopoDS_Shape& S) const
 bool TopOpeBRepBuild_Builder::GIsShapeOf(const TopoDS_Shape& S, const int I) const
 {
   if (S.IsNull())
+  {
     return false;
+  }
   bool b = false;
   if (I == 1)
+  {
     b = myMAP1.Contains(S);
+  }
   else if (I == 2)
+  {
     b = myMAP2.Contains(S);
+  }
   return b;
 }
 
@@ -390,7 +426,9 @@ bool TopOpeBRepBuild_Builder::GContains(const TopoDS_Shape&                   S,
     const TopoDS_Shape& SL     = it.Value();
     bool                issame = SL.IsSame(S);
     if (issame)
+    {
       return true;
+    }
   }
   return false;
 }

@@ -213,7 +213,9 @@ static void Print(Standard_OStream& OS, const BRepCheck_Analyzer& Ana, const Top
       for (; itl.More(); itl.Next())
       {
         if (itl.Value() != BRepCheck_NoError)
+        {
           BRepCheck::Print(itl.Value(), OS);
+        }
       }
     }
   }
@@ -325,7 +327,9 @@ static int checksection(Draw_Interpretor& di, int narg, const char** a)
   for (exp.Init(S, TopAbs_VERTEX); exp.More(); exp.Next())
   {
     if (!theVertices.Add(exp.Current()))
+    {
       theVertices.Remove(exp.Current());
+    }
   }
   // std::cout << " nb alone Vertices : " << theVertices.Extent() << std::endl;
   di << " nb alone Vertices : " << theVertices.Extent() << "\n";
@@ -461,8 +465,10 @@ void ContextualDump(Draw_Interpretor&         theCommands,
   theMap.Clear();
 
   if (nbfaulty != 0)
+  {
     theCommands << "Faulty shapes in variables " << checkfaultyname << "1 to " << checkfaultyname
                 << nbfaulty << " \n";
+  }
 
   theCommands << "\n";
 }
@@ -476,7 +482,9 @@ static void FillProblems(const BRepCheck_Status                 stat,
   const int anID = static_cast<int>(stat);
 
   if ((NbProblems->Upper() < anID) || (NbProblems->Lower() > anID))
+  {
     return;
+  }
 
   NbProblems->SetValue(anID, NbProblems->Value(anID) + 1);
 }
@@ -508,8 +516,12 @@ static void GetProblemSub(const BRepCheck_Analyzer&                         Ana,
           int ii = 0;
 
           for (ii = 1; ii <= sl->Length(); ii++)
+          {
             if (sl->Value(ii).IsSame(sub))
+            {
               break;
+            }
+          }
 
           if (ii > sl->Length())
           {
@@ -517,8 +529,12 @@ static void GetProblemSub(const BRepCheck_Analyzer&                         Ana,
             FillProblems(itl.Value(), NbProblems);
           }
           for (ii = 1; ii <= sl->Length(); ii++)
+          {
             if (sl->Value(ii).IsSame(Shape))
+            {
               break;
+            }
+          }
           if (ii > sl->Length())
           {
             sl->Append(Shape);
@@ -598,7 +614,9 @@ void StructuralDump(Draw_Interpretor&         theCommands,
   occ::handle<NCollection_HArray1<int>> NbProblems =
     new NCollection_HArray1<int>(1, NumberOfStatus);
   for (i = 1; i <= NumberOfStatus; i++)
+  {
     NbProblems->SetValue(i, 0);
+  }
   occ::handle<NCollection_HSequence<TopoDS_Shape>> sl, slv, sle, slw, slf, sls, slo;
   sl = new NCollection_HSequence<TopoDS_Shape>();
   theMap.Clear();
@@ -607,183 +625,255 @@ void StructuralDump(Draw_Interpretor&         theCommands,
 
   int aProblemID = static_cast<int>(BRepCheck_InvalidPointOnCurve);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Point on Curve ................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidPointOnCurveOnSurface);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Point on CurveOnSurface .......... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidPointOnSurface);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Point on Surface ................. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_No3DCurve);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  No 3D Curve .............................. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_Multiple3DCurve);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Multiple 3D Curve ........................ " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_Invalid3DCurve);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid 3D Curve ......................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_NoCurveOnSurface);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  No Curve on Surface ...................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidCurveOnSurface);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Curve on Surface ................. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidCurveOnClosedSurface);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Curve on closed Surface .......... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidSameRangeFlag);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid SameRange Flag ................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidSameParameterFlag);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid SameParameter Flag ............... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidDegeneratedFlag);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Degenerated Flag ................. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_FreeEdge);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Free Edge ................................ " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidMultiConnexity);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid MultiConnexity ................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidRange);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Range ............................ " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_EmptyWire);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Empty Wire ............................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_RedundantEdge);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Redundant Edge ........................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_SelfIntersectingWire);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Self Intersecting Wire ................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_NoSurface);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  No Surface ............................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidWire);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Wire ............................. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_RedundantWire);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Redundant Wire ........................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_IntersectingWires);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Intersecting Wires ....................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidImbricationOfWires);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Imbrication of Wires ............. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_EmptyShell);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Empty Shell .............................. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_RedundantFace);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Redundant Face ........................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_UnorientableShape);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Unorientable Shape ....................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_NotClosed);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Not Closed ............................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_NotConnected);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Not Connected ............................ " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_SubshapeNotInShape);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Subshape not in Shape .................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_BadOrientation);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Bad Orientation .......................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_BadOrientationOfSubshape);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Bad Orientation of Subshape .............. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidToleranceValue);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid tolerance value................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidPolygonOnTriangulation);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid polygon on triangulation.......... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_InvalidImbricationOfShells);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Invalid Imbrication of Shells............. " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_EnclosedRegion);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  Enclosed Region........................... " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   aProblemID = static_cast<int>(BRepCheck_CheckFail);
   if (NbProblems->Value(aProblemID) > 0)
+  {
     theCommands << "  checkshape failure........................ " << NbProblems->Value(aProblemID)
                 << "\n";
+  }
 
   theCommands << " ------------------------------------------------\n";
   theCommands << "*** Shapes with problems : " << sl->Length() << "\n";
@@ -831,14 +921,20 @@ void StructuralDump(Draw_Interpretor&         theCommands,
     B.MakeCompound(comp);
     int nb = slv->Length();
     for (i = 1; i <= nb; i++)
+    {
       B.Add(comp, slv->Value(i));
+    }
     char aName[20];
     Sprintf(aName, "%s_v", Pref);
     DBRep::Set(aName, comp);
     if (nb > 9)
+    {
       theCommands << "VERTEX	: " << nb << " Items -> compound named " << aName << "\n";
+    }
     else
+    {
       theCommands << "VERTEX	:  " << nb << " Items -> compound named " << aName << "\n";
+    }
   }
   if (sle->Length() > 0)
   {
@@ -846,14 +942,20 @@ void StructuralDump(Draw_Interpretor&         theCommands,
     B.MakeCompound(comp);
     int nb = sle->Length();
     for (i = 1; i <= nb; i++)
+    {
       B.Add(comp, sle->Value(i));
+    }
     char aName[20];
     Sprintf(aName, "%s_e", Pref);
     DBRep::Set(aName, comp);
     if (nb > 9)
+    {
       theCommands << "EDGE	: " << nb << " Items -> compound named " << aName << "\n";
+    }
     else
+    {
       theCommands << "EDGE	:  " << nb << " Items -> compound named " << aName << "\n";
+    }
   }
   if (slw->Length() > 0)
   {
@@ -861,14 +963,20 @@ void StructuralDump(Draw_Interpretor&         theCommands,
     B.MakeCompound(comp);
     int nb = slw->Length();
     for (i = 1; i <= nb; i++)
+    {
       B.Add(comp, slw->Value(i));
+    }
     char aName[20];
     Sprintf(aName, "%s_w", Pref);
     DBRep::Set(aName, comp);
     if (nb > 9)
+    {
       theCommands << "WIRE	: " << nb << " Items -> compound named " << aName << "\n";
+    }
     else
+    {
       theCommands << "WIRE	:  " << nb << " Items -> compound named " << aName << "\n";
+    }
   }
   if (slf->Length() > 0)
   {
@@ -876,14 +984,20 @@ void StructuralDump(Draw_Interpretor&         theCommands,
     B.MakeCompound(comp);
     int nb = slf->Length();
     for (i = 1; i <= nb; i++)
+    {
       B.Add(comp, slf->Value(i));
+    }
     char aName[20];
     Sprintf(aName, "%s_f", Pref);
     DBRep::Set(aName, comp);
     if (nb > 9)
+    {
       theCommands << "FACE	: " << nb << " Items -> compound named " << aName << "\n";
+    }
     else
+    {
       theCommands << "FACE	:  " << nb << " Items -> compound named " << aName << "\n";
+    }
   }
   if (sls->Length() > 0)
   {
@@ -891,14 +1005,20 @@ void StructuralDump(Draw_Interpretor&         theCommands,
     B.MakeCompound(comp);
     int nb = sls->Length();
     for (i = 1; i <= nb; i++)
+    {
       B.Add(comp, sls->Value(i));
+    }
     char aName[20];
     Sprintf(aName, "%s_s", Pref);
     DBRep::Set(aName, comp);
     if (nb > 9)
+    {
       theCommands << "SHELL	: " << nb << " Items -> compound named " << aName << "\n";
+    }
     else
+    {
       theCommands << "SHELL	:  " << nb << " Items -> compound named " << aName << "\n";
+    }
   }
   if (slo->Length() > 0)
   {
@@ -906,14 +1026,20 @@ void StructuralDump(Draw_Interpretor&         theCommands,
     B.MakeCompound(comp);
     int nb = slo->Length();
     for (i = 1; i <= nb; i++)
+    {
       B.Add(comp, slo->Value(i));
+    }
     char aName[20];
     Sprintf(aName, "%s_o", Pref);
     DBRep::Set(aName, comp);
     if (nb > 9)
+    {
       theCommands << "SOLID	: " << nb << " Items -> compound named " << aName << "\n";
+    }
     else
+    {
       theCommands << "SOLID	:  " << nb << " Items -> compound named " << aName << "\n";
+    }
   }
 }
 
@@ -1077,15 +1203,21 @@ static int shapeG1continuity(Draw_Interpretor& di, int n, const char** a)
   InitEpsSurf(epsnl, epsC0, epsC1, epsC2, epsG1, percent, maxlen);
   bool ISG1 = true;
   if (n < 4)
+  {
     return 1;
+  }
   TopoDS_Face  face1, face2;
   double       f1, f2, l1, l2;
   TopoDS_Shape shape = DBRep::Get(a[1], TopAbs_SHAPE);
   if (shape.IsNull())
+  {
     return 1;
+  }
   TopoDS_Shape edge = DBRep::Get(a[2], TopAbs_EDGE);
   if (edge.IsNull())
+  {
     return 1;
+  }
   // calcul des deux faces
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     lface;
@@ -1094,7 +1226,9 @@ static int shapeG1continuity(Draw_Interpretor& di, int n, const char** a)
 
   int nelem = lfac.Extent();
   if (nelem != 2)
+  {
     return 1;
+  }
   NCollection_List<TopoDS_Shape>::Iterator It;
   It.Initialize(lfac);
   face1 = TopoDS::Face(It.Value());
@@ -1106,13 +1240,19 @@ static int shapeG1continuity(Draw_Interpretor& di, int n, const char** a)
   // calcul des deux pcurves
   const occ::handle<Geom2d_Curve> c1 = BRep_Tool::CurveOnSurface(TopoDS::Edge(edge), face1, f1, l1);
   if (c1.IsNull())
+  {
     return 1;
+  }
 
   if (IsSeam)
+  {
     edge.Reverse();
+  }
   const occ::handle<Geom2d_Curve> c2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(edge), face2, f2, l2);
   if (c2.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom2d_Curve> curv1 = new Geom2d_TrimmedCurve(c1, f1, l1);
 
@@ -1125,22 +1265,30 @@ static int shapeG1continuity(Draw_Interpretor& di, int n, const char** a)
   //  const occ::handle<Geom_Surface>& s1 =
   //    BRep_Tool::Surface(TopoDS::Face(face1),L1);
   if (s1.IsNull())
+  {
     return 1;
+  }
   aLocalFace                          = face2;
   const occ::handle<Geom_Surface>& s2 = BRep_Tool::Surface(aLocalFace, L2);
   //  const occ::handle<Geom_Surface>& s2 =
   //    BRep_Tool::Surface(TopoDS::Face(face2),L2);
   if (s2.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> surf1 =
     occ::down_cast<Geom_Surface>(s1->Transformed(L1.Transformation()));
   if (surf1.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom_Surface> surf2 =
     occ::down_cast<Geom_Surface>(s2->Transformed(L2.Transformation()));
   if (surf2.IsNull())
+  {
     return 1;
+  }
 
   nbeval = (int)Draw::Atof(a[3]);
 
@@ -1196,13 +1344,19 @@ static int shapeG1continuity(Draw_Interpretor& di, int n, const char** a)
         if (isconti)
         {
           if (res.C0Value() > MaxG0Value)
+          {
             MaxG0Value = res.C0Value();
+          }
           if (res.G1Angle() > MaxG1Angle)
+          {
             MaxG1Angle = res.G1Angle();
+          }
         }
       }
       else
+      {
         isconti = false;
+      }
     }
 
     else
@@ -1230,17 +1384,24 @@ static int shapeG1continuity(Draw_Interpretor& di, int n, const char** a)
           MaxG1Angle = res.G1Angle();
         }
         if (res.C0Value() > MaxG0Value)
+        {
           MaxG0Value = res.C0Value();
+        }
         if (res.G1Angle() > MaxG1Angle)
+        {
           MaxG1Angle = res.G1Angle();
-        ;
+        };
       }
 
       else
+      {
         isconti = false;
+      }
     }
     if (!isconti)
+    {
       ISG1 = false;
+    }
     nb++;
 
   } while ((nb < nbeval) && isdone);
@@ -1279,15 +1440,21 @@ static int shapeG0continuity(Draw_Interpretor& di, int n, const char** a)
   InitEpsSurf(epsnl, epsC0, epsC1, epsC2, epsG1, percent, maxlen);
 
   if (n < 4)
+  {
     return 1;
+  }
   TopoDS_Face  face1, face2;
   double       f1, f2, l1, l2;
   TopoDS_Shape shape = DBRep::Get(a[1], TopAbs_SHAPE);
   if (shape.IsNull())
+  {
     return 1;
+  }
   TopoDS_Shape edge = DBRep::Get(a[2], TopAbs_EDGE);
   if (edge.IsNull())
+  {
     return 1;
+  }
   // calcul des deux faces
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     lface;
@@ -1296,7 +1463,9 @@ static int shapeG0continuity(Draw_Interpretor& di, int n, const char** a)
 
   int nelem = lfac.Extent();
   if (nelem != 2)
+  {
     return 1;
+  }
   NCollection_List<TopoDS_Shape>::Iterator It;
   It.Initialize(lfac);
   face1 = TopoDS::Face(It.Value());
@@ -1308,13 +1477,19 @@ static int shapeG0continuity(Draw_Interpretor& di, int n, const char** a)
   // calcul des deux pcurves
   const occ::handle<Geom2d_Curve> c1 = BRep_Tool::CurveOnSurface(TopoDS::Edge(edge), face1, f1, l1);
   if (c1.IsNull())
+  {
     return 1;
+  }
 
   if (IsSeam)
+  {
     edge.Reverse();
+  }
   const occ::handle<Geom2d_Curve> c2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(edge), face2, f2, l2);
   if (c2.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom2d_Curve> curv1 = new Geom2d_TrimmedCurve(c1, f1, l1);
 
@@ -1327,22 +1502,30 @@ static int shapeG0continuity(Draw_Interpretor& di, int n, const char** a)
   //  const occ::handle<Geom_Surface>& s1 =
   //    BRep_Tool::Surface(TopoDS::Face(face1),L1);
   if (s1.IsNull())
+  {
     return 1;
+  }
   aLocalFace                          = face2;
   const occ::handle<Geom_Surface>& s2 = BRep_Tool::Surface(aLocalFace, L2);
   //  const occ::handle<Geom_Surface>& s2 =
   //    BRep_Tool::Surface(TopoDS::Face(face2),L2);
   if (s2.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> surf1 =
     occ::down_cast<Geom_Surface>(s1->Transformed(L1.Transformation()));
   if (surf1.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom_Surface> surf2 =
     occ::down_cast<Geom_Surface>(s2->Transformed(L2.Transformation()));
   if (surf2.IsNull())
+  {
     return 1;
+  }
 
   nbeval = (int)Draw::Atof(a[3]);
 
@@ -1393,11 +1576,17 @@ static int shapeG0continuity(Draw_Interpretor& di, int n, const char** a)
       {
         isconti = res.IsC0();
         if (isconti)
+        {
           if (res.C0Value() > MaxG0Value)
+          {
             MaxG0Value = res.C0Value();
+          }
+        }
       }
       else
+      {
         isconti = false;
+      }
     }
 
     else
@@ -1424,16 +1613,22 @@ static int shapeG0continuity(Draw_Interpretor& di, int n, const char** a)
           MaxG0Value = res.C0Value();
         }
         if (res.C0Value() > MaxG0Value)
+        {
           MaxG0Value = res.C0Value();
+        }
       }
 
       else
+      {
         isconti = false;
+      }
     }
 
     nb++;
     if (!isconti)
+    {
       ISG0 = false;
+    }
 
   } while ((nb < nbeval) && isdone);
 
@@ -1472,15 +1667,21 @@ static int shapeG2continuity(Draw_Interpretor& di, int n, const char** a)
   InitEpsSurf(epsnl, epsC0, epsC1, epsC2, epsG1, percent, maxlen);
 
   if (n < 4)
+  {
     return 1;
+  }
   TopoDS_Face  face1, face2;
   double       f1, f2, l1, l2;
   TopoDS_Shape shape = DBRep::Get(a[1], TopAbs_SHAPE);
   if (shape.IsNull())
+  {
     return 1;
+  }
   TopoDS_Shape edge = DBRep::Get(a[2], TopAbs_EDGE);
   if (edge.IsNull())
+  {
     return 1;
+  }
   // calcul des deux faces
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     lface;
@@ -1489,7 +1690,9 @@ static int shapeG2continuity(Draw_Interpretor& di, int n, const char** a)
 
   int nelem = lfac.Extent();
   if (nelem != 2)
+  {
     return 1;
+  }
   NCollection_List<TopoDS_Shape>::Iterator It;
   It.Initialize(lfac);
   face1 = TopoDS::Face(It.Value());
@@ -1501,13 +1704,19 @@ static int shapeG2continuity(Draw_Interpretor& di, int n, const char** a)
   // calcul des deux pcurves
   const occ::handle<Geom2d_Curve> c1 = BRep_Tool::CurveOnSurface(TopoDS::Edge(edge), face1, f1, l1);
   if (c1.IsNull())
+  {
     return 1;
+  }
 
   if (IsSeam)
+  {
     edge.Reverse();
+  }
   const occ::handle<Geom2d_Curve> c2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(edge), face2, f2, l2);
   if (c2.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom2d_Curve> curv1 = new Geom2d_TrimmedCurve(c1, f1, l1);
 
@@ -1520,22 +1729,30 @@ static int shapeG2continuity(Draw_Interpretor& di, int n, const char** a)
   //  const occ::handle<Geom_Surface>& s1 =
   //    BRep_Tool::Surface(TopoDS::Face(face1),L1);
   if (s1.IsNull())
+  {
     return 1;
+  }
   aLocalFace                          = face2;
   const occ::handle<Geom_Surface>& s2 = BRep_Tool::Surface(aLocalFace, L2);
   //  const occ::handle<Geom_Surface>& s2 =
   //    BRep_Tool::Surface(TopoDS::Face(face2),L2);
   if (s2.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> surf1 =
     occ::down_cast<Geom_Surface>(s1->Transformed(L1.Transformation()));
   if (surf1.IsNull())
+  {
     return 1;
+  }
   occ::handle<Geom_Surface> surf2 =
     occ::down_cast<Geom_Surface>(s2->Transformed(L2.Transformation()));
   if (surf2.IsNull())
+  {
     return 1;
+  }
 
   nbeval = (int)Draw::Atof(a[3]);
 
@@ -1596,15 +1813,23 @@ static int shapeG2continuity(Draw_Interpretor& di, int n, const char** a)
         if (isconti)
         {
           if (res.C0Value() > MaxG0Value)
+          {
             MaxG0Value = res.C0Value();
+          }
           if (res.G1Angle() > MaxG1Angle)
+          {
             MaxG1Angle = res.G1Angle();
+          }
           if (res.G2CurvatureGap() > MaxG2Curvature)
+          {
             MaxG2Curvature = res.G2CurvatureGap();
+          }
         }
       }
       else
+      {
         isconti = false;
+      }
     }
 
     else
@@ -1633,19 +1858,29 @@ static int shapeG2continuity(Draw_Interpretor& di, int n, const char** a)
           MaxG2Curvature = res.G2CurvatureGap();
         }
         if (res.C0Value() > MaxG0Value)
+        {
           MaxG0Value = res.C0Value();
+        }
         if (res.G1Angle() > MaxG1Angle)
+        {
           MaxG1Angle = res.G1Angle();
+        }
         if (res.G2CurvatureGap() > MaxG2Curvature)
+        {
           MaxG2Curvature = res.G2CurvatureGap();
+        }
       }
       else
+      {
         isconti = false;
+      }
     }
 
     nb++;
     if (!isconti)
+    {
       ISG2 = false;
+    }
 
   } while ((nb < nbeval) && isdone);
 
@@ -1662,9 +1897,13 @@ static int shapeG2continuity(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   if (ISG2)
+  {
     di << " the continuity is G2 \n";
+  }
   else
+  {
     di << " the continuity is not G2  \n";
+  }
   di << "MaxG0Value :" << MaxG0Value << "\n";
   di << "MaxG1Angle:" << MaxG1Angle << "\n";
   di << "MaxG2Curvature:" << MaxG2Curvature << "\n";
@@ -1705,7 +1944,9 @@ static int clintedge(Draw_Interpretor& di, int narg, const char** a)
     di << "\n";
   }
   else
+  {
     di << "no internal (or external) edges\n";
+  }
   // std::cout << "no internal (or external) edges"<<std::endl;
 
   return 0;
@@ -1788,7 +2029,9 @@ static int fuseedge(Draw_Interpretor& di, int narg, const char** a)
     di << "\n";
   }
   else
+  {
     di << "no vertices to remove\n";
+  }
   // std::cout << "no vertices to remove"<<std::endl;
 
   return 0;
@@ -1883,7 +2126,9 @@ static int validrange(Draw_Interpretor& di, int narg, const char** a)
 
   TopoDS_Edge aE = TopoDS::Edge(DBRep::Get(a[1], TopAbs_EDGE, true));
   if (aE.IsNull())
+  {
     return 1;
+  }
 
   double u1, u2;
   if (BRepLib::FindValidRange(aE, u1, u2))
@@ -1899,7 +2144,9 @@ static int validrange(Draw_Interpretor& di, int narg, const char** a)
     }
   }
   else
+  {
     di << "edge has no valid range";
+  }
   return 0;
 }
 
@@ -1909,7 +2156,9 @@ void BRepTest::CheckCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   BRepTest_CheckCommands_SetFaultyName("faulty_");

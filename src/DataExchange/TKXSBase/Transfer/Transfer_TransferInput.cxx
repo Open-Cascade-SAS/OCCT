@@ -39,9 +39,13 @@ Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferItera
   {
     const occ::handle<Transfer_Binder>& binder = list.Value();
     if (binder.IsNull())
+    {
       continue;
+    }
     if (binder->IsKind(STANDARD_TYPE(Transfer_VoidBinder)))
+    {
       continue;
+    }
 
     // True result : must be transient (simple or list)
     DeclareAndCast(Transfer_SimpleBinderOfTransient, transb, binder);
@@ -49,7 +53,9 @@ Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferItera
     if (!transb.IsNull())
     {
       if (transb->HasResult())
+      {
         iter.AddItem(transb->Result());
+      }
     }
     else if (!multi.IsNull())
     {
@@ -57,13 +63,19 @@ Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferItera
         multi->MultipleResult();
       int nbres = 0;
       if (!mulres.IsNull())
+      {
         nbres = mulres->Length();
+      }
       for (int i = 1; i <= nbres; i++)
+      {
         iter.AddItem(mulres->Value(i));
+      }
     }
     else
+    {
       throw Transfer_TransferFailure(
         "TransferInput : Entities, one of the Results is not Transient Handle");
+    }
   }
   return iter;
 }
@@ -83,12 +95,18 @@ void Transfer_TransferInput::FillModel(const occ::handle<Transfer_TransientProce
 {
   Transfer_TransferIterator list;
   if (roots)
+  {
     list = proc->RootResult();
+  }
   else
+  {
     list = proc->CompleteResult();
+  }
   Interface_EntityIterator iter = Entities(list);
   for (iter.Start(); iter.More(); iter.Next())
+  {
     amodel->AddWithRefs(iter.Value(), proto);
+  }
 }
 
 void Transfer_TransferInput::FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
@@ -106,10 +124,16 @@ void Transfer_TransferInput::FillModel(const occ::handle<Transfer_FinderProcess>
 {
   Transfer_TransferIterator list;
   if (roots)
+  {
     list = proc->RootResult();
+  }
   else
+  {
     list = proc->CompleteResult();
+  }
   Interface_EntityIterator iter = Entities(list);
   for (iter.Start(); iter.More(); iter.Next())
+  {
     amodel->AddWithRefs(iter.Value(), proto);
+  }
 }

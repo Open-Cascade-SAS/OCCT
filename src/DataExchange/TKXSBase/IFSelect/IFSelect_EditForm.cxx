@@ -60,7 +60,9 @@ IFSelect_EditForm::IFSelect_EditForm(const occ::handle<IFSelect_Editor>& editor,
 {
   int i, nb = nums.Length();
   for (i = 1; i <= nb; i++)
+  {
     thenums.SetValue(i, nums.Value(i));
+  }
 }
 
 bool& IFSelect_EditForm::EditKeepStatus()
@@ -125,28 +127,38 @@ bool IFSelect_EditForm::IsComplete() const
 int IFSelect_EditForm::NbValues(const bool editable) const
 {
   if (!editable || thecomplete)
+  {
     return theeditor->NbValues();
+  }
   return thenums.Upper();
 }
 
 int IFSelect_EditForm::NumberFromRank(const int rank) const
 {
   if (thecomplete)
+  {
     return rank;
+  }
   if (rank < 1 || rank > thenums.Upper())
+  {
     return 0;
+  }
   return thenums.Value(rank);
 }
 
 int IFSelect_EditForm::RankFromNumber(const int num) const
 {
   if (thecomplete)
+  {
     return num;
+  }
   int i, n = thenums.Upper();
   for (i = 1; i <= n; i++)
   {
     if (thenums.Value(i) == num)
+    {
       return i;
+    }
   }
   return 0;
 }
@@ -155,13 +167,17 @@ int IFSelect_EditForm::NameNumber(const char* const name) const
 {
   int res = theeditor->NameNumber(name);
   if (thecomplete || res == 0)
+  {
     return res;
+  }
   //   Otherwise, search res in thenums
   int i, nb = thenums.Length();
   for (i = 1; i <= nb; i++)
   {
     if (res == thenums.Value(i))
+    {
       return res;
+    }
   }
   return -res;
 }
@@ -170,13 +186,17 @@ int IFSelect_EditForm::NameRank(const char* const name) const
 {
   int res = theeditor->NameNumber(name);
   if (thecomplete || res == 0)
+  {
     return res;
+  }
   //   Otherwise, search res in thenums
   int i, nb = thenums.Length();
   for (i = 1; i <= nb; i++)
   {
     if (res == thenums.Value(i))
+    {
       return i;
+    }
   }
   return 0;
 }
@@ -187,12 +207,16 @@ void IFSelect_EditForm::LoadDefault()
   thetouched = 0;
   int i, nb = theorigs.Upper();
   if (nb == 0)
+  {
     return;
+  }
   for (i = 1; i <= nb; i++)
   {
     int num = NumberFromRank(i);
     if (num == 0)
+    {
       continue;
+    }
     occ::handle<TCollection_HAsciiString> str = theeditor->StringValue(this, num);
     theorigs.SetValue(i, str);
   }
@@ -203,7 +227,9 @@ bool IFSelect_EditForm::LoadData(const occ::handle<Standard_Transient>&       en
 {
   thetouched = 0;
   if (!theeditor->Load(this, ent, model))
+  {
     return false;
+  }
   SetData(ent, model);
   theloaded = true;
   return true;
@@ -214,7 +240,9 @@ bool IFSelect_EditForm::LoadEntity(const occ::handle<Standard_Transient>& ent)
   thetouched = 0;
   occ::handle<Interface_InterfaceModel> model;
   if (!theeditor->Load(this, ent, model))
+  {
     return false;
+  }
   SetEntity(ent);
   theloaded = true;
   return true;
@@ -225,7 +253,9 @@ bool IFSelect_EditForm::LoadModel(const occ::handle<Interface_InterfaceModel>& m
   thetouched = 0;
   occ::handle<Standard_Transient> ent;
   if (!theeditor->Load(this, ent, model))
+  {
     return false;
+  }
   SetData(ent, model);
   theloaded = true;
   return true;
@@ -237,7 +267,9 @@ bool IFSelect_EditForm::LoadData()
   occ::handle<Interface_InterfaceModel> model;
   occ::handle<Standard_Transient>       ent;
   if (!theeditor->Load(this, ent, model))
+  {
     return false;
+  }
   theloaded = true;
   return true;
 }
@@ -249,9 +281,13 @@ occ::handle<IFSelect_ListEditor> IFSelect_EditForm::ListEditor(const int num) co
   int                              n = RankFromNumber(num);
   occ::handle<IFSelect_ListEditor> led;
   if (n <= 0 || n > theorigs.Upper())
+  {
     return led;
+  }
   if (!theeditor->IsList(n))
+  {
     return led;
+  }
   led = theeditor->ListEditor(num);
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> lis =
     theeditor->ListValue(this, num);
@@ -264,7 +300,9 @@ void IFSelect_EditForm::LoadValue(const int num, const occ::handle<TCollection_H
 {
   int n = RankFromNumber(num);
   if (n <= 0 || n > theorigs.Upper())
+  {
     return;
+  }
   theorigs.SetValue(n, val);
 }
 
@@ -274,7 +312,9 @@ void IFSelect_EditForm::LoadList(
 {
   int n = RankFromNumber(num);
   if (n <= 0 || n > theorigs.Upper())
+  {
     return;
+  }
   theorigs.SetValue(n, list);
 }
 
@@ -283,9 +323,13 @@ occ::handle<TCollection_HAsciiString> IFSelect_EditForm::OriginalValue(const int
   int                                   n = RankFromNumber(num);
   occ::handle<TCollection_HAsciiString> val;
   if (theorigs.Upper() == 0)
+  {
     return theeditor->StringValue(this, num);
+  }
   else
+  {
     return occ::down_cast<TCollection_HAsciiString>(theorigs.Value(n));
+  }
 }
 
 occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_EditForm::
@@ -294,18 +338,26 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSele
   int                                                                       n = RankFromNumber(num);
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list;
   if (theorigs.Upper() == 0)
+  {
     return theeditor->ListValue(this, num);
+  }
   else
+  {
     return occ::down_cast<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>(
       theorigs.Value(n));
+  }
 }
 
 occ::handle<TCollection_HAsciiString> IFSelect_EditForm::EditedValue(const int num) const
 {
   if (themodifs.Upper() == 0)
+  {
     return OriginalValue(num);
+  }
   if (!IsModified(num))
+  {
     return OriginalValue(num);
+  }
   int n = RankFromNumber(num);
   return occ::down_cast<TCollection_HAsciiString>(themodifs.Value(n));
 }
@@ -314,9 +366,13 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSele
   EditedList(const int num) const
 {
   if (themodifs.Upper() == 0)
+  {
     return OriginalList(num);
+  }
   if (!IsModified(num))
+  {
     return OriginalList(num);
+  }
   int n = RankFromNumber(num);
   return occ::down_cast<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>(
     themodifs.Value(n));
@@ -325,7 +381,9 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSele
 bool IFSelect_EditForm::IsModified(const int num) const
 {
   if (thestatus.Upper() == 0)
+  {
     return false;
+  }
   int n = RankFromNumber(num);
   return (thestatus.Value(n) != 0);
 }
@@ -333,7 +391,9 @@ bool IFSelect_EditForm::IsModified(const int num) const
 bool IFSelect_EditForm::IsTouched(const int num) const
 {
   if (thestatus.Upper() == 0)
+  {
     return false;
+  }
   int n = RankFromNumber(num);
   return (thestatus.Value(n) == 2);
 }
@@ -345,32 +405,48 @@ bool IFSelect_EditForm::Modify(const int                                    num,
   //  Peut-on editer
   thetouched = 0;
   if (themodifs.Upper() == 0)
+  {
     return false;
+  }
   int tnum = RankFromNumber(num);
   if (tnum == 0)
+  {
     return false;
+  }
   IFSelect_EditValue acc = theeditor->EditMode(num);
   if (newval.IsNull() && acc != IFSelect_Optional)
+  {
     return false;
+  }
   if (!enforce && (acc == IFSelect_EditProtected || acc == IFSelect_EditComputed))
+  {
     return false;
+  }
 
   //  Satisfies ?
   occ::handle<Interface_TypedValue> typval = theeditor->TypedValue(num);
   if (!typval->Satisfies(newval))
+  {
     return false;
+  }
   Interface_ParamType pty = typval->Type();
   if (pty == Interface_ParamIdent && !newval.IsNull())
   {
     if (themodel.IsNull())
+    {
       return false;
+    }
     if (themodel->NextNumberForLabel(newval->ToCString(), 0, false) <= 0)
+    {
       return false;
+    }
   }
 
   //  Update ?
   if (!theeditor->Update(this, num, newval, enforce))
+  {
     return false;
+  }
 
   thestatus.SetValue(tnum, 1);
   themodifs.SetValue(tnum, newval);
@@ -383,30 +459,46 @@ bool IFSelect_EditForm::ModifyList(const int                               num,
 {
   //  Faut-il prendre
   if (edited.IsNull())
+  {
     return false;
+  }
   if (!edited->IsTouched())
+  {
     return false;
+  }
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> newlist =
     edited->EditedValues();
 
   //  Peut-on editer
   thetouched = 0;
   if (themodifs.Upper() == 0)
+  {
     return false;
+  }
   int tnum = RankFromNumber(num);
   if (tnum == 0)
+  {
     return false;
+  }
   IFSelect_EditValue acc = theeditor->EditMode(num);
   if (acc == IFSelect_EditRead || acc == IFSelect_EditDynamic)
+  {
     return false;
+  }
   if (newlist.IsNull() && acc != IFSelect_Optional)
+  {
     return false;
+  }
   if (!enforce && (acc == IFSelect_EditProtected || acc == IFSelect_EditComputed))
+  {
     return false;
+  }
 
   //  Update ?
   if (!theeditor->UpdateList(this, num, newlist, enforce))
+  {
     return false;
+  }
 
   thestatus.SetValue(tnum, 1);
   themodifs.SetValue(tnum, newlist);
@@ -420,19 +512,27 @@ bool IFSelect_EditForm::ModifyListValue(
 {
   occ::handle<IFSelect_ListEditor> led = ListEditor(num);
   if (led.IsNull())
+  {
     return false;
+  }
   if (!led->LoadEdited(list))
+  {
     return false;
+  }
   return ModifyList(num, led, enforce);
 }
 
 bool IFSelect_EditForm::Touch(const int num, const occ::handle<TCollection_HAsciiString>& newval)
 {
   if (themodifs.Upper() == 0)
+  {
     return false;
+  }
   int tnum = RankFromNumber(num);
   if (tnum == 0)
+  {
     return false;
+  }
 
   thestatus.SetValue(tnum, 2);
   themodifs.SetValue(tnum, newval);
@@ -445,10 +545,14 @@ bool IFSelect_EditForm::TouchList(
   const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& newlist)
 {
   if (themodifs.Upper() == 0)
+  {
     return false;
+  }
   int tnum = RankFromNumber(num);
   if (tnum == 0)
+  {
     return false;
+  }
 
   thestatus.SetValue(tnum, 2);
   themodifs.SetValue(tnum, newlist);
@@ -462,30 +566,38 @@ void IFSelect_EditForm::ClearEdit(const int num)
   if (num == 0)
   {
     for (i = 1; i <= nb; i++)
+    {
       thestatus.SetValue(i, 0);
+    }
   }
   else
   {
     int tnum = RankFromNumber(num);
     if (tnum > 0 && num <= nb)
+    {
       thestatus.SetValue(tnum, 0);
+    }
   }
 }
 
 void IFSelect_EditForm::PrintDefs(Standard_OStream& S) const
 {
   int iv, nbv = NbValues(true);
-  S << "***** EditForm,  Label : " << Label() << std::endl;
+  S << "***** EditForm,  Label : " << Label() << '\n';
   if (IsComplete())
-    S << "Complete, " << nbv << " Values" << std::endl;
+  {
+    S << "Complete, " << nbv << " Values" << '\n';
+  }
   else
   {
-    S << "Extraction on " << nbv << " Values : (extracted<-editor)" << std::endl;
+    S << "Extraction on " << nbv << " Values : (extracted<-editor)" << '\n';
     for (iv = 1; iv <= nbv; iv++)
+    {
       S << "  " << iv << "<-" << NumberFromRank(iv);
-    S << std::endl;
+    }
+    S << '\n';
   }
-  S << "*****" << std::endl;
+  S << "*****" << '\n';
 }
 
 static void PrintList(
@@ -495,19 +607,21 @@ static void PrintList(
 {
   if (list.IsNull())
   {
-    S << "(NULL LIST)" << std::endl;
+    S << "(NULL LIST)" << '\n';
     return;
   }
 
   int i, nb = list->Length();
-  S << "(List : " << nb << " Items)" << std::endl;
+  S << "(List : " << nb << " Items)" << '\n';
   if (!alsolist)
+  {
     return;
+  }
 
   for (i = 1; i <= nb; i++)
   {
     occ::handle<TCollection_HAsciiString> str = list->Value(i);
-    S << "  [" << i << "]	" << (str.IsNull() ? "(NULL)" : str->ToCString()) << std::endl;
+    S << "  [" << i << "]	" << (str.IsNull() ? "(NULL)" : str->ToCString()) << '\n';
   }
 }
 
@@ -517,26 +631,33 @@ void IFSelect_EditForm::PrintValues(Standard_OStream& S,
                                     const bool        alsolist) const
 {
   int iv, nbv = NbValues(true);
-  S << "****************************************************" << std::endl;
-  S << "*****  " << Label() << Interface_MSG::Blanks(Label(), 40) << "*****" << std::endl;
-  S << "*****                                          *****" << std::endl;
+  S << "****************************************************" << '\n';
+  S << "*****  " << Label() << Interface_MSG::Blanks(Label(), 40) << "*****" << '\n';
+  S << "*****                                          *****" << '\n';
   if (!theloaded)
-    S << "*****         Values are NOT loaded            *****" << std::endl;
-
+  {
+    S << "*****         Values are NOT loaded            *****" << '\n';
+  }
   else
   {
     //  Data on which we worked
     if (themodel.IsNull())
     {
       if (theent.IsNull())
+      {
         S << "*****  No loaded data";
+      }
       else
+      {
         S << "*****  No loaded Model. Loaded object : type " << theent->DynamicType()->Name();
+      }
     }
     else
     {
       if (theent.IsNull())
+      {
         S << "*****  No loaded entity";
+      }
       else
       {
         S << "*****  Loaded entity : ";
@@ -544,9 +665,7 @@ void IFSelect_EditForm::PrintValues(Standard_OStream& S,
       }
     }
   }
-  S << std::endl
-    << "****************************************************" << std::endl
-    << std::endl;
+  S << '\n' << "****************************************************" << '\n' << '\n';
 
   //  Display of values
   bool nams   = names;
@@ -558,9 +677,13 @@ void IFSelect_EditForm::PrintValues(Standard_OStream& S,
   }
   int nbmod = 0;
   if (what != 0)
-    S << "Mod N0 Name               Value" << std::endl;
+  {
+    S << "Mod N0 Name               Value" << '\n';
+  }
   else
-    S << " N0 Name               Value" << std::endl;
+  {
+    S << " N0 Name               Value" << '\n';
+  }
 
   for (iv = 1; iv <= nbv; iv++)
   {
@@ -572,9 +695,13 @@ void IFSelect_EditForm::PrintValues(Standard_OStream& S,
     {
       occ::handle<TCollection_HAsciiString> str;
       if (IsModified(jv))
+      {
         S << "* ";
+      }
       else
+      {
         S << "  ";
+      }
       S << Interface_MSG::Blanks(iv, 3) << iv << " " << name << Interface_MSG::Blanks(name, maxnam)
         << "  ";
 
@@ -582,26 +709,36 @@ void IFSelect_EditForm::PrintValues(Standard_OStream& S,
       {
         occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list;
         if (what < 0)
+        {
           list = OriginalList(jv);
+        }
         if (what > 0)
+        {
           list = EditedList(jv);
+        }
         PrintList(list, S, alsolist);
         continue;
       }
 
       if (what < 0)
+      {
         str = OriginalValue(jv);
+      }
       if (what > 0)
+      {
         str = EditedValue(jv);
+      }
 
-      S << (str.IsNull() ? "(NULL)" : str->ToCString()) << std::endl;
+      S << (str.IsNull() ? "(NULL)" : str->ToCString()) << '\n';
 
       //    Modified only
     }
     else
     {
       if (!IsModified(jv))
+      {
         continue;
+      }
       nbmod++;
       if (theeditor->IsList(jv))
       {
@@ -620,21 +757,25 @@ void IFSelect_EditForm::PrintValues(Standard_OStream& S,
 
       occ::handle<TCollection_HAsciiString> str = OriginalValue(jv);
       S << Interface_MSG::Blanks(iv, 3) << iv << " " << name << Interface_MSG::Blanks(name, maxnam)
-        << " ORIG:" << (str.IsNull() ? "(NULL)" : str->ToCString()) << std::endl;
+        << " ORIG:" << (str.IsNull() ? "(NULL)" : str->ToCString()) << '\n';
       str = EditedValue(jv);
       S << Interface_MSG::Blanks("", maxnam + 4)
-        << " MOD :" << (str.IsNull() ? "(NULL)" : str->ToCString()) << std::endl;
+        << " MOD :" << (str.IsNull() ? "(NULL)" : str->ToCString()) << '\n';
     }
   }
   if (what == 0)
-    S << "On " << nbv << " Values, " << nbmod << " Modified" << std::endl;
+  {
+    S << "On " << nbv << " Values, " << nbmod << " Modified" << '\n';
+  }
 }
 
 bool IFSelect_EditForm::Apply()
 {
   bool stat = ApplyData(theent, themodel);
   if (stat && !thekeepst)
+  {
     ClearEdit();
+  }
   return stat;
 }
 
@@ -652,12 +793,16 @@ bool IFSelect_EditForm::ApplyData(const occ::handle<Standard_Transient>&       e
 bool IFSelect_EditForm::Undo()
 {
   if (thestatus.Upper() == 0 || theorigs.Upper() == 0)
+  {
     return false;
+  }
   int i, nb = thestatus.Upper();
   for (i = 1; i <= nb; i++)
   {
     if (thestatus.Value(i) != 0)
+    {
       themodifs.SetValue(i, theorigs.Value(i));
+    }
   }
   return Apply();
 }

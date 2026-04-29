@@ -79,9 +79,13 @@ static inline int getNearestPow2(int theValue)
   constexpr int aHalfMax = IntegerLast() >> 1;
   int           aRes     = 1;
   if (theValue > aHalfMax)
+  {
     theValue = aHalfMax;
+  }
   while (aRes < theValue)
+  {
     aRes <<= 1;
+  }
   return aRes;
 }
 
@@ -116,11 +120,15 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   occ::handle<MeshVS_DataSource> aSource = GetDataSource();
   occ::handle<MeshVS_Drawer>     aDrawer = GetDrawer();
   if (aSource.IsNull() || aDrawer.IsNull())
+  {
     return;
+  }
 
   int aMaxFaceNodes;
   if (!aDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) || aMaxFaceNodes <= 0)
+  {
     return;
+  }
 
   MeshVS_Buffer              aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
   NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * aMaxFaceNodes);
@@ -128,18 +136,24 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   MeshVS_EntityType          aType;
 
   if (!(DisplayMode & GetFlags()) || !IsElement)
+  {
     return;
+  }
 
   if ((myUseTexture && (!myTextureCoords.Extent() || !myTextureColorMap.Length()))
       || (!myUseTexture && !myNodeColorMap.Extent()))
+  {
     return;
+  }
 
   // subtract the hidden elements and ids to exclude (to minimize allocated memory)
   TColStd_PackedMapOfInteger anIDs;
   anIDs.Assign(IDs);
   occ::handle<TColStd_HPackedMapOfInteger> aHiddenElems = myParentMesh->GetHiddenElems();
   if (!aHiddenElems.IsNull())
+  {
     NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenElems->Map());
+  }
   NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
   bool IsReflect = false, IsMeshSmoothShading = false;
@@ -165,12 +179,14 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   {
     int aKey = it.Key();
     if (aSource->Get3DGeom(aKey, NbNodes, aTopo))
+    {
       MeshVS_MeshPrsBuilder::HowManyPrimitives(aTopo,
                                                true,
                                                false,
                                                NbNodes,
                                                PolygonVerticesFor3D,
                                                PolygonBoundsFor3D);
+    }
   }
 
   // Draw faces with nodal color
@@ -219,7 +235,9 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
     int aNbNodes = 0;
 
     if (!aSource->GetGeom(it.Key(), true, aCoords, aNbNodes, aType))
+    {
       continue;
+    }
 
     if (aType == MeshVS_ET_Volume)
     {
@@ -277,7 +295,9 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
       NCollection_Array1<int> aNodes(1, NbNodes);
 
       if (!aSource->GetNodesByElement(aKey, aNodes, NbNodes))
+      {
         continue;
+      }
 
       Quantity_Color aNColor;
 
@@ -286,16 +306,22 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
       if (myUseTexture)
       {
         for (int k = 1; k <= NbNodes && isValid; ++k)
+        {
           isValid = myTextureCoords.IsBound(aNodes(k));
+        }
       }
       else
       {
         for (int k = 1; k <= NbNodes && isValid; ++k)
+        {
           isValid = GetColor(aNodes(k), aNColor);
+        }
       }
 
       if (!isValid)
+      {
         continue;
+      }
 
       // Preparing normal(s) to show reflections if requested
       occ::handle<NCollection_HArray1<double>> aNormals;
@@ -389,7 +415,9 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
       else if (aType == MeshVS_ET_Volume)
       {
         if (!aSource->Get3DGeom(aKey, NbNodes, aTopo))
+        {
           continue;
+        }
 
         AddVolumePrs(aTopo,
                      aNodes,
@@ -411,7 +439,9 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
         // if IsExcludingOn then presentation must not be built by other builders
         if (IsExcludingOn())
+        {
           IDsToExclude.Add(aKey);
+        }
       }
     }
   } // for ( ...
@@ -434,25 +464,33 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
   int anEdgeInt = Aspect_TOL_SOLID;
   if (aDrawer->GetInteger(MeshVS_DA_EdgeType, anEdgeInt))
+  {
     anEdgeType = (Aspect_TypeOfLine)anEdgeInt;
+  }
 
   if (myUseTexture)
   {
     occ::handle<Prs3d_Drawer> aPrsDrawer = myParentMesh->Attributes();
     if (aPrsDrawer.IsNull())
+    {
       return;
+    }
 
     aPrsDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
     anAsp = aPrsDrawer->ShadingAspect()->Aspect();
     if (anAsp.IsNull())
+    {
       return;
+    }
 
     anAsp->SetFrontMaterial(aMaterial[0]);
     anAsp->SetBackMaterial(aMaterial[1]);
 
     occ::handle<Graphic3d_Texture2D> aTexture = CreateTexture();
     if (aTexture.IsNull())
+    {
       return;
+    }
 
     anAsp->SetTextureMapOn();
     anAsp->SetTextureMap(aTexture);
@@ -475,7 +513,9 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   anAsp->SetDistinguishOff();
   anAsp->SetEdgeOff();
   if (!IsReflect)
+  {
     anAsp->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+  }
 
   occ::handle<Graphic3d_AspectLine3d> anLAsp =
     new Graphic3d_AspectLine3d(anEdgeColor, anEdgeType, anEdgeWidth);
@@ -517,7 +557,9 @@ void MeshVS_NodalColorPrsBuilder::AddVolumePrs(
   int aLow = theCoords.Lower();
 
   if (theTopo.IsNull() || theArray.IsNull())
+  {
     return;
+  }
 
   bool aIsPolygons = theArray->IsKind(STANDARD_TYPE(Graphic3d_ArrayOfTriangles));
 
@@ -662,7 +704,9 @@ bool MeshVS_NodalColorPrsBuilder::GetColor(const int ID, Quantity_Color& theColo
 {
   bool aRes = myNodeColorMap.IsBound(ID);
   if (aRes)
+  {
     theColor = myNodeColorMap.Find(ID);
+  }
   return aRes;
 }
 
@@ -672,9 +716,13 @@ void MeshVS_NodalColorPrsBuilder::SetColor(const int theID, const Quantity_Color
 {
   bool aRes = myNodeColorMap.IsBound(theID);
   if (aRes)
+  {
     myNodeColorMap.ChangeFind(theID) = theCol;
+  }
   else
+  {
     myNodeColorMap.Bind(theID, theCol);
+  }
 }
 
 //================================================================
@@ -685,9 +733,13 @@ void MeshVS_NodalColorPrsBuilder::UseTexture(const bool theToUse)
 {
   myUseTexture = theToUse;
   if (myUseTexture)
+  {
     myNodeColorMap.Clear();
+  }
   else
+  {
     myTextureColorMap.Clear();
+  }
 }
 
 //================================================================

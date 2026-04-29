@@ -138,7 +138,9 @@ static int newDoc(Draw_Interpretor& di, int argc, const char** argv)
     // DDocStd::ReturnLabel(di,D->Main());
   }
   else
+  {
     di << argv[1] << " is already a document\n";
+  }
 
   return 0;
 }
@@ -153,13 +155,17 @@ static int saveDoc(Draw_Interpretor& di, int argc, const char** argv)
   if (argc == 1)
   {
     if (A->NbDocuments() < 1)
+    {
       return 1;
+    }
     D = A->GetDocument(1);
   }
   else
   {
     if (!DDocStd::GetDocument(argv[1], D))
+    {
       return 1;
+    }
   }
 
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di);
@@ -307,7 +313,9 @@ static int dump(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   bool                           deep       = false;
   if ((argc == 3) && (Draw::Atoi(argv[2]) == 1))
+  {
     deep = true;
+  }
   Standard_SStream aDumpLog;
   myAssembly->Dump(aDumpLog, deep);
   di << aDumpLog;
@@ -333,12 +341,16 @@ static void StatAssembly(const TDF_Label                        L,
   if (PrintStructMode)
   {
     for (int j = 0; j <= level; j++)
+    {
       di << "  ";
+    }
   }
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(L, Entry);
   if (PrintStructMode)
+  {
     di << Entry.ToCString();
+  }
 
   occ::handle<TDataStd_Name> Name;
   if (L.FindAttribute(TDataStd_Name::GetID(), Name))
@@ -352,27 +364,35 @@ static void StatAssembly(const TDF_Label                        L,
   else
   {
     if (PrintStructMode)
+    {
       di << " NoName  has attributes: ";
+    }
   }
 
   occ::handle<XCAFDoc_Centroid> aCentroid = new (XCAFDoc_Centroid);
   if (L.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
   {
     if (PrintStructMode)
+    {
       di << "Centroid ";
+    }
     NbCentroidProp++;
   }
   double tmp;
   if (XCAFDoc_Volume::Get(L, tmp))
   {
     if (PrintStructMode)
+    {
       di << "Volume(" << tmp << ") ";
+    }
     NbVolumeProp++;
   }
   if (XCAFDoc_Area::Get(L, tmp))
   {
     if (PrintStructMode)
+    {
       di << "Area(" << tmp << ") ";
+    }
     NbAreaProp++;
   }
   occ::handle<XCAFDoc_ColorTool>       CTool  = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
@@ -382,13 +402,21 @@ static void StatAssembly(const TDF_Label                        L,
   bool                                 IsColor   = false;
   bool                                 IsByLayer = false;
   if (CTool->GetColor(L, XCAFDoc_ColorGen, col))
+  {
     IsColor = true;
+  }
   else if (CTool->GetColor(L, XCAFDoc_ColorSurf, col))
+  {
     IsColor = true;
+  }
   else if (CTool->GetColor(L, XCAFDoc_ColorCurv, col))
+  {
     IsColor = true;
+  }
   else if (CTool->IsColorByLayer(L))
+  {
     IsByLayer = true;
+  }
   if (IsColor || IsByLayer)
   {
     if (IsByLayer)
@@ -418,7 +446,9 @@ static void StatAssembly(const TDF_Label                        L,
       TCollection_AsciiString Entry1;
       Entry1 = col.GetRGB().StringName(col.GetRGB().Name());
       if (PrintStructMode)
+      {
         di << "Color(" << Entry1.ToCString() << " " << col.Alpha() << ") ";
+      }
       NbShapesWithColor++;
     }
   }
@@ -433,9 +463,13 @@ static void StatAssembly(const TDF_Label                        L,
       {
         TCollection_AsciiString Entry2(aLayerS->Value(i));
         if (i == 1)
+        {
           di << "\"" << Entry2.ToCString() << "\"";
+        }
         else
+        {
           di << " \"" << Entry2.ToCString() << "\"";
+        }
       }
       di << ") ";
     }
@@ -458,7 +492,9 @@ static void StatAssembly(const TDF_Label                        L,
     NbShapesWithVisMaterial++;
   }
   if (PrintStructMode)
+  {
     di << "\n";
+  }
 
   HAI->SetValue(level, HAI->Value(level) + 1);
   if (L.HasChild())
@@ -505,9 +541,13 @@ static int statdoc(Draw_Interpretor& di, int argc, const char** argv)
   NCollection_Sequence<TDF_Label> SeqLabels;
   aTool->GetShapes(SeqLabels);
   if (SeqLabels.Length() <= 0)
+  {
     return 0;
+  }
   if (PrintStructMode)
+  {
     di << "\nStructure of shapes in the document:\n";
+  }
   int level          = 0;
   int NbCentroidProp = 0, NbVolumeProp = 0, NbAreaProp = 0;
   int NbShapesWithName = 0, NbShapesWithColor = 0, NbShapesWithLayer = 0,
@@ -515,7 +555,9 @@ static int statdoc(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<NCollection_HArray1<int>> HAI = new NCollection_HArray1<int>(0, 20);
   int                                   i   = 0;
   for (i = 0; i <= 20; i++)
+  {
     HAI->SetValue(i, 0);
+  }
   for (i = 1; i <= SeqLabels.Length(); i++)
   {
     StatAssembly(SeqLabels.Value(i),
@@ -537,7 +579,9 @@ static int statdoc(Draw_Interpretor& di, int argc, const char** argv)
   for (i = 0; i <= 20; i++)
   {
     if (HAI->Value(i) == 0)
+    {
       break;
+    }
     // di<<"level N "<<i<<" :  number of labels with shape = "<<HAI->Value(i)<<"\n";
     di << "level N " << i << " : " << HAI->Value(i) << "\n";
     NbLabelsShape = NbLabelsShape + HAI->Value(i);
@@ -1106,7 +1150,9 @@ static int XAttributeValue(Draw_Interpretor& di, int argc, const char** argv)
   int                   num = Draw::Atoi(argv[3]);
   TDF_AttributeIterator itr(lab, false);
   for (int i = 1; itr.More() && i < num; i++)
+  {
     itr.Next();
+  }
 
   if (!itr.More())
   {
@@ -1133,7 +1179,9 @@ static int setviewName(Draw_Interpretor& di, int argc, const char** argv)
   }
   bool mode = false;
   if (Draw::Atoi(argv[1]) == 1)
+  {
     mode = true;
+  }
   XCAFPrs::SetViewNameMode(mode);
   return 0;
 }
@@ -1143,9 +1191,13 @@ static int setviewName(Draw_Interpretor& di, int argc, const char** argv)
 static int getviewName(Draw_Interpretor& di, int /*argc*/, const char** /*argv*/)
 {
   if (XCAFPrs::GetViewNameMode())
+  {
     di << "Display names ON\n";
+  }
   else
+  {
     di << "Display names OFF\n";
+  }
   return 0;
 }
 
@@ -1472,7 +1524,9 @@ static int XDumpAssemblyTree(Draw_Interpretor& di, int argc, const char** argv)
            anIt.Next(), aFirst = false)
       {
         if (!aFirst)
+        {
           aSS << "/";
+        }
         TDF_Label aL;
         TDF_Tool::Label(aDoc->GetData(), anIt.Value(), aL, false);
         if (!aL.IsNull())
@@ -1488,11 +1542,11 @@ static int XDumpAssemblyTree(Draw_Interpretor& di, int argc, const char** argv)
         }
         aSS << anIt.Value();
       }
-      aSS << std::endl;
+      aSS << '\n';
     }
     else
     {
-      aSS << theItem.ToString() << std::endl;
+      aSS << theItem.ToString() << '\n';
     }
     return true;
   });
@@ -1603,7 +1657,7 @@ static int XDumpAssemblyGraph(Draw_Interpretor& di, int argc, const char** argv)
           aSS << " " << anIt1.Key();
         }
       }
-      aSS << std::endl;
+      aSS << '\n';
 
       return true;
     });
@@ -1680,7 +1734,7 @@ static int XDumpNomenclature(Draw_Interpretor& di, int argc, const char** argv)
       }
 
       aSS << theNode << " " << graphNodeTypename(aNodeType) << " " << aNodeEntry << " "
-          << theGraph->NbOccurrences(theNode) << std::endl;
+          << theGraph->NbOccurrences(theNode) << '\n';
 
       return true;
     });
@@ -1758,12 +1812,14 @@ static int testDoc(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 2)
   {
-    std::cout << "Invalid numbers of arguments should be: XTestDoc shape" << std::endl;
+    std::cout << "Invalid numbers of arguments should be: XTestDoc shape" << '\n';
     return 1;
   }
   TopoDS_Shape shape = DBRep::Get(argv[1]);
   if (shape.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
 
@@ -1790,7 +1846,9 @@ static int testDoc(Draw_Interpretor&, int argc, const char** argv)
   }
 
   if (aLab.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+  {
     prs->Display();
+  }
 
   TPrsStd_AISViewer::Update(aLab);
   ViewerTest::GetAISContext()->Display(aTriShape, true);

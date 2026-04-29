@@ -29,11 +29,15 @@ Interface_NodeOfReaderLib::Interface_NodeOfReaderLib() = default;
 void Interface_NodeOfReaderLib::AddNode(const occ::handle<Interface_GlobalNodeOfReaderLib>& anode)
 {
   if (thenode == anode)
+  {
     return;
+  }
   if (thenext.IsNull())
   {
     if (thenode.IsNull())
+    {
       thenode = anode;
+    }
     else
     {
       thenext = new Interface_NodeOfReaderLib;
@@ -41,7 +45,9 @@ void Interface_NodeOfReaderLib::AddNode(const occ::handle<Interface_GlobalNodeOf
     }
   }
   else
+  {
     thenext->AddNode(anode);
+  }
 }
 
 const occ::handle<Interface_ReaderModule>& Interface_NodeOfReaderLib::Module() const

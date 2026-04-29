@@ -111,9 +111,6 @@ public:
     }
   }
 
-  //! Size - Number of items
-  int Size() const noexcept { return Extent(); }
-
   //! Replace this list by the items of another list (theOther parameter).
   //! This method does not change the internal allocator.
   NCollection_List& Assign(const NCollection_List& theOther)

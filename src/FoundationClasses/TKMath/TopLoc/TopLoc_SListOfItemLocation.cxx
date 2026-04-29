@@ -38,7 +38,9 @@ TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::Assign(
   const TopLoc_SListOfItemLocation& Other)
 {
   if (this == &Other)
+  {
     return *this;
+  }
   Clear();
   myNode = Other.myNode;
 
@@ -58,7 +60,11 @@ const TopLoc_ItemLocation& TopLoc_SListOfItemLocation::Value() const
 const TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::Tail() const
 {
   if (!myNode.IsNull())
+  {
     return myNode->Tail();
+  }
   else
+  {
     return *this;
+  }
 }

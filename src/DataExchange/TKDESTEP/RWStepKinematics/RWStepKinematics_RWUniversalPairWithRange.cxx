@@ -40,7 +40,9 @@ void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 17, theArch, "universal_pair_with_range"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -264,7 +266,9 @@ void RWStepKinematics_RWUniversalPairWithRange::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -295,7 +299,9 @@ void RWStepKinematics_RWUniversalPairWithRange::WriteStep(
     theSW.Send(theEnt->InputSkewAngle());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   // Own fields of UniversalPairWithRange
 
@@ -304,28 +310,36 @@ void RWStepKinematics_RWUniversalPairWithRange::WriteStep(
     theSW.Send(theEnt->LowerLimitFirstRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitFirstRotation())
   {
     theSW.Send(theEnt->UpperLimitFirstRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasLowerLimitSecondRotation())
   {
     theSW.Send(theEnt->LowerLimitSecondRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitSecondRotation())
   {
     theSW.Send(theEnt->UpperLimitSecondRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

@@ -113,7 +113,7 @@ ViewerTest_CommandOptionKey ViewerTest_CmdParser::AddOption(const std::string& t
 
 void ViewerTest_CmdParser::PrintHelp() const
 {
-  std::cout << myDescription << std::endl;
+  std::cout << myDescription << '\n';
   std::vector<CommandOption>::const_iterator anIt = myOptionStorage.begin();
   for (++anIt; anIt != myOptionStorage.end(); ++anIt)
   {
@@ -133,7 +133,7 @@ void ViewerTest_CmdParser::PrintHelp() const
     }
     std::cout << " : " << aCommandOption.Description;
   }
-  std::cout << std::endl;
+  std::cout << '\n';
 }
 
 //=================================================================================================

@@ -67,7 +67,9 @@ void StepKinematics_PrismaticPairWithRange::Init(
     myLowerLimitActualTranslation = theLowerLimitActualTranslation;
   }
   else
+  {
     myLowerLimitActualTranslation = 0;
+  }
 
   defUpperLimitActualTranslation = hasUpperLimitActualTranslation;
   if (defUpperLimitActualTranslation)
@@ -75,7 +77,9 @@ void StepKinematics_PrismaticPairWithRange::Init(
     myUpperLimitActualTranslation = theUpperLimitActualTranslation;
   }
   else
+  {
     myUpperLimitActualTranslation = 0;
+  }
 }
 
 //=================================================================================================

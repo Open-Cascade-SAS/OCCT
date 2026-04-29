@@ -75,7 +75,9 @@ static TopoDS_Shape Geometry(const occ::handle<TDataXtd_Constraint>& A,
   if (!S.IsNull())
   {
     if (T != TopAbs_SHAPE && T != S.ShapeType())
+    {
       S.Nullify();
+    }
   }
   return S;
 }
@@ -179,7 +181,9 @@ occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableConstraint(
         TopoDS_Face  F1          = TopoDS::Face(aLocalShape);
         // TopoDS_Face F1 = TopoDS::Face(Geometry(A,1,TopAbs_FACE));
         if (!F1.IsNull())
+        {
           D = new DrawDim_Radius(F1);
+        }
       }
     }
     break;
@@ -241,7 +245,9 @@ occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableConstraint(
         //	TopoDS_Face F1 = TopoDS::Face(Geometry(A,1,TopAbs_FACE));
         //	TopoDS_Face F2 = TopoDS::Face(Geometry(A,2,TopAbs_FACE));
         if (!F1.IsNull() && !F2.IsNull())
+        {
           D = new DrawDim_Angle(F1, F2);
+        }
       }
     }
     break;
@@ -280,7 +286,9 @@ occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableConstraint(
       //      TopoDS_Face F1 = TopoDS::Face(Geometry(A,1,TopAbs_FACE));
       //      TopoDS_Face F2 = TopoDS::Face(Geometry(A,2,TopAbs_FACE));
       if (!F1.IsNull() && !F2.IsNull())
+      {
         D = new DrawDim_Distance(F1, F2);
+      }
     }
     break;
 
@@ -292,7 +300,9 @@ occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableConstraint(
       //      TopoDS_Face F1 = TopoDS::Face(Geometry(A,1,TopAbs_FACE));
       //      TopoDS_Face F2 = TopoDS::Face(Geometry(A,2,TopAbs_FACE));
       if (!F1.IsNull() && !F2.IsNull())
+      {
         D = new DrawDim_Distance(F1, F2);
+      }
     }
     break;
 
@@ -318,12 +328,16 @@ occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableConstraint(
     {
       double val = A->GetValue()->Get();
       Standard_DISABLE_DEPRECATION_WARNINGS if (A->GetValue()->GetDimension() == TDataStd_ANGULAR)
+      {
         val = (180. * val) / M_PI;
+      }
       Standard_ENABLE_DEPRECATION_WARNINGS D->SetValue(val);
     }
     // unverified constraints are red (default is white)
     if (!A->Verified())
+    {
       D->TextColor(Draw_rouge);
+    }
   }
   return D;
 }
@@ -340,9 +354,13 @@ occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableShape(const TDF_Label&
   {
     TopoDS_Shape S;
     if (current)
+    {
       S = TNaming_Tool::CurrentShape(NS);
+    }
     else
+    {
       S = TNaming_Tool::GetShape(NS);
+    }
     DS = DrawableShape(S, color);
   }
   return DS;

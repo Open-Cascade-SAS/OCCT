@@ -41,7 +41,9 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
+  {
     return false;
+  }
   int igt = igesent->TypeNumber();
 
   //   TrimmedSurface 144
@@ -51,7 +53,9 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
     explored.AddItem(trs->OuterContour());
     int i, nb = trs->NbInnerContours();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(trs->InnerContour(i));
+    }
     return true;
   }
 
@@ -61,7 +65,9 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
     DeclareAndCast(IGESGeom_CurveOnSurface, crf, ent);
     explored.AddItem(crf->CurveUV());
     if (thebasic)
+    {
       IGESSelect_SelectBasicGeom::SubCurves(crf->CurveUV(), explored);
+    }
     return true;
   }
 
@@ -87,7 +93,9 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
     DeclareAndCast(IGESGeom_BoundedSurface, bns, ent);
     int i, nb = bns->NbBoundaries(); // szv#4:S4163:12Mar99 optimized
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(bns->Boundary(i));
+    }
     return (nb != 0);
     // return true; //szv#4:S4163:12Mar99 unreached
   }
@@ -97,10 +105,14 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
   {
     DeclareAndCast(IGESBasic_Group, gr, ent);
     if (gr.IsNull())
+    {
       return false;
+    }
     int i, nb = gr->NbEntities();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(gr->Entity(i));
+    }
     return true;
   }
 
@@ -111,7 +123,9 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
     explored.AddItem(msb->Shell());
     int i, nb = msb->NbVoidShells();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(msb->VoidShell(i));
+    }
     return true;
   }
 
@@ -121,7 +135,9 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
     DeclareAndCast(IGESSolid_Shell, sh, ent);
     int i, nb = sh->NbFaces();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(sh->Face(i));
+    }
     return true;
   }
 
@@ -131,7 +147,9 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
     DeclareAndCast(IGESSolid_Face, fc, ent);
     int i, nb = fc->NbLoops();
     for (i = 1; i <= nb; i++)
+    {
       explored.AddItem(fc->Loop(i));
+    }
     return true;
   }
 
@@ -143,8 +161,10 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
     for (i = 1; i <= nb; i++)
     {
       int j, np = lp->NbParameterCurves(i);
-      for (j = 1; j <= np; j++) // szv#4:S4163:12Mar99 was bug
+      for (j = 1; j <= np; j++)
+      { // szv#4:S4163:12Mar99 was bug
         explored.AddItem(lp->ParametricCurve(i, j));
+      }
     }
     return true;
   }
@@ -152,13 +172,19 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
   //   LES LIGNES : seult si en tant que pcurve : donc level >= 3
   //   Lignes en general. Attention CopiousData, aux variantes "habillage"
   if (level < 3)
+  {
     return false;
+  }
 
   if (igt == 106)
+  {
     return (igesent->FormNumber() < 20);
+  }
   if ((igt >= 100 && igt <= 106) || igt == 110 || igt == 112 || igt == 116 || igt == 126
       || igt == 130)
+  {
     return true;
+  }
 
   //  Pas trouve
   return false;
@@ -167,7 +193,11 @@ bool IGESSelect_SelectPCurves::Explore(const int                              le
 TCollection_AsciiString IGESSelect_SelectPCurves::ExploreLabel() const
 {
   if (thebasic)
+  {
     return TCollection_AsciiString("Basic PCurves");
+  }
   else
+  {
     return TCollection_AsciiString("Global PCurves");
+  }
 }

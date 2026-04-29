@@ -42,7 +42,9 @@ GProp_GProps::GProp_GProps(const gp_Pnt& SystemLocation)
 void GProp_GProps::Add(const GProp_GProps& Item, const double Density)
 {
   if (Density <= gp::Resolution())
+  {
     throw Standard_DomainError();
+  }
   if (loc.Distance(Item.loc) <= gp::Resolution())
   {
     gp_XYZ GXYZ = (Item.g.XYZ()).Multiplied(Item.dim * Density);

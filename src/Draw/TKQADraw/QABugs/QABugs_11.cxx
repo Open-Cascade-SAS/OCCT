@@ -58,17 +58,15 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Geom2dAPI_Interpolate.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dConvert_BSplineCurveToBezierCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomProjLib.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TDF_CopyLabel.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
@@ -76,7 +74,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DoubleMap.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
-#include <gp_GTrsf.hxx>
 #include <Poly_Triangulation.hxx>
 #include <IGESControl_Reader.hxx>
 #include <IGESData_IGESModel.hxx>
@@ -287,7 +284,9 @@ static int OCC105(Draw_Interpretor& di, int argc, const char** argv)
     TopoDS_Edge   edge = TopoDS::Edge(wire_exp.Current());
     TopExp::Vertices(edge, ve1, ve2);
     if (vw1.IsSame(ve1) || vw1.IsSame(ve2))
+    {
       vlast = vw1;
+    }
     else
     {
       //      assert(vw2.IsSame(ve1) || vw2.IsSame(ve2));
@@ -326,7 +325,9 @@ static int OCC105(Draw_Interpretor& di, int argc, const char** argv)
     curve.Load(acurve);
     algo.Initialize(curve, l, newufirst, newulast);
     if (!algo.IsDone())
+    {
       di << "Not Done!!!" << "\n";
+    }
     for (int Index = 1; Index <= algo.NbPoints(); Index++)
     {
       double t   = algo.Parameter(Index);
@@ -475,7 +476,9 @@ int OCC157(Draw_Interpretor& di, int n, const char** a)
     }
   }
   else
+  {
     di << "OCC157: ERROR; Planar surface is not found with toler = " << toler << "\n";
+  }
   return 0;
 }
 
@@ -599,9 +602,13 @@ static int OCC297(Draw_Interpretor& di, int /*argc*/, const char** argv)
 
   gp_Pnt g_pnt;
   if (up)
+  {
     g_pnt = gp_Pnt(0, 0, -100);
+  }
   else
+  {
     g_pnt = gp_Pnt(0, 0, 100);
+  }
 
   myAISContext->EraseAll(false);
   occ::handle<Geom_CartesianPoint> GEOMPoint = new Geom_CartesianPoint(g_pnt);
@@ -694,7 +701,9 @@ static int OCC381_Save(Draw_Interpretor& di, int nb, const char** a)
 
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
+  {
     return 1;
+  }
 
   occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
 
@@ -751,7 +760,9 @@ static int OCC381_SaveAs(Draw_Interpretor& di, int nb, const char** a)
 
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
+  {
     return 1;
+  }
 
   TCollection_ExtendedString       path(a[2]);
   occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
@@ -889,8 +900,12 @@ static int OCC363(Draw_Interpretor& di, int argc, const char** argv)
     shapes->GetFreeShapes(seq);
     occ::handle<TPrsStd_AISPresentation> prs;
     for (int i = 1; i <= seq.Length(); i++)
+    {
       if (!seq.Value(i).FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+      {
         prs = TPrsStd_AISPresentation::Set(seq.Value(i), XCAFPrs_Driver::GetID());
+      }
+    }
   }
   catch (Standard_Failure const&)
   {
@@ -1048,7 +1063,9 @@ static int OCC377(Draw_Interpretor& di, int argc, const char** argv)
 
       // 4.3. Compare results (they must be same)
       if (stat1 == stat2)
+      {
         di << "OCC377 OK\n";
+      }
       else
       {
         di << "OCC377 FAULTY\n";
@@ -1104,13 +1121,19 @@ static int OCC22(Draw_Interpretor& di, int argc, const char** argv)
     occ::handle<ShapeBuild_ReShape> aReshape = new ShapeBuild_ReShape;
     aShapeUpgrade.SetContext(aReshape);
     if (aConsiderLocation)
+    {
       aReshape->ModeConsiderLocation() = true;
+    }
 
     // 3. Perform splitting
     if (aShapeUpgrade.Perform(false))
+    {
       di << "Upgrade_SplitRevolution_Done \n";
+    }
     else if (aShapeUpgrade.Status(ShapeExtend_OK))
+    {
       di << "Upgrade_SplitRevolution_OK \n";
+    }
     else if (aShapeUpgrade.Status(ShapeExtend_FAIL))
     {
       di << "OCC22 FAULTY. Operation failed. Angle was not divided\n";
@@ -1193,7 +1216,9 @@ static int OCC24(Draw_Interpretor& di, int argc, const char** argv)
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator anIter(
       aShapeContext->Map());
     for (; anIter.More(); anIter.Next())
+    {
       aReshape->Replace(anIter.Key(), anIter.Value());
+    }
     TopoDS_Shape aResultShape = aReshape->Apply(anInitShape);
 
     // 5 Create resultant Draw shape
@@ -1251,63 +1276,6 @@ static int OCC369(Draw_Interpretor& di, int argc, const char** argv)
 
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-
-static int OCC524(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 9)
-  {
-    di << "Usage : " << argv[0]
-       << " LowerVector UpperVector InitialValueVector LowerRowMatrix UpperRowMatrix "
-          "LowerColMatrix UpperColMatrix InitialValueMatrix\n";
-    return 1;
-  }
-  int    LowerVector        = Draw::Atoi(argv[1]);
-  int    UpperVector        = Draw::Atoi(argv[2]);
-  double InitialValueVector = Draw::Atof(argv[3]);
-  int    LowerRowMatrix     = Draw::Atoi(argv[4]);
-  int    UpperRowMatrix     = Draw::Atoi(argv[5]);
-  int    LowerColMatrix     = Draw::Atoi(argv[6]);
-  int    UpperColMatrix     = Draw::Atoi(argv[7]);
-  double InitialValueMatrix = Draw::Atof(argv[8]);
-
-  math_Vector Vector1(LowerVector, UpperVector);
-  math_Vector Vector2(LowerVector, UpperVector);
-
-  math_Vector Vector(LowerVector, UpperVector, InitialValueVector);
-  math_Matrix Matrix(LowerRowMatrix,
-                     UpperRowMatrix,
-                     LowerColMatrix,
-                     UpperColMatrix,
-                     InitialValueMatrix);
-
-  // Vector.Dump(std::cout);
-  // std::cout<<std::endl;
-
-  // Matrix.Dump(std::cout);
-  // std::cout<<std::endl;
-
-  Vector1.Multiply(Vector, Matrix);
-
-  // Vector1.Dump(std::cout);
-  Standard_SStream aSStream1;
-  Vector1.Dump(aSStream1);
-  di << aSStream1;
-  di << "\n";
-
-  if (Matrix.RowNumber() > 1)
-  {
-    Matrix(Matrix.LowerRow() + 1, Matrix.LowerCol()) += 1.;
-  }
-  Vector2.TMultiply(Vector, Matrix);
-
-  // Vector2.Dump(std::cout);
-  Standard_SStream aSStream2;
-  Vector2.Dump(aSStream2);
-  di << aSStream2;
-  di << "\n";
-
-  return 0;
-}
 
 #include <GeomPlate_BuildPlateSurface.hxx>
 
@@ -1463,41 +1431,6 @@ static int OCC708(Draw_Interpretor& di, int argc, const char** argv)
 
 //=================================================================================================
 
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-
-//=================================================================================================
-
-static int OCC867(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 7)
-  {
-    di << "Usage : " << argv[0] << " Point Surface Umin Usup Vmin Vsup \n";
-    return 1;
-  }
-
-  gp_Pnt aPoint3d;
-  DrawTrSurf::GetPoint(argv[1], aPoint3d);
-  occ::handle<Geom_Surface> aSurface = DrawTrSurf::GetSurface(argv[2]);
-  double                    Umin     = Draw::Atof(argv[3]);
-  double                    Usup     = Draw::Atof(argv[4]);
-  double                    Vmin     = Draw::Atof(argv[5]);
-  double                    Vsup     = Draw::Atof(argv[6]);
-
-  if (aSurface.IsNull())
-  {
-    di << argv[2] << " Null surface \n";
-    return 1;
-  }
-
-  GeomAPI_ProjectPointOnSurf PonSurf;
-  PonSurf.Init(aSurface, Umin, Usup, Vmin, Vsup);
-  PonSurf.Perform(aPoint3d);
-
-  return 0;
-}
-
-//=================================================================================================
-
 static int OCC909(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
@@ -1541,7 +1474,9 @@ static int OCC921(Draw_Interpretor& di, int argc, const char** argv)
   double      u1, u2, v1, v2;
   TopoDS_Face F = TopoDS::Face(DBRep::Get(argv[1])); // read the shape
   if (F.IsNull())
+  {
     return 1;
+  }
   BRepTools::UVBounds(F, u1, u2, v1, v2);
   di << "Bounds: " << u1 << "   " << u2 << "   " << v1 << "   " << v2 << "\n";
   return 0;
@@ -1566,14 +1501,20 @@ static int OCC1029_AISTransparency(Draw_Interpretor& di, int nb, const char** ar
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -1605,14 +1546,20 @@ static int OCC1031_AISMaterial(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -1644,14 +1591,20 @@ static int OCC1032_AISWidth(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -1683,14 +1636,20 @@ static int OCC1033_AISMode(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -1722,14 +1681,20 @@ static int OCC1034_AISSelectionMode(Draw_Interpretor& di, int nb, const char** a
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -1807,112 +1772,6 @@ static int OCC1487(Draw_Interpretor& di, int argc, const char** argv)
 }
 
 #include <NCollection_List.hxx>
-#include <BRepFilletAPI_MakeFillet.hxx>
-
-//=================================================================================================
-
-TopoDS_Shape OCC1077_boolbl(BRepAlgoAPI_BooleanOperation& aBoolenaOperation, const double aRadius)
-{
-  double        tesp       = 1.e-4;
-  double        t3d        = 1.e-4;
-  double        t2d        = 1.e-5;
-  double        ta         = 1.e-2;
-  double        fl         = 1.e-3;
-  double        tapp_angle = 1.e-2;
-  GeomAbs_Shape blend_cont = GeomAbs_C1;
-
-  TopoDS_Shape ShapeCut = aBoolenaOperation.Shape();
-
-  NCollection_List<TopoDS_Shape>::Iterator its;
-
-  TopoDS_Compound result;
-  BRep_Builder    B;
-  B.MakeCompound(result);
-
-  TopExp_Explorer ex;
-  for (ex.Init(ShapeCut, TopAbs_SOLID); ex.More(); ex.Next())
-  {
-    const TopoDS_Shape& cutsol = ex.Current();
-
-    BRepFilletAPI_MakeFillet fill(cutsol);
-    fill.SetParams(ta, tesp, t2d, t3d, t2d, fl);
-    fill.SetContinuity(blend_cont, tapp_angle);
-    its = aBoolenaOperation.SectionEdges();
-    while (its.More())
-    {
-      TopoDS_Edge E = TopoDS::Edge(its.Value());
-      fill.Add(aRadius, E);
-      its.Next();
-    }
-
-    fill.Build();
-    if (fill.IsDone())
-    {
-      B.Add(result, fill.Shape());
-    }
-    else
-    {
-      B.Add(result, cutsol);
-    }
-  }
-  return result;
-}
-
-TopoDS_Shape OCC1077_cut_blend(const TopoDS_Shape& aShapeToCut,
-                               const TopoDS_Shape& aTool,
-                               const double        aRadius)
-{
-  // return OCC1077_boolbl(BRepAlgoAPI_Cut(aShapeToCut, aTool),aRadius);
-  BRepAlgoAPI_Cut aCut(aShapeToCut, aTool);
-  return OCC1077_boolbl(aCut, aRadius);
-}
-
-// TopoDS_Shape OCC1077_common_blend(const TopoDS_Shape& aShape1, const TopoDS_Shape& aShape2, const
-// double aRadius)
-//{
-//   return OCC1077_boolbl(BRepAlgoAPI_Common(aShape1, aShape2),aRadius);
-// }
-
-TopoDS_Shape OCC1077_Bug()
-{
-  TopoDS_Shape theBox    = BRepPrimAPI_MakeBox(gp_Pnt(-5, -5, -5), 10, 10, 10).Shape();
-  TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(7).Shape();
-
-  TopoDS_Shape theCommon = BRepAlgoAPI_Common(theBox, theSphere);
-  TopoDS_Shape theCylinder1 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, 0, -10), gp_Dir(gp_Dir::D::Z)), 3, 20).Shape();
-  TopoDS_Shape theCylinder2 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(-10, 0, 0), gp_Dir(gp_Dir::D::X)), 3, 20).Shape();
-  TopoDS_Shape theCylinder3 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, -10, 0), gp_Dir(gp_Dir::D::Y)), 3, 20).Shape();
-  TopoDS_Shape                theTmp1 = OCC1077_cut_blend(theCommon, theCylinder1, 0.7);
-  occ::handle<ShapeFix_Shape> fixer   = new ShapeFix_Shape(theTmp1);
-  fixer->Perform();
-  theTmp1              = fixer->Shape();
-  TopoDS_Shape theTmp2 = OCC1077_cut_blend(theTmp1, theCylinder2, 0.7);
-  fixer->Init(theTmp2);
-  fixer->Perform();
-  theTmp2                = fixer->Shape();
-  TopoDS_Shape theResult = OCC1077_cut_blend(theTmp2, theCylinder3, 0.7);
-  fixer->Init(theResult);
-  fixer->Perform();
-  theResult = fixer->Shape();
-  return theResult;
-}
-
-static int OCC1077(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc < 1 || argc > 2)
-  {
-    di << "Usage : " << argv[0] << " result\n";
-    return 1;
-  }
-
-  TopoDS_Shape S = OCC1077_Bug();
-  DBRep::Set(argv[1], S);
-
-  return 0;
-}
 
 //////////////////////////////////////////////////////////////
 /*!
@@ -1930,7 +1789,9 @@ static int OCC5739_UniAbs(Draw_Interpretor& di, int argc, const char** argv)
   Adaptor3d_Curve*        adapCurve = nullptr;
   occ::handle<Geom_Curve> curve     = DrawTrSurf::GetCurve(argv[2]);
   if (!curve.IsNull())
+  {
     adapCurve = new GeomAdaptor_Curve(curve);
+  }
   else
   {
     TopoDS_Shape wire = DBRep::Get(argv[2]);
@@ -1967,50 +1828,6 @@ static int OCC5739_UniAbs(Draw_Interpretor& di, int argc, const char** argv)
   return res;
 }
 
-static int OCC6046(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " nb_of_vectors size\n";
-    return 1;
-  }
-
-  int           nb  = Draw::Atoi(argv[1]);
-  int           sz  = Draw::Atoi(argv[2]);
-  double        val = 10;
-  math_Vector** pv  = new math_Vector*[nb];
-
-  di << "creating " << nb << " vectors " << sz << " elements each...\n";
-  int i;
-  for (i = 0; i < nb; i++)
-  {
-    pv[i] = new math_Vector(1, sz, val);
-    if ((i % (nb / 10)) == 0)
-    {
-      di << " " << i;
-      // std::cout.flush();
-      di << "\n";
-    }
-  }
-  di << " done\n";
-  di << "deleting them ...\n";
-  for (i = 0; i < nb; i++)
-  {
-    delete pv[i];
-    if ((i % (nb / 10)) == 0)
-    {
-      di << " " << i;
-      // std::cout.flush();
-      di << "\n";
-    }
-  }
-  di << " done\n";
-
-  delete[] pv;
-
-  return 0;
-}
-
 static int OCC5698(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
@@ -2020,7 +1837,9 @@ static int OCC5698(Draw_Interpretor& di, int argc, const char** argv)
   }
   TopoDS_Shape shape = DBRep::Get(argv[1], TopAbs_WIRE);
   if (shape.IsNull())
+  {
     return 1;
+  }
   TopoDS_Wire wire = TopoDS::Wire(shape);
   // create curve parameterised by curvilinear distance
   BRepAdaptor_CompCurve curve(wire, true);
@@ -2077,7 +1896,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     try
     {
       OCC_CATCH_SIGNALS
-      std::cout << "(Integer) Divide By Zero..." << std::endl;
+      std::cout << "(Integer) Divide By Zero..." << '\n';
       di << "(Integer) Divide By Zero...";
       // std::cout.flush();
       di << "\n";
@@ -2113,7 +1932,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     try
     {
       OCC_CATCH_SIGNALS
-      std::cout << "(Real) Divide By Zero..." << std::endl;
+      std::cout << "(Real) Divide By Zero..." << '\n';
       di << "(Real) Divide By Zero...";
       // std::cout.flush();
       di << "\n";
@@ -2144,7 +1963,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     try
     {
       OCC_CATCH_SIGNALS
-      std::cout << "(Integer) Overflow..." << std::endl;
+      std::cout << "(Integer) Overflow..." << '\n';
       di << "(Integer) Overflow...";
       // std::cout.flush();
       di << "\n";
@@ -2187,7 +2006,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     try
     {
       OCC_CATCH_SIGNALS
-      std::cout << "(Real) Overflow..." << std::endl;
+      std::cout << "(Real) Overflow..." << '\n';
       di << "(Real) Overflow...";
       // std::cout.flush();
       di << "\n";
@@ -2222,7 +2041,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     {
       OCC_CATCH_SIGNALS
       // clang-format off
-      std::cout << "(Real) Underflow" << std::endl; // to have message in log even if process crashed
+      std::cout << "(Real) Underflow" << '\n'; // to have message in log even if process crashed
       // clang-format on
       di << "(Real) Underflow";
       // std::cout.flush();
@@ -2258,7 +2077,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     try
     {
       OCC_CATCH_SIGNALS
-      std::cout << "(Real) Invalid Operation..." << std::endl;
+      std::cout << "(Real) Invalid Operation..." << '\n';
       di << "(Real) Invalid Operation...";
       // std::cout.flush();
       di << "\n";
@@ -2285,7 +2104,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     try
     {
       OCC_CATCH_SIGNALS
-      std::cout << "Segmentation Fault..." << std::endl;
+      std::cout << "Segmentation Fault..." << '\n';
       di << "Segmentation Fault...";
       // std::cout.flush();
       di << "\n";
@@ -2511,50 +2330,6 @@ static int OCC7141(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int OCC7372(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  // 1. Create an array of points
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> ap = new NCollection_HArray1<gp_Pnt2d>(1, 5);
-  ap->SetValue(1, gp_Pnt2d(100.0, 0.0));
-  ap->SetValue(2, gp_Pnt2d(100.0, 100.0));
-  ap->SetValue(3, gp_Pnt2d(0.0, 100.0));
-  ap->SetValue(4, gp_Pnt2d(0.0, 0.0));
-  ap->SetValue(5, gp_Pnt2d(50.0, -50.0));
-
-  // 2. Create a periodic bspline through these 5 points
-  Geom2dAPI_Interpolate intp(ap, true, 1e-6);
-  intp.Perform();
-  occ::handle<Geom2d_BSplineCurve> bspline1 = intp.Curve();
-
-  // 3. Increase degree of curve from 3 to 8
-  bspline1->IncreaseDegree(8); // Increase degree to demonstrate the error
-  const char* CString1 = "BSplineCurve";
-  DrawTrSurf::Set(CString1, bspline1);
-
-  // 4. Converts BSpline curve to Bezier segments
-  Geom2dConvert_BSplineCurveToBezierCurve bc(bspline1);
-
-  // 5. Test the result of conversion
-  TCollection_AsciiString aRName;
-  for (int i = 1; i <= bc.NbArcs(); i++)
-  {
-    occ::handle<Geom2d_BezierCurve> arc = bc.Arc(i);
-    aRName                              = "segment_";
-    aRName                              = aRName + TCollection_AsciiString(i);
-    const char* aRNameStr               = aRName.ToCString();
-    DrawTrSurf::Set(aRNameStr, arc);
-    di << aRNameStr << " ";
-  }
-
-  return 0;
-}
-
 static int OCC8169(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
@@ -2668,10 +2443,12 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<TDataStd_RealArray> array;
   if (label1.FindAttribute(TDataStd_RealArray::GetID(), array) && array->Lower() == LOWER
       && array->Upper() == UPPER)
-    std::cout << "1: OK" << std::endl;
+  {
+    std::cout << "1: OK" << '\n';
+  }
   else
   {
-    std::cout << "1: Failed.." << std::endl;
+    std::cout << "1: Failed.." << '\n';
     return 1;
   }
   doc->CommitCommand();
@@ -2680,16 +2457,18 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   doc->OpenCommand();
   int i;
   for (i = LOWER; i <= UPPER; i++)
+  {
     array->SetValue(i, i);
+  }
   for (i = LOWER; i <= UPPER; i++)
   {
     if (array->Value(i) != i)
     {
-      std::cout << "2: Failed.." << std::endl;
+      std::cout << "2: Failed.." << '\n';
       return 2;
     }
   }
-  std::cout << "2: OK" << std::endl;
+  std::cout << "2: OK" << '\n';
   doc->CommitCommand();
 
   //! 3. Re-init the array
@@ -2697,20 +2476,22 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   array->Init(LOWER + 2, UPPER + 4);
   if (array->Lower() != LOWER + 2 && array->Upper() != UPPER + 4)
   {
-    std::cout << "3: Failed.." << std::endl;
+    std::cout << "3: Failed.." << '\n';
     return 3;
   }
   for (i = LOWER + 2; i <= UPPER + 4; i++)
+  {
     array->SetValue(i, i);
+  }
   for (i = LOWER + 2; i <= UPPER + 4; i++)
   {
     if (array->Value(i) != i)
     {
-      std::cout << "3: Failed.." << std::endl;
+      std::cout << "3: Failed.." << '\n';
       return 3;
     }
   }
-  std::cout << "3: OK" << std::endl;
+  std::cout << "3: OK" << '\n';
   doc->CommitCommand();
 
   //! 4. Change array
@@ -2718,17 +2499,19 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<NCollection_HArray1<double>> arr =
     new NCollection_HArray1<double>(LOWER + 5, UPPER + 5);
   for (i = LOWER + 5; i <= UPPER + 5; i++)
+  {
     arr->SetValue(i, i);
+  }
   array->ChangeArray(arr);
   for (i = LOWER + 5; i <= UPPER + 5; i++)
   {
     if (array->Value(i) != i)
     {
-      std::cout << "4: Failed.." << std::endl;
+      std::cout << "4: Failed.." << '\n';
       return 4;
     }
   }
-  std::cout << "4: OK" << std::endl;
+  std::cout << "4: OK" << '\n';
   doc->CommitCommand();
 
   //! 5. Copy the array
@@ -2737,24 +2520,24 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   copier.Perform();
   if (!copier.IsDone())
   {
-    std::cout << "5: Failed.." << std::endl;
+    std::cout << "5: Failed.." << '\n';
     return 5;
   }
   occ::handle<TDataStd_RealArray> array2;
   if (!label2.FindAttribute(TDataStd_RealArray::GetID(), array2))
   {
-    std::cout << "5: Failed.." << std::endl;
+    std::cout << "5: Failed.." << '\n';
     return 5;
   }
   for (i = LOWER + 5; i <= UPPER + 5; i++)
   {
     if (array->Value(i) != i)
     {
-      std::cout << "5: Failed.." << std::endl;
+      std::cout << "5: Failed.." << '\n';
       return 5;
     }
   }
-  std::cout << "5: OK" << std::endl;
+  std::cout << "5: OK" << '\n';
   doc->CommitCommand();
 
   //! 6. Undo/Redo
@@ -2763,7 +2546,7 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array)
       || label2.FindAttribute(TDataStd_RealArray::GetID(), array2))
   {
-    std::cout << "6.a: Failed.." << std::endl;
+    std::cout << "6.a: Failed.." << '\n';
     return 6;
   }
   //! 6.b: undoes the 4th action: the array should be changed to (lower+2,upper+4)
@@ -2771,14 +2554,14 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array) || array->Lower() != LOWER + 2
       || array->Upper() != UPPER + 4)
   {
-    std::cout << "6.b: Failed.." << std::endl;
+    std::cout << "6.b: Failed.." << '\n';
     return 6;
   }
   for (i = LOWER + 2; i <= UPPER + 4; i++)
   {
     if (array->Value(i) != i)
     {
-      std::cout << "6.b: Failed.." << std::endl;
+      std::cout << "6.b: Failed.." << '\n';
       return 6;
     }
   }
@@ -2787,14 +2570,14 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array) || array->Lower() != LOWER
       || array->Upper() != UPPER)
   {
-    std::cout << "6.c: Failed.." << std::endl;
+    std::cout << "6.c: Failed.." << '\n';
     return 6;
   }
   for (i = LOWER; i <= UPPER; i++)
   {
     if (array->Value(i) != i)
     {
-      std::cout << "6.c: Failed.." << std::endl;
+      std::cout << "6.c: Failed.." << '\n';
       return 6;
     }
   }
@@ -2804,136 +2587,45 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array) || array->Lower() != LOWER
       || array->Upper() != UPPER)
   {
-    std::cout << "6.d: Failed.." << std::endl;
+    std::cout << "6.d: Failed.." << '\n';
     return 6;
   }
   for (i = LOWER; i <= UPPER; i++)
   {
     if (array->Value(i) != i)
     {
-      std::cout << "6.d: Failed.." << std::endl;
+      std::cout << "6.d: Failed.." << '\n';
       return 6;
     }
   }
-  std::cout << "6: OK" << std::endl;
+  std::cout << "6: OK" << '\n';
 
   //! 7. Re-set the array
   doc->OpenCommand();
   array = TDataStd_RealArray::Set(label1, LOWER + 1, UPPER + 1);
   if (array->Lower() != LOWER + 1 && array->Upper() != UPPER + 1)
   {
-    std::cout << "7: Failed.." << std::endl;
+    std::cout << "7: Failed.." << '\n';
     return 7;
   }
   for (i = LOWER + 1; i <= UPPER + 1; i++)
+  {
     array->SetValue(i, i);
+  }
   for (i = LOWER + 1; i <= UPPER + 1; i++)
   {
     if (array->Value(i) != i)
     {
-      std::cout << "7: Failed.." << std::endl;
+      std::cout << "7: Failed.." << '\n';
       return 7;
     }
   }
-  std::cout << "7: OK" << std::endl;
+  std::cout << "7: OK" << '\n';
   doc->CommitCommand();
 
   //! 8.Test of speed: set LOWER and UPPER equal to great integer number and
   //! measure the time spent by this test.
   //! Good luck!
-
-  return 0;
-}
-
-static int OCC7639(Draw_Interpretor& di, int argc, const char** argv)
-{
-  bool IsEvenArgc = true;
-  IsEvenArgc      = argc % 2 == 0;
-
-  if (argc < 3 || IsEvenArgc)
-  {
-    di << "Usage : " << argv[0] << " index1 value1 ... [indexN valueN]\n";
-    return 1;
-  }
-
-  int                     i, aValue, aPosition;
-  NCollection_Vector<int> vec;
-  for (i = 0; i < argc - 1; i++)
-  {
-    i++;
-    aValue    = Draw::Atoi(argv[i]);
-    aPosition = Draw::Atoi(argv[i + 1]);
-    vec.SetValue(aValue, aPosition);
-  }
-  NCollection_Vector<int>::Iterator it(vec);
-  int                               j;
-  for (j = 0; it.More(); it.Next(), j++)
-  {
-    // di << it.Value() << "\n";
-    di << j << " " << it.Value() << "\n";
-  }
-
-  return 0;
-}
-
-static int OCC8797(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  gp_Pnt point(0.0, 0.0, 0.0);
-
-  NCollection_Array1<gp_Pnt> poles(0, 6);
-  poles(0) = point;
-
-  point.SetCoord(1.0, 1.0, 0.0);
-  poles(1) = point;
-
-  point.SetCoord(2.0, 1.0, 0.0);
-  poles(2) = point;
-
-  point.SetCoord(3.0, 0.0, 0.0);
-  poles(3) = point;
-
-  point.SetCoord(4.0, 1.0, 0.0);
-  poles(4) = point;
-
-  point.SetCoord(5.0, 1.0, 0.0);
-  poles(5) = point;
-
-  point.SetCoord(6.0, 0.0, 0.0);
-  poles(6) = point;
-
-  NCollection_Array1<double> knots(0, 2);
-  knots(0) = 0.0;
-  knots(1) = 0.5;
-  knots(2) = 1.0;
-
-  NCollection_Array1<int> multi(0, 2);
-  multi(0) = 4;
-  multi(1) = 3;
-  multi(2) = 4;
-
-  occ::handle<Geom_BSplineCurve> spline = new Geom_BSplineCurve(poles, knots, multi, 3);
-
-  // length!! 1.
-  double               l_abcissa, l_gprop;
-  GeomAdaptor_Curve    adaptor_spline(spline);
-  GCPnts_AbscissaPoint temp;
-  l_abcissa = GCPnts_AbscissaPoint::Length(adaptor_spline);
-  std::cout << "Length Spline(abcissa_Pnt): " << l_abcissa << std::endl;
-
-  // length!! 2.
-  TopoDS_Edge  edge = BRepBuilderAPI_MakeEdge(spline);
-  GProp_GProps prop;
-  BRepGProp::LinearProperties(edge, prop);
-  l_gprop = prop.Mass();
-  std::cout << "Length Spline(GProp_GProps): " << l_gprop << std::endl;
-
-  std::cout << "Difference (abcissa_Pnt<->GProp_GProps): " << l_gprop - l_abcissa << std::endl;
 
   return 0;
 }
@@ -3008,32 +2700,6 @@ static int OCC11457(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int OCC13963(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc < 5)
-  {
-    di << "Usage : " << argv[0] << " ratio origin_x origin_y origin_z\n";
-    return 1;
-  }
-  gp_Ax2   aPln(gp_Pnt(0., 0., 0.), gp_Dir(1., -1., 0.));
-  gp_GTrsf aTrf;
-  aTrf.SetAffinity(aPln, Draw::Atof(argv[4]));
-  gp_XYZ aOrigin(Draw::Atof(argv[1]), Draw::Atof(argv[2]), Draw::Atof(argv[3]));
-  gp_XYZ aResult(aOrigin);
-  aTrf.Transforms(aResult);
-  char sbf[512];
-  Sprintf(sbf,
-          "( %8.3f %8.3f %8.3f ) => ( %8.3f %8.3f %8.3f )\n",
-          aOrigin.X(),
-          aOrigin.Y(),
-          aOrigin.Z(),
-          aResult.X(),
-          aResult.Y(),
-          aResult.Z());
-  di << sbf;
-  return 0;
-}
-
 int OCC14376(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
@@ -3071,26 +2737,6 @@ int OCC14376(Draw_Interpretor& di, int argc, const char** argv)
     di << argv[0] << " : OK\n";
     di << "NbNodes=" << aTriang->NbNodes() << "\n";
     di << "NbTriangles=" << aTriang->NbTriangles() << "\n";
-  }
-  return 0;
-}
-
-static int OCC15489(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 4)
-  {
-    di << "Usage : " << argv[0] << " A B C\n";
-    return 1;
-  }
-  try
-  {
-    gp_Lin2d aLin2d(Draw::Atof(argv[1]), Draw::Atof(argv[2]), Draw::Atof(argv[3]));
-    gp_Pnt2d anOrigin = aLin2d.Location();
-    di << "X_0 = " << anOrigin.X() << "   Y_0 = " << anOrigin.Y() << "\n";
-  }
-  catch (Standard_ConstructionError const&)
-  {
-    di << argv[0] << " Exception: Sqrt(A*A + B*B) <= Resolution from gp\n";
   }
   return 0;
 }
@@ -3156,18 +2802,26 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_Tick> tick;
   if (!doc->Main().FindAttribute(TDataStd_Tick::GetID(), tick))
+  {
     return 1;
+  }
   // Forget
   doc->Main().ForgetAttribute(TDataStd_Tick::GetID());
   if (doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 2;
+  }
   doc->Main().ResumeAttribute(tick);
   if (!doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 3;
+  }
   // Forget
   doc->Main().ForgetAttribute(TDataStd_Tick::GetID());
   if (doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 2;
+  }
 
   // TDataStd_IntegerList:
   // Set
@@ -3182,11 +2836,17 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_IntegerList> getintlist;
   if (!doc->Main().FindAttribute(TDataStd_IntegerList::GetID(), getintlist))
+  {
     return 1;
+  }
   if (getintlist->First() != 1)
+  {
     return 2;
+  }
   if (getintlist->Last() != 3)
+  {
     return 3;
+  }
   const NCollection_List<int>&    intlist = getintlist->List();
   NCollection_List<int>::Iterator itr_intlist(intlist);
   for (; itr_intlist.More(); itr_intlist.Next())
@@ -3211,11 +2871,17 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_RealList> getdbllist;
   if (!doc->Main().FindAttribute(TDataStd_RealList::GetID(), getdbllist))
+  {
     return 1;
+  }
   if (getdbllist->First() != 1.5)
+  {
     return 2;
+  }
   if (getdbllist->Last() != 3.5)
+  {
     return 3;
+  }
   const NCollection_List<double>&    dbllist = getdbllist->List();
   NCollection_List<double>::Iterator itr_dbllist(dbllist);
   for (; itr_dbllist.More(); itr_dbllist.Next())
@@ -3240,11 +2906,17 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_ExtStringList> getstrlist;
   if (!doc->Main().FindAttribute(TDataStd_ExtStringList::GetID(), getstrlist))
+  {
     return 1;
+  }
   if (getstrlist->First() != "Guten Tag")
+  {
     return 2;
+  }
   if (getstrlist->Last() != "Hello")
+  {
     return 3;
+  }
   const NCollection_List<TCollection_ExtendedString>&    strlist = getstrlist->List();
   NCollection_List<TCollection_ExtendedString>::Iterator itr_strlist(strlist);
   for (; itr_strlist.More(); itr_strlist.Next())
@@ -3265,11 +2937,17 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_BooleanList> getboollist;
   if (!doc->Main().FindAttribute(TDataStd_BooleanList::GetID(), getboollist))
+  {
     return 1;
+  }
   if (getboollist->First())
+  {
     return 2;
+  }
   if (!getboollist->Last())
+  {
     return 3;
+  }
   const NCollection_List<uint8_t>& boollist = getboollist->List();
   for (NCollection_List<uint8_t>::Iterator itr_boollist(boollist); itr_boollist.More();
        itr_boollist.Next())
@@ -3299,11 +2977,17 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_ReferenceList> getreflist;
   if (!doc->Main().FindAttribute(TDataStd_ReferenceList::GetID(), getreflist))
+  {
     return 1;
+  }
   if (getreflist->First() != L2)
+  {
     return 2;
+  }
   if (getreflist->Last() != L1)
+  {
     return 3;
+  }
   const NCollection_List<TDF_Label>&    reflist = getreflist->List();
   NCollection_List<TDF_Label>::Iterator itr_reflist(reflist);
   for (; itr_reflist.More(); itr_reflist.Next())
@@ -3327,17 +3011,29 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_BooleanArray> getboolarr;
   if (!doc->Main().FindAttribute(TDataStd_BooleanArray::GetID(), getboolarr))
+  {
     return 1;
+  }
   if (!getboolarr->Value(12))
+  {
     return 2;
+  }
   if (getboolarr->Value(13))
+  {
     return 2;
+  }
   if (!getboolarr->Value(14))
+  {
     return 2;
+  }
   if (getboolarr->Value(15))
+  {
     return 2;
+  }
   if (!getboolarr->Value(16))
+  {
     return 2;
+  }
 
   // TDataStd_ReferenceArray:
   // Set
@@ -3350,17 +3046,29 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_ReferenceArray> getrefarr;
   if (!doc->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), getrefarr))
+  {
     return 1;
+  }
   if (getrefarr->Value(0) != L1)
+  {
     return 2;
+  }
   if (getrefarr->Value(1) != L2)
+  {
     return 2;
+  }
   if (getrefarr->Value(2) != L3)
+  {
     return 2;
+  }
   if (getrefarr->Value(3) != L4)
+  {
     return 2;
+  }
   if (getrefarr->Value(4) != L5)
+  {
     return 2;
+  }
 
   // TDataStd_ByteArray:
   // Set
@@ -3373,17 +3081,29 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get
   occ::handle<TDataStd_ByteArray> getbytearr;
   if (!doc->Main().FindAttribute(TDataStd_ByteArray::GetID(), getbytearr))
+  {
     return 1;
+  }
   if (getbytearr->Value(12) != 0)
+  {
     return 2;
+  }
   if (getbytearr->Value(13) != 1)
+  {
     return 2;
+  }
   if (getbytearr->Value(14) != 2)
+  {
     return 2;
+  }
   if (getbytearr->Value(15) != 3)
+  {
     return 2;
+  }
   if (getbytearr->Value(16) != 255)
+  {
     return 2;
+  }
 
   // TDataStd_NamedData:
   // Set:
@@ -3395,15 +3115,25 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   // Get:
   occ::handle<TDataStd_NamedData> getnd;
   if (!doc->Main().FindAttribute(TDataStd_NamedData::GetID(), getnd))
+  {
     return 1;
+  }
   if (!getnd->HasIntegers())
+  {
     return 2;
+  }
   if (!getnd->HasInteger("Integer1"))
+  {
     return 3;
+  }
   if (getnd->GetInteger("Integer2") != 2)
+  {
     return 4;
+  }
   if (getnd->GetInteger("Integer3") != 3)
+  {
     return 4;
+  }
 
   return 0;
 }
@@ -3415,13 +3145,19 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   occ::handle<TDataStd_Tick> tick = TDataStd_Tick::Set(doc->Main());
   doc->CommitCommand();
   if (!doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 1;
+  }
   doc->Undo();
   if (doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 2;
+  }
   doc->Redo();
   if (!doc->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 3;
+  }
 
   // TDataStd_IntegerList:
   doc->OpenCommand();
@@ -3432,17 +3168,27 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   intlist->InsertAfter(3, 2);
   doc->CommitCommand();
   if (!doc->Main().IsAttribute(TDataStd_IntegerList::GetID()))
+  {
     return 1;
+  }
   doc->Undo();
   if (!intlist->IsEmpty())
+  {
     return 2;
+  }
   doc->Redo();
   if (!intlist->Extent())
+  {
     return 3;
+  }
   if (intlist->First() != 0)
+  {
     return 4;
+  }
   if (intlist->Last() != 3)
+  {
     return 5;
+  }
   intlist->Clear();
 
   // TDataStd_RealList:
@@ -3454,17 +3200,27 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   dbllist->InsertAfter(3.5, 2.5);
   doc->CommitCommand();
   if (!doc->Main().IsAttribute(TDataStd_RealList::GetID()))
+  {
     return 1;
+  }
   doc->Undo();
   if (!dbllist->IsEmpty())
+  {
     return 2;
+  }
   doc->Redo();
   if (!dbllist->Extent())
+  {
     return 3;
+  }
   if (dbllist->First() != 0.5)
+  {
     return 4;
+  }
   if (dbllist->Last() != 3.5)
+  {
     return 5;
+  }
   dbllist->Clear();
 
   // TDataStd_ExtStringList:
@@ -3476,17 +3232,27 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   strlist->InsertBefore("Bonsoir", "Hello");
   doc->CommitCommand();
   if (!doc->Main().IsAttribute(TDataStd_ExtStringList::GetID()))
+  {
     return 1;
+  }
   doc->Undo();
   if (!strlist->IsEmpty())
+  {
     return 2;
+  }
   doc->Redo();
   if (!strlist->Extent())
+  {
     return 3;
+  }
   if (strlist->First() != "Guten Tag")
+  {
     return 4;
+  }
   if (strlist->Last() != "Hello")
+  {
     return 5;
+  }
   strlist->Clear();
 
   // TDataStd_BooleanList:
@@ -3496,17 +3262,27 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   boollist->Prepend(false);
   doc->CommitCommand();
   if (!doc->Main().IsAttribute(TDataStd_BooleanList::GetID()))
+  {
     return 1;
+  }
   doc->Undo();
   if (!boollist->IsEmpty())
+  {
     return 2;
+  }
   doc->Redo();
   if (!boollist->Extent())
+  {
     return 3;
+  }
   if (boollist->First())
+  {
     return 4;
+  }
   if (!boollist->Last())
+  {
     return 5;
+  }
   boollist->Clear();
 
   // TDataStd_ReferenceList:
@@ -3522,17 +3298,27 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   reflist->InsertAfter(L4, L2);
   doc->CommitCommand();
   if (!doc->Main().IsAttribute(TDataStd_ReferenceList::GetID()))
+  {
     return 1;
+  }
   doc->Undo();
   if (!reflist->IsEmpty())
+  {
     return 2;
+  }
   doc->Redo();
   if (!reflist->Extent())
+  {
     return 3;
+  }
   if (reflist->First() != L2)
+  {
     return 4;
+  }
   if (reflist->Last() != L1)
+  {
     return 5;
+  }
   reflist->Clear();
 
   // TDataStd_BooleanArray:
@@ -3548,18 +3334,30 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   doc->CommitCommand();
   doc->Undo();
   if (!boolarr->Value(23))
+  {
     return 2;
+  }
   if (boolarr->Value(24))
+  {
     return 2;
+  }
   if (!boolarr->Value(25))
+  {
     return 2;
+  }
   doc->Redo();
   if (!boolarr->Value(230))
+  {
     return 3;
+  }
   if (boolarr->Value(240))
+  {
     return 3;
+  }
   if (!boolarr->Value(250))
+  {
     return 3;
+  }
 
   // TDataStd_ReferenceArray:
   doc->OpenCommand();
@@ -3570,17 +3368,27 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   refarr->SetValue(8, L4);
   doc->CommitCommand();
   if (!doc->Main().IsAttribute(TDataStd_ReferenceArray::GetID()))
+  {
     return 1;
+  }
   doc->Undo();
   doc->Redo();
   if (refarr->Value(5) != L1)
+  {
     return 4;
+  }
   if (refarr->Value(6) != L2)
+  {
     return 4;
+  }
   if (refarr->Value(7) != L3)
+  {
     return 4;
+  }
   if (refarr->Value(8) != L4)
+  {
     return 4;
+  }
 
   // TDataStd_ByteArray:
   doc->OpenCommand();
@@ -3595,14 +3403,22 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   doc->CommitCommand();
   doc->Undo();
   if (bytearr->Value(23) != 23)
+  {
     return 2;
+  }
   if (bytearr->Value(25) != 25)
+  {
     return 2;
+  }
   doc->Redo();
   if (bytearr->Value(230) != 230)
+  {
     return 3;
+  }
   if (bytearr->Value(250) != 250)
+  {
     return 3;
+  }
 
   // TDataStd_NamedData:
   doc->OpenCommand();
@@ -3621,30 +3437,54 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   doc->CommitCommand();
   doc->Undo();
   if (nd->HasStrings())
+  {
     return 1;
+  }
   if (nd->HasReals())
+  {
     return 1;
+  }
   if (nd->HasReal("r17"))
+  {
     return 2;
+  }
   if (!nd->HasBytes())
+  {
     return 3;
+  }
   if (nd->GetByte("b14") != 14)
+  {
     return 4;
+  }
   if (nd->GetByte("b17") != 17)
+  {
     return 4;
+  }
   if (nd->HasByte("b18"))
+  {
     return 5;
+  }
   doc->Redo();
   if (!nd->HasBytes())
+  {
     return 1;
+  }
   if (!nd->HasReals())
+  {
     return 1;
+  }
   if (nd->GetByte("b14") != 14)
+  {
     return 2;
+  }
   if (nd->GetReal("r14") != 14.4)
+  {
     return 2;
+  }
   if (nd->GetReal("r17") != 17.7)
+  {
     return 2;
+  }
 
   return 0;
 }
@@ -3659,9 +3499,13 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   TDataStd_Tick::Set(L1);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   if (!L2.IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 2;
+  }
 
   // TDataStd_IntegerList:
   occ::handle<TDataStd_IntegerList> intlist = TDataStd_IntegerList::Set(L1);
@@ -3669,15 +3513,23 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   intlist->InsertAfter(2, 1);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   intlist->Clear();
   intlist.Nullify();
   if (!L2.FindAttribute(TDataStd_IntegerList::GetID(), intlist))
+  {
     return 2;
+  }
   if (intlist->First() != 1)
+  {
     return 3;
+  }
   if (intlist->Last() != 2)
+  {
     return 4;
+  }
   intlist->Clear();
 
   // TDataStd_RealList:
@@ -3686,15 +3538,23 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   dbllist->InsertAfter(2.5, 1.5);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   dbllist->Clear();
   dbllist.Nullify();
   if (!L2.FindAttribute(TDataStd_RealList::GetID(), dbllist))
+  {
     return 2;
+  }
   if (dbllist->First() != 1.5)
+  {
     return 3;
+  }
   if (dbllist->Last() != 2.5)
+  {
     return 4;
+  }
   dbllist->Clear();
 
   // TDataStd_ExtStringList:
@@ -3703,15 +3563,23 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   strlist->InsertAfter(" - is the best set of libraries!", "Open CASCADE");
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   strlist->Clear();
   strlist.Nullify();
   if (!L2.FindAttribute(TDataStd_ExtStringList::GetID(), strlist))
+  {
     return 2;
+  }
   if (strlist->First() != "Open CASCADE")
+  {
     return 3;
+  }
   if (strlist->Last() != " - is the best set of libraries!")
+  {
     return 4;
+  }
   strlist->Clear();
 
   // TDataStd_BooleanList:
@@ -3720,15 +3588,23 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   boollist->Prepend(false);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   boollist->Clear();
   boollist.Nullify();
   if (!L2.FindAttribute(TDataStd_BooleanList::GetID(), boollist))
+  {
     return 2;
+  }
   if (boollist->First())
+  {
     return 3;
+  }
   if (!boollist->Last())
+  {
     return 4;
+  }
   boollist->Clear();
 
   // TDataStd_ReferenceList:
@@ -3739,15 +3615,23 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   reflist->InsertAfter(L101, L100);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   reflist->Clear();
   reflist.Nullify();
   if (!L2.FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
+  {
     return 2;
+  }
   if (reflist->First() != L100)
+  {
     return 3;
+  }
   if (reflist->Last() != L101)
+  {
     return 4;
+  }
   reflist->Clear();
 
   // TDataStd_BooleanArray:
@@ -3756,16 +3640,26 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   boolarr->SetValue(6, true);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   boolarr.Nullify();
   if (!L2.FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
+  {
     return 2;
+  }
   if (!boolarr->Value(4))
+  {
     return 3;
+  }
   if (boolarr->Value(5))
+  {
     return 3;
+  }
   if (!boolarr->Value(6))
+  {
     return 3;
+  }
 
   // TDataStd_ReferenceArray:
   occ::handle<TDataStd_ReferenceArray> refarr = TDataStd_ReferenceArray::Set(L1, 3, 4);
@@ -3773,14 +3667,22 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   refarr->SetValue(4, L101);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   refarr.Nullify();
   if (!L2.FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
+  {
     return 2;
+  }
   if (refarr->Value(3) != L100)
+  {
     return 3;
+  }
   if (refarr->Value(4) != L101)
+  {
     return 3;
+  }
 
   // TDataStd_ByteArray:
   occ::handle<TDataStd_ByteArray> bytearr = TDataStd_ByteArray::Set(L1, 4, 6);
@@ -3788,14 +3690,22 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   bytearr->SetValue(6, 60);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   bytearr.Nullify();
   if (!L2.FindAttribute(TDataStd_ByteArray::GetID(), bytearr))
+  {
     return 2;
+  }
   if (bytearr->Value(4) != 40)
+  {
     return 3;
+  }
   if (bytearr->Value(6) != 60)
+  {
     return 3;
+  }
 
   // TDataStd_NamedData:
   occ::handle<TDataStd_NamedData> nd = TDataStd_NamedData::Set(L1);
@@ -3809,45 +3719,83 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   nd->SetArrayOfIntegers("Integers1", ints_arr);
   copier.Perform();
   if (!copier.IsDone())
+  {
     return 1;
+  }
   nd.Nullify();
   if (!L2.FindAttribute(TDataStd_NamedData::GetID(), nd))
+  {
     return 2;
+  }
   if (!nd->HasIntegers())
+  {
     return 3;
+  }
   if (!nd->HasReals())
+  {
     return 3;
+  }
   if (!nd->HasStrings())
+  {
     return 3;
+  }
   if (!nd->HasBytes())
+  {
     return 3;
+  }
   if (!nd->HasArraysOfIntegers())
+  {
     return 3;
+  }
   if (nd->HasArraysOfReals())
+  {
     return 3;
+  }
   if (!nd->HasInteger("Integer1"))
+  {
     return 4;
+  }
   if (nd->GetInteger("Integer1") != 11)
+  {
     return 4;
+  }
   if (!nd->HasReal("Real1"))
+  {
     return 4;
+  }
   if (nd->GetReal("Real1") != 11.1)
+  {
     return 4;
+  }
   if (!nd->HasString("String1"))
+  {
     return 4;
+  }
   if (nd->GetString("String1") != "11.11111111")
+  {
     return 4;
+  }
   if (!nd->HasByte("Byte1"))
+  {
     return 4;
+  }
   if (nd->GetByte("Byte1") != 111)
+  {
     return 4;
+  }
   if (!nd->HasArrayOfIntegers("Integers1"))
+  {
     return 4;
+  }
   const occ::handle<NCollection_HArray1<int>>& ints_arr_out = nd->GetArrayOfIntegers("Integers1");
   if (ints_arr_out.IsNull())
+  {
     return 4;
+  }
   if (ints_arr_out->Value(5) != 5)
+  {
     return 4;
+  }
 
   return 0;
 }
@@ -3912,7 +3860,9 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
   // Save
   // if (app->SaveAs(doc_std, "W:\\doc.std") != PCDM_SS_OK)
   if (app->SaveAs(doc_std, aFile1) != PCDM_SS_OK)
+  {
     return 1;
+  }
   intlist.Nullify();
   dbllist.Nullify();
   strlist.Nullify();
@@ -3924,75 +3874,141 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
   doc_std.Nullify();
   // if (app->Open("W:\\doc.std", doc_std_open) != PCDM_RS_OK)
   if (app->Open(aFile1, doc_std_open) != PCDM_RS_OK)
+  {
     return 2;
+  }
   if (!doc_std_open->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 3;
+  }
   if (!doc_std_open->Main().FindAttribute(TDataStd_IntegerList::GetID(), intlist))
+  {
     return 4;
+  }
   if (intlist->First() != 1)
+  {
     return 5;
+  }
   if (intlist->Last() != 5)
+  {
     return 6;
+  }
   if (!doc_std_open->Main().FindAttribute(TDataStd_RealList::GetID(), dbllist))
+  {
     return 4;
+  }
   if (dbllist->First() != 1.5)
+  {
     return 5;
+  }
   if (dbllist->Last() != 5.5)
+  {
     return 6;
+  }
   if (!doc_std_open->Main().FindAttribute(TDataStd_ExtStringList::GetID(), strlist))
+  {
     return 4;
+  }
   if (strlist->First() != "Auf")
+  {
     return 5;
+  }
   if (strlist->Last() != "Wiedersehen")
+  {
     return 6;
+  }
   if (!doc_std_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
+  {
     return 4;
+  }
   if (boollist->First())
+  {
     return 5;
+  }
   if (!boollist->Last())
+  {
     return 6;
+  }
   if (!doc_std_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
+  {
     return 4;
+  }
   TDF_Tool::Entry(reflist->First(), entry_first);
   if (entry1 != entry_first)
+  {
     return 5;
+  }
   TDF_Tool::Entry(reflist->Last(), entry_last);
   if (entry2 != entry_last)
+  {
     return 6;
+  }
   if (!doc_std_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
+  {
     return 4;
+  }
   if (boolarr->Value(15))
+  {
     return 5;
+  }
   if (!boolarr->Value(16))
+  {
     return 5;
+  }
   if (!boolarr->Value(17))
+  {
     return 5;
+  }
   if (!boolarr->Value(18))
+  {
     return 5;
+  }
   if (!doc_std_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
+  {
     return 4;
+  }
   TDF_Tool::Entry(refarr->Value(45), entry_first);
   if (entry1 != entry_first)
+  {
     return 5;
+  }
   TDF_Tool::Entry(refarr->Value(46), entry_last);
   if (entry2 != entry_last)
+  {
     return 6;
+  }
   if (!doc_std_open->Main().FindAttribute(TDataStd_ByteArray::GetID(), bytearr))
+  {
     return 4;
+  }
   if (bytearr->Value(15) != 150)
+  {
     return 5;
+  }
   if (bytearr->Value(16) != 160)
+  {
     return 5;
+  }
   if (bytearr->Value(17) != 170)
+  {
     return 5;
+  }
   if (bytearr->Value(18) != 180)
+  {
     return 5;
+  }
   if (!doc_std_open->Main().FindAttribute(TDF_Reference::GetID(), ref))
+  {
     return 4;
+  }
   if (ref->Get().IsNull())
+  {
     return 5;
+  }
   if (ref->Get().Tag() != 103)
+  {
     return 5;
+  }
 
   // Xml
   occ::handle<TDocStd_Document> doc_xml, doc_xml_open;
@@ -4058,106 +4074,198 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
   // Save
   // if (app->SaveAs(doc_xml, "W:\\doc.xml") != PCDM_SS_OK)
   if (app->SaveAs(doc_xml, aFile2) != PCDM_SS_OK)
+  {
     return 1;
+  }
   intlist.Nullify();
   ref.Nullify();
   app->Close(doc_xml);
   doc_xml.Nullify();
   // if (app->Open("W:\\doc.xml", doc_xml_open) != PCDM_RS_OK)
   if (app->Open(aFile2, doc_xml_open) != PCDM_RS_OK)
+  {
     return 2;
+  }
   if (!doc_xml_open->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 3;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDataStd_IntegerList::GetID(), intlist))
+  {
     return 4;
+  }
   if (intlist->First() != 1)
+  {
     return 5;
+  }
   if (intlist->Last() != 5)
+  {
     return 6;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDataStd_RealList::GetID(), dbllist))
+  {
     return 4;
+  }
   if (dbllist->First() != 1.5)
+  {
     return 5;
+  }
   if (dbllist->Last() != 5.5)
+  {
     return 6;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDataStd_ExtStringList::GetID(), strlist))
+  {
     return 4;
+  }
   if (strlist->First() != "Guten ")
+  {
     return 5;
+  }
   if (strlist->Last() != "Tag")
+  {
     return 6;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
+  {
     return 4;
+  }
   if (boollist->First())
+  {
     return 5;
+  }
   if (!boollist->Last())
+  {
     return 6;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
+  {
     return 4;
+  }
   TDF_Tool::Entry(reflist->First(), entry_first);
   if (entry1 != entry_first)
+  {
     return 5;
+  }
   TDF_Tool::Entry(reflist->Last(), entry_last);
   if (entry2 != entry_last)
+  {
     return 6;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
+  {
     return 4;
+  }
   if (boolarr->Value(15))
+  {
     return 5;
+  }
   if (!boolarr->Value(16))
+  {
     return 5;
+  }
   if (!boolarr->Value(17))
+  {
     return 5;
+  }
   if (!boolarr->Value(18))
+  {
     return 5;
+  }
   if (!boolarr->Value(19))
+  {
     return 5;
+  }
   if (!boolarr->Value(20))
+  {
     return 5;
+  }
   if (boolarr->Value(21))
+  {
     return 5;
+  }
   if (!boolarr->Value(22))
+  {
     return 5;
+  }
   if (!boolarr->Value(23))
+  {
     return 5;
+  }
   if (!boolarr->Value(24))
+  {
     return 5;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
+  {
     return 4;
+  }
   TDF_Tool::Entry(refarr->Value(444), entry_first);
   if (entry1 != entry_first)
+  {
     return 5;
+  }
   TDF_Tool::Entry(refarr->Value(445), entry_last);
   if (entry2 != entry_last)
+  {
     return 6;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDataStd_ByteArray::GetID(), bytearr))
+  {
     return 4;
+  }
   if (bytearr->Value(15) != 0)
+  {
     return 5;
+  }
   if (bytearr->Value(16) != 10)
+  {
     return 5;
+  }
   if (bytearr->Value(17) != 100)
+  {
     return 5;
+  }
   if (bytearr->Value(18) != 200)
+  {
     return 5;
+  }
   if (bytearr->Value(19) != 250)
+  {
     return 5;
+  }
   if (bytearr->Value(20) != 251)
+  {
     return 5;
+  }
   if (bytearr->Value(21) != 252)
+  {
     return 5;
+  }
   if (bytearr->Value(22) != 253)
+  {
     return 5;
+  }
   if (bytearr->Value(23) != 254)
+  {
     return 5;
+  }
   if (bytearr->Value(24) != 255)
+  {
     return 5;
+  }
   if (!doc_xml_open->Main().FindAttribute(TDF_Reference::GetID(), ref))
+  {
     return 4;
+  }
   if (ref->Get().IsNull())
+  {
     return 5;
+  }
   if (ref->Get().Tag() != 103)
+  {
     return 5;
+  }
 
   // Bin
   occ::handle<TDocStd_Document> doc_bin, doc_bin_open;
@@ -4219,96 +4327,178 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
   // Save
   // if (app->SaveAs(doc_bin, "W:\\doc.cbf") != PCDM_SS_OK)
   if (app->SaveAs(doc_bin, aFile3) != PCDM_SS_OK)
+  {
     return 1;
+  }
   intlist.Nullify();
   ref.Nullify();
   app->Close(doc_bin);
   doc_bin.Nullify();
   // if (app->Open("W:\\doc.cbf", doc_bin_open) != PCDM_RS_OK)
   if (app->Open(aFile3, doc_bin_open) != PCDM_RS_OK)
+  {
     return 2;
+  }
   if (!doc_bin_open->Main().IsAttribute(TDataStd_Tick::GetID()))
+  {
     return 3;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_IntegerList::GetID(), intlist))
+  {
     return 4;
+  }
   if (intlist->First() != 1)
+  {
     return 5;
+  }
   if (intlist->Last() != 5)
+  {
     return 6;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_RealList::GetID(), dbllist))
+  {
     return 4;
+  }
   if (dbllist->First() != 1.5)
+  {
     return 5;
+  }
   if (dbllist->Last() != 5.5)
+  {
     return 6;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_ExtStringList::GetID(), strlist))
+  {
     return 4;
+  }
   if (strlist->First() != "Bonjour")
+  {
     return 5;
+  }
   if (strlist->Last() != "Bonsoir")
+  {
     return 6;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
+  {
     return 4;
+  }
   if (boollist->First())
+  {
     return 5;
+  }
   if (!boollist->Last())
+  {
     return 6;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
+  {
     return 4;
+  }
   TDF_Tool::Entry(reflist->First(), entry_first);
   if (entry1 != entry_first)
+  {
     return 5;
+  }
   TDF_Tool::Entry(reflist->Last(), entry_last);
   if (entry2 != entry_last)
+  {
     return 6;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
+  {
     return 4;
+  }
   if (boolarr->Value(15))
+  {
     return 5;
+  }
   if (!boolarr->Value(16))
+  {
     return 5;
+  }
   if (!boolarr->Value(17))
+  {
     return 5;
+  }
   if (!boolarr->Value(18))
+  {
     return 5;
+  }
   if (!boolarr->Value(19))
+  {
     return 5;
+  }
   if (!boolarr->Value(20))
+  {
     return 5;
+  }
   if (boolarr->Value(21))
+  {
     return 5;
+  }
   if (!boolarr->Value(22))
+  {
     return 5;
+  }
   if (!boolarr->Value(23))
+  {
     return 5;
+  }
   if (!boolarr->Value(24))
+  {
     return 5;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
+  {
     return 4;
+  }
   TDF_Tool::Entry(refarr->Value(0), entry_first);
   if (entry1 != entry_first)
+  {
     return 5;
+  }
   TDF_Tool::Entry(refarr->Value(1), entry_last);
   if (entry2 != entry_last)
+  {
     return 6;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_ByteArray::GetID(), bytearr))
+  {
     return 4;
+  }
   if (bytearr->Value(15) != 0)
+  {
     return 5;
+  }
   if (bytearr->Value(16) != 255)
+  {
     return 5;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDataStd_NamedData::GetID(), nameddata))
+  {
     return 4;
+  }
   if (nameddata->GetByte("A") != 12)
+  {
     return 5;
+  }
   if (nameddata->GetByte("B") != 234)
+  {
     return 5;
+  }
   if (!doc_bin_open->Main().FindAttribute(TDF_Reference::GetID(), ref))
+  {
     return 4;
+  }
   if (ref->Get().IsNull())
+  {
     return 5;
+  }
   if (ref->Get().Tag() != 103)
+  {
     return 5;
+  }
 
   return 0;
 }
@@ -4327,7 +4517,9 @@ static int OCC16782(Draw_Interpretor& di, int argc, const char** argv)
   TCollection_ExtendedString aFile3(argv[3]);
 
   if (app.IsNull())
+  {
     app = new AppStd_Application();
+  }
 
   int good = 0;
 
@@ -4356,9 +4548,13 @@ static int OCC16782(Draw_Interpretor& di, int argc, const char** argv)
   di << "Status = " << good << "\n";
 
   if (!good)
+  {
     di << "\nThe " << argv[0] << " test is passed well, OK\n";
+  }
   else
+  {
     di << "\nThe " << argv[0] << " test failed, Faulty\n";
+  }
 
   return 0;
 }
@@ -4423,9 +4619,13 @@ static int OCC12584(Draw_Interpretor& di, int argc, const char** argv)
     {
       bool IsDisplayed = aContext->IsDisplayed(aCS);
       if (IsDisplayed)
+      {
         di << "ColorScaleIsDisplayed = 1\n";
+      }
       else
+      {
         di << "ColorScaleIsDisplayed = 0\n";
+      }
     }
   }
   return 0;
@@ -4546,12 +4746,16 @@ int OCC22301(Draw_Interpretor& di, int argc, const char** argv)
   // Create mask 1111: extent == 4
   TColStd_PackedMapOfInteger aFullMask;
   for (int i = 0; i < 4; i++)
+  {
     aFullMask.Add(i);
+  }
 
   // Create mask 1100: extent == 2
   TColStd_PackedMapOfInteger aPartMask;
   for (int i = 0; i < 2; i++)
+  {
     aPartMask.Add(i);
+  }
 
   di << "aFullMask = 1111\n";
   di << "aPartMask = 1100\n";
@@ -4569,130 +4773,18 @@ int OCC22301(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-#include <NCollection_DataMap.hxx>
-class AIS_InteractiveObject;
-
-int OCC22744(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  TCollection_ExtendedString anExtString;
-
-  char16_t aNonAsciiChar = 0x0f00;
-  anExtString.Insert(1, aNonAsciiChar);
-
-  di << "Is ASCII: " << (anExtString.IsAscii() ? "true : Error" : "false : OK") << "\n";
-  NCollection_DataMap<TCollection_ExtendedString, int> aMap;
-  aMap.Bind(anExtString, 0);
-
-  return 0;
-}
-
-int OCC22558(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 10)
-  {
-    di << "Wrong number of arguments" << argv[0] << "\n";
-    return 1;
-  }
-
-  double X_vec = Draw::Atof(argv[1]);
-  double Y_vec = Draw::Atof(argv[2]);
-  double Z_vec = Draw::Atof(argv[3]);
-
-  double X_dir = Draw::Atof(argv[4]);
-  double Y_dir = Draw::Atof(argv[5]);
-  double Z_dir = Draw::Atof(argv[6]);
-
-  double X_pnt = Draw::Atof(argv[7]);
-  double Y_pnt = Draw::Atof(argv[8]);
-  double Z_pnt = Draw::Atof(argv[9]);
-
-  gp_Dir toSym(X_vec, Y_vec, Z_vec);
-  gp_Dir dir(X_dir, Y_dir, Z_dir);
-  gp_Pnt loc(X_pnt, Y_pnt, Z_pnt);
-  gp_Ax2 symObj(loc, dir);
-  toSym.Mirror(symObj);
-
-  di << "The result " << toSym.X() << " " << toSym.Y() << " " << toSym.Z() << "\n";
-  return 0;
-}
-
-int OCC22736(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 9)
-  {
-    di << "Usage : " << argv[0]
-       << " X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint Y_mirrorSecondPoint X_p1 "
-          "Y_p1 X_p2 Y_p2\n";
-    return 1;
-  }
-
-  double X_mirrorFirstPoint  = Draw::Atof(argv[1]);
-  double Y_mirrorFirstPoint  = Draw::Atof(argv[2]);
-  double X_mirrorSecondPoint = Draw::Atof(argv[3]);
-  double Y_mirrorSecondPoint = Draw::Atof(argv[4]);
-  double X_p1                = Draw::Atof(argv[5]);
-  double Y_p1                = Draw::Atof(argv[6]);
-  double X_p2                = Draw::Atof(argv[7]);
-  double Y_p2                = Draw::Atof(argv[8]);
-
-  gp_Pnt2d mirrorFirstPoint(X_mirrorFirstPoint, Y_mirrorFirstPoint);
-  gp_Pnt2d mirrorSecondPoint(X_mirrorSecondPoint, Y_mirrorSecondPoint);
-  gp_Ax2d  mirrorAxis(mirrorFirstPoint, gp_Vec2d(mirrorFirstPoint, mirrorSecondPoint));
-
-  gp_Pnt2d p1(X_p1, Y_p1);
-  gp_Pnt2d p2(X_p2, Y_p2);
-
-  gp_Trsf2d M1;
-  M1.SetMirror(mirrorAxis);
-  gp_Trsf2d M2;
-  M2.SetMirror(mirrorAxis);
-  gp_Trsf2d Tcomp;
-  Tcomp = M2.Multiplied(M1);
-
-  constexpr double aTol    = Precision::Confusion();
-  int              aStatus = 0;
-
-  // After applying two times the same mirror the point is located on the same location OK
-  gp_Pnt2d p1MirrorM1 = p1.Transformed(M1);
-  if (std::abs(p2.X() - p1MirrorM1.X()) > aTol)
-    aStatus = 2;
-  if (std::abs(p2.Y() - p1MirrorM1.Y()) > aTol)
-    aStatus = 3;
-
-  gp_Pnt2d p1MirrorM1M2 = p1MirrorM1.Transformed(M2);
-  if (std::abs(p1.X() - p1MirrorM1M2.X()) > aTol)
-    aStatus = 4;
-  if (std::abs(p1.Y() - p1MirrorM1M2.Y()) > aTol)
-    aStatus = 5;
-
-  // If we apply the composed transformation of the same two mirrors to a point the result is //not
-  // located on the initial position.-->>ERROR
-  gp_Pnt2d p1MirrorComp = p1.Transformed(Tcomp);
-  if (std::abs(p1.X() - p1MirrorComp.X()) > aTol)
-    aStatus = 6;
-  if (std::abs(p1.Y() - p1MirrorComp.Y()) > aTol)
-    aStatus = 7;
-
-  di << "Status = " << aStatus << "\n";
-  return 0;
-}
-
 int OCC23429(Draw_Interpretor& /*di*/, int narg, const char** a)
 {
   if (narg < 4)
+  {
     return 1;
+  }
 
   TopoDS_Shape aShape = DBRep::Get(a[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
 
   BRepFeat_SplitShape Spls(aShape);
   Spls.SetCheckInterior(false);
@@ -4702,7 +4794,9 @@ int OCC23429(Draw_Interpretor& /*di*/, int narg, const char** a)
   BRepAlgoAPI_Section Builder(aShape, aTool, false);
   Builder.ComputePCurveOn1(true);
   if (narg == 5)
+  {
     Builder.Approximation(true);
+  }
   Builder.Build();
   TopoDS_Shape aSection = Builder.Shape();
 
@@ -4723,7 +4817,9 @@ int OCC23429(Draw_Interpretor& /*di*/, int narg, const char** a)
       TopLoc_Location           aLoc;
       occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace, aLoc);
       if (aSurface == theSurface && aLoc == theLoc)
+      {
         break;
+      }
     }
     Spls.Add(anEdge, aFace);
   }
@@ -4805,7 +4901,9 @@ struct Functor
     if (theTask.Range.More())
     {
       if (theTask.Mat1.RowNumber() > 1)
+      {
         theTask.Mat3 = theTask.Mat1 * theTask.Mat2;
+      }
     }
     theTask.Range.Close();
   }
@@ -4823,13 +4921,21 @@ int OCC25748(Draw_Interpretor& di, int argc, const char** argv)
   for (int i = 1; i < argc; i++)
   {
     if (strcmp(argv[i], "-niter") == 0)
+    {
       nIter = Draw::Atoi(argv[++i]);
+    }
     else if (strcmp(argv[i], "-matsize") == 0)
+    {
       aMatSize = Draw::Atoi(argv[++i]);
+    }
     else if (strcmp(argv[i], "-progr") == 0)
+    {
       isProgress = true;
+    }
     else if (strcmp(argv[i], "-parallel") == 0)
+    {
       isParallel = true;
+    }
     else
     {
       di.PrintHelp("OCC25748");
@@ -4849,11 +4955,11 @@ int OCC25748(Draw_Interpretor& di, int argc, const char** argv)
                             "Parallel data processing",
                             nIter);
 
-  std::vector<Task> aTasks;
-  aTasks.reserve(nIter);
+  NCollection_LinearVector<Task> aTasks;
+  aTasks.Reserve(nIter);
   for (int i = 0; i < nIter; i++)
   {
-    aTasks.push_back(Task(aPS.Next(), aMatSize));
+    aTasks.Append(Task(aPS.Next(), aMatSize));
   }
 
   OSD_Timer aTimer;
@@ -4866,11 +4972,17 @@ int OCC25748(Draw_Interpretor& di, int argc, const char** argv)
   TCollection_AsciiString aText(nIter);
   aText += (isParallel ? " parallel" : " sequential");
   if (aMatSize > 1)
+  {
     aText = aText + " calculations on matrices " + aMatSize + "x" + aMatSize;
+  }
   else
+  {
     aText += " empty tasks";
+  }
   if (isProgress)
+  {
     aText += " with progress";
+  }
   di << "COUNTER " << aText << ": " << aTimer.ElapsedTime();
   di << "\nCOUNTER " << "including preparations" << ": " << aTimerWhole.ElapsedTime();
   return 0;
@@ -4925,12 +5037,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   OCC24,
                   group);
   theCommands.Add("OCC369", "OCC369 Shape", __FILE__, OCC369, group);
-  theCommands.Add("OCC524",
-                  "OCC524 LowerVector UpperVector InitialValueVector LowerRowMatrix UpperRowMatrix "
-                  "LowerColMatrix UpperColMatrix InitialValueMatrix",
-                  __FILE__,
-                  OCC524,
-                  group);
   // theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC708",
@@ -4938,7 +5044,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC708,
                   group);
-  theCommands.Add("OCC867", "OCC867 Point Surface Umin Usup Vmin Vsup", __FILE__, OCC867, group);
   theCommands.Add("OCC909", "OCC909 wire face", __FILE__, OCC909, group);
   theCommands.Add("OCC921", "OCC921 face", __FILE__, OCC921, group);
 
@@ -4976,31 +5081,20 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   OCC1487,
                   group);
 
-  theCommands.Add("OCC1077", "OCC1077 result", __FILE__, OCC1077, group);
   theCommands.Add("OCC5739", "OCC5739 name shape step", __FILE__, OCC5739_UniAbs, group);
-  theCommands.Add("OCC6046", "OCC6046 nb_of_vectors size", __FILE__, OCC6046, group);
   theCommands.Add("OCC5698", "OCC5698 wire", __FILE__, OCC5698, group);
   theCommands.Add("OCC6143", "OCC6143 catching signals", __FILE__, OCC6143, group);
   theCommands.Add("OCC30762", "OCC30762 printing backtrace", __FILE__, OCC30762, group);
   theCommands.Add("OCC7141", "OCC7141 [nCount] aPath", __FILE__, OCC7141, group);
-  theCommands.Add("OCC7372", "OCC7372", __FILE__, OCC7372, group);
   theCommands.Add("OCC8169", "OCC8169 edge1 edge2 plane", __FILE__, OCC8169, group);
   theCommands.Add("OCC10138", "OCC10138 lower upper", __FILE__, OCC10138, group);
-  theCommands.Add("OCC7639", "OCC7639 index1 value1 ... [indexN valueN]", __FILE__, OCC7639, group);
-  theCommands.Add("OCC8797", "OCC8797", __FILE__, OCC8797, group);
   theCommands.Add("OCC7068", "OCC7068", __FILE__, OCC7068, group);
   theCommands.Add("OCC11457",
                   "OCC11457 polygon lastedge x1 y1 z1 x2 y2 z2 ...",
                   __FILE__,
                   OCC11457,
                   group);
-  theCommands.Add("OCC13963",
-                  "OCC13963 ratio origin_x origin_y origin_z",
-                  __FILE__,
-                  OCC13963,
-                  group);
   theCommands.Add("OCC14376", "OCC14376 shape [deflection]", __FILE__, OCC14376, group);
-  theCommands.Add("OCC15489", "OCC15489 A B C", __FILE__, OCC15489, group);
   theCommands.Add("OCC15755", "OCC15755 file shape", __FILE__, OCC15755, group);
   theCommands.Add("OCC16782", "OCC16782 file.std file.xml file.cbf", __FILE__, OCC16782, group);
   theCommands.Add("OCC12584", "OCC12584 [mode = 0/1/2]", __FILE__, OCC12584, group);
@@ -5012,18 +5106,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   OCC17424,
                   group);
   theCommands.Add("OCC22301", "OCC22301", __FILE__, OCC22301, group);
-  theCommands.Add("OCC22736",
-                  "OCC22736 X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint "
-                  "Y_mirrorSecondPoint X_p1 Y_p1 X_p2 Y_p2",
-                  __FILE__,
-                  OCC22736,
-                  group);
-  theCommands.Add("OCC22744", "OCC22744", __FILE__, OCC22744, group);
-  theCommands.Add("OCC22558",
-                  "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt",
-                  __FILE__,
-                  OCC22558,
-                  group);
   theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
   theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);
   theCommands.Add(
@@ -5044,5 +5126,4 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC31965,
                   group);
-  return;
 }

@@ -35,7 +35,9 @@ void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "unequally_disposed_geometric_tolerance"))
+  {
     return;
+  }
 
   // inherited from GeometricTolerance
 

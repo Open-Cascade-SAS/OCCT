@@ -36,10 +36,14 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
 {
   int aNb = myMapOfCorrect2dEdges.Extent();
   if (!aNb)
+  {
     return 0;
+  }
 
   if (aResult.ShapeType() != TopAbs_SOLID)
+  {
     return 0;
+  }
 
   //
   // 1. Map Of sources' subshapes .
@@ -126,12 +130,16 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
             bool            free = anEdge.Free();
             anEdge.Free(true);
             for (; anExpVertices.More(); anExpVertices.Next())
+            {
               BB.Add(anEdge, anExpVertices.Current());
+            }
 
             anEdge.Free(free);
           }
           else
+          {
             anEdge = E;
+          }
 
           anEdge.Orientation(E.Orientation());
           BB.Add(aWire, anEdge);
@@ -169,7 +177,9 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
         corrLSE.Append(newE);
       }
       else
+      {
         corrLSE.Append(E);
+      }
     }
     LSE.Clear();
     LSE.Append(corrLSE);
@@ -183,7 +193,9 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
   {
     const TopoDS_Shape& es = BDS.SectionEdge(i);
     if (es.IsNull())
+    {
       continue;
+    }
 
     for (int j = 0; j <= 2; j++)
     {
@@ -200,7 +212,9 @@ int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
           corrLSE.Append(newE);
         }
         else
+        {
           corrLSE.Append(E);
+        }
       }
       LSE.Clear();
       LSE.Append(corrLSE);

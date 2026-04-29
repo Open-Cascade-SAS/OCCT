@@ -115,16 +115,22 @@ bool DBRep_HideData::IsSame(const gp_Trsf& TProj, const double focal) const
   if (focal > 0)
   {
     if (myFocal <= 0)
+    {
       return false;
+    }
     if (myFocal != focal)
+    {
       return false;
+    }
     const gp_XYZ& T1 = TProj.TranslationPart();
     const gp_XYZ& T2 = myTrsf.TranslationPart();
 
     for (int i = 1; i <= 3; i++)
     {
       if (T1.Coord(i) != T2.Coord(i))
+      {
         return false;
+      }
     }
   }
   const gp_Mat& M1 = TProj.HVectorialPart();
@@ -136,7 +142,9 @@ bool DBRep_HideData::IsSame(const gp_Trsf& TProj, const double focal) const
     for (int j = 1; j <= 3; j++)
     {
       if (M1.Value(i, j) != M2.Value(i, j))
+      {
         return false;
+      }
     }
   }
   return true;
@@ -165,7 +173,9 @@ void DBRep_HideData::DrawOn(Draw_Display&     D,
       bool                   todraw = true;
       if ((!withRg1 && BP.Rg1Line() && !BP.OutLine())
           || (!withRgN && BP.RgNLine() && !BP.OutLine()))
+      {
         todraw = false;
+      }
       if (todraw)
       {
         D.MoveTo(BP.P1());
@@ -185,7 +195,9 @@ void DBRep_HideData::DrawOn(Draw_Display&     D,
     const HLRBRep_BiPoint& BP     = It.Value();
     bool                   todraw = true;
     if ((!withRg1 && BP.Rg1Line() && !BP.OutLine()) || (!withRgN && BP.RgNLine() && !BP.OutLine()))
+    {
       todraw = false;
+    }
     if (todraw)
     {
       D.MoveTo(BP.P1());

@@ -14,20 +14,20 @@
 //! @file BOPDS_VectorOfShapeInfo.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<BOPDS_ShapeInfo> directly instead.
+//!             Use NCollection_DynamicArray<BOPDS_ShapeInfo> directly instead.
 
 #ifndef _BOPDS_VectorOfShapeInfo_hxx
 #define _BOPDS_VectorOfShapeInfo_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfShapeInfo.hxx is deprecated since OCCT 8.0.0. Use "
-                           "NCollection_Vector<BOPDS_ShapeInfo> directly.")
+                           "NCollection_DynamicArray<BOPDS_ShapeInfo> directly.")
 
   Standard_DEPRECATED(
-    "BOPDS_VectorOfShapeInfo is deprecated, use NCollection_Vector<BOPDS_ShapeInfo> directly")
-typedef NCollection_Vector<BOPDS_ShapeInfo> BOPDS_VectorOfShapeInfo;
+    "BOPDS_VectorOfShapeInfo is deprecated, use NCollection_DynamicArray<BOPDS_ShapeInfo> directly")
+typedef NCollection_DynamicArray<BOPDS_ShapeInfo> BOPDS_VectorOfShapeInfo;
 
 #endif // _BOPDS_VectorOfShapeInfo_hxx

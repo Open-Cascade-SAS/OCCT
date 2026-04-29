@@ -51,7 +51,9 @@ void BRepTools_Substitution::Substitute(const TopoDS_Shape&                   OS
 void BRepTools_Substitution::Build(const TopoDS_Shape& S)
 {
   if (IsCopied(S))
+  {
     return;
+  }
 
   BRep_Builder    B;
   TopoDS_Iterator iteS(S.Oriented(TopAbs_FORWARD));
@@ -120,10 +122,12 @@ void BRepTools_Substitution::Build(const TopoDS_Shape& S)
     {
       if (NewS.ShapeType() == TopAbs_WIRE || NewS.ShapeType() == TopAbs_SHELL
           || NewS.ShapeType() == TopAbs_SOLID || NewS.ShapeType() == TopAbs_COMPOUND)
+      {
         //-----------------------------------------------------------------
         // Wire,Solid,Shell,Compound must have subshape else they disappear
         //-----------------------------------------------------------------
         NewS.Nullify();
+      }
     }
   }
   NCollection_List<TopoDS_Shape> L;
@@ -132,7 +136,9 @@ void BRepTools_Substitution::Build(const TopoDS_Shape& S)
   // so NewS is bound with orientation FORWARD.
   //-------------------------------------------------------
   if (!NewS.IsNull())
+  {
     L.Append(NewS.Oriented(TopAbs_FORWARD));
+  }
   Substitute(S, L);
 }
 
@@ -143,12 +149,18 @@ bool BRepTools_Substitution::IsCopied(const TopoDS_Shape& S) const
   if (myMap.IsBound(S))
   {
     if (myMap(S).IsEmpty())
+    {
       return true;
+    }
     else
+    {
       return !S.IsSame(myMap(S).First());
+    }
   }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================

@@ -30,7 +30,9 @@ void RWStepGeom_RWCylindricalSurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "cylindrical_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

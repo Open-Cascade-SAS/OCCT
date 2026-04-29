@@ -33,11 +33,17 @@ double GeomLib_LogSample::GetParameter(const int Index) const
     double aA, aB;
     Bounds(aA, aB);
     if (Index == 1)
+    {
       return aA;
+    }
     else if (Index == aN)
+    {
       return aB;
+    }
     else
+    {
       throw Standard_OutOfRange("GeomLib_LogSample::GetParameter");
+    }
   }
 
   double v = myF + std::exp(myexp * Index);

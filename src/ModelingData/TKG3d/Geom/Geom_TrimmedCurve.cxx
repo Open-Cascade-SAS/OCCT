@@ -62,9 +62,13 @@ Geom_TrimmedCurve::Geom_TrimmedCurve(const occ::handle<Geom_Curve>& C,
   // kill trimmed basis curves
   occ::handle<Geom_TrimmedCurve> T = occ::down_cast<Geom_TrimmedCurve>(C);
   if (!T.IsNull())
+  {
     basisCurve = occ::down_cast<Geom_Curve>(T->BasisCurve()->Copy());
+  }
   else
+  {
     basisCurve = occ::down_cast<Geom_Curve>(C->Copy());
+  }
 
   SetTrim(U1, U2, Sense, theAdjustPeriodic);
 }
@@ -95,7 +99,9 @@ void Geom_TrimmedCurve::SetTrim(const double U1,
 {
   bool sameSense = true;
   if (U1 == U2)
+  {
     throw Standard_ConstructionError("Geom_TrimmedCurve::U1 == U2");
+  }
 
   double Udeb = basisCurve->FirstParameter();
   double Ufin = basisCurve->LastParameter();
@@ -109,11 +115,13 @@ void Geom_TrimmedCurve::SetTrim(const double U1,
     uTrim1 = U1;
     uTrim2 = U2;
     if (theAdjustPeriodic)
+    {
       ElCLib::AdjustPeriodic(Udeb,
                              Ufin,
                              std::min(std::abs(uTrim2 - uTrim1) / 2, Precision::PConfusion()),
                              uTrim1,
                              uTrim2);
+    }
   }
 
   else
@@ -132,7 +140,9 @@ void Geom_TrimmedCurve::SetTrim(const double U1,
     }
 
     if ((Udeb - uTrim1 > Precision::PConfusion()) || (uTrim2 - Ufin > Precision::PConfusion()))
+    {
       throw Standard_ConstructionError("Geom_TrimmedCurve::parameters out of range");
+    }
   }
   if (!sameSense)
   {
@@ -150,7 +160,9 @@ bool Geom_TrimmedCurve::IsClosed() const
     const double aLength = LastParameter() - FirstParameter();
     if (aLength > Precision::PConfusion()
         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+    {
       return true;
+    }
   }
   return StartPoint().SquareDistance(EndPoint()) <= Precision::Computational();
 }
@@ -165,7 +177,9 @@ bool Geom_TrimmedCurve::IsPeriodic() const
     const double aLength = LastParameter() - FirstParameter();
     if (aLength > Precision::PConfusion()
         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+    {
       return true;
+    }
   }
   return false;
 }

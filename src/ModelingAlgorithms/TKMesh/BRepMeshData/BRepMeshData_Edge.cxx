@@ -39,7 +39,7 @@ BRepMeshData_Edge::~BRepMeshData_Edge() = default;
 
 int BRepMeshData_Edge::PCurvesNb() const
 {
-  return myPCurves.Size();
+  return myPCurves.Length();
 }
 
 //=================================================================================================

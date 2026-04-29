@@ -273,7 +273,9 @@ static void FUN_addf(const TopAbs_State  sta,
 #endif
   TopoDS_Shape fori = ftoadd;
   if (sta == TopAbs_IN)
+  {
     fori.Complement();
+  }
   map.Bind(fori, fori);
 }
 
@@ -293,15 +295,21 @@ static int FUN_comparekoletgesh(TopOpeBRepTool_ShapeClassifier& SC,
   {
     const TopoDS_Face& f1 = TopoDS::Face(exf.Current());
     if (f1.IsSame(fkole1))
+    {
       continue;
+    }
     gp_Pnt pnt1;
     BRepClass3d_SolidExplorer::FindAPointInTheFace(f1, pnt1);
     SC.StateP3DReference(pnt1);
     TopAbs_State stpnt1 = SC.State();
     if (stpnt1 == TopAbs_IN)
+    {
       return 2;
+    }
     if (stpnt1 == TopAbs_OUT)
+    {
       return 1;
+    }
   }
   return 0;
 }
@@ -310,10 +318,14 @@ static bool FUN_changev(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS, con
 {
   bool changev = HDS->HasShape(v);
   if (!changev)
+  {
     return false;
+  }
   changev = HDS->HasSameDomain(v);
   if (!changev)
+  {
     return false;
+  }
   int rankv = HDS->DS().AncestorRank(v);
   changev   = (rankv == 2);
   return changev;
@@ -333,7 +345,9 @@ static bool FUN_updatev(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
     TopoDS_Shape oov;
     bool         ok = FUN_ds_getoov(v, HDS, oov);
     if (!ok)
+    {
       return false;
+    }
     oov.Orientation(oriv);
     BB.Add(newed, oov);
     BT.Parameter(newed, oov, parv);
@@ -399,10 +413,14 @@ static bool FUN_makefaces(
         BT.CopyEdge(ed.Oriented(TopAbs_FORWARD), newed);
         bool ok = ::FUN_updatev(HDS, newed, vf, TopAbs_FORWARD, ff, changevf);
         if (!ok)
+        {
           return false;
+        }
         ok = ::FUN_updatev(HDS, newed, vl, TopAbs_REVERSED, l, changevl);
         if (!ok)
+        {
           return false;
+        }
         newed.Orientation(oe);
         NCollection_List<TopoDS_Shape> led;
         led.Append(newed);
@@ -415,12 +433,16 @@ static bool FUN_makefaces(
     {
       const NCollection_List<TopoDS_Shape>& speds = BU.Splits(ed, TopAbs_ON);
       if (speds.Extent() == 0)
+      {
         return false;
+      }
       const TopoDS_Edge& spe     = TopoDS::Edge(speds.First());
       bool               sameori = FUN_tool_SameOri(ed, spe);
       TopAbs_Orientation orisp   = spe.Orientation();
       if (!sameori)
+      {
         orisp = TopAbs::Complement(orisp);
+      }
 
       NCollection_List<TopoDS_Shape>::Iterator it(speds);
       for (; it.More(); it.Next())
@@ -428,7 +450,9 @@ static bool FUN_makefaces(
         TopoDS_Edge esp = TopoDS::Edge(it.Value());
         bool        ok  = FUN_tool_pcurveonF(TopoDS::Face(f), esp);
         if (!ok)
+        {
           return false;
+        }
         TopoDS_Shape ee = esp.Oriented(orisp);
         loe.Append(ee);
       }
@@ -438,17 +462,23 @@ static bool FUN_makefaces(
       const NCollection_List<TopoDS_Shape>&    neweds = EnewE.ChangeFind(ed);
       NCollection_List<TopoDS_Shape>::Iterator itnes(neweds);
       for (; itnes.More(); itnes.Next())
+      {
         loe.Append(itnes.Value().Oriented(oe));
+      }
     }
     else
+    {
       loe.Append(ed);
+    }
   }
 
   TopoDS_Wire newW;
   //---------------
   BB.MakeWire(newW);
   for (NCollection_List<TopoDS_Shape>::Iterator itee(loe); itee.More(); itee.Next())
+  {
     BB.Add(newW, itee.Value());
+  }
 
   // the new face :
   // --------------
@@ -463,20 +493,28 @@ static bool FUN_makefaces(
   {
     const TopoDS_Wire OOw = TopoDS::Wire(exw.Current());
     if (OOw.IsSame(outerwf))
+    {
       continue;
+    }
     BB.Add(newf, OOw);
   }
 
   if (M_REVERSED(of))
+  {
     newf.Orientation(TopAbs_REVERSED);
+  }
 
   // xpu140898 : CTS21251
   TopoDS_Face Newf = newf;
   bool        ok   = TopOpeBRepTool::CorrectONUVISO(TopoDS::Face(f), Newf);
   if (ok)
+  {
     newfaces.Append(Newf);
+  }
   else
+  {
     newfaces.Append(newf);
+  }
 
   return true;
 }
@@ -513,7 +551,9 @@ static bool FUN_rebuildfc(
     // prequesitory : ed in {edges of Owk}
     //                ed's faces ancestor = {Fk,fofj}
     if (lfcFk.Extent() != 1)
+    {
       return false;
+    }
 
     // purpose : Building up new topologies on connexed faces
     //           attached to outer wire's edges.
@@ -521,7 +561,9 @@ static bool FUN_rebuildfc(
     NCollection_List<TopoDS_Shape> newfcFk;
     bool                           ok = FUN_makefaces(BU, HDS, EnewE, fcFk, Owk, newfcFk);
     if (!ok)
+    {
       return false;
+    }
     fcnewfc.Add(fcFk, newfcFk);
   }
   return true;
@@ -608,7 +650,9 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
     // getting greater
     rgre = ::FUN_comparekoletgesh(myShapeClassifier, myShape1, myShape2, fac1, fac2);
     if (rgre == 0)
+    {
       rgre = FUN_tool_comparebndkole(myShape1, myShape2);
+    }
   }
   if (rgre == 0)
   {
@@ -733,9 +777,13 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
     {
       const TopoDS_Shape& ff = exSMA.Current();
       if (fcnewfcSMA.Contains(ff))
+      {
         continue;
+      }
       if (ff.IsSame(*pfSMA))
+      {
         continue;
+      }
       lOOfSMA.Append(ff); // DEB
       ::FUN_addf(staSMA, ff, addedfaces);
     }
@@ -744,9 +792,13 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
     {
       const TopoDS_Shape& ff = exGRE.Current();
       if (fcnewfcGRE.Contains(ff))
+      {
         continue;
+      }
       if (ff.IsSame(*pfGRE))
+      {
         continue;
+      }
       lOOfGRE.Append(ff); // DEB
       ::FUN_addf(staGRE, ff, addedfaces);
     }
@@ -794,7 +846,9 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
 #endif
 
   if (myIsKPart != 2)
+  {
     return; // isdisj
+  }
 
   NCollection_List<TopoDS_Shape>& lmergesha1 = ChangeMerged(myShape1, myState1);
   /*  NCollection_List<TopoDS_Shape>& lmergesha2 =*/ChangeMerged(myShape2, myState2);
@@ -814,10 +868,14 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
   {
     anExp.Init(myShape1, (TopAbs_ShapeEnum)i, TopAbs_SOLID);
     if (anExp.More())
+    {
       hasnotsol1 = true;
+    }
     anExp.Init(myShape2, (TopAbs_ShapeEnum)i, TopAbs_SOLID);
     if (anExp.More())
+    {
       hasnotsol2 = true;
+    }
   }
   soldisj = !(hasnotsol1 || hasnotsol2);
   // modified by NIZHNY-MKK  Fri May 19 16:18:16 2000.END
@@ -840,22 +898,30 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
       if (Opefus())
       {
         if (!disjPerformFuse(aMapOfSolid1, aMapOfSolid2, aMapOfResult))
+        {
           return;
+        }
       }
       else if (Opec12())
       {
         if (!disjPerformCut(aMapOfSolid1, aMapOfSolid2, aMapOfResult))
+        {
           return;
+        }
       }
       else if (Opec21())
       {
         if (!disjPerformCut(aMapOfSolid2, aMapOfSolid1, aMapOfResult))
+        {
           return;
+        }
       }
       else if (Opecom())
       {
         if (!disjPerformCommon(aMapOfSolid1, aMapOfSolid2, aMapOfResult))
+        {
           return;
+        }
       }
       for (int ii = 1; ii <= aMapOfResult.Extent(); ii++)
       {
@@ -955,11 +1021,11 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
       lmergesha1.Append(myShape2);
     }
     else
+    {
       return;
+    }
 
   } // ( !soldisj )
-
-  return;
 
 } // MergeKPartisdisj
 
@@ -979,11 +1045,15 @@ void TopOpeBRepBuild_Builder::MergeKPartisfafa()
     TopExp_Explorer ex;
     ex.Init(myShape1, TopAbs_FACE);
     if (!ex.More())
+    {
       return;
+    }
     TopoDS_Shape F1 = ex.Current();
     ex.Init(myShape2, TopAbs_FACE);
     if (!ex.More())
+    {
       return;
+    }
     TopoDS_Shape F2 = ex.Current();
 
     NCollection_List<TopoDS_Shape> LF1, LF2;
@@ -992,15 +1062,25 @@ void TopOpeBRepBuild_Builder::MergeKPartisfafa()
     TopAbs_ShapeEnum      tf = TopAbs_FACE;
     TopOpeBRepBuild_GTopo G;
     if (Opec12())
+    {
       G = TopOpeBRepBuild_GTool::GCutSame(tf, tf);
+    }
     else if (Opec21())
+    {
       G = TopOpeBRepBuild_GTool::GCutSame(tf, tf).CopyPermuted();
+    }
     else if (Opecom())
+    {
       G = TopOpeBRepBuild_GTool::GComSame(tf, tf);
+    }
     else if (Opefus())
+    {
       G = TopOpeBRepBuild_GTool::GFusSame(tf, tf);
+    }
     else
+    {
       return;
+    }
 
     GMapShapes(myShape1, myShape2);
     GMergeFaces(LF1, LF2, G);
@@ -1040,7 +1120,9 @@ void TopOpeBRepBuild_Builder::MergeKPartissoso()
     {
       ex.Init(myShape1, TopAbs_SOLID);
       if (!ex.More())
+      {
         return;
+      }
       SO1 = ex.Current();
     }
 
@@ -1049,12 +1131,16 @@ void TopOpeBRepBuild_Builder::MergeKPartissoso()
     {
       ex.Init(myShape2, TopAbs_SOLID);
       if (!ex.More())
+      {
         return;
+      }
       SO2 = ex.Current();
     }
 
     if (SO1.IsNull())
+    {
       return;
+    }
 
     NCollection_List<TopoDS_Shape> LSO1, LSO2;
     GFindSamDom(SO1, LSO1, LSO2);
@@ -1062,15 +1148,25 @@ void TopOpeBRepBuild_Builder::MergeKPartissoso()
     TopAbs_ShapeEnum      tf = TopAbs_FACE; // NYI TopAbs_SOLID
     TopOpeBRepBuild_GTopo G;
     if (Opec12())
+    {
       G = TopOpeBRepBuild_GTool::GCutSame(tf, tf);
+    }
     else if (Opec21())
+    {
       G = TopOpeBRepBuild_GTool::GCutSame(tf, tf).CopyPermuted();
+    }
     else if (Opecom())
+    {
       G = TopOpeBRepBuild_GTool::GComSame(tf, tf);
+    }
     else if (Opefus())
+    {
       G = TopOpeBRepBuild_GTool::GFusSame(tf, tf);
+    }
     else
+    {
       return;
+    }
 
     GMapShapes(myShape1, myShape2);
     GMergeSolids(LSO1, LSO2, G);
@@ -1108,13 +1204,17 @@ static bool sectionedgesON(
     const TopoDS_Shape&                      e1  = ex1.Current();
     NCollection_List<TopoDS_Shape>::Iterator it2 = HDS->SameDomain(e1);
     if (!it2.More())
+    {
       return false; // xpu231098 : cto904C7 : e1 !hsd
+    }
     for (; it2.More(); it2.Next())
     {
       const TopoDS_Shape& e2      = it2.Value();
       bool                isbound = mape2.Contains(e2);
       if (!isbound)
+      {
         return false;
+      }
     }
   }
   return true;
@@ -1138,7 +1238,9 @@ static bool allIonsectionedges(
     const TopoDS_Shape& e1       = HDS->Shape(G1);
     bool                isbound  = isgbound ? mape1.Contains(e1) : mape2.Contains(e1);
     if (!isbound)
+    {
       return false;
+    }
   }
   return true;
 }
@@ -1159,32 +1261,44 @@ int TopOpeBRepBuild_Builder::KPiskoletge()
 
   bool iskp1 = KPiskoletgesh(myShape1, lShsd1, lfhsd1);
   if (!iskp1)
+  {
     return 0;
+  }
   NCollection_List<TopoDS_Shape> lplhsd1, lcyhsd1;
   ::FUN_sortplcy(lfhsd1, lplhsd1, lcyhsd1);
   int nplhsd1 = lplhsd1.Extent();
   int ncyhsd1 = lcyhsd1.Extent();
   if (nplhsd1 != 1)
+  {
     return 0;
+  }
   if (ncyhsd1 > 1)
+  {
     return 0;
+  }
 
   bool iskp2 = KPiskoletgesh(myShape2, lShsd2, lfhsd2);
   if (!iskp2)
+  {
     return 0;
+  }
   NCollection_List<TopoDS_Shape> lplhsd2, lcyhsd2;
   ::FUN_sortplcy(lfhsd2, lplhsd2, lcyhsd2);
   int nplhsd2 = lplhsd2.Extent();
   int ncyhsd2 = lcyhsd2.Extent();
   if (nplhsd2 != 1)
+  {
     return 0;
+  }
 
   // Si l'un des objets est constitue de plusieurs solides on passe
   // dans le cas general.
   int nshsd1 = lShsd1.Extent();
   int nshsd2 = lShsd2.Extent();
   if (nshsd1 > 1 || nshsd2 > 1)
+  {
     return 0;
+  }
 
   // NYI : (nplhsd1 > 1) || (nplhsd2 > 1)
   // ------------------------------------
@@ -1222,19 +1336,27 @@ int TopOpeBRepBuild_Builder::KPiskoletge()
 
   bool se1ONouterw2 = ::sectionedgesON(myDataStructure, outerw1, mape2);
   if (!se1ONouterw2)
+  {
     return 0;
+  }
   bool se2ONouterw1 = ::sectionedgesON(myDataStructure, outerw2, mape1);
   if (!se2ONouterw1)
+  {
     return 0;
+  }
 
   // NYI : <fi> interferes with faces of <Sj> on edges different from outerw's edges
   // -------=-----------------------------------------------------------------------
   bool allI1onseouterw = ::allIonsectionedges(myDataStructure, f1, mape1, mape2);
   if (!allI1onseouterw)
+  {
     return 0;
+  }
   bool allI2onseouterw = ::allIonsectionedges(myDataStructure, f2, mape2, mape1);
   if (!allI2onseouterw)
+  {
     return 0;
+  }
 
   // NYI : (ncyhsd1 > 1) || (ncyhsd2 > 1)
   // ------------------------------------
@@ -1243,14 +1365,20 @@ int TopOpeBRepBuild_Builder::KPiskoletge()
   {
     bool cycy = (ncyhsd1 == 1) && (ncyhsd2 == 1);
     if (!cycy)
+    {
       return 0;
+    }
 
     bool isbound1 = FUN_tool_inS(outerw1, f1);
     if (!isbound1)
+    {
       return 0;
+    }
     bool isbound2 = FUN_tool_inS(outerw2, f2);
     if (!isbound2)
+    {
       return 0;
+    }
   }
 
   return 1;
@@ -1270,9 +1398,13 @@ int TopOpeBRepBuild_Builder::KPisdisj()
   //  if (nsh != 2) return 0;
 
   if (!DS.HasShape(myShape1))
+  {
     return 0;
+  }
   if (!DS.HasShape(myShape2))
+  {
     return 0;
+  }
 
   int isdisj1 = KPisdisjsh(myShape1);
   int isdisj2 = KPisdisjsh(myShape2);
@@ -1495,7 +1627,9 @@ bool TopOpeBRepBuild_Builder::KPiskoletgesh(const TopoDS_Shape&             Sarg
   const TopOpeBRepDS_DataStructure& BDS      = myDataStructure->DS();
   bool                              iskolesh = FUNKP_KPiskolesh((*this), BDS, Sarg, lShsd, lfhsd);
   if (!iskolesh)
+  {
     return false;
+  }
 
 #ifdef OCCT_DEBUG
   int nfhsd =
@@ -1508,13 +1642,19 @@ bool TopOpeBRepBuild_Builder::KPiskoletgesh(const TopoDS_Shape&             Sarg
     bool               isplan     = FUN_tool_plane(fac);
     bool               iscylinder = FUN_tool_cylinder(fac);
     if (iscylinder)
+    {
       continue;
+    }
     if (!isplan)
+    {
       return false;
+    }
 
     TopoDS_Wire outerw = BRepTools::OuterWire(fac);
     if (outerw.IsNull())
+    {
       return false;
+    }
 
     TopExp_Explorer exe(outerw, TopAbs_EDGE);
     //    int ne = 0;
@@ -1524,9 +1664,13 @@ bool TopOpeBRepBuild_Builder::KPiskoletgesh(const TopoDS_Shape&             Sarg
       bool                                  isse = BDS.IsSectionEdge(ed);
       const NCollection_List<TopoDS_Shape>& sp   = (*this).Splits(ed, TopAbs_ON);
       if (sp.Extent() == 0)
+      {
         return false;
+      }
       if (!isse)
+      {
         return false;
+      }
       //      ne++;
     }
     //    if (ne > 1) return false;
@@ -1642,22 +1786,30 @@ void TopOpeBRepBuild_Builder::KPSameDomain(NCollection_List<TopoDS_Shape>& L1,
 int TopOpeBRepBuild_Builder::KPisdisjsh(const TopoDS_Shape& Sarg) const
 {
   if (Sarg.IsNull())
+  {
     return 0;
+  }
 
   TopExp_Explorer ex;
   int             nhg;
 
   nhg = KPlhg(Sarg, TopAbs_SOLID);
   if (nhg != 0)
+  {
     return 0;
+  }
 
   nhg = KPlhg(Sarg, TopAbs_FACE);
   if (nhg != 0)
+  {
     return 0;
+  }
 
   nhg = KPlhg(Sarg, TopAbs_EDGE);
   if (nhg != 0)
+  {
     return 0;
+  }
 
   // un seul niveau de HasSameDomain
   int                            n1, n2;
@@ -1672,7 +1824,9 @@ int TopOpeBRepBuild_Builder::KPisdisjsh(const TopoDS_Shape& Sarg) const
       const TopoDS_Shape& s = it.Value();
       n2                    = KPlhsd(s, TopAbs_FACE);
       if (n2 != 0)
+      {
         return 0;
+      }
     }
   }
 
@@ -1685,7 +1839,9 @@ int TopOpeBRepBuild_Builder::KPisdisjsh(const TopoDS_Shape& Sarg) const
       const TopoDS_Shape& s = it.Value();
       n2                    = KPlhsd(s, TopAbs_EDGE);
       if (n2 != 0)
+      {
         return 0;
+      }
     }
   }
 
@@ -1703,20 +1859,28 @@ int TopOpeBRepBuild_Builder::KPissososh(const TopoDS_Shape& Sarg) const
   int             nsol1 = 0;
   TopExp_Explorer ex1(Sarg, TopAbs_SOLID);
   for (; ex1.More(); ex1.Next())
+  {
     nsol1++;
+  }
 
   int             nsol2 = 0;
   TopExp_Explorer ex2(Sarg, TopAbs_SOLID, TopAbs_COMPSOLID);
   for (; ex2.More(); ex2.Next())
+  {
     nsol2++;
+  }
 
   if (nsol1 && (nsol1 != nsol2))
+  {
     return 0;
+  }
 
   // toutes les solides sont HasSameDomain()
   int nhsd = KPlhsd(Sarg, TopAbs_SOLID);
   if (nhsd != nsol1)
+  {
     return 0;
+  }
 
   int             n;
   TopExp_Explorer ex;
@@ -1724,30 +1888,46 @@ int TopOpeBRepBuild_Builder::KPissososh(const TopoDS_Shape& Sarg) const
   // pas de shell volant
   n = 0;
   for (ex.Init(Sarg, TopAbs_SHELL, TopAbs_SOLID); ex.More(); ex.Next())
+  {
     n++;
+  }
   if (n)
+  {
     return 0;
+  }
 
   // pas de face volant
   n = 0;
   for (ex.Init(Sarg, TopAbs_FACE, TopAbs_SHELL); ex.More(); ex.Next())
+  {
     n++;
+  }
   if (n)
+  {
     return 0;
+  }
 
   // pas d'edge volant
   n = 0;
   for (ex.Init(Sarg, TopAbs_EDGE, TopAbs_WIRE); ex.More(); ex.Next())
+  {
     n++;
+  }
   if (n)
+  {
     return 0;
+  }
 
   // pas de vertex volant
   n = 0;
   for (ex.Init(Sarg, TopAbs_VERTEX, TopAbs_EDGE); ex.More(); ex.Next())
+  {
     n++;
+  }
   if (n)
+  {
     return 0;
+  }
 
   return 1;
 }
@@ -1763,20 +1943,28 @@ int TopOpeBRepBuild_Builder::KPisfafash(const TopoDS_Shape& Sarg) const
   int             nfac1 = 0;
   TopExp_Explorer ex1(Sarg, TopAbs_FACE);
   for (; ex1.More(); ex1.Next())
+  {
     nfac1++;
+  }
 
   int             nfac2 = 0;
   TopExp_Explorer ex2(Sarg, TopAbs_FACE, TopAbs_SHELL);
   for (; ex2.More(); ex2.Next())
+  {
     nfac2++;
+  }
 
   if (nfac1 && (nfac1 != nfac2))
+  {
     return 0;
+  }
 
   // toutes les faces sont HasSameDomain()
   int nhsd = KPlhsd(Sarg, TopAbs_FACE);
   if (nhsd != nfac1)
+  {
     return 0;
+  }
 
   int             n;
   TopExp_Explorer ex;
@@ -1784,23 +1972,35 @@ int TopOpeBRepBuild_Builder::KPisfafash(const TopoDS_Shape& Sarg) const
   // pas de wire volant
   n = 0;
   for (ex.Init(Sarg, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next())
+  {
     n++;
+  }
   if (n)
+  {
     return 0;
+  }
 
   // pas d'edge volant
   n = 0;
   for (ex.Init(Sarg, TopAbs_EDGE, TopAbs_WIRE); ex.More(); ex.Next())
+  {
     n++;
+  }
   if (n)
+  {
     return 0;
+  }
 
   // pas de vertex volant
   n = 0;
   for (ex.Init(Sarg, TopAbs_VERTEX, TopAbs_EDGE); ex.More(); ex.Next())
+  {
     n++;
+  }
   if (n)
+  {
     return 0;
+  }
 
   return 1;
 }
@@ -1831,8 +2031,10 @@ void TopOpeBRepBuild_Builder::KPiskoletgeanalyse(const TopOpeBRepDS_Config confi
   if (DiffOriented)
   {
     if (Stsol1 == TopAbs_IN && Stsol2 == TopAbs_IN)
+    {
       //      if (com) ires = RESNULL;
       ires = RESNULL;
+    }
 
     if (Stsol1 == TopAbs_OUT && Stsol2 == TopAbs_IN)
     {
@@ -1849,8 +2051,10 @@ void TopOpeBRepBuild_Builder::KPiskoletgeanalyse(const TopOpeBRepDS_Config confi
     }
 
     if (Stsol1 == TopAbs_OUT && Stsol2 == TopAbs_OUT)
+    {
       //      if (fus) ires = RESNEWSOL;
       ires = RESNEWSOL;
+    }
   } // DiffOriented
 
   if (SameOriented)
@@ -1860,8 +2064,10 @@ void TopOpeBRepBuild_Builder::KPiskoletgeanalyse(const TopOpeBRepDS_Config confi
     // ==============================
 
     if (Stsol1 == TopAbs_IN && Stsol2 == TopAbs_IN)
+    {
       //      if (com) ires = RESSHAPE1;
       ires = RESSHAPE1;
+    }
 
     if (Stsol1 == TopAbs_OUT && Stsol2 == TopAbs_IN)
     {
@@ -1878,8 +2084,10 @@ void TopOpeBRepBuild_Builder::KPiskoletgeanalyse(const TopOpeBRepDS_Config confi
     }
 
     if (Stsol1 == TopAbs_OUT && Stsol2 == TopAbs_OUT)
+    {
       //      if (fus) ires = RESSHAPE2;
       ires = RESSHAPE2;
+    }
   } // SameOriented
 
 #ifdef OCCT_DEBUG
@@ -2035,9 +2243,13 @@ int TopOpeBRepBuild_Builder::KPls(const TopoDS_Shape&             S,
 TopAbs_State TopOpeBRepBuild_Builder::KPclassF(const TopoDS_Shape& F1, const TopoDS_Shape& F2)
 {
   if (F1.IsNull())
+  {
     return TopAbs_UNKNOWN;
+  }
   if (F2.IsNull())
+  {
     return TopAbs_UNKNOWN;
+  }
 
   TopoDS_Face F1F = TopoDS::Face(F1);
   F1F.Orientation(TopAbs_FORWARD);
@@ -2047,7 +2259,9 @@ TopAbs_State TopOpeBRepBuild_Builder::KPclassF(const TopoDS_Shape& F1, const Top
   NCollection_List<TopoDS_Shape> le1;
   int                            ne1 = KPls(F1F, TopAbs_EDGE, le1);
   if (ne1 == 0)
+  {
     return TopAbs_UNKNOWN;
+  }
   const TopoDS_Edge& e1 = TopoDS::Edge(le1.First());
 
   int          isamdom = 1;
@@ -2117,9 +2331,13 @@ bool TopOpeBRepBuild_Builder::KPiskoleFF(const TopoDS_Shape& F1,
   bool st2ok = (St2 == TopAbs_OUT || St2 == TopAbs_IN);
 
   if (!st1ok)
+  {
     return false;
+  }
   if (!st2ok)
+  {
     return false;
+  }
   bool stok = (St1 != St2);
   return stok;
 }
@@ -2137,7 +2355,9 @@ bool TopOpeBRepBuild_Builder::KPContains(const TopoDS_Shape&                   S
     const TopoDS_Shape& SL     = it.Value();
     bool                issame = SL.IsSame(S);
     if (issame)
+    {
       return true;
+    }
   }
   return false;
 } // KPContains
@@ -2256,7 +2476,7 @@ static void LocalKPisdisjanalyse(const TopAbs_State                     Stsol1,
       break;
     }
     default: {
-      std::cout << "Warning: given operation is unknown" << std::endl;
+      std::cout << "Warning: given operation is unknown" << '\n';
       break;
     }
   } // end switch
@@ -2324,19 +2544,31 @@ static TopoDS_Solid BuildNewSolid(const TopoDS_Solid& sol1,
 
       bool garde = true;
       if (icla == SHEAUCU)
+      {
         garde = false;
+      }
       else if (icla == SHEGARDAUTR || icla == SHECLASAUTR)
+      {
         garde = !isoutsha;
+      }
       if (!garde)
+      {
         continue;
+      }
 
       bool add = false;
       if (icla == SHEGARDCOUR)
+      {
         add = true;
+      }
       else if (icla == SHEGARDAUTR)
+      {
         add = true;
+      }
       else if (icla == SHEGARDTOUS)
+      {
         add = true;
+      }
       else if (icla == SHECLASAUTR)
       {
         TopAbs_State state = aShapeClassifier.StateShapeShape(shacur, Snull, othersol);
@@ -2347,7 +2579,9 @@ static TopoDS_Solid BuildNewSolid(const TopoDS_Solid& sol1,
         TopoDS_Shell shaori = shacur;
         bool         r      = (solstate == TopAbs_IN);
         if (r)
+        {
           shaori.Complement();
+        }
         if (!isdisjmap.Contains(shaori))
         {
           isdisjmap.Add(shaori);
@@ -2373,19 +2607,31 @@ static TopoDS_Solid BuildNewSolid(const TopoDS_Solid& sol1,
 
       bool garde = true;
       if (icla == SHEAUCU)
+      {
         garde = false;
+      }
       else if (icla == SHEGARDAUTR || icla == SHECLASAUTR)
+      {
         garde = !isoutsha;
+      }
       if (!garde)
+      {
         continue;
+      }
 
       bool add = false;
       if (icla == SHEGARDCOUR)
+      {
         add = true;
+      }
       else if (icla == SHEGARDAUTR)
+      {
         add = true;
+      }
       else if (icla == SHEGARDTOUS)
+      {
         add = true;
+      }
       else if (icla == SHECLASAUTR)
       {
         TopAbs_State state = aShapeClassifier.StateShapeShape(shacur, Snull, othersol);
@@ -2396,7 +2642,9 @@ static TopoDS_Solid BuildNewSolid(const TopoDS_Solid& sol1,
         TopoDS_Shell shaori = shacur;
         bool         r      = (solstate == TopAbs_IN);
         if (r)
+        {
           shaori.Complement();
+        }
         aBuildTool.AddSolidShell(newsol, shaori);
       }
     }
@@ -2439,12 +2687,16 @@ static bool disjPerformFuse(
   {
     const TopoDS_Shape& localshape1 = aMapOfSolid(i);
     if (localshape1.ShapeType() != TopAbs_SOLID)
+    {
       return false;
+    }
 
     sol1          = TopoDS::Solid(localshape1);
     acurrentsolid = sol1;
     if (aMapOfUsedSolids.Contains(localshape1))
+    {
       continue;
+    }
 
     int j = 1, acheckiterator = 0;
     while (j <= aMapOfSolid.Extent() && (acheckiterator <= aMaxNumberOfIterations))
@@ -2457,7 +2709,9 @@ static bool disjPerformFuse(
       }
       const TopoDS_Shape& localshape2 = aMapOfSolid(j);
       if (localshape2.ShapeType() != TopAbs_SOLID)
+      {
         return false;
+      }
 
       j++; // increase iterator
 
@@ -2480,11 +2734,13 @@ static bool disjPerformFuse(
                            icla2);
       if (ires == RESUNDEF || icla1 == SHEUNDEF || icla2 == SHEUNDEF || ires == RESNULL)
       {
-        std::cout << "Warning: disjPerformFuse: can not determine solid's states" << std::endl;
+        std::cout << "Warning: disjPerformFuse: can not determine solid's states" << '\n';
         continue;
       }
       if (ires == RESSHAPE12)
+      {
         continue;
+      }
 
       if (ires == RESNEWSHA1 || ires == RESNEWSHA2)
       {
@@ -2501,12 +2757,14 @@ static bool disjPerformFuse(
         acurrentsolid = newsol;
         aMapOfUsedSolids.Add(localshape2);
         if (acurrentsolid.IsNull())
+        {
           return false;
+        }
       }
     } // end while(j)
     if (acheckiterator > aMaxNumberOfIterations)
     {
-      std::cout << "disjPerformFuse: programming error" << std::endl;
+      std::cout << "disjPerformFuse: programming error" << '\n';
       return false;
     }
     theMapOfResult.Add(acurrentsolid);
@@ -2543,7 +2801,9 @@ static bool disjPerformCommon(
   {
     const TopoDS_Shape& localshape1 = aMapOfSeparatedSolid1(i);
     if (localshape1.ShapeType() != TopAbs_SOLID)
+    {
       return false;
+    }
     sol1    = TopoDS::Solid(localshape1);
     outsha1 = BRepClass3d::OuterShell(sol1);
 
@@ -2551,7 +2811,9 @@ static bool disjPerformCommon(
     {
       const TopoDS_Shape& localshape2 = aMapOfSeparatedSolid2(j);
       if (localshape2.ShapeType() != TopAbs_SOLID)
+      {
         return false;
+      }
 
       sol2                = TopoDS::Solid(localshape2);
       outsha2             = BRepClass3d::OuterShell(sol2);
@@ -2567,7 +2829,7 @@ static bool disjPerformCommon(
                            icla2);
       if (ires == RESUNDEF || icla1 == SHEUNDEF || icla2 == SHEUNDEF)
       {
-        std::cout << "Warning: disjPerformCommon: can not determine solid's states" << std::endl;
+        std::cout << "Warning: disjPerformCommon: can not determine solid's states" << '\n';
         continue;
       }
       switch (ires)
@@ -2634,7 +2896,9 @@ static bool disjPerformCut(
   {
     const TopoDS_Shape& localshape1 = aMapOfSeparatedSolid1(i);
     if (localshape1.ShapeType() != TopAbs_SOLID)
+    {
       return false;
+    }
     sol1          = TopoDS::Solid(localshape1);
     acurrentsolid = sol1;
 
@@ -2644,7 +2908,9 @@ static bool disjPerformCut(
     {
       const TopoDS_Shape& localshape2 = aMapOfSeparatedSolid2(j);
       if (localshape2.ShapeType() != TopAbs_SOLID)
+      {
         return false;
+      }
       sol2                = TopoDS::Solid(localshape2);
       outsha2             = BRepClass3d::OuterShell(sol2);
       outsha1             = BRepClass3d::OuterShell(acurrentsolid);
@@ -2660,7 +2926,7 @@ static bool disjPerformCut(
                            icla2);
       if (ires == RESUNDEF || icla1 == SHEUNDEF || icla2 == SHEUNDEF)
       {
-        std::cout << "Warning: disjPerformCut: can not determine solid's states" << std::endl;
+        std::cout << "Warning: disjPerformCut: can not determine solid's states" << '\n';
         continue;
       }
       switch (ires)
@@ -2702,7 +2968,9 @@ static bool disjPerformCut(
     if (!NullResult)
     {
       if (acurrentsolid.IsNull())
+      {
         return false;
+      }
       theMapOfResult.Add(acurrentsolid);
     }
   } // end for(i)

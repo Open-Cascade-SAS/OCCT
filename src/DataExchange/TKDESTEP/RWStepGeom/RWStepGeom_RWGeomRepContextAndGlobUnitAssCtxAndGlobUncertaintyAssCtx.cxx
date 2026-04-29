@@ -35,7 +35,9 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
   // -----------------------------------------------------------------
 
   if (!data->CheckNbParams(num, 1, ach, "geometric_representation_context"))
+  {
     return;
+  }
 
   // --- field : coordinateSpaceDimension ---
 
@@ -50,7 +52,9 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
   // -------------------------------------------------------------------
 
   if (!data->CheckNbParams(num, 1, ach, "global_uncertainty_assigned_context"))
+  {
     return;
+  }
 
   // --- field : uncertainty ---
 
@@ -71,7 +75,9 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
                            ach,
                            STANDARD_TYPE(StepBasic_UncertaintyMeasureWithUnit),
                            anent3))
+      {
         aUncertainty->SetValue(i3, anent3);
+      }
     }
   }
 
@@ -82,7 +88,9 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
   // ------------------------------------------------------------
 
   if (!data->CheckNbParams(num, 1, ach, "global_unit_assigned_context"))
+  {
     return;
+  }
 
   // --- field : units ---
 
@@ -97,7 +105,9 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "unit", ach, STANDARD_TYPE(StepBasic_NamedUnit), anent2))
+      {
         aUnits->SetValue(i2, anent2);
+      }
     }
   }
 
@@ -108,7 +118,9 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
   // ----------------------------------------------------------
 
   if (!data->CheckNbParams(num, 2, ach, "representation_context"))
+  {
     return;
+  }
 
   // --- field : contextIdentifier ---
 

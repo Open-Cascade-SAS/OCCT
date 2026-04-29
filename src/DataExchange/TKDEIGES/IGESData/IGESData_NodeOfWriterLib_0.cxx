@@ -29,11 +29,15 @@ IGESData_NodeOfWriterLib::IGESData_NodeOfWriterLib() = default;
 void IGESData_NodeOfWriterLib::AddNode(const occ::handle<IGESData_GlobalNodeOfWriterLib>& anode)
 {
   if (thenode == anode)
+  {
     return;
+  }
   if (thenext.IsNull())
   {
     if (thenode.IsNull())
+    {
       thenode = anode;
+    }
     else
     {
       thenext = new IGESData_NodeOfWriterLib;
@@ -41,7 +45,9 @@ void IGESData_NodeOfWriterLib::AddNode(const occ::handle<IGESData_GlobalNodeOfWr
     }
   }
   else
+  {
     thenext->AddNode(anode);
+  }
 }
 
 const occ::handle<IGESData_ReadWriteModule>& IGESData_NodeOfWriterLib::Module() const

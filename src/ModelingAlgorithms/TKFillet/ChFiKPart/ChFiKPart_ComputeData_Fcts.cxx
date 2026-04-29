@@ -37,11 +37,17 @@ double ChFiKPart_InPeriod(const double U, const double UFirst, const double ULas
 {
   double u = U, period = ULast - UFirst;
   while (Eps < (UFirst - u))
+  {
     u += period;
+  }
   while (Eps > (ULast - u))
+  {
     u -= period;
+  }
   if (u < UFirst)
+  {
     u = UFirst;
+  }
   return u;
 }
 

@@ -105,7 +105,9 @@ void HLRBRep_EdgeIList::ProcessComplex(NCollection_List<HLRAlgo_Interference>& I
                 || SimilarInterference(It1.Value(), It2.Value())
 #endif
                   ))
+          {
             break;
+          }
 
           T.InterferenceBoundaryGeometry(It2.Value(), TgtI, NormI, CurvI);
           transTool.AddInterference(TolAng,

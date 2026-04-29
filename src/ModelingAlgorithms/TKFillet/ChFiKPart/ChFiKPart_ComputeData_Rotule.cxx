@@ -96,7 +96,9 @@ bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&         DStr,
 
   gp_Ax3 ppos(ptor, dpl.Reversed(), dpl1);
   if (ppos.YDirection().Dot(dpl2) < 0.)
+  {
     ppos.YReverse();
+  }
   occ::handle<Geom_ToroidalSurface> gtor = new Geom_ToroidalSurface(ppos, r, r);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gtor, DStr));
 
@@ -137,7 +139,9 @@ bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&         DStr,
   occ::handle<Geom2d_Line>   GL2d  = new Geom2d_Line(p2dlin, gp::DX2d());
   TopAbs_Orientation         trans = TopAbs_REVERSED;
   if (reversecur)
+  {
     trans = TopAbs_FORWARD;
+  }
   Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(GC, DStr),
                                                  trans,
                                                  GC2d,

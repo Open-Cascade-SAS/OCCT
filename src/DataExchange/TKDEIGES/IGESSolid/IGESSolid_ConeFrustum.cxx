@@ -63,7 +63,9 @@ gp_Pnt IGESSolid_ConeFrustum::FaceCenter() const
 gp_Pnt IGESSolid_ConeFrustum::TransformedFaceCenter() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(theFaceCenter);
+  }
   else
   {
     gp_XYZ tmp = theFaceCenter;
@@ -80,7 +82,9 @@ gp_Dir IGESSolid_ConeFrustum::Axis() const
 gp_Dir IGESSolid_ConeFrustum::TransformedAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theAxis);
+  }
   else
   {
     gp_XYZ   xyz = theAxis;

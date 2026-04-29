@@ -127,7 +127,9 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const occ::handle<Geom2
     theBoundedCurve = MkBSplineC.Value();
   }
   else
+  {
     done = false;
+  }
 }
 
 //=============================================================================

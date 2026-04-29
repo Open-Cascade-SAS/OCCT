@@ -2,6 +2,7 @@
 set(OCCT_TKernel_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKernel_GTests_FILES
+  FSD_BinaryFile_Test.cxx
   Handle_Advanced_Test.cxx
   Handle_Operations_Test.cxx
   Message_Messenger_Test.cxx
@@ -9,6 +10,8 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_Array2_Test.cxx
   NCollection_BaseAllocator_Test.cxx
   NCollection_CellFilter_Test.cxx
+  NCollection_DynamicArray_Test.cxx
+  NCollection_LinearVector_Test.cxx
   NCollection_DataMap_Test.cxx
   NCollection_DoubleMap_Test.cxx
   NCollection_FlatDataMap_Test.cxx
@@ -28,9 +31,10 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_SparseArray_Test.cxx
   NCollection_UBTree_Test.cxx
   NCollection_Vec4_Test.cxx
-  NCollection_Vector_Test.cxx
+  OSD_Parallel_Test.cxx
   OSD_Path_Test.cxx
   OSD_PerfMeter_Test.cxx
+  Resource_Manager_Test.cxx
   Quantity_Color_Test.cxx
   Quantity_ColorRGBA_Test.cxx
   Quantity_Date_Test.cxx

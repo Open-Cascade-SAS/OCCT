@@ -66,7 +66,9 @@ math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet&         F,
     Tval(1) = Xm; // +  Xr * GaussP(ind1);
     IsOk    = F.Value(Tval, Val);
     if (!IsOk)
+    {
       return;
+    }
     Val *= GaussW(ind1);
   }
   else
@@ -79,11 +81,15 @@ math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet&         F,
     Tval(1) = Xm + Xr * GaussP(i);
     IsOk    = F.Value(Tval, FVal1);
     if (!IsOk)
+    {
       return;
+    }
     Tval(1) = Xm - Xr * GaussP(i);
     IsOk    = F.Value(Tval, FVal2);
     if (!IsOk)
+    {
       return;
+    }
     FVal1 += FVal2;
     FVal1 *= GaussW(i);
     Val += FVal1;

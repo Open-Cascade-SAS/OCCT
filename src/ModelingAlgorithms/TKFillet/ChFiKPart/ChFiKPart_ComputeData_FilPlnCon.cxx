@@ -119,7 +119,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   ElSLib::D1(u, v, Con, pp, dcu, dcv);
   gp_Dir ddc(dcv);
   if (ddc.Dot(Dp) < 0.)
+  {
     ddc.Reverse();
+  }
   double Ang    = ddp.Angle(ddc);
   double Rabio  = Radius / std::tan(Ang / 2);
   double Maxrad = cPln.Distance(Pv);
@@ -184,7 +186,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
     ElSLib::TorusParameters(FilAx3, Rad, Radius, P, u, v);
     ElSLib::TorusD1(u, v, FilAx3, Rad, Radius, PP, deru, derv);
     if (!plandab && Ang < M_PI / 2 && dedans)
+    {
       v = v + 2 * M_PI;
+    }
   }
   gp_Pnt2d p2dFil(0., v);
   gp_Dir   norFil(deru.Crossed(derv));
@@ -260,7 +264,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
     ElSLib::TorusParameters(FilAx3, Rad, Radius, P, u, v);
     ElSLib::TorusD1(u, v, FilAx3, Rad, Radius, PP, deru, derv);
     if (plandab && Ang < M_PI / 2 && dedans)
+    {
       v = v + 2 * M_PI;
+    }
   }
   norFil = deru.Crossed(derv);
   p2dFil.SetCoord(0., v);
@@ -270,13 +276,21 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   double tol           = Precision::PConfusion();
   bool   careaboutsens = false;
   if (std::abs(lu - fu - 2 * M_PI) < tol)
+  {
     careaboutsens = true;
+  }
   if (u >= fu - tol && u < fu)
+  {
     u = fu;
+  }
   if (u <= lu + tol && u > lu)
+  {
     u = lu;
+  }
   if (u < fu || u > lu)
+  {
     u = ElCLib::InPeriod(u, fu, fu + 2 * M_PI);
+  }
   ElSLib::D1(u, v, Con, PP, deru, derv);
   gp_Dir   norCon = deru.Crossed(derv);
   gp_Dir2d d2dCon = gp::DX2d();
@@ -284,10 +298,14 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   {
     d2dCon.Reverse();
     if (careaboutsens && std::abs(fu - u) < tol)
+    {
       u = lu;
+    }
   }
   else if (careaboutsens && std::abs(lu - u) < tol)
+  {
     u = fu;
+  }
   gp_Pnt2d                 p2dCon(u, v);
   gp_Lin2d                 lin2dCon(p2dCon, d2dCon);
   occ::handle<Geom2d_Line> GLin2dCon = new Geom2d_Line(lin2dCon);

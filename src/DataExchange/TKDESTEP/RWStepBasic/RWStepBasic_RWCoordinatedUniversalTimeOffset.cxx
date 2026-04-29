@@ -32,7 +32,9 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "coordinated_universal_time_offset"))
+  {
     return;
+  }
 
   // --- own field : hourOffset ---
 
@@ -67,7 +69,9 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #3 (sense) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 

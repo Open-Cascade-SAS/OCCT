@@ -83,7 +83,9 @@ void IGESAppli_ToolElementResults::ReadOwnParams(const occ::handle<IGESAppli_Ele
     // ??  WHAT ABOUT FILLING  ?
   }
   else
+  {
     PR.AddFail("Number of Finite Elements: Not Positive");
+  }
 
   for (int nume = 1; nume <= num; nume++)
   {
@@ -94,28 +96,44 @@ void IGESAppli_ToolElementResults::ReadOwnParams(const occ::handle<IGESAppli_Ele
     occ::handle<NCollection_HArray1<double>> vres;
     // szv#4:S4163:12Mar99 moved in if
     if (PR.ReadInteger(PR.Current(), "FEM Element Identifier", ival))
+    {
       allElementIdentifiers->SetValue(nume, ival);
+    }
     if (PR.ReadEntity(IR,
                       PR.Current(),
                       "FEM Element Entity",
                       STANDARD_TYPE(IGESAppli_FiniteElement),
                       aFEM))
+    {
       allElements->SetValue(nume, aFEM);
+    }
     if (PR.ReadInteger(PR.Current(), "FEM Element Topology Type", ival))
+    {
       allElementTopologyType->SetValue(nume, ival);
+    }
     if (PR.ReadInteger(PR.Current(), "Nb. of layers", nl))
+    {
       allNbLayers->SetValue(nume, nl);
+    }
     if (PR.ReadInteger(PR.Current(), "Data Layer Flag", ival))
+    {
       allDataLayerFlag->SetValue(nume, ival);
+    }
     if (PR.ReadInteger(PR.Current(), "Nb. of result data locations", nrl))
+    {
       allNbResultDataLocs->SetValue(nume, nrl);
+    }
     if (PR.ReadInts(PR.CurrentList(nrl), "Result data locations", rdrl))
+    {
       allResultDataLoc->SetValue(nume, rdrl);
+    }
     // clang-format off
     PR.ReadInteger (PR.Current(), "Nb. of result data locations", numv); //szv#4:S4163:12Mar99 `st=` not needed
     // clang-format on
     if (PR.ReadReals(PR.CurrentList(numv), "Result Data", vres))
+    {
       allResultData->SetValue(nume, vres);
+    }
   }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -157,10 +175,14 @@ void IGESAppli_ToolElementResults::WriteOwnParams(const occ::handle<IGESAppli_El
     IW.Send(ent->DataLayerFlag(i));
     IW.Send(nrl);
     for (j = 1; j <= nrl; j++)
+    {
       IW.Send(ent->ResultDataLoc(i, j));
+    }
     IW.Send(numv);
     for (j = 1; j <= numv; j++)
+    {
       IW.Send(ent->ResultData(i, j));
+    }
   }
 }
 
@@ -171,7 +193,9 @@ void IGESAppli_ToolElementResults::OwnShared(const occ::handle<IGESAppli_Element
   int num = ent->NbElements();
   iter.GetOneItem(ent->Note());
   for (i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->Element(i));
+  }
 }
 
 void IGESAppli_ToolElementResults::OwnCopy(const occ::handle<IGESAppli_ElementResults>& another,
@@ -220,11 +244,15 @@ void IGESAppli_ToolElementResults::OwnCopy(const occ::handle<IGESAppli_ElementRe
     occ::handle<NCollection_HArray1<int>> rdrl = new NCollection_HArray1<int>(1, nrl);
     allResultDataLoc->SetValue(i, rdrl);
     for (j = 1; j <= nrl; j++)
+    {
       rdrl->SetValue(j, another->ResultDataLoc(i, j));
+    }
     numv                                          = another->NbResults(i);
     occ::handle<NCollection_HArray1<double>> vres = new NCollection_HArray1<double>(1, numv);
     for (j = 1; j <= numv; j++)
+    {
       vres->SetValue(j, another->ResultData(i, j));
+    }
     allResultData->SetValue(i, vres);
   }
   ent->Init(aNote,
@@ -265,157 +293,231 @@ void IGESAppli_ToolElementResults::OwnCheck(const occ::handle<IGESAppli_ElementR
 {
   int rrf = ent->ResultReportFlag();
   if (rrf < 0 || rrf > 3)
+  {
     ach->AddFail("Result Report Flag not in [0-3]");
+  }
   int  nv = ent->NbResultValues();
   bool OK = true;
   switch (ent->FormNumber())
   {
     case 0:
       if (nv < 0)
+      {
         OK = false;
+      }
       break;
     case 1:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 2:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 3:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 4:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 5:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 6:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 7:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 8:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 9:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 10:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 11:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 12:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 13:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 14:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 15:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 16:
       if (nv != 1)
+      {
         OK = false;
+      }
       break;
     case 17:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 18:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 19:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 20:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 21:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 22:
       if (nv != 3)
+      {
         OK = false;
+      }
       break;
     case 23:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 24:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 25:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 26:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 27:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 28:
       if (nv != 6)
+      {
         OK = false;
+      }
       break;
     case 29:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 30:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 31:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 32:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 33:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     case 34:
       if (nv != 9)
+      {
         OK = false;
+      }
       break;
     default:
       ach->AddFail("Incorrect Form Number");
       break;
   }
   if (!OK)
+  {
     ach->AddFail("Incorrect count of real values in array V for FEM node");
+  }
   int ne = ent->NbElements();
   for (int i = 1; i <= ne; i++)
   {
@@ -424,18 +526,22 @@ void IGESAppli_ToolElementResults::OwnCheck(const occ::handle<IGESAppli_ElementR
     int  nl  = ent->NbLayers(i);
     int  nrl = ent->NbResultDataLocs(i);
     if (dlf < 0 || dlf > 4)
+    {
       ach->AddFail("One of the Data Layer Flags not in [0-4]");
+    }
     if (dlf < 4 && ent->NbLayers(i) != 1)
     {
       Sprintf(mess, "Nb. of Layers n0.%d not ONE while Data Layer Flag is in [0-3]", i);
       ach->AddFail(mess);
     }
     if (rrf == 1 || rrf == 2)
+    {
       if (nrl != 1 || ent->ResultDataLoc(i, 1) != 0)
       {
         Sprintf(mess, "Result Data Locs n0.%d incorrect for Result Report = 1 or 2", i);
         ach->AddFail(mess);
       }
+    }
     if (ent->NbResults(i) != (nv * nl * nrl))
     {
       Sprintf(mess, "Nb. of results for Element n0.%d incorrect, should be %d", i, nv * nl * nrl);
@@ -476,7 +582,9 @@ void IGESAppli_ToolElementResults::OwnDump(const occ::handle<IGESAppli_ElementRe
   //  ??  TO VERIFY CLOSELY, not at all sure this is correct
   //      see also Write and Copy
   if (level <= 4)
+  {
     S << " [ ask level > 4 for more, > 5 for complete ]\n";
+  }
   else
   {
     int i; // svv Jan 10 2000 : porting on DEC
@@ -485,7 +593,9 @@ void IGESAppli_ToolElementResults::OwnDump(const occ::handle<IGESAppli_ElementRe
       int nloc = ent->NbResultDataLocs(i);
       S << " [" << i << ":NbLoc=" << nloc << "]:";
       for (int j = 1; j <= nloc; j++)
+      {
         S << " " << ent->ResultDataLoc(i, j);
+      }
       S << "\n";
     }
     S << "Result Data : ";
@@ -495,11 +605,15 @@ void IGESAppli_ToolElementResults::OwnDump(const occ::handle<IGESAppli_ElementRe
       int nres = ent->NbResults(i);
       S << " [" << i << ":NbRes=" << nres << "]:";
       if (level <= 5)
+      {
         S << " [ ask level > 5 for complete Data ]\n";
+      }
       else
       {
         for (int j = 1; j <= nres; j++)
+        {
           S << " " << ent->ResultData(i, j); // ?? is it all ?? UNFINISHED
+        }
       }
     }
   }

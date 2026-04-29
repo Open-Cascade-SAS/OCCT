@@ -42,7 +42,9 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
   occ::handle<NCollection_HSequence<occ::handle<Geom_BoundedCurve>>>& seqBS)
 {
   if (BS.IsNull() || (BS->IsCN(1)))
+  {
     return false;
+  }
 
   seqBS = new NCollection_HSequence<occ::handle<Geom_BoundedCurve>>;
   BS->SetNotPeriodic(); // to have equation NbPoles = NbKnots with Multiplicities - degree - 1
@@ -60,7 +62,9 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
   for (EndKnotIndex = StartKnotIndex + 1; EndKnotIndex <= BS->LastUKnotIndex(); EndKnotIndex++)
   {
     if ((Mults(EndKnotIndex) < deg) && (EndKnotIndex < BS->LastUKnotIndex()))
+    {
       continue;
+    }
 
     int StartFlatIndex = BSplCLib::FlatIndex(deg, StartKnotIndex, Mults, false);
     //    StartFlatIndex += Mults (StartKnotIndex) - 1;
@@ -74,16 +78,26 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
     TempKnots(TempKnotIndex) = KnotSequence(StartFlatIndex - deg);
 
     for (j = StartFlatIndex - deg + 1; j <= EndFlatIndex + deg; j++)
+    {
       if (std::abs(KnotSequence(j) - KnotSequence(j - 1)) <= gp::Resolution())
+      {
         TempMults(TempKnotIndex)++;
+      }
       else
+      {
         TempKnots(++TempKnotIndex) = KnotSequence(j);
+      }
+    }
 
     int TempStartIndex = 1, TempEndIndex = TempKnotIndex;
     if (TempMults(TempStartIndex) == 1)
+    {
       TempMults(++TempStartIndex)++;
+    }
     if (TempMults(TempEndIndex) == 1)
+    {
       TempMults(--TempEndIndex)++;
+    }
 
     int                        NewNbKnots = TempEndIndex - TempStartIndex + 1;
     NCollection_Array1<int>    newMults(1, NewNbKnots);
@@ -128,7 +142,9 @@ static occ::handle<Geom_BSplineCurve> BSplineCurve2dTo3d(const occ::handle<Geom2
 
   NCollection_Array1<gp_Pnt> Poles3d(1, NbPoles);
   for (int i = 1; i <= NbPoles; i++)
+  {
     Poles3d(i) = gp_Pnt(Poles2d(i).X(), Poles2d(i).Y(), 0);
+  }
 
   occ::handle<Geom_BSplineCurve> BS3d =
     new Geom_BSplineCurve(Poles3d, Weights, Knots, Mults, deg, BS->IsPeriodic());
@@ -146,7 +162,9 @@ static occ::handle<Geom2d_BSplineCurve> BSplineCurve3dTo2d(const occ::handle<Geo
 
   NCollection_Array1<gp_Pnt2d> Poles2d(1, NbPoles);
   for (int i = 1; i <= NbPoles; i++)
+  {
     Poles2d(i) = gp_Pnt2d(Poles3d(i).X(), Poles3d(i).Y());
+  }
 
   occ::handle<Geom2d_BSplineCurve> BS2d =
     new Geom2d_BSplineCurve(Poles2d, Weights, Knots, Mults, deg, BS->IsPeriodic());
@@ -158,7 +176,9 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
   occ::handle<NCollection_HSequence<occ::handle<Geom2d_BoundedCurve>>>& seqBS)
 {
   if (BS.IsNull() || (BS->IsCN(1)))
+  {
     return false;
+  }
 
   occ::handle<Geom_BSplineCurve>                                     BS3d = BSplineCurve2dTo3d(BS);
   occ::handle<NCollection_HSequence<occ::handle<Geom_BoundedCurve>>> seqBS3d;
@@ -167,7 +187,9 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
   {
     seqBS = new NCollection_HSequence<occ::handle<Geom2d_BoundedCurve>>;
     for (int i = 1; i <= seqBS3d->Length(); i++)
+    {
       seqBS->Append(BSplineCurve3dTo2d(occ::down_cast<Geom_BSplineCurve>(seqBS3d->Value(i))));
+    }
   }
   return result;
 }
