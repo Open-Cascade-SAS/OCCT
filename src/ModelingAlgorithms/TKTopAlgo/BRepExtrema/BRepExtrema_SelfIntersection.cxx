@@ -15,6 +15,7 @@
 
 #include <BRepExtrema_SelfIntersection.hxx>
 
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
 
@@ -241,7 +242,7 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::PreCheckEl
 
   myElementSet->GetVertices(theIndex2, aTrng1Vtxs[0], aTrng1Vtxs[1], aTrng1Vtxs[2]);
 
-  std::vector<std::pair<int, int>> aSharedVtxs;
+  NCollection_LinearVector<std::pair<int, int>> aSharedVtxs;
 
   for (int aVertIdx1 = 0; aVertIdx1 < 3; ++aVertIdx1)
   {
@@ -250,24 +251,24 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::PreCheckEl
       if ((aTrng0Vtxs[aVertIdx1] - aTrng1Vtxs[aVertIdx2]).SquareModulus()
           < Precision::SquareConfusion())
       {
-        aSharedVtxs.emplace_back(aVertIdx1, aVertIdx2);
+        aSharedVtxs.EmplaceAppend(aVertIdx1, aVertIdx2);
 
         break; // go to next vertex of the 1st triangle
       }
     }
   }
 
-  if (aSharedVtxs.size() == 2) // check shared edge
+  if (aSharedVtxs.Size() == 2) // check shared edge
   {
     return isRegularSharedEdge(aTrng0Vtxs[aSharedVtxs[0].first],
                                aTrng0Vtxs[aSharedVtxs[1].first],
                                aTrng0Vtxs[3 - aSharedVtxs[0].first - aSharedVtxs[1].first],
                                aTrng1Vtxs[3 - aSharedVtxs[0].second - aSharedVtxs[1].second]);
   }
-  else if (aSharedVtxs.size() == 1) // check shared vertex
+  else if (aSharedVtxs.Size() == 1) // check shared vertex
   {
-    std::swap(*aTrng0Vtxs, aTrng0Vtxs[aSharedVtxs.front().first]);
-    std::swap(*aTrng1Vtxs, aTrng1Vtxs[aSharedVtxs.front().second]);
+    std::swap(*aTrng0Vtxs, aTrng0Vtxs[aSharedVtxs.First().first]);
+    std::swap(*aTrng1Vtxs, aTrng1Vtxs[aSharedVtxs.First().second]);
 
     return isRegularSharedVertex(aTrng0Vtxs[0],
                                  aTrng0Vtxs[1],

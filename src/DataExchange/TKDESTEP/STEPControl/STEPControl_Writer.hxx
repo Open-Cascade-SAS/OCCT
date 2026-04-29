@@ -29,8 +29,6 @@
 #include <Message_ProgressRange.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 
-#include <unordered_map>
-
 struct DE_ShapeFixParameters;
 class XSControl_WorkSession;
 class StepData_StepModel;

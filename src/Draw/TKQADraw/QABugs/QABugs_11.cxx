@@ -58,6 +58,7 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomProjLib.hxx>
@@ -4304,11 +4305,11 @@ int OCC25748(Draw_Interpretor& di, int argc, const char** argv)
                             "Parallel data processing",
                             nIter);
 
-  std::vector<Task> aTasks;
-  aTasks.reserve(nIter);
+  NCollection_LinearVector<Task> aTasks;
+  aTasks.Reserve(nIter);
   for (int i = 0; i < nIter; i++)
   {
-    aTasks.push_back(Task(aPS.Next(), aMatSize));
+    aTasks.Append(Task(aPS.Next(), aMatSize));
   }
 
   OSD_Timer aTimer;

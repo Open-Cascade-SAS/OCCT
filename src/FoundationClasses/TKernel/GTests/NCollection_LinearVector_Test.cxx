@@ -292,6 +292,29 @@ TEST(NCollection_LinearVectorTest, Resize)
   EXPECT_EQ(2, aVec(1));
 }
 
+TEST(NCollection_LinearVectorTest, Resize_WithValue)
+{
+  NCollection_LinearVector<int> aVec;
+  aVec.Append(1);
+  aVec.Append(2);
+
+  // Grow - new elements filled with -1
+  aVec.Resize(5, -1);
+  EXPECT_EQ(5, aVec.Size());
+  EXPECT_EQ(1, aVec(0));
+  EXPECT_EQ(2, aVec(1));
+  EXPECT_EQ(-1, aVec(2));
+  EXPECT_EQ(-1, aVec(3));
+  EXPECT_EQ(-1, aVec(4));
+
+  // Shrink - existing elements kept, no fill needed
+  aVec.Resize(3, -1);
+  EXPECT_EQ(3, aVec.Size());
+  EXPECT_EQ(1, aVec(0));
+  EXPECT_EQ(2, aVec(1));
+  EXPECT_EQ(-1, aVec(2));
+}
+
 TEST(NCollection_LinearVectorTest, EraseLast)
 {
   NCollection_LinearVector<int> aVec;
@@ -614,6 +637,26 @@ TEST(NCollection_LinearVectorTest, ResizeNonTrivial)
   EXPECT_EQ("a", aVec(0));
 }
 
+TEST(NCollection_LinearVectorTest, Resize_WithValue_NonTrivial)
+{
+  NCollection_LinearVector<std::string> aVec;
+  aVec.Append("x");
+
+  // Grow - new elements filled with "hello"
+  aVec.Resize(4, std::string("hello"));
+  EXPECT_EQ(4, aVec.Size());
+  EXPECT_EQ("x", aVec(0));
+  EXPECT_EQ("hello", aVec(1));
+  EXPECT_EQ("hello", aVec(2));
+  EXPECT_EQ("hello", aVec(3));
+
+  // Shrink
+  aVec.Resize(2, std::string("ignored"));
+  EXPECT_EQ(2, aVec.Size());
+  EXPECT_EQ("x", aVec(0));
+  EXPECT_EQ("hello", aVec(1));
+}
+
 TEST(NCollection_LinearVectorTest, BoundsAccess)
 {
   NCollection_LinearVector<int> aVec;
@@ -696,4 +739,66 @@ TEST(NCollection_LinearVectorTest, OutOfRangeIndicesThrow)
   EXPECT_ANY_THROW(aVec.InsertAfter(anOutIndex, 1));
   EXPECT_ANY_THROW(aVec.Erase(anOutIndex));
 #endif
+}
+
+TEST(NCollection_LinearVectorTest, Constructor_SizeAndValue)
+{
+  NCollection_LinearVector<int> aVec(5, 42);
+  EXPECT_EQ(5u, aVec.Size());
+  for (size_t i = 0; i < aVec.Size(); ++i)
+  {
+    EXPECT_EQ(42, aVec[i]);
+  }
+}
+
+TEST(NCollection_LinearVectorTest, Constructor_SizeAndValue_NonTrivial)
+{
+  NCollection_LinearVector<TCollection_AsciiString> aVec(3, TCollection_AsciiString("hello"));
+  EXPECT_EQ(3u, aVec.Size());
+  for (size_t i = 0; i < aVec.Size(); ++i)
+  {
+    EXPECT_STREQ("hello", aVec[i].ToCString());
+  }
+}
+
+TEST(NCollection_LinearVectorTest, Constructor_SizeZero_IsEmpty)
+{
+  NCollection_LinearVector<int> aVec(0, 99);
+  EXPECT_TRUE(aVec.IsEmpty());
+}
+
+TEST(NCollection_LinearVectorTest, OcctApiCoverage)
+{
+  NCollection_LinearVector<int> aVec;
+  EXPECT_TRUE(aVec.IsEmpty());
+  EXPECT_EQ(0u, aVec.Size());
+
+  aVec.Append(10);
+  int& aBackRef = aVec.EmplaceAppend(20);
+  aBackRef      = 30;
+
+  EXPECT_FALSE(aVec.IsEmpty());
+  EXPECT_EQ(2u, aVec.Size());
+  EXPECT_GE(aVec.Capacity(), aVec.Size());
+  EXPECT_EQ(10, aVec.First());
+  EXPECT_EQ(30, aVec.Last());
+  EXPECT_EQ(&aVec[0], aVec.Data());
+  EXPECT_EQ(10, aVec.Value(0));
+  EXPECT_EQ(30, aVec.Value(1));
+
+  aVec.Reserve(8);
+  EXPECT_GE(aVec.Capacity(), 8u);
+
+  aVec.Resize(4, 7);
+  EXPECT_EQ(4u, aVec.Size());
+  EXPECT_EQ(7, aVec[2]);
+  EXPECT_EQ(7, aVec[3]);
+
+  aVec.EraseLast();
+  EXPECT_EQ(3u, aVec.Size());
+  EXPECT_EQ(7, aVec.Last());
+
+  aVec.Clear();
+  EXPECT_TRUE(aVec.IsEmpty());
+  EXPECT_EQ(0u, aVec.Size());
 }

@@ -128,8 +128,8 @@ void BRepOffset_Inter3d::CompletInt(const NCollection_List<TopoDS_Shape>& SetOfF
   aSelector.Sort();
 
   // Treat the selected pairs
-  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aSelector.Pairs();
-  const int                                             aNbPairs = static_cast<int>(aPairs.size());
+  const NCollection_LinearVector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aSelector.Pairs();
+  const int             aNbPairs = static_cast<int>(aPairs.Size());
   Message_ProgressScope aPS(theRange, "Complete intersection", aNbPairs);
   for (int iPair = 0; iPair < aNbPairs; ++iPair, aPS.Next())
   {

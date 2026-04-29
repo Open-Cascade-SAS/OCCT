@@ -19,6 +19,7 @@
 #include <BVH_Box.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_HArray1.hxx>
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_SelectionType.hxx>

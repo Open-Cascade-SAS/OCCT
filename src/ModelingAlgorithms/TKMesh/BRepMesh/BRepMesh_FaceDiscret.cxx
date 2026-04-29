@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_FaceDiscret.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <IMeshData_Model.hxx>
 #include <IMeshData_Wire.hxx>
 #include <IMeshData_Edge.hxx>
@@ -42,10 +43,10 @@ public:
       : myAlgo(theAlgo),
         myScope(theRange, "Face Discret", theAlgo->myModel->FacesNb())
   {
-    myRanges.reserve(theAlgo->myModel->FacesNb());
+    myRanges.Reserve(theAlgo->myModel->FacesNb());
     for (int aFaceIter = 0; aFaceIter < theAlgo->myModel->FacesNb(); ++aFaceIter)
     {
-      myRanges.push_back(myScope.Next());
+      myRanges.Append(myScope.Next());
     }
   }
 
@@ -60,9 +61,9 @@ public:
   }
 
 private:
-  mutable BRepMesh_FaceDiscret*      myAlgo;
-  Message_ProgressScope              myScope;
-  std::vector<Message_ProgressRange> myRanges;
+  mutable BRepMesh_FaceDiscret*                   myAlgo;
+  Message_ProgressScope                           myScope;
+  NCollection_LinearVector<Message_ProgressRange> myRanges;
 };
 
 //=================================================================================================

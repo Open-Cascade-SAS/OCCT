@@ -47,8 +47,6 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_Sequence.hxx>
 
-#include <unordered_set>
-#include <unordered_map>
 #include <stack>
 #include <algorithm>
 
@@ -56,15 +54,10 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Shell, ShapeFix_Root)
 
 namespace
 {
-// Type aliases for unordered maps with custom allocators
+// Type aliases for DataMaps with shape hasher
 using FaceEdgesMap = NCollection_IndexedDataMap<TopoDS_Face, NCollection_Array1<TopoDS_Edge>>;
-using EdgeFacesAllocator =
-  NCollection_Allocator<std::pair<const TopoDS_Edge, NCollection_DynamicArray<TopoDS_Face>>>;
-using EdgeFacesMap = std::unordered_map<TopoDS_Edge,
-                                        NCollection_DynamicArray<TopoDS_Face>,
-                                        TopTools_ShapeMapHasher,
-                                        TopTools_ShapeMapHasher,
-                                        EdgeFacesAllocator>;
+using EdgeFacesMap =
+  NCollection_DataMap<TopoDS_Edge, NCollection_DynamicArray<TopoDS_Face>, TopTools_ShapeMapHasher>;
 
 // Default increment for dynamic array of faces per edge
 constexpr int DEFAULT_EDGE_FACES_INCREMENT = 5;
@@ -245,10 +238,10 @@ static NCollection_List<NCollection_Sequence<TopoDS_Shape>> GetConnectedFaceGrou
         {
           const TopoDS_Edge& anEdge = aFaceEdgesArray.Value(anEdgeIdx);
 
-          auto anEdgeFacesIter = theEdgeFaces.find(anEdge);
-          if (anEdgeFacesIter != theEdgeFaces.end())
+          auto anEdgeFacesPtr = theEdgeFaces.Seek(anEdge);
+          if (anEdgeFacesPtr)
           {
-            const NCollection_DynamicArray<TopoDS_Face>& aConnectedFaces = anEdgeFacesIter->second;
+            const NCollection_DynamicArray<TopoDS_Face>& aConnectedFaces = *anEdgeFacesPtr;
 
             for (int aFaceIdx = 0; aFaceIdx < aConnectedFaces.Length(); ++aFaceIdx)
             {
@@ -319,13 +312,8 @@ static bool GetShells(
 
   // Using STL containers because number of faces or edges can be too high
   // to keep them on flat basket OCCT map
-  using EdgeMapAllocator =
-    NCollection_Allocator<std::pair<const TopoDS_Edge, std::pair<bool, bool>>>;
-  using EdgeOrientedMap = std::unordered_map<TopoDS_Edge,
-                                             std::pair<bool, bool>,
-                                             TopTools_ShapeMapHasher,
-                                             TopTools_ShapeMapHasher,
-                                             EdgeMapAllocator>;
+  using EdgeOrientedMap =
+    NCollection_DataMap<TopoDS_Edge, std::pair<bool, bool>, TopTools_ShapeMapHasher>;
   using TempProcessedEdges =
     NCollection_DataMap<TopoDS_Edge, std::pair<bool, bool>, TopTools_ShapeMapHasher>;
 
@@ -351,8 +339,7 @@ static bool GetShells(
     aFaceEdges.Add(aFace, std::move(aFaceEdgesArray));
   }
 
-  EdgeFacesMap aEdgeFaces;
-  aEdgeFaces.reserve(aNumberOfEdges);
+  EdgeFacesMap aEdgeFaces(static_cast<int>(aNumberOfEdges));
 
   for (int aFaceInd = 1; aFaceInd <= aFaceEdges.Length(); ++aFaceInd)
   {
@@ -363,7 +350,8 @@ static bool GetShells(
     {
       const TopoDS_Edge& anEdge = aFaceEdgesArray.Value(anEdgeInd);
 
-      auto& aFacesArray = aEdgeFaces[anEdge];
+      NCollection_DynamicArray<TopoDS_Face>& aFacesArray =
+        aEdgeFaces.TryBound(anEdge, NCollection_DynamicArray<TopoDS_Face>());
 
       // Check if face already exists in the array
       bool aFaceExists = false;
@@ -401,8 +389,7 @@ static bool GetShells(
   // Some assumption that each edge can be in two orientations
   aNumberOfEdges = static_cast<size_t>((aNumberOfEdges / 2) + 1);
 
-  EdgeOrientedMap aProcessedEdges;
-  aProcessedEdges.reserve(aNumberOfEdges);
+  EdgeOrientedMap aProcessedEdges(static_cast<int>(aNumberOfEdges));
 
   NCollection_Sequence<TopoDS_Shape> aProcessingFaces = std::move(aConnectedGroups.First());
 
@@ -425,9 +412,9 @@ static bool GetShells(
       if (anIsMultiConnex && theMapMultiConnectEdges.Contains(edge))
         continue;
 
-      auto aProcessedEdgeIt = aProcessedEdges.find(edge);
+      std::pair<bool, bool>* aProcessedEdgeIt = aProcessedEdges.ChangeSeek(edge);
 
-      if (aProcessedEdgeIt == aProcessedEdges.end())
+      if (!aProcessedEdgeIt)
       {
         std::pair<bool, bool>* aTempProcessedEdgeIt = aTempProcessedEdges.ChangeSeek(edge);
         if (!aTempProcessedEdgeIt)
@@ -447,7 +434,7 @@ static bool GetShells(
         continue;
       }
 
-      auto& aPair = aProcessedEdgeIt->second;
+      std::pair<bool, bool>& aPair = *aProcessedEdgeIt;
 
       const bool isDirect   = aPair.first;
       const bool isReversed = aPair.second;
@@ -475,7 +462,7 @@ static bool GetShells(
       if (!aPair.first && !aPair.second)
       {
         // if edge is processed in this face it is removed from map of processed edges
-        aProcessedEdges.erase(aProcessedEdgeIt);
+        aProcessedEdges.UnBind(edge);
       }
     }
 
@@ -510,15 +497,14 @@ static bool GetShells(
           std::pair<bool, bool> aRevertedPair{!anEdgeOrientationPair.first,
                                               !anEdgeOrientationPair.second};
 
-          auto aProcessedEdgeIt = aProcessedEdges.find(edge);
-          if (aProcessedEdgeIt == aProcessedEdges.end())
+          std::pair<bool, bool>* aProcessedEdgePtr = aProcessedEdges.ChangeSeek(edge);
+          if (!aProcessedEdgePtr)
           {
-            aProcessedEdges.emplace(edge, aRevertedPair);
+            aProcessedEdges.Bind(edge, aRevertedPair);
           }
           else
           {
-            auto& aPair = aProcessedEdgeIt->second;
-            aPair       = aRevertedPair;
+            *aProcessedEdgePtr = aRevertedPair;
           }
         }
         aDone = true;
@@ -531,16 +517,15 @@ static bool GetShells(
           const TopoDS_Edge& edge                  = aTempEdgeIter.Key();
           const auto&        anEdgeOrientationPair = aTempEdgeIter.Value();
 
-          auto aProcessedEdgeIt = aProcessedEdges.find(edge);
-          if (aProcessedEdgeIt == aProcessedEdges.end())
+          std::pair<bool, bool>* aProcessedEdgePtr = aProcessedEdges.ChangeSeek(edge);
+          if (!aProcessedEdgePtr)
           {
-            aProcessedEdges.emplace(edge, anEdgeOrientationPair);
+            aProcessedEdges.Bind(edge, anEdgeOrientationPair);
           }
           else
           {
-            auto& aPair  = aProcessedEdgeIt->second;
-            aPair.first  = anEdgeOrientationPair.first;
-            aPair.second = anEdgeOrientationPair.second;
+            aProcessedEdgePtr->first  = anEdgeOrientationPair.first;
+            aProcessedEdgePtr->second = anEdgeOrientationPair.second;
           }
         }
       }

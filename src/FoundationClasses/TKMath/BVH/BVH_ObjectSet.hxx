@@ -18,6 +18,7 @@
 
 #include <BVH_Set.hxx>
 #include <BVH_Object.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 //! Array of abstract entities (bounded by BVH boxes) to built BVH.
 //! \tparam T Numeric data type

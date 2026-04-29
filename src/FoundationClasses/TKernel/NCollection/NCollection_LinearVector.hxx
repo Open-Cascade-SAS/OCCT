@@ -62,6 +62,8 @@ public:
   NCollection_LinearVector() noexcept = default;
 
   //! Constructor with pre-allocated capacity.
+  //! Unlike std::vector(n), this constructor does not create elements.
+  //! Use Resize() or NCollection_LinearVector(theSize, theValue) to construct items.
   //! @param[in] theCapacity number of elements to pre-allocate
   explicit NCollection_LinearVector(const size_t theCapacity)
   {
@@ -70,6 +72,15 @@ public:
       myData     = myAlloc.allocate(theCapacity);
       myCapacity = theCapacity;
     }
+  }
+
+  //! Constructor creating theSize elements initialized to theValue.
+  //! Equivalent to std::vector(n, val).
+  //! @param[in] theSize   number of elements to construct
+  //! @param[in] theValue  value to initialize each element with
+  NCollection_LinearVector(const size_t theSize, const TheItemType& theValue)
+  {
+    Resize(theSize, theValue);
   }
 
   //! Copy constructor.
@@ -199,7 +210,14 @@ public:
   //! If theSize > Size(), new elements are default-constructed.
   //! If theSize < Size(), excess elements are destroyed.
   //! @param[in] theSize new number of elements
-  void Resize(const size_t theSize)
+  void Resize(const size_t theSize) { Resize(theSize, TheItemType()); }
+
+  //! Change the number of elements, filling new slots with theValue.
+  //! If theSize > Size(), new elements are copy-constructed from theValue.
+  //! If theSize < Size(), excess elements are destroyed.
+  //! @param[in] theSize  new number of elements
+  //! @param[in] theValue value to fill new elements with
+  void Resize(const size_t theSize, const TheItemType& theValue)
   {
     if (theSize > mySize)
     {
@@ -209,7 +227,7 @@ public:
       }
       for (size_t i = mySize; i < theSize; ++i)
       {
-        myAlloc.construct(myData + i, TheItemType());
+        myAlloc.construct(myData + i, theValue);
       }
     }
     else if (theSize < mySize)

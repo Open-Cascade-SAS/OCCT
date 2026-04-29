@@ -16,6 +16,7 @@
 
 #include <Bnd_BoundSortBox.hxx>
 
+#include <NCollection_LinearVector.hxx>
 #include <gp_Pln.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_IncAllocator.hxx>
@@ -438,10 +439,11 @@ const NCollection_List<int>& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
   // indicates the Y-axis. If both bits are set (0b11), and the box also occupies the Z-axis,
   // we check for actual intersection with the given box and add it to the result if
   // intersection occurs.
-  std::vector<uint8_t> aResultIndices(myBoxes->Upper() + 1, 0);
-  constexpr uint8_t    anOccupiedX  = 0b01;
-  constexpr uint8_t    anOccupiedY  = 0b10;
-  constexpr uint8_t    anOccupiedXY = 0b11;
+  NCollection_LinearVector<uint8_t> aResultIndices;
+  aResultIndices.Resize(myBoxes->Upper() + 1, 0);
+  constexpr uint8_t anOccupiedX  = 0b01;
+  constexpr uint8_t anOccupiedY  = 0b10;
+  constexpr uint8_t anOccupiedXY = 0b11;
 
   // Checking the voxels along X-axis.
   for (int aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)

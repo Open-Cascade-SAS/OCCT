@@ -102,7 +102,7 @@ bool RWObj_Reader::read(std::istream&                  theStream,
   // determine file location to load associated files
   TCollection_AsciiString aFileName;
   OSD_Path::FolderAndFileFromPath(theFile, myFolder, aFileName);
-  myCurrElem.resize(1024, -1);
+  myCurrElem.Resize(1024, -1);
 
   Standard_CLocaleSentry aLocaleSentry;
   if (!theStream.good())
@@ -397,9 +397,9 @@ void RWObj_Reader::pushIndices(const char* thePos)
       }
     }
 
-    if (myCurrElem.size() < size_t(aNode))
+    if (myCurrElem.Size() < size_t(aNode))
     {
-      myCurrElem.resize(aNode * 2, -1);
+      myCurrElem.Resize(aNode * 2, -1);
     }
     myCurrElem[aNode] = anIndex;
     aNbElemNodes      = aNode + 1;

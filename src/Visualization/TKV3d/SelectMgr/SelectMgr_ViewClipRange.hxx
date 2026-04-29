@@ -20,8 +20,7 @@
 #include <Standard_TypeDef.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Dump.hxx>
-
-#include <vector>
+#include <NCollection_LinearVector.hxx>
 
 class gp_Ax1;
 class Graphic3d_SequenceOfHClipPlane;
@@ -43,7 +42,7 @@ public:
     {
       return true;
     }
-    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.Size(); ++aRangeIter)
     {
       if (!myClipRanges[aRangeIter].IsOut(theDepth))
       {
@@ -70,7 +69,7 @@ public:
       myUnclipRange.GetMin(theDepth);
     }
 
-    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.Size(); ++aRangeIter)
     {
       if (!myClipRanges[aRangeIter].IsOut(theDepth))
       {
@@ -84,7 +83,7 @@ public:
       return true;
     }
 
-    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.Size(); ++aRangeIter)
     {
       if (!aCommonClipRange.IsOut(myClipRanges[aRangeIter]))
       {
@@ -101,7 +100,7 @@ public:
   //! Clears clipping range.
   void SetVoid()
   {
-    myClipRanges.resize(0);
+    myClipRanges.Clear();
     myUnclipRange = Bnd_Range(RealFirst(), RealLast());
   }
 
@@ -113,14 +112,14 @@ public:
   Bnd_Range& ChangeUnclipRange() { return myUnclipRange; }
 
   //! Adds a clipping sub-range (for clipping chains).
-  void AddClipSubRange(const Bnd_Range& theRange) { myClipRanges.push_back(theRange); }
+  void AddClipSubRange(const Bnd_Range& theRange) { myClipRanges.Append(theRange); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  std::vector<Bnd_Range> myClipRanges;
-  Bnd_Range              myUnclipRange;
+  NCollection_LinearVector<Bnd_Range> myClipRanges;
+  Bnd_Range                           myUnclipRange;
 };
 
 #endif // _SelectMgr_ViewClipRange_HeaderFile

@@ -91,72 +91,74 @@ static void writeVertex(std::ostream& theStream, const T& theVertex)
 
 #ifdef HAVE_DRACO
 //! Write nodes to Draco mesh
-static void writeNodesToDracoMesh(draco::Mesh&                                theMesh,
-                                  const std::vector<NCollection_Vec3<float>>& theNodes)
+static void writeNodesToDracoMesh(draco::Mesh&                                             theMesh,
+                                  const NCollection_LinearVector<NCollection_Vec3<float>>& theNodes)
 {
-  if (theNodes.empty())
+  if (theNodes.IsEmpty())
   {
     return;
   }
 
   draco::PointAttribute anAttr;
   anAttr.Init(draco::GeometryAttribute::POSITION, 3, draco::DT_FLOAT32, false, sizeof(float) * 3);
-  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theNodes.size()));
+  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theNodes.Size()));
   draco::PointAttribute* aPtr = theMesh.attribute(anId);
   draco::PointIndex      anIndex(0);
-  for (size_t aNodeInd = 0; aNodeInd < theNodes.size(); ++aNodeInd, ++anIndex)
+  for (size_t aNodeInd = 0; aNodeInd < theNodes.Size(); ++aNodeInd, ++anIndex)
   {
     aPtr->SetAttributeValue(aPtr->mapped_index(anIndex), theNodes[aNodeInd].GetData());
   }
 }
 
 //! Write normals to Draco mesh
-static void writeNormalsToDracoMesh(draco::Mesh&                                theMesh,
-                                    const std::vector<NCollection_Vec3<float>>& theNormals)
+static void writeNormalsToDracoMesh(
+  draco::Mesh&                                             theMesh,
+  const NCollection_LinearVector<NCollection_Vec3<float>>& theNormals)
 {
-  if (theNormals.empty())
+  if (theNormals.IsEmpty())
   {
     return;
   }
 
   draco::PointAttribute anAttr;
   anAttr.Init(draco::GeometryAttribute::NORMAL, 3, draco::DT_FLOAT32, false, sizeof(float) * 3);
-  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theNormals.size()));
+  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theNormals.Size()));
   draco::PointAttribute* aPtr = theMesh.attribute(anId);
   draco::PointIndex      anIndex(0);
-  for (size_t aNormInd = 0; aNormInd < theNormals.size(); ++aNormInd, ++anIndex)
+  for (size_t aNormInd = 0; aNormInd < theNormals.Size(); ++aNormInd, ++anIndex)
   {
     aPtr->SetAttributeValue(aPtr->mapped_index(anIndex), theNormals[aNormInd].GetData());
   }
 }
 
 //! Write texture UV coordinates to Draco mesh
-static void writeTexCoordsToDracoMesh(draco::Mesh&                                theMesh,
-                                      const std::vector<NCollection_Vec2<float>>& theTexCoord)
+static void writeTexCoordsToDracoMesh(
+  draco::Mesh&                                             theMesh,
+  const NCollection_LinearVector<NCollection_Vec2<float>>& theTexCoord)
 {
-  if (theTexCoord.empty())
+  if (theTexCoord.IsEmpty())
   {
     return;
   }
 
   draco::PointAttribute anAttr;
   anAttr.Init(draco::GeometryAttribute::TEX_COORD, 2, draco::DT_FLOAT32, false, sizeof(float) * 2);
-  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theTexCoord.size()));
+  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theTexCoord.Size()));
   draco::PointAttribute* aPtr = theMesh.attribute(anId);
   draco::PointIndex      anIndex(0);
-  for (size_t aTexInd = 0; aTexInd < theTexCoord.size(); ++aTexInd, ++anIndex)
+  for (size_t aTexInd = 0; aTexInd < theTexCoord.Size(); ++aTexInd, ++anIndex)
   {
     aPtr->SetAttributeValue(aPtr->mapped_index(anIndex), theTexCoord[aTexInd].GetData());
   }
 }
 
 //! Write indices to Draco mesh
-static void writeIndicesToDracoMesh(draco::Mesh&                      theMesh,
-                                    const std::vector<Poly_Triangle>& theIndices)
+static void writeIndicesToDracoMesh(draco::Mesh&                                   theMesh,
+                                    const NCollection_LinearVector<Poly_Triangle>& theIndices)
 {
   draco::Mesh::Face aFace;
   int               anIndex = 0;
-  for (size_t anInd = 0; anInd < theIndices.size(); ++anInd, ++anIndex)
+  for (size_t anInd = 0; anInd < theIndices.Size(); ++anInd, ++anIndex)
   {
     const Poly_Triangle& anElem = theIndices[anInd];
     aFace[0]                    = anElem.Value(1);
@@ -173,17 +175,20 @@ static void writeIndicesToDracoMesh(draco::Mesh&                      theMesh,
 class DracoEncodingFunctor
 {
 public:
-  DracoEncodingFunctor(const Message_ProgressRange&                                theProgress,
-                       draco::Encoder&                                             theDracoEncoder,
-                       const std::vector<std::shared_ptr<RWGltf_CafWriter::Mesh>>& theMeshes,
-                       std::vector<std::shared_ptr<draco::EncoderBuffer>>& theEncoderBuffers)
-      : myProgress(theProgress, "Draco compression", std::max(1, int(theMeshes.size()))),
+  using MeshVector          = NCollection_LinearVector<std::shared_ptr<RWGltf_CafWriter::Mesh>>;
+  using EncoderBufferVector = NCollection_LinearVector<std::shared_ptr<draco::EncoderBuffer>>;
+
+  DracoEncodingFunctor(const Message_ProgressRange& theProgress,
+                       draco::Encoder&              theDracoEncoder,
+                       const MeshVector&            theMeshes,
+                       EncoderBufferVector&         theEncoderBuffers)
+      : myProgress(theProgress, "Draco compression", std::max(1, int(theMeshes.Size()))),
         myDracoEncoder(&theDracoEncoder),
-        myRanges(0, int(theMeshes.size()) - 1),
+        myRanges(0, int(theMeshes.Size()) - 1),
         myMeshes(&theMeshes),
         myEncoderBuffers(&theEncoderBuffers)
   {
-    for (int anIndex = 0; anIndex != int(theMeshes.size()); ++anIndex)
+    for (int anIndex = 0; anIndex != int(theMeshes.Size()); ++anIndex)
     {
       myRanges.SetValue(anIndex, myProgress.Next());
     }
@@ -191,8 +196,8 @@ public:
 
   void operator()(int theMeshIndex) const
   {
-    const std::shared_ptr<RWGltf_CafWriter::Mesh>& aCurrentMesh = myMeshes->at(theMeshIndex);
-    if (aCurrentMesh->NodesVec.empty())
+    const std::shared_ptr<RWGltf_CafWriter::Mesh>& aCurrentMesh = myMeshes->Value(theMeshIndex);
+    if (aCurrentMesh->NodesVec.IsEmpty())
     {
       return;
     }
@@ -202,12 +207,12 @@ public:
     draco::Mesh aMesh;
     writeNodesToDracoMesh(aMesh, aCurrentMesh->NodesVec);
 
-    if (!aCurrentMesh->NormalsVec.empty())
+    if (!aCurrentMesh->NormalsVec.IsEmpty())
     {
       writeNormalsToDracoMesh(aMesh, aCurrentMesh->NormalsVec);
     }
 
-    if (!aCurrentMesh->TexCoordsVec.empty())
+    if (!aCurrentMesh->TexCoordsVec.IsEmpty())
     {
       writeTexCoordsToDracoMesh(aMesh, aCurrentMesh->TexCoordsVec);
     }
@@ -219,18 +224,18 @@ public:
     draco::Status aStatus = myDracoEncoder->EncodeMeshToBuffer(aMesh, anEncoderBuffer.get());
     if (aStatus.ok())
     {
-      myEncoderBuffers->at(theMeshIndex) = anEncoderBuffer;
+      myEncoderBuffers->ChangeValue(theMeshIndex) = anEncoderBuffer;
     }
 
     aScope.Next();
   }
 
 private:
-  Message_ProgressScope                                       myProgress;
-  draco::Encoder*                                             myDracoEncoder;
-  NCollection_Array1<Message_ProgressRange>                   myRanges;
-  const std::vector<std::shared_ptr<RWGltf_CafWriter::Mesh>>* myMeshes;
-  std::vector<std::shared_ptr<draco::EncoderBuffer>>*         myEncoderBuffers;
+  Message_ProgressScope                     myProgress;
+  draco::Encoder*                           myDracoEncoder;
+  NCollection_Array1<Message_ProgressRange> myRanges;
+  const MeshVector*                         myMeshes;
+  EncoderBufferVector*                      myEncoderBuffers;
 };
 #endif
 
@@ -352,7 +357,7 @@ void RWGltf_CafWriter::saveNodes(RWGltf_GltfFace&                               
     theGltfFace.NodePos.BndBox.Add(NCollection_Vec3<double>(aNode.X(), aNode.Y(), aNode.Z()));
     if (theMesh.get() != nullptr && hasTriangulation(theGltfFace))
     {
-      theMesh->NodesVec.push_back(
+      theMesh->NodesVec.Append(
         NCollection_Vec3<float>(float(aNode.X()), float(aNode.Y()), float(aNode.Z())));
     }
     else
@@ -401,7 +406,7 @@ void RWGltf_CafWriter::saveNormals(RWGltf_GltfFace&                             
     myCSTrsf.TransformNormal(aVecNormal);
     if (theMesh.get() != nullptr)
     {
-      theMesh->NormalsVec.push_back(aVecNormal);
+      theMesh->NormalsVec.Append(aVecNormal);
     }
     else
     {
@@ -464,7 +469,7 @@ void RWGltf_CafWriter::saveTextCoords(RWGltf_GltfFace&                          
     aTexCoord.SetY(1.0 - aTexCoord.Y());
     if (theMesh.get() != nullptr)
     {
-      theMesh->TexCoordsVec.push_back(
+      theMesh->TexCoordsVec.Append(
         NCollection_Vec2<float>((float)aTexCoord.X(), (float)aTexCoord.Y()));
     }
     else
@@ -493,7 +498,7 @@ void RWGltf_CafWriter::saveTriangleIndices(RWGltf_GltfFace&           theGltfFac
     aTri(3) += aNodeFirst;
     if (theMesh.get() != nullptr)
     {
-      theMesh->IndicesVec.push_back(aTri);
+      theMesh->IndicesVec.Append(aTri);
     }
     else
     {
@@ -839,7 +844,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
   myBuffViewInd.ByteLength = 0;
   myBuffViewInd.Target     = RWGltf_GltfBufferViewTarget_ELEMENT_ARRAY_BUFFER;
 
-  myBuffViewsDraco.clear();
+  myBuffViewsDraco.Clear();
 
   myBinDataMap.Clear();
   myBinDataLen64 = 0;
@@ -894,8 +899,8 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
     }
   }
 
-  std::vector<std::shared_ptr<RWGltf_CafWriter::Mesh>> aMeshes;
-  int                                                  aNbAccessors = 0;
+  NCollection_LinearVector<std::shared_ptr<RWGltf_CafWriter::Mesh>> aMeshes;
+  int                                                               aNbAccessors = 0;
   NCollection_Map<occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>>
     aWrittenFaces;
   NCollection_DataMap<TopoDS_Shape, occ::handle<RWGltf_GltfFace>, TopTools_ShapeMapHasher>
@@ -952,14 +957,13 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
         ++aMeshIndex;
         if (myDracoParameters.DracoCompression)
         {
-          if (aMeshIndex <= aMeshes.size())
+          if (aMeshIndex <= aMeshes.Size())
           {
-            aMeshPtr = aMeshes.at(aMeshIndex - 1);
+            aMeshPtr = aMeshes.Value(aMeshIndex - 1);
           }
           else
           {
-            aMeshes.push_back(std::make_shared<RWGltf_CafWriter::Mesh>(RWGltf_CafWriter::Mesh()));
-            aMeshPtr = aMeshes.back();
+            aMeshPtr = aMeshes.Append(std::make_shared<RWGltf_CafWriter::Mesh>());
           }
         }
 #endif
@@ -1107,14 +1111,16 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
     aDracoEncoder.SetSpeedOptions(myDracoParameters.CompressionLevel,
                                   myDracoParameters.CompressionLevel);
 
-    std::vector<std::shared_ptr<draco::EncoderBuffer>> anEncoderBuffers(aMeshes.size());
+    NCollection_LinearVector<std::shared_ptr<draco::EncoderBuffer>> anEncoderBuffers(
+      aMeshes.Size(),
+      std::shared_ptr<draco::EncoderBuffer>());
     DracoEncodingFunctor aFunctor(aScope.Next(), aDracoEncoder, aMeshes, anEncoderBuffers);
-    OSD_Parallel::For(0, int(aMeshes.size()), aFunctor, !myToParallel);
+    OSD_Parallel::For(0, int(aMeshes.Size()), aFunctor, !myToParallel);
 
     int aNbSkippedBuffers = 0;
-    for (size_t aBuffInd = 0; aBuffInd != anEncoderBuffers.size(); ++aBuffInd)
+    for (size_t aBuffInd = 0; aBuffInd != anEncoderBuffers.Size(); ++aBuffInd)
     {
-      if (anEncoderBuffers.at(aBuffInd).get() == nullptr)
+      if (anEncoderBuffers.Value(aBuffInd).get() == nullptr)
       {
         if (aBuffViewId == 0)
         {
@@ -1129,7 +1135,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
       RWGltf_GltfBufferView aBuffViewDraco;
       aBuffViewDraco.Id                         = (int)aBuffInd + aBuffViewId - aNbSkippedBuffers;
       aBuffViewDraco.ByteOffset                 = aBinFile->tellp();
-      const draco::EncoderBuffer& anEncoderBuff = *anEncoderBuffers.at(aBuffInd);
+      const draco::EncoderBuffer& anEncoderBuff = *anEncoderBuffers.Value(aBuffInd);
       aBinFile->write(anEncoderBuff.data(), std::streamsize(anEncoderBuff.size()));
       if (!aBinFile->good())
       {
@@ -1146,7 +1152,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
       }
 
       aBuffViewDraco.ByteLength = aLength - aBuffViewDraco.ByteOffset;
-      myBuffViewsDraco.push_back(aBuffViewDraco);
+      myBuffViewsDraco.Append(aBuffViewDraco);
     }
     aDracoTimer.Stop();
     Message::SendInfo(TCollection_AsciiString("Draco compression time: ")
@@ -1848,7 +1854,7 @@ void RWGltf_CafWriter::writeBufferViews(const int theBinDataBufferId)
   }
   if (myDracoParameters.DracoCompression)
   {
-    for (size_t aBufInd = 0; aBufInd != myBuffViewsDraco.size(); ++aBufInd)
+    for (size_t aBufInd = 0; aBufInd != myBuffViewsDraco.Size(); ++aBufInd)
     {
       if (myBuffViewsDraco[aBufInd].Id != RWGltf_GltfAccessor::INVALID_ID)
       {

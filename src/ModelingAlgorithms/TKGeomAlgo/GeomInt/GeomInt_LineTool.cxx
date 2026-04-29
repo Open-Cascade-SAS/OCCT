@@ -24,13 +24,11 @@
 #include <IntPatch_RLine.hxx>
 #include <IntPatch_WLine.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <NCollection_OccAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-
-#include <vector>
 
 namespace
 {
@@ -411,10 +409,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   const GeomInt_LineConstructor&                    theLConstructor,
   NCollection_Sequence<occ::handle<IntPatch_Line>>& theNewLines)
 {
-  typedef NCollection_List<int> ListOfInteger;
-  // have to use std::vector, not NCollection_DynamicArray in order to use copy constructor of
-  // ListOfInteger which will be created with specific allocator instance
-  typedef std::vector<ListOfInteger, NCollection_OccAllocator<ListOfInteger>> ArrayOfListOfInteger;
+  typedef NCollection_List<int>                   ListOfInteger;
+  typedef NCollection_LinearVector<ListOfInteger> ArrayOfListOfInteger;
 
   bool   bIsPrevPointOnBoundary, bIsCurrentPointOnBoundary;
   int    nblines, aNbPnts, aNbParts, pit, i, j, aNbListOfPointIndex;
@@ -440,10 +436,9 @@ bool GeomInt_LineTool::DecompositionOfWLine(
     return false;
   }
   //
-  occ::handle<NCollection_IncAllocator>   anIncAlloc = new NCollection_IncAllocator();
-  NCollection_OccAllocator<ListOfInteger> anAlloc(anIncAlloc);
+  occ::handle<NCollection_IncAllocator> anIncAlloc = new NCollection_IncAllocator();
   const ListOfInteger  aDummy(anIncAlloc); // empty list to be copy constructed from
-  ArrayOfListOfInteger anArrayOfLines(aNbPnts + 1, aDummy, anAlloc);
+  ArrayOfListOfInteger anArrayOfLines(aNbPnts + 1, aDummy);
 
   NCollection_LocalArray<int> anArrayOfLineTypeArr(aNbPnts + 1);
   int*                        anArrayOfLineType = anArrayOfLineTypeArr;

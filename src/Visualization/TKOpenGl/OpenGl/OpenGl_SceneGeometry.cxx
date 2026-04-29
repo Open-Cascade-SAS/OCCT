@@ -142,16 +142,10 @@ OpenGl_TriangleSet::OpenGl_TriangleSet(const size_t                             
 
 void OpenGl_RaytraceGeometry::Clear()
 {
-  BVH_Geometry<float, 3>::BVH_Geometry::Clear();
+  BVH_ObjectSet<float, 3>::Clear();
 
-  std::vector<OpenGl_RaytraceLight, NCollection_OccAllocator<OpenGl_RaytraceLight>> anEmptySources;
-
-  Sources.swap(anEmptySources);
-
-  std::vector<OpenGl_RaytraceMaterial, NCollection_OccAllocator<OpenGl_RaytraceMaterial>>
-    anEmptyMaterials;
-
-  Materials.swap(anEmptyMaterials);
+  Sources.Clear(true);
+  Materials.Clear(true);
 }
 
 struct OpenGL_BVHParallelBuilder
@@ -279,8 +273,8 @@ bool OpenGl_RaytraceGeometry::ProcessAcceleration()
                                                    aVerticesOffset,
                                                    aElementsOffset);
 
-      aVerticesOffset += static_cast<int>(aTriangleSet->Vertices.size());
-      aElementsOffset += static_cast<int>(aTriangleSet->Elements.size());
+      aVerticesOffset += static_cast<int>(aTriangleSet->Vertices.Size());
+      aElementsOffset += static_cast<int>(aTriangleSet->Elements.Size());
 
       aBvhNodesOffset += aTriangleSet->QuadBVH()->Length();
     }
@@ -320,7 +314,7 @@ int OpenGl_RaytraceGeometry::AccelerationOffset(int theNodeIdx)
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
     return INVALID_OFFSET;
 
-  return aBVH->NodeInfoBuffer().at(theNodeIdx).y();
+  return aBVH->NodeInfoBuffer().Value(theNodeIdx).y();
 }
 
 // =======================================================================
@@ -334,7 +328,7 @@ int OpenGl_RaytraceGeometry::VerticesOffset(int theNodeIdx)
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
     return INVALID_OFFSET;
 
-  return aBVH->NodeInfoBuffer().at(theNodeIdx).z();
+  return aBVH->NodeInfoBuffer().Value(theNodeIdx).z();
 }
 
 // =======================================================================
@@ -348,7 +342,7 @@ int OpenGl_RaytraceGeometry::ElementsOffset(int theNodeIdx)
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
     return INVALID_OFFSET;
 
-  return aBVH->NodeInfoBuffer().at(theNodeIdx).w();
+  return aBVH->NodeInfoBuffer().Value(theNodeIdx).w();
 }
 
 // =======================================================================
@@ -362,11 +356,11 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet(int theNodeIdx)
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
     return nullptr;
 
-  if (aBVH->NodeInfoBuffer().at(theNodeIdx).x() > myObjects.Length())
+  if (aBVH->NodeInfoBuffer().Value(theNodeIdx).x() > myObjects.Length())
     return nullptr;
 
   return dynamic_cast<OpenGl_TriangleSet*>(
-    myObjects(aBVH->NodeInfoBuffer().at(theNodeIdx).x() - 1).get());
+    myObjects(aBVH->NodeInfoBuffer().Value(theNodeIdx).x() - 1).get());
 }
 
 // =======================================================================
@@ -412,7 +406,7 @@ bool OpenGl_RaytraceGeometry::AcquireTextures(const occ::handle<OpenGl_Context>&
           GL_DEBUG_SEVERITY_HIGH,
           TCollection_AsciiString("Error: Failed to get 64-bit handle of OpenGL texture ")
             + OpenGl_Context::FormatGlError(anErr));
-        myTextureHandles.clear();
+        myTextureHandles.Clear();
         return false;
       }
     }
@@ -446,7 +440,7 @@ bool OpenGl_RaytraceGeometry::ReleaseTextures(const occ::handle<OpenGl_Context>&
     return true;
   }
 
-  for (size_t aTexIter = 0; aTexIter < myTextureHandles.size(); ++aTexIter)
+  for (size_t aTexIter = 0; aTexIter < myTextureHandles.Size(); ++aTexIter)
   {
     theContext->arbTexBindless->glMakeTextureHandleNonResidentARB(myTextureHandles[aTexIter]);
     const GLenum anErr = theContext->core11fwd->glGetError();
@@ -504,8 +498,8 @@ bool OpenGl_RaytraceGeometry::UpdateTextureHandles(const occ::handle<OpenGl_Cont
     return false;
   }
 
-  myTextureHandles.clear();
-  myTextureHandles.resize(myTextures.Size());
+  myTextureHandles.Clear();
+  myTextureHandles.Resize(myTextures.Size());
 
   int aTexIter = 0;
   for (NCollection_DynamicArray<occ::handle<OpenGl_Texture>>::Iterator aTexSrcIter(myTextures);
@@ -537,7 +531,7 @@ bool OpenGl_RaytraceGeometry::UpdateTextureHandles(const occ::handle<OpenGl_Cont
         GL_DEBUG_SEVERITY_HIGH,
         TCollection_AsciiString("Error: Failed to get 64-bit handle of OpenGL texture ")
           + OpenGl_Context::FormatGlError(anErr));
-      myTextureHandles.clear();
+      myTextureHandles.Clear();
       return false;
     }
   }

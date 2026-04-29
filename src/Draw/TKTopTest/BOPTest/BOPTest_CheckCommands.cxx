@@ -17,6 +17,7 @@
 #include <BOPAlgo_CheckResult.hxx>
 #include <BOPDS_DS.hxx>
 #include <NCollection_Map.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPTest.hxx>
 #include <BOPTest_Objects.hxx>
@@ -37,7 +38,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <vector>
 //
 static void MakeShapeForFullOutput(const TCollection_AsciiString&,
                                    const int,
@@ -272,9 +272,8 @@ int bopcheck(Draw_Interpretor& di, int n, const char** a)
   //
   const NCollection_Map<BOPDS_Pair>& aMPK = aDS.Interferences();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  std::vector<BOPTest_Interf>           aVec;
-  std::vector<BOPTest_Interf>::iterator aIt;
-  BOPTest_Interf                        aBInterf;
+  NCollection_LinearVector<BOPTest_Interf> aVec;
+  BOPTest_Interf                           aBInterf;
   //
   aItMPK.Initialize(aMPK);
   for (; aItMPK.More(); aItMPK.Next())
@@ -296,15 +295,15 @@ int bopcheck(Draw_Interpretor& di, int n, const char** a)
     aBInterf.SetIndices(n1, n2);
     aBInterf.SetType(iT);
     //
-    aVec.push_back(aBInterf);
+    aVec.Append(aBInterf);
   }
   //
   sort(aVec.begin(), aVec.end(), std::less<BOPTest_Interf>());
   //
   iCnt = 0;
-  for (aIt = aVec.begin(); aIt != aVec.end(); aIt++)
+  for (size_t aBIdx = 0; aBIdx < aVec.Size(); ++aBIdx)
   {
-    const BOPTest_Interf& aBI = *aIt;
+    const BOPTest_Interf& aBI = aVec[aBIdx];
     //
     aBI.Indices(n1, n2);
     if (aDS.IsNewShape(n1) || aDS.IsNewShape(n2))

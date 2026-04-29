@@ -5916,11 +5916,11 @@ occ::handle<StepBasic_Product> STEPCAFControl_Reader::getProductFromProductDefin
 
 //=================================================================================================
 
-std::vector<occ::handle<StepRepr_PropertyDefinition>> STEPCAFControl_Reader::
+NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>> STEPCAFControl_Reader::
   collectPropertyDefinitions(const occ::handle<XSControl_WorkSession>& theWorkSession,
                              const occ::handle<Standard_Transient>&    theGeneralProperty) const
 {
-  std::vector<occ::handle<StepRepr_PropertyDefinition>> aResult;
+  NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>> aResult;
 
   occ::handle<StepBasic_GeneralProperty> aGeneralProp =
     occ::down_cast<StepBasic_GeneralProperty>(theGeneralProperty);
@@ -5939,7 +5939,7 @@ std::vector<occ::handle<StepRepr_PropertyDefinition>> STEPCAFControl_Reader::
       continue;
     }
 
-    aResult.emplace_back(aPropAssociation->PropertyDefinition());
+    aResult.Append(aPropAssociation->PropertyDefinition());
   }
 
   return aResult;
@@ -5947,12 +5947,12 @@ std::vector<occ::handle<StepRepr_PropertyDefinition>> STEPCAFControl_Reader::
 
 //=================================================================================================
 
-std::vector<TDF_Label> STEPCAFControl_Reader::collectShapeLabels(
+NCollection_LinearVector<TDF_Label> STEPCAFControl_Reader::collectShapeLabels(
   const occ::handle<XSControl_WorkSession>&       theWorkSession,
   const occ::handle<Transfer_TransientProcess>&   theTransferProcess,
   const occ::handle<StepRepr_PropertyDefinition>& theSource) const
 {
-  std::vector<TDF_Label> aResult;
+  NCollection_LinearVector<TDF_Label> aResult;
 
   NCollection_List<occ::handle<Transfer_Binder>> aBinders;
   collectBinders(theWorkSession, theTransferProcess, theSource, aBinders);
@@ -5973,7 +5973,7 @@ std::vector<TDF_Label> STEPCAFControl_Reader::collectShapeLabels(
     TDF_Label aShapeResultLabel;
     if (myMap.Find(aShape, aShapeResultLabel))
     {
-      aResult.emplace_back(aShapeResultLabel);
+      aResult.Append(aShapeResultLabel);
     }
   }
 
@@ -5982,13 +5982,13 @@ std::vector<TDF_Label> STEPCAFControl_Reader::collectShapeLabels(
 
 //=================================================================================================
 
-std::vector<occ::handle<StepRepr_PropertyDefinition>> STEPCAFControl_Reader::
+NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>> STEPCAFControl_Reader::
   collectRelatedPropertyDefinitions(
     const occ::handle<XSControl_WorkSession>&       theWorkSession,
     const occ::handle<StepRepr_PropertyDefinition>& theProperty) const
 {
-  std::vector<occ::handle<StepRepr_PropertyDefinition>> aGroupedProperties;
-  aGroupedProperties.emplace_back(theProperty);
+  NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>> aGroupedProperties;
+  aGroupedProperties.Append(theProperty);
 
   Interface_EntityIterator aSharingsListOfPD = theWorkSession->Graph().Sharings(theProperty);
   for (aSharingsListOfPD.Start(); aSharingsListOfPD.More(); aSharingsListOfPD.Next())
@@ -6003,7 +6003,7 @@ std::vector<occ::handle<StepRepr_PropertyDefinition>> STEPCAFControl_Reader::
     occ::handle<StepRepr_PropertyDefinition> aGroupedProp = aRel->RelatedPropertyDefinition();
     if (!aGroupedProp.IsNull())
     {
-      aGroupedProperties.emplace_back(aGroupedProp);
+      aGroupedProperties.Append(aGroupedProp);
     }
   }
 
@@ -6162,11 +6162,11 @@ bool STEPCAFControl_Reader::ReadMetadata(const occ::handle<XSControl_WorkSession
          collectPropertyDefinitions(theWS, aModel->Value(anEntityInd)))
     {
       // Collect all the related PropertyDefinitions.
-      const std::vector<occ::handle<StepRepr_PropertyDefinition>> aGroupedProperties =
+      const NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>> aGroupedProperties =
         collectRelatedPropertyDefinitions(theWS, aPropertyDefinition);
 
       // Collect all the shapes labels.
-      const std::vector<TDF_Label> aLabels =
+      const NCollection_LinearVector<TDF_Label> aLabels =
         collectShapeLabels(theWS, aTransientProcess, aPropertyDefinition);
 
       // Fill all attributes for each shape label.

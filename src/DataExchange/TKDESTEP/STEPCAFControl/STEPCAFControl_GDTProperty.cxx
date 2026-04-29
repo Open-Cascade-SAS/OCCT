@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Tool.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
@@ -1519,11 +1520,11 @@ occ::handle<StepVisual_TessellatedGeometricSet> STEPCAFControl_GDTProperty::GetT
   const TopoDS_Shape& theShape)
 {
   // Build complex_triangulated_surface_set.
-  std::vector<occ::handle<StepVisual_ComplexTriangulatedSurfaceSet>> aCTSSs;
+  NCollection_LinearVector<occ::handle<StepVisual_ComplexTriangulatedSurfaceSet>> aCTSSs;
   for (TopExp_Explorer aFaceIt(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
   {
     const TopoDS_Face aFace = TopoDS::Face(aFaceIt.Current());
-    aCTSSs.emplace_back(GenerateComplexTriangulatedSurfaceSet(aFace));
+    aCTSSs.Append(GenerateComplexTriangulatedSurfaceSet(aFace));
   }
 
   // Build tesselated_curve_set.
@@ -1532,10 +1533,10 @@ occ::handle<StepVisual_TessellatedGeometricSet> STEPCAFControl_GDTProperty::GetT
   // Fill the container of tessellated items.
   NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> aTesselatedItems =
     new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1,
-                                                                    static_cast<int>(aCTSSs.size())
+                                                                    static_cast<int>(aCTSSs.Size())
                                                                       + 1);
   aTesselatedItems->SetValue(1, aTCS);
-  for (size_t aCTSSIndex = 0; aCTSSIndex < aCTSSs.size(); ++aCTSSIndex)
+  for (size_t aCTSSIndex = 0; aCTSSIndex < aCTSSs.Size(); ++aCTSSIndex)
   {
     aTesselatedItems->SetValue(static_cast<int>(aCTSSIndex) + 2, aCTSSs[aCTSSIndex]);
   }

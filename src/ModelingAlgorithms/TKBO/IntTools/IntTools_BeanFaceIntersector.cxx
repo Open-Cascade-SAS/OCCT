@@ -46,6 +46,7 @@
 #include <IntTools_Tools.hxx>
 #include <Precision.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -2440,9 +2441,9 @@ static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   
 {
   NCollection_IndexedMap<IntTools_SurfaceRangeSample> aMapToAvoid;
 
-  NCollection_DataMap<int, NCollection_List<int>> aCurveIdMap;
-  std::vector<IntTools_CurveRangeSample>          aCurveRangeVector;
-  aCurveRangeVector.reserve(theListCurveRange.Size());
+  NCollection_DataMap<int, NCollection_List<int>>     aCurveIdMap;
+  NCollection_LinearVector<IntTools_CurveRangeSample> aCurveRangeVector;
+  aCurveRangeVector.Reserve(theListCurveRange.Size());
 
   NCollection_List<IntTools_CurveRangeSample>::Iterator   anItC(theListCurveRange);
   NCollection_List<IntTools_SurfaceRangeSample>::Iterator anItS(theListSurfaceRange);
@@ -2451,7 +2452,7 @@ static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   
   int aSurfRangeSize = 0;
   for (; anItS.More() && anItC.More(); anItS.Next(), anItC.Next(), ++aCurveRangeId)
   {
-    aCurveRangeVector.push_back(anItC.Value());
+    aCurveRangeVector.Append(anItC.Value());
     int aSurfIndex = aMapToAvoid.Add(anItS.Value());
     if (aSurfIndex > aSurfRangeSize)
     {

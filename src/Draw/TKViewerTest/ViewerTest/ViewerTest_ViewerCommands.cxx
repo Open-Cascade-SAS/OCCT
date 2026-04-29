@@ -31,6 +31,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_LightSource.hxx>
 #include <AIS_InteractiveObject.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_List.hxx>
 #include <AIS_Manipulator.hxx>
 #include <AIS_ViewCube.hxx>
@@ -10479,7 +10480,7 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
   if (!aPrsList.IsEmpty())
   {
     // update light source presentations
-    std::vector<occ::handle<AIS_LightSource>> aLightPrsVec;
+    NCollection_LinearVector<occ::handle<AIS_LightSource>> aLightPrsVec;
     for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aPrsIter(aPrsList);
          aPrsIter.More();
          aPrsIter.Next())
@@ -10487,7 +10488,7 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
       if (occ::handle<AIS_LightSource> aLightPrs2 =
             occ::down_cast<AIS_LightSource>(aPrsIter.Value()))
       {
-        aLightPrsVec.push_back(aLightPrs2);
+        aLightPrsVec.Append(aLightPrs2);
       }
     }
 
@@ -10495,11 +10496,8 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
     std::sort(aLightPrsVec.begin(), aLightPrsVec.end(), LightPrsSort());
 
     int aTopStack = 0;
-    for (std::vector<occ::handle<AIS_LightSource>>::iterator aPrsIter = aLightPrsVec.begin();
-         aPrsIter != aLightPrsVec.end();
-         ++aPrsIter)
+    for (const occ::handle<AIS_LightSource>& aLightPrs2 : aLightPrsVec)
     {
-      occ::handle<AIS_LightSource> aLightPrs2 = *aPrsIter;
       if (!aLightPrs2->TransformPersistence().IsNull()
           && aLightPrs2->TransformPersistence()->IsTrihedronOr2d())
       {
@@ -10512,6 +10510,7 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
       aCtx->SetTransformPersistence(aLightPrs2, aLightPrs2->TransformPersistence());
     }
   }
+
   return 0;
 }
 

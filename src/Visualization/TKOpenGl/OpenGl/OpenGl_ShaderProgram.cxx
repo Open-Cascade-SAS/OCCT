@@ -15,6 +15,7 @@
 
 #include <OSD_File.hxx>
 #include <OSD_Environment.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderProgram.hxx>
@@ -662,13 +663,14 @@ bool OpenGl_ShaderProgram::Initialize(
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occShadowMapSamplers"))
   {
-    std::vector<GLint> aShadowSamplers(myNbShadowMaps);
-    const GLint        aSamplFrom = GLint(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
+    NCollection_LinearVector<GLint> aShadowSamplers;
+    aShadowSamplers.Resize(myNbShadowMaps);
+    const GLint aSamplFrom = GLint(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
     for (int aSamplerIter = 0; aSamplerIter < myNbShadowMaps; ++aSamplerIter)
     {
       aShadowSamplers[aSamplerIter] = aSamplFrom + aSamplerIter;
     }
-    SetUniform(theCtx, aLocSampler, myNbShadowMaps, &aShadowSamplers.front());
+    SetUniform(theCtx, aLocSampler, myNbShadowMaps, &aShadowSamplers[0]);
   }
 
   if (const OpenGl_ShaderUniformLocation aLocSampler =

@@ -30,8 +30,7 @@
 #include <RWObj_SubMeshReason.hxx>
 #include <RWObj_Tools.hxx>
 #include <Standard_HashUtils.hxx>
-
-#include <vector>
+#include <NCollection_LinearVector.hxx>
 
 //! An abstract class implementing procedure to read OBJ file.
 //!
@@ -383,8 +382,8 @@ protected:
   NCollection_DataMap<TCollection_AsciiString, RWObj_Material>
     myMaterials; //!< map of known materials
 
-  RWObj_SubMesh    myActiveSubMesh; //!< active sub-mesh definition
-  std::vector<int> myCurrElem;      //!< indices for the current element
+  RWObj_SubMesh                 myActiveSubMesh; //!< active sub-mesh definition
+  NCollection_LinearVector<int> myCurrElem;      //!< indices for the current element
 };
 
 #endif // _RWObj_Reader_HeaderFile

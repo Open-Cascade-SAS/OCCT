@@ -29,6 +29,7 @@
 #include <Font_BRepTextBuilder.hxx>
 #include <Font_FontMgr.hxx>
 #include <Message.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_List.hxx>
 
 #include <OSD_Chronometer.hxx>
@@ -5879,21 +5880,18 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       TCollection_AsciiString aResult;
       if (toFindAll || aFontName.Search("*") != -1)
       {
-        const NCollection_List<occ::handle<Font_SystemFont>> aFonts = aMgr->GetAvailableFonts();
-        std::vector<occ::handle<Font_SystemFont>>            aFontsSorted;
-        aFontsSorted.reserve(aFonts.Size());
+        const NCollection_List<occ::handle<Font_SystemFont>>   aFonts = aMgr->GetAvailableFonts();
+        NCollection_LinearVector<occ::handle<Font_SystemFont>> aFontsSorted;
+        aFontsSorted.Reserve(aFonts.Size());
         for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts);
              aFontIter.More();
              aFontIter.Next())
         {
-          aFontsSorted.push_back(aFontIter.Value());
+          aFontsSorted.Append(aFontIter.Value());
         }
         std::stable_sort(aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
-        for (std::vector<occ::handle<Font_SystemFont>>::iterator aFontIter = aFontsSorted.begin();
-             aFontIter != aFontsSorted.end();
-             ++aFontIter)
+        for (const occ::handle<Font_SystemFont>& aFont : aFontsSorted)
         {
-          const occ::handle<Font_SystemFont>& aFont = *aFontIter;
           const TCollection_AsciiString aCheck = TCollection_AsciiString("string match -nocase \"")
                                                  + aFontName + "\" \"" + aFont->FontName() + "\"";
           if (theDI.Eval(aCheck.ToCString()) == 0 && *theDI.Result() != '1')
@@ -6072,23 +6070,19 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   if (toPrintList)
   {
     // just print the list of available fonts
-    bool                                                 isFirst = true;
-    const NCollection_List<occ::handle<Font_SystemFont>> aFonts  = aMgr->GetAvailableFonts();
-    std::vector<occ::handle<Font_SystemFont>>            aFontsSorted;
-    aFontsSorted.reserve(aFonts.Size());
+    bool                                                   isFirst = true;
+    const NCollection_List<occ::handle<Font_SystemFont>>   aFonts  = aMgr->GetAvailableFonts();
+    NCollection_LinearVector<occ::handle<Font_SystemFont>> aFontsSorted;
+    aFontsSorted.Reserve(aFonts.Size());
     for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts);
          aFontIter.More();
          aFontIter.Next())
     {
-      aFontsSorted.push_back(aFontIter.Value());
+      aFontsSorted.Append(aFontIter.Value());
     }
     std::stable_sort(aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
-    for (std::vector<occ::handle<Font_SystemFont>>::iterator aFontIter = aFontsSorted.begin();
-         aFontIter != aFontsSorted.end();
-         ++aFontIter)
+    for (const occ::handle<Font_SystemFont>& aFont : aFontsSorted)
     {
-      const occ::handle<Font_SystemFont>& aFont = *aFontIter;
-
       if (toPrintNames)
       {
         if (!isFirst)
@@ -6107,7 +6101,6 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       }
       isFirst = false;
     }
-    return 0;
   }
 
   return 0;

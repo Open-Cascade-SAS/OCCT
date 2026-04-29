@@ -258,7 +258,7 @@ bool BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
     double aPar = aGCPnts.Parameter(aVertIdx);
     gp_Pnt aP   = aBAC.Value(aPar);
 
-    theAddVertices.emplace_back(aP.X(), aP.Y(), aP.Z());
+    theAddVertices.EmplaceAppend(aP.X(), aP.Y(), aP.Z());
     theAddStatuses.Append(ProxPnt_Status::ProxPnt_Status_MIDDLE);
   }
 
@@ -308,10 +308,10 @@ void BRepExtrema_ProximityValueTool::doRecurTrgSplit(
   if (myInspector.IsNeedAdd()) // is point aCenterOfMaxSide unique
   {
     BVH_Vec3d aBisectingPnt(aCenterOfMaxSide.X(), aCenterOfMaxSide.Y(), aCenterOfMaxSide.Z());
-    theAddVertices.push_back(aBisectingPnt);
+    theAddVertices.Append(aBisectingPnt);
     theAddStatuses.Append(theEdgesStatus[aBisectedEdgeIdx]);
     myInspector.Add(aCenterOfMaxSide.Coord());
-    myCells.Add(static_cast<BRepExtrema_VertexInspector::Target>(theAddVertices.size()),
+    myCells.Add(static_cast<BRepExtrema_VertexInspector::Target>(theAddVertices.Size()),
                 aBox.CornerMin().XYZ(),
                 aBox.CornerMax().XYZ());
   }

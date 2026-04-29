@@ -16,6 +16,8 @@
 #include <OpenGl_View.hxx>
 
 #include <cmath>
+#include <NCollection_LinearVector.hxx>
+#include <Standard_OutOfMemory.hxx>
 
 #include <Aspect_NeutralWindow.hxx>
 #include <Aspect_RenderingContext.hxx>
@@ -534,12 +536,12 @@ bool OpenGl_View::BufferDump(Image_PixMap& theImage, const Graphic3d_BufferType&
     return false;
   }
 
-  std::vector<GLfloat> aValues;
+  NCollection_LinearVector<GLfloat> aValues;
   try
   {
-    aValues.resize(aW * aH);
+    aValues.Resize(aW * aH);
   }
-  catch (const std::bad_alloc&)
+  catch (const Standard_OutOfMemory&)
   {
     return false;
   }
