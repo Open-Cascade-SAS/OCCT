@@ -261,6 +261,9 @@ static bool SplitWire(const TopoDS_Face&                  face,
     occ::handle<ShapeExtend_WireData> sewd1 = new ShapeExtend_WireData;
     sewd1->Add(E1);
     bool IsConnectedEdge = true;
+    // Set to true when null pcurves prevent the 2D closure verification:
+    // the partial wire collected so far is discarded for this start edge.
+    bool aIsAbandonedSplit = false;
     for (j = 2; j <= sewd->NbEdges() && IsConnectedEdge; j++)
     {
       TopoDS_Edge E2;
@@ -294,9 +297,9 @@ static bool SplitWire(const TopoDS_Face&                  face,
         occ::handle<Geom2d_Curve> curve2 = BRep_Tool::CurveOnSurface(E2, face, a2, b2);
         if (curve1.IsNull() || curve2.IsNull())
         {
-          continue;
+          aIsAbandonedSplit = true;
+          break;
         }
-
         gp_Pnt2d v0, v1;
         if (E1.Orientation() == TopAbs_REVERSED)
         {
@@ -318,6 +321,10 @@ static bool SplitWire(const TopoDS_Face&                  face,
           break;
         }
       }
+    }
+    if (aIsAbandonedSplit)
+    {
+      continue;
     }
     if (!IsConnectedEdge)
     {
