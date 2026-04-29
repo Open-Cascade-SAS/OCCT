@@ -351,7 +351,7 @@ static bool GetShells(
       const TopoDS_Edge& anEdge = aFaceEdgesArray.Value(anEdgeInd);
 
       NCollection_DynamicArray<TopoDS_Face>& aFacesArray =
-        *aEdgeFaces.Bound(anEdge, NCollection_DynamicArray<TopoDS_Face>());
+        aEdgeFaces.TryBound(anEdge, NCollection_DynamicArray<TopoDS_Face>());
 
       // Check if face already exists in the array
       bool aFaceExists = false;
