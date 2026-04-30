@@ -7,7 +7,8 @@ puts ""
 ###############################
 
 puts "TODO OCC29501 All: Error: The curve ii13_20 is possible"
-puts "TODO OCC29501 All: Error: The curve ii13_48 is possible"
+puts "TODO OCC29501 All: Error: The curve ii13_44 is possible"
+puts "TODO OCC00000 All: Error in ii13_23"
 
 pload QAcommands
 

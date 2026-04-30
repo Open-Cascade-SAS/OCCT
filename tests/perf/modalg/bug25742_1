@@ -25,14 +25,14 @@ checkshape result
 set nbshapes_expected "
 Number of shapes in shape
  VERTEX    : 14
- EDGE      : 24
- WIRE      : 11
- FACE      : 10
+ EDGE      : 23
+ WIRE      : 10
+ FACE      : 9
  SHELL     : 1
  SOLID     : 0
  COMPSOLID : 0
  COMPOUND  : 1
- SHAPE     : 61
+ SHAPE     : 58
 "
 checknbshapes result -ref "${nbshapes_expected}" -t -m "Partition of 2 shapes"
 checkview -display result -3d -path ${imagedir}/${test_image}.png

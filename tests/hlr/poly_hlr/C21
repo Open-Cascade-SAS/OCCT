@@ -1,5 +1,5 @@
 set viewname "vright"
-set length 949.199
+set length 949.207
 
 testreadstep [locate_data_file bug27341_Einsatz_BILZ_SEK_BFA_CAD.stp] a
 COMPUTE_HLR $viewname $algotype

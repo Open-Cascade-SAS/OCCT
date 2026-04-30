@@ -6,11 +6,11 @@ set filename FRA62468-1.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 345  ( 5241 )  Summary  = 345  ( 5241 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 429  ( 5241 )  Summary  = 429  ( 5241 )
 CHECKSHAPE  : Wires    = 8  ( 12 )  Faces    = 12  ( 12 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   FreeWire = 10  ( 10 ) 
-TOLERANCE   : MaxTol   =   0.9874083984  (   0.9875071265 )  AvgTol   =   0.01115260676  (   0.01115854425 )
+TOLERANCE   : MaxTol   =   0.9874083984  (   0.9875071265 )  AvgTol   =   0.01115263697  (   0.01115854425 )
 LABELS      : N0Labels = 5392  ( 5458 )  N1Labels = 302  ( 18481 )  N2Labels = 0  ( 0 )   TotalLabels = 5694  ( 23939 )   NameLabels = 5392  ( 5458 )   ColorLabels = 5675  ( 23873 )   LayerLabels = 5663  ( 23873 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )

@@ -1,4 +1,3 @@
-puts "REQUIRED All: checkshape failure"
 puts "================"
 puts "OCC25844"
 puts "================"

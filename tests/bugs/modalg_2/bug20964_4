@@ -3,6 +3,8 @@ puts "OCC20964: Wrong result of cut operation for given shapes"
 puts "============"
 puts ""
 
+puts "TODO OCC0000 ALL: Error in triangulation"
+
 restore [locate_data_file OCC20964_revsolid.brep] b1 
 restore [locate_data_file OCC20964_sphere.brep] b2 
 

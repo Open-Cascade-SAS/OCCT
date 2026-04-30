@@ -1,5 +1,3 @@
-puts "TODO OCC33548 Windows: compute of chamfer failed"
-
 puts "================"
 puts "OCC116"
 puts "================"

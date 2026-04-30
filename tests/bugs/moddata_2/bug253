@@ -7,6 +7,8 @@ puts "========"
 ## More over it seems that command segment in Draw does not work.
 ######################################################
 
+puts "TODO OCC0000 ALL: Faulty OCC253: parametrization of result curve is wrong"
+
 restore [locate_data_file OCC253.draw] result
 ############### checkshape c1 # is not a topological shape
 

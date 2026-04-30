@@ -9,12 +9,12 @@ set filename UKI60028-1.igs
 
 set ref_data {
 DATA        : Faulties = 4  ( 0 )  Warnings = 0  ( 0 )  Summary  = 4  ( 0 )
-TPSTAT      : Faulties = 8  ( 150 )  Warnings = 42  ( 788 )  Summary  = 50  ( 938 )
+TPSTAT      : Faulties = 10  ( 150 )  Warnings = 42  ( 788 )  Summary  = 52  ( 938 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   FreeWire = 189  ( 284 ) 
 TOLERANCE   : MaxTol   =   0.6023944505  (   0.6023945025 )  AvgTol   =  0.007298259627  (  0.008822195946 )
-LABELS      : N0Labels = 8  ( 11 )  N1Labels = 959  ( 2069 )  N2Labels = 0  ( 0 )   TotalLabels = 967  ( 2080 )   NameLabels = 797  ( 1105 )   ColorLabels = 959  ( 2067 )   LayerLabels = 780  ( 2034 )
+LABELS      : N0Labels = 8  ( 13 )  N1Labels = 959  ( 2069 )  N2Labels = 0  ( 0 )   TotalLabels = 967  ( 2082 )   NameLabels = 797  ( 1107 )   ColorLabels = 959  ( 2067 )   LayerLabels = 780  ( 2034 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 12  ( 14 )
 COLORS      : Colors   = BLUE CHOCOLATE2 DARKGOLDENROD4 DEEPSKYBLUE2 GOLD4 GREEN KHAKI1 KHAKI2 LEMONCHIFFON1 RED WHITE YELLOW  ( BLUE CHOCOLATE2 DARKGOLDENROD4 DEEPSKYBLUE2 FIREBRICK4 GOLD4 GREEN KHAKI1 KHAKI2 LEMONCHIFFON1 RED TURQUOISE4 WHITE YELLOW )

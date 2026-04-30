@@ -7,12 +7,12 @@ set filename OPEL5.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 7 )  Warnings = 10  ( 142 )  Summary  = 10  ( 149 )
+TPSTAT      : Faulties = 1  ( 7 )  Warnings = 10  ( 142 )  Summary  = 11  ( 149 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 28  ( 28 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 28  ( 28 )   FreeWire = 20  ( 20 ) 
 TOLERANCE   : MaxTol   =  0.09192532719  (  0.09192532719 )  AvgTol   =  0.0005521171736  (  0.0005524808205 )
-LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1109  ( 1273 )  N2Labels = 0  ( 0 )   TotalLabels = 1110  ( 1274 )   NameLabels = 1090  ( 1131 )   ColorLabels = 1109  ( 1273 )   LayerLabels = 1089  ( 1273 )
+LABELS      : N0Labels = 1  ( 2 )  N1Labels = 1109  ( 1273 )  N2Labels = 0  ( 0 )   TotalLabels = 1110  ( 1275 )   NameLabels = 1090  ( 1132 )   ColorLabels = 1109  ( 1273 )   LayerLabels = 1089  ( 1273 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 6 )
 COLORS      : Colors   = BLUE CYAN GOLDENROD2 GREEN YELLOW  ( BLUE CYAN GOLDENROD2 GREEN RED YELLOW )

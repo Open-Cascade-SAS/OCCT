@@ -12,7 +12,7 @@ explode a
 
 set nbshapes_expected "
 Number of shapes in shape
- VERTEX    : 37090
+ VERTEX    : 37203
  EDGE      : 37571
  WIRE      : 6695
  FACE      : 6290
@@ -20,7 +20,7 @@ Number of shapes in shape
  SOLID     : 0
  COMPSOLID : 0
  COMPOUND  : 1
- SHAPE     : 87647
+ SHAPE     : 87760
 "
 checknbshapes a -ref ${nbshapes_expected} -t -m "importing file"
 
