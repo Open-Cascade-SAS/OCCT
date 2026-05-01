@@ -136,10 +136,10 @@ void OpenGl_Window::Init (const occ::handle<OpenGl_GraphicDriver>& theDriver,
   Cocoa_LocalPool aLocalPool;
 
   // all GL context within one OpenGl_GraphicDriver should be shared!
-  NSOpenGLContext* aGLCtxShare = theShareCtx.IsNull() ? NULL : theShareCtx->myGContext;
+  NSOpenGLContext* aGLCtxShare = theShareCtx.IsNull() ? nullptr : theShareCtx->myGContext;
   NSOpenGLContext* aGLContext  = theGContext;
   bool isCore = false;
-  if (aGLContext == NULL)
+  if (aGLContext == nullptr)
   {
     NSOpenGLPixelFormatAttribute anAttribs[32] = {};
     int aLastAttrib = 0;
@@ -195,19 +195,19 @@ void OpenGl_Window::Init (const occ::handle<OpenGl_GraphicDriver>& theDriver,
         NSOpenGLPixelFormat* aGLFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
         aGLContext = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
                                                 shareContext: aGLCtxShare];
-        if (aGLContext != NULL)
+        if (aGLContext != nullptr)
         {
           break;
         }
       }
 
-      if (aGLContext != NULL)
+      if (aGLContext != nullptr)
       {
         break;
       }
     }
 
-    if (aGLContext == NULL)
+    if (aGLContext == nullptr)
     {
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: NSOpenGLContext creation failed");
       throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
@@ -402,7 +402,7 @@ void OpenGl_Window::init()
   const int aViewport[4] = { 0, 0, mySize.x(), mySize.y() };
   myGlContext->ResizeViewport (aViewport);
   myGlContext->SetDrawBuffer (GL_BACK);
-  if (myGlContext->core11ffp != NULL)
+  if (myGlContext->core11ffp != nullptr)
   {
     myGlContext->core11ffp->glMatrixMode (GL_MODELVIEW);
   }

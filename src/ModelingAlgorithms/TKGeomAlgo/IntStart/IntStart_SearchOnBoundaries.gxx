@@ -1005,7 +1005,7 @@ void PointProcess(const gp_Pnt&                    Pt,
 bool IsRegularity(const TheArc& /*A*/, const occ::handle<TheTopolTool>& aDomain)
 {
   void* anEAddress = aDomain->Edge();
-  if (anEAddress == NULL)
+  if (anEAddress == nullptr)
   {
     return false;
   }
@@ -1026,7 +1026,7 @@ int TreatLC(const TheArc&                    A,
   int anExitCode = 1, aNbExt;
 
   void* anEAddress = aDomain->Edge();
-  if (anEAddress == NULL)
+  if (anEAddress == nullptr)
   {
     return anExitCode;
   }
