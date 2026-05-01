@@ -240,9 +240,8 @@ void V3d_RectangularGrid::DefineLines()
   const double aYSize   = SizeY();
   const double aOffSet  = ZOffset();
   const bool   toUpdate = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
-                          || aXStep != myCurXStep || aYStep != myCurYStep
-                          || aXSize != myCurXSize || aYSize != myCurYSize
-                          || aOffSet != myCurOffSet;
+                        || aXStep != myCurXStep || aYStep != myCurYStep || aXSize != myCurXSize
+                        || aYSize != myCurYSize || aOffSet != myCurOffSet;
   if (!toUpdate && !myToComputePrs)
   {
     return;
@@ -335,9 +334,8 @@ void V3d_RectangularGrid::DefinePoints()
   const double aYSize   = SizeY();
   const double aOffSet  = ZOffset();
   const bool   toUpdate = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
-                          || aXStep != myCurXStep || aYStep != myCurYStep
-                          || aXSize != myCurXSize || aYSize != myCurYSize
-                          || aOffSet != myCurOffSet;
+                        || aXStep != myCurXStep || aYStep != myCurYStep || aXSize != myCurXSize
+                        || aYSize != myCurYSize || aOffSet != myCurOffSet;
   if (!toUpdate && !myToComputePrs)
   {
     return;

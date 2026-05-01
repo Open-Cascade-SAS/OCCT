@@ -81,7 +81,7 @@ public:
 protected:
   //! Recomputes the structure transformation and the ring / spoke primitive arrays
   //! whenever a parameter or the privileged plane changes. Emits a one-shot
-  //! Message::SendWarning() when an arc range is set on the base class — the CPU
+  //! Message::SendWarning() when an arc range is set on the base class - the CPU
   //! renderer cannot honor it and falls back to a full circle.
   Standard_EXPORT void UpdateDisplay() override;
 

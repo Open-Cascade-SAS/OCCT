@@ -233,13 +233,13 @@ void V3d_CircularGrid::UpdateDisplay()
 
 void V3d_CircularGrid::DefineLines()
 {
-  const double aStep      = RadiusStep();
-  const double aDivision  = DivisionNumber();
-  const double aRadius    = Radius();
-  const double aOffSet    = ZOffset();
-  const bool   toUpdate   = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
-                          || aDivision != myCurDivi || aStep != myCurStep
-                          || aRadius != myCurRadius || aOffSet != myCurOffSet;
+  const double aStep     = RadiusStep();
+  const double aDivision = DivisionNumber();
+  const double aRadius   = Radius();
+  const double aOffSet   = ZOffset();
+  const bool   toUpdate  = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
+                        || aDivision != myCurDivi || aStep != myCurStep || aRadius != myCurRadius
+                        || aOffSet != myCurOffSet;
   if (!toUpdate && !myToComputePrs)
   {
     return;
@@ -270,11 +270,11 @@ void V3d_CircularGrid::DefineLines()
   }
   myGroup->AddPrimitiveArray(aPrims1, false);
 
-  nbpnts                                   = 2 * Division + 1;
-  alpha                                    = M_PI / Division;
-  int                              nblines = 0;
-  const size_t                     aNbR  = aStep > 0.0 ? static_cast<size_t>(aRadius / aStep) + 1 : 1;
-  const size_t                     aResv = aNbR * static_cast<size_t>(nbpnts);
+  nbpnts               = 2 * Division + 1;
+  alpha                = M_PI / Division;
+  int          nblines = 0;
+  const size_t aNbR    = aStep > 0.0 ? static_cast<size_t>(aRadius / aStep) + 1 : 1;
+  const size_t aResv   = aNbR * static_cast<size_t>(nbpnts);
   NCollection_LinearVector<gp_Pnt> aSeqLines(aResv), aSeqTenth(aResv);
   for (double r = aStep; r <= aRadius; r += aStep, nblines++)
   {
@@ -289,11 +289,10 @@ void V3d_CircularGrid::DefineLines()
   {
     myGroup->SetGroupPrimitivesAspect(
       new Graphic3d_AspectLine3d(myTenthColor, Aspect_TOL_SOLID, 1.0));
-    const int                               aSize = static_cast<int>(aSeqTenth.Size());
-    const int                               nbl   = aSize / nbpnts;
-    occ::handle<Graphic3d_ArrayOfPolylines> aPrims2 =
-      new Graphic3d_ArrayOfPolylines(aSize, nbl);
-    int np = 0;
+    const int                               aSize   = static_cast<int>(aSeqTenth.Size());
+    const int                               nbl     = aSize / nbpnts;
+    occ::handle<Graphic3d_ArrayOfPolylines> aPrims2 = new Graphic3d_ArrayOfPolylines(aSize, nbl);
+    int                                     np      = 0;
     for (int n = 0; n < nbl; n++)
     {
       aPrims2->AddBound(nbpnts);
@@ -307,11 +306,10 @@ void V3d_CircularGrid::DefineLines()
   if (!aSeqLines.IsEmpty())
   {
     myGroup->SetPrimitivesAspect(new Graphic3d_AspectLine3d(myColor, Aspect_TOL_SOLID, 1.0));
-    const int                               aSize = static_cast<int>(aSeqLines.Size());
-    const int                               nbl   = aSize / nbpnts;
-    occ::handle<Graphic3d_ArrayOfPolylines> aPrims3 =
-      new Graphic3d_ArrayOfPolylines(aSize, nbl);
-    int np = 0;
+    const int                               aSize   = static_cast<int>(aSeqLines.Size());
+    const int                               nbl     = aSize / nbpnts;
+    occ::handle<Graphic3d_ArrayOfPolylines> aPrims3 = new Graphic3d_ArrayOfPolylines(aSize, nbl);
+    int                                     np      = 0;
     for (int n = 0; n < nbl; n++)
     {
       aPrims3->AddBound(nbpnts);
@@ -337,13 +335,13 @@ void V3d_CircularGrid::DefineLines()
 
 void V3d_CircularGrid::DefinePoints()
 {
-  const double aStep      = RadiusStep();
-  const double aDivision  = DivisionNumber();
-  const double aRadius    = Radius();
-  const double aOffSet    = ZOffset();
-  const bool   toUpdate   = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
-                          || aDivision != myCurDivi || aStep != myCurStep
-                          || aRadius != myCurRadius || aOffSet != myCurOffSet;
+  const double aStep     = RadiusStep();
+  const double aDivision = DivisionNumber();
+  const double aRadius   = Radius();
+  const double aOffSet   = ZOffset();
+  const bool   toUpdate  = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
+                        || aDivision != myCurDivi || aStep != myCurStep || aRadius != myCurRadius
+                        || aOffSet != myCurOffSet;
   if (!toUpdate && !myToComputePrs)
   {
     return;
@@ -365,7 +363,7 @@ void V3d_CircularGrid::DefinePoints()
   const int nbpnts = int(2 * aDivision);
   double    r, alpha = M_PI / aDivision;
 
-  const size_t                     aNbR = aStep > 0.0 ? static_cast<size_t>(aRadius / aStep) + 1 : 1;
+  const size_t aNbR = aStep > 0.0 ? static_cast<size_t>(aRadius / aStep) + 1 : 1;
   NCollection_LinearVector<gp_Pnt> aSeqPnts(aNbR * static_cast<size_t>(nbpnts) + 1);
   aSeqPnts.EmplaceAppend(0.0, 0.0, -aOffSet);
   for (r = aStep; r <= aRadius; r += aStep)
