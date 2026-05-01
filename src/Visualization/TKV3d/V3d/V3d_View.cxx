@@ -256,6 +256,11 @@ void V3d_View::Remove()
   {
     MyGrid->Erase();
   }
+  if (myShaderGridActive)
+  {
+    myView->GridErase();
+    myShaderGridActive = false;
+  }
   if (!myTrihedron.IsNull())
   {
     myTrihedron->Erase();
@@ -3453,6 +3458,12 @@ void V3d_View::Translate(const double theLength, const bool theStart)
 
 void V3d_View::SetGrid(const gp_Ax3& aPlane, const occ::handle<Aspect_Grid>& aGrid)
 {
+  if (myShaderGridActive)
+  {
+    myView->GridErase();
+    myShaderGridActive = false;
+  }
+
   MyPlane = aPlane;
   MyGrid  = aGrid;
 
@@ -3533,6 +3544,15 @@ void V3d_View::GridDisplay(const Aspect_GridParams& theParams)
 
 void V3d_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
 {
+  // Mutual exclusion: the CPU grid renders into a viewer-wide Graphic3d_Structure
+  // (visible in every active view), so enabling the per-view shader grid hides the
+  // CPU rendering at the viewer level. Snap geometry (Aspect_*Grid) is left alive
+  // and only the structure is erased; SetGrid / ActivateGrid restores it.
+  if (!MyGrid.IsNull() && MyGrid->IsDisplayed())
+  {
+    MyGrid->Erase();
+  }
+  myShaderGridActive = true;
   myView->GridDisplay(theParams, thePlane);
 }
 
@@ -3541,6 +3561,7 @@ void V3d_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& the
 void V3d_View::GridErase()
 {
   myView->GridErase();
+  myShaderGridActive = false;
 }
 
 //=================================================================================================

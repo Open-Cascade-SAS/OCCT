@@ -907,28 +907,37 @@ public:
                                  const double                         theResolution = 0.0,
                                  const bool theToEnlargeIfLine                      = true) const;
 
-  //! Defines or Updates the definition of the
-  //! grid in <me>
+public: //! @name CPU grid plumbing (deprecated, fed by V3d_Viewer::ActivateGrid)
+  //! Snap + CPU rendering. The CPU grid lives on the viewer's structure manager
+  //! and is visible in every active view; SetGrid on a view that has the shader
+  //! grid enabled erases the shader grid on this view, the CPU grid is left
+  //! intact (or re-displayed by V3d_Viewer::ActivateGrid).
+
+  //! Defines or updates the grid plane and snap object on this view.
+  //! @param[in] aPlane grid plane (origin + axes)
+  //! @param[in] aGrid  snap object (Aspect_RectangularGrid or Aspect_CircularGrid)
   Standard_EXPORT void SetGrid(const gp_Ax3& aPlane, const occ::handle<Aspect_Grid>& aGrid);
 
-  //! Defines or Updates the activity of the
-  //! grid in <me>
+  //! Activates / deactivates snap on this view.
+  //! @param[in] aFlag true to enable snap, false to disable
   Standard_EXPORT void SetGridActivity(const bool aFlag);
 
+public: //! @name GPU shader grid (recommended)
+  //! Per-view immediate-mode shader; supports infinite, AA, background, arc range.
+  //! GridDisplay erases the viewer-wide CPU grid rendering (snap geometry is
+  //! preserved). GridErase or SetGrid restores the CPU grid via V3d_Viewer.
+
   //! Display a shader-rendered grid on the viewer's privileged plane.
-  //! @param[in] theParams render-only appearance (color, scale, bounds, arc,
-  //!            draw-mode, background/inf flags); snap geometry still comes
-  //!            from the classical Aspect_*Grid on the viewer.
+  //! @param[in] theParams appearance: color, scale, bounds, arc, draw-mode, background / inf flags
   Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams);
 
-  //! Display a shader-rendered grid on an explicit plane (overrides the
-  //! viewer's privileged plane for this view only).
-  //! @param[in] theParams appearance parameters; see the single-argument overload.
-  //! @param[in] thePlane  world-space grid plane (origin + axes).
+  //! Display a shader-rendered grid on an explicit plane (overrides the viewer's
+  //! privileged plane for this view only).
+  //! @param[in] theParams appearance parameters; see the single-argument overload
+  //! @param[in] thePlane  world-space grid plane (origin + axes)
   Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane);
 
-  //! Erase the shader-rendered grid from this view. Does not touch the
-  //! viewer's classical grid activation used by snap.
+  //! Erase the shader-rendered grid from this view.
   Standard_EXPORT void GridErase();
 
   //! Dumps the full contents of the View into the image file. This is an alias for ToPixMap() with
@@ -1202,6 +1211,7 @@ private:
   occ::handle<Aspect_Grid>                                  MyGrid;
   gp_Ax3                                                    MyPlane;
   NCollection_Array2<double>                                MyTrsf;
+  bool                                                      myShaderGridActive = false;
   occ::handle<Graphic3d_Structure>                          MyGridEchoStructure;
   occ::handle<Graphic3d_Group>                              MyGridEchoGroup;
   gp_Vec                                                    myXscreenAxis;

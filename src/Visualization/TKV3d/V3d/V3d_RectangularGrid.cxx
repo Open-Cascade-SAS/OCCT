@@ -13,12 +13,15 @@
 
 #include <V3d_RectangularGrid.hxx>
 
-#include <Aspect_GridParams.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
-#include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_RectangularGrid, Aspect_RectangularGrid)
@@ -29,6 +32,30 @@ constexpr double THE_DEFAULT_GRID_STEP = 10.0;
 constexpr double THE_MYFACTOR          = 50.0;
 } // namespace
 
+//! Dummy implementation of Graphic3d_Structure overriding ::Compute() method for handling Device
+//! Lost.
+class V3d_RectangularGrid::RectangularGridStructure : public Graphic3d_Structure
+{
+public:
+  RectangularGridStructure(const occ::handle<Graphic3d_StructureManager>& theManager,
+                           V3d_RectangularGrid*                           theGrid)
+      : Graphic3d_Structure(theManager),
+        myGrid(theGrid)
+  {
+  }
+
+  void Compute() override
+  {
+    GraphicClear(false);
+    myGrid->myGroup         = NewGroup();
+    myGrid->myCurAreDefined = false;
+    myGrid->UpdateDisplay();
+  }
+
+private:
+  V3d_RectangularGrid* myGrid;
+};
+
 //=================================================================================================
 
 V3d_RectangularGrid::V3d_RectangularGrid(const V3d_ViewerPointer& aViewer,
@@ -36,15 +63,32 @@ V3d_RectangularGrid::V3d_RectangularGrid(const V3d_ViewerPointer& aViewer,
                                          const Quantity_Color&    aTenthColor)
     : Aspect_RectangularGrid(1., 1.),
       myViewer(aViewer),
-      myIsDisplayed(false)
+      myCurAreDefined(false),
+      myToComputePrs(true),
+      myCurDrawMode(Aspect_GDM_Lines),
+      myCurXo(0.0),
+      myCurYo(0.0),
+      myCurAngle(0.0),
+      myCurXStep(0.0),
+      myCurYStep(0.0),
+      myCurXSize(0.0),
+      myCurYSize(0.0),
+      myCurOffSet(0.0)
 {
   myColor      = aColor;
   myTenthColor = aTenthColor;
 
+  myStructure = new RectangularGridStructure(aViewer->StructureManager(), this);
+  myGroup     = myStructure->NewGroup();
+  myStructure->SetInfiniteState(true);
+
   SetXStep(THE_DEFAULT_GRID_STEP);
   SetYStep(THE_DEFAULT_GRID_STEP);
-  // Keep rectangular grid unbounded by default; explicit -size / viewer API
-  // requests set non-zero SizeX/SizeY and activate clipping in the shader.
+  // Aspect_RectangularGrid default-constructs SizeX/SizeY to 0; restore the historical
+  // CPU bound of half the default view size so existing ActivateGrid() users still see
+  // a bounded grid without needing an explicit SetGraphicValues call.
+  Aspect_RectangularGrid::SetSizeX(0.5 * aViewer->DefaultViewSize());
+  Aspect_RectangularGrid::SetSizeY(0.5 * aViewer->DefaultViewSize());
   Aspect_RectangularGrid::SetZOffset(THE_DEFAULT_GRID_STEP / THE_MYFACTOR);
 }
 
@@ -52,9 +96,10 @@ V3d_RectangularGrid::V3d_RectangularGrid(const V3d_ViewerPointer& aViewer,
 
 V3d_RectangularGrid::~V3d_RectangularGrid()
 {
-  if (myIsDisplayed)
+  myGroup.Nullify();
+  if (!myStructure.IsNull())
   {
-    syncViews(false);
+    myStructure->Erase();
   }
 }
 
@@ -64,8 +109,9 @@ void V3d_RectangularGrid::SetColors(const Quantity_Color& aColor, const Quantity
 {
   if (myColor != aColor || myTenthColor != aTenthColor)
   {
-    myColor      = aColor;
-    myTenthColor = aTenthColor;
+    myColor         = aColor;
+    myTenthColor    = aTenthColor;
+    myCurAreDefined = false;
     UpdateDisplay();
   }
 }
@@ -74,33 +120,278 @@ void V3d_RectangularGrid::SetColors(const Quantity_Color& aColor, const Quantity
 
 void V3d_RectangularGrid::Display()
 {
-  myIsDisplayed = true;
-  syncViews(true);
+  myStructure->SetDisplayPriority(Graphic3d_DisplayPriority_AlmostBottom);
+  myStructure->Display();
+  UpdateDisplay();
 }
 
 //=================================================================================================
 
 void V3d_RectangularGrid::Erase() const
 {
-  myIsDisplayed = false;
-  syncViews(false);
+  myStructure->Erase();
 }
 
 //=================================================================================================
 
 bool V3d_RectangularGrid::IsDisplayed() const
 {
-  return myIsDisplayed;
+  return myStructure->IsDisplayed();
 }
 
 //=================================================================================================
 
 void V3d_RectangularGrid::UpdateDisplay()
 {
-  if (myIsDisplayed)
+  const gp_Ax3 aPlane = myViewer->PrivilegedPlane();
+
+  bool   MakeTransform = false;
+  double xl, yl, zl;
+  double xdx, xdy, xdz;
+  double ydx, ydy, ydz;
+  double dx, dy, dz;
+  aPlane.Location().Coord(xl, yl, zl);
+  aPlane.XDirection().Coord(xdx, xdy, xdz);
+  aPlane.YDirection().Coord(ydx, ydy, ydz);
+  aPlane.Direction().Coord(dx, dy, dz);
+  if (!myCurAreDefined)
   {
-    syncViews(true);
+    MakeTransform = true;
   }
+  else
+  {
+    if (RotationAngle() != myCurAngle || XOrigin() != myCurXo || YOrigin() != myCurYo)
+    {
+      MakeTransform = true;
+    }
+    if (!MakeTransform)
+    {
+      double curxl, curyl, curzl;
+      double curxdx, curxdy, curxdz;
+      double curydx, curydy, curydz;
+      double curdx, curdy, curdz;
+      myCurViewPlane.Location().Coord(curxl, curyl, curzl);
+      myCurViewPlane.XDirection().Coord(curxdx, curxdy, curxdz);
+      myCurViewPlane.YDirection().Coord(curydx, curydy, curydz);
+      myCurViewPlane.Direction().Coord(curdx, curdy, curdz);
+      if (xl != curxl || yl != curyl || zl != curzl || xdx != curxdx || xdy != curxdy
+          || xdz != curxdz || ydx != curydx || ydy != curydy || ydz != curydz || dx != curdx
+          || dy != curdy || dz != curdz)
+      {
+        MakeTransform = true;
+      }
+    }
+  }
+
+  if (MakeTransform)
+  {
+    const double CosAlpha = std::cos(RotationAngle());
+    const double SinAlpha = std::sin(RotationAngle());
+
+    gp_Trsf aTrsf;
+    aTrsf.SetValues(xdx, ydx, dx, xl, xdy, ydy, dy, yl, xdz, ydz, dz, zl);
+
+    gp_Trsf aTrsf2;
+    aTrsf2.SetValues(CosAlpha,
+                     SinAlpha,
+                     0.0,
+                     -XOrigin(),
+                     -SinAlpha,
+                     CosAlpha,
+                     0.0,
+                     -YOrigin(),
+                     0.0,
+                     0.0,
+                     1.0,
+                     0.0);
+    aTrsf.Multiply(aTrsf2);
+    myStructure->SetTransformation(new TopLoc_Datum3D(aTrsf));
+
+    myCurAngle     = RotationAngle();
+    myCurXo        = XOrigin();
+    myCurYo        = YOrigin();
+    myCurViewPlane = aPlane;
+  }
+
+  switch (myDrawMode)
+  {
+    case Aspect_GDM_Points:
+      DefinePoints();
+      myCurDrawMode = Aspect_GDM_Points;
+      break;
+    case Aspect_GDM_Lines:
+      DefineLines();
+      myCurDrawMode = Aspect_GDM_Lines;
+      break;
+    case Aspect_GDM_None:
+      myCurDrawMode = Aspect_GDM_None;
+      break;
+  }
+  myCurAreDefined = true;
+}
+
+//=================================================================================================
+
+void V3d_RectangularGrid::DefineLines()
+{
+  const double aXStep   = XStep();
+  const double aYStep   = YStep();
+  const double aXSize   = SizeX();
+  const double aYSize   = SizeY();
+  const double aOffSet  = ZOffset();
+  const bool   toUpdate = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
+                          || aXStep != myCurXStep || aYStep != myCurYStep
+                          || aXSize != myCurXSize || aYSize != myCurYSize
+                          || aOffSet != myCurOffSet;
+  if (!toUpdate && !myToComputePrs)
+  {
+    return;
+  }
+  else if (!myStructure->IsDisplayed())
+  {
+    myToComputePrs = true;
+    return;
+  }
+
+  myToComputePrs = false;
+  myGroup->Clear();
+
+  int          nblines;
+  double       xl, yl;
+  const double zl    = aOffSet;
+  const size_t aNbXc = aXStep > 0.0 ? static_cast<size_t>(aXSize / aXStep) + 1 : 1;
+  const size_t aNbYc = aYStep > 0.0 ? static_cast<size_t>(aYSize / aYStep) + 1 : 1;
+  const size_t aResv = 4 * (aNbXc + aNbYc) + 4;
+
+  NCollection_LinearVector<gp_Pnt> aSeqLines(aResv), aSeqTenth(aResv);
+
+  aSeqTenth.EmplaceAppend(0., -aYSize, -zl);
+  aSeqTenth.EmplaceAppend(0., aYSize, -zl);
+  for (nblines = 1, xl = aXStep; xl < aXSize; xl += aXStep, nblines++)
+  {
+    NCollection_LinearVector<gp_Pnt>& aSeq = (Modulus(nblines, 10) != 0) ? aSeqLines : aSeqTenth;
+    aSeq.EmplaceAppend(xl, -aYSize, -zl);
+    aSeq.EmplaceAppend(xl, aYSize, -zl);
+    aSeq.EmplaceAppend(-xl, -aYSize, -zl);
+    aSeq.EmplaceAppend(-xl, aYSize, -zl);
+  }
+
+  aSeqTenth.EmplaceAppend(-aXSize, 0., -zl);
+  aSeqTenth.EmplaceAppend(aXSize, 0., -zl);
+  for (nblines = 1, yl = aYStep; yl < aYSize; yl += aYStep, nblines++)
+  {
+    NCollection_LinearVector<gp_Pnt>& aSeq = (Modulus(nblines, 10) != 0) ? aSeqLines : aSeqTenth;
+    aSeq.EmplaceAppend(-aXSize, yl, -zl);
+    aSeq.EmplaceAppend(aXSize, yl, -zl);
+    aSeq.EmplaceAppend(-aXSize, -yl, -zl);
+    aSeq.EmplaceAppend(aXSize, -yl, -zl);
+  }
+
+  if (!aSeqLines.IsEmpty())
+  {
+    occ::handle<Graphic3d_AspectLine3d> aLineAspect =
+      new Graphic3d_AspectLine3d(myColor, Aspect_TOL_SOLID, 1.0);
+    myGroup->SetPrimitivesAspect(aLineAspect);
+    const int                              nbv    = static_cast<int>(aSeqLines.Size());
+    occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(nbv);
+    for (const gp_Pnt& aPnt : aSeqLines)
+    {
+      aPrims->AddVertex(aPnt);
+    }
+    myGroup->AddPrimitiveArray(aPrims, false);
+  }
+  if (!aSeqTenth.IsEmpty())
+  {
+    occ::handle<Graphic3d_AspectLine3d> aLineAspect =
+      new Graphic3d_AspectLine3d(myTenthColor, Aspect_TOL_SOLID, 1.0);
+    myGroup->SetPrimitivesAspect(aLineAspect);
+    const int                              nbv    = static_cast<int>(aSeqTenth.Size());
+    occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(nbv);
+    for (const gp_Pnt& aPnt : aSeqTenth)
+    {
+      aPrims->AddVertex(aPnt);
+    }
+    myGroup->AddPrimitiveArray(aPrims, false);
+  }
+
+  myGroup->SetMinMaxValues(-aXSize, -aYSize, -aOffSet, aXSize, aYSize, -aOffSet);
+  myCurXStep  = aXStep;
+  myCurYStep  = aYStep;
+  myCurXSize  = aXSize;
+  myCurYSize  = aYSize;
+  myCurOffSet = aOffSet;
+
+  myStructure->CalculateBoundBox();
+  myViewer->StructureManager()->Update(myStructure->GetZLayer());
+}
+
+//=================================================================================================
+
+void V3d_RectangularGrid::DefinePoints()
+{
+  const double aXStep   = XStep();
+  const double aYStep   = YStep();
+  const double aXSize   = SizeX();
+  const double aYSize   = SizeY();
+  const double aOffSet  = ZOffset();
+  const bool   toUpdate = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
+                          || aXStep != myCurXStep || aYStep != myCurYStep
+                          || aXSize != myCurXSize || aYSize != myCurYSize
+                          || aOffSet != myCurOffSet;
+  if (!toUpdate && !myToComputePrs)
+  {
+    return;
+  }
+  else if (!myStructure->IsDisplayed())
+  {
+    myToComputePrs = true;
+    return;
+  }
+
+  myToComputePrs = false;
+  myGroup->Clear();
+
+  double       xl, yl;
+  const size_t aNbXc = aXStep > 0.0 ? static_cast<size_t>(aXSize / aXStep) + 1 : 1;
+  const size_t aNbYc = aYStep > 0.0 ? static_cast<size_t>(aYSize / aYStep) + 1 : 1;
+
+  NCollection_LinearVector<gp_Pnt> aSeqPnts((2 * aNbXc + 1) * (2 * aNbYc + 1));
+  for (xl = 0.0; xl <= aXSize; xl += aXStep)
+  {
+    aSeqPnts.EmplaceAppend(xl, 0.0, -aOffSet);
+    aSeqPnts.EmplaceAppend(-xl, 0.0, -aOffSet);
+    for (yl = aYStep; yl <= aYSize; yl += aYStep)
+    {
+      aSeqPnts.EmplaceAppend(xl, yl, -aOffSet);
+      aSeqPnts.EmplaceAppend(xl, -yl, -aOffSet);
+      aSeqPnts.EmplaceAppend(-xl, yl, -aOffSet);
+      aSeqPnts.EmplaceAppend(-xl, -yl, -aOffSet);
+    }
+  }
+  if (!aSeqPnts.IsEmpty())
+  {
+    const int                            nbv      = static_cast<int>(aSeqPnts.Size());
+    occ::handle<Graphic3d_ArrayOfPoints> Vertical = new Graphic3d_ArrayOfPoints(nbv);
+    for (const gp_Pnt& aPnt : aSeqPnts)
+    {
+      Vertical->AddVertex(aPnt);
+    }
+
+    occ::handle<Graphic3d_AspectMarker3d> aMarkerAspect =
+      new Graphic3d_AspectMarker3d(Aspect_TOM_POINT, myColor, 3.0);
+    myGroup->SetGroupPrimitivesAspect(aMarkerAspect);
+    myGroup->AddPrimitiveArray(Vertical, false);
+  }
+
+  myGroup->SetMinMaxValues(-aXSize, -aYSize, -aOffSet, aXSize, aYSize, -aOffSet);
+  myCurXStep  = aXStep;
+  myCurYStep  = aYStep;
+  myCurXSize  = aXSize;
+  myCurYSize  = aYSize;
+  myCurOffSet = aOffSet;
+
+  myStructure->CalculateBoundBox();
+  myViewer->StructureManager()->Update(myStructure->GetZLayer());
 }
 
 //=================================================================================================
@@ -118,69 +409,10 @@ void V3d_RectangularGrid::SetGraphicValues(const double theXSize,
                                            const double theYSize,
                                            const double theOffSet)
 {
-  // The Aspect_RectangularGrid setters each trigger UpdateDisplay() only when the
-  // value actually changes, so the final UpdateDisplay fires at most once.
+  // Aspect_RectangularGrid setters trigger UpdateDisplay() on real change only.
   SetSizeX(theXSize);
   SetSizeY(theYSize);
   SetZOffset(theOffSet);
-}
-
-//=================================================================================================
-
-void V3d_RectangularGrid::syncViews(const bool theDoDisplay) const
-{
-  if (myViewer == nullptr)
-  {
-    return;
-  }
-
-  // XStep/YStep carry world-unit spacing; the shader consumes cells-per-unit (1/step).
-  // Guard zero/negative step that could come from Aspect_RectangularGrid defaults.
-  const double aXStep = XStep() > 0.0 ? XStep() : THE_DEFAULT_GRID_STEP;
-  const double aYStep = YStep() > 0.0 ? YStep() : THE_DEFAULT_GRID_STEP;
-
-  const gp_Ax3 aPlane = myViewer->PrivilegedPlane();
-
-  // Pass the grid origin as a world-space offset from the plane origin, so the
-  // shader's aPlaneOrigin = planeLoc + Origin matches V3d_View::Compute's
-  // aPnt0 = planeLoc - XOrigin * planeX - YOrigin * planeY. Any other
-  // convention leaves selection snapping to a world point that doesn't line up
-  // with the drawn grid for tilted privileged planes.
-  const gp_XYZ aOriginOffset =
-    aPlane.XDirection().XYZ() * -XOrigin() + aPlane.YDirection().XYZ() * -YOrigin();
-
-  Aspect_GridParams aParams;
-  aParams.SetColor(myColor);
-  aParams.SetAccentColor(myTenthColor);
-  aParams.SetOrigin(gp_Pnt(aOriginOffset));
-  aParams.SetScale(1.0 / aXStep);
-  aParams.SetScaleY(1.0 / aYStep);
-  aParams.SetAccentScaleX(0.1 / aXStep);
-  aParams.SetAccentScaleY(0.1 / aYStep);
-  aParams.SetRotationAngle(RotationAngle());
-  aParams.SetDrawMode(DrawMode());
-  aParams.SetSizeX(SizeX());
-  aParams.SetSizeY(SizeY());
-  aParams.SetZOffset(ZOffset());
-  aParams.SetIsBackground(false);
-  aParams.SetIsDrawAxis(false);
-  aParams.SetIsInfinity(false);
-
-  for (const occ::handle<V3d_View>& aView : myViewer->DefinedViews())
-  {
-    if (aView.IsNull())
-    {
-      continue;
-    }
-    if (theDoDisplay)
-    {
-      aView->GridDisplay(aParams, aPlane);
-    }
-    else
-    {
-      aView->GridErase();
-    }
-  }
 }
 
 //=================================================================================================
@@ -190,6 +422,20 @@ void V3d_RectangularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) c
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Aspect_RectangularGrid)
 
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myStructure.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myGroup.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myCurViewPlane)
   OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myViewer)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsDisplayed)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurAreDefined)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToComputePrs)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurDrawMode)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurXo)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurYo)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurXStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurYStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurXSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurYSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurOffSet)
 }

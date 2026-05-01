@@ -1,0 +1,34 @@
+puts "=================================================================="
+puts "Restored CPU rectangular grid path: V3d_RectangularGrid + ActivateGrid"
+puts "=================================================================="
+# Exercises the legacy CPU grid that draws lines / points into a viewer-wide
+# Graphic3d_Structure. The shader (-type inf) path is covered by rect_shader.
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vaxo
+
+box b 1 2 3
+vdisplay b -dispMode 1
+vfit
+vzoom 0.2
+
+# Default rectangular CPU grid (no -type inf): bounded, half-default-view-size.
+vgrid -type rect -step 0.5 0.5 -rotAngle 0
+vdump $imagedir/${casename}_rect.png
+
+# Non-isotropic step (different X and Y spacing).
+vgrid -type rect -step 0.5 1.0
+vdump $imagedir/${casename}_rect_aniso.png
+
+# Switch to points draw-mode (still CPU path).
+vgrid -type rect -step 0.5 0.5 -mode points
+vdump $imagedir/${casename}_rect_points.png
+
+# In-plane rotation.
+vgrid -type rect -step 0.5 0.5 -mode lines -rotAngle 0.5
+vdump $imagedir/${casename}_rect_rotated.png
+
+vgrid off

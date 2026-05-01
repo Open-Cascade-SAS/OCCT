@@ -14259,11 +14259,17 @@ vgrid [off] [-type {rect|circ|inf}] [-mode {line|point}] [-origin X Y] [-rotAngl
       [-step StepRadius NbDivisions] [-radius Radius] [-arc AngleStart AngleEnd]
       [-color R G B] [-tenthColor R G B] [-scale N] [-lineThickness T]
       [-background {0|1}] [-drawAxis {0|1}] [-inf {0|1}]
-'-type inf' activates a shader-rendered infinite (or bounded) grid; combine
-with '-size DX DY' for a rectangle, '-radius R' for a disc, '-arc S E' for a
-wedge. '-color', '-tenthColor', '-scale', '-lineThickness' drive every grid
-since rendering is shader-based. '-background', '-drawAxis', '-inf {0|1}' are
-inf-mode only. 'off' deactivates the grid and cannot be combined with '-type inf'.
+Two render backends are available:
+  - '-type rect' / '-type circ' (default) draws the legacy CPU grid into a
+    bounded Graphic3d_Structure shared by every active view.
+  - '-type inf' activates the shader-rendered infinite (or bounded) grid on
+    the active view; combine with '-size DX DY' for a rectangle, '-radius R'
+    for a disc, '-arc S E' for a wedge.
+'-color', '-tenthColor' apply to both backends. '-scale', '-lineThickness',
+'-background', '-drawAxis', '-inf {0|1}' are inf-mode only. Switching to
+'-type inf' hides the CPU grid in the viewer; switching back to a non-inf
+type erases the shader grid in the active view. 'off' deactivates whichever
+grid is currently visible.
 )" /* [vgrid] */);
 
   addCmd("vpriviledgedplane", VPriviledgedPlane, /* [vpriviledgedplane] */ R"(

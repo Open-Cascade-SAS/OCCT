@@ -22,16 +22,10 @@
 #include <Quantity_Color.hxx>
 #include <gp_Pnt.hxx>
 
-//! Render-only appearance parameters for a shader-rendered grid.
-//!
-//! Drives a screen-space quad intersected with a grid plane in the fragment
-//! shader (see Graphic3d_ShaderManager::getGridProgram). This is a pure value
-//! struct; it does NOT own any snap state. The authoritative grid geometry for
-//! snap selection still lives on Aspect_RectangularGrid / Aspect_CircularGrid,
-//! and V3d_{Rectangular,Circular}Grid::syncViews produces an Aspect_GridParams
-//! from the grid on every display. If you introduce a new field here that has
-//! a matching concept on Aspect_Grid, update syncViews too so both layers stay
-//! in sync.
+//! Shader grid appearance (color, scale, bounds, arc, draw mode, background / inf flags).
+//! Consumed only by the GPU path: V3d_View::GridDisplay -> OpenGl_View::renderGrid.
+//! No effect on the CPU path (V3d_Viewer::ActivateGrid). Snap math is independent and
+//! lives on Aspect_RectangularGrid / Aspect_CircularGrid.
 class Aspect_GridParams
 {
 public:
@@ -77,10 +71,10 @@ public:
   //! Set local offset of the grid origin within the plane.
   void SetOrigin(const gp_Pnt& theOrigin) { myOrigin = theOrigin; }
 
-  //! Return accent color used by the classical V3d grid emulation path.
+  //! Return every-tenth-line / accent colour rendered by the shader.
   const Quantity_Color& AccentColor() const { return myAccentColor; }
 
-  //! Set accent color used by the classical V3d grid emulation path.
+  //! Set every-tenth-line / accent colour rendered by the shader.
   void SetAccentColor(const Quantity_Color& theColor) { myAccentColor = theColor; }
 
   //! Return accent overlay scale along the plane X/radial direction.
