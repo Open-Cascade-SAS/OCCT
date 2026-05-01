@@ -194,7 +194,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
   EGLContext anEglContext = (EGLContext)theDriver->getRawGlContext();
   EGLConfig  anEglConfig  = (EGLConfig)theDriver->getRawGlConfig();
   if (anEglDisplay == EGL_NO_DISPLAY || anEglContext == EGL_NO_CONTEXT
-      || (anEglConfig == NULL && (EGLContext)theGContext == EGL_NO_CONTEXT))
+      || (anEglConfig == nullptr && (EGLContext)theGContext == EGL_NO_CONTEXT))
   {
     throw Aspect_GraphicDeviceDefinitionError(
       "OpenGl_Window, EGL does not provide compatible configurations!");
@@ -215,7 +215,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
     anEglSurf = eglCreateWindowSurface(anEglDisplay,
                                        anEglConfig,
                                        (EGLNativeWindowType)myPlatformWindow->NativeHandle(),
-                                       NULL);
+                                       nullptr);
     if (anEglSurf == EGL_NO_SURFACE && myPlatformWindow->NativeHandle() != 0)
     {
       throw Aspect_GraphicDeviceDefinitionError(
@@ -226,7 +226,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
       // window-less EGL context (off-screen)
       // throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to retrieve current
       // surface!");
-      if (anEglConfig != NULL)
+      if (anEglConfig != nullptr)
       {
     #if !defined(__EMSCRIPTEN__) // eglCreatePbufferSurface() is not implemented by Emscripten EGL
         const int aSurfAttribs[] = {EGL_WIDTH,
@@ -267,7 +267,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
       // window-less EGL context (off-screen)
       // throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to retrieve current
       // surface!");
-      if (anEglConfig != NULL)
+      if (anEglConfig != nullptr)
       {
     #if !defined(__EMSCRIPTEN__) // eglCreatePbufferSurface() is not implemented by Emscripten EGL
         const int aSurfAttribs[] = {EGL_WIDTH,
