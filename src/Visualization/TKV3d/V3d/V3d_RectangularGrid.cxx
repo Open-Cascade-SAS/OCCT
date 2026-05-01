@@ -368,17 +368,17 @@ void V3d_RectangularGrid::DefinePoints()
   }
   if (!aSeqPnts.IsEmpty())
   {
-    const int                            nbv      = static_cast<int>(aSeqPnts.Size());
-    occ::handle<Graphic3d_ArrayOfPoints> Vertical = new Graphic3d_ArrayOfPoints(nbv);
+    const int                            nbv     = static_cast<int>(aSeqPnts.Size());
+    occ::handle<Graphic3d_ArrayOfPoints> aPoints = new Graphic3d_ArrayOfPoints(nbv);
     for (const gp_Pnt& aPnt : aSeqPnts)
     {
-      Vertical->AddVertex(aPnt);
+      aPoints->AddVertex(aPnt);
     }
 
     occ::handle<Graphic3d_AspectMarker3d> aMarkerAspect =
       new Graphic3d_AspectMarker3d(Aspect_TOM_POINT, myColor, 3.0);
     myGroup->SetGroupPrimitivesAspect(aMarkerAspect);
-    myGroup->AddPrimitiveArray(Vertical, false);
+    myGroup->AddPrimitiveArray(aPoints, false);
   }
 
   myGroup->SetMinMaxValues(-aXSize, -aYSize, -aOffSet, aXSize, aYSize, -aOffSet);

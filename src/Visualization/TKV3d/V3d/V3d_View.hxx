@@ -924,8 +924,9 @@ public: //! @name CPU grid plumbing (deprecated, fed by V3d_Viewer::ActivateGrid
 
 public: //! @name GPU shader grid (recommended)
   //! Per-view immediate-mode shader; supports infinite, AA, background, arc range.
-  //! GridDisplay erases the viewer-wide CPU grid rendering (snap geometry is
-  //! preserved). GridErase or SetGrid restores the CPU grid via V3d_Viewer.
+  //! GridDisplay erases the viewer-wide CPU grid rendering on entry (snap geometry
+  //! on Aspect_*Grid is preserved). GridErase only tears down the shader grid on
+  //! this view; restoring the CPU rendering needs V3d_Viewer::ActivateGrid.
 
   //! Display a shader-rendered grid on the viewer's privileged plane.
   //! @param[in] theParams appearance: color, scale, bounds, arc, draw-mode, background / inf flags

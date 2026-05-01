@@ -22,8 +22,9 @@ vzoom 0.2
 vgrid -type rect -step 0.5 0.5
 vdump $imagedir/${casename}_cpu.png
 
-# (2) Switch the same view to the shader grid; vgrid -type inf calls
-# V3d_View::GridDisplay which only erases the shader grid on this view.
+# (2) Switch the same view to the shader grid. vgrid -type inf calls
+# V3d_View::GridDisplay which erases the viewer-wide CPU grid rendering
+# (snap geometry on Aspect_*Grid is preserved) and enables the shader.
 vgrid -type inf -step 0.5 0.5
 vdump $imagedir/${casename}_shader.png
 

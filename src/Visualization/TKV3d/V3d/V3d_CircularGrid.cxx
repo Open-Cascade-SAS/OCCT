@@ -355,10 +355,10 @@ void V3d_CircularGrid::DefinePoints()
   myToComputePrs = false;
   myGroup->Clear();
 
-  occ::handle<Graphic3d_AspectMarker3d> MarkerAttrib = new Graphic3d_AspectMarker3d();
-  MarkerAttrib->SetColor(myColor);
-  MarkerAttrib->SetType(Aspect_TOM_POINT);
-  MarkerAttrib->SetScale(3.);
+  occ::handle<Graphic3d_AspectMarker3d> aMarkerAttrib = new Graphic3d_AspectMarker3d();
+  aMarkerAttrib->SetColor(myColor);
+  aMarkerAttrib->SetType(Aspect_TOM_POINT);
+  aMarkerAttrib->SetScale(3.);
 
   const int nbpnts = int(2 * aDivision);
   double    r, alpha = M_PI / aDivision;
@@ -373,16 +373,16 @@ void V3d_CircularGrid::DefinePoints()
       aSeqPnts.EmplaceAppend(std::cos(alpha * i) * r, std::sin(alpha * i) * r, -aOffSet);
     }
   }
-  myGroup->SetGroupPrimitivesAspect(MarkerAttrib);
+  myGroup->SetGroupPrimitivesAspect(aMarkerAttrib);
   if (!aSeqPnts.IsEmpty())
   {
-    const int                            nbv    = static_cast<int>(aSeqPnts.Size());
-    occ::handle<Graphic3d_ArrayOfPoints> Cercle = new Graphic3d_ArrayOfPoints(nbv);
+    const int                            nbv     = static_cast<int>(aSeqPnts.Size());
+    occ::handle<Graphic3d_ArrayOfPoints> aPoints = new Graphic3d_ArrayOfPoints(nbv);
     for (const gp_Pnt& aPnt : aSeqPnts)
     {
-      Cercle->AddVertex(aPnt);
+      aPoints->AddVertex(aPnt);
     }
-    myGroup->AddPrimitiveArray(Cercle, false);
+    myGroup->AddPrimitiveArray(aPoints, false);
   }
   myGroup->SetMinMaxValues(-aRadius, -aRadius, -aOffSet, aRadius, aRadius, -aOffSet);
 
