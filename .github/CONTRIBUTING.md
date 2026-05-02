@@ -6,7 +6,7 @@ In order to contribute code to OCCT you must sign the Contributor License Agreem
 
 - [Introduction: What is CLA and Why It Is Needed?](CLA_SIGNING.md)
 - [Contribution License Agreement](CLA.md)
-- [CLA Submission Form](https://dev.opencascade.org/get_involved/cla_submission_form)
+- [CLA Submission Form](https://dev.opencascade.org/get_involed/cla_submission_form)
 
 ### Steps to Submit Your Contribution
 

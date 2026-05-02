@@ -12,7 +12,7 @@ All contributions are submitted as Pull Requests (PRs) through the GitHub interf
 @subsection occt_contribution_intro_cla Contributor License Agreement
 
 Before contributing, you must sign the Contributor License Agreement (CLA).
-See the [CLA submission form](https://dev.opencascade.org/get_involved/cla_submission_form) for details.
+See the [CLA submission form](https://dev.opencascade.org/get_involed/cla_submission_form) for details.
 
 @subsection occt_contribution_intro_pr PR Title Convention
 
