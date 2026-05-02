@@ -7,7 +7,7 @@ Upgrade from older OCCT versions  {#occt__upgrade}
 
 This document provides technical details on changes made in particular versions of OCCT. It can help to upgrade user applications based on previous versions of OCCT to newer ones.
 
-@ref upgrade_occt790 "SEEK TO THE LAST CHAPTER (UPGRADE TO 7.9.0)"
+@ref upgrade_occt800 "SEEK TO THE LAST CHAPTER (UPGRADE TO 8.0.0)"
 
 @subsection upgrade_intro_precautions Precautions
 
@@ -1506,3 +1506,437 @@ Example:
 
 The `NCollection_Map` class has been reorganized to migrate extra methods to the `NCollection_MapAlgo` class.
 Boolean operations on maps are now available in the `NCollection_MapAlgo` class.
+
+@section upgrade_occt800 Upgrade to OCCT 8.0.0
+
+OCCT 8.0.0 is a major release with broad, source-incompatible changes across the foundation, modeling-data, and modeling-algorithm layers. The bulk of the per-line changes (handle macro, `Standard_*` typedefs, `Standard_OVERRIDE` etc., `TColStd_*`/`TopTools_*` typedefs, `DEFINE_HARRAY*`, `Standard_Failure::Raise`) can be migrated automatically. A smaller set of changes — exception handling, removed/renamed APIs, reworked evaluation hierarchies, and packages that have been removed outright — require manual review.
+
+@subsection upgrade_800_minimums Minimum requirements and project layout
+
+OCCT 8.0.0 raises the supported toolchain baseline and reorganizes the source tree.
+
+- **C++17 is now required**. Application code and CMake `CXX_STANDARD` must be raised to 17 or higher. Compiler minimums: VS 2019 (2022 preferred), GCC 8.0, Clang 7.0, Apple Clang 11.0, MinGW-w64 7.3.
+- **CMake 3.10 or later** is enforced (3.16+ recommended; required when `BUILD_USE_PCH=ON` for precompiled headers).
+- **Source-tree layout** has been reorganized from a flat `src/<Package>/` layout to `src/<Module>/<Toolkit>/<Package>/`. Build scripts that hard-coded the old layout, copied OCCT into a vendored tree, or referenced specific source paths must be updated.
+- **Resource files** are now installed under `share/<OCCT_PROJECT_NAME>/resources/` (vcpkg-compliant layout). The CSF_* environment variables (`CSF_OCCTResourcePath`, `CSF_IGESDefaults`, `CSF_STEPDefaults`, `CSF_PluginDefaults`, `CSF_XCAFDefaults`, etc.) are the supported way to point OCCT at the resources at runtime; `CASROOT` remains supported for compatibility.
+- **`BUILD_PATCH` CMake option is removed**. There is no replacement; apply patches at the source level or via your build system.
+- **`OCCT_PROJECT_NAME`** is a new CMake cache variable that controls the install layout's project name (defaults to `opencascade`); it is the supported customization hook for vcpkg and embedded builds.
+- **Inspector** and **ExpToCas** have been moved out of the main repository to their own GitHub repositories. If your build relied on them being shipped in-tree, switch to the upstream repositories.
+- The `-symbolic` Unix linker flag is no longer applied. RTTI behavior with `dlopen`-style plugins should be re-validated.
+
+@subsection upgrade_800_migration_toolkit Automated migration toolkit
+
+A 12-phase Python migration suite is shipped with OCCT under `adm/scripts/migration_800/`. It requires Python 3.6+ with no external dependencies. Each phase supports `--dry-run` to preview changes.
+
+For external projects, the recommended entry point is the wrapper script:
+
+~~~~{.bash}
+# Linux/macOS
+./adm/scripts/migration_800/run_migration.sh /path/to/your/src --dry-run
+./adm/scripts/migration_800/run_migration.sh /path/to/your/src
+
+# Windows
+adm\scripts\migration_800\run_migration.bat /path/to/your/src --dry-run
+~~~~
+
+The phases run in order and cover, in summary:
+
+1. `migrate_handles.py`- `Handle(T)` to `occ::handle<T>`, `Handle(T)::DownCast()` to `occ::down_cast<T>()`.
+2. `migrate_standard_types.py`- `Standard_Boolean/Integer/Real/...` to `bool/int/double/...`, `Standard_True/False` to `true/false`.
+3. `migrate_macros.py`- `Standard_OVERRIDE` to `override`, `Standard_NODISCARD` to `[[nodiscard]]`, `Standard_FALLTHROUGH` to `[[fallthrough]];`, etc.
+4. `cleanup_define_handle.py`- removes redundant `DEFINE_STANDARD_HANDLE` macros.
+5. `cleanup_deprecated_typedefs.py`- removes deprecated typedef/using declarations and replaces usages.
+6. `collect_typedefs.py`- collects `NCollection` typedef mappings (analysis phase).
+7. `replace_typedefs.py`- replaces `TColStd_*`/`TopTools_*` etc. with `NCollection_*<T>`.
+8. `remove_typedef_headers.py`- removes typedef-only headers and updates `FILES.cmake`.
+9. `cleanup_forwarding_headers.py`- cleans up forwarding/include-only headers.
+10. `cleanup_unused_typedefs.py`- removes unused typedef declarations.
+11. `cleanup_access_specifiers.py`- removes redundant access specifiers.
+12. `migrate_raise_to_throw.py`- converts `Standard_Failure::Raise(...)` to `throw Standard_Failure(...)`.
+
+The accompanying `migrate_hcollections.py` script converts `DEFINE_HARRAY1`/`DEFINE_HARRAY2`/`DEFINE_HSEQUENCE` macros to the `NCollection_HArray1`/`HArray2`/`HSequence` template classes.
+
+After all phases, `verify_migration.py` reports any remaining legacy patterns:
+
+~~~~{.bash}
+python3 adm/scripts/migration_800/verify_migration.py --verbose /path/to/your/src
+~~~~
+
+Pre-generated mapping files (`collected_typedefs.json`, `collected_deprecated_typedefs.json`) are bundled in `adm/scripts/migration_800/`; external projects do not need to re-scan the OCCT source. The migration scripts also support `.h`/`.c`/`.hpp`/`.cpp` files and can automatically add or replace `#include` directives when replacing typedefs.
+
+`Standard_UNUSED` is an exception and requires manual migration to `[[maybe_unused]]` due to stricter placement rules of the C++ attribute.
+
+@subsection upgrade_800_handle Handle macro and Standard_* primitive types
+
+The `Handle()` macro and `::DownCast` are replaced with explicit `occ::handle<>` / `occ::down_cast<>` templates:
+
+~~~~{.cpp}
+// Before                                                     // After
+Handle(Geom_Circle) aCircle;                                   occ::handle<Geom_Circle> aCircle;
+Handle(Geom_Circle)::DownCast(aCurve);                         occ::down_cast<Geom_Circle>(aCurve);
+~~~~
+
+OCCT's primitive typedefs are migrated to standard C++ types:
+
+| Deprecated typedef       | Replacement       |
+| ------------------------ | ----------------- |
+| `Standard_Boolean`       | `bool`            |
+| `Standard_True/False`    | `true/false`      |
+| `Standard_Integer`       | `int`             |
+| `Standard_Real`          | `double`          |
+| `Standard_ShortReal`     | `float`           |
+| `Standard_Byte`          | `uint8_t`         |
+| `Standard_Size`          | `size_t`          |
+| `Standard_Address`       | `void*`           |
+| `Standard_CString`       | `const char*`     |
+| `Standard_Character`     | `char`            |
+| `Standard_ExtCharacter`  | `char16_t`        |
+| `Standard_Time`          | `std::time_t`     |
+
+The `Standard_*` typedefs are still defined for source-level compatibility, but their use is discouraged in new code and the migration scripts rewrite them to the native C++ types.
+
+@subsection upgrade_800_macros Standard_* macros
+
+Legacy attribute macros are replaced with the standard C++ attributes and keywords:
+
+| Deprecated macro       | Replacement        |
+| ---------------------- | ------------------ |
+| `Standard_OVERRIDE`    | `override`         |
+| `Standard_NODISCARD`   | `[[nodiscard]]`    |
+| `Standard_FALLTHROUGH` | `[[fallthrough]];` |
+| `Standard_Noexcept`    | `noexcept`         |
+| `Standard_DELETE`      | `= delete`         |
+| `Standard_THREADLOCAL` | `thread_local`     |
+| `Standard_ATOMIC(T)`   | `std::atomic<T>`   |
+
+@subsection upgrade_800_exceptions Exception handling
+
+`Standard_Failure` now inherits from `std::exception`. OCCT exceptions can be caught by standard `catch (const std::exception&)` blocks, the message is exposed through `what()`, and `ExceptionType()` returns the exception class name.
+
+Static `Raise()`, `Instance()`, and `Throw()` methods on `Standard_Failure` and its subclasses are removed. Use the C++ `throw` statement directly:
+
+~~~~{.cpp}
+// Before (removed)                                            // After
+Standard_Failure::Raise("error");                              throw Standard_Failure("error");
+Standard_OutOfRange::Raise("index");                           throw Standard_OutOfRange("index");
+~~~~
+
+`GetMessageString()` is deprecated- use `what()`. The error-handler stack used by `OCC_CATCH_SIGNALS` is now `thread_local` instead of being protected by a global mutex; threads no longer contend on error-handler state. `Catches()` and `LastCaughtError()` static methods on `Standard_ErrorHandler` have been removed; `OCC_CATCH_SIGNALS` exposes a new `Raise()` re-throw method.
+
+If you previously combined OCCT exceptions with custom catch logic that relied on `Catches()` / `LastCaughtError()`, restructure the handler around the standard `try`/`catch` flow.
+
+@subsection upgrade_800_ncollection NCollection API changes
+
+`Seek()` and `ChangeSeek()` are removed from `NCollection_Map`. Use the unified `Contained()` API, which returns `std::optional<std::reference_wrapper<T>>`:
+
+~~~~{.cpp}
+// Before (removed)
+const KeyType* pKey = aMap.Seek(aKey);
+
+// After
+auto anOpt = aMap.Contained(aKey);
+if (anOpt.has_value()) { const KeyType& aFoundKey = anOpt->get(); }
+~~~~
+
+The non-throwing `TryEmplace`/`TryBind` methods are now available on all map types and avoid the throwing two-step "find then add" pattern:
+
+~~~~{.cpp}
+if (auto* pValue = aMap.TryBind(key, defaultValue)) { /* use pValue */ }
+aMap.Emplace(key, constructorArgs...);  // in-place construction, no copy/move
+~~~~
+
+C++17 structured bindings are supported via `Items()` / `IndexedItems()` views:
+
+~~~~{.cpp}
+for (auto [aKey, aValue] : aMap.Items()) { ... }
+~~~~
+
+New collection types are available in 8.0.0 and may be preferred over their predecessors in new code:
+
+- `NCollection_FlatMap` / `NCollection_FlatDataMap`- cache-friendly open-addressing hash containers with Robin Hood hashing.
+- `NCollection_OrderedMap` / `NCollection_OrderedDataMap`- insertion-order-preserving maps with O(1) lookup, append, and removal.
+- `NCollection_KDTree`- header-only static balanced KD-Tree for spatial queries (`gp_Pnt`, `gp_Pnt2d`, `gp_XYZ`, `gp_XY`).
+- `NCollection_ForwardRange`- lightweight forward-range adapter for non-owning index spans.
+
+`Standard_Mutex` is deprecated in favor of `std::mutex`.
+
+@subsection upgrade_800_collections_typedefs Package collection typedefs
+
+The package-specific collection typedefs (`TColStd_*`, `TopTools_*`, `TColgp_*`, etc.) are kept as deprecated aliases of the underlying `NCollection_*<T>` template instantiations and emit deprecation warnings on use. The migration scripts rewrite call sites to use the templates directly:
+
+~~~~{.cpp}
+// Before                                                     // After
+TColStd_ListOfInteger aList;                                   NCollection_List<int> aList;
+TopTools_MapOfShape aMap;                                      NCollection_Map<TopoDS_Shape> aMap;
+TColStd_Array1OfReal anArr;                                    NCollection_Array1<double> anArr;
+TColgp_SequenceOfPnt aSeq;                                     NCollection_Sequence<gp_Pnt> aSeq;
+~~~~
+
+Two package typedef wrappers have been removed entirely (no backward-compatible aliases): `TColGeom` and `TColGeom2d`. Replace with `NCollection_Array1<occ::handle<Geom_Curve>>` and the equivalent `Geom2d_*` form:
+
+~~~~{.cpp}
+// Before (removed)                                           // After
+#include <TColGeom_Array1OfCurve.hxx>                          #include <NCollection_Array1.hxx>
+TColGeom_Array1OfCurve aCurves;                                #include <Geom_Curve.hxx>
+                                                               NCollection_Array1<occ::handle<Geom_Curve>> aCurves;
+~~~~
+
+@subsection upgrade_800_bspline BSpline/Bezier weights and accessors
+
+BSpline and Bezier curves and surfaces store poles, weights, and knots as direct array value-members rather than `NCollection_HArray*` handles. The previously nullable `Weights()` accessor is replaced by `WeightsArray()`, which always returns a valid reference- non-rational geometry exposes a non-owning view over a static unit-weights buffer with zero allocation:
+
+~~~~{.cpp}
+// Before (nullable)
+const NCollection_Array1<double>* pWeights = aCurve->Weights();
+if (pWeights != nullptr) { /* use weights */ }
+
+// After (always valid)
+const NCollection_Array1<double>& aWeights = aCurve->WeightsArray();
+~~~~
+
+Copy-out accessor overloads (those taking an output `NCollection_Array1` to fill) are deprecated in favour of zero-copy const-reference returning versions:
+
+~~~~{.cpp}
+// Before (deprecated, copies data)
+NCollection_Array1<gp_Pnt> aPoles;
+aCurve->Poles(aPoles);
+
+// After (zero-copy)
+const NCollection_Array1<gp_Pnt>& aPoles = aCurve->Poles();
+~~~~
+
+The same deprecation applies to single-element accessors throughout the `Convert` package- prefer the batch const-reference accessors (`Poles()`, `Weights()`, `Knots()`, `Multiplicities()`).
+
+@subsection upgrade_800_eval Evaluation hierarchy: EvalD0/D1/D2/D3/DN
+
+The geometry evaluation dispatch hierarchy has been redesigned across all 32 `Geom`/`Geom2d` curve and surface classes and across `Adaptor3d_Curve`, `Adaptor3d_Surface`, and their subclasses.
+
+The new primary virtual dispatch points are `EvalD0`, `EvalD1`, `EvalD2`, `EvalD3`, and `EvalDN`. They return POD result structs (`Geom_CurveD1` / `D2` / `D3`, `Geom_SurfD1` / `D2` / `D3`, and the `Geom2d_*` equivalents) and use exception-based error handling on the hot path.
+
+The old `Value()` and `D0` / `D1` / `D2` / `D3` / `DN` methods are kept as non-virtual inline backward-compatible wrappers that delegate to `EvalD*`. **If your code overrides `D0`/`D1`/`D2`/`D3`/`DN` on a `Geom*` class or an `Adaptor3d_Curve`/`Adaptor3d_Surface` subclass, you must override `EvalD0`/`EvalD1`/`EvalD2`/`EvalD3`/`EvalDN` instead.** Existing call-site code that consumes `Value()` / `D0..DN` continues to work unchanged.
+
+The new `EvalRep` descriptor system additionally allows alternate evaluation paths to be attached per-object via the `Set`/`Get`/`Clear` EvalRep API (full, derivative-bounded, and parameter-mapped descriptors are supported). This is the mechanism behind, for example, the offset-surface fast path that bypasses the expensive offset evaluation when an equivalent non-offset surface is available.
+
+Adaptor classes for elementary geometry now store `gp_*` primitives directly in `std::variant` and dispatch via switch/enum to `ElCLib`/`ElSLib` static methods, eliminating virtual calls for elementary geometry on the evaluation hot path.
+
+@subsection upgrade_800_lprop_gprop LProp consolidation and GProp deprecations
+
+LProp packages are consolidated and several `GProp` classes are deprecated.
+
+- `Geom2dLProp` and `LProp3d` packages are removed and consolidated into the unified `GeomLProp` template classes (`GeomLProp_CLPropsBase`, `GeomLProp_SLProps`). Backward-compatible type aliases for the previous class names are preserved, so most call sites continue to compile unchanged.
+- `LProp_AnalyticCurInf` is removed (dead code).
+- The `GProp_EquaType` enum is removed (no consumers). Dimensionality analysis is now exposed via `PointSetLib_Equation`.
+
+The point-cloud property classes `GProp_PGProps`, `GProp_PEquation`, `GProp_CelGProps`, `GProp_SelGProps`, `GProp_VelGProps` are marked with `Standard_HEADER_DEPRECATED("Deprecated since OCCT 8.0.0. Use PointSetLib_Equation instead")` (and equivalent messages) in favour of the new `PointSetLib` package (`PointSetLib_Props`, `PointSetLib_Equation`), which is provided in `TKMath` without inheritance from `GProp_GProps`.
+
+@subsection upgrade_800_bndlib Bounding-box computation: GeomBndLib
+
+A new `GeomBndLib` package provides geometry-aware bounding boxes for all standard `Geom` curve and surface types via `std::variant`-based per-type dispatch, with analytical solutions for conics and quadrics and PSO+Powell-based tight `BoxOptimal` results. `BndLib_Add3dCurve`, `BndLib_AddSurface`, and `BndLib_Add2dCurve` now delegate to `GeomBndLib`. The public `BndLib` API is preserved unchanged.
+
+@subsection upgrade_800_extremapc Point-to-curve extrema: ExtremaPC
+
+The new `ExtremaPC` package provides point-to-curve extrema computation with per-geometry specialized evaluators (`ExtremaPC_Line`, `ExtremaPC_Circle`, `ExtremaPC_Ellipse`, `ExtremaPC_Hyperbola`, `ExtremaPC_BezierCurve`, `ExtremaPC_BSplineCurve`, `ExtremaPC_OffsetCurve`) and an `ExtremaPC_Curve` aggregator dispatcher.
+
+@subsection upgrade_800_brepgraph BRepGraph- graph-based BRep representation
+
+OCCT 8.0.0 introduces a new graph-based representation of topology and BRep geometry as an alternative to the linked `TopoDS_Shape` data structure. The foundation is split across two layers:
+
+- `BRepGraph` (public)- typed `BRepGraph_NodeId` identifiers, multiple Views (`TopoView`, `RefsView`, `CacheView`, `BuilderView`), bidirectional parent/child explorers (`BRepGraph_ChildExplorer`, `BRepGraph_ParentExplorer`, `BRepGraph_WireExplorer`), iterators (`BRepGraph_DefsIterator`, `BRepGraph_RefsIterator`, `BRepGraph_RelatedIterator`, `BRepGraph_CacheKindIterator`, `BRepGraph_LayerIterator`), extensible Layer/Cache system, mutation guards (`BRepGraph_MutGuard`), history tracking (`BRepGraph_History`), deduplication (`BRepGraph_Deduplicate`), compaction (`BRepGraph_Compact`), deep copy (`BRepGraph_Copy`), and validation (`BRepGraph_Validate`).
+- `BRepGraphInc` (internal)- incidence-table storage with `BRepGraphInc_Populate` (`TopoDS_Shape` -> graph) and `BRepGraphInc_Reconstruct` (graph -> `TopoDS_Shape`) roundtrip conversion.
+
+`BRepGraph_Tool` is the centralized geometry-access API (analogue of `BRep_Tool`). `BRepGraph_Builder` allows programmatic graph construction without an input `TopoDS_Shape`.
+
+The graph representation is additive in 8.0.0- existing `TopoDS_Shape` code continues to work unchanged. Application code that wants to opt in can use `BRepGraphInc_Populate` and `BRepGraphInc_Reconstruct` to convert in either direction.
+
+@subsection upgrade_800_topods TopoDS_TShape redesign
+
+The `TopoDS_TShape` hierarchy has been reworked at the state and dispatch layer:
+
+- `ShapeType()` is non-virtual and embedded in a compact `uint16_t` bit-packed state field on `TopoDS_TShape`. Subclasses no longer override `ShapeType()`; the shape type is stored alongside the orientation/lock/checked/closed/infinite/convex/modified/free flags in the same field.
+- `TopAbs::Compose()`, `Reverse()`, and `Complement()` are inlined `noexcept` static functions in the `TopAbs.hxx` header (constexpr lookup tables) rather than out-of-line functions in `TopAbs.cxx`.
+
+This is a binary-incompatible change. Source compatibility is preserved for code that uses the public `TopoDS_*` and `TopExp*` APIs. Custom `TShape`-derived classes that previously overrode `ShapeType()` must drop the override and rely on the base-class state field.
+
+Child storage on `TopoDS_TShape` remains `NCollection_List<TopoDS_Shape>` and `TopoDS_Iterator` continues to iterate the list - callers that touch `myShapes` directly do not need to change.
+
+@subsection upgrade_800_handle_outparams Handle out-parameter overloads deprecated
+
+Methods that previously returned `occ::handle<>` values via output parameters are deprecated in favour of return-by-value overloads in `ApplicationFramework`, `DataExchange`, `ModelingAlgorithms`, `ModelingData`, and `Visualization`:
+
+~~~~{.cpp}
+// Before (deprecated)
+occ::handle<TDocStd_Document> aDoc;
+anApp.GetDocument(aLabel, aDoc);
+
+// After
+occ::handle<TDocStd_Document> aDoc = anApp.GetDocument(aLabel);
+~~~~
+
+Many handle-returning APIs are now `[[nodiscard]]`.
+
+@subsection upgrade_800_mesh_factory Mesh: registry-based discrete-algorithm factory
+
+The legacy `DISCRETPLUGIN` / `DISCRETALGO` symbol-based plugin system is replaced with a registry-based factory. The headers `BRepMesh_PluginMacro.hxx`, `BRepMesh_PluginEntryType.hxx`, and `BRepMesh_FactoryError.hxx` are removed, as are the Draw commands `mpsetfunctionname`, `mpgetfunctionname`, `mperror`.
+
+Migrate plugin discovery to the new factory:
+
+~~~~{.cpp}
+// Before (removed)
+BRepMesh_PluginEntryType aFunc = BRepMesh::PluginEntry("DISCRETPLUGIN");
+
+// After
+occ::handle<BRepMesh_DiscretAlgoFactory> aFactory =
+    BRepMesh_DiscretAlgoFactory::FindFactory("FastDiscret");
+if (!aFactory.IsNull())
+{
+  occ::handle<BRepMesh_DiscretAlgo> anAlgo = aFactory->Create();
+}
+~~~~
+
+`BRepMesh_IncrementalMeshFactory` is registered for the "FastDiscret" algorithm and `XBRepMesh_Factory` for the "XBRepMesh" extended meshing algorithm. Loading both `TKMesh` and `TKXMesh` no longer causes symbol collisions.
+
+@subsection upgrade_800_plib PLib refactoring- value types and removed classes
+
+The `PLib_Base` abstract handle class has been removed. `PLib_JacobiPolynomial` and `PLib_HermitJacobi` are now value types (no longer derived from `Standard_Transient`); their methods are non-virtual and `const`. Construct them on the stack or as direct members:
+
+~~~~{.cpp}
+// Before
+occ::handle<PLib_JacobiPolynomial> aPoly = new PLib_JacobiPolynomial(theDegree, theNivConstr);
+aPoly->Points(...);
+
+// After
+PLib_JacobiPolynomial aPoly(theDegree, theNivConstr);
+aPoly.Points(...);
+~~~~
+
+`PLib_DoubleJacobiPolynomial` is removed entirely. There is no direct in-tree replacement- application code that depended on it must be ported manually to a combination of `PLib_JacobiPolynomial` and `PLib_HermitJacobi`, or rewritten against the new `Geom2dProp` / `GeomProp` differential-property packages where applicable.
+
+@subsection upgrade_800_std_math Standard math wrappers deprecated
+
+The OCCT-specific math wrapper functions are deprecated in favour of the `<cmath>` / `<algorithm>` standard library equivalents:
+
+| Deprecated | Replacement |
+| ---------- | ----------- |
+| `ACos`, `ASin`, `ATan`, `Cos`, `Sin`, `Tan`, `Cosh`, `Sinh`, `Tanh` | `std::acos`, `std::asin`, ... |
+| `Exp`, `Log`, `Pow`, `Sqrt` | `std::exp`, `std::log`, `std::pow`, `std::sqrt` |
+| `Abs`, `Sign` | `std::abs`, `std::copysign` (or `<` comparison) |
+| `Floor`, `Ceiling`, `Round`, `IntegerPart` | `std::floor`, `std::ceil`, `std::round`, `std::trunc` |
+| `Min`, `Max` | `std::min`, `std::max` |
+| `NextAfter` | `std::nextafter` |
+
+@subsection upgrade_800_step_signature StepData_ReadWriteModule::StepType signature
+
+The pure virtual `StepType()` method on `StepData_ReadWriteModule` now returns `const std::string_view&` instead of `const TCollection_AsciiString&`. All subclasses must update their override to match. If your code stored or compared the result against `TCollection_AsciiString` instances, convert through `TCollection_AsciiString(theType.data(), int(theType.size()))` or compare against string literals directly.
+
+@subsection upgrade_800_ais_immediate AIS_InteractiveContext immediate-mode rendering deprecated
+
+The legacy immediate-mode rendering methods on `AIS_InteractiveContext` are deprecated. New code should use the retained-mode pipeline through `Display()` / `Redisplay()` and presentation updates. Specific deprecated entry points emit compiler warnings on use.
+
+@subsection upgrade_800_mutex Standard_Mutex superseded by std::mutex
+
+`Standard_Mutex` and its `Standard_Mutex::Sentry` RAII helper are deprecated. Use the standard library:
+
+~~~~{.cpp}
+// Before
+static Standard_Mutex theMutex;
+{
+  Standard_Mutex::Sentry aLock(theMutex);
+  ...
+}
+
+// After
+static std::mutex theMutex;
+{
+  std::lock_guard<std::mutex> aLock(theMutex);
+  ...
+}
+~~~~
+
+`TopTools_MutexForShapeProvider` is removed. Where shape-level locking is needed, allocate a `std::mutex` directly. Several previously mutex-guarded internals in `BRepCheck_*` and Foundation globals have been converted to `thread_local` storage in 8.0.0, which may obviate the lock entirely.
+
+@subsection upgrade_800_visualization_unlit Visualization: implicit UNLIT shading removed
+
+The implicit optimization in `OpenGl_Aspects` that forced UNLIT shading when a material had no reflection properties has been removed. This was breaking PBR materials, interior color handling, and texture modulation. If your application relied on zero-material properties to obtain UNLIT shading, set the shading model explicitly:
+
+~~~~{.cpp}
+// After
+anAspect->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+~~~~
+
+@subsection upgrade_800_bnd_intersected Bnd: IntersectStatus enum
+
+`Bnd_Range::IsIntersected()` previously returned a magic integer; it now returns the strongly-typed `Bnd_Range::IntersectStatus` enum:
+
+~~~~{.cpp}
+// Before
+int aResult = aRange.IsIntersected(...);
+
+// After
+Bnd_Range::IntersectStatus aResult = aRange.IsIntersected(...);
+~~~~
+
+Several `Bnd_*` accessors (`Center()`, `Min()`, `Max()`, `Get()`) now return `std::optional`. `Bnd_*` classes have been annotated with `[[nodiscard]]` and `noexcept` where appropriate; `Contains()` and `Intersects()` wrappers have been added.
+
+@subsection upgrade_800_geomadaptor_transformed Transformed adaptor changes
+
+`GeomAdaptor_TransformedSurface::GeomSurface()` is deprecated. Use the new original/transformed surface accessors instead. `GeomAdaptor_TransformedCurve` has been introduced as a new base class for `BRepAdaptor_Curve` that wraps a `GeomAdaptor_Curve` (or `Adaptor3d_CurveOnSurface`) with an applied `gp_Trsf`. `GeomAdaptor_Surface` exposes new `ToleranceU()` / `ToleranceV()` accessors.
+
+@subsection upgrade_800_geomhash GeomHash configurable tolerances
+
+Geometry hash classes now expose `CompTolerance` and `HashTolerance` fields and constructors instead of the previously hard-coded `1e-12` constant. Code that depended on the old constant should explicitly request the previous values via the constructors.
+
+@subsection upgrade_800_isclosed IsClosed/IsPeriodic tolerance change
+
+`IsClosed()` on curves and surfaces previously used `gp::Resolution()` (~1e-290), making the check practically unusable. It now uses `Precision::Computational()` (~`DBL_EPSILON`). Trimmed curves and surfaces now also detect integer-period spans when reporting `IsClosed()` / `IsPeriodic()`. Application code that relied on the previous near-zero tolerance must adjust its inputs or its expectations accordingly.
+
+@subsection upgrade_800_build Build and configuration
+
+- `USE_VTK` is now `OFF` by default. Builds that need VIS must opt in explicitly (`-DUSE_VTK=ON`).
+- ARM64 architecture is supported; CMake auto-detection and Windows ARM64 CI are added.
+- **glTF read/write (`USE_RAPIDJSON`)** is now an explicit dependency: glTF support is disabled when RapidJSON is not available. Set `-DUSE_RAPIDJSON=ON` (and ensure RapidJSON is discoverable, or use `BUILD_USE_VCPKG=ON`) to keep glTF.
+- **Documentation build is CMake-driven**. The legacy Tcl-based documentation entrypoints have been removed; use the `Overview`, `RefMan`, and `doc` CMake targets.
+- **`vcpkg` integration**- OCCT ships a vcpkg manifest at `adm/vcpkg/ports/opencascade/vcpkg.json` (referenced via `VCPKG_MANIFEST_DIR`). Configure with `-DBUILD_USE_VCPKG=ON` and the desired `USE_*` flags; the toolchain file is detected automatically from `VCPKG_ROOT`. CMake config files are now installed under `share/<OCCT_PROJECT_NAME>/` for vcpkg compliance.
+- **Plugin discovery**- Data Exchange plugin registration is centralized through new `Register` / `UnRegister` static methods on configuration nodes, with `DE_MultiPluginHolder` for projects that load multiple providers.
+- Standard exception throw replaces legacy `Standard_Failure::Raise` throughout the OCCT source tree- any custom build system that grepped for `Raise(` should be updated.
+
+@subsection upgrade_800_removed Removed and deprecated- summary
+
+Removed (no backward-compatible alias):
+
+| Item | Replacement |
+| ---- | ----------- |
+| `Standard_Failure::Raise()`, `Instance()`, `Throw()` static methods | `throw Standard_Failure(...)` |
+| `Standard_ErrorHandler::Catches()` / `LastCaughtError()` | Implicit via execution flow / variant in handler |
+| `NCollection_Map::Seek()` / `ChangeSeek()` | `Contained()` returning `std::optional` |
+| `BRepMesh_PluginMacro.hxx`, `BRepMesh_PluginEntryType.hxx`, `BRepMesh_FactoryError.hxx` | `BRepMesh_DiscretAlgoFactory` |
+| Draw commands `mpsetfunctionname`, `mpgetfunctionname`, `mperror` | Not needed with factory pattern |
+| `TColGeom`, `TColGeom2d` packages | `NCollection_Array1<occ::handle<Geom*_Curve>>` |
+| `Geom2dLProp`, `LProp3d` packages | `GeomLProp` template classes (aliases preserved) |
+| `LProp_AnalyticCurInf` |- |
+| `GProp_EquaType` enum | `PointSetLib_Equation` |
+| `BUC60720` Draw command, `QABugs_PresentableObject` |- |
+| `PLib_Base` abstract class | `PLib_JacobiPolynomial` / `PLib_HermitJacobi` as value types |
+| `PLib_DoubleJacobiPolynomial` |- (port manually) |
+| `TopTools_MutexForShapeProvider` | `std::mutex` |
+| `OSD_MAllocHook` class, `mallochook` Draw command | Platform tools (Valgrind, AddressSanitizer) |
+| `QANCollection` test package | GTest-based tests under `src/.../GTests/` |
+| `BUILD_PATCH` CMake option |- (apply patches at source level) |
+| Legacy Tcl documentation entrypoints | `Overview`, `RefMan`, `doc` CMake targets |
+| Inspector, ExpToCas (in-tree) | Separate GitHub repositories |
+
+Deprecated (still compiles with warnings):
+
+| Item | Replacement |
+| ---- | ----------- |
+| `Standard_Failure::GetMessageString()` | `what()` |
+| Package collection typedefs (`TColStd_*`, `TopTools_*`, ...) | `NCollection_*<T>` |
+| BSpline / Bezier copy-out accessor overloads | Const-reference returning versions |
+| Convert package single-element accessors | Batch const-reference accessors |
+| Nullable `Weights()` | `WeightsArray()` |
+| `GProp_PGProps`, `GProp_PEquation`, `GProp_CelGProps`, `GProp_SelGProps`, `GProp_VelGProps` | `PointSetLib_Props`, `PointSetLib_Equation` |
+| `GeomAdaptor_TransformedSurface::GeomSurface()` | Original/transformed surface accessors |
+| Handle out-parameter overloads | Return-by-value overloads |
+| `Standard_Mutex` (and `Standard_Mutex::Sentry`) | `std::mutex` (with `std::lock_guard`) |
+| OCCT math wrappers (`ACos`, `Sin`, `Sqrt`, `Min`, `Max`, ...) | `std::` equivalents in `<cmath>` / `<algorithm>` |
+| `Transfer_TransferDeadLoop` exception | Status-flag-based dead-loop detection |
+| `AIS_InteractiveContext` immediate-mode rendering methods | Retained-mode pipeline |
