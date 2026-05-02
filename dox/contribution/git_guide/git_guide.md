@@ -30,6 +30,7 @@ Or via SSH:
 @subsection occt_gitguide_1_3 Repository Content
 
 - **master** branch: the current development version. Official releases are marked by tags.
+- **IR** branch: the weekly integration branch where contributions are merged after review and CI/CD checks.
 - Topic branches for feature development, bug fixes, and improvements.
 
 @subsection occt_gitguide_1_4 Quick Rules
@@ -141,7 +142,7 @@ Then create a Pull Request on GitHub:
 
 - Go to your fork on GitHub
 - Click **New Pull Request**
-- Set the base to `Open-Cascade-SAS/OCCT/master` and compare to your branch
+- Set the base to `Open-Cascade-SAS/OCCT/IR` and compare to your branch
 - Start with a **Draft PR** to indicate work in progress
 - When ready, click **Ready for Review**
 
@@ -161,7 +162,7 @@ CI/CD re-runs automatically.
 @subsection occt_gitguide_3_6 Merge
 
 Once approved and all checks pass, a maintainer merges the PR.
-PRs are typically squashed into a single commit on master.
+PRs are typically squashed into a single commit on IR.
 
 @subsection occt_gitguide_3_7 Keep Your Fork Updated
 
@@ -175,11 +176,11 @@ git push origin master
 
 @section occt_gitguide_4 Rebasing
 
-If your branch falls behind master, rebase it:
+If your branch falls behind IR, rebase it:
 
 ~~~~
 git checkout my-feature-branch
-git pull --rebase upstream master
+git pull --rebase upstream IR
 ~~~~
 
 If conflicts occur, resolve them manually, then:
@@ -202,7 +203,7 @@ git push --force origin my-feature-branch
 After your PR is merged, delete the local and remote branch:
 
 ~~~~
-git checkout master
+git checkout IR
 git branch -d my-feature-branch
 git push origin --delete my-feature-branch
 ~~~~

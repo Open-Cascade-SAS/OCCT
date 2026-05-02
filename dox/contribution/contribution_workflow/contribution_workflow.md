@@ -44,7 +44,7 @@ The contribution workflow follows these steps:
 
 Start with a Draft PR to signal that the work is in progress. CI/CD pipelines will run on every push, providing early feedback on build and test results.
 
-Create the PR from your fork's feature branch to the `master` branch of the official repository.
+Create the PR from your fork's feature branch to the `IR` branch of the official repository.
 
 @subsection occt_contribution_workflow_review Code Review
 
@@ -57,7 +57,7 @@ When the Draft PR is ready, mark it as "Ready for Review":
 @subsection occt_contribution_workflow_merge Merge
 
 After approval and successful CI/CD checks, the PR is merged by a maintainer.
-PRs are typically squashed into a single commit on the master branch.
+PRs are typically squashed into a single commit on the IR branch.
 
 @subsection occt_contribution_workflow_ci CI/CD Testing
 
@@ -105,8 +105,8 @@ Changes that break API compatibility must be documented in @ref occt__upgrade "U
 
 Open issues through the GitHub web interface using the provided issue templates:
 
-- **Bug Report** -- for reproducible defects. The template asks for a description, expected and actual behavior, a sample script or code, OS, compiler, bitness and OCCT version.
-- **Feature Request** -- for new functionality or enhancements. The template asks for a description, use case, expected benefits and any additional context.
+- **Bug Report** - for reproducible defects. The template asks for a description, expected and actual behavior, a sample script or code, OS, compiler, bitness and OCCT version.
+- **Feature Request** - for new functionality or enhancements. The template asks for a description, use case, expected benefits and any additional context.
 
 Templates apply the appropriate labels automatically; there is no need to set them by hand. Maintainers may add further classification labels (component, priority, etc.) during triage.
 
@@ -114,10 +114,10 @@ Templates apply the appropriate labels automatically; there is no need to set th
 
 @subsection occt_contribution_nonstd_rebase Updating Branches
 
-If your branch falls behind master, rebase it:
+If your branch falls behind IR, rebase it:
 
     git fetch upstream
-    git rebase upstream/master
+    git rebase upstream/IR
 
 Force-push the updated branch:
 
