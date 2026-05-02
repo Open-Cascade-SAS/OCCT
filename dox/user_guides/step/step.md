@@ -1692,7 +1692,7 @@ For each Saved View OCCT STEP Reader will retrieve the following attributes:
 - front and back plane clipping.
 
 ### User defined attributes
-Attributes are implemented in accordance with <a href="https://www.mbx-if.org/documents/rec_prac_user_def_attributes_v18.pdf">Recommended practices for User Defined Attributes</a> section 4, 5, 6.1-6.3 and 7.
+Attributes are implemented in accordance with <a href="https://www.cax-if.org/documents/rec_prac_user_def_attributes_v18.pdf">Recommended practices for User Defined Attributes</a> section 4, 5, 6.1-6.3 and 7.
 Attributes can be read for shapes at levels:
 - Part/Product Level;
 - Component Instances in an Assembly;

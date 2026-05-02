@@ -239,13 +239,13 @@ This module handles various problems of interoperability between CAD systems, ca
   * **STL** converter translates Open CASCADE shapes to STL files.
     STL (STtereoLithography) format is widely used for rapid prototyping (3D printing).
 * @ref occt_user_guides__xde "Extended data exchange" (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
-* <a href="https://www.opencascade.com/content/advanced-data-exchange-components">Advanced Data Exchange Components</a>
+* <a href="https://occt3d.com/components/">Advanced Data Exchange Components</a>
   are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref intro_overview_heal "Shape Healing") with CAD software using the following proprietary formats (commercial product pages, URLs may change):
-	* <a href="https://www.opencascade.com/content/acis-sat-import-export">ACIS SAT</a>
-	* <a href="https://www.opencascade.com/content/parasolid-import">Parasolid</a>
-	* <a href="https://www.opencascade.com/content/dxf-import-export">DXF</a>
-	* <a href="https://www.opencascade.com/content/ifc-import">IFC</a>
-	* <a href="https://www.opencascade.com/content/jt-import-export">JT</a>
+	* <a href="https://occt3d.com/components/acis-import-export-component/">ACIS SAT</a>
+	* <a href="https://occt3d.com/components/parasolid-import-component/">Parasolid</a>
+	* <a href="https://occt3d.com/components/dxf-import-export-component/">DXF</a>
+	* <a href="https://occt3d.com/components/ifc-import-component/">IFC</a>
+	* <a href="https://occt3d.com/components/jt-import-export-component/">JT</a>
 
 These components are based on the same architecture as interfaces with STEP and IGES.
 
@@ -425,7 +425,7 @@ The source tree obtained from a Git clone contains the following top-level direc
 
 OCCT is available as package "opencascade" in official repositories of many Linux distributions.
 
-See https://repology.org/project/opencascade/versions for overview of available repositories.
+See https://repology.org/project/opencascade-occt/versions for overview of available repositories.
 
 @subsection intro_install_mac macOS
 
