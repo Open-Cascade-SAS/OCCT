@@ -1151,13 +1151,13 @@ Redundant class Prs3d_Root has been marked as deprecated - Prs3d_Presentation::N
 @subsection upgrade_750_cdf_session Support of multiple OCAF application instances
 
 Class *CDF_Session* has been removed.
-That class was used to store global instance of OCAF application (object of class *CDM_Application* or descendant, typically *TDataStd_Application*).
+That class was used to store global instance of OCAF application (object of class *CDM_Application* or descendant, typically *TDocStd_Application*).
 Global directory of all opened OCAF documents has been removed as well; such directory is maintained now by each instance of the *CDM_Application* class.
 
 This allows creating programs that work with different OCAF documents concurrently in parallel threads,
-provided that each thread deals with its own instance of *TDataStd_Application* and documents managed by this instance.
+provided that each thread deals with its own instance of *TDocStd_Application* and documents managed by this instance.
 
-Note that neither *TDataStd_Application* nor *TDocStd_Document* is protected from concurrent access from several threads.
+Note that neither *TDocStd_Application* nor *TDocStd_Document* is protected from concurrent access from several threads.
 Such protection, if necessary, shall be implemented on the application level.
 For an example, access to labels and attributes could be protected by mutex if there is a probability that different threads access the same labels / attributes:
 ~~~~{.cpp}
@@ -1498,8 +1498,8 @@ The `Handle_*` type names are still available, but it is recommended to use the 
 Example:
 
 ~~~~{.cpp}
-  occ::handle<TDataStd_Application> anApp = new TDataStd_Application(); // recommended
-  Handle_TDataStd_Application anApp = new TDataStd_Application(); // deprecated
+  occ::handle<TDocStd_Application> anApp = new TDocStd_Application(); // recommended
+  Handle_TDocStd_Application anApp = new TDocStd_Application(); // deprecated
 ~~~~
 
 @subsection upgrade_790_general_map NCollection_Map algorithm method migration

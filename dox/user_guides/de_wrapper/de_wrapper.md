@@ -37,7 +37,7 @@ This guide principally deals with the following OCCT classes:
 **Note** :
   * The format names in the first column match the FormatName values used for configuration nodes.
   * The VendorName for all listed CAD formats is "OCC".
-  * For STEP, thread safety requires that each concurrent call uses its own @ref DESTEP_Parameters instance rather than relying on the process-wide *Interface_Static* settings. See the @ref occt_user_guides__step "STEP user guide" for details.
+  * For STEP, thread safety requires that each concurrent call uses its own *DESTEP_Parameters* instance rather than relying on the process-wide *Interface_Static* settings. See the @ref occt_user_guides__step "STEP user guide" for details.
 
 @section occt_de_wrapper_3 DE Session Configuration
 
@@ -157,7 +157,8 @@ Dump to resource string. If the vendors list is empty, saves all vendors. If the
   aFormats.Append("STEP");
   aVendors.Append("OCC");
   bool aIsRecursive = true;
-  aSession->Save(aIsRecursive, aFormats, aVendors);
+  TCollection_AsciiString aConfDump =
+    aSession->Save(aIsRecursive, aFormats, aVendors);
 ~~~~
 Configure using a resource file. If the vendors list is empty, saves all vendors. If the providers list is empty, saves all providers of valid vendors.
 ~~~~{.cpp}
