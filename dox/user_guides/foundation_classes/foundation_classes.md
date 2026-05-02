@@ -193,67 +193,34 @@ providing reference counting mechanism and automatic destruction of the object w
 @subsubsection occt_fcug_2_1_1 Primitive Types
 
 The primitive types are predefined in the language and they are **manipulated by value**.
-> **Note:** In new code, prefer standard C++ primitive types (*int*, *double*, *bool*, *float*) directly. The OCCT typedefs (*Standard_Integer*, *Standard_Real*, etc.) are retained for backward compatibility.
 
-* **Standard_Boolean** is used to represent logical data.
-  It may have only two values: *Standard_True* and *Standard_False*.
-* **Standard_Character** designates a single 8-bit character.
-* **Standard_ExtCharacter** is an extended character.
-* **Standard_Integer** is a whole number.
-* **Standard_Real** denotes a real number (i.e. one with whole and a fractional part, either of which may be null).
-* **Standard_ShortReal** is a real with a smaller choice of values and memory size.
-* **Standard_CString** is used for literal constants.
-* **Standard_ExtString** is an extended string.
-* **Standard_Address** represents a byte address of undetermined size *(deprecated, use void\* directly)*.
+In new code, always use standard C++ primitive types directly:
 
-The services offered by each of these types are described in the **Standard** Package.
-The table below presents the equivalence existing between C++ fundamental types and OCCT primitive types.
+| C++ Type  | Description |
+| :-------- | :---------- |
+| int       | 32-bit signed integer, negative, positive or null values |
+| double    | Double-precision real number with finite precision and size |
+| float     | Single-precision real number with a smaller choice of values and memory size |
+| bool      | Logical data: *true* and *false* |
+| char      | Single 8-bit character; ordering per ASCII chart |
+| char16_t  | 16-bit character; ordering per UNICODE chart |
+| char\*    | C string literal (a sequence of UTF-8 code points enclosed in double quotes) |
+| void\*    | Generic byte address pointer |
+| char16_t\* | Extended string (sequence of Unicode 16-bit characters) |
 
-**Table 1: Equivalence between C++ Types and OCCT Primitive Types**
-
-| C++ Types	| OCCT Types |
-| :--------- | :----------- |
-| int	| Standard_Integer |
-| double 	| Standard_Real |
-| float	| Standard_ShortReal |
-| bool	| Standard_Boolean |
-| char	| Standard_Character |
-| char16_t	| Standard_Utf16Char |
-| char\*	| Standard_CString |
-| void\* | Standard_Address (deprecated) |
-| char16_t\*	| Standard_ExtString |
-
-\* The types with asterisk are pointers.
-
-**Reminder of the classes listed above:**
-
-* **Standard_Integer**: fundamental type representing 32-bit integers yielding negative, positive or null values.
-  *Integer* is implemented as a *typedef* of the C++ *int* fundamental type.
-  As such, the algebraic operations  +, -, *, / as well as the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on it.
-* **Standard_Real**: fundamental type representing real numbers with finite precision and finite size.
-  **Real** is implemented as a *typedef* of the C++ *double* (double precision) fundamental type.
-  As such, the algebraic operations +, -, *, /, unary- and the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on reals.
-* **Standard_ShortReal**: fundamental type representing real numbers with finite precision and finite size.
-  *ShortReal* is implemented as a *typedef* of the C++ *float* (single precision) fundamental type.
-  As such, the algebraic operations +, -, *, /, unary- and the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on reals.
-* **Standard_Boolean**: fundamental type representing logical expressions.
-  It has two values: *false* and *true*.
-  *Boolean* is implemented as a *typedef* of the C++ *bool* fundamental type.
-  As such, the algebraic operations *and, or, xor* and *not* as well as equivalence relations == and != are defined on Booleans.
-* **Standard_Character**: fundamental type representing a single 8-bit character.
-  *Character* is implemented as a *typedef* of the C++ *char* fundamental type.
-  As such, the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on characters using the order of the ASCII chart (ex: A B).
-* **Standard_ExtCharacter**: fundamental type representing the UTF-16 character set.
-  It is a 16-bit character type.
-  *ExtCharacter* is implemented as a *typedef* of the C++ *char16_t* fundamental type.
-  As such, the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on extended characters using the order of the UNICODE chart (ex: A B).
-* **Standard_CString**: fundamental type representing string literals.
-  A string literal is a sequence of UTF-8 (8 bits) code points enclosed in double quotes.
-  *CString* is implemented as a *typedef* of the C++ *char* fundamental type.
-* **Standard_Address**: fundamental type representing a generic pointer *(deprecated, use void\* directly)*.
-  *Address* is implemented as a *typedef* of the C++ *void* fundamental type.
-* **Standard_ExtString**: fundamental type representing string literals as sequences of Unicode (16 bits) characters.
-  *ExtString* is implemented as a *typedef* of the C++ *char16_t* fundamental type.
+> **Backward compatibility only:** The legacy OCCT typedefs (*Standard_Integer*, *Standard_Real*, *Standard_Boolean*, etc.) are retained for compatibility with existing code but should not be used in new code. They are defined in the **Standard** Package and map to C++ fundamental types:
+>
+> | Legacy OCCT Type        | Maps to C++ Type |
+> | :---------------------- | :--------------- |
+> | Standard_Integer        | int              |
+> | Standard_Real           | double           |
+> | Standard_ShortReal      | float            |
+> | Standard_Boolean        | bool             |
+> | Standard_Character      | char             |
+> | Standard_Utf16Char      | char16_t         |
+> | Standard_CString        | char\*           |
+> | Standard_Address        | void\* (deprecated) |
+> | Standard_ExtString      | char16_t\*       |
 
 @subsubsection occt_fcug_2_1_2 Types manipulated by value
 There are three categories of types which are manipulated by value:
@@ -310,7 +277,7 @@ occ::handle<Geom_Line> aLine; // "occ::handle<Geom_Line>" is expanded to "openca
 In addition, for most OCCT classes a legacy *typedef* is defined for a handle, as the name of a class prefixed by *Handle_* (deprecated but retained for backward compatibility).
 For instance, the above example can be also coded as:
 ~~~~{.cpp}
-Handle_Geom_Line aLine; // "Handle_Geom_Line" is typedef to "opencascade::handle<Geom_Line>"
+Handle_Geom_Line aLine; // DEPRECATED: "Handle_Geom_Line" is a legacy typedef to "opencascade::handle<Geom_Line>". Use occ::handle<Geom_Line> instead.
 ~~~~
 
 #### Using a Handle
@@ -436,7 +403,7 @@ void MyFunction (const occ::handle<A> & a)
 ~~~~
 Downcasting is used particularly with collections of objects of different types; however, these objects should inherit from the same root class.
 
-For example, with a sequence of transient objects *TColStd_SequenceOfTransient* and two classes A and B that both inherit from *Standard_Transient*, you get the following syntax:
+For example, with a sequence of transient objects *NCollection_Sequence\<occ::handle\<Standard_Transient\>\>* and two classes A and B that both inherit from *Standard_Transient*, you get the following syntax:
 
 ~~~~{.cpp}
 occ::handle<A> a;
@@ -728,7 +695,7 @@ Thus,
   * No exception should be raised during normal execution of an application.
   * A method which may raise an exception should be protected by other methods allowing the caller to check on the validity of the call.
 
-For example, if you consider the *TCollection_Array1* class used with:
+For example, if you consider the *NCollection_Array1* class used with:
   * *Value* function to extract an element;
   * *Lower* function to extract the lower bound of the array;
   * *Upper* function to extract the upper bound of the array.
@@ -736,12 +703,12 @@ For example, if you consider the *TCollection_Array1* class used with:
 then, the *Value* function may be implemented as follows:
 
 ~~~~{.cpp}
-Item TCollection_Array1::Value (int theIndex) const
+Item NCollection_Array1::Value (int theIndex) const
 {
   // where myR1 and myR2 are the lower and upper bounds of the array
   if (theIndex < myR1 || theIndex > myR2)
   {
-    throw Standard_OutOfRange ("Index out of range in TCollection_Array1::Value");
+    throw Standard_OutOfRange ("Index out of range in NCollection_Array1::Value");
   }
   return myContents[theIndex];
 }
@@ -767,9 +734,9 @@ The entire call may be removed by defining one of the preprocessor symbols *No_E
 Using this syntax, the *Value* function becomes:
 
 ~~~~{.cpp}
-Item TCollection_Array1::Value (int theIndex) const
+Item NCollection_Array1::Value (int theIndex) const
 {
-  Standard_OutOfRange_Raise_if(theIndex < myR1 || theIndex > myR2, "index out of range in TCollection_Array1::Value");
+  Standard_OutOfRange_Raise_if(theIndex < myR1 || theIndex > myR2, "index out of range in NCollection_Array1::Value");
   return myContents[theIndex];
 }
 ~~~~

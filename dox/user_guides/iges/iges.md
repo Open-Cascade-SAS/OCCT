@@ -272,7 +272,7 @@ Default value is 0 (Off).
 <h4>read.iges.resource.name and read.iges.sequence</h4>
 These two parameters define the name of the resource file  and the name of the sequence of operators   (defined in that file) for Shape Processing, which is automatically performed  by the IGES   translator. The Shape Processing is a user-configurable step, which is  performed after   the translation and consists in application of a set of operators to a  resulting shape. This is   a very powerful tool allowing to customize the shape and to adapt it to the  needs of   a receiving application. By default, the sequence consists of a single operator  *ShapeFix* that calls Shape Healing from the IGES translator.  
 
-Find an example of the resource file for IGES (which  defines parameters corresponding to the sequence applied by default, i.e. if the resource file is  not found) in the Open CASCADE Technology sources by the path <i>$CASROOT/resources/XSTEPResource/IGES</i>. 
+Find an example of the resource file for IGES (which  defines parameters corresponding to the sequence applied by default, i.e. if the resource file is  not found) at the location pointed to by the <i>$CSF_IGESDefaults</i> environment variable. 
 
 IGES translator will use that file if you define the environment variable *CSF_IGESDefaults*, which should point to the directory where the resource file  resides.   Note that if you change parameter *read.iges.resource.name*, you should change  the name of the resource file and the name of the environment variable correspondingly.  The variable should contain a path to the resource file. 
 
@@ -1086,11 +1086,11 @@ Refer to @ref occt_iges_3_3_2 "Setting the translation parameters" for a descrip
 
 | Description | Name | Values |
 | :-----------  | :---- | :----- |
-| Author | XSTEP.iges.header.author | String |
-| Company | XSTEP.iges.header.company | String |
-| Receiver | XSTEP.iges.header.receiver | String |
-| Write mode for shapes | XSTEP.iges.writebrep.mode | 0/Faces or 1/BRep |
-| Measurement units | XSTEP.iges.unit | 1-11 (or a string value) |
+| Author | write.iges.header.author | String |
+| Company | write.iges.header.company | String |
+| Receiver | write.iges.header.receiver | String |
+| Write mode for shapes | write.iges.brep.mode | 0/Faces or 1/BRep |
+| Measurement units | write.iges.unit | 1-11 (or a string value) |
 
 Several shapes can be written in one file. To start writing  a new file, enter command 
 ~~~~{.tcl}

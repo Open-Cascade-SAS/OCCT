@@ -711,9 +711,9 @@ If output does not contain required statement, test case will be marked as FAILE
 
 @subsection testmanual_4_1 Running Tests on Older Versions of OCCT
 
-Sometimes it might be necessary to run tests on the previous versions of OCCT (<= 6.5.4) that do not include this test system. This can be done by adding DRAW configuration file *DrawAppliInit* in the directory, which is current by the moment of DRAW start-up, to load test commands and to define the necessary environment.
+Sometimes it might be necessary to run tests on older OCCT versions that do not include this test system. This can be done by adding DRAW configuration file *DrawAppliInit* in the directory, which is current by the moment of DRAW start-up, to load test commands and to define the necessary environment.
 
-Note: in OCCT 6.5.3, file *DrawAppliInit* already exists in <i>$CASROOT/resources/DrawResources</i>, new commands should be added to this file instead of a new one in the current directory.
+Note: in some older OCCT versions, file *DrawAppliInit* already exists in <i>$CASROOT/resources/DrawResources</i>, new commands should be added to this file instead of a new one in the current directory.
 
 For example, let us assume that *d:/occt* contains an up-to-date version of OCCT sources with tests, and the test data archive is unpacked to *d:/test-data*):
 

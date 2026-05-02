@@ -79,7 +79,7 @@ The Test Harness executable *DRAWEXE* is produced by the OCCT build and installe
 
 @subsubsection occt_draw_1_3_2 Plug-in resource file
 
-Open CASCADE Technology is shipped with the DrawPlugin resource file located in the <i>$CASROOT/resources/DrawResources</i> directory. 
+Open CASCADE Technology is shipped with the DrawPlugin resource file located in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory. 
 
 The format of the file is compliant with standard Open CASCADE Technology resource files (see the *Resource_Manager.hxx* file for details). 
 
@@ -108,12 +108,12 @@ Where:
 * <i>-PluginFileName</i> -- defines the name of a plug-in resource file (prefix "-" is mandatory) described above. If this parameter is omitted then the default name *DrawPlugin* is used. 
 * *Key* -- defines the key(s) enumerating plug-ins to be loaded. If no keys are specified then the key named *DEFAULT* is used (if there is no such key in the file then no plug-ins are loaded). 
 
-According to the OCCT resource file management rules, to access the resource file the environment variable *CSF_DrawPluginDefaults* (and optionally *CSF_DrawPluginUserDefaults*) must be set and point to the directory storing the resource file. If it is omitted then the plug-in resource file will be searched in the <i>$CASROOT/resources/DrawResources</i> directory. 
+According to the OCCT resource file management rules, to access the resource file the environment variable *CSF_DrawPluginDefaults* (and optionally *CSF_DrawPluginUserDefaults*) must be set and point to the directory storing the resource file. If it is omitted then the plug-in resource file will be searched in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory. 
 
 ~~~~{.tcl}
 Draw[]        pload -DrawPlugin OCAF 
 ~~~~
-This command will search the resource file *DrawPlugin* using variable *CSF_DrawPluginDefaults* (and *CSF_DrawPluginUserDefaults*) and will start with the OCAF key. Since the *DrawPlugin* is the file shipped with Open CASCADE Technology it will be found in the <i>$CASROOT/resources/DrawResources</i> directory (unless this location is redefined by user's variables). The OCAF key will be recursively extracted into two toolkits/plug-ins: *TKDCAF* and *TKViewerTest* (e.g. on Windows they correspond to *TKDCAF.dll* and *TKViewerTest.dll*). Thus, commands implemented for Visualization and OCAF will be loaded and activated in Test Harness. 
+This command will search the resource file *DrawPlugin* using variable *CSF_DrawPluginDefaults* (and *CSF_DrawPluginUserDefaults*) and will start with the OCAF key. Since the *DrawPlugin* is the file shipped with Open CASCADE Technology it will be found in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory (unless this location is redefined by user's variables). The OCAF key will be recursively extracted into two toolkits/plug-ins: *TKDCAF* and *TKViewerTest* (e.g. on Windows they correspond to *TKDCAF.dll* and *TKViewerTest.dll*). Thus, commands implemented for Visualization and OCAF will be loaded and activated in Test Harness. 
 
 ~~~~{.tcl}
 Draw[]        pload (equivalent to pload -DrawPlugin DEFAULT). 
@@ -10967,7 +10967,7 @@ ADVCURV            : TKMyAdvCurv
 MESHING            : TKMyMesh 
 ~~~~
 
-For other examples of the plug-in resource file refer to the @ref occt_draw_1_3_2 "Plug-in resource file" chapter above or to the <i>$CASROOT/resources/DrawResources/DrawPlugin</i> file shipped with Open CASCADE Technology. 
+For other examples of the plug-in resource file refer to the @ref occt_draw_1_3_2 "Plug-in resource file" chapter above or to the <i>$CSF_OCCTResourcePath/DrawResources/DrawPlugin</i> file shipped with Open CASCADE Technology. 
 
 
 @subsection occt_draw_11_5 Dynamic loading and activation

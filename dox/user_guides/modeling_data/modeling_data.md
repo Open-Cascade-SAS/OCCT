@@ -35,7 +35,7 @@ You can program approximations in two ways:
 
 @subsubsection occt_modat_1_1_1 Analysis of a set of points
 
-The class *PEquation* from  *GProp* package allows analyzing a collection or cloud of points and verifying if they are coincident, collinear or coplanar within a given precision. If they are, the algorithm computes the mean point, the mean line or the mean plane of the points. If they are not, the algorithm computes the minimal box, which includes all the points. 
+The class *GProp_PEquation* from  *GProp* package allows analyzing a collection or cloud of points and verifying if they are coincident, collinear or coplanar within a given precision. If they are, the algorithm computes the mean point, the mean line or the mean plane of the points. If they are not, the algorithm computes the minimal box, which includes all the points. 
 
 @subsubsection occt_modat_1_1_2 Basic Interpolation and Approximation
 
@@ -63,11 +63,11 @@ occ::handle<Geom_BSplineCurve> C = Interp.Curve();
 
 #### 2D Approximation
 
-The class *PointsToBSpline* from *Geom2dAPI* package allows building a 2DBSpline curve, which approximates a set of points. You have to define the lowest and highest degree of the curve, its continuity and a tolerance value for it.The tolerance value is used to check that points are not too close to each other, or tangential vectors not too small. The resulting BSpline curve will beC2 or second degree continuous, except where a tangency constraint is defined on a point through which the curve passes. In this case, it will be only C1continuous. 
+The class *PointsToBSpline* from *Geom2dAPI* package allows building a 2D BSpline curve, which approximates a set of points. You have to define the lowest and highest degree of the curve, its continuity and a tolerance value for it. The tolerance value is used to check that points are not too close to each other, or tangential vectors not too small. The resulting BSpline curve will be C2 or second degree continuous, except where a tangency constraint is defined on a point through which the curve passes. In this case, it will be only C1 continuous. 
 
 #### 3D Approximation
 
-The class *PointsToBSpline* from GeomAPI package allows building a 3D BSplinecurve, which approximates a set of points. It is necessary to define the lowest and highest degree of the curve, its continuity and tolerance. The tolerance value is used to check that points are not too close to each other,or that tangential vectors are not too small. 
+The class *PointsToBSpline* from GeomAPI package allows building a 3D BSpline curve, which approximates a set of points. It is necessary to define the lowest and highest degree of the curve, its continuity and tolerance. The tolerance value is used to check that points are not too close to each other, or that tangential vectors are not too small. 
 
 The resulting BSpline curve will be C2 or second degree continuous, except where a tangency constraint is defined on a point, through which the curve passes. In this case, it will be only C1 continuous. This class is instantiated as follows: 
 

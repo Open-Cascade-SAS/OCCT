@@ -16,7 +16,7 @@ Open CASCADE Technology includes two mesh converters:
 - VRML converter translates Open CASCADE shapes to VRML 1.0 files (Virtual Reality Modeling Language). Open CASCADE shapes may be translated in two representations: shaded or wireframe. A shaded representation present shapes as sets of triangles computed by a mesh algorithm while a wireframe representation present shapes as sets of curves.
 - STL converter translates Open CASCADE shapes to STL files. STL (STtereoLithography) format is widely used for rapid prototyping.
 
-Open CASCADE also offers Advanced Mesh Products:
+Open CASCADE also offers Advanced Mesh Products (commercial product pages, URLs may change):
 - <a href="https://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
 - <a href="https://www.opencascade.com/content/express-mesh">Express Mesh</a>
 

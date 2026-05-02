@@ -96,6 +96,7 @@ This is because the *GC* provides two algorithm classes which are exactly what i
 Both of these classes return a *Geom_TrimmedCurve* manipulated by handle. This entity represents a base curve (line or circle, in our case), limited between two of its parameter values. For example, circle C is parameterized between 0 and 2PI. If you need to create a quarter of a circle, you create a *Geom_TrimmedCurve* on C limited between 0 and M_PI/2.
 
 ~~~~{.cpp}
+    // For production code, prefer the explicit IsDone()/Value() pattern shown below.
     occ::handle<Geom_TrimmedCurve> aArcOfCircle = GC_MakeArcOfCircle(aPnt2,aPnt3,aPnt4);
     occ::handle<Geom_TrimmedCurve> aSegment1    = GC_MakeSegment(aPnt1, aPnt2);
     occ::handle<Geom_TrimmedCurve> aSegment2    = GC_MakeSegment(aPnt4, aPnt5);
@@ -143,6 +144,8 @@ Referring to the previous table, to build the profile, you will create:
     
 However, the *TopoDS* package provides only the data structure of the topological entities. Algorithm classes available to compute standard topological objects can be found in the *BRepBuilderAPI* package.
 To create an edge, you use the BRepBuilderAPI_MakeEdge class with the previously computed curves:
+
+**Note:** In production code, `IsDone()` should be checked on all builder operations before accessing their results. The tutorial omits these checks for brevity.
 
 ~~~~{.cpp}
     TopoDS_Edge anEdge1 = BRepBuilderAPI_MakeEdge(aSegment1);
@@ -437,7 +440,7 @@ DynamicType returns the real type of the object, but you need to compare it with
 To compare a given type with the type you seek, use the *STANDARD_TYPE* macro, which returns the type of a class:
 
 ~~~~{.cpp}
-    if(aSurface->DynamicType() == STANDARD_TYPE(Geom_Plane)){
+    if(!aSurface.IsNull() && aSurface->DynamicType() == STANDARD_TYPE(Geom_Plane)){
     }
 ~~~~
 
@@ -457,11 +460,14 @@ Remember that the goal of all these conversions is to find the highest face of t
 You can easily find the plane whose origin is the biggest in Z knowing that the location of the plane is given with the *Geom_Plane::Location* method. For example:
 
 ~~~~{.cpp}
-    gp_Pnt aPnt = aPlane->Location();
-    double aZ = aPnt.Z();
-    if(aZ > zMax){
-        zMax = aZ;
-        faceToRemove = aFace;
+    if (!aPlane.IsNull())
+    {
+      gp_Pnt aPnt = aPlane->Location();
+      double aZ = aPnt.Z();
+      if(aZ > zMax){
+          zMax = aZ;
+          faceToRemove = aFace;
+      }
     }
 ~~~~
 
@@ -700,7 +706,7 @@ Congratulations! Your bottle is complete. Here is the result snapshot of the Tut
 @figure{/tutorial/images/tutorial_image019.png,"",320} height=450px
 
 We hope that this tutorial has provided you with a feel for the industrial strength power of Open CASCADE Technology.
-If you want to know more and develop major projects using Open CASCADE Technology, we invite you to study our training, support, and consulting services on our site at https://www.opencascade.com/content/technology-support. Our professional services can maximize the power of your Open CASCADE Technology applications.
+If you want to know more and develop major projects using Open CASCADE Technology, we invite you to study our training, support, and consulting services on our site at https://www.opencascade.com/content/technology-support (commercial product page, URL may change). Our professional services can maximize the power of your Open CASCADE Technology applications.
 
 
 @section sec6 Appendix
@@ -774,7 +780,9 @@ Complete definition of MakeBottle function:
 
         BRepAlgoAPI_Fuse aFuser(myBody, myNeck);
         if (aFuser.IsDone())
+        {
           myBody = aFuser.Shape();
+        }
 
         // Body : Create a Hollowed Solid
         TopoDS_Face   faceToRemove;
@@ -784,13 +792,16 @@ Complete definition of MakeBottle function:
             TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
             // Check if <aFace> is the top face of the bottle's neck 
             occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace);
-            if(aSurface->DynamicType() == STANDARD_TYPE(Geom_Plane)){
+            if(!aSurface.IsNull() && aSurface->DynamicType() == STANDARD_TYPE(Geom_Plane)){
                 occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(aSurface);
-                gp_Pnt aPnt = aPlane->Location();
-                double aZ   = aPnt.Z();
-                if(aZ > zMax){
-                    zMax = aZ;
-                    faceToRemove = aFace;
+                if (!aPlane.IsNull())
+                {
+                  gp_Pnt aPnt = aPlane->Location();
+                  double aZ   = aPnt.Z();
+                  if(aZ > zMax){
+                      zMax = aZ;
+                      faceToRemove = aFace;
+                  }
                 }
             }
         }

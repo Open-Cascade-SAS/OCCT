@@ -1,4 +1,4 @@
-﻿Contribution {#contribution}
+Contribution {#contribution}
 ============
 
 This chapter contains the detailed information about contribution procedure:

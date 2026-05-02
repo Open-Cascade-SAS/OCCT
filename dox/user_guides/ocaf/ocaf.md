@@ -714,7 +714,7 @@ NewDocumentFormat.RetrievalPlugin: 76fb4c04-ea9a-46aa-88a2-25f6a228d902
 The GUIDs should be unique and correspond to the GUIDs supported by relevant plugin.
 You can use an existing plugins (see the table above) or create your own.
 
-Finally, make a copy of the resource file "Plugin" from the OCCT source directory <i>$CASROOT/resources/StdResource</i> and, if necessary, add the definition of your plugin in it, for instance:
+Finally, make a copy of the resource file "Plugin" from the OCCT installation resource directory (e.g., `<install>/share/opencascade/resources`) and, if necessary, add the definition of your plugin in it, for instance:
 
 ~~~~
 bb5aa176-c65c-4c84-862e-6b7c1fe16921.Location: TKNewFormat
@@ -2377,7 +2377,7 @@ of the same type (e.g. sequences of homogeneous data or references).
 
 The get/set methods allow easily accessing the data located in the specified data label 
 for the most widely used data types (*double*, *int*, *TCollection_HExtendedString*,
- *TColStd_HArray1OfReal*, *TColStd_HArray1OfInteger*, *TColStd_HArray1OfExtendedString*). 
+ *NCollection_HArray1<double>*, *NCollection_HArray1<int>*, *NCollection_HArray1<TCollection_ExtendedString>*). 
 For instance, methods provided for real numbers are: 
 
 ~~~~{.cpp}
@@ -2665,7 +2665,7 @@ To set/get an object, the flags use the following methods:
 ~~~~{.cpp}
     int GetFlags() const; 
     void SetFlags( const int theMask ); 
-    Standard_Boolean TestFlags( const int theMask ) const; 
+    bool TestFlags( const int theMask ) const; 
     void ClearFlags( const int theMask = 0 ); 
 ~~~~
 

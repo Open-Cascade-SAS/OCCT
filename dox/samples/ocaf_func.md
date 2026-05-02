@@ -1,4 +1,4 @@
-﻿OCAF: Function Mechanism {#samples__ocaf_func}
+OCAF: Function Mechanism {#samples__ocaf_func}
 ========================
 
 Let us describe the usage of the "Function Mechanism" of Open CASCADE Application Framework on a simple example.  

@@ -1,4 +1,4 @@
-﻿Tutorials and Samples {#samples}
+Tutorials and Samples {#samples}
 =====================
 
 - @subpage samples__tutorials
@@ -31,4 +31,4 @@
 Additional DRAW demo scripts are available in the OCCT repository under the <i>resources/samples/tcl</i> directory.
 They can be run from DRAW as described in @ref samples__draw_scripts.
 
-C++ project samples (Qt, MFC, C#, WebGL, Java/Android, iOS, GLFW, QML) are not currently shipped with the OCCT repository and will be republished as separate repositories.
+C++ project samples (Qt, MFC, C#, WebGL, Java/Android, iOS, GLFW, QML) are available separately from the OCCT organization's GitHub repositories.

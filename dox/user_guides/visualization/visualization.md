@@ -271,7 +271,7 @@ At this stage it is necessary to determine if there are candidates among all sen
 First of all, at this stage the algorithm checks if there is any transformation applied for the current object.
 If it has its own location, then the correspondingly transformed frustum will be used for further calculations.
 At the next step the nodes of the second level BVH tree of the given object are visited to search for overlapping leaves.
-If no such leafs have been found, the algorithm returns to the second stage.
+If no such leaves have been found, the algorithm returns to the second stage.
 Otherwise it starts processing the found entities by performing the following checks:
   - activation check - the entity may be inactive at the moment as it belongs to deactivated selection;
   - tolerance check - current selection frustum may be too large for further checks as it is always built with the maximum tolerance among all activated entities;
@@ -297,7 +297,7 @@ The most notable are:
   - *SelectBasics_PickResult* -- the structure for storing quantitative results of detection procedure, for example, depth and distance to the center of geometry;
   - *SelectBasics_SelectingVolumeManager* -- the interface for interaction with the current selection frustum.
 
-Each custom sensitive entity must inherit at least *SelectBasics_SensitiveEntity*.
+Each custom sensitive entity must inherit at least *Select3D_SensitiveEntity*.
 
 #### Select3D
 
@@ -650,7 +650,7 @@ void myPk_IShape::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrs
   switch (theMode)
   {
     // algo for calculation of wireframe presentation
-    case 0: StdPrs_WFDeflectionShape::Add (thePrs, myShape, myDrawer); return;
+    case 0: StdPrs_WFShape::Add (thePrs, myShape, myDrawer); return;
     // algo for calculation of shading presentation
     case 1: StdPrs_ShadedShape::Add (thePrs, myShape, myDrawer); return;
   }
@@ -900,7 +900,7 @@ theCtx->SetDisplayMode (2, true);
 
 *PrsMgr_PresentationManager* and *SelectMgr_ViewerSelector3d*, which manage the presentation and selection of present interactive objects, are associated to the main Viewer.
 
-*WARNING!* Do NOT use integer values (like in sample above) in real code - use appropriate enumerations instead!
+@warning Do NOT use integer values (like in sample above) in real code - use appropriate enumerations instead!
 Each presentable object has independent list of supported display and selection modes; for instance, *AIS_DisplayMode* enumeration is applicable only to *AIS_Shape* presentations.
 
 @subsection occt_visu_3_4 Local Selection
@@ -1357,8 +1357,8 @@ The different types of primitives could be presented with the following primitiv
   * *Graphic3d_ArrayOfTriangles,*
   * *Graphic3d_ArrayOfTriangleStrips.*
 
-The *Graphic3d_ArrayOfPrimitives* is a base class for these primitive arrays.
-Method set *Graphic3d_ArrayOfPrimitives::AddVertex* allows adding vertices to the primitive array with their attributes (color, normal, texture coordinates).
+The *Graphic3d_Buffer* is a base class for these primitive arrays.
+Method set *Graphic3d_Buffer::AddVertex* allows adding vertices to the primitive array with their attributes (color, normal, texture coordinates).
 You can also modify the values assigned to the vertex or query these values by the vertex index.
 
 The following example shows how to define an array of points:
@@ -1378,9 +1378,9 @@ aGroup->SetGroupPrimitivesAspect (myDrawer->PointAspect()->Aspect());
 ~~~~
 
 If the primitives share the same vertices (polygons, triangles, etc.) then you can define them as indices of the vertices array.
-The method *Graphic3d_ArrayOfPrimitives::AddEdge* allows defining the primitives by indices.
+The method *Graphic3d_Buffer::AddEdge* allows defining the primitives by indices.
 This method adds an "edge" in the range *[1, VertexNumber()]* in the array.
-It is also possible to query the vertex defined by an edge using method *Graphic3d_ArrayOfPrimitives::Edge*.
+It is also possible to query the vertex defined by an edge using method *Graphic3d_Buffer::Edge*.
 
 The following example shows how to define an array of triangles:
 
@@ -1535,6 +1535,8 @@ occ::handle<OpenGl_GraphicDriver> aGraphicDriver = new OpenGl_GraphicDriver (aDi
 occ::handle<V3d_Viewer> aViewer = new V3d_Viewer (aGraphicDriver);
 aViewer->SetDefaultBackgroundColor (Quantity_NOC_DARKVIOLET);
 // Create a structure in this Viewer
+// @warning This is a low-level example that bypasses the AIS/Presentation layer.
+// Modern code should use AIS_InteractiveObject::Compute() with Prs3d_Presentation instead.
 occ::handle<Graphic3d_Structure> aStruct = new Graphic3d_Structure (aViewer->StructureManager());
 aStruct->SetVisual (Graphic3d_TOS_SHADING); // Type of structure
 
@@ -1561,7 +1563,8 @@ aViewer->AddLight (aLight1);
 aViewer->AddLight (aLight2);
 aViewer->SetLightOn();
 
-// Create a 3D quality  Window with the same DisplayConnection
+// Create a 3D quality Window with the same DisplayConnection
+// @note Xw_Window is X11-only. Cross-platform code should use Aspect_Window or the AIS context instead.
 occ::handle<Xw_Window> aWindow = new Xw_Window (aDispConnection, "Test V3d", 100, 100, 500, 500);
 aWindow->Map(); // Map this Window to this screen
 
@@ -2049,7 +2052,7 @@ myViewer->SetDefaultBackgroundColor (Quantity_NOC_BLACK);
 
 @subsubsection occt_visu_4_5_3 Create a 3D view (a Windows example)
 
-It is assumed that a valid Windows window may already be accessed via the method *GetSafeHwnd()* (as in case of MFC sample).
+It is assumed that a valid Windows window may already be accessed via the method *GetSafeHwnd()* (e.g. from an MFC application).
 ~~~~{.cpp}
 occ::handle<WNT_Window> aWNTWindow = new WNT_Window (GetSafeHwnd());
 myView = myViewer->CreateView();

@@ -868,7 +868,7 @@ Romain Guy, Mathias Agopian, "Physically Based Rendering in Filament", *Part of 
 @anchor Aguilar17 **[Aguilar17]**
 </td><td>
 Orlando Aguilar, "Spherical Harmonics", *Blog post*:
-[http://orlandoaguilar.github.io/sh/spherical/harmonics/irradiance/map/2017/02/12/SphericalHarmonics.html](http://orlandoaguilar.github.io/sh/spherical/harmonics/irradiance/map/2017/02/12/SphericalHarmonics.html)
+[https://orlandoaguilar.github.io/sh/spherical/harmonics/irradiance/map/2017/02/12/SphericalHarmonics.html](https://orlandoaguilar.github.io/sh/spherical/harmonics/irradiance/map/2017/02/12/SphericalHarmonics.html)
 </td></tr>
 
 <tr><td valign="top">

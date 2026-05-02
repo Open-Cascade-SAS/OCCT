@@ -316,7 +316,7 @@ Default value is File
 
 These two parameters define the name of the resource file and the name of the sequence of operators (defined in that file) for Shape Processing, which is automatically performed by the STEP translator. Shape Processing is a user-configurable step, which is performed after translation and consists in applying a set of operators to a resulting shape. This is a very powerful tool allowing customizing the shape and adapting it to the needs of a receiving application. By default the sequence consists of a single operator ShapeFix -- that is how Shape Healing is called from the STEP translator. 
 
-Find an example of the resource file for STEP (which defines parameters corresponding to the sequence applied by default, i.e. if the resource file is not found) in the Open CASCADE Technology sources by the path <i>$CASROOT/resources/XSTEPResource</i>.
+Find an example of the resource file for STEP (which defines parameters corresponding to the sequence applied by default, i.e. if the resource file is not found) in the Open CASCADE Technology sources under the directory pointed by the <i>$CSF_STEPDefaults</i> environment variable.
  
 In order for the STEP translator to use that file, you have to define the *CSF_STEPDefaults* environment variable, which should point to the directory where the resource file resides. Note that if you change parameter *read.step.resource.name*, you will change the name of the resource file and the environment variable correspondingly. 
 
@@ -1175,7 +1175,7 @@ The table below describes STEP entities, which are created when the assembly str
 | Geometry | CASCADE object | STEP entity | Comments | 
 | :----- | :------ | :----- | :----- | 
 | Points | Geom_CartesianPoint, Geom2d_CartesianPoint |  cartesian_point | |
-| | TColgp_Array1OfPnt, TColgp_Array1OfPnt2d | polyline  | | 
+| | NCollection_Array1<gp_Pnt>, NCollection_Array1<gp_Pnt2d> | polyline  | | 
 | Placements | Geom_Axis1Placement, Geom2d_AxisPlacement | axis1_placement | |
 | | Geom_Axis2Placement | axis2_placement_3d | | 
 | Directions | Geom_Direction, Geom2d_Direction  | direction | |
@@ -1510,8 +1510,8 @@ For writing shapes to a STEP file, the following parameters are defined (see abo
 
 | Description | Name | Values | Meaning | 
 | :------------ | :----- | :------ | :------- | 
-| Uncertainty for resulting entities | Write.precision.mode | -1, 0, 1 or 2 | If -1 the uncertainty value is set to the minimal tolerance of CASCADE subshapes. If 0 the uncertainty value is set to the average tolerance of CASCADE subshapes. If 1 the uncertainty value is set to the maximal tolerance of CASCADE subshapes. If 2 the uncertainty value is set to write.precision.val |
-| Value of uncertainty | Write.precision.val | real | Value of uncertainty (used if previous parameter is 2). | 
+| Uncertainty for resulting entities | write.precision.mode | -1, 0, 1 or 2 | If -1 the uncertainty value is set to the minimal tolerance of CASCADE subshapes. If 0 the uncertainty value is set to the average tolerance of CASCADE subshapes. If 1 the uncertainty value is set to the maximal tolerance of CASCADE subshapes. If 2 the uncertainty value is set to write.precision.val |
+| Value of uncertainty | write.precision.val | real | Value of uncertainty (used if previous parameter is 2). | 
 
 Several shapes can be written in one file. To start writing a new file, enter command *Draw:> newmodel*. 
 Actually, command *newmodel* will clear the *InterfaceModel* to empty it, and the next command will convert the specified shape to STEP entities and add them to the *InterfaceModel*: 

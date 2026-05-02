@@ -477,7 +477,7 @@ The Curves and Surfaces from Constraints component groups together high level fu
   * construction of plate surfaces
   * extension of a 3D curve or surface beyond its original bounds.
   
-OPEN CASCADE company also provides a product known as <a href="https://www.opencascade.com/content/surfaces-scattered-points">Surfaces from Scattered Points</a>, which allows constructing surfaces from scattered points. This algorithm accepts or constructs an initial B-Spline surface and looks for its deformation (finite elements method) which would satisfy the constraints. Using optimized computation methods, this algorithm is able to construct a surface from more than 500 000 points.
+OPEN CASCADE company also provides a product known as <a href="https://www.opencascade.com/content/surfaces-scattered-points">Surfaces from Scattered Points</a> (commercial product page, URL may change), which allows constructing surfaces from scattered points. This algorithm accepts or constructs an initial B-Spline surface and looks for its deformation (finite elements method) which would satisfy the constraints. Using optimized computation methods, this algorithm is able to construct a surface from more than 500 000 points.
 
 SSP product is not supplied with Open CASCADE Technology, but can be purchased separately.
 

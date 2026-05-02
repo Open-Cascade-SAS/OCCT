@@ -24,7 +24,7 @@ This guide principally deals with the following OCCT classes:
 
 | CAD format | Extensions | RW support | Thread Safety | Presentation | Package |
 | :--------- | :--------- | :--------- | :----------- | :----------- | :------ |
-| STEP | .stp, .step .stepz | RW | No | BRep, Mesh | DESTEP |
+| STEP | .step, .stp, .stepz | RW | Yes (per-reader) | BRep, Mesh | DESTEP |
 | XCAF | .xbf | RW | Yes | BRep, Mesh | DEXCAF |
 | BREP | .brep | RW | Yes | BRep, Mesh | DEBREP |
 | IGES | .igs, .iges | RW | No | BRep | DEIGES |
@@ -37,6 +37,7 @@ This guide principally deals with the following OCCT classes:
 **Note** :
   * The format names in the first column match the FormatName values used for configuration nodes.
   * The VendorName for all listed CAD formats is "OCC".
+  * For STEP, thread safety requires that each concurrent call uses its own @ref DESTEP_Parameters instance rather than relying on the process-wide *Interface_Static* settings. See the @ref occt_user_guides__step "STEP user guide" for details.
 
 @section occt_de_wrapper_3 DE Session Configuration
 

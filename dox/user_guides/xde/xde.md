@@ -192,8 +192,8 @@ The Document used by XDE usually starts as a `TDocStd_Document`.
 
 To use XDE you have to set the environment variables properly.
 Make sure that two important environment variables are set as follows:
-  * `CSF_PluginDefaults` points to the `$CASROOT/resources/StdResource` directory.
-  * `CSF_XCAFDefaults`   points to the `$CASROOT/resources/StdResource` directory.
+  * `CSF_PluginDefaults` points to the directory containing plugin resource files (e.g., `<install>/share/opencascade/resources`).
+  * `CSF_XCAFDefaults`   points to the directory containing XCAF resource files (e.g., `<install>/share/opencascade/resources`).
 
 @subsection occt_xde_2_1_2 General Check
 

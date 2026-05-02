@@ -10,11 +10,11 @@ See @ref intro_req "requirements on 3rdparty libraries" for a full list.
 
 The easiest way to obtain third-party libraries is to enable vcpkg integration with `-DBUILD_USE_VCPKG=ON` -- OCCT will then download and build only the components required by the enabled `USE_*` options (e.g. `USE_TBB`, `USE_VTK`, `USE_FREEIMAGE`, `USE_RAPIDJSON`, `USE_DRACO`).
 
-Pre-built third-party archives matching official releases are also attached to [OCCT GitHub Releases](https://github.com/Open-Cascade-SAS/OCCT/releases). On Linux and macOS prefer the libraries provided by your distribution's package manager. Manual builds from sources are still supported -- see @ref build_upgrade_building_3rdparty for instructions.
+Pre-built third-party archives matching official releases are also attached to [OCCT GitHub Releases](https://github.com/Open-Cascade-SAS/OCCT/releases). On Linux and macOS prefer the libraries provided by your distribution's package manager. Manual builds from sources are still supported -- follow each project's upstream build documentation.
 
 @section build_requirements System Requirements
 
-* **CMake** 3.16 or later (precompiled headers, modern toolchains)
+* **CMake** 3.10 or later (3.16+ recommended; required when `BUILD_USE_PCH=ON` for precompiled headers)
 * C++17 compliant compiler (required)
 * Supported platforms and compilers:
   * Windows:
@@ -33,7 +33,7 @@ This chapter describes the [CMake](https://cmake.org/download/)-based build proc
 
 @subsection build_occt_vcpkg_quickstart Quick start with vcpkg
 
-The fastest path to a working OCCT build, used by the official CI (`.github/workflows/`), is to let CMake provision third-party dependencies via [vcpkg](https://vcpkg.io). OCCT ships a `vcpkg.json` manifest at the repository root and pulls only the packages needed by the OCCT `USE_*` options you enable -- you do not need to manage vcpkg manifest features manually.
+The fastest path to a working OCCT build, used by the official CI (`.github/workflows/`), is to let CMake provision third-party dependencies via [vcpkg](https://vcpkg.io). OCCT ships a `vcpkg.json` manifest under `adm/vcpkg/ports/opencascade/` (referenced automatically via `VCPKG_MANIFEST_DIR`) and pulls only the packages needed by the OCCT `USE_*` options you enable -- you do not need to manage vcpkg manifest features manually.
 
 ~~~~
 cmake -S . -B build \
@@ -44,7 +44,7 @@ cmake -S . -B build \
 cmake --build build --config Release --parallel
 ~~~~
 
-Toggle additional third-party features through the corresponding `USE_*` cache variables (e.g. `USE_FFMPEG`, `USE_OPENVR`, `USE_EIGEN`); enabling a `USE_*` flag automatically triggers vcpkg installation of the corresponding package. The `CMAKE_TOOLCHAIN_FILE` for vcpkg is detected automatically from `VCPKG_ROOT` -- pass it explicitly only if vcpkg is not on `PATH`. Manual third-party setup (see @ref build_upgrade_building_3rdparty "Build 3rd-parties") is still supported but no longer the recommended path.
+Toggle additional third-party features through the corresponding `USE_*` cache variables (e.g. `USE_FFMPEG`, `USE_OPENVR`, `USE_EIGEN`); enabling a `USE_*` flag automatically triggers vcpkg installation of the corresponding package. The `CMAKE_TOOLCHAIN_FILE` for vcpkg is detected automatically from `VCPKG_ROOT` -- pass it explicitly only if vcpkg is not on `PATH`. Manual third-party setup is still supported via standard upstream build instructions, but no longer the recommended path.
 
 CMake is a tool that generates project files for the selected target build system (e.g. Unix makefiles) or IDE (e.g. Visual Studio).
 Here we describe the build procedure using Windows platform with Visual Studio as an example.
@@ -194,11 +194,11 @@ clear (if they are not empty) `3RDPARTY_<PRODUCT>_DLL_DIR`, `3RDPARTY_<PRODUCT>_
 At this time the search will be performed in the newly identified directory and the result will be recorded to corresponding variables (replace old value if it is necessary).
 For example, `3RDPARTY_FREETYPE_DIR` variable
 
-    d:/3rdparty/freetype-2.4.10
+    d:/3rdparty/freetype-<version>
 
 can be changed to
 
-    d:/3rdparty/freetype-2.5.3
+    d:/3rdparty/freetype-<version>
 
 During the configuration process the related variables (`3RDPARTY_FREETYPE_DLL_DIR`, `3RDPARTY_FREETYPE_INCLUDE_DIR` and `3RDPARTY_FREETYPE_LIBRARY_DIR`) will be filled with new found values.
 

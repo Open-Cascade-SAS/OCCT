@@ -171,7 +171,7 @@ See the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms Us
 - data structures and algorithms to build triangular surface mesh from *BRep* objects (shapes);
 - tools for displaying meshes with associated pre- and post-processor data (scalars or vectors).
 
-Open CASCADE SAS also offers Advanced Mesh Products:
+Open CASCADE SAS also offers Advanced Mesh Products (commercial product pages, URLs may change):
 - <a href="https://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
 - <a href="https://www.opencascade.com/content/express-mesh">Express Mesh</a>
 
@@ -240,7 +240,7 @@ This module handles various problems of interoperability between CAD systems, ca
     STL (STtereoLithography) format is widely used for rapid prototyping (3D printing).
 * @ref occt_user_guides__xde "Extended data exchange" (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
 * <a href="https://www.opencascade.com/content/advanced-data-exchange-components">Advanced Data Exchange Components</a>
-  are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref intro_overview_heal "Shape Healing") with CAD software using the following proprietary formats:
+  are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref intro_overview_heal "Shape Healing") with CAD software using the following proprietary formats (commercial product pages, URLs may change):
 	* <a href="https://www.opencascade.com/content/acis-sat-import-export">ACIS SAT</a>
 	* <a href="https://www.opencascade.com/content/parasolid-import">Parasolid</a>
 	* <a href="https://www.opencascade.com/content/dxf-import-export">DXF</a>
@@ -359,7 +359,7 @@ Pre-built third-party archives are attached to the OCCT GitHub release pages at 
 | Component | Where to find | Used for | Purpose |
 | --------- | ------------- | -------- | -------------------- |
 | CMake 3.16+ | https://cmake.org/ | Configuration | Build from sources |
-| Intel oneTBB 2021.5.0 | https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0 | All | Parallelization of algorithms (alternative to built-in thread pool) |
+| Intel oneTBB 2021+ | https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0 | All | Parallelization of algorithms (alternative to built-in thread pool) |
 | OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required for using 3D Viewer |
 | OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | VR (Virtual Reality) support in 3D Viewer |
 | FreeType 2.10+ | https://www.freetype.org/download.html | Visualization | Text rendering in 3D Viewer |
@@ -378,7 +378,7 @@ Pre-built third-party archives are attached to the OCCT GitHub release pages at 
 | Component | Requirement |
 | --------- | ----------- |
 | Minimum memory    | 512 MB, 1 GB recommended |
-| Free disk space (complete installation) | 1,5 GB approx. |
+| Free disk space (complete installation) | 2 GB approx. |
 
 On desktop, 3D viewer for optimal performance requires graphics processing unit (GPU) supporting OpenGL 3.3 or above. 
 Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with *GL_ARB_texture_buffer_object_rgb32* extension.
@@ -405,37 +405,21 @@ The following subsections describe how OCCT can be installed from ready-to-use p
 
 @subsection intro_install_windows Windows
 
-On Windows Open CASCADE Technology with binaries precompiled by Visual C++ 2017 
-can be installed using installation procedure available on official download page.
+On Windows, OCCT can be built from sources using CMake.
+Pre-built binary packages for Visual Studio are available from the
+[GitHub releases page](https://github.com/Open-Cascade-SAS/OCCT/releases).
+Third-party dependencies can be automatically resolved via vcpkg by configuring CMake with `-DBUILD_USE_VCPKG=ON`.
 
-**Recommendation:**
+The source tree obtained from a Git clone contains the following top-level directories:
 
-If you have a previous version of OCCT installed on your station, 
-and you do not plan to use it along with the new version, you might want to uninstall 
-the previous version (using Control Panel, Add/Remove Programs) before 
-the installation of this new version, to avoid possible problems 
-(conflict of system variables, paths, etc).
-
-Full OCCT installation with reference documentation requires 1.8 Gb on disk.
-
-When the installation is complete, you will find the directories for 3rd party products 
-(some might be absent in case of custom installation) and the main **OCCT** directory:
-
-@figure{/introduction/images/overview_3rdparty.png}
-
-The contents of the OCCT root directory (called further "OCCT root", or $CASROOT) are as follows:
-
-@figure{/introduction/images/overview_installation.png, "The directory tree"}
-
-  * **adm**   This folder contains administration files, which allow rebuilding OCCT;
-  * **adm/cmake**  This folder contains files of CMake building procedure;
-  * **adm/scripts** This folder contains auxiliary scripts for building and packaging of OCCT for different platforms;
-  * **data**  This folder contains CAD files in different formats, which can be used to test the OCCT functionality;
-  * **doc**  This folder contains OCCT documentation in HTML and PDF format;
-  * **dox**  This folder contains sources of OCCT documentation in plain text (MarkDown) format;
-  * **inc**  This folder contains copies of all OCCT header files;
-  * **src**  This folder contains OCCT source files. They are organized in folders, one per development unit;
-  * **tests**  This folder contains scripts for OCCT testing;
+  * **adm**   Administration files for building and packaging OCCT;
+  * **data**  CAD files in various formats for testing OCCT functionality;
+  * **doc**   Documentation in HTML and PDF format;
+  * **dox**   Documentation sources in Markdown format;
+  * **inc**   Header files (generated during build);
+  * **samples**  Sample applications;
+  * **src**   OCCT source files, organized by module/toolkit/package;
+  * **tests**  Draw Harness test scripts;
 
 @subsection intro_install_linux Linux
 
@@ -549,7 +533,7 @@ FreeType 2 is released under two open-source licenses: BSD-like FreeType License
 It is a library that helps you to take advantage of multi-core processor performance without having to be a threading expert. 
 Threading Building Blocks is not just a threads-replacement library. It represents a higher-level, task-based parallelism that 
 abstracts platform details and threading mechanisms for scalability and performance. 
-Intel oneTBB 2021.5.0 is available under Apache 2.0 license (https://www.threadingbuildingblocks.org).
+Intel oneTBB 2021+ is available under Apache 2.0 license (https://github.com/oneapi-src/oneTBB/).
 
 **OpenGL** is an industry standard API for 3D graphics used by OCCT for 
 implementation of 3D viewer. OpenGL specification is developed by the
@@ -578,7 +562,7 @@ basis under The Eclipse Public License (EPL) (https://www.graphviz.org/license/)
 
 **Inno Setup** is a free script-driven installation system created in CodeGear Delphi by Jordan Russell. 
 In OCCT Inno Setup is used to create Installation Wizard on Windows. 
-It is licensed under Inno Setup License (http://www.jrsoftware.org/files/is/license.txt).
+It is licensed under Inno Setup License (https://jrsoftware.org/files/is/license.txt).
 
 **FreeImage** is an Open Source library supporting popular graphics image formats, such as PNG, BMP, JPEG, TIFF, 
 and others used by multimedia applications. This library is developed by Hervé Drolon and Floris van den Berg. 
@@ -606,9 +590,7 @@ CMake is used to control the software compilation process using simple platform 
 OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. 
 See more at https://cmake.org/
 
-**MikTEX** is up-to-date implementation of TeX/LaTeX and related programs for Windows. It is used 
-for generation of User and Developer Guides in PDF format. See https://miktex.org for information
-on this tool.
+**LaTeX** distribution (e.g. TeX Live, MikTeX, MacTeX) is used for generation of User and Developer Guides in PDF format.
 
 **RapidJSON** is an Open Source JSON parser and generator for C++.
 RapidJSON is optionally used by OCCT for reading glTF files (https://rapidjson.org/).

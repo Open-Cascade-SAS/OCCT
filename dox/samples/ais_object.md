@@ -1,4 +1,4 @@
-﻿AIS: Custom Presentation {#tutorials__ais_object}
+AIS: Custom Presentation {#tutorials__ais_object}
 ========
 
 @tableofcontents

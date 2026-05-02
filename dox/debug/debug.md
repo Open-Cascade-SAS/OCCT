@@ -11,7 +11,7 @@ This manual describes facilities included in OCCT to support debugging, and prov
 
 Many OCCT algorithms can produce extended debug messages, usually printed to cout.
 These include messages on internal errors and special cases encountered, timing etc.
-In OCCT versions prior to 6.8.0 most of these messages were activated by compiler macro *DEB*, enabled by default in debug builds.
+In older OCCT versions most of these messages were activated by compiler macro *DEB*, enabled by default in debug builds.
 This is now disabled by default but can be enabled by defining compiler macro *OCCT_DEBUG*.
 
 To enable this macro on Windows, set it in the CMake configuration (e.g., using `adm/templates/custom.bat.main` as a template):
@@ -415,4 +415,4 @@ Known problems (as of CLang 6.0) are:
 
 @subsection occt_debug_sanitizers_windows Windows
 
-Though Clang toolset is available in Visual Studio 2017 and newer, sanitizers may not be available out of the box.
+Clang toolset is available in Visual Studio 2019 and newer. Sanitizers may require manual installation via the Visual Studio Installer.

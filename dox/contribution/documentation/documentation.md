@@ -28,7 +28,7 @@ This document provides practical guidelines for generation and editing of OCCT u
 You need to have the following software installed to generate the documentation.
 
 **Tcl/Tk**
-Version 8.5 or 8.6: https://www.tcl.tk/software/tcltk/download.html
+Version 8.6.3+: https://www.tcl.tk/software/tcltk/download.html
 
 **Doxygen**
 Version 1.8.4 or above: https://www.doxygen.nl/download.html
@@ -36,9 +36,9 @@ Version 1.8.4 or above: https://www.doxygen.nl/download.html
 **Dot**
 Part of Graphviz software, used by Doxygen for generation of class diagrams in Reference Manual: https://www.graphviz.org/download/
 
-**MiKTeX** or other package providing **pdflatex** command (only needed for generation of PDF documents): https://miktex.org/download
+**LaTeX distribution** (e.g. TeX Live, MikTeX, MacTeX) providing **pdflatex** command (only needed for generation of PDF documents): https://www.latex-project.org/get
 
-**Inkscape** (only needed for generation of PDF documents containing SVG images): http://www.inkscape.org/download
+**Inkscape** (optionally needed for generation of PDF documents containing SVG images): https://inkscape.org
 
 When generating PDF documentation, **pdflatex** and **inkscape** executables should be accessible by PATH variable.
 You can use *custom.bat* file to add necessary paths to the *PATH* variable. 
@@ -51,7 +51,7 @@ We recommend setting option "Install missing packages on-the-fly" to "Ask me fir
 On the first run of **pdflatex** it will open a dialog window prompting for installation of missing packages.
 Follow the instructions to proceed (define proxy settings if needed, select a mirror site to download from, etc.).
 
-**MathJax** is used for rendering math formulas in browser (HTML and CHM outputs): http://www.mathjax.org.
+**MathJax** is used for rendering math formulas in browser (HTML and CHM outputs): https://www.mathjax.org.
 
 By default MathJAX scripts and fonts work on-line and no installation of MathJAX is necessary if Internet is accessible.
 If you need to use OCCT documentation while off-line, you can install a local copy of MathJax, see https://docs.mathjax.org/en/v2.7-latest/start.html#installing-your-own-copy-of-mathjax.
@@ -143,7 +143,7 @@ https://www.doxygen.nl/manual/
 A document file in *.md format must start with a proper header defining a caption and a unique tag.
 
 @verbatim
-Documentation System {#contribution__documentation}
+Documentation System {#occt_contribution__documentation}
 =====================
 @endverbatim
 
