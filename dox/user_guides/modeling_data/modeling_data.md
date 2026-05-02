@@ -455,6 +455,8 @@ The objects provided by *Geom2d* package are handled by reference rather than by
 Copying an instance copies the handle, not the object, so that a change to one instance is reflected in each occurrence of it.
 If a set of object instances is needed rather than a single object instance, *TColGeom2d* package can be used.
 This package provides standard and frequently used instantiations of one-dimensional arrays and sequences for curves from *Geom2d* package.
+
+@note In OCCT 8.0.0 the package-level `TCol*` typedefs are deprecated. Prefer `NCollection_*<T>` directly -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 All objects are available in two versions:
 - handled by reference and
 - handled by value.
@@ -551,6 +553,8 @@ This is why they are used within topological data structures, for example.
 
 If a set of object instances is needed rather than a single object instance, *TColGeom* package can be used.
 This package provides instantiations of one- and two-dimensional arrays and sequences for curves from *Geom* package.
+
+@note In OCCT 8.0.0 the package-level `TCol*` typedefs are deprecated. Prefer `NCollection_*<T>` directly -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 All objects are available in two versions:
 - handled by reference and
 - handled by value.

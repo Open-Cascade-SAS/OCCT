@@ -475,6 +475,8 @@ You have now found the top face of the neck. Your final step before creating the
 Open CASCADE Technology provides many collections for different kinds of objects: see *TColGeom* package for collections of objects from *Geom* package, *TColgp* package for collections of objects from gp package, etc.
 The collection for shapes can be found in the *TopTools* package. As *BRepOffsetAPI_MakeThickSolid* requires a list, use the *TopTools_ListOfShape* class.
 
+@note In OCCT 8.0.0 the package-level `TCol*` typedefs are deprecated. Prefer `NCollection_*<T>` directly -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
+
 ~~~~{.cpp}
     NCollection_List<TopoDS_Shape> facesToRemove;
     facesToRemove.Append(faceToRemove);

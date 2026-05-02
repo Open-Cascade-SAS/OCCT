@@ -37,7 +37,7 @@ Collections are implemented in the *TCollection* and *NCollection* packages.
 
 ### Collections of Standard Objects
 
-The *TColStd* package provides frequently used instantiations of generic classes from the *TCollection* package with objects from the *Standard* package or strings from the *TCollection* package.
+The legacy *TColStd* package provides frequently used instantiations of generic classes from the *TCollection* package with objects from the *Standard* package or strings from the *TCollection* package. New code should prefer the explicit `NCollection_*<T>` form -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 
 ### Vectors and Matrices
 
@@ -998,7 +998,7 @@ Collections classes are *generic* (C++ templates), that is, they define a struct
 
 Note that:
   * Each collection directly used as an argument in OCCT public syntax is instantiated in an OCCT component.
-  * The *TColStd* package (**Collections of Standard Objects** component) provides numerous instantiations of these generic collections with objects from the **Standard** package or from the **Strings** component.
+  * The legacy *TColStd* package (**Collections of Standard Objects** component) provides numerous instantiations of these generic collections with objects from the **Standard** package or from the **Strings** component. New code should prefer the explicit `NCollection_*<T>` form -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 
 The **Collections** component provides a wide range of generic collections:
   * **Arrays** are generally used for a quick access to the item, however an array is a fixed sized aggregate.
@@ -1591,8 +1591,7 @@ Note: the <i>gp</i> entities cannot be shared when they are inside more complex 
 @subsection occt_occt_fcug_4_4 Collections of Primitive Geometric Types
 
 Before creating a geometric object, you must decide whether you are in a 2d or in a 3d context and how you want to handle the object.
-If you do not need a single instance of a geometric primitive but a set of them then the package which deals with collections of this sort of object, *TColgp*, will provide the necessary functionality.
-In particular, this package provides standard and frequently used instantiations of generic classes with geometric objects, i.e. *gp_XY*, *gp_XYZ*, *gp_Pnt*, *gp_Pnt2d*, *gp_Vec*, *gp_Vec2d*, *gp_Lin*, *gp_Lin2d*, *gp_Circ*, *gp_Circ2d*.
+If you do not need a single instance of a geometric primitive but a set of them, use the explicit `NCollection_*<T>` form -- e.g. `NCollection_Array1<gp_Pnt>` or `NCollection_Vector<gp_Vec>`. The legacy *TColgp* package still provides frequently used instantiations with geometric objects (*gp_XY*, *gp_XYZ*, *gp_Pnt*, *gp_Pnt2d*, *gp_Vec*, *gp_Vec2d*, *gp_Lin*, *gp_Lin2d*, *gp_Circ*, *gp_Circ2d*) but is deprecated in OCCT 8.0.0 -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 
 @subsection occt_occt_fcug_4_5 Basic Geometric Libraries
 There are various library packages available which offer a range of basic computations on curves and surfaces.

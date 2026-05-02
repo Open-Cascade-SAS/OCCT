@@ -1357,8 +1357,8 @@ The different types of primitives could be presented with the following primitiv
   * *Graphic3d_ArrayOfTriangles,*
   * *Graphic3d_ArrayOfTriangleStrips.*
 
-The *Graphic3d_Buffer* is a base class for these primitive arrays.
-Method set *Graphic3d_Buffer::AddVertex* allows adding vertices to the primitive array with their attributes (color, normal, texture coordinates).
+The *Graphic3d_ArrayOfPrimitives* is the base class for these primitive arrays.
+Method set *Graphic3d_ArrayOfPrimitives::AddVertex* allows adding vertices to the primitive array with their attributes (color, normal, texture coordinates).
 You can also modify the values assigned to the vertex or query these values by the vertex index.
 
 The following example shows how to define an array of points:
@@ -1378,9 +1378,9 @@ aGroup->SetGroupPrimitivesAspect (myDrawer->PointAspect()->Aspect());
 ~~~~
 
 If the primitives share the same vertices (polygons, triangles, etc.) then you can define them as indices of the vertices array.
-The method *Graphic3d_Buffer::AddEdge* allows defining the primitives by indices.
+The method *Graphic3d_ArrayOfPrimitives::AddEdge* allows defining the primitives by indices.
 This method adds an "edge" in the range *[1, VertexNumber()]* in the array.
-It is also possible to query the vertex defined by an edge using method *Graphic3d_Buffer::Edge*.
+It is also possible to query the vertex defined by an edge using method *Graphic3d_ArrayOfPrimitives::Edge*.
 
 The following example shows how to define an array of triangles:
 
