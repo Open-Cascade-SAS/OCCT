@@ -167,6 +167,15 @@ Notes API provides the following functionality:
   * Deletes note(s) and removes them from annotated items;
   * Gets / deletes orphan notes.
 
+@note **Loading external CAD files into an XDE document.** The unified @ref occt_user_guides__de_wrapper "DE_Wrapper" can read STEP, IGES, glTF, OBJ, PLY, STL and VRML directly into a *TDocStd_Document* (preserving colors, names and assembly structure where the format supports it):
+~~~~{.cpp}
+#include <DE_Wrapper.hxx>
+occ::handle<TDocStd_Document> aDoc;
+anApp->NewDocument ("BinXCAF", aDoc);
+DE_Wrapper::GlobalWrapper()->Read ("model.stp", aDoc);
+~~~~
+The format-specific *STEPCAFControl_Reader* / *IGESCAFControl_Reader* / TKRWMesh-based readers documented elsewhere remain fully supported.
+
 @section occt_xde_2_1 Getting started
 
 As explained in the last chapter, XDE uses `TDocStd_Documents` as a starting point. The general purpose of XDE is:
@@ -183,8 +192,8 @@ The Document used by XDE usually starts as a `TDocStd_Document`.
 
 To use XDE you have to set the environment variables properly.
 Make sure that two important environment variables are set as follows:
-  * `CSF_PluginDefaults` points to sources of `$CASROOT/src/XCAFResources`.
-  * `CSF_XCAFDefaults`   points to sources of `$CASROOT/src/XCAFResources`.
+  * `CSF_PluginDefaults` points to the `$CASROOT/resources/StdResource` directory.
+  * `CSF_XCAFDefaults`   points to the `$CASROOT/resources/StdResource` directory.
 
 @subsection occt_xde_2_1_2 General Check
 
@@ -675,7 +684,7 @@ When the Color is added by its value `Quantity_Color`, it is added only if it ha
 
 To set a Color to a Shape using a label, use:
 ~~~~{.cpp}
-Quantity_Color aCol (red, green, blue);
+Quantity_Color aCol (red, green, blue, Quantity_TOC_RGB);
 // Can take one of these values:
 // XCAFDoc_ColorGen - all types of geometries;
 // XCAFDoc_ColorSurf - surfaces only;
@@ -688,7 +697,7 @@ Alternately, the Shape can be designated directly, without using its label, use:
 ~~~~{.cpp}
 myColors->SetColor (aShape, aCol, aColType);
 // creating and Adding a Color, explicitly
-Quantity_Color aCol (red, green, blue);
+Quantity_Color aCol (red, green, blue, Quantity_TOC_RGB);
 TDF_Label aColLabel = myColors->AddColor (aCol);
 ~~~~
 **Note** that this Color can then be named, allowing later retrieval by its Name instead of its Value.
@@ -696,7 +705,7 @@ TDF_Label aColLabel = myColors->AddColor (aCol);
 To set a Color, identified by its Label and already recorded, to a Shape, use:
 ~~~~{.cpp}
 XCAFDoc_ColorType aColType = ...; // see above
-if (myColors->SetColors (aLabel, aColLabel, aColType)) {.. it is done .. }
+if (myColors->SetColor (aLabel, aColLabel, aColType)) {.. it is done .. }
 ~~~~
 In this example, `aLabel` can be replaced by `aShape` directly.
 
@@ -753,7 +762,7 @@ for (NCollection_Sequence<TDF_Label>::Iterator aColIter (aColLabels); aColIter.M
 
 To find a Color from its Value, use:
 ~~~~{.cpp}
-Quantity_Color aCol (red, green, blue);
+Quantity_Color aCol (red, green, blue, Quantity_TOC_RGB);
 TDF_Label aColLabel = myColors->FindColor (aCol);
 if (!aColLabel.IsNull()) { .. found .. }
 ~~~~
@@ -870,7 +879,7 @@ aShapes1.Append (aShape11);
 //...
 aShapes2.Append (aShape21);
 //...
-aDGTTool->SetDimension (aShapes1, aShapes2, aDimLabel);
+myDimTolTool->SetDimension (aShapes1, aShapes2, aDimLabel);
 ~~~~
 
 In addition, a special method `XCAFDoc_DimTolTool::SetDatumToGeomTol` should be used to link a datum with a geometric tolerance.

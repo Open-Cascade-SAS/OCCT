@@ -29,6 +29,10 @@ All definitions in IGES  version 5.3 are recognized but only 3D geometric entiti
 
 @ref occt_user_guides__shape_healing "Shape Healing" toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to IGES translator using the same API, only the names of API packages change.
 
+@warning **The IGES translator is not thread-safe.** Unlike the STEP translator, IGES reading and writing rely on shared global state inside the IGES engine itself; running two IGES `Read`/`Write` calls in parallel from different threads -- even via the @ref occt_user_guides__de_wrapper "DE_Wrapper" -- is **not supported** and will produce undefined behaviour. Serialise IGES translation calls in your application (e.g. via a process-wide mutex) when working with several files. For the same reason, configuring IGES through `Interface_Static::SetCVal` / `SetIVal` / `SetRVal` (described later in this document) remains the historical practice but must not be relied on from libraries that may be used concurrently by other code.
+
+@note **Modern alternative.** For format-agnostic loading the unified `DE_Wrapper` exposes the same IGES parameters via `DEIGES_ConfigurationNode::InternalParameters` (`DEIGES_Parameters`). A `DE_ShapeFixParameters` value built from `DEIGES_Parameters::GetDefaultShapeFixParameters()` can be passed to `SetShapeFixParameters()` on the legacy `IGESControl_Writer` / `IGESCAFControl_Writer` to keep Shape Processing parameters out of `Interface_Static`. The bullet points above about thread safety still apply.
+
 @section occt_iges_2 Reading IGES
 @subsection occt_iges_2_1 Procedure
 You can translate an  IGES file to an OCCT shape by following the steps below: 
@@ -62,7 +66,7 @@ Administrative data, in the Global Section of the IGES  file (such as the file n
 Before performing any  other operation, you have to load the file using the syntax below. 
 ~~~~{.cpp}
 IGESControl_Reader reader; 
-IFSelect_ReturnStatus stat  = reader.ReadFile(“filename.igs”); 
+IFSelect_ReturnStatus stat  = reader.ReadFile("filename.igs"); 
 ~~~~
 The loading operation  only loads the IGES file into computer memory; it does not translate it. 
 
@@ -71,7 +75,7 @@ This step is not obligatory.  Check the loaded file with:
 ~~~~{.cpp}
 bool ok =  reader.Check(true); 
 ~~~~
-The variable “ok is  True” is returned if no fail message was found; “ok is False” is returned if  there was at least one fail message.  
+The variable "ok is  True" is returned if no fail message was found; "ok is False" is returned if  there was at least one fail message.  
 ~~~~{.cpp}
 reader.PrintCheckLoad  (failsonly, mode); 
 ~~~~
@@ -255,20 +259,20 @@ This parameter is obsolete (it is rarely used in real  practice). If set to True
 
 Read this parameter with:  
 ~~~~{.cpp}
-double bam =   Interface_Static::CVal("read.iges.bspline.approxd1.mode"); 
+int bam = Interface_Static::IVal ("read.iges.bspline.approxd1.mode");
 ~~~~
 Modify this parameter with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetRVal ("read.encoderegularity.angle","On"))   
+if  (!Interface_Static::SetIVal ("read.iges.bspline.approxd1.mode", 1))
 .. error ..; 
 ~~~~
-Default value is Off.  
+Default value is 0 (Off).
 
 
 <h4>read.iges.resource.name and read.iges.sequence</h4>
 These two parameters define the name of the resource file  and the name of the sequence of operators   (defined in that file) for Shape Processing, which is automatically performed  by the IGES   translator. The Shape Processing is a user-configurable step, which is  performed after   the translation and consists in application of a set of operators to a  resulting shape. This is   a very powerful tool allowing to customize the shape and to adapt it to the  needs of   a receiving application. By default, the sequence consists of a single operator  *ShapeFix* that calls Shape Healing from the IGES translator.  
 
-Find an example of the resource file for IGES (which  defines parameters corresponding to the sequence applied by default, i.e. if the resource file is  not found) in the Open CASCADE Technology sources by the path <i>%CASROOT%/src/XSTEPResource/IGES</i>. 
+Find an example of the resource file for IGES (which  defines parameters corresponding to the sequence applied by default, i.e. if the resource file is  not found) in the Open CASCADE Technology sources by the path <i>$CASROOT/resources/XSTEPResource/IGES</i>. 
 
 IGES translator will use that file if you define the environment variable *CSF_IGESDefaults*, which should point to the directory where the resource file  resides.   Note that if you change parameter *read.iges.resource.name*, you should change  the name of the resource file and the name of the environment variable correspondingly.  The variable should contain a path to the resource file. 
 
@@ -291,33 +295,33 @@ Several predefined  operators can be used to select a list of entities of a spec
 To make a selection, use the method *IGESControl_Reader::GiveList* with the selection type in  quotation marks as an argument. You can also make cumulative selections. For  example, you would use the following Syntax:
 1. Requesting the faces in the  file: 
 ~~~~{.cpp}
-faces =  Reader.GiveList("iges-faces"); 
+faces =  reader.GiveList("iges-faces"); 
 ~~~~
 2. Requesting the visible roots  in the file: 
 ~~~~{.cpp}
-visibles =  Reader.GiveList(iges-visible-roots); 
+visibles =  reader.GiveList("iges-visible-roots");
 ~~~~
 3.  Requesting the visible faces:
 ~~~~{.cpp}
-visfac =  Reader.GiveList(iges-visible-roots,faces); 
+visfac =  reader.GiveList("iges-visible-roots",faces); 
 ~~~~
 Using a signature, you  can define a selection dynamically, filtering the string by means of a  criterion. When you request a selection using the method GiveList, you can give  either a predefined selection or a selection by signature. You make your selection  by signature using the predefined signature followed by your criterion in  parentheses as shown in the example below. The syntaxes given are equivalent to  each other. 
 ~~~~{.cpp}
-faces =  Reader.GiveList(“xst-type(SurfaceOfRevolution)”); 
-faces =  Reader.GiveList(“iges-type(120)”); 
+faces =  reader.GiveList("xst-type(SurfaceOfRevolution)"); 
+faces =  reader.GiveList("iges-type(120)"); 
 ~~~~
 You can also look for: 
   * values returned by your  signature which match your criterion exactly
 ~~~~{.cpp}
-faces =  Reader.GiveList(“xst-type(=SurfaceOfRevolution)”); 
+faces =  reader.GiveList("xst-type(=SurfaceOfRevolution)"); 
 ~~~~
   * values returned by your  signature which do not contain your criterion
 ~~~~{.cpp}
-faces = Reader.GiveList(“xst-type(!SurfaceOfRevolution)”); 
+faces = reader.GiveList("xst-type(!SurfaceOfRevolution)"); 
 ~~~~
   * values returned by your  signature which do not exactly match your criterion.
 ~~~~{.cpp}
-faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”); 
+faces =  reader.GiveList("xst-type(!=SurfaceOfRevolution)"); 
 ~~~~
 
 <h4>List of predefined operators that can be used:</h4>
@@ -354,21 +358,21 @@ bool ok =  reader.TransferEntity (ent);
 3. Translate a list of entities  in one operation with:  
 ~~~~{.cpp}
 int nbtrans =  reader.TransferList (list); 
-reader.IsDone(); 
 ~~~~
-where *nbtrans* returns the number of items  in the list that produced a shape and    *reader.IsDone()* indicates  whether at least one entity was translated. 
+where *nbtrans* returns the number of items  in the list that produced a shape. 
 4. Translate a list of entities,  entity by entity: 
 ~~~~{.cpp}
-int i,nb =  list-Length();  
-for (i = 1; i  <= nb; i ++) {  
-    occ::handle<Standard_Transient> ent = list-Value(i);  
+int i,nb =  list->Length();  
+...
+    occ::handle<Standard_Transient> ent = list->Value(i);
     bool OK = reader.TransferEntity (ent);  
 } 
 ~~~~
 5.  Translate the whole file (all  entities or only visible entities) with:  
 ~~~~{.cpp}
-bool  onlyvisible = true or false;  
-reader.TransferRoots(onlyvisible) 
+bool  onlyvisible = true;
+reader.SetReadVisible(onlyvisible);
+reader.TransferRoots();
 ~~~~
 
 @subsubsection occt_iges_2_3_6 Getting the  translation results
@@ -379,7 +383,7 @@ int nbs =  reader.NbShapes();
 ~~~~
 returns the number of  shapes recorded in the result.  
 ~~~~{.cpp}
-TopoDS_Shape shape =  reader.Shape(num);, 
+TopoDS_Shape aShape = reader.Shape (num); 
 ~~~~
 returns the result *num*, where *num* is an integer between 1 and *NbShapes*.  
 ~~~~{.cpp}
@@ -402,7 +406,7 @@ reader.PrintTransferInfo  (failsonly, mode);
 ~~~~
 displays the messages  that appeared during the last invocation of *Transfer* or *TransferRoots*.  
 
-If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it is  *IFSelect_FailAndWarn*, all messages will be output. Parameter “mode” can have  *IFSelect_xxx* values where *xxx* can be:
+If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it is  *IFSelect_FailAndWarn*, all messages will be output. Parameter "mode" can have  *IFSelect_xxx* values where *xxx* can be:
   * *GeneralCount* -- gives general statistics  on the transfer (number of translated IGES entities, number of fails and  warnings, etc)  
   * *CountByItem* -- gives the number of IGES  entities with their types per message. 
   * *ListByItem* -- gives the number of IGES  entities with their type and DE numbers per message.  
@@ -490,28 +494,16 @@ If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and i
 
 
 @subsection occt_iges_2_5 Messages
-Messages are displayed concerning the normal functioning of  the processor (transfer, loading, etc.).  
-You must declare an include file: 
-~~~~{.cpp}
-#include \<Interface_DT.hxx\> 
-~~~~
 
-You have the choice of the following options for messages: 
+Diagnostic and progress messages are routed through OCCT's *Message_Messenger*. By default messages go to standard output; redirect them by attaching custom printers (see *Message_Messenger::AddPrinter* / *Message_PrinterOStream*) on the singleton returned by *Message::DefaultMessenger*.
+
+Verbosity for the IGES translators is controlled via the trace level on `Interface_Static`:
+
 ~~~~{.cpp}
-IDT_SetLevel (level); 
+// 0: no messages, 1: errors only, 2: errors + warnings (default 1)
+Interface_Static::SetIVal ("read.iges.trace.level", 2);
+Interface_Static::SetIVal ("write.iges.trace.level", 2);
 ~~~~
-level modifies the level of messages: 
-  * 0: no messages
-  * 1: raise and fail messages are displayed, as are messages  concerning file access,
-  * 2: warnings are also displayed.
-~~~~{.cpp}
-IDT_SetFile (“tracefile.log”); 
-~~~~
-prints the messages in a file, 
-~~~~{.cpp}
-IDT_SetStandard(); 
-~~~~
-restores screen output. 
 
 @subsection occt_iges_2_6 Tolerance management
 @subsubsection occt_iges_2_6_1 Values used for tolerances during reading IGES
@@ -608,24 +600,24 @@ The highlighted classes produce OCCT geometry.
 @subsection occt_iges_2_8 Example
 
 ~~~~{.cpp}
-#include “IGESControl_Reader.hxx” 
-#include “NCollection_HSequence<occ::handle<Standard_Transient>>.hxx” 
-#include “TopoDS_Shape.hxx” 
+#include <IGESControl_Reader.hxx> 
+#include <NCollection_HSequence.hxx> 
+#include <TopoDS_Shape.hxx> 
 { 
 IGESControl_Reader myIgesReader; 
 int nIgesFaces,nTransFaces; 
 
-myIgesReader.ReadFile (“MyFile.igs”); 
+myIgesReader.ReadFile ("MyFile.igs"); 
 //loads file MyFile.igs 
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> myList =  myIgesReader.GiveList(“iges-faces”); 
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> myList =  myIgesReader.GiveList("iges-faces"); 
 //selects all IGES faces in the file and puts them into a list  called //MyList, 
 
-nIgesFaces = myList-Length();  
+nIgesFaces = myList->Length();  
 nTransFaces = myIgesReader.TransferList(myList); 
 //translates MyList, 
 
-cout<<"IGES Faces: "<<nIgesFaces<<"   Transferred:"<<nTransFaces<<endl; 
+std::cout << "IGES Faces: " << nIgesFaces << "   Transferred:" << nTransFaces << std::endl; 
 TopoDS_Shape sh = myIgesReader.OneShape(); 
 //and obtains the results in an OCCT shape. 
 } 
@@ -685,7 +677,7 @@ Default value is "Faces" (0).
 * *write.iges.header.company:* gives the name of the  sending company.  The default value is  "" (empty).
  * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.company");*
  * Modify this value with *Interface_Static::SetCVal ("write.iges.header.company", "Open CASCADE");* 
-* *write.iges.header.product:* gives the name of the  sending product. The default value is  "CAS.CADE IGES processor Vx.x", where *x.x* means the current version of  Open CASCADE Technology.  
+* *write.iges.header.product:* gives the name of the  sending product. The default value is  "Open CASCADE Technology IGES Processor", where *x.x* means the current version of  Open CASCADE Technology.  
  * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.product")*; 
  * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.product", "product name")*; 
 * *write.iges.header.receiver:* -- gives the name of the  receiving company.  The default value is  "" (empty).
@@ -703,11 +695,11 @@ Default value is "Faces" (0).
 
 Read this parameter  with:  
 ~~~~{.cpp}
-double rp =  Interface_Static::RVal(;write.precision.val;); 
+double rp =  Interface_Static::RVal("write.precision.val"); 
 ~~~~
 Modify this parameter  with:  
 ~~~~{.cpp}
-if  (!Interface_Static::SetRVal(;write.precision.val;,0.01))  
+if  (!Interface_Static::SetRVal("write.precision.val",0.01))  
 .. error .. 
 ~~~~
 Default value is 0.0001. 
@@ -724,7 +716,7 @@ write.iges.sequence - ToIGES.
 
 You can perform the  translation in one or several operations. Here is how you translate topological  and geometrical objects:  
 ~~~~{.cpp}
-bool ok =  writer.AddShape (TopoDS_Shape); 
+bool ok =  writer.AddShape (aShape); 
 ~~~~
 *ok* is True if translation was correctly performed and False if there was at least one entity that was not translated.  
 ~~~~{.cpp}
@@ -832,13 +824,13 @@ The highlighted classes are intended to translate geometry.
 int main() 
 { 
   IGESControl_Controller::Init(); 
-  IGESControl_Writer ICW (;MM;, 0); 
+  IGESControl_Writer ICW ("MM", 0); 
   //creates a writer object for writing in Face mode with  millimeters 
   TopoDS_Shape sh; 
   ICW.AddShape (sh); 
   //adds shape sh to IGES model 
   ICW.ComputeModel(); 
-  bool OK = ICW.Write (;MyFile.igs;); 
+  bool OK = ICW.Write ("MyFile.igs"); 
   //writes a model to the file MyFile.igs 
 } 
 ~~~~
@@ -854,7 +846,7 @@ In the description of  commands, square brackets ([]) are used to indicate optio
 
 A set of parameters for  importing and exporting IGES files is defined in the XSTEP resource file. In  XSTEPDRAW, these parameters can be viewed or changed using command  
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> param [<parameter_name> [<value>]]  
 ~~~~
 
@@ -885,13 +877,13 @@ These parameters are set  by command *param* :
 It is possible either only to load an IGES file into memory  (i.e. to fill the model with data from the file), or to read it (i.e. to load  and convert all entities to OCCT shapes).  
 
 Loading is done by the command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> xload <file_name>
 ~~~~
 Once the file is loaded, it is possible to investigate the  structure of the loaded data. To learn how to do it see @ref occt_iges_4_4 "Analyzing the  transferred".
  
 Reading of an IGES file is done by the command  
-~~~~{.php}
+~~~~{.tcl}
 Draw> igesbrep <file_name> <result_shape_name> [<selection>]
 ~~~~
 Here a dot can be used instead of a filename if the file is  already loaded by *xload* or *igesbrep* command. In that case, only  conversion of IGES entities to OCCT shapes will be done. 
@@ -910,20 +902,20 @@ After the selected set of entities is loaded the user will  be asked how loaded 
 
 The second parameter of the *igesbrep* command defines  the name of the loaded shape. If several shapes are created, they will get  indexed names. For instance, if the last parameter is ‘s’, they will be <i>s_1,  ... s_N.</i> 
 
-<i>\<selection\></i> specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk “*” can be  specified instead of *iges-visible-transf-roots*. For possible values of  *selection* refer to @ref occt_iges_2_3_4 "Selecting entities" section. 
+<i>\<selection\></i> specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk "*" can be  specified instead of *iges-visible-transf-roots*. For possible values of  *selection* refer to @ref occt_iges_2_3_4 "Selecting entities" section. 
 
 
 Instead of *igesbrep* it is possible to use commands:
-~~~~{.php}
+~~~~{.tcl}
 Draw> trimport <file_name> <result_shape_name> <selection>
 ~~~~
 which outputs the result of translation of each selected  entity into one shape, or
-~~~~{.php}
+~~~~{.tcl}
 Draw> trimpcomp <file_name> <result_shape_name> <selection>
 ~~~~
 which outputs the result of translation of all selected  entities into one shape (*TopoDS_Compound* for several entities). 
 
-An asterisk “*” can be specified instead of  *selection*, it means *xst-transferrable-roots*.
+An asterisk "*" can be specified instead of  *selection*, it means *xst-transferrable-roots*.
  
 During the IGES translation, a map of correspondence between  IGES entities and OCCT shapes is created. 
 The following commands are available:  
@@ -942,7 +934,7 @@ The procedure of analysis of the data import can be divided  into two stages:
 @subsubsection occt_iges_4_4_1 Checking file contents
 
 General statistics on the loaded data can be obtained by  using command  
-~~~~{.php}
+~~~~{.tcl}
 Draw> data <symbol> 
 ~~~~
 The information printed by this command depends on the  symbol specified: 
@@ -965,16 +957,16 @@ There is a set of special objects, which can be used to  operate with the loaded
 
 
 A list of these objects defined in the current session can  be printed in DRAW by command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> listitems 
 ~~~~
 In the following commands if several <i>\<selection\></i>  arguments are specified the results of each following selection are applied to the results of the previous one. 
-~~~~{.php}
+~~~~{.tcl}
 Draw> givelist <selection_name> [<selection_name>]
 ~~~~
 prints a list of loaded entities defined by selection argument. 
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> givecount <selection_name> [<selection_name>]
 ~~~~
 prints a number of loaded entities defined by <i>selection</i> argument. 
@@ -993,7 +985,7 @@ Optional <i>\<selection\></i> argument, if specified, defines a subset of entiti
 | iges-levels | Calculates how much entities lie in different IGES levels |
 
 The command:
-~~~~{.php}
+~~~~{.tcl}
 Draw> listtypes <selection_name> ...
 ~~~~
 gives a list of entity types which were encountered in the  last loaded file (with a number of IGES entities of each type). The list can be  shown not for all entities but for a subset of them. This subset is defined by  an optional selection argument. 
@@ -1008,7 +1000,7 @@ Entities in the IGES file are numbered in the succeeding  order. An entity can b
 @subsubsection occt_iges_4_4_2 Estimating the results of reading IGES
 All of the following commands are available only after the  data are converted into OCCT shapes (i.e. after command **igesbrep**). 
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> tpstat [*|?]<symbol> [<selection>]
 ~~~~
 provides all statistics on the last transfer,  including the list of transferred entities with mapping from IGES to OCCT  types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines  what information will be printed: 
@@ -1030,11 +1022,11 @@ Optional argument <i>\<selection\></i> can limit the action of  the command with
 To get help, run this command without arguments. 
 
 For example, to get translation ratio on IGES faces, you can use. 
-~~~~{.php}
+~~~~{.tcl}
 Draw:> tpstat *l iges-faces
 ~~~~
 The second version of the same command is TPSTAT (not  capital spelling). 
-~~~~{.php}
+~~~~{.tcl}
 Draw:> TPSTAT <symbol> 
 ~~~~
 Symbol can be of the following values: 
@@ -1047,7 +1039,7 @@ Symbol can be of the following values:
 Sometimes the trimming contours of IGES faces (i.e., entity  141 for 143, 142 for 144) can be lost during translation due to fails. 
 
 The number of lost trims and the corresponding IGES entities can be obtained by the command:
-~~~~{.php}
+~~~~{.tcl}
 Draw> tplosttrim [<IGES_type>] 
 ~~~~
 It outputs the rank and DE numbers of faces that  lost their trims and their numbers for each type (143, 144, 510) and their  total number. If a face lost several of its trims it is output only once. 
@@ -1055,11 +1047,11 @@ It outputs the rank and DE numbers of faces that  lost their trims and their num
 Optional parameter <i>\<IGES_type\></i> can be *TrimmedSurface,  BoundedSurface* or *Face* to specify the only type of IGES faces. 
 
 For example, to get untrimmed 144 entities, use command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> tplosttrim TrimmedSurface 
 ~~~~
 To get the information on OCCT shape contents, use command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> statshape <shape_name> 
 ~~~~
 It outputs the number of each kind of shapes (vertex, edge,  wire, etc.) in a shape and some geometrical data (number of C0 surfaces,  curves, indirect surfaces, etc.). 
@@ -1067,7 +1059,7 @@ It outputs the number of each kind of shapes (vertex, edge,  wire, etc.) in a sh
 Note. The number of faces is returned as a number of  references. To obtain the number of single instances the standard command (from  TTOPOLOGY executable) **nbshapes** can be used. 
 
 To analyze the internal validity of a shape, use command  
-~~~~{.php}
+~~~~{.tcl}
 Draw> checkbrep <shape_name> <expurged_shape_name>
 ~~~~
 It checks the geometry and topology of a shape for  different cases of inconsistency, like self-intersecting wires or wrong  orientation of trimming contours. If an error is found, it copies bad parts of  the shape with the names "expurged_subshape_name _#" and generates  an appropriate message. If possible, this command also tries to find IGES  entities the OCCT shape was produced from. 
@@ -1075,7 +1067,7 @@ It checks the geometry and topology of a shape for  different cases of inconsist
 <i>\<expurged_shape_name\></i> will contain the original shape  without invalid subshapes. 
 
 To get information on tolerances of subshapes, use command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> tolerance <shape_name> [<min> [<max>] [<symbol>]]
 ~~~~
 It outputs maximum, average and minimum values of  tolerances for each kind of subshapes having tolerances or it can output  tolerances of all subshapes of the whole shape. 
@@ -1101,17 +1093,17 @@ Refer to @ref occt_iges_3_3_2 "Setting the translation parameters" for a descrip
 | Measurement units | XSTEP.iges.unit | 1-11 (or a string value) |
 
 Several shapes can be written in one file. To start writing  a new file, enter command 
-~~~~{.php}
+~~~~{.tcl}
 Draw> newmodel 
 ~~~~
 This command clears the *InterfaceModel* to make it empty.
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> brepiges <shape_name_1> [<filename.igs>]
 ~~~~
 Converts the  specified shapes into IGES entities and puts them into the *InterfaceModel*.
 
-~~~~{.php}
+~~~~{.tcl}
 Draw> writeall <filename.igs>
 ~~~~
 Allows writing the prepared model to a file with name *filename.igs*.
@@ -1124,8 +1116,8 @@ Allows writing the prepared model to a file with name *filename.igs*.
 
 Before performing any other operation, you must load an IGES  file with: 
 ~~~~{.cpp}
-IGESCAFControl_Reader reader(XSDRAW::Session(),  false); 
-IFSelect_ReturnStatus stat = reader.ReadFile(“filename.igs”); 
+IGESCAFControl_Reader reader;
+IFSelect_ReturnStatus stat = reader.ReadFile("filename.igs"); 
 ~~~~
 Loading the file only memorizes, but does not translate the  data. 
 
@@ -1162,7 +1154,7 @@ where *doc* is a variable which contains a handle to the output document and sho
 
 The translation from XDE to IGES can be initialized as follows: 
 ~~~~{.cpp}
-IGESCAFControl_Writer aWriter(XSDRAW::Session(),false); 
+IGESCAFControl_Writer aWriter;
 ~~~~
 
 ### Set parameters for translation from XDE to IGES
@@ -1198,6 +1190,5 @@ or
 IFSelect_ReturnStatus statw = writer.WriteFile (S); 
 ~~~~
 where S is OStream.  
-
 
 

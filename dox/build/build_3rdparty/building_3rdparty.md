@@ -1,13 +1,19 @@
-﻿ Build 3rd-parties {#build_upgrade_building_3rdparty}
+ Build 3rd-parties {#build_upgrade_building_3rdparty}
 ==============================================
 @tableofcontents
 
-On Windows, the easiest way to install third-party libraries is to download archive with pre-built binaries from https://dev.opencascade.org/resources/download/3rd-party-components.
-On Linux and macOS, it is recommended to use the version installed in the system natively.
+**Recommended path: vcpkg.** OCCT ships a `vcpkg.json` manifest at the repository root and the official CI uses vcpkg to provision all third-party dependencies. Configure your build with `-DBUILD_USE_VCPKG=ON` and OCCT will fetch and build only the packages required by the `USE_*` options you enable (e.g. `USE_TBB`, `USE_VTK`, `USE_FREEIMAGE`, `USE_RAPIDJSON`, `USE_DRACO`); in that case you can skip the manual instructions below.
+
+The sections below are kept for users who prefer to manage third-party libraries by hand:
+
+- Pre-built third-party archives matching official releases are attached to the [OCCT GitHub Releases](https://github.com/Open-Cascade-SAS/OCCT/releases) pages.
+- On Linux and macOS, prefer the system package manager.
+
+@note The Visual Studio 2005 / 2008 (`VS80COMNTOOLS`) and VTK 6.x instructions below are kept for reference only; OCCT now requires Visual Studio 2019 or later and VTK 9.x is the recommended version.
 
 @section dev_guides__building_3rdparty_win_1 Windows
 
-This section presents guidelines for building third-party products used by Open CASCADE Technology (OCCT) and samples on Windows platform.
+This section presents guidelines for building third-party products used by Open CASCADE Technology (OCCT) on Windows platform.
 It is assumed that you are already familiar with MS Visual Studio / Visual C++.
 
 You need to use the same version of MS Visual Studio for building all third-party products and OCCT itself, in order to receive a consistent set of runtime binaries.
@@ -86,16 +92,16 @@ You can download its sources from https://freetype.org/
    As a result, you will get a folder named, for example, `3rdparty/freetype-2.4.10`.
    Further in this document, this folder is referred to as `freetype`.
 
-2. Open the solution file `freetype/builds/win32/vc20xx/freetype.sln` in Visual Studio.
+2. Open the solution file `freetype/builds/windows/vc20xx/freetype.sln` in Visual Studio.
    Here `vc20xx` stands for your version of Visual Studio.
 
 3. Select the configuration to build: either `Debug` or `Release`.
 
 4. Build the `freetype` project.<br>
-   As a result, you will get a `freetype` import library (`.lib`) in the `freetype/obj/win32/vc20xx` folder.
+   As a result, you will get a `freetype` import library (`.lib`) in the output folder configured by the FreeType Visual Studio project.
 
 5. If you build FreeType for a 64 bit platform, select in the main menu `Build - Configuration Manager`
-   and add `x64` platform to the solution configuration by copying the settings from `Win32` platform:
+   and add `x64` platform to the solution configuration by copying the settings from the base platform:
 
    @figure{/build/build_3rdparty/images/3rdparty_image001.png}
 
@@ -119,7 +125,7 @@ You can download its sources from https://freetype.org/
 
    To facilitate the use of FreeType libraries in OCCT with minimal adjustment of build procedures,
    it is recommended to copy the include files and libraries of FreeType into a separate folder, named according to the pattern `freetype-compiler-bitness-building mode`, where:
-   * `compiler` is `vc8` or `vc9` or `vc10` or `vc11`;
+   * `compiler` is `vc142` or `vc143` (for Visual Studio 2019 or 2022);
    * `bitness`  is `32` or `64`;
    * `building mode` is `opt` (for `Release`) or `deb` (for `Debug`).
 
@@ -146,8 +152,8 @@ https://sourceforge.net/projects/freeimage/files/Source%20Distribution/
    As a result, you should have a folder named `3rdparty/FreeImage`.
    Rename it according to the rule: `freeimage-platform-compiler-building mode`, where
 
-   * `platform`  is `win32` or `win64`;
-   * `compiler`  is `vc8` or `vc9` or `vc10` or `vc11`;
+   * `platform`  is `win64` for current certified Windows builds;
+   * `compiler`  is `vc142` or `vc143` (for Visual Studio 2019 or 2022);
    * `building mode` is *opt* (for release) or `deb` (for debug)
 
    Further in this document, this folder is referred to as `freeimage`.
@@ -188,8 +194,7 @@ https://sourceforge.net/projects/freeimage/files/Source%20Distribution/
        from FreeImage*d*.lib to FreeImage.lib
 
 4. Select a platform to build.
-   - Choose `Win32` if you are building for a 32 bit platform.
-   - Choose `x64` if you are building for a 64 bit platform.
+   - Choose `x64` for current certified Windows builds.
 
 5. Start the building process.<br>
    As a result, you should have the library files of FreeImage product in `freeimage/Dist` folder (`FreeImage.dll` and `FreeImage.lib`).
@@ -205,14 +210,14 @@ VTK Integration Services component provides adaptation functionality for visuali
 2. Use CMake to generate VS projects for building the library:
    - Start CMake-GUI and select `VTK` folder as source path, and the folder of your choice for VS project and intermediate build data.
    - Click **Configure**.
-   - Select the VS version to be used from the ones you have installed (we recommend using VS 2015) and the architecture (32 or 64-bit).
+   - Select the VS version to be used from the ones you have installed and the architecture matching your OCCT build (`x64` for current certified Windows builds).
    - Generate VS projects with default CMake options. The open solution `VTK.sln` will be generated in the build folder.
 
 3. Build project VTK in Release mode.
 
 @section build_3rdparty_linux Linux
 
-This section presents additional guidelines for building third-party products used by Open CASCADE Technology and samples on Linux platform.
+This section presents additional guidelines for building third-party products used by Open CASCADE Technology on Linux platform.
 
 @subsection dev_guides__building_3rdparty_linux_4 Installation From Official Repositories
 
@@ -317,7 +322,7 @@ The directory with unpacked sources is  further referred to as `FREEIMAGE_SRC_DI
 1. Modify `FREEIMAGE_SRC_DIR/Source/OpenEXR/Imath/ImathMatrix.h`:<br>
    In line 60 insert the following:
 
-       #include string.h
+        #include <string.h>
 
 2. Enter the directory where the source files of FreeImage are located (`FREEIMAGE_SRC_DIR`).
 
@@ -365,7 +370,7 @@ The directory with unpacked sources is  further referred to as `FREEIMAGE_SRC_DI
 
       to:
   
-          \#ldconfig
+          #ldconfig
 
    Then run the installation process by the following command:
 
@@ -397,10 +402,10 @@ Download the necessary archive from https://www.vtk.org/VTK/resources/software.h
 
        make install
 
-@section build_3rdparty_macos Mac OS X
+@section build_3rdparty_macos macOS
 
 This section presents additional guidelines for building third-party products
-used by Open CASCADE Technology and samples on Mac OS X platform (10.6.4 and later).
+used by Open CASCADE Technology on macOS platform.
 
 @subsection dev_guides__building_3rdparty_osx_2_1 Tcl/Tk
 
@@ -479,7 +484,7 @@ Download the necessary archive from https://freetype.org/ and unpack it.
 @subsection dev_guides__building_3rdparty_osx_3_1 TBB
 
 This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0.
-Go to the **Download** page, find the release version you need (e.g. `oneTBB 2021.5.0`) and pick the archive for Mac OS X platform.
+Go to the **Download** page, find the release version you need (e.g. `oneTBB 2021.5.0`) and pick the archive for macOS platform.
 To install, unpack the downloaded archive of TBB product (`oneapi-tbb-2021.5.0-mac.tgz`).
 
 @subsection dev_guides__building_3rdparty_osx_3_3 FreeImage
@@ -488,15 +493,12 @@ Download the necessary archive from
 https://sourceforge.net/projects/freeimage/files/Source%20Distribution/
 and unpack it. The directory with unpacked sources is further referred to as `FREEIMAGE_SRC_DIR`.
 
-Note that for building FreeImage on Mac OS X 10.7 you should replace `Makefile.osx`
-in `FREEIMAGE_SRC_DIR` by the corrected file, which you can find in attachment to issue [`#22811`](https://tracker.dev.opencascade.org/file_download.php?file_id=6937&type=bug) in OCCT Mantis bug tracker.
-
-1. If you build FreeImage 3.15.x you can skip this step.
+If you build FreeImage 3.17 or later you can skip this step.
 
    Modify `FREEIMAGE_SRC_DIR/Source/OpenEXR/Imath/ImathMatrix.h:`<br>
    In line 60 insert the following:
 
-       #include string.h
+        #include <string.h>
 
    Modify `FREEIMAGE_SRC_DIR/Source/FreeImage/PluginTARGA.cpp`:<br>
    In line 320 replace:

@@ -176,7 +176,7 @@ The sequence of actions is as follows:
 See the description for *thePrec* and *theMaxTol* above.
 7. Merge and remove small edges:
 ~~~~{.cpp}
-  aFixWire->DropSmallEdgesMode() = true;
+  aFixWire->ModeDropSmallEdges() = true;
   aFixWire->FixSmallEdges();
 ~~~~
 **Note:** Small edges are not removed with the default mode, but in many cases removing small edges is very useful for fixing a shape.
@@ -248,7 +248,7 @@ The following sequence of actions should be applied to perform fixes:
 	+ to force or forbid some of fixes, set the corresponding flag to 0 or 1.
 3. Initialize the tool by the shape with the help of methods `Init()` or `Load()`.
 4. Use method *Perform()* or create a custom set of fixes.
-5. Check the statuses of fixes by the general method *Status* or specialized methods *Status_* (for example *StatusSelfIntersection* (*ShapeExtentd_DONE*)).
+5. Check the statuses of fixes by the general method *Status* or specialized methods *Status_* (for example *StatusSelfIntersection* (*ShapeExtend_DONE*)).
    See the description of statuses below.
 6. Get the result in two ways:
 	- with help of a special method *Shape(), Face(), Wire(), Edge()*.
@@ -307,7 +307,7 @@ else if (aFixShape->Status (ShapeExtend_FAIL))
 {
   std::cout << "Shape could not be fixed\n";
 }
-else if (aFixShape->Status (ShapeExtent_OK))
+else if (aFixShape->Status (ShapeExtend_OK))
 {
   std::cout << "Initial face is valid with specified precision =" << thePrec << std::endl;
 }
@@ -598,7 +598,7 @@ if (aCheckEdge.CheckSameParameter (theEdge, aMaxDev))
   std::cout << "Incorrect SameParameter flag\n"
             << "Maximum deviation " << aMaxDev << ", tolerance " << BRep_Tool::Tolerance (theEdge) << std::endl;
   ShapeFix_Edge aFixEdge;
-  aFixEdge.FixSameParameter();
+  aFixEdge.FixSameParameter(theEdge);
   std::cout << "New tolerance " << BRep_Tool::Tolerance (theEdge) << std::endl;
 }
 ~~~~
@@ -633,8 +633,8 @@ aFixWireframe->SetMaxTolerance (theMaxTol);
 aFixWireframe->FixWireGaps();
 // fixing of small edges
 // setting of the drop mode for the fixing of small edges and max possible angle between merged edges
-aFixWireframe->ModeDropSmallEdges = true;
-aFixWireframe->SetLimliteAngle (theAngle);
+aFixWireframe->ModeDropSmallEdges() = true;
+aFixWireframe->SetLimitAngle (theAngle);
 // performing the fix
 aFixWireframe->FixSmallEdges();
 // getting the result
@@ -645,7 +645,7 @@ It is desirable that a shape is topologically correct before applying the method
 
 @subsubsection occt_shg_2_3_10 Tool for removing small faces from a shape
 
-Class ShapeFix_FixSmallFaceThis tool is intended for dropping small faces from the shape. The following cases are processed:
+Class *ShapeFix_FixSmallFace*. This tool is intended for dropping small faces from the shape. The following cases are processed:
 * Spot face: if the size of the face is less than the given precision;
 * Strip face: if the size of the face in one dimension is less then the given precision.
 
@@ -657,9 +657,9 @@ occ::handle<ShapeFix_FixSmallFace> aFixSmallFace = new ShapeFix_FixSmallFace (th
 aFixSmallFace->SetPrecision (thePrec);
 aFixSmallFace->SetMaxTolerance (theMaxTol);
 // performing fixes
-aFixSmallFace.Perform();
+aFixSmallFace->Perform();
 // getting the result
-TopoDS_Shape aResShape = aFixSmallFace.FixShape();
+TopoDS_Shape aResShape = aFixSmallFace->FixShape();
 ~~~~
 
 @subsubsection occt_shg_2_3_11 Tool to modify tolerances of shapes (Class ShapeFix_ShapeTolerance)
@@ -988,7 +988,7 @@ Methods for calculating the number of geometric objects or sub-shapes with a spe
 and selecting sub-shapes by various criteria.
 
 The corresponding flags should be set to true for storing a shape by a specified criteria:
-  * faces based on indirect surfaces -- *aCheckContents.MofifyIndirectMode() = true*;
+  * faces based on indirect surfaces -- *aCheckContents.ModifyIndirectMode() = true*;
   * faces based on offset surfaces -- *aCheckContents.ModifyOffsetSurfaceMode() = true*;
   * edges if their 3D curves are trimmed -- *aCheckContents.ModifyTrimmed3dMode() = true*;
   * edges if their 3D curves and 2D curves are offset curves -- *aCheckContents.ModifyOffsetCurveMode() = true*;
@@ -1141,10 +1141,10 @@ aShapeDivide.SetValCriterion (val);
 aShapeDivide.Perform();
 
 // getting the result
-TopoDS_Shape aSplitShape = aShapeDivide.GetResult();
+TopoDS_Shape aSplitShape = aShapeDivide.Result();
 
 // getting the history of modifications of faces
-for (TopExp_Explorer anExp (theInitShape, TopAbs_FACE); anExp.More(0; anExp.Next())
+for (TopExp_Explorer anExp (theInitShape, TopAbs_FACE); anExp.More(); anExp.Next())
 {
   TopoDS_Shape aModifShape = aShapeDivide.GetContext()->Apply (anExp.Current());
 } 
@@ -1322,7 +1322,7 @@ aConvToBez.SetPlaneMode (true);
 aConvToBez.Perform();
 if (aConvToBez.Status(ShapeExtend_DONE)
 {
-  TopoDS_Shape aResult = aConvToBez.GetResult();
+  TopoDS_Shape aResult = aConvToBez.Result();
 }
 ~~~~
 
@@ -1559,7 +1559,7 @@ If the sequence of shapes contains wires, only the internal wires are removed.
 
 If the sequence of shapes contains faces, only the internal wires from these faces are removed.
 * The status of the performed operation can be obtained using  method *Status()*;
-* The resulting shape can be obtained using  method *GetResult()*.
+* The resulting shape can be obtained using  method *Result()*.
 
 An example of using this tool is presented in the figures below:
 
@@ -1611,7 +1611,7 @@ if (aTool->Status (ShapeExtend_DONE2))
   std::cout << aRemovedFaces.Length() << " small faces were removed\n";
 }
 // getting result shape
-TopoDS_Shape aRes = aTool->GetResult();
+TopoDS_Shape aRes = aTool->Result();
 ~~~~
 
 @subsubsection occt_shg_4_4_8 Conversion of surfaces
@@ -1672,7 +1672,7 @@ The example of the usage is given below:
  TopoDS_Shape aResult = aTool.Shape();
  // Let theSh1 as a part of theSh
  // get the new (probably unified) shape form the theSh1
- TopoDS_Shape aResSh1 = aTool.Generated (theSh1);
+ TopoDS_Shape aResSh1 = aTool.History().Modified (theSh1);
 ~~~~
 
 @section occt_shg_5_ Auxiliary tools for repairing, analysis and upgrading
@@ -1771,7 +1771,7 @@ This class also provides a method to check if the edge in the wire is a seam (if
 Let us remove edges from the wire and define whether it is seam edge:
 ~~~~{.cpp}
 TopoDS_Wire theInitWire = ...;
-occ::handle<ShapeExtend_Wire> anExtendWire = new ShapeExtend_Wire (theInitWire);
+occ::handle<ShapeExtend_WireData> anExtendWire = new ShapeExtend_WireData (theInitWire);
 
 // Removing edge theEdge1 from the wire
 int anEdge1Index = anExtendWire->Index (theEdge1);

@@ -33,7 +33,7 @@ The packages used to display 3D objects are also applicable for visualization of
 The figure below presents a schematic overview of the relations between the key concepts and packages in visualization.
 Naturally, "Geometry & Topology" is just an example of application data that can be handled by *AIS*, and application-specific interactive objects can deal with any kind of data.
 
-@figure{visualization_image003.png,"Key concepts and packages in visualization",400}
+@figure{images/visualization_image003.png,"Key concepts and packages in visualization",400}
 
 To answer different needs of CASCADE users, this User's Guide offers the following three paths in reading it.
 
@@ -122,7 +122,7 @@ An *AIS_Shape* is then created from the shape.
 When calling the *Display* command, the interactive context calls the Compute method of the presentable object to calculate the presentation data and transfer it to the viewer.
 See figure below.
 
-@figure{visualization_image004.svg,"Processes involved in displaying a presentable shape",400}
+@figure{images/visualization_image004.svg,"Processes involved in displaying a presentable shape",400}
 
 @subsection occt_visu_2_2 Selection
 
@@ -150,7 +150,7 @@ The purpose of entities is to define what parts of the object will be selectable
 Thus, any object that is meant to be selectable must be split into sensitive entities (one or several).
 For instance, to apply face selection to an object it is necessary to explode it into faces and use them for creation of a sensitive entity set.
 
-@figure{visualization_image005.png,"Example of a shape divided into sensitive entities",400}
+@figure{images/visualization_image005.png,"Example of a shape divided into sensitive entities",400}
 
 Depending on the user's needs, sensitive entities may be atomic (point or edge) or complex.
 Complex entities contain many sub-elements that can be handled by detection mechanism in a similar way
@@ -188,9 +188,9 @@ For example, the *AIS_Shape* object determine the following modes (see AIS_Shape
   - 5 -- selection of the shells (TopAbs_SHELL);
   - 6 -- selection of the constituent solids (TopAbs_SOLID).
 
-@figure{visualization_image006.png,"Hierarchy of references from sensitive entity to selectable object",400}
+@figure{images/visualization_image006.png,"Hierarchy of references from sensitive entity to selectable object",400}
 
-@figure{visualization_image007.png,"The principle of entities organization within the selectable object",400}
+@figure{images/visualization_image007.png,"The principle of entities organization within the selectable object",400}
 
 #### Viewer selector
 
@@ -206,7 +206,7 @@ It handles all viewer selectors, activates and deactivates selection modes for t
 manages computation and update of selections for each object.
 Moreover, it keeps selection structures updated taking into account applied changes.
 
-@figure{visualization_image008.png,"The relations chain between viewer selector and selection manager",400}
+@figure{images/visualization_image008.png,"The relations chain between viewer selector and selection manager",400}
 
 @subsubsection occt_visu_2_2_2 Algorithm
 
@@ -223,11 +223,11 @@ Thus, this type of selection uses a set of triangular frustums for overlap detec
 
 The frustum length is limited by near and far view volume planes and each plane is built parallel to the corresponding view volume plane.
 
-@figure{visualization_image009.png,"",400}
+@figure{images/visualization_image009.png,"",400}
 
 The image above shows the rectangular frustum: a) after mouse move or click, b) after applying the rectangular selection.
 
-@figure{visualization_image010.png,"",400}
+@figure{images/visualization_image010.png,"",400}
 
 In the image above triangular frustum is set: a) by a user-defined polyline, b) by triangulation of the polygon based on the given polyline, c) by a triangular frustum based on one of the triangles.
 
@@ -246,7 +246,7 @@ The 2nd level trees are built automatically when the default mode is activated a
 The third level BVH tree is used for complex sensitive entities that contain many elements: for example, triangulations, wires with many segments, point sets, etc.
 It is built on demand for sensitive entities with more than 800K sub-elements (defined by *StdSelect_BRepSelectionTool::PreBuildBVH()*).
 
-@figure{visualization_image022.png,"Selection BVH tree hierarchy: from the biggest object-level (first) to the smallest complex entity level (third)",400}
+@figure{images/visualization_image022.png,"Selection BVH tree hierarchy: from the biggest object-level (first) to the smallest complex entity level (third)",400}
 
 #### Stages of the algorithm
 
@@ -386,7 +386,7 @@ void InteractiveBox::ComputeSelection (const occ::handle<SelectMgr_Selection>& t
       {
         // 1 owner per edge, where 6 is a priority of the sensitive
         occ::handle<MySelection_EdgeOwner> anOwner = new MySelection_EdgeOwner (this, anEdgeIter, 6);
-        theSel->Add (new Select3D_SensitiveSegment (anOwner, myFirstPnt[anEdgeIter]), myLastPnt[anEdgeIter]));
+        theSel->Add (new Select3D_SensitiveSegment (anOwner, myFirstPnt[anEdgeIter], myLastPnt[anEdgeIter]));
       }
       break;
     }
@@ -518,7 +518,7 @@ An Interactive Object can have a certain number of specific graphic attributes, 
 When an Interactive Object is visualized, the required graphic attributes are taken from its own **Drawer** (*Prs3d_Drawer*)
 if it has the required custom attributes or otherwise from the context drawer.
 
-@figure{visualization_image017.png,"",360}
+@figure{images/visualization_image017.png,"",360}
 
 It can be necessary to filter the entities to be selected.
 Consequently there are **Filter** entities (*SelectMgr_Filter*), which allow refining the dynamic detection context.
@@ -541,7 +541,7 @@ As this is transparent in AIS, the user does not have to worry about it.
 A presentation is identified by an index (*Display Mode*) and by the reference to the Presentation Manager, which it depends on.
 By convention, the default mode of representation for the Interactive Object has index 0.
 
-@figure{visualization_image018.png,"",360}
+@figure{images/visualization_image018.png,"",360}
 
 Calculation of different presentations of an interactive object is done by the *Compute* functions inheriting from *PrsMgr_PresentableObject::Compute* functions.
 They are automatically called by *PresentationManager* at a visualization or an update request.
@@ -556,18 +556,11 @@ void PackageName_ClassName::Compute (const occ::handle<PrsMgr_PresentationManage
                                      const int theMode);
 ~~~~
 
-#### For hidden line removal (HLR) mode in 3D:
-
-~~~~{.cpp}
-void PackageName_ClassName::Compute (const occ::handle<Prs3d_Projector>& theProjector,
-                                     const occ::handle<Prs3d_Presentation>& thePresentation);
-~~~~
-
 @subsubsection occt_visu_3_2_2 Hidden Line Removal
 
 The view can have two states: the normal mode or the computed mode (Hidden Line Removal mode).
 When the latter is active, the view looks for all presentations displayed in the normal mode, which have been signaled as accepting HLR mode.
-An internal mechanism allows calling the interactive object's own *Compute*, that is projector function.
+HLR is computed inside the View pipeline (see *V3d_View::SetComputedMode*); the interactive object's own *Compute* method is reused, with HLR-specific aspects taken from its *Prs3d_Drawer*.
 
 By convention, the Interactive Object accepts or rejects the representation of HLR mode.
 It is possible to make this declaration in one of two ways:
@@ -662,13 +655,6 @@ void myPk_IShape::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrs
     case 1: StdPrs_ShadedShape::Add (thePrs, myShape, myDrawer); return;
   }
 }
-
-void myPk_IShape::Compute (const occ::handle<Prs3d_Projector>& theProjector,
-                           const occ::handle<Prs3d_Presentation>& thePrs)
-{
-  // Hidden line mode calculation algorithm
-  StdPrs_HLRPolyShape::Add (thePrs, myShape, myDrawer, theProjector);
-}  
 ~~~~
 
 @subsubsection occt_visu_3_2_4 Selection
@@ -704,7 +690,7 @@ Keep in mind the following points concerning graphic attributes:
     Consequently, there is a certain number of virtual functions, which allow acting on these attributes.
     Each new class of interactive object can redefine these functions and change the behavior of the class.
 
-@figure{visualization_image020.svg,"Redefinition of virtual functions for changes in AIS_Shape and AIS_TextLabel.",360}
+@figure{images/visualization_image020.svg,"Redefinition of virtual functions for changes in AIS_Shape and AIS_TextLabel.",360}
 
 The following virtual functions provide settings for color, width, material and transparency:
   * *AIS_InteractiveObject::UnsetColor*
@@ -804,7 +790,7 @@ Instances can be controlled by the following DRAW commands:
 * *vlistconnected* : Lists objects in the assembly.
 
 Have a look at the examples below:
-~~~~{.php}
+~~~~{.tcl}
 pload MODELING VISUALIZATION
 vinit
 psphere s 1
@@ -820,7 +806,7 @@ See how proxy *OpenGl_Structure* is used to represent instance:
 The original object does not have to be displayed in order to make instance.
 Also selection handles transformations of instances correctly:
 
-~~~~{.php}
+~~~~{.tcl}
 pload MODELING VISUALIZATION
 vinit
 psphere s 1
@@ -835,7 +821,7 @@ vfit
 
 Here is the example of a more complex hierarchy involving sub-assemblies:
 
-~~~~{.php}
+~~~~{.tcl}
 pload MODELING VISUALIZATION
 vinit
 box b 1 1 1
@@ -865,8 +851,8 @@ You can only directly call the functions available for an interactive object if 
 
 ~~~~{.cpp}
 occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (theShape);
-myIntContext->Display (aShapePrs, AIS_Shaded, 0, false, aShapePrs->AcceptShapeDecomposition());
-myIntContext->SetColor(aShapePrs, Quantity_NOC_RED);
+myIntContext->Display (aShapePrs, AIS_Shaded, 0, false);
+myIntContext->SetColor(aShapePrs, Quantity_NOC_RED, true);
 ~~~~
 
 You can also write
@@ -875,7 +861,7 @@ You can also write
 occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (theShape);
 aShapePrs->SetColor (Quantity_NOC_RED);
 aShapePrs->SetDisplayMode (AIS_Shaded);
-myIntContext->Display (aShapePrs);
+myIntContext->Display (aShapePrs, true);
 ~~~~
 
 @subsubsection occt_visu_3_3_2 Groups of functions
@@ -969,10 +955,10 @@ There are several functions to manipulate filters:
 // shading visualization mode, no specific mode, authorization for decomposition into sub-shapes
 const TopoDS_Shape theShape;
 occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (theShape);
-myContext->Display (aShapePrs, AIS_Shaded, -1, true, true);
+myContext->Display (aShapePrs, AIS_Shaded, -1, true, PrsMgr_DisplayStatus_Displayed);
 
 // activates decomposition of shapes into faces
-const int aSubShapeSelMode = AIS_Shape::SelectionMode (TopAbs_Face);
+const int aSubShapeSelMode = AIS_Shape::SelectionMode (TopAbs_FACE);
 myContext->Activate (aShapePrs, aSubShapeSelMode);
 
 occ::handle<StdSelect_FaceFilter> aFil1 = new StdSelect_FaceFilter (StdSelect_Revol);
@@ -1038,9 +1024,9 @@ Select* methods of AIS_InteractiveContext accept some selection scheme as parame
 
 | Type | Reaction on click |  | Type | Reaction on click |
 | :----- | :----- | :----- | :----- | :----- |
-| AIS_SelectionScheme_Replace | @figure{visualization_selection_scheme_replace.svg, ""} |  | AIS_SelectionScheme_XOR | @figure{visualization_selection_scheme_XOR.svg, ""} |
-| AIS_SelectionScheme_Add | @figure{visualization_selection_scheme_add.svg, ""} |  | AIS_SelectionScheme_Clear | @figure{visualization_selection_scheme_clear.svg, ""} |
-| AIS_SelectionScheme_Remove | @figure{visualization_selection_scheme_remove.svg, ""} |  | AIS_SelectionScheme_ReplaceExtra | @figure{visualization_selection_scheme_replaceExtra.svg, ""} |
+| AIS_SelectionScheme_Replace | @figure{images/visualization_selection_scheme_replace.svg, ""} |  | AIS_SelectionScheme_XOR | @figure{images/visualization_selection_scheme_XOR.svg, ""} |
+| AIS_SelectionScheme_Add | @figure{images/visualization_selection_scheme_add.svg, ""} |  | AIS_SelectionScheme_Clear | @figure{images/visualization_selection_scheme_clear.svg, ""} |
+| AIS_SelectionScheme_Remove | @figure{images/visualization_selection_scheme_remove.svg, ""} |  | AIS_SelectionScheme_ReplaceExtra | @figure{images/visualization_selection_scheme_replaceExtra.svg, ""} |
 
 
 @subsection occt_visu_3_5 Standard Interactive Object Classes
@@ -1102,7 +1088,7 @@ and can be built up from the source data with a custom presentation builder.
 The class *AIS_ColoredShape* allows using custom colors and line widths for *TopoDS_Shape* objects and their sub-shapes.
 
 ~~~~{.cpp}
-  AIS_ColoredShape aColoredShape = new AIS_ColoredShape (theShape);
+  occ::handle<AIS_ColoredShape> aColoredShape = new AIS_ColoredShape (theShape);
 
   // setup color of entire shape
   aColoredShape->SetColor (Quantity_NOC_RED);
@@ -1127,7 +1113,7 @@ The point data is packed into vertex buffer object for performance.
 - The presentation provides selection by a bounding box of the visualized set of points.
   It supports two display / highlighting modes: points or bounding box.
 
-@figure{point_cloud.png,"A random colored cloud of points",240}
+@figure{images/point_cloud.png,"A random colored cloud of points",240}
 
 Example:
 ~~~~{.cpp}
@@ -1239,10 +1225,10 @@ Such an object, for example, can be used for displaying the object and stored in
 ~~~~{.cpp}
 // read the data and create a data source
 occ::handle<Poly_Triangulation> aSTLMesh = RWStl::ReadFile (aFileName);
-occ::handle<XSDRAWSTLVRML_DataSource> aDataSource = new XSDRAWSTLVRML_DataSource (aSTLMesh);
+occ::handle<XSDRAWSTL_DataSource> aDataSource = new XSDRAWSTL_DataSource (aSTLMesh);
 
 // create mesh
-occ::handle<MeshVS_Mesh> aMeshPrs = new MeshVS();
+occ::handle<MeshVS_Mesh> aMeshPrs = new MeshVS_Mesh();
 aMeshPrs->SetDataSource (aDataSource);
 
 // use default presentation builder
@@ -1621,7 +1607,7 @@ aView->Camera()->Transform (aTrsf);
 
 @subsubsection occt_visu_4_4_4 Orthographic Projection
 
-@figure{view_frustum.png,"Perspective and orthographic projection",420}
+@figure{images/view_frustum.png,"Perspective and orthographic projection",420}
 
 The following code configures the camera for orthographic rendering:
 
@@ -1636,7 +1622,7 @@ aView->Update(); // update the Visualization in this View
 
 **Field of view (FOVy)** -- defines the field of camera view by y axis in degrees (45° is default).
 
-@figure{camera_perspective.png,"Perspective frustum",420}
+@figure{images/camera_perspective.png,"Perspective frustum",420}
 
 The following code configures the camera for perspective rendering:
 
@@ -1659,7 +1645,7 @@ There are two types of IOD:
 
 **ZFocus** -- defines the distance to the point of stereographic focus.
 
-@figure{stereo.png,"Stereographic projection",420}
+@figure{images/stereo.png,"Stereographic projection",420}
 
 To enable stereo projection for active (shutter) 3D glasses, your workstation should meet the following requirements:
 
@@ -1674,7 +1660,8 @@ In a non-stereo camera this effect is not visible because only the same projecti
 To enable quad buffering support you should provide the following settings to the graphic driver *OpenGl_Caps*:
 
 ~~~~{.cpp}
-occ::handle<OpenGl_GraphicDriver> aDriver = new OpenGl_GraphicDriver();
+occ::handle<Aspect_DisplayConnection> aDispConn = new Aspect_DisplayConnection();
+occ::handle<OpenGl_GraphicDriver>     aDriver   = new OpenGl_GraphicDriver (aDispConn);
 OpenGl_Caps& aCaps = aDriver->ChangeOptions();
 aCaps.contextStereo = true;
 ~~~~
@@ -1686,7 +1673,7 @@ The following code configures the camera for stereographic rendering:
 occ::handle<V3d_View> aView = new V3d_View (theViewer);
 aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
 // Change stereo parameters
-aView->Camera()->SetIOD (IODType_Absolute, 5.0);
+aView->Camera()->SetIOD (Graphic3d_Camera::IODType_Absolute, 5.0);
 // Finally update the Visualization in this View
 aView->Update();
 ~~~~
@@ -1750,7 +1737,7 @@ The 3D scene displayed in the view can be dumped into image file with resolution
 The *V3d_View* has the following methods for dumping the 3D scene:
 ~~~~{.cpp}
 bool V3d_View::Dump (const char* theFile,
-                                 const Image_TypeOfImage theBufferType);
+                                 const Graphic3d_BufferType& theBufferType = Graphic3d_BT_RGB);
 ~~~~
 Dumps the scene into an image file with the view dimensions.
 The raster image data handling algorithm is based on the *Image_AlienPixMap* class.
@@ -1943,7 +1930,7 @@ aMat.SetAmbientColor (aColor);
 aMat.SetDiffuseColor (aColor);
 aClipPlane->SetCappingMaterial (aMat);
 // set the texture of clipping plane
-occ::handle<Graphic3d_Texture2Dmanual> aTexture = ...
+occ::handle<Graphic3d_Texture2D> aTexture = ...
 aTexture->EnableModulate();
 aTexture->EnableRepeat();
 aClipPlane->SetCappingTexture (aTexture);
@@ -2016,7 +2003,7 @@ Create marker attributes.
 ~~~~{.cpp}
 occ::handle<Graphic3d_AspectMarker3d> aFirebrickMarker = new Graphic3d_AspectMarker3d();
 // marker attributes
-aFirebrickMarker->SetColor (Firebrick);
+aFirebrickMarker->SetColor (aFirebrick);
 aFirebrickMarker->SetScale (1.0f);
 aFirebrickMarker->SetType (Aspect_TOM_BALL);
 // or custom image
@@ -2053,11 +2040,11 @@ myViewer = new V3d_Viewer (aGraphicDriver);
 //   directional-light V3d_XnegYposZpos
 //   directional-light V3d_XnegYneg
 //   ambient-light
-a3DViewer->SetDefaultLights();
+myViewer->SetDefaultLights();
 // activates all the lights defined in this viewer
-a3DViewer->SetLightOn();
+myViewer->SetLightOn();
 // set background color to black
-a3DViewer->SetDefaultBackgroundColor (Quantity_NOC_BLACK);
+myViewer->SetDefaultBackgroundColor (Quantity_NOC_BLACK);
 ~~~~
 
 @subsubsection occt_visu_4_5_3 Create a 3D view (a Windows example)
@@ -2078,7 +2065,7 @@ myAISContext = new AIS_InteractiveContext (myViewer);
 You are now able to display interactive objects such as an *AIS_Shape*.
 
 ~~~~{.cpp}
-TopoDS_Shape aShape = BRepAPI_MakeBox (10, 20, 30).Solid();
+TopoDS_Shape aShape = BRepPrimAPI_MakeBox (10, 20, 30).Solid();
 occ::handle<AIS_Shape> anAISShape = new AIS_Shape (aShape);
 myAISContext->Display (anAISShape, true);
 ~~~~
@@ -2090,24 +2077,15 @@ Follow the procedure below to compute the presentable object:
 1. Build a presentable object inheriting from *AIS_InteractiveObject* (refer to the Chapter on @ref occt_visu_2_1 "Presentable Objects").
 2. Reuse the *Graphic3d_Structure* provided as an argument of the compute methods.
 
-**Note** that there are two compute methods: one for a standard representation, and the other for a degenerated representation,
-i.e. in hidden line removal and wireframe modes.
-
-Let us look at the example of compute methods
+A custom interactive object only needs to override the regular *Compute* method (HLR is handled inside the View pipeline using the same *Compute*, with HLR-specific aspects taken from the *Prs3d_Drawer*).
 
 ~~~~{.cpp}
 void MyPresentableObject::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrsManager,
-                                   const occ::handle<Graphic3d_Structure>& thePrs,
+                                   const occ::handle<Prs3d_Presentation>& thePrs,
                                    const int theMode)
-(
+{
   //...
-)
-
-void MyPresentableObject::Compute (const occ::handle<Prs3d_Projector>& theProjector,
-                                   const occ::handle<Graphic3d_Structure>& thePrs)
-(
-  //...
-)
+}
 ~~~~
 
 @subsubsection occt_visu_4_5_6 Create primitives in the interactive object
@@ -2186,13 +2164,13 @@ aPtsArr->AddVertex (40.0, 40.0, 40.0);
 aGroup->AddPrimitiveArray (aPtsArr);
 aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectText3d());
 
-Graphic3d_Vertex aMarker (0.0, 0.0, 0.0);
-for (int i = 0; i <= 2; i++)
+for (int i = 0; i <= 2; ++i)
 {
-  aMarker.SetCoord (-(double )i * 4 + 30,
-                     (double )i * 4,
-                    -(double )i * 4);
-  aGroup->Text (THE_TEXT[i], Marker, 20.);
+  gp_Pnt aPos (-(double)i * 4 + 30, (double)i * 4, -(double)i * 4);
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text (20.0f);
+  aText->SetText (THE_TEXT[i]);
+  aText->SetPosition (aPos);
+  aGroup->AddText (aText);
 }
 ~~~~
 

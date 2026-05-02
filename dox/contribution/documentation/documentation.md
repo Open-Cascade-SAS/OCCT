@@ -31,7 +31,7 @@ You need to have the following software installed to generate the documentation.
 Version 8.5 or 8.6: https://www.tcl.tk/software/tcltk/download.html
 
 **Doxygen**
-Version 1.8.4 or above: http://www.doxygen.nl/download.html
+Version 1.8.4 or above: https://www.doxygen.nl/download.html
 
 **Dot**
 Part of Graphviz software, used by Doxygen for generation of class diagrams in Reference Manual: https://www.graphviz.org/download/
@@ -54,57 +54,30 @@ Follow the instructions to proceed (define proxy settings if needed, select a mi
 **MathJax** is used for rendering math formulas in browser (HTML and CHM outputs): http://www.mathjax.org.
 
 By default MathJAX scripts and fonts work on-line and no installation of MathJAX is necessary if Internet is accessible.
-If you need to use OCCT documentation while off-line, you can install a local copy of MatJAX, see https://docs.mathjax.org/en/v2.7-latest/start.html#installing-your-own-copy-of-mathjax.
-See \ref OCCT_DM_SECTION_A_9 for more details on inserting mathematical expressions. 
+If you need to use OCCT documentation while off-line, you can install a local copy of MathJax, see https://docs.mathjax.org/en/v2.7-latest/start.html#installing-your-own-copy-of-mathjax.
+See @ref OCCT_DM_SECTION_A_9 for more details on inserting mathematical expressions. 
 
 @section OCCT_DM_SECTION_2_1 Documentation Generation
 
-Run command *gendoc* from command prompt (located in `adm` directory) to generate OCCT documentation.
-The synopsis is:
+OCCT documentation is generated via CMake targets. Configure the build with
+`-DBUILD_DOC_Overview=ON` and/or other documentation options:
 
-    gendoc \[-h\] {-refman|-overview} \[-html|-pdf|-chm\] \[-m=<list of modules>|-ug=<list of docs>\] \[-v\] \[-s=<search_mode>\] \[-mathjax=<path>\]
-	
-Here the options are:
+| CMake Target | Purpose |
+|-------------|---------|
+| `Overview` | HTML documentation for Overview and User Guides |
+| `RefMan` | HTML class Reference Manual |
+| `doc` | Combined documentation (Overview + RefMan) |
 
-* Choice of documentation to be generated:
-  * <i>-overview</i>: To generate Overview and User Guides (cannot be used with -refman)
-  * <i>-refman</i>: To generate class Reference Manual (cannot be used with -overview)
+**Examples:**
 
-* Choice of output format:
-  * <i>-html</i>: To generate HTML files (default, cannot be used with -pdf or -chm)
-  * <i>-pdf</i>: To generate PDF files (cannot be used with -refman, -html, or -chm)
-  * <i>-chm</i>: To generate CHM files (cannot be used with -html or -pdf)
-
-* Additional options:
-  * <i>-m=\<modules_list\></i>: List of OCCT modules (separated with comma), for generation of Reference Manual
-  * <i>-ug=\<docs_list\></i>: List of MarkDown documents (separated with comma), to use for generation of Overview / User Guides
-  * <i>-mathjax=\<path\></i>: To use local or alternative copy of MathJax
-  * <i>-s=\<search_mode\></i>: Specifies the Search mode of HTML documents; can be: none | local | server | external
-  * <i>-h</i>: Prints this help message
-  * <i>-v</i>: Enables more verbose output
-
-**Note**
-
-* In case of PDF output the utility generates a separate PDF file for each document;
-* In case of HTML output the utility generates a common Table of contents containing references to all documents.
-* In case of CHM output single CHM file is generated
-
-**Examples**
-
-To generate the output for a specific document specify the path to the corresponding MarkDown file (paths relative to *dox* sub-folder can be given), for instance:
-
+To generate the HTML Overview documentation:
 ~~~~
-    > gendoc -overview -ug=dev_guides/documentation/documentation.md
+cmake --build . --target Overview
 ~~~~
 
-To generate Reference Manual for the whole Open CASCADE Technology library, run: 
+To generate the HTML Reference Manual:
 ~~~~
-    > gendoc -refman
-~~~~
-
-To generate Reference Manual for Foundation Classes and Modeling Data modules only, with search option, run:
-~~~~
-    > gendoc -refman -m=FoundationClasses,ModelingData,ModelingAlgorithms -s=local
+cmake --build . --target RefMan
 ~~~~
 
 @section  OCCT_DM_SECTION_3 Documentation Conventions
@@ -114,7 +87,7 @@ This section contains information about file format conventions, directories str
 @subsection  OCCT_DM_SECTION_3_1 File Format
 
 The format used for documentation is MarkDown with Doxygen extensions. 
-The MarkDown files have a <i>*.md</i> extension and are based on rules described in \ref OCCT_DM_SECTION_A section.
+The MarkDown files have a <i>*.md</i> extension and are based on rules described in @ref OCCT_DM_SECTION_A section.
 
 @subsection  OCCT_DM_SECTION_3_2 Directory Structure
 
@@ -138,32 +111,32 @@ The documentation is generated in subfolder *doc* :
 
 @section  OCCT_DM_SECTION_4 Adding a New Document
 
-Place a new document in the folder taking into account its logical position in the documentation hierarchy. For instance, the document *svn.md* about the use of SVN to work with OCCT source code can be placed into <i>/dox/contribution/</i>. 
+Place a new document in the folder taking into account its logical position in the documentation hierarchy. For instance, the document *new_feature.md* could be placed into <i>/dox/user_guides/new_feature/</i>.
 
 If there are images in the document, it should be placed in its own folder containing a subfolder for images. For instance:
-* <i> /dox/contribution/svn/ </i> -- for *svn.md* file;
-* <i> /dox/contribution/svn/images/ </i> -- for images.
+* <i> /dox/user_guides/new_feature/ </i> -- for *new_feature.md* file;
+* <i> /dox/user_guides/new_feature/images/ </i> -- for images.
 
-Add a relative path to *svn.md* in file <i>dox/FILES.txt</i>. For instance
+Add a relative path to the file in <i>dox/FILES_HTML.txt</i> (for HTML documentation). For instance:
 
 @verbatim
-contribution/svn/svn.md
+user_guides/new_feature/new_feature.md
 @endverbatim
 
-**Note** that the order of paths to documents in *FILES.txt* is reproduced in the Table of Contents in the HTML output, thus they need to be placed logically.
+**Note** that the order of paths to documents in *FILES_HTML.txt* is reproduced in the Table of Contents in the HTML output, thus they need to be placed logically.
 
 **Note** that you should specify a file tag, not the document name. See @ref OCCT_DM_SECTION_A_1 "Header and hierarchic document structure" section for details.
 
 @section  OCCT_DOC_SECTION_5 Additional Resources
 
-More information about OCCT can be found at http://www.opencascade.com and <br> http://dev.opencascade.org sites. 
+More information about OCCT can be found at https://www.opencascade.com and https://dev.opencascade.org sites.
 
 
 The information on formula syntax can be found at: <br>
-http://en.wikipedia.org/wiki/Help:Displaying_a_formula
+https://en.wikipedia.org/wiki/Help:Displaying_a_formula
 
 More information on MarkDown and Doxygen syntax can be found at: <br>
-http://www.stack.nl/~dimitri/doxygen/manual
+https://www.doxygen.nl/manual/
 
 @section  OCCT_DM_SECTION_A Appendix 1: Document Syntax
 
@@ -386,7 +359,7 @@ Empty lines in the quoted text, if any, should not have trailing spaces after th
 @subsection  OCCT_DM_SECTION_A_6 References
 
 To insert a reference to a website, it is sufficient to write an URL.
-For example: http://en.wikipedia.org
+For example: https://en.wikipedia.org
 
 To insert a reference to a document or its subsection, use command <i>\@ref</i> followed by the document or section tag name.
 For instance, @code @ref OCCT_DM_SECTION_A @endcode will be rendered as @ref OCCT_DM_SECTION_A.

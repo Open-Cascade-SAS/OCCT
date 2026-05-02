@@ -9,6 +9,8 @@ BRep Format {#specification__brep_format}
   of vertices, edges, wires, faces, shells, solids,  compsolids, compounds, edge triangulations, 
   face triangulations, polylines on  triangulations, space location and orientation. 
   Any set of such models may be  stored as a single model which is a compound of the models.  
+
+  @note This document describes the **ASCII** BREP format produced by `BRepTools` (`Write` / `Read`), whose header line is `CASCADE Topology V1/V2/V3`. OCCT also ships a **binary** BREP format, produced by the `BinTools` package (`BinTools::Write` / `BinTools::Read`), with its own independent header sequence (`Open CASCADE Topology V1`..`V4`). The two formats share most of the geometric content but differ in framing and tokenization, and are not interchangeable.
    
   The format is described in an order which is convenient for understanding 
   rather than in the order the format parts follow each other. 
@@ -1124,7 +1126,7 @@ The example record is interpreted as a circle which  has a center *P*=(1,2).  Th
  
 **Description**  
  
-\<2D curve record 3\> describes an ellipse. The  ellipse data are 2D point *P*, orthogonal 2D directions *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* that *r<sub>maj</sub>* @f$ \leq @f$ *r<sub>min</sub>*. The ellipse has a center *P*, major and  minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by  the following parametric equation:  
+\<2D curve record 3\> describes an ellipse. The  ellipse data are 2D point *P*, orthogonal 2D directions *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* that *r<sub>maj</sub>* @f$ \geq @f$ *r<sub>min</sub>*. The ellipse has a center *P*, major and  minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by  the following parametric equation:  
  
 @f[ C(u)=P+r_{maj} \cdot cos(u) \cdot D_{maj}+r_{min} \cdot sin(u) \cdot D_{min},\; u \in [0,\; 2 \cdot \pi) . @f]  
  
@@ -1193,7 +1195,7 @@ The example record is interpreted as a parabola in plane which passes through a 
  
 @f[ C(u)=P+k_{x} \cdot cosh(u) D_{x}+k_{y} \cdot sinh(u) \cdot D_{y},\; u \in (-\infty,\; \infty). @f]  
  
-The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: @f$ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) @f$.  
+The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=3 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: @f$ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) @f$.  
  
  
 @subsubsection specification__brep_format_5_3_6 Bezier Curve - \<2D curve record 6\>

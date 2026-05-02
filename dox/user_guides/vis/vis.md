@@ -92,7 +92,7 @@ DS->SetShape(aShapeImpl);
 ~~~~{.cpp}
 vtkSmartPointer<vtkPolyDataMapper> Mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 
-Mapper->SetInputConnection(aDS->GetOutputPort());
+Mapper->SetInputConnection(DS->GetOutputPort());
 vtkSmartPointer<vtkActor> Actor = vtkSmartPointer<vtkActor>::New();
 
 Actor->SetMapper(Mapper);
@@ -135,10 +135,10 @@ IVtkTools::InitShapeMapper(Mapper, Table);
 
 It is also possible to bind custom colors to any sub-shape type listed in *IVtk_MeshType* enumeration. For example, to access the color bound to *free edge* entities, the following calls are available in *IVtkTools* namespace:
 ~~~~{.cpp}
-SetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B);
-SetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B, A);
-GetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B);
-GetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B, A);
+IVtkTools::SetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B);
+IVtkTools::SetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B, A);
+IVtkTools::GetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B);
+IVtkTools::GetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B, A);
 ~~~~
 Here *R, G, B* are double values of red, green and blue components of a color from the range [0, 1]. The optional parameter *A* stands for the alpha value (the opacity) as a double from the same range [0, 1]. By default alpha value is 1, i.e. a color is not transparent.
 
@@ -264,7 +264,7 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> subShapesFilter = IVtkTools_SubPoly
 subShapesFilter->SetInputConnection(DS->GetOutputPort());
 
 // Get all picked sub-shapes ids of the shape from a picker (see 3.4)
-NCollection_List<IVtk_IdType> subShapeIds = aPicker->GetPickedSubShapesIds(ds->GetId(), true);
+NCollection_List<IVtk_IdType> subShapeIds = aPicker->GetPickedSubShapesIds(DS->GetId(), true);
 
 // Set ids to the filter to pass only picked sub-shapes
 subShapesFilter->SetData(subShapeIds);
@@ -282,7 +282,7 @@ The usage of low-level tools is justified in cases when the utilities from *IVtk
 
 The low-level scenario of VIS usage in VTK pipeline is shown in the figure below. The Mesher component produces shape facet (VTK polygonal data) using implementation of *IShapeData* interface. Then result can be retrieved from this implementation as a *vtkPolyData* instance.
 
-@figure{/user_guides/vis/images/vis_image007.svg "Low-level VIS usage with VTK", 420}
+@figure{/user_guides/vis/images/vis_image007.svg,"Low-level VIS usage with VTK", 420}
 
 The visualization pipeline for OCCT shape presentation can be initialized as follows:
 1. Create an instance of *IShape* class initialized by OCCT topological shape:
@@ -356,8 +356,8 @@ NCollection_List<IVtk_IdType> ids = myOccPickerAlgo->ShapesPicked();
 ~~~~
 6. Obtain IDs of the picked sub-shapes:
 ~~~~{.cpp}
-NCollection_List<IVtk_IdType> subShapeIds
-  = myOccPickerAlgo->SubShapesPicked(shapeId);
+NCollection_List<IVtk_IdType> subShapeIds;
+myOccPickerAlgo->SubShapesPicked(shapeId, subShapeIds);
 ~~~~
 
 @section occt_vis_5	DRAW Test Harness
@@ -365,4 +365,3 @@ NCollection_List<IVtk_IdType> subShapeIds
 *TKIVtkDraw* toolkit contains classes for embedding VIS functionality into DRAW Test Harness with possibility of simple interactions, including detection and highlighting.
 * *IVtkDraw_HighlightAndSelectionPipeline* -- Creates VTK pipeline with OCCT shape data source and properly initialized VIS filters.
 * *IVtkDraw_Interactor* -- Controls simple interactive actions, such as detection and selection of the displayed shapes.
-

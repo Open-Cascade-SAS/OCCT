@@ -627,7 +627,7 @@ Lets go back to diffuse indirect illumination component represented by following
 
 Of course, Monte-Carlo algorithm can be applied directly and hemisphere integral can be precalculated for every normal direction
 but dependence from \f$v\f$ in Fresnel's factor does not allow to do it efficiently (every \f$v\f$ direction is needed to be considered again).
-In order to resolve it modified version of Schlick's approximation has been created [[?](TODO)]:
+In order to resolve it, a modified version of Schlick's approximation has been created:
 
 \f[F \approx F_{ss}=F_0+(\max(1-r, F_0))(1-\cos\theta_v)^5\f]
 
@@ -770,11 +770,11 @@ As practice shows this is very good approximation of diffuse indirect illuminati
 
 @section pbr_transparency Transparent materials
 
-TODO
+Content to be provided.
 
 @section pbr_low_discrepancy Low discrepancy sequence
 
-TODO
+Content to be provided.
 
 @section pbr_references References
 

@@ -3,6 +3,8 @@ Novice Guide {#samples__novice_guide}
 
 @tableofcontents
 
+@note This guide refers to the **OCCTOverview** Qt sample (and other C++ project samples such as Qt, MFC, C#, WebGL, QML, Java/Android and iOS). These project samples are **no longer bundled with the OCCT repository** -- they are being repackaged into separate Git repositories. Until those land, treat the screenshots and instructions related to the OCCTOverview Qt application as illustrative; the @ref samples__draw_scripts "DRAW Tcl demos" under `resources/samples/tcl/` and the @ref occt__tutorial "OCCT Tutorial" remain available and are the recommended starting points.
+
 @section diffs Modeling with OCCT: Key differences
 
 Open CASCADE Technology (OCCT) is an object-oriented C++ framework designed for rapid production of sophisticated CAD/CAM/CAE applications.
@@ -25,15 +27,15 @@ In this tutorial you will create a solid model step-by-step using different clas
 Each step of the tutorial contains code snippets and images.
 
 The basics involved in the modeling process are explained.
-When the basics of OCCT are clear, the next logical step is to check out @ref samples "sample applications" and examine those that suit your needs.
-For these, the best starting point is **OCCTOverview** located in /samples/qt subfolder of OCCT installation.
+When the basics of OCCT are clear, the next logical step is to check out @ref samples "sample scripts and examples" and examine those that suit your needs.
+For these, the best starting point is the **OCCTOverview** material presented in this guide.
 
 This sample provides code examples for several actions as well as visualization of these code snippets output.
 The Overview interface is dynamically changing based on selected **Category** at the menu.
 Additional menu buttons will appear, providing users with subcategories and relevant commands to select one of the actions.
 The result will appear in the viewer window, the code will appear at the top right, and in several cases the output will be produced at the bottom right window.
 
-@figure{sample_overview_qt_viewers.png,"Comparison of 3D and 2D viewer windows",240} height=420px
+@figure{images/sample_overview_qt_viewers.png,"Comparison of 3D and 2D viewer windows",240}
 
 The 3D viewer window has a row of preset interface buttons to customize the visual output.
 
@@ -55,7 +57,7 @@ The **Geometry** category of the Overview focuses on primitive objects like dots
 These objects will appear in the viewer after the subcategory is selected.
 This section will demonstrate these entities both in 2D and 3D view mode and provide basic examples of parametric creation and data analysis.
 
-@figure{sample_overview_qt_geometry.png,"",240} height=440px
+@figure{images/sample_overview_qt_geometry.png,"",240}
 
 The usage of the functions shown in the Overview is described more thoroughly at the @ref occt_user_guides__modeling_data "Modeling data" section of the documentation.
 Additionally, @ref occt_user_guides__modeling_algos "Modeling Algorithms" are used in more complex cases.
@@ -63,7 +65,7 @@ Additionally, @ref occt_user_guides__modeling_algos "Modeling Algorithms" are us
 The **Topology** section of the Overview demonstrates the functions used in 3D operations.
 Multiple use cases are provided, including different object intersections, modifying and calculations.
 
-@figure{sample_overview_qt_topology.png,"",240} height=440px
+@figure{images/sample_overview_qt_topology.png,"",240}
 
 The subsections are grouped as shown on the screenshot before.
 Most shapes and primitive objects are introduced and then followed by a set of operations and interactions.
@@ -74,29 +76,25 @@ This may be inspected via [Poly_Triangulation Class Reference](https://dev.openc
 a part of the [Reference manual](https://dev.opencascade.org/doc/refman/html/index.html),
 an overall Open CASCADE code guide that may be used to inspect the key points in classes and their connections.
 
-@figure{sample_overview_qt_triangulation.png,"",240} height=440px
+@figure{images/sample_overview_qt_triangulation.png,"",240}
 
 The triangulation uses some of Mesh-related classes - see full description at @ref occt_user_guides__mesh "Mesh" documentation section.
 
 The **Data exchange** section provides examples of how to export and import files of several different formats.
 
-@figure{sample_overview_qt_xde.png,"",240} height=440px
+@figure{images/sample_overview_qt_xde.png,"",240}
 
 The **OCAF** section gives an introduction for the @ref intro_overview_ocaf "Open CASCADE Application Framework" functionality.
 To test these functions, create an object first (box or cylinder).
 After that, the object may be modified and saved. Actions are recorded and may be undone or redone.
 
-@figure{sample_overview_qt_ocaf.png,"",240} height=440px
+@figure{images/sample_overview_qt_ocaf.png,"",240}
 
 **Viewers** section demonstrates examples of the 2D and 3D visualization outputs.
 Check @ref occt_user_guides__visualization "Visualization" section of the documentation for a detailed description.
 In addition to these two samples, there are much more that might be of use to a new user based on their particular use case.
 
-Check Readme files in the sample directories to learn more about samples compilation.
-
-**Note:** source code for OCCTOverview is stored at 'samples/qt/OCCTOverview/src' folder in your OCCT root,
-and the source code files for examples presented in subsections are stored at 'samples/qt/OCCTOverview/code folder'.
-Several utility classes that are not presented in the example window may be found in example source code files.
+Check the @ref samples__draw_scripts "DRAW demo scripts" for executable examples available in the OCCT repository.
 
 The overall classes introduction may be found in the @ref occt_user_guides__foundation_classes "Foundation Classes" section of the documentation.
 The "Introduction" section contains short descriptions of the most massive entries in the documentation.

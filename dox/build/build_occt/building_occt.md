@@ -8,30 +8,43 @@ The list of required libraries depends on what OCCT modules will be used, and yo
 The typical minimum is **FreeType** (necessary for Visualization) and **Tcl/Tk** (for DRAW).
 See @ref intro_req "requirements on 3rdparty libraries" for a full list.
 
-The easiest way to install third-party libraries is to download archive with pre-built binaries, corresponding to your target configuration,
-from [Development Portal](https://dev.opencascade.org/resources/download/3rd-party-components).
-You can also build third-party libraries from their sources, see @ref build_upgrade_building_3rdparty for instructions.
+The easiest way to obtain third-party libraries is to enable vcpkg integration with `-DBUILD_USE_VCPKG=ON` -- OCCT will then download and build only the components required by the enabled `USE_*` options (e.g. `USE_TBB`, `USE_VTK`, `USE_FREEIMAGE`, `USE_RAPIDJSON`, `USE_DRACO`).
 
-On Linux and macOS we recommend using libraries maintained by distributive developers when possible.
+Pre-built third-party archives matching official releases are also attached to [OCCT GitHub Releases](https://github.com/Open-Cascade-SAS/OCCT/releases). On Linux and macOS prefer the libraries provided by your distribution's package manager. Manual builds from sources are still supported -- see @ref build_upgrade_building_3rdparty for instructions.
 
 @section build_requirements System Requirements
 
-* **CMake** version 3.10 or later (3.16+ recommended for precompiled headers support)
-* C++11 compliant compiler (required)
+* **CMake** 3.16 or later (precompiled headers, modern toolchains)
+* C++17 compliant compiler (required)
 * Supported platforms and compilers:
   * Windows:
-    - Visual Studio 2015 or later
+    - Visual Studio 2019 or later (2022 preferred — used by official CI)
     - MinGW-w64 7.3 or later
   * Linux:
-    - GCC 5.0 or later
-    - Clang 3.8 or later
+    - GCC 8.0 or later
+    - Clang 7.0 or later
   * macOS:
-    - Apple Clang 9.0 or later
-    - Xcode 9.0 or later
+    - Apple Clang 11.0 or later
+    - Xcode 11.0 or later
 
 @section build_occt_cmake Building with CMake
 
 This chapter describes the [CMake](https://cmake.org/download/)-based build process, which is the standard way to produce OCCT binaries from sources.
+
+@subsection build_occt_vcpkg_quickstart Quick start with vcpkg
+
+The fastest path to a working OCCT build, used by the official CI (`.github/workflows/`), is to let CMake provision third-party dependencies via [vcpkg](https://vcpkg.io). OCCT ships a `vcpkg.json` manifest at the repository root and pulls only the packages needed by the OCCT `USE_*` options you enable -- you do not need to manage vcpkg manifest features manually.
+
+~~~~
+cmake -S . -B build \
+      -DBUILD_USE_VCPKG=ON \
+      -DUSE_TBB=ON -DUSE_VTK=ON -DUSE_FREEIMAGE=ON \
+      -DUSE_RAPIDJSON=ON -DUSE_DRACO=ON \
+      -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release --parallel
+~~~~
+
+Toggle additional third-party features through the corresponding `USE_*` cache variables (e.g. `USE_FFMPEG`, `USE_OPENVR`, `USE_EIGEN`); enabling a `USE_*` flag automatically triggers vcpkg installation of the corresponding package. The `CMAKE_TOOLCHAIN_FILE` for vcpkg is detected automatically from `VCPKG_ROOT` -- pass it explicitly only if vcpkg is not on `PATH`. Manual third-party setup (see @ref build_upgrade_building_3rdparty "Build 3rd-parties") is still supported but no longer the recommended path.
 
 CMake is a tool that generates project files for the selected target build system (e.g. Unix makefiles) or IDE (e.g. Visual Studio).
 Here we describe the build procedure using Windows platform with Visual Studio as an example.
@@ -48,7 +61,7 @@ Different configurations should be built in different build directories to avoid
 For example:
 
     d:/occt/                   - the source directory
-    d:/tmp/occt-build-vc14-x64 - the build directory with the generated
+    d:/tmp/occt-build-vc143-x64 - the build directory with the generated
                                  solution and other intermediate files created during a CMake tool working
     d:/occt-install            - the installation directory that can
                                  contain several OCCT configurations
@@ -60,7 +73,7 @@ A command-line alternative, *ccmake* can also be used.
 
 If the command-line tool is used, run it from the build directory with a single argument indicating the source directory:
 
-    cd d:/tmp/occt-build-vc14-x64
+    cd d:/tmp/occt-build-vc143-x64
     ccmake d:/occt
 
 Then press *c* to configure.
@@ -72,17 +85,14 @@ If the GUI tool is used, run this tool without additional arguments and specify 
 @figure{/build/build_occt/images/cmake_image001.png}
 
 @note Each configuration of the project should be built in its own directory.
-When building multiple configurations it is suggested to indicate in the name of build directories the system, bitness and compiler (e.g., <i>d:/occt/build/win32-vc14</i>).
+When building multiple configurations it is suggested to indicate in the name of build directories the system, bitness and compiler (e.g., <i>d:/occt/build/win64-vc143</i>).
 
 Once the source and build directories are selected, "Configure" button should be pressed in order to start manual configuration process.
-It begins with selection of a target configurator. It is "Visual Studio 14 2015 Win64" in our example.
+It begins with selection of a target configurator. It is "Visual Studio 17 2022" in our example.
 
 @figure{/build/build_occt/images/cmake_image002.png}
 
-@note To build OCCT for **Universal Windows Platform (UWP)** specify the path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
-Alternatively, if you are using CMake from the command line add options `-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0`.
-Universal Windows Platform (UWP) is supported only on "Visual Studio 14 2015".
-File `CASROOT/samples/xaml/ReadMe.md` describes the building procedure of XAML (UWP) sample.
+@note When configuring OCCT for **Universal Windows Platform (UWP)**, use CMake from the command line with options `-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0`.
 
 Once "Finish" button is pressed, the first pass of the configuration process is executed.
 At the end of the process, CMake outputs the list of environment variables, which have to be properly specified for successful configuration.
@@ -125,11 +135,9 @@ The following table gives the full list of environment variables used at the con
 | 3RDPARTY_FREEIMAGE* | Path | Path to FreeImage binaries |
 | 3RDPARTY_TBB*  | Path | Path to TBB binaries |
 | 3RDPARTY_VTK_* | Path | Path to VTK binaries |
-| BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODUE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |
+| BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODULE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |
 | BUILD_YACCLEX | Boolean | Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and ExprIntrp functionality are generated automatically with Flex/Bison. Checking this option leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files |
-| BUILD_SAMPLES_MFC | Boolean | Indicates whether MFC samples should be built together with OCCT. This option is only relevant to Windows platforms |
-| BUILD_SAMPLES_QT  | Boolean | Indicates whether QT samples should be built together with OCCT. |
-| BUILD_Inspector | Boolean | Indicates whether Inspector should be built together with OCCT. |
+| BUILD_GTEST | Boolean | Enable building of the GoogleTest-based C++ unit tests located under `src/<Module>/<Toolkit>/GTests/`. Produces the `OpenCascadeGTest` executable in the build/install `bin/` directory |
 | BUILD_DOC_Overview | Boolean | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this option leads to automatic search of Doxygen binaries. Its building calls Doxygen command to generate the documentation in HTML format |
 | BUILD_PATCH | Path | Points to the directory recognized as a "patch" for OCCT. If specified, the files from this directory take precedence over the corresponding native OCCT sources. This way you are able to introduce patches to Open CASCADE Technology not affecting the original source distribution |
 | BUILD_WITH_DEBUG | Boolean | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing, etc. |
@@ -227,10 +235,9 @@ The directory structure is as follows:
     data            - data files for OCCT (brep, iges, stp)
     doc             - OCCT overview documentation in HTML format
     inc             - header files
-    samples         - samples
     src             - all required source files for OCCT
     tests           - OCCT test suite
-    win32\vc14\bind - binary files (installed 3rdparties and occt)
+    win64\vc143\bind - binary files (installed 3rdparties and occt)
               \libd - libraries (installed 3rdparties and occt)
 
 @note The above example is given for debug configuration.
@@ -238,7 +245,7 @@ However, it is generally safe to use the same installation directory for the rel
 In the latter case the contents of install directory will be enriched with subdirectories and files related to the release configuration.
 In particular, the binaries directory win64 will be expanded as follows:
 
-    \win32\vc14\bind
+    \win64\vc143\bind
                \libd
                \bin
                \lib
@@ -246,18 +253,18 @@ In particular, the binaries directory win64 will be expanded as follows:
 If CMake installation flags are enabled for the 3rd party products (e.g. `INSTALL_FREETYPE`), then the corresponding binaries will be copied to the same bin(d) and lib(d) directories together with the native binaries of OCCT.
 Such organization of libraries can be especially helpful if your OCCT-based software does not use itself the 3rd parties of Open CASCADE Technology (thus, there is no sense to pack them into dedicated directories).
 
-The installation folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*), samples (if they were installed) and overview.html (short-cut for installed OCCT overview documentation).
+The installation folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*) and overview.html (short-cut for installed OCCT overview documentation).
 
 @subsection build_occt_crossplatform_cmake Cross-compiling (Android)
 
 This section describes the steps to build OCCT libraries for Android from a complete source package with GNU make (makefiles).
-The steps on Windows 7 and Ubuntu 15.10 are similar. There is the only one difference: makefiles are built with mingw32-make on Windows and native GNU make on Ubuntu.
+The steps on Windows and Linux are similar. There is the only one difference: makefiles are built with mingw32-make on Windows and native GNU make on Ubuntu.
 
 Required tools (download and install if it is required):
-  - CMake 3.10+ (3.16+ recommended)
+  - CMake 3.16+
   - Android NDK r19+
   - Android SDK API level 21+
-  - For Windows: MinGW-w64 7.3+ or Visual Studio 2015+
+  - For Windows: MinGW-w64 7.3+ or Visual Studio 2019+
   - For Linux/macOS: GNU Make 4.0+
 
 Run GUI tool provided by CMake and:

@@ -20,7 +20,7 @@ To illustrate the use of classes provided in the 3D geometric modeling toolkits,
 
 @figure{/tutorial/images/tutorial_image001.png,"",240} height=350px
 
-In the tutorial we will create, step-by-step, a function that will model a bottle as shown above. You will find the complete source code of this tutorial, including the very function *MakeBottle* in the distribution of Open CASCADE Technology. The function body is provided in the file samples/qt/Tutorial/src/MakeBottle.cxx.
+In the tutorial we will create, step-by-step, a function that will model a bottle as shown above. You will find the complete source code of this tutorial in the appendix below.
 
 @subsection OCCT_TUTORIAL_SUB1_3 Model Specifications
 
@@ -50,7 +50,7 @@ This modeling requires four steps:
 
 To create the bottle's profile, you first create characteristic points with their coordinates as shown below in the (XOY) plane. These points will be the supports that define the geometry of the profile.
 
-@figure{tutorial/images/tutorial_image003.svg,"",466}
+@figure{/tutorial/images/tutorial_image003.svg,"",466}
 
 There are two classes to describe a 3D Cartesian point from its X, Y and Z coordinates in Open CASCADE Technology:
 
@@ -106,7 +106,7 @@ All *GC* classes provide a casting method to obtain a result automatically with 
 ~~~~{.cpp}
     GC_MakeSegment mkSeg (aPnt1, aPnt2);
     occ::handle<Geom_TrimmedCurve> aSegment1;
-    if(mkSegment.IsDone()){
+    if(mkSeg.IsDone()){
         aSegment1 = mkSeg.Value();
     }
     else {
@@ -153,8 +153,8 @@ To create an edge, you use the BRepBuilderAPI_MakeEdge class with the previously
 In Open CASCADE Technology, you can create edges in several ways. One possibility is to create an edge directly from two points, in which case the underlying geometry of this edge is a line, bounded by two vertices being automatically computed from the two input points. For example, anEdge1 and anEdge3 could have been computed in a simpler way:
 
 ~~~~{.cpp}
-    TopoDS_Edge anEdge1 = BRepBuilderAPI_MakeEdge(aPnt1, aPnt3);
-    TopoDS_Edge anEdge2 = BRepBuilderAPI_MakeEdge(aPnt4, aPnt5);
+    TopoDS_Edge anEdge1 = BRepBuilderAPI_MakeEdge(aPnt1, aPnt2);
+    TopoDS_Edge anEdge3 = BRepBuilderAPI_MakeEdge(aPnt4, aPnt5);
 ~~~~
 
 To connect the edges, you need to create a wire with the *BRepBuilderAPI_MakeWire* class. There are two ways of building a wire with this class:
@@ -706,7 +706,7 @@ If you want to know more and develop major projects using Open CASCADE Technolog
 @section sec6 Appendix
 
 
-Complete definition of MakeBottle function (defined in the file src/MakeBottle.cxx of the Tutorial):
+Complete definition of MakeBottle function:
 
 ~~~~{.cpp}
     TopoDS_Shape MakeBottle(const double myWidth, const double myHeight,
@@ -772,7 +772,9 @@ Complete definition of MakeBottle function (defined in the file src/MakeBottle.c
         BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, myNeckRadius, myNeckHeight);
         TopoDS_Shape myNeck = MKCylinder.Shape();
 
-        myBody = BRepAlgoAPI_Fuse(myBody, myNeck);
+        BRepAlgoAPI_Fuse aFuser(myBody, myNeck);
+        if (aFuser.IsDone())
+          myBody = aFuser.Shape();
 
         // Body : Create a Hollowed Solid
         TopoDS_Face   faceToRemove;
@@ -846,4 +848,3 @@ Complete definition of MakeBottle function (defined in the file src/MakeBottle.c
         return aRes;
     }
 ~~~~
-

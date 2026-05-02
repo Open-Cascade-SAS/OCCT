@@ -648,7 +648,7 @@ The input data for this step is the DS after updating Pave Blocks.
 | 4	| Access to the pave blocks of interfered shapes: <i>(PBi1, PBi2…PBiNi)</i> for edge *Ei* and <i>(PBj1, PBj2…PBjNj)</i> for  edge *Ej* | *BOPAlgo_PaveFiller::PerformEE()* |
 | 5	| Compute shrunk data for pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock", if it is necessary. | *BOPAlgo_PaveFiller::FillShrunkData()* |
 | 6	| Compute Edge/Edge interference for pave blocks *PBix* and *PBiy*. The result of the computation is a set of objects of type *IntTools_CommonPart* | *IntTools_EdgeEdge* |
-| 7.1 | For each *CommonPart* of type *VERTEX:*	Create new vertices *VNi (i =1, 2…,NbVN),* where *NbVN* is the number of new vertices. Intersect the vertices *VNi* using the steps Initialization and compute Vertex/Vertex interferences as follows: a) create a new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDs_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* |
+| 7.1 | For each *CommonPart* of type *VERTEX:*	Create new vertices *VNi (i =1, 2…,NbVN),* where *NbVN* is the number of new vertices. Intersect the vertices *VNi* using the steps Initialization and compute Vertex/Vertex interferences as follows: a) create a new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDS_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* |
 | 7.2 |	For each *CommonPart* of type *EDGE:*	Compute the coinciding connexity chains of  pave blocks <i>(PB1C, PB2C… PNnC)k, C=0, 1…nCs,</i> where *nCs* is the number of the connexity chains. Create common blocks <i>(CBc. C=0, 1…nCs)</i> from the chains. Attach the common blocks to the pave blocks. |	*BOPAlgo_Tools::PerformCommonBlocks()* |
 | 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock" | *BOPDS_PaveBlock:: AppendExtPave()* |
 | 9	| Split common blocks CBc by the paves. | *BOPDS_DS:: UpdateCommonBlock()* |
@@ -684,7 +684,7 @@ The input data for this step is the DS after computing Vertex/Face Interferences
 | 4	| Access to the pave blocks of interfered edge <i>(PBi1, PBi2…PBiNi)</i> for edge *Ei*	| *BOPAlgo_PaveFiller::PerformEF()* |
 | 5	| Compute shrunk data for pave blocks (in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock") if it is necessary. |	*BOPAlgo_PaveFiller::FillShrunkData()* |
 | 6	| Compute Edge/Face interference for pave block *PBix*, and face *nFj*. The result of the computation is a set of objects of type *IntTools_CommonPart* | *IntTools_EdgeFace* |
-| 7.1 |	For each *CommonPart* of type *VERTEX:* Create new vertices *VNi (i=1, 2…,NbVN),* where *NbVN* is the number of new vertices. Merge vertices *VNi* as follows: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDs_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* and *BOPAlgo_PaveFiller::PerformVertices1()* |
+| 7.1 |	For each *CommonPart* of type *VERTEX:* Create new vertices *VNi (i=1, 2…,NbVN),* where *NbVN* is the number of new vertices. Merge vertices *VNi* as follows: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDS_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* and *BOPAlgo_PaveFiller::PerformVertices1()* |
 | 7.2 | For each *CommonPart* of type *EDGE:* Create common blocks <i>(CBc. C=0, 1…nCs)</i> from pave blocks that lie on the faces. Attach the common blocks to the pave blocks. | *BOPAlgo_Tools::PerformCommonBlocks()* |
 | 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock". | *BOPDS_PaveBlock:: AppendExtPave()* |
 | 9	| Split pave blocks and common blocks *CBc* by the paves. |	*BOPAlgo_PaveFiller::PerformVertices1()*, *BOPDS_DS:: UpdatePaveBlock()* and *BOPDS_DS:: UpdateCommonBlock()* |
@@ -722,7 +722,7 @@ The input data for this step is the DS after computing Face/Face interferences.
 
 | No | Contents	| Implementation  |
 | :---- | :---- | :---- |
-| 1 | For each Face/Face interference *nFi, nFj*, retrieve @ref specification__boolean_4_6 "FaceInfo". Create draft vertices from intersection points *VPk (k=1, 2…, NbVP)*, where *NbVP* is the number of new vertices, and the draft vertex *VPk* is created from an intersection point if *VPk ≠ Vm (m = 0, 1, 2… NbVm)*, where *Vm* is an existing vertex for the faces *nFi* and *nF,j* (*On* or *In* in terms of *TopoDs_Shape*),  *NbVm* is the number of vertices existing on faces *nFi* and *nF,j* and ≠ -- means non-coincidence in terms of @ref specification__boolean_3_1_1 "Vertex/Vertex interference". | *BOPAlgo_PaveFiller::MakeBlocks()* |
+| 1 | For each Face/Face interference *nFi, nFj*, retrieve @ref specification__boolean_4_6 "FaceInfo". Create draft vertices from intersection points *VPk (k=1, 2…, NbVP)*, where *NbVP* is the number of new vertices, and the draft vertex *VPk* is created from an intersection point if *VPk ≠ Vm (m = 0, 1, 2… NbVm)*, where *Vm* is an existing vertex for the faces *nFi* and *nF,j* (*On* or *In* in terms of *TopoDS_Shape*),  *NbVm* is the number of vertices existing on faces *nFi* and *nF,j* and ≠ -- means non-coincidence in terms of @ref specification__boolean_3_1_1 "Vertex/Vertex interference". | *BOPAlgo_PaveFiller::MakeBlocks()* |
 | 2	| For each intersection curve *Cijk* | |	
 | 2.1 | Create paves PVc for the curve using existing vertices, i.e. vertices On or In (in terms of *FaceInfo*) for faces *nFi* and *nFj*. Append the paves *PVc* | *BOPAlgo_PaveFiller::PutPaveOnCurve()* and *BOPDS_PaveBlock::AppendExtPave()* |
 | 2.2 |	Create technological vertices *Vt*, which are the bounding points of an intersection curve (with the value of tolerance *Tol(Cijk)*). Each vertex *Vt* with parameter *Tt* on curve *Cijk* forms pave *PVt* on curve *Cijk*. Append technological paves. | *BOPAlgo_PaveFiller::PutBoundPaveOnCurve()* |
@@ -836,12 +836,12 @@ BOPAlgo_GlueEnum aGlue = BOPAlgo_GlueShift;
 aBuilder.SetGlue(aGlue);
 
 // Disabling/Enabling the check for inverted solids (default is true)
-Standard Boolean bCheckInverted = false;
+bool bCheckInverted = false;
 aBuilder.SetCheckInverted(bCheckInverted);
 
 // Set OBB usage (default is false)
 bool bUseOBB = true;
-aBuilder.SetUseOBB(buseobb);
+aBuilder.SetUseOBB(bUseOBB);
 
 // Perform the operation
 aBuilder.Perform();
@@ -2206,7 +2206,7 @@ const TopoDS_Shape& aResult = aMV.Shape(); // result of the operation
 
 #### Tcl Level
 To use the algorithm in Draw the command mkvolume has been implemented. The usage of this command is following:
-~~~~{.php}
+~~~~{.tcl}
 Usage: mkvolume r b1 b2 ... [-c] [-ni] [-ai]
 Options:
 -c - use this option to have input compounds considered as set of separate arguments (allows passing multiple arguments as one compound);
@@ -2309,7 +2309,7 @@ aResult = aCBuilder.Shape(); // the result
 #### DRAW usage
 
 The following set of new commands has been implemented to run the algorithm in DRAW Test Harness:
-~~~~{.php}
+~~~~{.tcl}
 bcbuild          : Initialization of the Cells Builder. Use: *bcbuild r*
 bcadd            : Add parts to result. Use: *bcadd r s1 (0,1) s2 (0,1) ... [-m material [-u]]*
 bcaddall         : Add all parts to result. Use: *bcaddall r [-m material [-u]]*
@@ -2320,7 +2320,7 @@ bcmakecontainers : Make containers from the parts added to result. Use: *bcmakec
 ~~~~
 
 Here is the example of the algorithm use on the DRAW level:
-~~~~{.php}
+~~~~{.tcl}
 psphere s1 15
 psphere s2 15
 psphere s3 15
@@ -2343,7 +2343,7 @@ bcremoveint res
 @subsection specification__boolean_10c_Cells_2 Examples
 
 The following simple example illustrates the possibilities of the algorithm working on a cylinder and a sphere intersected by a plane:
-~~~~{.php}
+~~~~{.tcl}
 pcylinder c 10 30 
 psphere s 15
 ttranslate s 0 0 30
@@ -2353,7 +2353,7 @@ mkface f p -25 30 -17 17
 
 @figure{/specification/boolean_operations/images/cells_algorithm_001.png,"Arguments",160} 
 
-~~~~{.php}
+~~~~{.tcl}
 bclearobjects
 bcleartools
 baddobjects c s f
@@ -2363,7 +2363,7 @@ bcbuild r
 
 #### 1. Common for all arguments
 
-~~~~{.php}
+~~~~{.tcl}
 bcremoveall
 bcadd res c 1 s 1 f 1
 ~~~~
@@ -2372,7 +2372,7 @@ bcadd res c 1 s 1 f 1
 
 #### 2. Common between cylinder and face
 
-~~~~{.php}
+~~~~{.tcl}
 bcremoveall
 bcadd res f 1 c 1
 ~~~~
@@ -2381,7 +2381,7 @@ bcadd res f 1 c 1
 
 #### 3. Common between cylinder and sphere
 
-~~~~{.php}
+~~~~{.tcl}
 bcremoveall
 bcadd res c 1 s 1
 ~~~~
@@ -2390,7 +2390,7 @@ bcadd res c 1 s 1
 
 #### 4. Fuse of cylinder and sphere
 
-~~~~{.php}
+~~~~{.tcl}
 bcremoveall
 bcadd res c 1 -m 1
 bcadd res s 1 -m 1
@@ -2401,7 +2401,7 @@ bcremoveint res
 
 #### 5. Parts of the face inside solids - FUSE(COMMON(f, c), COMMON(f, s))
 
-~~~~{.php}
+~~~~{.tcl}
 bcremoveall
 bcadd res f 1 s 1 -m 1
 bcadd res f 1 c 1 -m 1
@@ -2409,7 +2409,7 @@ bcadd res f 1 c 1 -m 1
 
 @figure{/specification/boolean_operations/images/cells_algorithm_006_1.png,"Parts of the face inside solids",160} 
 
-~~~~{.php}
+~~~~{.tcl}
 bcremoveint res
 ~~~~
 
@@ -2417,7 +2417,7 @@ bcremoveint res
 
 #### 6. Part of the face outside solids
 
-~~~~{.php}
+~~~~{.tcl}
 bcremoveall
 bcadd res f 1 c 0 s 0
 ~~~~
@@ -2426,7 +2426,7 @@ bcadd res f 1 c 0 s 0
 
 #### 7. Fuse operation (impossible using standard Boolean Fuse operation)
 
-~~~~{.php}
+~~~~{.tcl}
 bcremoveall
 bcadd res c 1 -m 1
 bcadd res s 1 -m 1
@@ -2733,7 +2733,7 @@ The following results are obtained using Basic Operations and the Fuzzy ones wit
 
 @figure{/specification/boolean_operations/images/boolean_image132.png,"Result of CUT operation obtained with Fuzzy Option",240}
 
-This example stresses not only the validity, but also the performance issue. The usage of Fuzzy option with the appropriate value allows processing the case much faster than with the pure Basic operation. The performance gain for the case is 45 (Processor: Intel(R) Core(TM) i5-3450 CPU @ 3.10 GHz).
+This example stresses not only the validity, but also the performance issue. The usage of Fuzzy option with the appropriate value allows processing the case much faster than with the pure Basic operation. The performance gain for the case is 45 (tested on Intel(R) Core(TM) i5-3450 CPU @ 3.10 GHz; results may vary depending on hardware).
 
 @subsection specification__boolean_11a_2 Gluing Operation
 
@@ -2777,7 +2777,7 @@ BOPAlgo_Builder aGF;
 //
 ....
 // setting the gluing option to speed up intersection of the arguments
-aGF.SetGlue(BOPAlgo_GlueShift)
+aGF.SetGlue(BOPAlgo_GlueShift);
 //
 ....
 ~~~~
@@ -2788,7 +2788,7 @@ For setting the Gluing options in DRAW it is necessary to call the <i>bglue</i> 
 * 1 - for partial coincidence;
 * 2 - for full coincidence
 
-~~~~{.php}
+~~~~{.tcl}
 bglue 1
 ~~~~
 
@@ -2836,7 +2836,7 @@ To enable the safe processing mode for the operation in DRAW, it is necessary to
 * 0 - default value, the safe mode is switched off;
 * 1 - the safe mode will be switched on.
 
-~~~~{.php}
+~~~~{.tcl}
 bnondestructive 1
 ~~~~
 
@@ -2867,7 +2867,7 @@ To enable/disable the classification of the solids in DRAW, it is necessary to c
 * 0 - disabling the classification;
 * 1 - default value, enabling the classification.
 
-~~~~{.php}
+~~~~{.tcl}
 bcheckinverted 0
 ~~~~
 
@@ -2893,7 +2893,7 @@ aGF.SetUseOBB(true);
 To enable/disable the usage of OBB in the operation in DRAW it is necessary to call the *buseobb* command with the appropriate value:
 * 0 - disabling the usage of OBB;
 * 1 - enabling the usage of OBB.
-~~~~{.php}
+~~~~{.tcl}
 buseobb 1
 ~~~~
 
@@ -2919,17 +2919,17 @@ Note that messages corresponding to errors and warnings are defined in resource 
 These messages can be localized; for that put translated version to separate file and load it in the application by call to *Message_MsgFile::Load()* .
 
 Here is the example of how to use this system:
-~~~~{.php}
+~~~~{.cpp}
 BOPAlgo_PaveFiller aPF;
 aPF.SetArguments(...);
 aPF.Perform();
 if (aPF.HasErrors()) {
   aPF.DumpErrors(std::cerr);
   //
-  if (aPF.HasError(STANDARD_TYPE(BOPAlgo_AlertNullInputShapes)) {
+  if (aPF.HasError(STANDARD_TYPE(BOPAlgo_AlertNullInputShapes))) {
     // some actions
   }
-  if (aPF.HasWarning(STANDARD_TYPE(BOPAlgo_AlertTooSmallEdge)) {
+  if (aPF.HasWarning(STANDARD_TYPE(BOPAlgo_AlertTooSmallEdge))) {
     // some actions
   }
   ...
@@ -2939,7 +2939,7 @@ if (aPF.HasErrors()) {
 DRAW commands executing Boolean operations output errors and warnings generated by these operations in textual form.
 Additional option allows saving shapes for which warnings have been generated, as DRAW variables. 
 To activate this option, run command *bdrawwarnshapes* with argument 1 (or with 0 to deactivate):
-~~~~{.php}
+~~~~{.tcl}
 bdrawwarnshapes 1
 ~~~~
 
@@ -2978,7 +2978,7 @@ But if the faces are fully coinciding, the result must be empty, and both faces 
 
 Example of the overlapping faces:
 
-~~~~{.php}
+~~~~{.tcl}
 plane p 0 0 0 0 0 1
 mkface f1 p -10 10 -10 10
 mkface f2 p 0 20 -10 10
@@ -3005,7 +3005,7 @@ Thus, each of the input edges will be Modified into its two splits.
 But in the CUT operation on the same edges, the tool edge will be Deleted from the result and, thus, will not have any Modified shapes.
 
 Example of the intersecting edges:
-~~~~{.php}
+~~~~{.tcl}
 line l1 0 0 0 1 0 0
 mkedge e1 l1 -10 10
 
@@ -3051,7 +3051,7 @@ Two intersecting edges will both have the intersection vertices Generated from t
 
 As for the operation with intersecting faces, consider the following example:
 
-~~~~{.php}
+~~~~{.tcl}
 plane p1 0 0 0 0 0 1
 mkface f1 p1 -10 10 -10 10
 
@@ -3115,7 +3115,7 @@ For controlling this possibility in DRAW the command **bsimplify** has been impl
 
 Here is the simple example of simplification of the result of Fuse operation of two boxes:
 
-~~~~{.php}
+~~~~{.tcl}
 bsimplify -f 1
 
 box b1 10 10 15
@@ -3205,7 +3205,7 @@ The following example illustrates how to use General Fuse operator:
 
 #### Tcl Level
 
-~~~~{.php}
+~~~~{.tcl}
 # prepare the arguments
 box b1 10 10 10 
 box b2 3 4 5 10 10 10 
@@ -3236,7 +3236,7 @@ The following example illustrates how to use the Splitter operator:
 #include <TopTools_ListOfShape.hxx>
 #include <BRepAlgoAPI_Splitter.hxx>
 //
-BRepAlgoAPI_BuilderAlgo aSplitter;
+BRepAlgoAPI_Splitter aSplitter;
 //
 // prepare the arguments
 // objects
@@ -3265,7 +3265,7 @@ const TopoDS_Shape& aResult = aSplitter.Shape();
 
 #### Tcl Level
 
-~~~~{.php}
+~~~~{.tcl}
 # prepare the arguments
 # objects
 box b1 10 10 10 
@@ -3300,7 +3300,7 @@ The following example illustrates how to use Common operation:
 ~~~~{.cpp}
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include < BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Common.hxx>
  {…
   bool bRunParallel;
   double aFuzzyValue;
@@ -3336,7 +3336,7 @@ The following example illustrates how to use Common operation:
 
 #### Tcl Level
 
-~~~~{.php}
+~~~~{.tcl}
 # prepare the arguments
 box b1 10 10 10 
 box b2 7 0 4 10 10 10 
@@ -3367,7 +3367,7 @@ The following example illustrates how to use Fuse operation:
 ~~~~{.cpp}
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include < BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
  {…
   bool bRunParallel;
   double aFuzzyValue;
@@ -3403,7 +3403,7 @@ The following example illustrates how to use Fuse operation:
 
 #### Tcl Level
 
-~~~~{.php}
+~~~~{.tcl}
 # prepare the arguments
 box b1 10 10 10 
 box b2 7 0 4 10 10 10 
@@ -3434,7 +3434,7 @@ The following example illustrates how to use Cut operation:
 ~~~~{.cpp}
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include < BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
  {…
   bool bRunParallel;
   double aFuzzyValue;
@@ -3470,7 +3470,7 @@ The following example illustrates how to use Cut operation:
 
 #### Tcl Level
 
-~~~~{.php}
+~~~~{.tcl}
 # prepare the arguments
 box b1 10 10 10 
 box b2 7 0 4 10 10 10 
@@ -3502,7 +3502,7 @@ The following example illustrates how to use Section operation:
 ~~~~{.cpp}
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include < BRepAlgoAPI_Section.hxx>
+#include <BRepAlgoAPI_Section.hxx>
  {…
   bool bRunParallel;
   double aFuzzyValue;
@@ -3538,7 +3538,7 @@ The following example illustrates how to use Section operation:
 
 #### Tcl Level
 
-~~~~{.php}
+~~~~{.tcl}
 # prepare the arguments
 box b1 10 10 10 
 box b2 3 4 5 10 10 10 

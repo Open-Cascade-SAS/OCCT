@@ -244,7 +244,7 @@ It is possible to create a point using a *gce* package class, then question it t
   ...
   // Initialization of Point1 and Point2
   gce_MakeLin2d L = gce_MakeLin2d(Point1,Point2);
-  if (L.Status() == gce_Done())
+  if (L.Status() == gce_Done)
   {
     gp_Lin2d l = L.Value();
   }
@@ -377,7 +377,7 @@ The adapted curve is created in the following way:
 The algorithm is then constructed with this object:
 
 ~~~~{.cpp}
-  GCPnts_UniformDeflection myAlgo ();
+  GCPnts_UniformDeflection myAlgo;
   double Deflection = ... ;
   myAlgo.Initialize (C, Deflection);
   if (myAlgo.IsDone())
@@ -407,7 +407,7 @@ These packages calculate the extrema of distance between:
 
 The *GeomAPI_ProjectPointOnCurve* class allows calculation of all extrema between a point and a curve.
 Extrema are the lengths of the segments orthogonal to the curve.
-The *GeomAPI_ProjectPointOnSurface* class allows calculation of all  extrema between a point and a surface.
+The *GeomAPI_ProjectPointOnSurf* class allows calculation of all  extrema between a point and a surface.
 Extrema are the lengths of the segments orthogonal to the surface.
 These classes use the "Projection" criteria for optimization.
 
@@ -623,7 +623,7 @@ This avoids redefinition of enumerations by remaining independent of modeling re
 The TopAbs package defines three notions:
 - **Type** - *TopAbs_ShapeEnum*;
 - **Orientation** - *TopAbs_Orientation*;
-- **State** - *StateTopAbs_State*.
+- **State** - *TopAbs_State*.
 
 @subsubsection occt_modat_5_2_1 Topological types
 
@@ -755,7 +755,7 @@ Change of coordinates
 
 *TopLoc_Datum3D* class represents a change of elementary coordinates.
 Such changes must be shared so this class inherits from *Standard_Transient*.
-The coordinate is represented by a transformation *gp_Trsfpackage*.
+The coordinate is represented by the *gp_Trsf* class from the *gp* package.
 This transformation has no scaling factor.
 
 @subsection occt_modat_5_3 Manipulating shapes and sub-shapes
@@ -864,6 +864,7 @@ The TopoDS package provides package methods for **casting** an object of the Top
 The following example shows a routine receiving an argument of the *TopoDS_Shape* type, then putting it into a variable V if it is a vertex or calling the method ProcessEdge if it is an edge.
 
 ~~~~{.cpp}
+  #include <iostream>
   #include <TopoDS_Vertex.hxx>
   #include <TopoDS_Edge.hxx>
 
@@ -871,7 +872,7 @@ The following example shows a routine receiving an argument of the *TopoDS_Shape
 
   void Process (const TopoDS_Shape& theShape)
   {
-    if (theShape.Shapetype() == TopAbs_VERTEX)
+    if (theShape.ShapeType() == TopAbs_VERTEX)
     {
       TopoDS_Vertex V;
       V = TopoDS::Vertex (theShape); // Also correct
@@ -995,7 +996,7 @@ The following steps are performed:
                   const Quantity_Color SharedEdgeColor)
   {
     // Store the edges in a Map
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edgemap;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edgeMap;
     TopExp::MapShapes (aShape, TopAbs_EDGE, edgeMap);
 
     // Create an array set to zero
@@ -1014,14 +1015,14 @@ The following steps are performed:
       while (expEdge.More())
       {
         // Increment the face count for this edge
-        ++faceCount[edgemap.FindIndex (expEdge.Current())];
+        ++faceCount[edgeMap.FindIndex (expEdge.Current())];
         expEdge.Next();
       }
       expFace.Next();
     }
 
     // Draw the edges of theMap
-    for (int i = 1; i <= edgemap.Extent(); i++)
+    for (int i = 1; i <= edgeMap.Extent(); i++)
     {
       switch (faceCount[i])
       {
@@ -1041,13 +1042,13 @@ The following steps are performed:
 
 @subsubsection occt_modat_5_5 Lists and Maps of Shapes
 
-**TopTools** package contains tools for exploiting the *TopoDS* data structure.
-It is an instantiation of the tools from *TCollection* package with the Shape classes of *TopoDS*.
+**TopTools** package contains tools for exploiting the *TopoDS* data structure: hashers (`TopTools_ShapeMapHasher`, `TopTools_OrientedShapeMapHasher`) and ready-to-use map / set types specialised for `TopoDS_Shape`:
 
-* *TopTools_Array1OfShape, HArray1OfShape* -- instantiation of the *NCollection_Array1* with *TopoDS_Shape*.
-* *TopTools_SequenceOfShape* -- instantiation of the *NCollection_Sequence* with *TopoDS_Shape*.
-* *TopTools_MapOfShape* - instantiation of the *NCollection_Map*. Allows the construction of sets of shapes.
-* *TopTools_IndexedMapOfShape* - instantiation of the *NCollection_IndexedMap*. Allows the construction of tables of shapes and other data structures.
+* *TopTools_MapOfShape* -- a hash set of shapes built on `NCollection_Map`.
+* *TopTools_IndexedMapOfShape* -- an indexed hash set of shapes built on `NCollection_IndexedMap`.
+* *TopTools_DataMapOfShapeShape*, *TopTools_IndexedDataMapOfShapeShape* and similar -- hash maps keyed by shape.
+
+For arrays and lists of shapes, use the `NCollection_*` templates directly with `TopoDS_Shape` (e.g. `NCollection_Array1<TopoDS_Shape>`, `std::vector<TopoDS_Shape>`); legacy package-level typedefs such as `TopTools_Array1OfShape` and `TopTools_SequenceOfShape` are kept for backward compatibility under `src/Deprecated/NCollectionAliases/` and should not be used in new code.
 
 With a *TopTools_Map*, a set of references to Shapes can be kept without duplication.
 The following example counts the size of a data structure as a number of *TShapes*.
@@ -1074,7 +1075,7 @@ One solution is to put all the Shapes in a Map so as to avoid counting them twic
 
 ~~~~{.cpp}
   #include <TopoDS_Iterator.hxx>
-  #include <TopTools_MapOfShape.hxx>
+  #include <NCollection_Map.hxx>
 
   void MapShapes (const TopoDS_Shape& aShape,
                   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& aMap)
@@ -1111,8 +1112,8 @@ The principal algorithm is as follows:
 ~~~~{.cpp}
   #include <TopoDS_Shape.hxx>
   #include <TopoDS_Iterator.hxx>
-  #include <TopTools_IndexedMapOfShape.hxx>
-  #include <TopTools_Array1OfShape.hxx>
+  #include <NCollection_IndexedMap.hxx>
+  #include <NCollection_Array1.hxx>
   #include <TopoDS_Location.hxx>
 
   TopoDS_Shape Copy (const TopoDS_Shape& aShape,
@@ -1149,13 +1150,13 @@ Only the underlying TShape is of great interest.
 
 ~~~~{.cpp}
   // Create an array to store the copies.
-  TopTools_Array1OfShapetheCopies (1, theMap.Extent());
+  NCollection_Array1<TopoDS_Shape> theCopies (1, theMap.Extent());
 
   // Use a recursivefunction to copy the first element.
-  void AuxiliaryCopy (int ,
-                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& ,
-                      NCollection_Array1<TopoDS_Shape>& ,
-                      const TopoDS_Builder& );
+  void AuxiliaryCopy (int theIndex,
+                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSource,
+                      NCollection_Array1<TopoDS_Shape>& theCopies,
+                      const TopoDS_Builder& theBuilder);
 
   AuxiliaryCopy (1, theMap, theCopies, aBuilder);
 
@@ -1171,7 +1172,7 @@ This method checks if the object has been copied; if not copied, then an empty c
 
 ~~~~{.cpp}
   void AuxiliaryCopy (int index,
-                      const TopTools_IndexedMapOfShapes& sources,
+                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& sources,
                       NCollection_Array1<TopoDS_Shape>& copies,
                       const TopoDS_Builder& aBuilder)
   {
@@ -1182,7 +1183,7 @@ This method checks if the object has been copied; if not copied, then an empty c
       // Insert copies of the sub-shapes.
       TopoDS_Shape S;
       TopLoc_Location Identity;
-      for (TopoDS_Iterator It (sources (index)), It.More(), It.Next())
+      for (TopoDS_Iterator It (sources (index)); It.More(); It.Next())
       {
         S = It.Value();
         S.Location (Identity);
@@ -1468,6 +1469,7 @@ Here is the example of optimal and not optimal OBB for the model using the set o
 
 Computation of the not optimal OBB in this case took 0.007 sec, optimal - 0.1 sec, which is about 14 times slower.
 Such performance is comparable to creation of the OBB for this shape by PCA approach (see below) which takes about 0.17 sec.
+(Note: these timings are illustrative and depend on the hardware used.)
 
 The computation of optimal OBB is controlled by the same *theIsOptimal* flag in the BRepBndLib::AddOBB method as for PCA algorithm.
 

@@ -96,7 +96,7 @@ Such types should be given own names using *typedef* statement, located in same-
 
 For example, see definition in the file *TColStd_IndexedDataMapOfStringString.hxx*:
 ~~~~{.cpp}
-typedef NCollection_IndexedDataMap<TCollection_AsciiString,TCollection_AsciiString,TCollection_AsciiString> NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> TColStd_IndexedDataMapOfStringString;
 ~~~~
 
 ### Names of functions
@@ -235,8 +235,17 @@ To improve the open source readability and, consequently, maintainability, the f
 
 ### Clang-format [MANDATORY]
 
-The source code should be formatted using the clang-format tool with the configuration file provided in the OCCT repository.
+The source code must be formatted using the clang-format tool with the configuration file provided in the OCCT repository (`.clang-format` at the project root).
 The version of clang-format should be 18.1.8 or higher.
+
+### Clang-tidy
+
+Source code should also be checked with clang-tidy where practical to ensure compliance with modern C++ best practices.
+Useful checks include:
+- `readability-braces-around-statements` -- braces required for all `if`/`for`/`while`/`else` blocks
+- `readability-identifier-naming` -- checks the/a/THE/an naming prefixes
+- `modernize-use-override` -- requires `override` specifier on virtual methods
+- `modernize-use-nullptr` -- use `nullptr` instead of `NULL` or `0`
 
 ### International language [MANDATORY]
 
@@ -293,14 +302,14 @@ See the following example:
 
 ~~~~{.cpp}
 
-// ================================================================================================
+//=================================================================================================
 
 void TellMeSmthGood()
 {
   ...
 }
 
-// ================================================================================================
+//=================================================================================================
 
 void TellMeSmthBad()
 {
@@ -322,23 +331,27 @@ while (expression)
 
 Entering a block increases and leaving a block decreases the indentation by one tabulation.
 
-### Single-line operators
+### Braces around statements [MANDATORY]
 
-Single-line conditional operators <i>(if, while, for,</i> etc.) can be written without brackets on the following line.
+Curly braces `{ }` are required for all compound statements (`if`, `for`, `while`, `else`, etc.), even when the body contains a single statement.
+The clang-tidy `readability-braces-around-statements` check can be used to detect violations of this rule.
 
 ~~~~{.cpp}
-if (!myIsInit) return false; // bad
+if (!myIsInit) return false; // WRONG - missing braces
 
-if (thePtr == nullptr)                // OK
+if (thePtr == nullptr)       // WRONG - missing braces
   return false;
 
-if (!theAlgo.IsNull())                // preferred
+if (!theAlgo.IsNull())       // CORRECT
+{
+  DoSomething();
+}
+
+for (int anIdx = 0; anIdx < aSize; ++anIdx) // CORRECT
 {
   DoSomething();
 }
 ~~~~
-
-Having all code in the same line is less convenient for debugging.
 
 ### Comparison expressions with constants
 
@@ -873,6 +886,15 @@ for (int anIter = 0; anIter < 4096; ++anIter)
 
 since linear access does not invalidate cache too often.
 
+@section occt_coding_rules_testing Testing
+
+OCCT ships with two complementary test runners; new code is expected to be covered by at least one of them:
+
+* **DRAW Tcl tests** (under `tests/`) -- the primary regression suite, exercised through DRAW commands. See @ref occt_contribution__tests "Automated Test System" for layout, naming, `TODO`/`REQUIRED`/`BAD` conventions and how to add a new case.
+* **OpenCascadeGTest** (under `src/<Module>/<Toolkit>/GTests/`) -- a GoogleTest-based C++ unit test runner, enabled at configure time with `-DBUILD_GTEST=ON` and producing the `OpenCascadeGTest` executable in the build/install `bin/` directory. Use it for unit-level tests of C++ APIs that are awkward to drive from DRAW. Add new test files to the corresponding `GTests/FILES.cmake`. Use the project's standard naming convention `TestFixture.MethodOrFeature_Scenario_ExpectedBehavior` for test names. Default to GTest assertions (`EXPECT_*` / `ASSERT_*`); use `EXPECT_NEAR` with `Precision::Confusion()` / `Precision::Angular()` for geometric / direction comparisons; wrap intentional `Standard_*` exception assertions in `#ifndef No_Exception` and cast the call with `(void)` to silence `[[nodiscard]]`.
+
+Refactors that affect public behaviour should add or update tests in the same PR; bug-fix PRs are expected to include a minimal regression test that fails before the fix and passes after.
+
 @section occt_coding_rules_10 Draw Harness command
 
 Draw Harness provides TCL interface for OCCT algorithms.
@@ -925,7 +947,7 @@ Information printed into Draw Interpreter should be well-structured to allow usa
 Any command with a long list of obligatory parameters should be considered as ill-formed by design.
 Optional parameters should start with flag name (with '-' prefix) and followed by its values:
 
-~~~~{.php}
+~~~~{.tcl}
 myCommand -flag1 value1 value2 -flag2 value3
 ~~~~
 
@@ -946,14 +968,14 @@ Functions *Draw::Atof()* and *Draw::Atoi()* support expressions and read values 
     aFlag.LowerCase(); //!< for case insensitive comparison
     if (aFlag == "position")
     {
-      if ((anArgIt + 3) >= theArgsNb)
+      if ((anArgIter + 3) >= theArgsNb)
       {
         std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
         return 1;
       }
-      aPosition[0] = Draw::Atof (theArgVec[++anArgIt]);
-      aPosition[1] = Draw::Atof (theArgVec[++anArgIt]);
-      aPosition[2] = Draw::Atof (theArgVec[++anArgIt]);
+      aPosition[0] = Draw::Atof (theArgVec[++anArgIter]);
+      aPosition[1] = Draw::Atof (theArgVec[++anArgIter]);
+      aPosition[2] = Draw::Atof (theArgVec[++anArgIter]);
     }
     else
     {
@@ -978,12 +1000,12 @@ public: //! @name public methods
   //! @return squared value
   Standard_Export double Square (const double theValue);
 
-private: //! \@name private methods
+private: //! @name private methods
 
   //! Auxiliary method
   void increment();
 
-private: //! \@name private fields
+private: //! @name private fields
 
   int myCounter; //!< usage counter
 
@@ -994,20 +1016,17 @@ private: //! \@name private fields
 
 ~~~~{.cpp}
 #include <Package_Class.hxx>
-// ==========================================================
-// function : Square
-// purpose  : Method computes the square value
-// ==========================================================
+
+//=================================================================================================
+
 double Package_Class::Square (const double theValue)
 {
   increment();
   return theValue * theValue;
 }
 
-// ==========================================================
-// function : increment
-// purpose  :
-// ==========================================================
+//=================================================================================================
+
 void Package_Class::increment()
 {
   ++myCounter;
@@ -1050,7 +1069,7 @@ vdump $imagedir/${casename}.png 512 512
 ~~~~
 
 ### GLSL program:
-~~~~{.cpp}
+~~~~{.glsl}
 vec3 Ambient;  //!< Ambient  contribution of light sources
 vec3 Diffuse;  //!< Diffuse  contribution of light sources
 vec3 Specular; //!< Specular contribution of light sources

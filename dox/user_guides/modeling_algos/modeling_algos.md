@@ -94,7 +94,7 @@ int nb = Intersector.NbPoints();
 
 
 ~~~~{.cpp}
-gp_Pnt& P = Intersector.Point(Index); 
+const gp_Pnt& P = Intersector.Point(Index); 
 ~~~~
 
 Where *Index* is an  integer between 1 and *nb*, calls the intersection points.
@@ -109,12 +109,12 @@ GeomAPI_IntSS Intersector(S1, S2, Tolerance);
 Once the *GeomAPI_IntSS* object has been created, it can be interpreted. 
 
 ~~~~{.cpp}
-int nb = Intersector. NbLines(); 
+int nb = Intersector.NbLines(); 
 ~~~~
 Calls the number of intersection curves.
 
 ~~~~{.cpp}
-occ::handle<Geom_Curve> C = Intersector.Line(Index) 
+occ::handle<Geom_Curve> C = Intersector.Line(Index);
 ~~~~
 Where *Index* is an  integer between 1 and *nb*, calls the intersection curves.
 
@@ -642,11 +642,10 @@ GeomPlate_BuildPlateSurface BPSurf(3,15,2);
 for (BRepTools_WireExplorer anExp(W); anExp.More(); anExp.Next()) 
 { 
 TopoDS_Edge E = anExp.Current(); 
-occ::handle<BRepAdaptor_HCurve> C = new 
-BRepAdaptor_HCurve(); 
-C-ChangeCurve().Initialize(E); 
-occ::handle<BRepFill_CurveConstraint> Cont= new 
-BRepFill_CurveConstraint(C,0); 
+occ::handle<BRepAdaptor_Curve> C = new BRepAdaptor_Curve (E);
+occ::handle<BRepFill_CurveConstraint> Cont = new
+BRepFill_CurveConstraint (C, 0);
+
 BPSurf.Add(Cont); 
 } 
 // Point constraint 
@@ -665,12 +664,11 @@ dmax = std::max(0.0001,10*BPSurf.G0Error());
 Tol=0.0001; 
 GeomPlate_MakeApprox 
 Mapp(PSurf,Tol,MaxSeg,MaxDegree,dmax,CritOrder); 
-Handle (Geom_Surface) Surf (Mapp.Surface()); 
-// create a face corresponding to the approximated Plate 
-Surface 
-double Umin, Umax, Vmin, Vmax; 
+occ::handle<Geom_Surface> aSurf = Mapp.Surface();
+// create a face corresponding to the approximated Plate
+double Umin, Umax, Vmin, Vmax;
 PSurf->Bounds( Umin, Umax, Vmin, Vmax); 
-BRepBuilderAPI_MakeFace MF(Surf,Umin, Umax, Vmin, Vmax); 
+BRepBuilderAPI_MakeFace MF(aSurf,Umin, Umax, Vmin, Vmax); 
 ~~~~
 
 @subsection occt_modalg_2_6 Projections
@@ -928,7 +926,7 @@ The algorithm  will function with any class inheriting *Geom_Surface*.
 *GeomAPI_ProjectPointOnSurf* is instantiated as in the following  example: 
 ~~~~{.cpp}
 gp_Pnt P; 
-Handle (Geom_Surface) S = new Geom_BezierSurface(args); 
+occ::handle<Geom_Surface> aSurf = new Geom_BezierSurface(...); 
 GeomAPI_ProjectPointOnSurf Proj (P, S); 
 ~~~~
 
@@ -1017,14 +1015,14 @@ gp_Pnt P1 = GeomAPI_ProjectPointOnSurf (P,S);
 Using these operators  makes coding easier when you only need the nearest point. In this way, 
 
 ~~~~{.cpp}
-GeomAPI_ProjectPointOnSurface Proj (P, S); 
+GeomAPI_ProjectPointOnSurf Proj (P, S); 
 gp_Pnt P1 = Proj.NearestPoint(); 
 ~~~~
 
 can be written more concisely as: 
 
 ~~~~{.cpp}
-gp_Pnt P1 = GeomAPI_ProjectPointOnSurface (P,S); 
+gp_Pnt P1 = GeomAPI_ProjectPointOnSurf (P,S); 
 ~~~~
 
 In the second case,  however, no intermediate *GeomAPI_ProjectPointOnSurf* object is created,  and it is impossible to access other solution points. 
@@ -1200,7 +1198,7 @@ The following example  creates a rectangle centered on the origin of dimensions 
 #include <gp_Circ.hxx> 
 #include <gp.hxx> 
 #include <TopoDS_Wire.hxx> 
-#include <TopTools_Array1OfShape.hxx> 
+#include <NCollection_Array1.hxx> 
 #include <BRepBuilderAPI_MakeWire.hxx> 
 
 // Use MakeArc method to make an edge and two vertices 
@@ -1228,11 +1226,8 @@ const double  R)
 NCollection_Array1<TopoDS_Shape> theEdges(1,8); 
 NCollection_Array1<TopoDS_Shape> theVertices(1,8); 
 
-// First create the circular edges and the vertices 
+// First create the circular edges and the vertices
 // using the MakeArc function described above. 
-void MakeArc(double, double, 
-double, double, 
-TopoDS_Shape&, TopoDS_Shape&,  TopoDS_Shape&); 
 
 double x = L/2 - R, y = H/2 - R; 
 MakeArc(x,-y,R,3.*PI/2.,theEdges(2),theVertices(2), 
@@ -1252,7 +1247,7 @@ theEdges(i) = BRepBuilderAPI_MakeEdge
 } 
 // Create the wire using the BRepBuilderAPI_MakeWire 
 BRepBuilderAPI_MakeWire MW; 
-for (i = 1; i <= 8; i++) 
+for (int i = 1; i <= 8; i++) 
 { 
 MW.Add(TopoDS::Edge(theEdges(i))); 
 } 
@@ -1275,7 +1270,8 @@ The basic usage of  *BRepBuilderAPI_MakePolygon* is to create a wire by adding v
 ~~~~{.cpp}
 #include <TopoDS_Wire.hxx> 
 #include <BRepBuilderAPI_MakePolygon.hxx> 
-#include <TColgp_Array1OfPnt.hxx> 
+#include <NCollection_Array1.hxx> 
+#include <gp_Pnt.hxx> 
 
 TopoDS_Wire ClosedPolygon(const NCollection_Array1<gp_Pnt>&  Points) 
 { 
@@ -1371,7 +1367,8 @@ A planar face can be  created from only a wire, provided this wire defines a pla
 
 ~~~~{.cpp}
 #include <TopoDS_Face.hxx> 
-#include <TColgp_Array1OfPnt.hxx> 
+#include <NCollection_Array1.hxx> 
+#include <gp_Pnt.hxx> 
 #include <BRepBuilderAPI_MakePolygon.hxx> 
 #include <BRepBuilderAPI_MakeFace.hxx> 
 
@@ -1421,11 +1418,12 @@ TopoDS_Wire W = BRepBuilderAPI_MakeWire(E1,E2,E3,E4);
 For a higher or unknown  number of edges the Add method must be used; for example, to build a wire from  an array of shapes (to be edges). 
 
 ~~~~{.cpp}
-TopTools_Array1OfShapes theEdges; 
-BRepBuilderAPI_MakeWire MW; 
-for (int i = theEdge.Lower(); 
-i <= theEdges.Upper(); i++) 
-MW.Add(TopoDS::Edge(theEdges(i)); 
+NCollection_Array1<TopoDS_Shape> theEdges (1, 10);
+BRepBuilderAPI_MakeWire MW;
+for (int i = theEdges.Lower(); i <= theEdges.Upper(); ++i)
+{
+  MW.Add (TopoDS::Edge (theEdges (i)));
+}
 TopoDS_Wire W = MW; 
 ~~~~
 
@@ -1710,7 +1708,7 @@ Boolean Operations have the following types of the arguments and produce the fol
 * For arguments having different shape types (e.g. SHELL / SOLID) the type of the resulting shape will be a COMPOUND, containing shapes of the type that is the same as that of the low type of the argument. Example: For SHELL/SOLID the result is a COMPOUND of SHELLs. 
 * For arguments with different shape types some of Boolean Operations can not be done using the default implementation, because of a non-manifold type of the result. Example: the FUSE operation for SHELL and SOLID can not be done, but the CUT operation can be done, where SHELL is the object and SOLID is the tool.
 * It is possible to perform Boolean Operations on arguments of the COMPOUND shape type. In this case each compound must not be heterogeneous, i.e. it must contain equidimensional shapes (EDGEs or/and WIREs, FACEs or/and SHELLs, SOLIDs). SOLIDs inside the COMPOUND must not contact (intersect or touch) each other. The same condition should be respected for SHELLs or FACEs, WIREs or EDGEs.
-* Boolean Operations for COMPSOLID type of shape are not supported.
+* Boolean Operations for COMPSOLID type of shape are not supported (note: COMPSOLID *is* supported as input for Defeaturing, see @ref occt_modalg_defeaturing).
 
 @subsection occt_modalg_5_2 Implementation
 
@@ -1749,12 +1747,11 @@ TopoDS_Shape S = BRepAlgoAPI_Cut(A,B);
 @figure{/user_guides/modeling_algos/images/modeling_algos_image037.png,"Section operation",220}
 
 ~~~~{.cpp}
-TopoDS_Shape A = ...,  TopoDS_ShapeB = ...; 
+TopoDS_Shape A = ...,  TopoDS_Shape B = ...; 
 TopoDS_Shape S =  BRepAlgoAPI_Section(A,B); 
 ~~~~
 
-
-
+> **Note:** The two-argument constructors shown above are convenient shortcuts retained for compatibility. For advanced use (multiple arguments, custom options), use the full API with `SetArguments()`, `SetTools()`, and `Build()`.
 
 @section occt_modalg_2_topo_tools Topological Tools
 
@@ -1789,14 +1786,14 @@ bool bShared = false; /* Defines whether the edges are shared or not */
 TopoDS_Shape aWires; /* resulting wires */
 int iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
 if (iErr) {
-  cout << "Error: Unable to build wires from given edges\n";
+  std::cout << "Error: Unable to build wires from given edges\n";
   return;
 }
 //
 TopoDS_Shape aFaces; /* resulting faces */
 bool bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
 if (!bDone) {
-  cout << "Error: Unable to build faces from wires\n";
+  std::cout << "Error: Unable to build faces from wires\n";
   return;
 }
 ~~~~
@@ -1902,8 +1899,8 @@ if (!ME.IsDone())
 { 
 // doing ME.Edge() or E = ME here 
 // would raise StdFail_NotDone 
-Standard_DomainError::Raise 
-(“ProcessPoints::Failed to createan edge”); 
+throw Standard_DomainError ("ProcessPoints::Failed to create an edge");
+
 } 
 TopoDS_Edge E = ME; 
 } 
@@ -1922,12 +1919,13 @@ TopoDS_Vertex& V2)
 { 
 BRepBuilderAPI_MakeEdge ME(P1,P2); 
 if (!ME.IsDone()) { 
-Standard_DomainError::Raise 
-(“MakeEdgeAndVerices::Failed  to create an edge”); 
+throw Standard_DomainError ("MakeEdgeAndVertices::Failed to create an edge");
+
 } 
 E = ME; 
-V1 = ME.Vextex1(); 
-V2 = ME.Vertex2(); 
+V1 = ME.Vertex1(); 
+V2 = ME.Vertex2();
+}
 ~~~~
 
 The class *BRepBuilderAPI_MakeEdge*  provides two methods *Vertex1* and  *Vertex2*, which return two vertices used to create the edge. 
@@ -2163,12 +2161,12 @@ Planar Fillet
 -------------
 
 ~~~~{.cpp}
-#include “BRepPrimAPI_MakeBox.hxx” 
-#include “TopoDS_Shape.hxx” 
-#include “TopExp_Explorer.hxx” 
-#include “BRepFilletAPI_MakeFillet2d.hxx” 
-#include “TopoDS.hxx” 
-#include “TopoDS_Solid.hxx” 
+#include <BRepPrimAPI_MakeBox.hxx> 
+#include <TopoDS_Shape.hxx> 
+#include <TopExp_Explorer.hxx> 
+#include <BRepFilletAPI_MakeFillet2d.hxx> 
+#include <TopoDS.hxx> 
+#include <TopoDS_Solid.hxx> 
 
 TopoDS_Shape FilletFace(const double a, 
 						const double  b, 
@@ -2271,7 +2269,7 @@ Also it is possible to create solid between shell, offset shell. This functional
 ~~~~{.cpp}
     BRepOffsetAPI_MakeThickSolid SolidMaker;
     SolidMaker.MakeThickSolidBySimple(Shell, OffsetValue);
-    if (myDone.IsDone())
+    if (SolidMaker.IsDone())
       Solid = SolidMaker.Shape();
 ~~~~
 
@@ -2380,12 +2378,12 @@ TopoDS_Shape myShape2 = ...;
 gp_Trsf T; 
 T.SetRotation(gp_Ax1(gp_Pnt(0.,0.,0.),gp_Vec(0.,0.,1.)), 
 2.*PI/5.); 
-BRepBuilderAPI_Transformation theTrsf(T); 
+BRepBuilderAPI_Transform theTrsf(T); 
 theTrsf.Perform(myShape1); 
-TopoDS_Shape myNewShape1 = theTrsf.Shape() 
-theTrsf.Perform(myShape2,true); 
-// Here duplication is forced 
-TopoDS_Shape myNewShape2 = theTrsf.Shape() 
+TopoDS_Shape myNewShape1 = theTrsf.Shape();
+theTrsf.Perform(myShape2,true);
+// Here duplication is forced
+TopoDS_Shape myNewShape2 = theTrsf.Shape();
 ~~~~
 
 @subsubsection occt_modalg_3b_2 Duplication
@@ -2394,10 +2392,10 @@ Use the  *BRepBuilderAPI_Copy* class to duplicate a shape. A new shape is thus c
 In the following example, a  solid is copied: 
 
 ~~~~{.cpp}
-TopoDS Solid MySolid; 
+TopoDS_Solid aSolid; 
 ....// Creates a solid 
 
-TopoDS_Solid myCopy = BRepBuilderAPI_Copy(mySolid); 
+TopoDS_Solid aCopy = BRepBuilderAPI_Copy(aSolid); 
 ~~~~
 
 @subsection occt_modalg_3a_1 Error Handling in the Topology API
@@ -2435,8 +2433,8 @@ BRepBuilderAPI_MakeEdge ME(P1,P2);
 if (!ME.IsDone()) { 
 // doing ME.Edge() or E = ME here 
 // would raise StdFail_NotDone 
-Standard_DomainError::Raise 
-(“ProcessPoints::Failed to create an edge”); 
+throw Standard_DomainError ("ProcessPoints::Failed to create an edge");
+
 } 
 TopoDS_Edge E = ME; 
 ~~~~
@@ -2465,7 +2463,7 @@ Let us define several terms:
 
 The sewing algorithm is one of the basic algorithms used for shape processing, therefore its quality is very important.
 
-Sewing algorithm is implemented in the class *BRepBuilder_Sewing*. This class provides the following methods: 
+Sewing algorithm is implemented in the class *BRepBuilderAPI_Sewing*. This class provides the following methods: 
 * loading initial data for global or local sewing; 
 * setting customization parameters, such as special operation modes, tolerances and output results;
 * applying analysis methods that can be used to obtain connectivity data required by external algorithms;
@@ -2627,7 +2625,7 @@ gp_Dir Extrusion (.,.,.);
 
 BRepFeat_MakePrism thePrism(Sbase, Fbase, TopoDS_Face(),  Extrusion, true, true); 
 
-thePrism, Perform(100.); 
+thePrism.Perform (100.); 
 if (thePrism.IsDone()) { 
 	TopoDS_Shape  theResult = thePrism; 
 	... 
@@ -2680,7 +2678,7 @@ BRepBuilderAPI_MakeFace MKF(surf, false);
 MKF.Add(MW.Wire());
 TopoDS_Face FP = MKF.Face();
 BRepLib::BuildCurves3d(FP);
-BRepFeat_MakeDPrism MKDP(S, FP, F, 10*PI180, true, true);
+BRepFeat_MakeDPrism MKDP(S, FP, F, 10. * M_PI / 180., true, true);
 MKDP.Perform(200);
 TopoDS_Shape res1 = MKDP.Shape();
 ~~~~
@@ -2840,8 +2838,7 @@ mkw.Add(BRepBuilderAPI_MakeEdge(p1,p2));
 p1 = p2; 
 mkw.Add(BRepBuilderAPI_MakeEdge(p2,gp_Pnt(0.,0.,0.))); 
 TopoDS_Shape S = BRepBuilderAPI_MakePrism(BRepBuilderAPI_MakeFace 
-	(mkw.Wire()),gp_Vec(gp_Pnt(0.,0.,0.),gp_P 
-	 nt(0.,100.,0.))); 
+	(mkw.Wire()),gp_Vec(gp_Pnt(0.,0.,0.),gp_Pnt(0.,100.,0.))); 
 TopoDS_Wire W = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt 
 	(50.,45.,100.), 
 gp_Pnt(100.,45.,50.))); 
@@ -2859,7 +2856,7 @@ TopoDS_Shape res = aform.Shape();
 
 The class *BRepFeat_Gluer* allows gluing two solids along faces. The contact faces of the glued  shape must not have parts outside the contact faces of the basic shape. Upon completion the algorithm gives the glued shape with cut out parts of faces inside the shape.
 
-The class is created or  initialized from two shapes: the “glued” shape and the basic shape (on which  the other shape is glued). 
+The class is created or  initialized from two shapes: the "glued" shape and the basic shape (on which  the other shape is glued). 
 Two *Bind* methods are  used to bind a face of the glued shape to a face of the basic shape and an edge  of the glued shape to an edge of the basic shape. 
 
 **Note** that every face and edge has to be  bounded, if two edges of two glued faces are  coincident they must be explicitly bounded.
@@ -2873,22 +2870,22 @@ NCollection_List<TopoDS_Shape> Lfglued;
 // Determination of the glued faces 
 ... 
 
-BRepFeat_Gluer theGlue(Sglue, Sbase); 
+BRepFeat_Gluer theGlue(Sglued, Sbase); 
 NCollection_List<TopoDS_Shape>::Iterator itlb(Lfbase); 
 NCollection_List<TopoDS_Shape>::Iterator itlg(Lfglued); 
-for (; itlb.More(); itlb.Next(), itlg(Next()) { 
+for (; itlb.More(); itlb.Next(), itlg.Next()) { 
 const TopoDS_Face& f1 = TopoDS::Face(itlg.Value()); 
 const TopoDS_Face& f2 = TopoDS::Face(itlb.Value()); 
 theGlue.Bind(f1,f2); 
-// for example, use the class FindEdges from LocOpe to 
-// determine coincident edges 
-LocOpe_FindEdge fined(f1,f2); 
+// for example, use the class FindEdges from LocOpe to
+// determine coincident edges
+LocOpe_FindEdges fined (f1, f2);
 for (fined.InitIterator(); fined.More(); fined.Next()) { 
 theGlue.Bind(fined.EdgeFrom(),fined.EdgeTo()); 
 } 
 } 
 theGlue.Build(); 
-if (theGlue.IsDone() { 
+if (theGlue.IsDone()) { 
 TopoDS_Shape  theResult = theGlue; 
 ... 
 } 
@@ -2988,7 +2985,7 @@ bool isHistoryNeeded = ...;  // History support
 
 BRepAlgoAPI_Defeaturing aDF;             // Defeaturing algorithm
 aDF.SetShape(aSolid);                    // Set the shape
-aDF.AddFacesToRemove(aFaces);            // Add faces to remove
+aDF.AddFacesToRemove(aFeatures);            // Add faces to remove
 aDF.SetRunParallel(bRunParallel);        // Define the processing mode (parallel or single)
 aDF.SetToFillHistory(isHistoryNeeded);   // Define whether to track the shapes modifications
 aDF.Build();                             // Perform the operation
@@ -3294,7 +3291,7 @@ The classes *HLRBRep_HLRToShape* and *HLRBRep_PolyHLRToShape* present a range of
 
 To perform extraction on an *HLRBRep_PolyHLRToShape* object, use *HLRBRep_PolyHLRToShape::Update*  function. 
 
-For an *HLRBRep_HLRToShape* object built from an *HLRBRepAlgo* object you can also highlight: 
+For an *HLRBRep_HLRToShape* object built from an *HLRBRep_Algo* object you can also highlight: 
   * visible isoparameters and
   * hidden isoparameters.
 
@@ -3309,11 +3306,11 @@ myAlgo = new HLRBRep_Algo();
 // Add Shapes into the algorithm 
 NCollection_List<TopoDS_Shape>::Iterator anIterator(myListOfShape); 
 for (;anIterator.More();anIterator.Next()) 
-myAlgo-Add(anIterator.Value(),myNbIsos); 
+myAlgo->Add(anIterator.Value(),myNbIsos); 
 
 // Set The Projector (myProjector is a 
 HLRAlgo_Projector) 
-myAlgo-Projector(myProjector); 
+myAlgo->Projector(myProjector); 
 
 // Build HLR 
 myAlgo->Update(); 
@@ -3357,7 +3354,7 @@ myPolyAlgo = new HLRBRep_PolyAlgo();
 NCollection_List<TopoDS_Shape>::Iterator 
 anIterator(myListOfShape); 
 for (;anIterator.More();anIterator.Next()) 
-myPolyAlgo-Load(anIterator.Value()); 
+myPolyAlgo->Load(anIterator.Value()); 
 
 // Set The Projector (myProjector is a 
 HLRAlgo_Projector) 
