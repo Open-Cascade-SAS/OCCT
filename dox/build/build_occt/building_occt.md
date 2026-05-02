@@ -139,7 +139,6 @@ The following table gives the full list of environment variables used at the con
 | BUILD_YACCLEX | Boolean | Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and ExprIntrp functionality are generated automatically with Flex/Bison. Checking this option leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files |
 | BUILD_GTEST | Boolean | Enable building of the GoogleTest-based C++ unit tests located under `src/<Module>/<Toolkit>/GTests/`. Produces the `OpenCascadeGTest` executable in the build/install `bin/` directory |
 | BUILD_DOC_Overview | Boolean | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this option leads to automatic search of Doxygen binaries. Its building calls Doxygen command to generate the documentation in HTML format |
-| BUILD_PATCH | Path | Points to the directory recognized as a "patch" for OCCT. If specified, the files from this directory take precedence over the corresponding native OCCT sources. This way you are able to introduce patches to Open CASCADE Technology not affecting the original source distribution |
 | BUILD_WITH_DEBUG | Boolean | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing, etc. |
 | BUILD_ENABLE_FPE_SIGNAL_HANDLER | Boolean | Enable/Disable the floating point exceptions (FPE) during DRAW execution only. Corresponding environment variable (CSF_FPE) can be changed manually in custom.bat/sh scripts without regeneration by CMake. |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
@@ -235,7 +234,7 @@ The directory structure is as follows:
     data            - data files for OCCT (brep, iges, stp)
     doc             - OCCT overview documentation in HTML format
     inc             - header files
-    src             - all required source files for OCCT
+    resources       - DrawResources, Shaders, XSTEPResource, textures, and other runtime data
     tests           - OCCT test suite
     win64\vc143\bind - binary files (installed 3rdparties and occt)
               \libd - libraries (installed 3rdparties and occt)
