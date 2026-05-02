@@ -785,6 +785,11 @@ Complete definition of MakeBottle function:
         {
           myBody = aFuser.Shape();
         }
+        else
+        {
+          // Fuse failed; proceed with unmodified myBody.
+          // In production code, report the error and handle the failure appropriately.
+        }
 
         // Body : Create a Hollowed Solid
         TopoDS_Face   faceToRemove;

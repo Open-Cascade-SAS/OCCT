@@ -1052,7 +1052,7 @@ The following steps are performed:
 * *TopTools_IndexedMapOfShape* -- an indexed hash set of shapes built on `NCollection_IndexedMap`.
 * *TopTools_DataMapOfShapeShape*, *TopTools_IndexedDataMapOfShapeShape* and similar -- hash maps keyed by shape.
 
-For arrays and lists of shapes, use the `NCollection_*` templates directly with `TopoDS_Shape` (e.g. `NCollection_Array1<TopoDS_Shape>`, `std::vector<TopoDS_Shape>`); legacy package-level typedefs such as `TopTools_Array1OfShape` and `TopTools_SequenceOfShape` are kept for backward compatibility under `src/Deprecated/NCollectionAliases/` and should not be used in new code.
+For arrays and lists of shapes, use the `NCollection_*` templates directly with `TopoDS_Shape` (e.g. `NCollection_Array1<TopoDS_Shape>`, `NCollection_Sequence<TopoDS_Shape>`); legacy package-level typedefs such as `TopTools_Array1OfShape` and `TopTools_SequenceOfShape` are kept for backward compatibility under `src/Deprecated/NCollectionAliases/` and should not be used in new code.
 
 With a *TopTools_Map*, a set of references to Shapes can be kept without duplication.
 The following example counts the size of a data structure as a number of *TShapes*.
