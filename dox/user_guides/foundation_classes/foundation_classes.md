@@ -1021,16 +1021,18 @@ Let see an example of NCollection template class instantiation for a sequence of
 typedef NCollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
 ~~~~
 
-For the case when a sequence needs to be managed by handle, use `occ::handle<NCollection_Sequence<T>>` directly:
+For the case when a sequence needs to be managed by handle, use `NCollection_HSequence<T>` (which inherits from both `NCollection_Sequence<T>` and `Standard_Transient`):
+
 ~~~~{.cpp}
-#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <gp_Pnt.hxx>
 typedef NCollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
+typedef NCollection_HSequence<gp_Pnt> MyPackage_HSequenceOfPnt;
 ...
-occ::handle<MyPackage_SequenceOfPnt> aSeq = new MyPackage_SequenceOfPnt();
+occ::handle<MyPackage_HSequenceOfPnt> aSeq = new MyPackage_HSequenceOfPnt();
 ~~~~
 
-The legacy `DEFINE_HSEQUENCE` macro is retained for compatibility with existing code, but new code should prefer direct use of `occ::handle<NCollection_Sequence<T>>`.
+The legacy `DEFINE_HSEQUENCE` macro is removed in OCCT 8.0.0. Existing code using it should be migrated to `NCollection_HSequence<T>` (the `migrate_hcollections.py` script in `adm/` automates this conversion).
 
 See more details about available collections in following sections.
 

@@ -927,7 +927,7 @@ The algorithm  will function with any class inheriting *Geom_Surface*.
 ~~~~{.cpp}
 gp_Pnt P; 
 occ::handle<Geom_Surface> aSurf = new Geom_BezierSurface(...); 
-GeomAPI_ProjectPointOnSurf Proj (P, S); 
+GeomAPI_ProjectPointOnSurf Proj (P, aSurf); 
 ~~~~
 
 To restrict the search  for normals within the given rectangular domain [U1, U2, V1, V2], use the  constructor <i>GeomAPI_ProjectPointOnSurf Proj (P, S, U1, U2, V1, V2)</i>

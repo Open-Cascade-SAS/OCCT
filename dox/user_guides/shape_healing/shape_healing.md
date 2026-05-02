@@ -1320,7 +1320,7 @@ ShapeUpgrade_ShapeConvertToBezier aConvToBez (theShape);
 aConvToBez.SetSurfaceConversion (true);
 aConvToBez.SetPlaneMode (true);
 aConvToBez.Perform();
-if (aConvToBez.Status(ShapeExtend_DONE)
+if (aConvToBez.Status(ShapeExtend_DONE))
 {
   TopoDS_Shape aResult = aConvToBez.Result();
 }

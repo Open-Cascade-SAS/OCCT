@@ -1640,30 +1640,30 @@ for (; anIterator.More(); anIterator.Next())
 
 ~~~~{.cpp}
 
-    // A virtual method  ::Arguments() returns a list of arguments of the function.  
-    CylinderDriver::Arguments( NCollection_List<TDF_Label>& args )  
-    {  
+    // A virtual method ::Arguments() returns a list of arguments of the function.
+    void CylinderDriver::Arguments( NCollection_List<TDF_Label>& args )
+    {
       // The direct arguments, located at sub-leaves of the function, are collected (see picture 2)
-      TDF_ChildIterator  cIterator( Label(), false );  
-      for (;  cIterator.More(); cIterator.Next() )  
-      {  
-        // Direct argument.  
-        TDF_Label  sublabel = cIterator.Value();  
-        args.Append(  sublabel );  
+      TDF_ChildIterator  cIterator( Label(), false );
+      for (;  cIterator.More(); cIterator.Next() )
+      {
+        // Direct argument.
+        TDF_Label  sublabel = cIterator.Value();
+        args.Append(  sublabel );
 
-        // The references to the external data are  checked.  
-        occ::handle<TDF_Reference>  ref;  
-        if (  sublabel.FindAttribute( TDF_Reference::GetID(), ref ) )  
-        {  
-          args.Append(  ref->Get() );  
+        // The references to the external data are  checked.
+        occ::handle<TDF_Reference>  ref;
+        if (  sublabel.FindAttribute( TDF_Reference::GetID(), ref ) )
+        {
+          args.Append(  ref->Get() );
         }
     }
-     
-    // A virtual method ::Results()  returns a list of result leaves.  
-    CylinderDriver::Results( NCollection_List<TDF_Label>& res )  
-    {  
-      // The result is kept at the function  label.  
-      res.Append(  Label() );  
+
+    // A virtual method ::Results() returns a list of result leaves.
+    void CylinderDriver::Results( NCollection_List<TDF_Label>& res )
+    {
+      // The result is kept at the function  label.
+      res.Append(  Label() );
     }
      
     // Execution of the function  driver.  
