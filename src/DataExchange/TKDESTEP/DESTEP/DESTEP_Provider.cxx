@@ -28,7 +28,9 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <OSD_OpenFile.hxx>
+
 #include <fstream>
+#include <mutex>
 
 IMPLEMENT_STANDARD_RTTIEXT(DESTEP_Provider, DE_Provider)
 
@@ -701,7 +703,8 @@ void DESTEP_Provider::personizeWS(occ::handle<XSControl_WorkSession>& theWS)
     occ::down_cast<STEPCAFControl_Controller>(theWS->NormAdaptor());
   if (aCntrl.IsNull())
   {
-    STEPCAFControl_Controller::Init();
+    static std::once_flag aInitFlag;
+    std::call_once(aInitFlag, []() { STEPCAFControl_Controller::Init(); });
     theWS->SelectNorm("STEP");
   }
 }

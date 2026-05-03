@@ -44,11 +44,20 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 
+namespace
+{
+void initStepCAFControlController()
+{
+  static std::once_flag aInitFlag;
+  std::call_once(aInitFlag, []() { STEPCAFControl_Controller::Init(); });
+}
+} // namespace
+
 // Test OCC33657 (case 1): STEPCAFControl_Reader and STEPCAFControl_Writer constructors
 // can be created and destroyed in parallel without crashing.
 TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelConstructors)
 {
-  STEPCAFControl_Controller::Init();
+  initStepCAFControlController();
   EXPECT_NO_FATAL_FAILURE(OSD_Parallel::For(0, 1000, [](int) {
     STEPCAFControl_Reader aReader;
     aReader.SetColorMode(true);
@@ -61,7 +70,7 @@ TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelConstructors)
 // Each thread creates its own shape and writer to avoid shared-state issues.
 TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelWritersToBuffer)
 {
-  STEPCAFControl_Controller::Init();
+  initStepCAFControlController();
   std::atomic<bool> allOk{true};
   EXPECT_NO_FATAL_FAILURE(OSD_Parallel::For(0, 100, [&](int) {
     const TopoDS_Shape aShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
@@ -79,7 +88,7 @@ TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelWritersToBuffer)
 // Test OCC33657 (case 2): STEPControl_Reader can read a STEP stream in parallel without crashing.
 TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelReadersFromStream)
 {
-  STEPCAFControl_Controller::Init();
+  initStepCAFControlController();
 
   // Write a box to a STEP stream once, then read it in parallel.
   const TopoDS_Shape aShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
@@ -102,7 +111,7 @@ TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelReadersFromStream)
 // and produce a shape with the same topology as the source.
 TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelReadersAndWriters)
 {
-  STEPCAFControl_Controller::Init();
+  initStepCAFControlController();
 
   // Acquire source shape and analyze its topology.
   const TopoDS_Shape          aSourceShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
@@ -149,7 +158,7 @@ TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelReadersAndWriters)
 // whose visibility is set to false. Verifies the write completes successfully.
 TEST(STEPCAFControl_ControllerTest, OCC23951_WriteDocumentWithVisibility)
 {
-  STEPCAFControl_Controller::Init();
+  initStepCAFControlController();
 
   occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
   const TopoDS_Shape            aBox = BRepPrimAPI_MakeBox(1, 1, 1).Shape();
@@ -236,7 +245,7 @@ TEST(STEPCAFControl_ControllerTest, OCC23951_WriteDocumentWithVisibility)
 // Verifies that the STEP stream contains the expected "Point1" name.
 TEST(STEPCAFControl_ControllerTest, OCC23950_WriteDocumentWithVertexName)
 {
-  STEPCAFControl_Controller::Init();
+  initStepCAFControlController();
 
   occ::handle<TDocStd_Document> aDoc    = new TDocStd_Document("dummy");
   const TopoDS_Shape            aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(75, 0, 0));
