@@ -26,6 +26,8 @@
 #include "../RWStepAP214/RWStepAP214.pxx"
 #include <Standard_Type.hxx>
 #include <Standard_Version.hxx>
+#include <DESTEP_Parameters.hxx>
+#include <ShapeProcess.hxx>
 #include <STEPControl_ActorRead.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
@@ -342,6 +344,13 @@ STEPControl_Controller::STEPControl_Controller()
 
   occ::handle<STEPControl_ActorWrite> ActWrite = new STEPControl_ActorWrite;
   myAdaptorWrite                               = ActWrite;
+
+  ActWrite->SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters(),
+                                  XSAlgo_ShapeProcessor::ParameterMap{});
+  ShapeProcess::OperationsFlags aDefaultProcFlags;
+  aDefaultProcFlags.set(ShapeProcess::Operation::SplitCommonVertex);
+  aDefaultProcFlags.set(ShapeProcess::Operation::DirectFaces);
+  ActWrite->SetShapeProcessFlags(aDefaultProcFlags);
 
   occ::handle<StepSelect_WorkLibrary> swl = new StepSelect_WorkLibrary;
   swl->SetDumpLabel(1);

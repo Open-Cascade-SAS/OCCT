@@ -718,16 +718,12 @@ void XSAlgo_ShapeProcessor::SetShapeFixParameters(
   const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters,
   XSAlgo_ShapeProcessor::ParameterMap&       theTargetParameterMap)
 {
-  theTargetParameterMap.Clear();
   XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, theTargetParameterMap);
   for (XSAlgo_ShapeProcessor::ParameterMap::Iterator aParamIter(theAdditionalParameters);
        aParamIter.More();
        aParamIter.Next())
   {
-    if (!theTargetParameterMap.IsBound(aParamIter.Key()))
-    {
-      theTargetParameterMap.Bind(aParamIter.Key(), aParamIter.Value());
-    }
+    SetParameter(aParamIter.Key().ToCString(), aParamIter.Value(), false, theTargetParameterMap);
   }
 }
 
@@ -763,17 +759,15 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*                          th
                                          const bool                           theIsReplace,
                                          XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
-  if (theIsReplace)
+  const TCollection_AsciiString* anExisting = theMap.Seek(theKey);
+  if (anExisting != nullptr)
   {
-    theMap.Bind(theKey, theValue);
-  }
-  else
-  {
-    if (!theMap.IsBound(theKey))
+    if (!theIsReplace || *anExisting == theValue)
     {
-      theMap.Bind(theKey, theValue);
+      return;
     }
   }
+  theMap.Bind(theKey, theValue);
 }
 
 //=============================================================================

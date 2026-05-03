@@ -155,7 +155,6 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&          
     occ::down_cast<STEPControl_ActorWrite>(WS()->NormAdaptor()->ActorWrite());
   ActWrite->SetGroupMode(
     occ::down_cast<StepData_StepModel>(thesession->Model())->InternalParameters.WriteAssembly);
-  InitializeMissingParameters();
   return thesession->TransferWriteShape(sh, compgraph, theProgress);
 }
 
