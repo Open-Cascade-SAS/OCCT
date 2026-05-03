@@ -20,8 +20,8 @@
 !/dox/
 !/src/
 !/tests/
-!/tools/
 !/.github/
+!/samples/
 
 # data/ level: Ignore everything except tracked subdirectories
 /data/*
