@@ -1557,8 +1557,24 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
       // modified by NIZHNY-MKK  Fri Oct 27 12:39:37 2000
       int IndexOfPathPointDoNotCheck = 0;
       int aNbIter                    = 10;
+      int aNbTotalIter               = 0;
+      // Arbitrary limit of total number of iterations to prevent
+      // infinite loops in degenerate cases. Normal curves rarely
+      // require more then hundreds of iterations, so 10000 is big
+      // enough to assume we are possibly in a degenerate case.
+      constexpr int THE_MAX_TOTAL_ITER = 10000;
       while (!Arrive)
-      { //    as one of stop tests is not checked
+      {
+        if (++aNbTotalIter > THE_MAX_TOTAL_ITER)
+        {
+          // If in 10000 iterations we didn't advance to the next point,
+          // we have degenerate case (e.g., edge-on faces where the contour
+          // function is near-zero everywhere).
+          if (CurrentLine->NbPoints() == 1)
+          {
+            break;
+          }
+        }
         Cadre = Cadrage(BornInf, BornSup, UVap, PasC, StepSign);
         //  Border?
 
