@@ -3,7 +3,7 @@ puts "Restored CPU circular grid path: V3d_CircularGrid + ActivateGrid"
 puts "=================================================================="
 # Exercises the legacy CPU circular grid (rings + spokes drawn into a
 # Graphic3d_Structure). The shader path with arc support is covered by
-# circ_shader and bounded_circ.
+# circ_gpu and bounded_circ.
 
 pload MODELING VISUALIZATION
 

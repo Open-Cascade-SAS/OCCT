@@ -5045,9 +5045,12 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   double                   aNewArcStart = 0.0, aNewArcEnd = 0.0;
   Quantity_Color           aNewColor, aNewTenthColor;
   bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasRadius = false,
-       hasZOffset                   = false;
-  bool                   isGpuGrid = false, hasGridOff = false, hasScale = false, hasArc = false;
-  bool                   hasColor = false, hasTenthColor = false;
+       hasZOffset = false;
+  bool isGpuGrid = false, hasGridOff = false, hasScale = false, hasArc = false;
+  bool hasColor = false, hasTenthColor = false;
+  // Tracks whether any GPU-grid-only option was passed; used to warn when
+  // such options are silently ignored on the CPU path.
+  bool                   hasGpuOnlyOpt = false;
   Aspect_GridParams      aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
@@ -5155,6 +5158,9 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArgIter + 3 < theArgNb && (anArg == "-color"))
     {
+      // Colors feed both backends through different sinks: aGridParams here
+      // for the GPU path, and Aspect_Grid::SetColors at the end of this
+      // function for the CPU path (so V3d_Viewer::syncViews picks them up).
       hasColor  = true;
       aNewColor = Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
                                  Draw::Atof(theArgVec[anArgIter + 2]),
@@ -5175,25 +5181,30 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-scale")
     {
-      hasScale = true;
+      hasScale      = true;
+      hasGpuOnlyOpt = true;
       aGridParams.SetScale(Draw::Atof(theArgVec[++anArgIter]));
     }
     else if (anArgIter + 1 < theArgNb && (anArg == "-linethickness" || anArg == "-thickness"))
     {
+      hasGpuOnlyOpt = true;
       aGridParams.SetLineThickness(Draw::Atof(theArgVec[++anArgIter]));
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-background")
     {
+      hasGpuOnlyOpt  = true;
       const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsBackground(aVal != 0);
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-drawaxis")
     {
+      hasGpuOnlyOpt  = true;
       const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsDrawAxis(aVal != 0);
     }
     else if (anArgIter + 1 < theArgNb && (anArg == "-viewadaptive" || anArg == "-adaptive"))
     {
+      hasGpuOnlyOpt  = true;
       const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsViewAdaptive(aVal != 0);
     }
@@ -5241,6 +5252,16 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   {
     Message::SendFail("Syntax error: 'off' cannot be combined with GPU grid display");
     return 1;
+  }
+
+  // GPU-only options (-scale, -lineThickness, -background, -drawAxis,
+  // -viewAdaptive) are stored on Aspect_GridParams and consumed only by the
+  // shader path. Silently ignoring them on the CPU path leaves the user
+  // wondering why nothing changed; warn explicitly.
+  if (hasGpuOnlyOpt && !isGpuGrid && !hasGridOff)
+  {
+    Message::SendWarning("vgrid: -scale / -lineThickness / -background / -drawAxis / "
+                         "-viewAdaptive are GPU-grid only; pass -gpu (or -type gpu) to apply.");
   }
 
   if (isGpuGrid || hasGridOff)

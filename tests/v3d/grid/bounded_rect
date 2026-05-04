@@ -1,6 +1,9 @@
 puts "=================================================================="
-puts "0030979: Bounded rectangular shader grid (-size X Y clips the area)"
+puts "0030979: Bounded rectangular GPU grid (-size X Y clips the area)"
 puts "=================================================================="
+# -gpu routes through the shader path so that -size truly clips the
+# rendered grid (Size on Aspect_RectangularGrid bounds the CPU graphic too,
+# but the shader path is the one this PR's bounding pipeline targets).
 
 pload MODELING VISUALIZATION
 
@@ -14,17 +17,17 @@ vfit
 vzoom 0.5
 
 # Full square bound: 4x4 world-unit patch centered at plane origin.
-vgrid -type rect -step 0.5 0.5 -size 4 4
+vgrid -gpu -type rect -step 0.5 0.5 -size 4 4
 vdump $imagedir/${casename}_full_square.png
 
 # Rectangular bound with different extents in X/Y.
 # NOTE: vgrid -size expects strictly positive X and Y values.
-vgrid -type rect -step 0.5 0.5 -size 4 8
+vgrid -gpu -type rect -step 0.5 0.5 -size 4 8
 vdump $imagedir/${casename}_strip_x.png
 
 # Same width but with a slight z-offset so the grid sinks below the box's
 # top face - used to avoid z-fighting in dense-coplanar scenes.
-vgrid -type rect -step 0.5 0.5 -size 4 4 -zoffset -0.01
+vgrid -gpu -type rect -step 0.5 0.5 -size 4 4 -zoffset -0.01
 vdump $imagedir/${casename}_zoffset.png
 
 vgrid off

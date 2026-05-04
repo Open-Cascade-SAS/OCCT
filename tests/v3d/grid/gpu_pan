@@ -1,5 +1,5 @@
 puts "======================================================"
-puts "0030979: shader infinite grid stays fixed during panning"
+puts "0030979: shader GPU grid stays fixed during panning"
 puts "======================================================"
 
 pload MODELING VISUALIZATION
@@ -12,7 +12,7 @@ vdisplay b -dispMode 1
 vfit
 vzoom 0.2
 
-vgrid -type inf -background 1
+vgrid -type gpu -background 1
 vdump $imagedir/${casename}_before.png
 
 vpan 80 40

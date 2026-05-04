@@ -1,9 +1,9 @@
 puts "=================================================================="
-puts "Toggle between CPU grid and shader grid in the same view"
+puts "Toggle between CPU grid and GPU shader grid in the same view"
 puts "=================================================================="
 # Verifies that the two grid backends do not corrupt each other when toggled:
 #   1) CPU grid active             -> classical bounded grid visible
-#   2) switch to shader (-type inf) -> shader grid only on this view
+#   2) switch to shader (-type gpu) -> shader grid only on this view
 #   3) switch back to CPU           -> CPU grid visible again, shader gone
 # Regression for the per-view shader / viewer-wide CPU coexistence policy.
 
@@ -22,10 +22,10 @@ vzoom 0.2
 vgrid -type rect -step 0.5 0.5
 vdump $imagedir/${casename}_cpu.png
 
-# (2) Switch the same view to the shader grid. vgrid -type inf calls
+# (2) Switch the same view to the shader grid. vgrid -type gpu calls
 # V3d_View::GridDisplay which erases the viewer-wide CPU grid rendering
 # (snap geometry on Aspect_*Grid is preserved) and enables the shader.
-vgrid -type inf -step 0.5 0.5
+vgrid -type gpu -step 0.5 0.5
 vdump $imagedir/${casename}_shader.png
 
 # (3) Re-activate the classical CPU grid; SetGrid path must erase the shader

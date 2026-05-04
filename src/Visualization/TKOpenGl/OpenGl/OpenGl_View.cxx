@@ -77,6 +77,66 @@ static bool checkWasFailedFbo(const occ::handle<OpenGl_FrameBuffer>& theFboToChe
                            theFboRef->NbSamples());
 }
 
+//! Unproject window-space (theWinX, theWinY) to a near/far ray, intersect the
+//! grid plane, express the hit in plane-local (X, Y). Returns FALSE if the
+//! unprojection fails or the ray is near-parallel to the plane.
+static bool unprojectGridPointToPlaneLocal(const occ::handle<OpenGl_Context>& theCtx,
+                                           const int*                         theViewport,
+                                           const float                        theWinX,
+                                           const float                        theWinY,
+                                           const NCollection_Vec3<float>&     thePlaneN,
+                                           const NCollection_Vec3<float>&     thePlaneOriginV,
+                                           const NCollection_Vec3<float>&     thePlaneX,
+                                           const NCollection_Vec3<float>&     thePlaneY,
+                                           double&                            theOutLocalX,
+                                           double&                            theOutLocalY)
+{
+  if (theViewport == nullptr)
+  {
+    return false;
+  }
+  float aNearX = 0.0f, aNearY = 0.0f, aNearZ = 0.0f;
+  float aFarX = 0.0f, aFarY = 0.0f, aFarZ = 0.0f;
+  if (!Graphic3d_TransformUtils::UnProject<float>(theWinX,
+                                                  theWinY,
+                                                  0.0f,
+                                                  theCtx->WorldViewState.Current(),
+                                                  theCtx->ProjectionState.Current(),
+                                                  theViewport,
+                                                  aNearX,
+                                                  aNearY,
+                                                  aNearZ))
+  {
+    return false;
+  }
+  if (!Graphic3d_TransformUtils::UnProject<float>(theWinX,
+                                                  theWinY,
+                                                  1.0f,
+                                                  theCtx->WorldViewState.Current(),
+                                                  theCtx->ProjectionState.Current(),
+                                                  theViewport,
+                                                  aFarX,
+                                                  aFarY,
+                                                  aFarZ))
+  {
+    return false;
+  }
+  const NCollection_Vec3<float> aNearP(aNearX, aNearY, aNearZ);
+  const NCollection_Vec3<float> aFarP(aFarX, aFarY, aFarZ);
+  const NCollection_Vec3<float> aDir   = aFarP - aNearP;
+  const float                   aDenom = thePlaneN.Dot(aDir);
+  if (std::abs(aDenom) <= 1.0e-6f)
+  {
+    return false;
+  }
+  const float                   aT      = thePlaneN.Dot(thePlaneOriginV - aNearP) / aDenom;
+  const NCollection_Vec3<float> aHit    = aNearP + aDir * aT;
+  const NCollection_Vec3<float> aLocal3 = aHit - thePlaneOriginV;
+  theOutLocalX                          = double(aLocal3.Dot(thePlaneX));
+  theOutLocalY                          = double(aLocal3.Dot(thePlaneY));
+  return true;
+}
+
 //! Chooses compatible internal color format for OIT frame buffer.
 static bool chooseOitColorConfiguration(const occ::handle<OpenGl_Context>& theGlContext,
                                         const int                          theConfigIndex,
@@ -2830,10 +2890,10 @@ void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
   occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   OpenGl_FrameBuffer*         anFbo =
     (theCustomFbo != nullptr && theCustomFbo->IsValid())
-              ? theCustomFbo
-              : (!aCtx->DefaultFrameBuffer().IsNull() && aCtx->DefaultFrameBuffer()->IsValid()
-                   ? aCtx->DefaultFrameBuffer().operator->()
-                   : nullptr);
+      ? theCustomFbo
+      : (!aCtx->DefaultFrameBuffer().IsNull() && aCtx->DefaultFrameBuffer()->IsValid()
+           ? aCtx->DefaultFrameBuffer().operator->()
+           : nullptr);
   if (anFbo != nullptr)
   {
     anFbo->BindBuffer(aCtx);
@@ -3741,11 +3801,12 @@ void OpenGl_View::renderGrid()
   double aScaleY = myGridParams.EffectiveScaleY();
   if (myGridParams.IsViewAdaptive())
   {
-    const double aTargetCellsY = std::max(1.0, std::min(200.0, aScaleY > 0.0 ? 1.0 / aScaleY : 10.0));
-    const double aViewHeight   = std::max(aCamera->Scale(), 1.0e-9);
-    const double aCellSize     = aViewHeight / aTargetCellsY;
-    aScaleX = 1.0 / aCellSize;
-    aScaleY = aScaleX;
+    const double aTargetCellsY =
+      std::max(1.0, std::min(200.0, aScaleY > 0.0 ? 1.0 / aScaleY : 10.0));
+    const double aViewHeight = std::max(aCamera->Scale(), 1.0e-9);
+    const double aCellSize   = aViewHeight / aTargetCellsY;
+    aScaleX                  = 1.0 / aCellSize;
+    aScaleY                  = aScaleX;
   }
 
   if (aContext->ShaderManager()->BindGridProgram())
@@ -3777,116 +3838,94 @@ void OpenGl_View::renderGrid()
     aProg->SetUniform(aContext, "uAngularScale", GLfloat(aAngularScale));
     aProg->SetUniform(aContext, "uDrawMode", myGridParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
 
+    // Plane basis used for both the view-adaptive bounds search and the final
+    // shader uniforms.
+    //  - In-plane rotation rotates X/Y around the plane normal. Sign matches
+    //    V3d_View::SetGrid's Trsf2 so snap (V3d_View::Compute) and the drawn
+    //    grid use the same basis: gridX = cos*planeX - sin*planeY,
+    //                              gridY = sin*planeX + cos*planeY.
+    //  - ZOffset pushes the displayed plane along its normal to avoid
+    //    z-fighting with coplanar geometry. Snap math uses the unshifted
+    //    plane, so selection still lands on the true plane.
+    const double aCosA        = std::cos(myGridParams.RotationAngle());
+    const double aSinA        = std::sin(myGridParams.RotationAngle());
+    const gp_Dir aRawX        = myGridPlane.XDirection();
+    const gp_Dir aRawY        = myGridPlane.YDirection();
+    const gp_Dir aNDir        = myGridPlane.Direction();
+    const gp_XYZ aXRotated    = aRawX.XYZ() * aCosA - aRawY.XYZ() * aSinA;
+    const gp_XYZ aYRotated    = aRawX.XYZ() * aSinA + aRawY.XYZ() * aCosA;
+    const double aZOffset     = myGridParams.ZOffset();
+    const gp_Pnt aOriginLocal = myGridParams.Origin();
+    const gp_Pnt aPlaneOrigin(aPlaneLoc.X() + aOriginLocal.X() + aNDir.X() * aZOffset,
+                              aPlaneLoc.Y() + aOriginLocal.Y() + aNDir.Y() * aZOffset,
+                              aPlaneLoc.Z() + aOriginLocal.Z() + aNDir.Z() * aZOffset);
+    const NCollection_Vec3<float> aPlaneNV((float)aNDir.X(), (float)aNDir.Y(), (float)aNDir.Z());
+    const NCollection_Vec3<float> aPlaneOriginV((float)aPlaneOrigin.X(),
+                                                (float)aPlaneOrigin.Y(),
+                                                (float)aPlaneOrigin.Z());
+    const NCollection_Vec3<float> aPlaneXV((float)aXRotated.X(),
+                                           (float)aXRotated.Y(),
+                                           (float)aXRotated.Z());
+    const NCollection_Vec3<float> aPlaneYV((float)aYRotated.X(),
+                                           (float)aYRotated.Y(),
+                                           (float)aYRotated.Z());
+
+    const int* aViewport = aContext->Viewport();
+
     // Bounded work area (HalfSizeX, HalfSizeY, Radius). 0 = unbounded along that axis.
     float aHalfX  = myGridParams.SizeX() > 0.0 ? float(myGridParams.SizeX() * 0.5) : 0.0f;
     float aHalfY  = myGridParams.SizeY() > 0.0 ? float(myGridParams.SizeY() * 0.5) : 0.0f;
     float aRadius = myGridParams.Radius() > 0.0 ? float(myGridParams.Radius()) : 0.0f;
     if (myGridParams.IsViewAdaptive())
     {
-      const double aCosA          = std::cos(myGridParams.RotationAngle());
-      const double aSinA          = std::sin(myGridParams.RotationAngle());
-      const gp_Dir anAdaptiveRawX = myGridPlane.XDirection();
-      const gp_Dir anAdaptiveRawY = myGridPlane.YDirection();
-      const gp_XYZ anAdaptiveXRotated = anAdaptiveRawX.XYZ() * aCosA - anAdaptiveRawY.XYZ() * aSinA;
-      const gp_XYZ anAdaptiveYRotated = anAdaptiveRawX.XYZ() * aSinA + anAdaptiveRawY.XYZ() * aCosA;
-      const gp_Dir anAdaptiveNDir     = myGridPlane.Direction();
-      const gp_Pnt anAdaptiveOrigin   = myGridParams.Origin();
-      const gp_Pnt anAdaptivePlaneOrigin(
-        aPlaneLoc.X() + anAdaptiveOrigin.X() + anAdaptiveNDir.X() * myGridParams.ZOffset(),
-        aPlaneLoc.Y() + anAdaptiveOrigin.Y() + anAdaptiveNDir.Y() * myGridParams.ZOffset(),
-        aPlaneLoc.Z() + anAdaptiveOrigin.Z() + anAdaptiveNDir.Z() * myGridParams.ZOffset());
-
-      double     aMinLocalX       = 0.0;
-      double     aMaxLocalX       = 0.0;
-      double     aMinLocalY       = 0.0;
-      double     aMaxLocalY       = 0.0;
-      double     aMaxLocalRadius  = 0.0;
-      bool       hasAdaptiveBounds = false;
-      const int* aViewport         = aContext->Viewport();
+      // Derive a tight world-space bound from the visible region: unproject
+      // the four viewport corners + center to the grid plane and enclose
+      // their plane-local extents. The center sample is a safety net when
+      // a corner ray is near-parallel to the plane and gets rejected.
+      double aMinLocalX      = 0.0;
+      double aMaxLocalX      = 0.0;
+      double aMinLocalY      = 0.0;
+      double aMaxLocalY      = 0.0;
+      double aMaxLocalRadius = 0.0;
+      bool   aHasBounds      = false;
       if (aViewport != nullptr)
       {
-        const float aWinMinX = float(aViewport[0]);
-        const float aWinMinY = float(aViewport[1]);
-        const float aWinMaxX = float(aViewport[0] + aViewport[2]);
-        const float aWinMaxY = float(aViewport[1] + aViewport[3]);
-        const float aWinMidX = (aWinMinX + aWinMaxX) * 0.5f;
-        const float aWinMidY = (aWinMinY + aWinMaxY) * 0.5f;
-        const NCollection_Vec2<float> aSamples[] = {
-          NCollection_Vec2<float>(aWinMinX, aWinMinY),
-          NCollection_Vec2<float>(aWinMaxX, aWinMinY),
-          NCollection_Vec2<float>(aWinMinX, aWinMaxY),
-          NCollection_Vec2<float>(aWinMaxX, aWinMaxY),
-          NCollection_Vec2<float>(aWinMidX, aWinMidY),
-          NCollection_Vec2<float>(aWinMidX, aWinMinY),
-          NCollection_Vec2<float>(aWinMidX, aWinMaxY),
-          NCollection_Vec2<float>(aWinMinX, aWinMidY),
-          NCollection_Vec2<float>(aWinMaxX, aWinMidY)};
-
-        const NCollection_Vec3<float> aPlaneN((float)anAdaptiveNDir.X(),
-                                              (float)anAdaptiveNDir.Y(),
-                                              (float)anAdaptiveNDir.Z());
-        const NCollection_Vec3<float> aPlaneOriginV((float)anAdaptivePlaneOrigin.X(),
-                                                    (float)anAdaptivePlaneOrigin.Y(),
-                                                    (float)anAdaptivePlaneOrigin.Z());
-        const NCollection_Vec3<float> aPlaneX((float)anAdaptiveXRotated.X(),
-                                              (float)anAdaptiveXRotated.Y(),
-                                              (float)anAdaptiveXRotated.Z());
-        const NCollection_Vec3<float> aPlaneY((float)anAdaptiveYRotated.X(),
-                                              (float)anAdaptiveYRotated.Y(),
-                                              (float)anAdaptiveYRotated.Z());
-
+        const float                   aWinMinX   = float(aViewport[0]);
+        const float                   aWinMinY   = float(aViewport[1]);
+        const float                   aWinMaxX   = float(aViewport[0] + aViewport[2]);
+        const float                   aWinMaxY   = float(aViewport[1] + aViewport[3]);
+        const float                   aWinMidX   = (aWinMinX + aWinMaxX) * 0.5f;
+        const float                   aWinMidY   = (aWinMinY + aWinMaxY) * 0.5f;
+        const NCollection_Vec2<float> aSamples[] = {NCollection_Vec2<float>(aWinMinX, aWinMinY),
+                                                    NCollection_Vec2<float>(aWinMaxX, aWinMinY),
+                                                    NCollection_Vec2<float>(aWinMinX, aWinMaxY),
+                                                    NCollection_Vec2<float>(aWinMaxX, aWinMaxY),
+                                                    NCollection_Vec2<float>(aWinMidX, aWinMidY)};
         for (const NCollection_Vec2<float>& aSample : aSamples)
         {
-          float      aNearX = 0.0f, aNearY = 0.0f, aNearZ = 0.0f;
-          float      aFarX = 0.0f, aFarY = 0.0f, aFarZ = 0.0f;
-          const bool isNearOk = Graphic3d_TransformUtils::UnProject<float>(
-            aSample.x(),
-            aSample.y(),
-            0.0f,
-            aContext->WorldViewState.Current(),
-            aContext->ProjectionState.Current(),
-            aViewport,
-            aNearX,
-            aNearY,
-            aNearZ);
-          const bool isFarOk = Graphic3d_TransformUtils::UnProject<float>(
-            aSample.x(),
-            aSample.y(),
-            1.0f,
-            aContext->WorldViewState.Current(),
-            aContext->ProjectionState.Current(),
-            aViewport,
-            aFarX,
-            aFarY,
-            aFarZ);
-          if (!isNearOk || !isFarOk)
+          double aLocalX = 0.0, aLocalY = 0.0;
+          if (!unprojectGridPointToPlaneLocal(aContext,
+                                              aViewport,
+                                              aSample.x(),
+                                              aSample.y(),
+                                              aPlaneNV,
+                                              aPlaneOriginV,
+                                              aPlaneXV,
+                                              aPlaneYV,
+                                              aLocalX,
+                                              aLocalY))
           {
             continue;
           }
-
-          const NCollection_Vec3<float> aNearP(aNearX, aNearY, aNearZ);
-          const NCollection_Vec3<float> aFarP(aFarX, aFarY, aFarZ);
-          const NCollection_Vec3<float> aDir = aFarP - aNearP;
-          const float                   aDenom = aPlaneN.Dot(aDir);
-          if (std::abs(aDenom) <= 1.0e-6f)
+          const double aHitR = std::sqrt(aLocalX * aLocalX + aLocalY * aLocalY);
+          if (!aHasBounds)
           {
-            continue;
-          }
-
-          const float                   aT      = aPlaneN.Dot(aPlaneOriginV - aNearP) / aDenom;
-          const NCollection_Vec3<float> aHit    = aNearP + aDir * aT;
-          const NCollection_Vec3<float> aLocal3 = aHit - aPlaneOriginV;
-          const double                  aLocalX = double(aLocal3.Dot(aPlaneX));
-          const double                  aLocalY = double(aLocal3.Dot(aPlaneY));
-          const double                  aRadius = std::sqrt(aLocalX * aLocalX + aLocalY * aLocalY);
-          if (!hasAdaptiveBounds)
-          {
-            aMinLocalX       = aLocalX;
-            aMaxLocalX       = aLocalX;
-            aMinLocalY       = aLocalY;
-            aMaxLocalY       = aLocalY;
-            aMaxLocalRadius  = aRadius;
-            hasAdaptiveBounds = true;
+            aMinLocalX      = aLocalX;
+            aMaxLocalX      = aLocalX;
+            aMinLocalY      = aLocalY;
+            aMaxLocalY      = aLocalY;
+            aMaxLocalRadius = aHitR;
+            aHasBounds      = true;
           }
           else
           {
@@ -3894,7 +3933,7 @@ void OpenGl_View::renderGrid()
             aMaxLocalX      = std::max(aMaxLocalX, aLocalX);
             aMinLocalY      = std::min(aMinLocalY, aLocalY);
             aMaxLocalY      = std::max(aMaxLocalY, aLocalY);
-            aMaxLocalRadius = std::max(aMaxLocalRadius, aRadius);
+            aMaxLocalRadius = std::max(aMaxLocalRadius, aHitR);
           }
         }
       }
@@ -3904,7 +3943,7 @@ void OpenGl_View::renderGrid()
       if (myGridParams.IsCircular())
       {
         const double aPad = std::max(aStepX, aStepY) * 4.0;
-        if (hasAdaptiveBounds)
+        if (aHasBounds)
         {
           aRadius = std::max(aRadius, float(aMaxLocalRadius + aPad));
         }
@@ -3913,20 +3952,19 @@ void OpenGl_View::renderGrid()
           aRadius = std::max(aRadius, float(std::max(aCamera->Scale(), aPad) * 2.0));
         }
       }
+      else if (aHasBounds)
+      {
+        const double aPadX = std::max((aMaxLocalX - aMinLocalX) * 0.10, aStepX * 4.0);
+        const double aPadY = std::max((aMaxLocalY - aMinLocalY) * 0.10, aStepY * 4.0);
+        aHalfX =
+          std::max(aHalfX, float(std::max(std::abs(aMinLocalX), std::abs(aMaxLocalX)) + aPadX));
+        aHalfY =
+          std::max(aHalfY, float(std::max(std::abs(aMinLocalY), std::abs(aMaxLocalY)) + aPadY));
+      }
       else
       {
-        if (hasAdaptiveBounds)
-        {
-          const double aPadX = std::max((aMaxLocalX - aMinLocalX) * 0.10, aStepX * 4.0);
-          const double aPadY = std::max((aMaxLocalY - aMinLocalY) * 0.10, aStepY * 4.0);
-          aHalfX = std::max(aHalfX, float(std::max(std::abs(aMinLocalX), std::abs(aMaxLocalX)) + aPadX));
-          aHalfY = std::max(aHalfY, float(std::max(std::abs(aMinLocalY), std::abs(aMaxLocalY)) + aPadY));
-        }
-        else
-        {
-          aHalfX = std::max(aHalfX, float(std::max(aCamera->Scale(), aStepX * 8.0)));
-          aHalfY = std::max(aHalfY, float(std::max(aCamera->Scale(), aStepY * 8.0)));
-        }
+        aHalfX = std::max(aHalfX, float(std::max(aCamera->Scale(), aStepX * 8.0)));
+        aHalfY = std::max(aHalfY, float(std::max(aCamera->Scale(), aStepY * 8.0)));
       }
     }
     aProg->SetUniform(aContext, "uBounds", NCollection_Vec3<float>(aHalfX, aHalfY, aRadius));
@@ -3936,112 +3974,38 @@ void OpenGl_View::renderGrid()
       NCollection_Vec2<float>(float(myGridParams.AngleStart()), float(myGridParams.AngleEnd())));
     aProg->SetUniform(aContext, "uArcBounded", myGridParams.IsArc() ? 1 : 0);
 
-    // In-plane rotation: rotate the plane's X/Y basis around the plane normal
-    // so the grid lines follow the requested RotationAngle. Sign matches
-    // V3d_View::SetGrid's Trsf2 so snap (V3d_View::Compute) and the drawn
-    // grid use the same basis: aGridX = cos*planeX - sin*planeY,
-    //                          aGridY = sin*planeX + cos*planeY.
-    const double aCosA     = std::cos(myGridParams.RotationAngle());
-    const double aSinA     = std::sin(myGridParams.RotationAngle());
-    const gp_Dir aRawX     = myGridPlane.XDirection();
-    const gp_Dir aRawY     = myGridPlane.YDirection();
-    const gp_XYZ aXRotated = aRawX.XYZ() * aCosA - aRawY.XYZ() * aSinA;
-    const gp_XYZ aYRotated = aRawX.XYZ() * aSinA + aRawY.XYZ() * aCosA;
+    aProg->SetUniform(aContext, "uPlaneOrigin", aPlaneOriginV);
+    aProg->SetUniform(aContext, "uPlaneX", aPlaneXV);
+    aProg->SetUniform(aContext, "uPlaneY", aPlaneYV);
 
-    // ZOffset pushes the displayed plane along its normal to avoid z-fighting
-    // with coplanar geometry. Snap math uses the unshifted plane, so selection
-    // still lands on the true plane.
-    const gp_Dir aNDir        = myGridPlane.Direction();
-    const double aZOffset     = myGridParams.ZOffset();
-    const gp_Pnt aOriginLocal = myGridParams.Origin();
-    const gp_Pnt aPlaneOrigin(aPlaneLoc.X() + aOriginLocal.X() + aNDir.X() * aZOffset,
-                              aPlaneLoc.Y() + aOriginLocal.Y() + aNDir.Y() * aZOffset,
-                              aPlaneLoc.Z() + aOriginLocal.Z() + aNDir.Z() * aZOffset);
-    aProg->SetUniform(aContext,
-                      "uPlaneOrigin",
-                      NCollection_Vec3<float>((float)aPlaneOrigin.X(),
-                                              (float)aPlaneOrigin.Y(),
-                                              (float)aPlaneOrigin.Z()));
-    aProg->SetUniform(
-      aContext,
-      "uPlaneX",
-      NCollection_Vec3<float>((float)aXRotated.X(), (float)aXRotated.Y(), (float)aXRotated.Z()));
-    aProg->SetUniform(
-      aContext,
-      "uPlaneY",
-      NCollection_Vec3<float>((float)aYRotated.X(), (float)aYRotated.Y(), (float)aYRotated.Z()));
-
-    // Build a stable per-frame rectangular-grid reference point in plane-local
-    // coordinates. This keeps shader fract() arguments bounded at shallow angles
+    // Stable per-frame rectangular-grid reference point in plane-local
+    // coordinates. Keeps shader fract() arguments bounded at shallow angles
     // without re-running extra unproject/intersection work for every fragment.
     int                     aHasStableRef = 0;
     NCollection_Vec2<float> aStableRefLocal(0.0f, 0.0f);
-    if (!myGridParams.IsCircular())
+    if (!myGridParams.IsCircular() && aViewport != nullptr)
     {
-      const int* aViewport = aContext->Viewport();
-      if (aViewport != nullptr)
+      const float aWinX   = float(aViewport[0]) + float(aViewport[2]) * 0.5f;
+      const float aWinY   = float(aViewport[1]) + float(aViewport[3]) * 0.5f;
+      double      aLocalX = 0.0, aLocalY = 0.0;
+      if (unprojectGridPointToPlaneLocal(aContext,
+                                         aViewport,
+                                         aWinX,
+                                         aWinY,
+                                         aPlaneNV,
+                                         aPlaneOriginV,
+                                         aPlaneXV,
+                                         aPlaneYV,
+                                         aLocalX,
+                                         aLocalY))
       {
-        const float aWinX = float(aViewport[0]) + float(aViewport[2]) * 0.5f;
-        const float aWinY = float(aViewport[1]) + float(aViewport[3]) * 0.5f;
-
-        float      aNearX = 0.0f, aNearY = 0.0f, aNearZ = 0.0f;
-        float      aFarX = 0.0f, aFarY = 0.0f, aFarZ = 0.0f;
-        const bool isNearOk =
-          Graphic3d_TransformUtils::UnProject<float>(aWinX,
-                                                     aWinY,
-                                                     0.0f,
-                                                     aContext->WorldViewState.Current(),
-                                                     aContext->ProjectionState.Current(),
-                                                     aViewport,
-                                                     aNearX,
-                                                     aNearY,
-                                                     aNearZ);
-        const bool isFarOk =
-          Graphic3d_TransformUtils::UnProject<float>(aWinX,
-                                                     aWinY,
-                                                     1.0f,
-                                                     aContext->WorldViewState.Current(),
-                                                     aContext->ProjectionState.Current(),
-                                                     aViewport,
-                                                     aFarX,
-                                                     aFarY,
-                                                     aFarZ);
-        if (isNearOk && isFarOk)
-        {
-          const NCollection_Vec3<float> aNearP(aNearX, aNearY, aNearZ);
-          const NCollection_Vec3<float> aFarP(aFarX, aFarY, aFarZ);
-          const NCollection_Vec3<float> aDir = aFarP - aNearP;
-
-          const NCollection_Vec3<float> aPlaneN((float)aNDir.X(),
-                                                (float)aNDir.Y(),
-                                                (float)aNDir.Z());
-          const float                   aDenom = aPlaneN.Dot(aDir);
-          if (std::abs(aDenom) > 1.0e-6f)
-          {
-            const NCollection_Vec3<float> aPlaneOriginV((float)aPlaneOrigin.X(),
-                                                        (float)aPlaneOrigin.Y(),
-                                                        (float)aPlaneOrigin.Z());
-            const float                   aT      = aPlaneN.Dot(aPlaneOriginV - aNearP) / aDenom;
-            const NCollection_Vec3<float> aHit    = aNearP + aDir * aT;
-            const NCollection_Vec3<float> aLocal3 = aHit - aPlaneOriginV;
-            const NCollection_Vec3<float> aPlaneX((float)aXRotated.X(),
-                                                  (float)aXRotated.Y(),
-                                                  (float)aXRotated.Z());
-            const NCollection_Vec3<float> aPlaneY((float)aYRotated.X(),
-                                                  (float)aYRotated.Y(),
-                                                  (float)aYRotated.Z());
-            aStableRefLocal.SetValues(aLocal3.Dot(aPlaneX), aLocal3.Dot(aPlaneY));
-            aHasStableRef = 1;
-          }
-        }
+        aStableRefLocal.SetValues(float(aLocalX), float(aLocalY));
+        aHasStableRef = 1;
       }
     }
     aProg->SetUniform(aContext, "uStableRefLocal", aStableRefLocal);
     aProg->SetUniform(aContext, "uHasStableRef", aHasStableRef);
-    aProg->SetUniform(
-      aContext,
-      "uPlaneN",
-      NCollection_Vec3<float>((float)aNDir.X(), (float)aNDir.Y(), (float)aNDir.Z()));
+    aProg->SetUniform(aContext, "uPlaneN", aPlaneNV);
 
     aContext->core11fwd->glDrawArrays(GL_TRIANGLES, 0, 6);
   }

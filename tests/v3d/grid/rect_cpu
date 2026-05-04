@@ -2,7 +2,7 @@ puts "=================================================================="
 puts "Restored CPU rectangular grid path: V3d_RectangularGrid + ActivateGrid"
 puts "=================================================================="
 # Exercises the legacy CPU grid that draws lines / points into a viewer-wide
-# Graphic3d_Structure. The shader (-type inf) path is covered by rect_shader.
+# Graphic3d_Structure. The shader (-type gpu) path is covered by rect_gpu.
 
 pload MODELING VISUALIZATION
 
@@ -15,7 +15,7 @@ vdisplay b -dispMode 1
 vfit
 vzoom 0.2
 
-# Default rectangular CPU grid (no -type inf): bounded, half-default-view-size.
+# Default rectangular CPU grid (no -type gpu): bounded, half-default-view-size.
 vgrid -type rect -step 0.5 0.5 -rotAngle 0
 vdump $imagedir/${casename}_rect.png
 

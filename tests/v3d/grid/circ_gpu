@@ -1,5 +1,5 @@
 puts "=================================================================="
-puts "0030979: vgrid -type inf with circular options uses the polar shader"
+puts "0030979: vgrid -type gpu with circular options uses the polar shader"
 puts "=================================================================="
 
 pload MODELING VISUALIZATION
@@ -13,17 +13,17 @@ vdisplay b -dispMode 1
 vfit
 vzoom 0.2
 
-# Shader circular grid: -type inf with -step <radial> <divisions> picks the polar
+# Shader circular grid: -type gpu with -step <radial> <divisions> picks the polar
 # branch. 8 divisions (22.5 deg spokes), radius step 0.5.
-vgrid -type inf -step 0.5 8 -radius 5
+vgrid -type gpu -step 0.5 8 -radius 5
 vdump $imagedir/${casename}_circ.png
 
 # Finer angular resolution, bigger radial spacing
-vgrid -type inf -step 1.0 24 -radius 10
+vgrid -type gpu -step 1.0 24 -radius 10
 vdump $imagedir/${casename}_circ_fine.png
 
 # Rotated
-vgrid -type inf -step 0.5 12 -radius 5 -rotAngle 0.4
+vgrid -type gpu -step 0.5 12 -radius 5 -rotAngle 0.4
 vdump $imagedir/${casename}_circ_rotated.png
 
 vgrid off

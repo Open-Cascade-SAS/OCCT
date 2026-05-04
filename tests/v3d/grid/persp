@@ -1,5 +1,5 @@
 puts "=================================================="
-puts "0030979: Visualization - shader-based infinite grid"
+puts "0030979: Visualization - shader-based GPU grid"
 puts "Perspective projection"
 puts "=================================================="
 
@@ -16,11 +16,11 @@ vcamera -persp
 vfit
 vzoom 0.1
 
-vgrid -type inf
+vgrid -type gpu
 vdump $imagedir/${casename}_0.png
 
 vgrid off
-vgrid -type inf -background 1 -drawAxis 0 -color 0 0 1 -origin 1 1 -inf 1 -lineThickness 0.05
+vgrid -type gpu -background 1 -drawAxis 0 -color 0 0 1 -origin 1 1 -viewAdaptive 1 -lineThickness 0.05
 vdump $imagedir/${casename}_1.png
 
 vgrid off
