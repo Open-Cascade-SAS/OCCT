@@ -108,10 +108,8 @@ bool BRepGraph::EditorView::EdgeOps::SetRegularity(const BRepGraph_EdgeId theEdg
   {
     return false;
   }
-  // Do not call markModified(theEdge) here: OnNodeModified on the regularity
-  // layer clears bindings on edge change, which would discard the value we
-  // just wrote. SetRegularity is a direct layer write, not an edge mutation.
   aLayer->SetRegularity(theEdge, theFace1, theFace2, theContinuity);
+  myGraph->markModified(theEdge);
   return true;
 }
 

@@ -151,14 +151,6 @@ const TCollection_AsciiString& BRepGraph_LayerParam::Name() const
 
 //=================================================================================================
 
-int BRepGraph_LayerParam::SubscribedKinds() const
-{
-  return KindBit(BRepGraph_NodeId::Kind::Vertex) | KindBit(BRepGraph_NodeId::Kind::Edge)
-         | KindBit(BRepGraph_NodeId::Kind::Face) | KindBit(BRepGraph_NodeId::Kind::CoEdge);
-}
-
-//=================================================================================================
-
 const BRepGraph_LayerParam::VertexParams* BRepGraph_LayerParam::FindVertexParams(
   const BRepGraph_VertexId theVertex) const
 {
@@ -691,40 +683,6 @@ void BRepGraph_LayerParam::migrateCoEdgeBindings(const BRepGraph_CoEdgeId theOld
     }
     removePointOnPCurve(aVtx, theOldCoEdge);
     SetPointOnPCurve(aVtx, theNewCoEdge, aParameter);
-  }
-}
-
-//=================================================================================================
-
-void BRepGraph_LayerParam::OnNodeModified(const BRepGraph_NodeId theNode) noexcept
-{
-  switch (theNode.NodeKind)
-  {
-    case BRepGraph_NodeId::Kind::Vertex:
-      removeVertexBindings(BRepGraph_VertexId(theNode));
-      break;
-    case BRepGraph_NodeId::Kind::Edge:
-      invalidateEdgeBindings(BRepGraph_EdgeId(theNode));
-      break;
-    case BRepGraph_NodeId::Kind::Face:
-      invalidateFaceBindings(BRepGraph_FaceId(theNode));
-      break;
-    case BRepGraph_NodeId::Kind::CoEdge:
-      invalidateCoEdgeBindings(BRepGraph_CoEdgeId(theNode));
-      break;
-    default:
-      break;
-  }
-}
-
-//=================================================================================================
-
-void BRepGraph_LayerParam::OnNodesModified(
-  const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes) noexcept
-{
-  for (const BRepGraph_NodeId& aModifiedNode : theModifiedNodes)
-  {
-    OnNodeModified(aModifiedNode);
   }
 }
 

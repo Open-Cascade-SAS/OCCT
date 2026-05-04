@@ -20,7 +20,26 @@
 #include <NCollection_DynamicArray.hxx>
 #include <gp_Pnt2d.hxx>
 
-//! @brief Stores vertex-on-curve, vertex-on-surface, and vertex-on-PCurve bindings.
+//! @brief Persistent vertex point-representation store: point-on-curve,
+//! point-on-surface, and point-on-PCurve parameters per vertex.
+//!
+//! Mirrors classical BRep_PointRepresentation entries on TVertex: each vertex
+//! may carry parameters identifying its location on incident edges, faces, or
+//! coedges (PCurves). The layer is the single source of truth for these
+//! parameters in BRepGraph.
+//!
+//! ## Lifetime policy
+//! The layer is **persistent metadata**: stored values survive arbitrary
+//! mutations to the referenced vertices, edges, faces, and coedges. Only the
+//! following events discard data:
+//!   - OnNodeRemoved - the referenced node is gone; entries naming it are
+//!     dropped (or migrated when a replacement is provided).
+//!   - OnCompact - ids are remapped; entries pointing to removed nodes drop.
+//!   - InvalidateAll() / Clear() - explicit caller request.
+//! The layer does NOT subscribe to OnNodeModified: a tolerance bump, parameter
+//! range adjustment, or NaturalRestriction toggle on a referenced node leaves
+//! point-representation data intact. Callers that change geometry are
+//! responsible for refreshing affected entries.
 class BRepGraph_LayerParam : public BRepGraph_Layer
 {
 public:
@@ -95,10 +114,6 @@ public:
                                         const double             theParameter);
 
   Standard_EXPORT const TCollection_AsciiString& Name() const override;
-  [[nodiscard]] Standard_EXPORT int              SubscribedKinds() const override;
-  Standard_EXPORT void OnNodeModified(const BRepGraph_NodeId theNode) noexcept override;
-  Standard_EXPORT void OnNodesModified(
-    const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes) noexcept override;
   Standard_EXPORT void OnNodeRemoved(const BRepGraph_NodeId theNode,
                                      const BRepGraph_NodeId theReplacement) noexcept override;
   Standard_EXPORT void OnCompact(

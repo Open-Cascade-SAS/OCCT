@@ -1166,7 +1166,10 @@ TEST(BRepGraph_BuildTest, ParamLayer_EdgeMutation_InvalidatesVertexBindings)
                                        aGraph.Topo().Edges().Definition(anEdgeId).Tolerance + 0.01);
 }
 
-TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_InvalidatesVertexBindings)
+// Persistent-layer policy: face-data mutation (e.g. NaturalRestriction toggle)
+// must NOT auto-clear point representations bound to that face. The user-set
+// value is persistent metadata; only explicit removal/clear discards it.
+TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_PreservesVertexBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
@@ -1191,10 +1194,13 @@ TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_InvalidatesVertexBindings)
     aGraph.Editor().Faces().SetNaturalRestriction(aFace, !aFace->NaturalRestriction);
   }
 
-  EXPECT_FALSE(aParamLayer->FindPointOnSurface(aVertexId, aFaceId));
+  EXPECT_TRUE(aParamLayer->FindPointOnSurface(aVertexId, aFaceId))
+    << "Persistent layer must keep user-set value across unrelated face modifications";
 }
 
-TEST(BRepGraph_BuildTest, ParamLayer_CoEdgeMutation_InvalidatesPCurveBindings)
+// Same persistent-layer policy for CoEdge param-range bumps: layer data is
+// preserved unless the caller explicitly clears it.
+TEST(BRepGraph_BuildTest, ParamLayer_CoEdgeMutation_PreservesPCurveBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
@@ -1219,10 +1225,14 @@ TEST(BRepGraph_BuildTest, ParamLayer_CoEdgeMutation_InvalidatesPCurveBindings)
                                             + 0.01,
                                           aGraph.Topo().CoEdges().Definition(aCoEdgeId).ParamLast);
 
-  EXPECT_FALSE(aParamLayer->FindPointOnPCurve(aVertexId, aCoEdgeId));
+  EXPECT_TRUE(aParamLayer->FindPointOnPCurve(aVertexId, aCoEdgeId))
+    << "Persistent layer must keep user-set value across CoEdge param-range bumps";
 }
 
-TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
+// Persistent-layer policy: edge tolerance bumps must NOT clear continuity.
+// Continuity is a stored G^k value, classical OCCT also keeps it across
+// such modifications.
+TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_PreservesBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
@@ -1278,12 +1288,15 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
   aGraph.Editor().Edges().SetTolerance(anEdgeId,
                                        aGraph.Topo().Edges().Definition(anEdgeId).Tolerance + 0.01);
 
-  EXPECT_FALSE(
-    aRegularityLayer->FindContinuity(anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
-  EXPECT_EQ(aRegularityLayer->NbRegularities(anEdgeId), 0);
+  EXPECT_TRUE(
+    aRegularityLayer->FindContinuity(anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2))
+    << "Persistent layer must keep continuity across edge tolerance bumps";
+  EXPECT_EQ(aRegularityLayer->NbRegularities(anEdgeId), 1u);
 }
 
-TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
+// Persistent-layer policy: NaturalRestriction toggle on a face does not
+// invalidate continuity entries that reference the face.
+TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_PreservesBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
@@ -1342,11 +1355,15 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
     aGraph.Editor().Faces().SetNaturalRestriction(aFace, !aFace->NaturalRestriction);
   }
 
-  EXPECT_FALSE(
-    aRegularityLayer->FindContinuity(anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
+  EXPECT_TRUE(
+    aRegularityLayer->FindContinuity(anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2))
+    << "Persistent layer must keep continuity across face property toggles";
 }
 
-TEST(BRepGraph_BuildTest, RegularityLayer_RemoveRegularity_SharedFaceRetained)
+// Removing a face that is shared by multiple regularity entries (F1,F2) and
+// (F1,F3): the entry naming the removed face must drop, but other entries
+// keeping F1 must survive.
+TEST(BRepGraph_BuildTest, RegularityLayer_RemoveFace_SharedFaceRetained)
 {
   BRepGraph_LayerRegularity aLayer;
   const BRepGraph_EdgeId    anEdgeId(0);
@@ -1356,18 +1373,16 @@ TEST(BRepGraph_BuildTest, RegularityLayer_RemoveRegularity_SharedFaceRetained)
 
   aLayer.SetRegularity(anEdgeId, aFace1, aFace2, GeomAbs_C1);
   aLayer.SetRegularity(anEdgeId, aFace1, aFace3, GeomAbs_G1);
-  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 2);
+  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 2u);
 
-  // Remove (F1,F2) - F1 is shared by the surviving (F1,F3) entry.
-  aLayer.OnNodeModified(aFace2);
-
-  // (F1,F3) must survive; F1 must still be tracked.
+  // Remove F2: entries naming F2 must go; (F1,F3) must survive.
+  aLayer.OnNodeRemoved(aFace2, BRepGraph_NodeId());
   EXPECT_TRUE(aLayer.FindContinuity(anEdgeId, aFace1, aFace3));
-  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 1);
+  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 1u);
 
-  // Modifying F1 should still invalidate the remaining entry.
-  aLayer.OnNodeModified(aFace1);
-  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 0);
+  // Remove F1: the remaining entry references F1 -> drops.
+  aLayer.OnNodeRemoved(aFace1, BRepGraph_NodeId());
+  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 0u);
 }
 
 TEST(BRepGraph_BuildTest, RegularityLayer_RemoveRegularity_NoMatch_NoEffect)
