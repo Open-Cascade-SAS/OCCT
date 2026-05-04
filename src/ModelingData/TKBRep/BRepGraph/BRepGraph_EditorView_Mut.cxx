@@ -295,12 +295,24 @@ bool BRepGraph::EditorView::EdgeOps::IsSeamOnFace(const BRepGraph_EdgeId theEdge
   {
     return false;
   }
-  uint32_t aCount = 0;
+  bool               hasOrientation = false;
+  TopAbs_Orientation anOrientation  = TopAbs_FORWARD;
   for (BRepGraph_CoEdgesOfEdge anIt(*myGraph, myGraph->Topo().Edges().CoEdges(theEdge));
        anIt.More();
        anIt.Next())
   {
-    if (anIt.Definition().FaceDefId == theFace && ++aCount == 2)
+    const BRepGraphInc::CoEdgeDef& aCoEdge = anIt.Definition();
+    if (aCoEdge.FaceDefId != theFace)
+    {
+      continue;
+    }
+    if (!hasOrientation)
+    {
+      anOrientation  = aCoEdge.Orientation;
+      hasOrientation = true;
+      continue;
+    }
+    if (aCoEdge.Orientation != anOrientation)
     {
       return true;
     }

@@ -31,6 +31,7 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
+#include <BRepGraph_Validate.hxx>
 #include <BRepGraph_WireExplorer.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
@@ -45,6 +46,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Wire.hxx>
+#include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
 
@@ -368,6 +370,58 @@ TEST(BRepGraph_SeamRedesignTest, EdgeOps_SetRegularity_RoundTripThroughLayer)
   EXPECT_EQ(BRepGraph_Tool::Edge::Continuity(aGraph, aEdgeId, aFace2, aFace1), GeomAbs_G2);
 }
 
+TEST(BRepGraph_SeamRedesignTest, EdgeOps_Split_PreservesSeamRegularityLayer)
+{
+  const TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
+  BRepGraph          aGraph;
+  registerLayers(aGraph);
+  aGraph.Clear();
+  ASSERT_TRUE(BRepGraph_Builder::Add(aGraph, aCyl).Ok);
+
+  const BRepGraph_CoEdgeId aSeamCoEdge = findSeamCoEdge(aGraph);
+  ASSERT_TRUE(aSeamCoEdge.IsValid());
+  const BRepGraphInc::CoEdgeDef& aSeamDef = aGraph.Topo().CoEdges().Definition(aSeamCoEdge);
+  const BRepGraph_EdgeId         aSeamEdgeId = aSeamDef.EdgeDefId;
+  const BRepGraph_FaceId         aSeamFaceId = aSeamDef.FaceDefId;
+  ASSERT_TRUE(aSeamEdgeId.IsValid());
+  ASSERT_TRUE(aSeamFaceId.IsValid());
+
+  ASSERT_TRUE(aGraph.Editor().Edges().SetRegularity(aSeamEdgeId,
+                                                    aSeamFaceId,
+                                                    aSeamFaceId,
+                                                    GeomAbs_G2));
+  const occ::handle<BRepGraph_LayerRegularity> aLayer =
+    aGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
+  ASSERT_FALSE(aLayer.IsNull());
+
+  GeomAbs_Shape aContinuity = GeomAbs_C0;
+  ASSERT_TRUE(aLayer->FindContinuity(aSeamEdgeId, aSeamFaceId, aSeamFaceId, &aContinuity));
+  ASSERT_EQ(aContinuity, GeomAbs_G2);
+
+  const BRepGraphInc::EdgeDef& aEdgeDef = aGraph.Topo().Edges().Definition(aSeamEdgeId);
+  const double                 aMidParam = 0.5 * (aEdgeDef.ParamFirst + aEdgeDef.ParamLast);
+  const BRepGraph_VertexId     aSplitVertex =
+    aGraph.Editor().Vertices().Add(gp_Pnt(5.0, 0.0, 5.0), aEdgeDef.Tolerance);
+  ASSERT_TRUE(aSplitVertex.IsValid());
+
+  BRepGraph_EdgeId aSubA;
+  BRepGraph_EdgeId aSubB;
+  aGraph.Editor().Edges().Split(aSeamEdgeId, aSplitVertex, aMidParam, aSubA, aSubB);
+  ASSERT_TRUE(aSubA.IsValid());
+  ASSERT_TRUE(aSubB.IsValid());
+
+  EXPECT_FALSE(aLayer->FindContinuity(aSeamEdgeId, aSeamFaceId, aSeamFaceId))
+    << "Removed source edge must not keep stale regularity bindings";
+  EXPECT_TRUE(aLayer->FindContinuity(aSubA, aSeamFaceId, aSeamFaceId, &aContinuity));
+  EXPECT_EQ(aContinuity, GeomAbs_G2);
+  EXPECT_TRUE(aLayer->FindContinuity(aSubB, aSeamFaceId, aSeamFaceId, &aContinuity));
+  EXPECT_EQ(aContinuity, GeomAbs_G2);
+
+  const BRepGraph_Validate::Result aAudit =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_TRUE(aAudit.IsValid()) << "Audit must remain clean after seam split";
+}
+
 // SetRegularity returns false when the layer is not registered.
 TEST(BRepGraph_SeamRedesignTest, EdgeOps_SetRegularity_FailsWithoutLayer)
 {
@@ -476,11 +530,10 @@ TEST(BRepGraph_SeamRedesignTest, LayerRegularity_CapturesInterFaceAndSeam)
 }
 
 // ============================================================
-// Validator catches orphaned seam (one half missing from wire)
+// Validator catches invalid seam orientation
 // ============================================================
 
-// Manually break the wire-membership invariant: drop one seam half from the
-// wire's CoEdgeRefIds while keeping it as an active CoEdge. Validate must flag.
+// Manually break the opposite-orientation invariant. Validate must flag it.
 TEST(BRepGraph_SeamRedesignTest, Validate_DetectsAsymmetricSeamPair)
 {
   const TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
@@ -502,23 +555,24 @@ TEST(BRepGraph_SeamRedesignTest, Validate_DetectsAsymmetricSeamPair)
     aGraph.Topo().CoEdges().Definition(aSeamCoEdge).Orientation;
   aGraph.Editor().CoEdges().SetOrientation(aSeamMate, aOri);
 
-  // Direct iteration check (analogous to Validate's logic): two CoEdges on
-  // (edge, face) with same orientation -> structural error.
   const BRepGraphInc::CoEdgeDef& aDef = aGraph.Topo().CoEdges().Definition(aSeamCoEdge);
-  uint32_t aSameFaceCount = 0;
-  bool     aOpposite      = false;
-  for (BRepGraph_CoEdgesOfEdge aIt(aGraph, aGraph.Topo().Edges().CoEdges(aDef.EdgeDefId));
-       aIt.More();
-       aIt.Next())
+  EXPECT_FALSE(BRepGraph_Tool::Edge::IsClosedOnFace(aGraph, aDef.EdgeDefId, aDef.FaceDefId));
+  EXPECT_FALSE(aGraph.Editor().Edges().IsSeamOnFace(aDef.EdgeDefId, aDef.FaceDefId));
+
+  const BRepGraph_Validate::Result aResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_FALSE(aResult.IsValid());
+  EXPECT_GT(aResult.NbIssues(BRepGraph_Validate::Severity::Error), 0);
+
+  bool hasSameOrientationIssue = false;
+  for (const BRepGraph_Validate::Issue& anIssue : aResult.Issues)
   {
-    if (aIt.Definition().FaceDefId != aDef.FaceDefId)
-      continue;
-    ++aSameFaceCount;
-    if (aIt.CurrentId() != aSeamCoEdge && aIt.Definition().Orientation != aDef.Orientation)
+    if (anIssue.Sev == BRepGraph_Validate::Severity::Error
+        && anIssue.Description.Search("same Orientation") > 0)
     {
-      aOpposite = true;
+      hasSameOrientationIssue = true;
+      break;
     }
   }
-  EXPECT_EQ(aSameFaceCount, 2u);
-  EXPECT_FALSE(aOpposite) << "After injection, both halves should share orientation";
+  EXPECT_TRUE(hasSameOrientationIssue);
 }

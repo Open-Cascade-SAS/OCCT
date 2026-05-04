@@ -80,6 +80,13 @@ public:
                                      const BRepGraph_FaceId theFace2,
                                      const GeomAbs_Shape    theContinuity);
 
+  //! Copy all regularity entries from one edge to another.
+  Standard_EXPORT void CopyRegularities(const BRepGraph_EdgeId theSourceEdge,
+                                        const BRepGraph_EdgeId theTargetEdge);
+
+  //! Remove all regularity entries bound to the edge.
+  Standard_EXPORT void RemoveRegularities(const BRepGraph_EdgeId theEdge) noexcept;
+
   Standard_EXPORT const TCollection_AsciiString& Name() const override;
   Standard_EXPORT void OnNodeRemoved(const BRepGraph_NodeId theNode,
                                      const BRepGraph_NodeId theReplacement) noexcept override;

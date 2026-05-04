@@ -622,16 +622,28 @@ bool BRepGraph_Tool::Edge::IsClosedOnFace(const BRepGraph&       theGraph,
                                           const BRepGraph_EdgeId theEdge,
                                           const BRepGraph_FaceId theFace)
 {
-  if (!theEdge.IsValid())
+  if (!theEdge.IsValid() || !theFace.IsValid())
   {
     return false;
   }
-  uint32_t aCount = 0;
+  bool               hasOrientation = false;
+  TopAbs_Orientation anOrientation  = TopAbs_FORWARD;
   for (BRepGraph_CoEdgesOfEdge anIt(theGraph, theGraph.Topo().Edges().CoEdges(theEdge));
        anIt.More();
        anIt.Next())
   {
-    if (anIt.Definition().FaceDefId == theFace && ++aCount == 2)
+    const BRepGraphInc::CoEdgeDef& aCoEdge = anIt.Definition();
+    if (aCoEdge.FaceDefId != theFace)
+    {
+      continue;
+    }
+    if (!hasOrientation)
+    {
+      anOrientation  = aCoEdge.Orientation;
+      hasOrientation = true;
+      continue;
+    }
+    if (aCoEdge.Orientation != anOrientation)
     {
       return true;
     }

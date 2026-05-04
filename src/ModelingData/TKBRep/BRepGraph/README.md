@@ -330,17 +330,17 @@ layers are added explicitly via `LayerRegistry().RegisterLayer()`.
 - **Storage**: internal maps keyed by NodeId, owned by the layer
 - **Lifecycle**: `OnNodeRemoved(old, replacement)` migrates data; `OnCompact(remapMap)` remaps; `OnNodeModified`/`OnNodesModified` for node mutation tracking; `OnRefRemoved`/`OnRefModified`/`OnRefsModified` for reference mutation tracking (subscribed via `SubscribedRefKinds()` bitmask)
 - **Survives mutations**: yes
-- **Examples**: `BRepGraph_ParamLayer`, `BRepGraph_RegularityLayer`
+- **Examples**: `BRepGraph_LayerParam`, `BRepGraph_LayerRegularity`
 
 Typical workflow:
 
 ```cpp
 BRepGraph aGraph;
-aGraph.LayerRegistry().RegisterLayer(new BRepGraph_ParamLayer());
-aGraph.LayerRegistry().RegisterLayer(new BRepGraph_RegularityLayer());
+aGraph.LayerRegistry().RegisterLayer(new BRepGraph_LayerParam());
+aGraph.LayerRegistry().RegisterLayer(new BRepGraph_LayerRegularity());
 
-const occ::handle<BRepGraph_ParamLayer> aParamLayer =
-  aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
+const occ::handle<BRepGraph_LayerParam> aParamLayer =
+  aGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
 ```
 
 ### TransientCache (`BRepGraph_TransientCache`) and RefTransientCache (`BRepGraph_RefTransientCache`)
@@ -487,7 +487,7 @@ if (!aResult.IsValid())
 | **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_RelatedIterator.hxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
-| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_LayerIterator.hxx`, `BRepGraph_LayerRegistry.hxx/.cxx`, `BRepGraph_ParamLayer.hxx/.cxx`, `BRepGraph_RegularityLayer.hxx/.cxx` |
+| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_LayerIterator.hxx`, `BRepGraph_LayerRegistry.hxx/.cxx`, `BRepGraph_LayerParam.hxx/.cxx`, `BRepGraph_LayerRegularity.hxx/.cxx` |
 | **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx`, `BRepGraph_RefTransientCache.hxx/.cxx`, `BRepGraph_CacheKindIterator.hxx` |
 | **History** | `BRepGraph_History.hxx/.cxx`, `BRepGraph_HistoryRecord.hxx` |
 | **Build** | `BRepGraph_Builder.hxx/.cxx` |

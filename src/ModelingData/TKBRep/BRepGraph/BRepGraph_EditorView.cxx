@@ -2421,6 +2421,15 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
       }
     }
 
+    const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
+      myGraph->LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
+    if (!aRegularityLayer.IsNull())
+    {
+      aRegularityLayer->CopyRegularities(theEdgeEntity, theSubA);
+      aRegularityLayer->CopyRegularities(theEdgeEntity, theSubB);
+      aRegularityLayer->RemoveRegularities(theEdgeEntity);
+    }
+
     // Mark original edge as removed.
     aStorage.MarkRemoved(theEdgeEntity);
   }

@@ -268,6 +268,36 @@ void BRepGraph_LayerRegularity::SetRegularity(const BRepGraph_EdgeId theEdge,
 
 //=================================================================================================
 
+void BRepGraph_LayerRegularity::CopyRegularities(const BRepGraph_EdgeId theSourceEdge,
+                                                 const BRepGraph_EdgeId theTargetEdge)
+{
+  if (theSourceEdge == theTargetEdge)
+  {
+    return;
+  }
+
+  const EdgeRegularities* aSourceRegularities = myEdgeRegularities.Seek(theSourceEdge);
+  if (aSourceRegularities == nullptr)
+  {
+    return;
+  }
+
+  const EdgeRegularities aSnapshot = *aSourceRegularities;
+  for (const RegularityEntry& anEntry : aSnapshot.Entries)
+  {
+    SetRegularity(theTargetEdge, anEntry.FaceEntity1, anEntry.FaceEntity2, anEntry.Continuity);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegularity::RemoveRegularities(const BRepGraph_EdgeId theEdge) noexcept
+{
+  removeEdgeBindings(theEdge);
+}
+
+//=================================================================================================
+
 void BRepGraph_LayerRegularity::removeRegularity(const BRepGraph_EdgeId theEdge,
                                                  const BRepGraph_FaceId theFace1,
                                                  const BRepGraph_FaceId theFace2) noexcept
