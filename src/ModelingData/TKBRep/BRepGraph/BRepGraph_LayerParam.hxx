@@ -114,10 +114,10 @@ public:
                                         const double             theParameter);
 
   Standard_EXPORT const TCollection_AsciiString& Name() const override;
-  Standard_EXPORT void OnNodeRemoved(const BRepGraph_NodeId theNode,
-                                     const BRepGraph_NodeId theReplacement) noexcept override;
-  Standard_EXPORT void OnCompact(
-    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept override;
+  Standard_EXPORT void                           OnNodeRemoved(const BRepGraph_NodeId theNode,
+                                                               const BRepGraph_NodeId theReplacement) noexcept override;
+  Standard_EXPORT void                           OnCompact(
+                              const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept override;
   Standard_EXPORT void InvalidateAll() noexcept override;
   Standard_EXPORT void Clear() noexcept override;
 

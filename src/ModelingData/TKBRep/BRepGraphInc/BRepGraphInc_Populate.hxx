@@ -68,12 +68,11 @@ public:
   //! @param[in]  theRegularityLayer   optional edge-regularity layer to populate
   //! @param[in]  theTmpAlloc          optional allocator for temporary scratch data
   static Standard_EXPORT void Perform(
-    BRepGraphInc_Storage&                         theStorage,
-    const TopoDS_Shape&                           theShape,
-    const bool                                    theParallel,
-    const Options&                                theOptions = Options(),
-    const occ::handle<BRepGraph_LayerParam>&      theParamLayer =
-      occ::handle<BRepGraph_LayerParam>(),
+    BRepGraphInc_Storage&                    theStorage,
+    const TopoDS_Shape&                      theShape,
+    const bool                               theParallel,
+    const Options&                           theOptions    = Options(),
+    const occ::handle<BRepGraph_LayerParam>& theParamLayer = occ::handle<BRepGraph_LayerParam>(),
     const occ::handle<BRepGraph_LayerRegularity>& theRegularityLayer =
       occ::handle<BRepGraph_LayerRegularity>(),
     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
@@ -90,13 +89,12 @@ public:
   //! @param[in]     theOptions       optional post-pass controls
   //! @param[in]     theTmpAlloc      optional allocator for temporary scratch data
   static Standard_EXPORT void AppendFlattened(
-    BRepGraphInc_Storage&                         theStorage,
-    const TopoDS_Shape&                           theShape,
-    const bool                                    theParallel,
-    NCollection_DynamicArray<BRepGraph_NodeId>&   theAppendedRoots,
-    const Options&                                theOptions = Options(),
-    const occ::handle<BRepGraph_LayerParam>&      theParamLayer =
-      occ::handle<BRepGraph_LayerParam>(),
+    BRepGraphInc_Storage&                       theStorage,
+    const TopoDS_Shape&                         theShape,
+    const bool                                  theParallel,
+    NCollection_DynamicArray<BRepGraph_NodeId>& theAppendedRoots,
+    const Options&                              theOptions    = Options(),
+    const occ::handle<BRepGraph_LayerParam>&    theParamLayer = occ::handle<BRepGraph_LayerParam>(),
     const occ::handle<BRepGraph_LayerRegularity>& theRegularityLayer =
       occ::handle<BRepGraph_LayerRegularity>(),
     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
@@ -112,12 +110,11 @@ public:
   //! @param[in]     theOptions       optional post-pass controls
   //! @param[in]     theTmpAlloc      optional allocator for temporary scratch data
   static Standard_EXPORT void Append(
-    BRepGraphInc_Storage&                         theStorage,
-    const TopoDS_Shape&                           theShape,
-    const bool                                    theParallel,
-    const Options&                                theOptions = Options(),
-    const occ::handle<BRepGraph_LayerParam>&      theParamLayer =
-      occ::handle<BRepGraph_LayerParam>(),
+    BRepGraphInc_Storage&                    theStorage,
+    const TopoDS_Shape&                      theShape,
+    const bool                               theParallel,
+    const Options&                           theOptions    = Options(),
+    const occ::handle<BRepGraph_LayerParam>& theParamLayer = occ::handle<BRepGraph_LayerParam>(),
     const occ::handle<BRepGraph_LayerRegularity>& theRegularityLayer =
       occ::handle<BRepGraph_LayerRegularity>(),
     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =

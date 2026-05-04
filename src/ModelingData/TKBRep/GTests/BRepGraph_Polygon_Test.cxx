@@ -469,8 +469,9 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_ShapeGraphShape_RoundTrip)
 
   // Walk both originals and reconstructed in lock-step (TopExp_Explorer order)
   // and verify every (edge, F1, F2) pair preserves its classical Continuity value.
-  using ShapeMap =
-    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>;
+  using ShapeMap = NCollection_IndexedDataMap<TopoDS_Shape,
+                                              NCollection_List<TopoDS_Shape>,
+                                              TopTools_ShapeMapHasher>;
   ShapeMap aOrigEdgeFaces, aReconEdgeFaces;
   TopExp::MapShapesAndAncestors(aOriginal, TopAbs_EDGE, TopAbs_FACE, aOrigEdgeFaces);
   TopExp::MapShapesAndAncestors(aReconstructed, TopAbs_EDGE, TopAbs_FACE, aReconEdgeFaces);
@@ -479,8 +480,8 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_ShapeGraphShape_RoundTrip)
   uint32_t aNbCheckedPairs = 0;
   for (int i = 1; i <= aOrigEdgeFaces.Extent(); ++i)
   {
-    const TopoDS_Edge& aOrigEdge  = TopoDS::Edge(aOrigEdgeFaces.FindKey(i));
-    const TopoDS_Edge& aReconEdge = TopoDS::Edge(aReconEdgeFaces.FindKey(i));
+    const TopoDS_Edge&              aOrigEdge   = TopoDS::Edge(aOrigEdgeFaces.FindKey(i));
+    const TopoDS_Edge&              aReconEdge  = TopoDS::Edge(aReconEdgeFaces.FindKey(i));
     NCollection_List<TopoDS_Shape>& aOrigFaces  = aOrigEdgeFaces.ChangeFromIndex(i);
     NCollection_List<TopoDS_Shape>& aReconFaces = aReconEdgeFaces.ChangeFromIndex(i);
     ASSERT_EQ(aOrigFaces.Size(), aReconFaces.Size());
@@ -492,7 +493,7 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_ShapeGraphShape_RoundTrip)
       const TopoDS_Face& aOrigF1  = TopoDS::Face(aOrigIt.Value());
       const TopoDS_Face& aReconF1 = TopoDS::Face(aReconIt.Value());
 
-      NCollection_List<TopoDS_Shape>::Iterator aOrigIt2 = aOrigIt;
+      NCollection_List<TopoDS_Shape>::Iterator aOrigIt2  = aOrigIt;
       NCollection_List<TopoDS_Shape>::Iterator aReconIt2 = aReconIt;
       for (; aOrigIt2.More(); aOrigIt2.Next(), aReconIt2.Next())
       {

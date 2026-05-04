@@ -946,7 +946,7 @@ static void extractEdgeInFace(ExtractedEdge&                   theEdgeData,
   // The input theEdge carries the iterator's natural orientation, so the
   // extractor returns the matching PCurve (PCurve() for FORWARD, PCurve2() for
   // REVERSED on a closed surface). The opposite half is the *other* yield's
-  // ExtractedEdge — we don't need to fetch it here.
+  // ExtractedEdge - we don't need to fetch it here.
   {
     double aPCFirst = 0.0, aPCLast = 0.0;
     extractStoredPCurves(theEdge,
@@ -1215,7 +1215,7 @@ void registerFaceData(BRepGraphInc_Storage&                          theStorage,
             theStorage.TriangulationRep(aFaceDef.TriangulationRepId).Triangulation;
           if (!aTri.IsNull())
           {
-            TopLoc_Location aPolyTriLoc;
+            TopLoc_Location                          aPolyTriLoc;
             occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
               BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
             if (!aPolyOnTri.IsNull())
@@ -1780,10 +1780,7 @@ void populateRegularityLayer(BRepGraphInc_Storage&                         theSt
         {
           continue;
         }
-        theRegularityLayer->SetRegularity(anEdgeId,
-                                          *aFaceIdx,
-                                          *aFaceIdx,
-                                          aCRep->Continuity());
+        theRegularityLayer->SetRegularity(anEdgeId, *aFaceIdx, *aFaceIdx, aCRep->Continuity());
       }
     }
   }
@@ -1991,13 +1988,14 @@ void populateOptionalLayers(BRepGraphInc_Storage&                         theSto
 
 //=================================================================================================
 
-void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                         theStorage,
-                                    const TopoDS_Shape&                           theShape,
-                                    const bool                                    theParallel,
-                                    const Options&                                theOptions,
-                                    const occ::handle<BRepGraph_LayerParam>&      theParamLayer,
-                                    const occ::handle<BRepGraph_LayerRegularity>& theRegularityLayer,
-                                    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
+void BRepGraphInc_Populate::Perform(
+  BRepGraphInc_Storage&                         theStorage,
+  const TopoDS_Shape&                           theShape,
+  const bool                                    theParallel,
+  const Options&                                theOptions,
+  const occ::handle<BRepGraph_LayerParam>&      theParamLayer,
+  const occ::handle<BRepGraph_LayerRegularity>& theRegularityLayer,
+  const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   theStorage.Clear();
 

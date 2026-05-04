@@ -98,8 +98,7 @@ TEST(BRepGraph_SeamRedesignTest, CylinderLateralWire_BothSeamHalvesInCoEdgeRefId
   const BRepGraph_CoEdgeId aSeamCoEdge = findSeamCoEdge(aGraph);
   ASSERT_TRUE(aSeamCoEdge.IsValid()) << "Cylinder must have a seam CoEdge";
 
-  const BRepGraph_CoEdgeId aSeamPair =
-    BRepGraph_Tool::CoEdge::SeamPair(aGraph, aSeamCoEdge);
+  const BRepGraph_CoEdgeId aSeamPair = BRepGraph_Tool::CoEdge::SeamPair(aGraph, aSeamCoEdge);
   ASSERT_TRUE(aSeamPair.IsValid());
 
   // Find the wire containing the seam CoEdge.
@@ -132,7 +131,7 @@ TEST(BRepGraph_SeamRedesignTest, CylinderLateralWire_BothSeamHalvesInCoEdgeRefId
 }
 
 // Cylinder lateral wire's NbCoEdges must equal the count of TopoDS_Iterator(wire)
-// yields on the same wire — i.e. the seam edge contributes 2 CoEdgeRefs.
+// yields on the same wire - i.e. the seam edge contributes 2 CoEdgeRefs.
 TEST(BRepGraph_SeamRedesignTest, CylinderLateralWire_NbCoEdges_MatchesTopoDSIterator)
 {
   const TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
@@ -145,7 +144,7 @@ TEST(BRepGraph_SeamRedesignTest, CylinderLateralWire_NbCoEdges_MatchesTopoDSIter
   TopoDS_Face aLateralFace;
   for (TopExp_Explorer aFE(aCyl, TopAbs_FACE); aFE.More(); aFE.Next())
   {
-    const TopoDS_Face& aF = TopoDS::Face(aFE.Current());
+    const TopoDS_Face& aF       = TopoDS::Face(aFE.Current());
     int                aNbEdges = 0;
     for (TopExp_Explorer aEE(aF, TopAbs_EDGE); aEE.More(); aEE.Next())
       ++aNbEdges;
@@ -174,8 +173,7 @@ TEST(BRepGraph_SeamRedesignTest, CylinderLateralWire_NbCoEdges_MatchesTopoDSIter
   uint32_t aGraphCount = 0;
   for (BRepGraph_WireIterator aWIt(aGraph); aWIt.More(); aWIt.Next())
   {
-    const BRepGraph_FaceId aFaceId =
-      BRepGraph_Tool::Wire::FaceOf(aGraph, aWIt.CurrentId());
+    const BRepGraph_FaceId aFaceId = BRepGraph_Tool::Wire::FaceOf(aGraph, aWIt.CurrentId());
     if (!aFaceId.IsValid())
       continue;
     const TopoDS_Shape* aOrig = aGraph.Shapes().FindOriginal(aFaceId);
@@ -191,7 +189,7 @@ TEST(BRepGraph_SeamRedesignTest, CylinderLateralWire_NbCoEdges_MatchesTopoDSIter
 // Derived SeamPair: symmetry, free wire, non-seam
 // ============================================================
 
-// SeamPair(SeamPair(c)) == c on every seam half — symmetry guaranteed by the
+// SeamPair(SeamPair(c)) == c on every seam half - symmetry guaranteed by the
 // connectivity-derived implementation.
 TEST(BRepGraph_SeamRedesignTest, SeamPair_DerivedQuery_IsSymmetric)
 {
@@ -230,7 +228,7 @@ TEST(BRepGraph_SeamRedesignTest, SeamPair_BoxHasNoSeams)
   }
 }
 
-// Free-wire CoEdge (no FaceDefId) cannot be a seam — derived query handles invalid face.
+// Free-wire CoEdge (no FaceDefId) cannot be a seam - derived query handles invalid face.
 TEST(BRepGraph_SeamRedesignTest, SeamPair_FreeWireHasNoSeams)
 {
   // Build a free wire: an edge between two vertices, not bound to any face.
@@ -269,8 +267,7 @@ TEST(BRepGraph_SeamRedesignTest, EdgeOps_IsSeamOnFace_DerivedFromConnectivity)
 
   const BRepGraph_CoEdgeId aSeamCoEdge = findSeamCoEdge(aGraph);
   ASSERT_TRUE(aSeamCoEdge.IsValid());
-  const BRepGraphInc::CoEdgeDef& aSeamDef =
-    aGraph.Topo().CoEdges().Definition(aSeamCoEdge);
+  const BRepGraphInc::CoEdgeDef& aSeamDef = aGraph.Topo().CoEdges().Definition(aSeamCoEdge);
   EXPECT_TRUE(aGraph.Editor().Edges().IsSeamOnFace(aSeamDef.EdgeDefId, aSeamDef.FaceDefId));
 
   // A box edge (any) must NOT be a seam on its face.
@@ -304,11 +301,10 @@ TEST(BRepGraph_SeamRedesignTest, NbDistinctEdges_AccountsForSeamHalves)
   uint32_t aWiresWithSeams = 0;
   for (BRepGraph_WireIterator aWIt(aGraph); aWIt.More(); aWIt.Next())
   {
-    const BRepGraph_WireId aWireId  = aWIt.CurrentId();
-    const uint32_t         aRawCnt  = BRepGraph_Tool::Wire::NbCoEdges(aGraph, aWireId);
+    const BRepGraph_WireId aWireId   = aWIt.CurrentId();
+    const uint32_t         aRawCnt   = BRepGraph_Tool::Wire::NbCoEdges(aGraph, aWireId);
     const uint32_t         aDistinct = BRepGraph_Tool::Wire::NbDistinctEdges(aGraph, aWireId);
-    EXPECT_LE(aDistinct, aRawCnt)
-      << "Distinct edges <= raw CoEdge count";
+    EXPECT_LE(aDistinct, aRawCnt) << "Distinct edges <= raw CoEdge count";
     if (aRawCnt > aDistinct)
     {
       ++aWiresWithSeams;
@@ -380,16 +376,14 @@ TEST(BRepGraph_SeamRedesignTest, EdgeOps_Split_PreservesSeamRegularityLayer)
 
   const BRepGraph_CoEdgeId aSeamCoEdge = findSeamCoEdge(aGraph);
   ASSERT_TRUE(aSeamCoEdge.IsValid());
-  const BRepGraphInc::CoEdgeDef& aSeamDef = aGraph.Topo().CoEdges().Definition(aSeamCoEdge);
+  const BRepGraphInc::CoEdgeDef& aSeamDef    = aGraph.Topo().CoEdges().Definition(aSeamCoEdge);
   const BRepGraph_EdgeId         aSeamEdgeId = aSeamDef.EdgeDefId;
   const BRepGraph_FaceId         aSeamFaceId = aSeamDef.FaceDefId;
   ASSERT_TRUE(aSeamEdgeId.IsValid());
   ASSERT_TRUE(aSeamFaceId.IsValid());
 
-  ASSERT_TRUE(aGraph.Editor().Edges().SetRegularity(aSeamEdgeId,
-                                                    aSeamFaceId,
-                                                    aSeamFaceId,
-                                                    GeomAbs_G2));
+  ASSERT_TRUE(
+    aGraph.Editor().Edges().SetRegularity(aSeamEdgeId, aSeamFaceId, aSeamFaceId, GeomAbs_G2));
   const occ::handle<BRepGraph_LayerRegularity> aLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
   ASSERT_FALSE(aLayer.IsNull());
@@ -398,7 +392,7 @@ TEST(BRepGraph_SeamRedesignTest, EdgeOps_Split_PreservesSeamRegularityLayer)
   ASSERT_TRUE(aLayer->FindContinuity(aSeamEdgeId, aSeamFaceId, aSeamFaceId, &aContinuity));
   ASSERT_EQ(aContinuity, GeomAbs_G2);
 
-  const BRepGraphInc::EdgeDef& aEdgeDef = aGraph.Topo().Edges().Definition(aSeamEdgeId);
+  const BRepGraphInc::EdgeDef& aEdgeDef  = aGraph.Topo().Edges().Definition(aSeamEdgeId);
   const double                 aMidParam = 0.5 * (aEdgeDef.ParamFirst + aEdgeDef.ParamLast);
   const BRepGraph_VertexId     aSplitVertex =
     aGraph.Editor().Vertices().Add(gp_Pnt(5.0, 0.0, 5.0), aEdgeDef.Tolerance);
@@ -427,17 +421,16 @@ TEST(BRepGraph_SeamRedesignTest, EdgeOps_SetRegularity_FailsWithoutLayer)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
   BRepGraph          aGraph;
-  // Note: NOT calling registerLayers — layer absent.
+  // Note: NOT calling registerLayers - layer absent.
   aGraph.Clear();
   ASSERT_TRUE(BRepGraph_Builder::Add(aGraph, aBox).Ok);
 
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0u);
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 1u);
-  EXPECT_FALSE(aGraph.Editor().Edges().SetRegularity(
-    BRepGraph_EdgeId::Start(),
-    BRepGraph_FaceId::Start(),
-    BRepGraph_FaceId(1),
-    GeomAbs_G1));
+  EXPECT_FALSE(aGraph.Editor().Edges().SetRegularity(BRepGraph_EdgeId::Start(),
+                                                     BRepGraph_FaceId::Start(),
+                                                     BRepGraph_FaceId(1),
+                                                     GeomAbs_G1));
 }
 
 // ============================================================
@@ -545,14 +538,12 @@ TEST(BRepGraph_SeamRedesignTest, Validate_DetectsAsymmetricSeamPair)
   // Locate a CoEdge with a seam pair.
   const BRepGraph_CoEdgeId aSeamCoEdge = findSeamCoEdge(aGraph);
   ASSERT_TRUE(aSeamCoEdge.IsValid());
-  const BRepGraph_CoEdgeId aSeamMate =
-    BRepGraph_Tool::CoEdge::SeamPair(aGraph, aSeamCoEdge);
+  const BRepGraph_CoEdgeId aSeamMate = BRepGraph_Tool::CoEdge::SeamPair(aGraph, aSeamCoEdge);
   ASSERT_TRUE(aSeamMate.IsValid());
 
   // Forcibly assign the same orientation to both halves to break the
   // "opposite-orientation" invariant. Validate must flag this.
-  const TopAbs_Orientation aOri =
-    aGraph.Topo().CoEdges().Definition(aSeamCoEdge).Orientation;
+  const TopAbs_Orientation aOri = aGraph.Topo().CoEdges().Definition(aSeamCoEdge).Orientation;
   aGraph.Editor().CoEdges().SetOrientation(aSeamMate, aOri);
 
   const BRepGraphInc::CoEdgeDef& aDef = aGraph.Topo().CoEdges().Definition(aSeamCoEdge);

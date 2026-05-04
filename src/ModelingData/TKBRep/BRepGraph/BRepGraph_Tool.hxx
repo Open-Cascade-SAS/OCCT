@@ -620,9 +620,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theWire  typed wire definition identifier
     //! @return number of distinct EdgeDefIds reachable from the wire's CoEdgeRefIds
-    [[nodiscard]] Standard_EXPORT static uint32_t NbDistinctEdges(
-      const BRepGraph&       theGraph,
-      const BRepGraph_WireId theWire);
+    [[nodiscard]] Standard_EXPORT static uint32_t NbDistinctEdges(const BRepGraph&       theGraph,
+                                                                  const BRepGraph_WireId theWire);
 
     //! Returns the first owning face for this wire via the reverse-index table.
     //! Returns an invalid id if the wire has no owning face (free wire).

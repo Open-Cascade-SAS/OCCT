@@ -1023,8 +1023,7 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
     ++aNbPairedCoEdges;
 
     // Symmetry: the partner's partner is us.
-    const BRepGraph_CoEdgeId aBackId =
-      BRepGraph_TestTools::SeamPairFromStorage(aStorage, aPairId);
+    const BRepGraph_CoEdgeId aBackId = BRepGraph_TestTools::SeamPairFromStorage(aStorage, aPairId);
     EXPECT_EQ(aBackId, aCoEdgeId) << "Seam relation must be symmetric";
     const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdgeId);
     const BRepGraphInc::CoEdgeDef& aPaired = aStorage.CoEdge(aPairId);
@@ -1188,8 +1187,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
       aGraph.Topo().Edges().CoEdges(theEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      const BRepGraph_CoEdgeId aPairId =
-        BRepGraph_Tool::CoEdge::SeamPair(aGraph, aCoEdgeId);
+      const BRepGraph_CoEdgeId aPairId = BRepGraph_Tool::CoEdge::SeamPair(aGraph, aCoEdgeId);
       if (!aPairId.IsValid())
       {
         continue;
