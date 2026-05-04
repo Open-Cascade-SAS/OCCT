@@ -35,7 +35,7 @@ Naturally, "Geometry & Topology" is just an example of application data that can
 
 @figure{images/visualization_image003.png,"Key concepts and packages in visualization",400}
 
-To answer different needs of CASCADE users, this User's Guide offers the following three paths in reading it.
+To answer different needs of OCCT users, this User's Guide offers the following three paths in reading it.
 
   * If the 3D services proposed in AIS meet your requirements, you need only read chapter 3  @ref occt_visu_3 "AIS: Application Interactive Services".
   * If you need more detail, for example, a selection filter on another type of entity -- you should read
@@ -108,8 +108,8 @@ Additional packages, such as *Prs3d* and *Graphic3d* may be used if you need to 
 @subsubsection occt_visu_2_1_3 A Basic Example: How to display a 3D object
 
 ~~~~{.cpp}
-occ::handle<V3d_Viewer> theViewer;
-occ::handle<AIS_InteractiveContext> aContext = new AIS_InteractiveContext (theViewer);
+occ::handle<V3d_Viewer> aViewer;
+occ::handle<AIS_InteractiveContext> aContext = new AIS_InteractiveContext (aViewer);
 
 BRepPrimAPI_MakeWedge aWedgeMaker (theWedgeDX, theWedgeDY, theWedgeDZ, theWedgeLtx);
 TopoDS_Solid aShape = aWedgeMaker.Solid();
@@ -454,30 +454,30 @@ It also contains the code to start the detection procedure and parse the results
 // Suppose there is an instance of class InteractiveBox from the previous sample.
 // It contains an implementation of method InteractiveBox::ComputeSelection() for selection
 // modes 0 (whole box must be selected) and 1 (edge of the box must be selectable)
-occ::handle<InteractiveBox> theBox;
-occ::handle<AIS_InteractiveContext> theContext;
+occ::handle<InteractiveBox> aBox;
+occ::handle<AIS_InteractiveContext> aContext;
 // To prevent automatic activation of the default selection mode
-theContext->SetAutoActivateSelection (false);
-theContext->Display (theBox, false);
+aContext->SetAutoActivateSelection (false);
+aContext->Display (aBox, false);
 
 // Load a box to the selection manager without computation of any selection mode
-theContext->Load (theBox, -1, true);
+aContext->Load (aBox, -1, true);
 // Activate edge selection
-theContext->Activate (theBox, 1);
+aContext->Activate (aBox, 1);
 
 // Run the detection mechanism for activated entities in the current mouse coordinates and in the current view.
 // Detected owners will be highlighted with context highlight color
-theContext->MoveTo (aXMousePos, aYMousePos, myView, false);
+aContext->MoveTo (aXMousePos, aYMousePos, myView, false);
 // Select the detected owners
-theContext->Select();
+aContext->Select();
 // Iterate through the selected owners
-for (theContext->InitSelected(); theContext->MoreSelected() && !aHasSelected; theContext->NextSelected())
+for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aContext->NextSelected())
 {
-  occ::handle<AIS_InteractiveObject> anIO = theContext->SelectedInteractive();
+  occ::handle<AIS_InteractiveObject> anIO = aContext->SelectedInteractive();
 }
 
 // deactivate all selection modes for aBox1
-theContext->Deactivate (aBox1);
+aContext->Deactivate (aBox1);
 ~~~~
 
 It is also important to know, that there are 2 types of detection implemented for rectangular selection in OCCT:
@@ -491,9 +491,9 @@ To change this, use the following code:
 
 ~~~~{.cpp}
 // Assume there is a created interactive context
-const occ::handle<AIS_InteractiveContext> theContext;
+const occ::handle<AIS_InteractiveContext> aContext;
 // Retrieve the current viewer selector
-const occ::handle<StdSelect_ViewerSelector3d>& aMainSelector = theContext->MainSelector();
+const occ::handle<StdSelect_ViewerSelector3d>& aMainSelector = aContext->MainSelector();
 // Set the flag to allow overlap detection
 aMainSelector->AllowOverlapDetection (true);
 ~~~~
@@ -635,8 +635,8 @@ you can cancel its "infinite" status using *AIS_InteractiveObject::SetInfiniteSt
 Let us take for example the class called *IShape* representing an interactive object:
 
 ~~~~{.cpp}
-myPk_IShape::myPk_IShape (const TopoDS_Shape& theShape, PrsMgr_TypeOfPresentation theType)
-: AIS_InteractiveObject (theType), myShape (theShape) { SetHilightMode (0); }
+myPk_IShape::myPk_IShape (const TopoDS_Shape& aShape, PrsMgr_TypeOfPresentation theType)
+: AIS_InteractiveObject (theType), myShape (aShape) { SetHilightMode (0); }
 
 bool myPk_IShape::AcceptDisplayMode (const int theMode) const
 {
@@ -850,7 +850,7 @@ There is one essential rule to follow: the modification of an interactive object
 You can only directly call the functions available for an interactive object if it has not been loaded into an Interactive Context.
 
 ~~~~{.cpp}
-occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (theShape);
+occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (aShape);
 myIntContext->Display (aShapePrs, AIS_Shaded, 0, false);
 myIntContext->SetColor(aShapePrs, Quantity_NOC_RED, true);
 ~~~~
@@ -858,7 +858,7 @@ myIntContext->SetColor(aShapePrs, Quantity_NOC_RED, true);
 You can also write
 
 ~~~~{.cpp}
-occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (theShape);
+occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (aShape);
 aShapePrs->SetColor (Quantity_NOC_RED);
 aShapePrs->SetDisplayMode (AIS_Shaded);
 myIntContext->Display (aShapePrs, true);
@@ -953,8 +953,8 @@ There are several functions to manipulate filters:
 
 ~~~~{.cpp}
 // shading visualization mode, no specific mode, authorization for decomposition into sub-shapes
-const TopoDS_Shape theShape;
-occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (theShape);
+const TopoDS_Shape aShape;
+occ::handle<AIS_Shape> aShapePrs = new AIS_Shape (aShape);
 myContext->Display (aShapePrs, AIS_Shaded, -1, true, PrsMgr_DisplayStatus_Displayed);
 
 // activates decomposition of shapes into faces
@@ -1088,7 +1088,7 @@ and can be built up from the source data with a custom presentation builder.
 The class *AIS_ColoredShape* allows using custom colors and line widths for *TopoDS_Shape* objects and their sub-shapes.
 
 ~~~~{.cpp}
-  occ::handle<AIS_ColoredShape> aColoredShape = new AIS_ColoredShape (theShape);
+  occ::handle<AIS_ColoredShape> aColoredShape = new AIS_ColoredShape (aShape);
 
   // setup color of entire shape
   aColoredShape->SetColor (Quantity_NOC_RED);
@@ -1616,7 +1616,7 @@ The following code configures the camera for orthographic rendering:
 
 ~~~~{.cpp}
 // Create an orthographic View in this Viewer
-occ::handle<V3d_View> aView = new V3d_View (theViewer);
+occ::handle<V3d_View> aView = new V3d_View (aViewer);
 aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
 aView->Update(); // update the Visualization in this View
 ~~~~
@@ -1631,7 +1631,7 @@ The following code configures the camera for perspective rendering:
 
 ~~~~{.cpp}
 // Create a perspective View in this Viewer
-occ::handle<V3d_View> aView = new V3d_View (theViewer);
+occ::handle<V3d_View> aView = new V3d_View (aViewer);
 aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
 aView->Update();
 ~~~~
@@ -1673,7 +1673,7 @@ The following code configures the camera for stereographic rendering:
 
 ~~~~{.cpp}
 // Create a Stereographic View in this Viewer
-occ::handle<V3d_View> aView = new V3d_View (theViewer);
+occ::handle<V3d_View> aView = new V3d_View (aViewer);
 aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
 // Change stereo parameters
 aView->Camera()->SetIOD (Graphic3d_Camera::IODType_Absolute, 5.0);
@@ -1684,9 +1684,9 @@ aView->Update();
 Other 3D displays are also supported, including row-interlaced with passive glasses and anaglyph glasses - see *Graphic3d_StereoMode* enumeration.
 Example to activate another stereoscopic display:
 ~~~~{.cpp}
-occ::handle<V3d_View> theView;
-theView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
-theView->ChangeRenderingParams().StereoParams = Graphic3d_StereoMode_RowInterlaced;
+occ::handle<V3d_View> aView;
+aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
+aView->ChangeRenderingParams().StereoParams = Graphic3d_StereoMode_RowInterlaced;
 ~~~~
 
 Supporting of VR/AR headsets in application is more involving.
@@ -1820,11 +1820,11 @@ Example:
 
 ~~~~{.cpp}
 // set z-layer to an interactive object
-occ::handle<AIS_InteractiveContext> theContext;
-occ::handle<AIS_InteractiveObject> theInterObj;
+occ::handle<AIS_InteractiveContext> aContext;
+occ::handle<AIS_InteractiveObject> anInterObj;
 int anId = -1;
 aViewer->AddZLayer (anId);
-theContext->SetZLayer (theInterObj, anId);
+aContext->SetZLayer (anInterObj, anId);
 ~~~~
 
 For each z-layer, it is allowed to:

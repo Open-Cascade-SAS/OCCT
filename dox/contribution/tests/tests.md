@@ -353,7 +353,7 @@ The test group may contain *parse.rules* file. This file defines patterns used f
 
 Each line in the file should specify a status (single word), followed by a regular expression delimited by slashes (*/*) that will be matched against lines in the test output log to check if it corresponds to this status.
 
-The regular expressions should follow <a href="https://www.tcl-lang.org/man/tcl/TclCmd/re_syntax.htm">Tcl syntax</a>, with a special exception that "\\b" is considered as word limit (Perl-style), in addition to "\\y" used in Tcl.
+The regular expressions should follow <a href="https://www.tcl-lang.org/man/tcl8.6/TclCmd/re_syntax.htm">Tcl syntax</a>, with a special exception that "\\b" is considered as word limit (Perl-style), in addition to "\\y" used in Tcl.
 
 The rest of the line can contain a comment message, which will be added to the test report when this status is detected.
 

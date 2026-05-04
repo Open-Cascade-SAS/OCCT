@@ -1495,7 +1495,7 @@ The class *BRepPrimAPI_MakeBox* allows building a parallelepiped box. The result
 
 An error is raised if  the box is flat in any dimension using the default precision. The following  code shows how to create a box: 
 ~~~~{.cpp}
-TopoDS_Solid theBox = BRepPrimAPI_MakeBox(10.,20.,30.); 
+TopoDS_Solid aBox = BRepPrimAPI_MakeBox(10.,20.,30.); 
 ~~~~
 
 The four methods to build a box are shown in the figure: 
@@ -2105,9 +2105,9 @@ TopoDS_Shape FilletedBox(const double a,
 ~~~~{.cpp}
 void CSampleTopologicalOperationsDoc::OnEvolvedblend1() 
 { 
-	TopoDS_Shape theBox  = BRepPrimAPI_MakeBox(200,200,200); 
+	TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(200,200,200); 
 
-	BRepFilletAPI_MakeFillet  Rake(theBox); 
+	BRepFilletAPI_MakeFillet  Rake(aBox); 
 	ChFi3d_FilletShape  FSh = ChFi3d_Rational; 
 	Rake.SetFilletShape(FSh); 
 
@@ -2119,7 +2119,7 @@ void CSampleTopologicalOperationsDoc::OnEvolvedblend1()
 	ParAndRad(1).SetCoord(160.,  30.); 
 	ParAndRad(1).SetCoord(200.,  20.); 
 
-	TopExp_Explorer  ex(theBox,TopAbs_EDGE); 
+	TopExp_Explorer  ex(aBox,TopAbs_EDGE); 
 	Rake.Add(ParAndRad, TopoDS::Edge(ex.Current())); 
 	TopoDS_Shape  evolvedBox = Rake.Shape(); 
 } 
@@ -2286,7 +2286,7 @@ The class is created or  initialized from a shape, then faces to be modified are
 The following code  places a draft angle on several faces of a shape; the same direction, angle and  neutral plane are used for each face: 
 
 ~~~~{.cpp}
-TopoDS_Shape myShape = ... 
+TopoDS_Shape aShape = ... 
 // The original shape 
 NCollection_List<TopoDS_Shape> ListOfFace; 
 // Creation of the list of faces to be modified 
@@ -2298,7 +2298,7 @@ double Angle = 5.*PI/180.;
 // 5 degree angle 
 gp_Pln Neutral(gp_Pnt(0.,0.,5.), Direc); 
 // Neutral plane Z=5 
-BRepOffsetAPI_DraftAngle theDraft(myShape); 
+BRepOffsetAPI_DraftAngle theDraft(aShape); 
 NCollection_List<TopoDS_Shape>::Iterator itl; 
 for (itl.Initialize(ListOfFace); itl.More(); itl.Next())  { 
 	theDraft.Add(TopoDS::Face(itl.Value()),Direc,Angle,Neutral); 
@@ -2318,7 +2318,7 @@ if (!theDraft.IsDone()) {
 	... 
 } 
 else { 
-	TopoDS_Shape  myResult = theDraft.Shape(); 
+	TopoDS_Shape  aResult = theDraft.Shape(); 
 	... 
 } 
 ~~~~
@@ -2371,19 +2371,19 @@ The following example  deals with the rotation of shapes.
 
 ~~~~{.cpp}
 
-TopoDS_Shape myShape1 = ...; 
+TopoDS_Shape aShape1 = ...; 
 // The original shape 1 
-TopoDS_Shape myShape2 = ...; 
+TopoDS_Shape aShape2 = ...; 
 // The original shape2 
 gp_Trsf T; 
 T.SetRotation(gp_Ax1(gp_Pnt(0.,0.,0.),gp_Vec(0.,0.,1.)), 
 2.*PI/5.); 
 BRepBuilderAPI_Transform theTrsf(T); 
-theTrsf.Perform(myShape1); 
-TopoDS_Shape myNewShape1 = theTrsf.Shape();
-theTrsf.Perform(myShape2,true);
+theTrsf.Perform(aShape1); 
+TopoDS_Shape aNewShape1 = theTrsf.Shape();
+theTrsf.Perform(aShape2,true);
 // Here duplication is forced
-TopoDS_Shape myNewShape2 = theTrsf.Shape();
+TopoDS_Shape aNewShape2 = theTrsf.Shape();
 ~~~~
 
 @subsubsection occt_modalg_3b_2 Duplication
@@ -2627,7 +2627,7 @@ BRepFeat_MakePrism thePrism(Sbase, Fbase, TopoDS_Face(),  Extrusion, true, true)
 
 thePrism.Perform (100.); 
 if (thePrism.IsDone()) { 
-	TopoDS_Shape  theResult = thePrism; 
+	TopoDS_Shape  aResult = thePrism; 
 	... 
 } 
 ~~~~
@@ -2722,7 +2722,7 @@ BRepFeat_MakeRevol theRevol(Sbase, Frevol, TopoDS_Face(), RevolAx,  true, true);
 
 theRevol.Perform(FUntil); 
 if (theRevol.IsDone()) { 
-	TopoDS_Shape  theResult = theRevol; 
+	TopoDS_Shape  aResult = theRevol; 
 	... 
 } 
 ~~~~
@@ -2757,17 +2757,17 @@ BRepBuilderAPI_MakeWire MW1;
 gp_Pnt2d p1,p2;
 p1 = gp_Pnt2d(100.,100.);
 p2 = gp_Pnt2d(200.,100.);
-occ::handle<Geom2d_Line> aline = GCE2d_MakeLine(p1,p2).Value();
+  occ::handle<Geom2d_Line> aline = GC_MakeLine2d(p1,p2).Value();
 
 MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
 p1 = p2;
 p2 = gp_Pnt2d(150.,200.);
-aline = GCE2d_MakeLine(p1,p2).Value();
+aline = GC_MakeLine2d(p1,p2).Value();
 
 MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
 p1 = p2;
 p2 = gp_Pnt2d(100.,100.);
-aline = GCE2d_MakeLine(p1,p2).Value();
+aline = GC_MakeLine2d(p1,p2).Value();
 
 MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
 BRepBuilderAPI_MakeFace MKF1(surf, false);
@@ -2886,7 +2886,7 @@ theGlue.Bind(fined.EdgeFrom(),fined.EdgeTo());
 } 
 theGlue.Build(); 
 if (theGlue.IsDone()) { 
-TopoDS_Shape  theResult = theGlue; 
+TopoDS_Shape  aResult = theGlue; 
 ... 
 } 
 ~~~~
@@ -2909,7 +2909,7 @@ TopoDS_Face Fsplit = ...; // face of Sbase
 TopoDS_Wire Wsplit = ...; // new wire contained in Fsplit 
 BRepFeat_SplitShape Spls(Sbase); 
 Spls.Add(Wsplit, Fsplit); 
-TopoDS_Shape theResult = Spls; 
+TopoDS_Shape aResult = Spls; 
 ...
 ~~~~
 
@@ -3301,25 +3301,25 @@ For an *HLRBRep_HLRToShape* object built from an *HLRBRep_Algo* object you can a
 
 ~~~~{.cpp}
 // Build The algorithm object 
-myAlgo = new HLRBRep_Algo(); 
+anAlgo = new HLRBRep_Algo(); 
 
 // Add Shapes into the algorithm 
 NCollection_List<TopoDS_Shape>::Iterator anIterator(myListOfShape); 
 for (;anIterator.More();anIterator.Next()) 
-myAlgo->Add(anIterator.Value(),myNbIsos); 
+anAlgo->Add(anIterator.Value(),aNbIsos); 
 
-// Set The Projector (myProjector is a 
+// Set The Projector (aProjector is a 
 HLRAlgo_Projector) 
-myAlgo->Projector(myProjector); 
+anAlgo->Projector(aProjector); 
 
 // Build HLR 
-myAlgo->Update(); 
+anAlgo->Update(); 
 
 // Set The Edge Status 
-myAlgo->Hide(); 
+anAlgo->Hide(); 
 
 // Build the extraction object : 
-HLRBRep_HLRToShape aHLRToShape(myAlgo); 
+HLRBRep_HLRToShape aHLRToShape(anAlgo); 
 
 // extract the results : 
 TopoDS_Shape VCompound           = aHLRToShape.VCompound(); 
@@ -3348,24 +3348,24 @@ aHLRToShape.IsoLineHCompound();
 ~~~~{.cpp}
 
 // Build The algorithm object 
-myPolyAlgo = new HLRBRep_PolyAlgo(); 
+aPolyAlgo = new HLRBRep_PolyAlgo(); 
 
 // Add Shapes into the algorithm 
 NCollection_List<TopoDS_Shape>::Iterator 
 anIterator(myListOfShape); 
 for (;anIterator.More();anIterator.Next()) 
-myPolyAlgo->Load(anIterator.Value()); 
+aPolyAlgo->Load(anIterator.Value()); 
 
-// Set The Projector (myProjector is a 
+// Set The Projector (aProjector is a 
 HLRAlgo_Projector) 
-myPolyAlgo->Projector(myProjector); 
+aPolyAlgo->Projector(aProjector); 
 
 // Build HLR 
-myPolyAlgo->Update(); 
+aPolyAlgo->Update(); 
 
 // Build the extraction object : 
 HLRBRep_PolyHLRToShape aPolyHLRToShape; 
-aPolyHLRToShape.Update(myPolyAlgo); 
+aPolyHLRToShape.Update(aPolyAlgo); 
 
 // extract the results : 
 TopoDS_Shape VCompound = 

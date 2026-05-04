@@ -28,7 +28,7 @@ When you upgrade the code by an automatic script, make sure to carefully review 
 
 @section upgrade_pre_7_1 Upgrades pre-7.1.0
 
-Detailed upgrade notes for OCCT versions 6.5.0 through 7.0.0 are available in the versioned documentation archives at https://dev.opencascade.org/doc (e.g. https://dev.opencascade.org/doc/occt-7.0.0/overview/html/index.html). Refer to the [OCCT GitHub releases](https://github.com/Open-Cascade-SAS/OCCT/releases) for per-version change logs.
+Detailed upgrade notes for OCCT versions 6.5.0 through 7.0.0 are available in the versioned documentation archives, e.g. https://dev.opencascade.org/doc/occt-7.0.0/overview/html/index.html. Refer to the [OCCT GitHub releases](https://github.com/Open-Cascade-SAS/OCCT/releases) for per-version change logs.
 
 
 @section upgrade_occt710 Upgrade to OCCT 7.1.0

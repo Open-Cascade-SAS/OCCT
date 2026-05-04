@@ -49,15 +49,13 @@ This file contains several definitions for the saving and opening mechanisms ass
     }
 ~~~~
 
-To obtain the saving and opening mechanisms, it is necessary to set two environment variables: <i>CSF_PluginDefaults</i>, which defines the path of the plug-in file,
-and <i>CSF_ResourcesDefaults</i>, which defines the resource file:
+To obtain the saving and opening mechanisms, it is necessary to set the environment variable <i>CSF_PluginDefaults</i>, which defines the path of the plug-in file:
 
 ~~~~{.cpp}
-    SetEnvironmentVariable ("CSF_ResourcesDefaults", myDirectory);
     SetEnvironmentVariable ("CSF_PluginDefaults", myDirectory);
 ~~~~
 
-The plugin and the resource files of the application will be located in <i>myDirector</i>.
+The plugin and the resource files of the application will be located in <i>myDirectory</i>.
 The name of the plugin file must be <i>Plugin</i>.
 
 ### Resource File

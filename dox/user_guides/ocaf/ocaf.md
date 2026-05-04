@@ -376,11 +376,11 @@ Using *TDF_Tool::Entry* with *TDF_ChildIterator* you can retrieve the entries of
 
  
 ~~~~{.cpp}
-void DumpChildren(const TDF_Label& aLabel) 
+void DumpChildren(const TDF_Label& theLabel) 
 { 
   TDF_ChildIterator it; 
   TCollection_AsciiString es; 
-  for (it.Initialize(aLabel,true); it.More(); it.Next()){ 
+  for (it.Initialize(theLabel,true); it.More(); it.Next()){ 
     TDF_Tool::Entry(it.Value(),es); 
     std::cout << es.ToCString() << std::endl; 
   } 
@@ -695,7 +695,7 @@ On reading, the format identifier stored in the file is used and recorded in the
 @subsubsection occt_ocaf_4_3_plugins Defining storage format by resource files 
 
 The alternative  method to define formats is via usage of resource files. 
-This method is  used in earlier versions of OCCT and is considered as deprecated since version 7.1.0. New applications should use the driver-based approach described above.
+This method was used in earlier versions of OCCT and is deprecated. New applications should use the driver-based approach described above.
 This method allows loading persistence drivers on demand, using plugin mechanism.
 
 To use this method, create your own application class inheriting from *TDocStd_Application*, and override method *ResourcesName()*.
@@ -721,12 +721,11 @@ bb5aa176-c65c-4c84-862e-6b7c1fe16921.Location: TKNewFormat
 76fb4c04-ea9a-46aa-88a2-25f6a228d902.Location: TKNewFormat
 ~~~~
 
-In order to have these resource files loaded during the program execution, it is necessary to set two environment variables: *CSF_PluginDefaults* and *CSF_NewFormatDefaults*.
+In order to have these resource files loaded during the program execution, set the environment variable *CSF_PluginDefaults*.
 For example, set the files in the directory *MyApplicationPath/MyResources*: 
 
 ~~~~
-setenv CSF_PluginDefaults MyApplicationPath/MyResources 
-setenv CSF_NewFormatDefaults MyApplicationPath/MyResources 
+setenv CSF_PluginDefaults MyApplicationPath/MyResources
 ~~~~
 
 @subsubsection occt_ocaf_4_3_3 Saving a document

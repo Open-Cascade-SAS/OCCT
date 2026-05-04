@@ -26,6 +26,10 @@ Pre-built third-party archives matching official releases are also attached to [
   * macOS:
     - Apple Clang 11.0 or later
     - Xcode 11.0 or later
+  * Android:
+    - NDK r19+, Clang
+  * Web:
+    - Emscripten SDK 3.0 or newer (Clang)
 
 @section build_occt_cmake Building with CMake
 
@@ -118,6 +122,9 @@ The following table gives the full list of environment variables used at the con
 | USE_OPENVR    | Boolean | Indicates whether OpenVR product should be used in OCCT visualization module for VR support |
 | USE_OPENGL    | Boolean | Indicates whether TKOpenGl graphic driver using OpenGL library (desktop) should be built |
 | USE_GLES2     | Boolean | Indicates whether TKOpenGles graphic driver using OpenGL ES library should be built |
+| USE_XLIB      | Boolean | Indicates whether X11 library should be used on Linux |
+| USE_D3D       | Boolean | Indicates whether Direct3D graphic driver should be built (Windows only) |
+| USE_EIGEN     | Boolean | Indicates whether Eigen linear algebra library should be used |
 | USE_RAPIDJSON | Boolean | Indicates whether RapidJSON product should be used for JSON format support |
 | USE_DRACO     | Boolean | Indicates whether Draco mesh compression library should be used |
 | USE_TK        | Boolean | Indicates whether Tcl/Tk product should be used in Draw Harness for user interface |
@@ -125,6 +132,7 @@ The following table gives the full list of environment variables used at the con
 | USE_VTK       | Boolean | Indicates whether VTK bridge should be built |
 | BUILD_USE_PCH | Boolean | Enable/disable use of precompiled headers. Requires CMake 3.16 or later |
 | BUILD_USE_VCPKG | Boolean | Use vcpkg for managing third-party dependencies |
+| VCPKG_ROOT    | Path | Path to vcpkg root directory |
 | BUILD_INCLUDE_SYMLINK | Boolean | Use symbolic links instead of copies for header files in build directory |
 | BUILD_MODULE_<MODULE>| Boolean | Indicates whether the corresponding OCCT module should be built |
 | BUILD_LIBRARY_TYPE | String | Specifies library type ("Shared" or "Static") |
@@ -135,30 +143,56 @@ The following table gives the full list of environment variables used at the con
 | 3RDPARTY_FREEIMAGE* | Path | Path to FreeImage binaries |
 | 3RDPARTY_TBB*  | Path | Path to TBB binaries |
 | 3RDPARTY_VTK_* | Path | Path to VTK binaries |
+| 3RDPARTY_\<PRODUCT\>_* | Path | Additional products (RAPIDJSON, DRACO, FFMPEG, OPENVR, EIGEN, EGL, GLES2, JEMALLOC, GTEST, Qt) follow the same search variable pattern: `3RDPARTY_<PRODUCT>_DIR`, `_LIBRARY_DIR`, `_INCLUDE_DIR`, `_DLL_DIR` |
+| 3RDPARTY_DOXYGEN_EXECUTABLE | Path | Path to Doxygen executable |
+| 3RDPARTY_DOT_EXECUTABLE | Path | Path to Graphviz dot executable |
 | BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODULE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |
 | BUILD_YACCLEX | Boolean | Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and ExprIntrp functionality are generated automatically with Flex/Bison. Checking this option leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files |
 | BUILD_GTEST | Boolean | Enable building of the GoogleTest-based C++ unit tests located under `src/<Module>/<Toolkit>/GTests/`. Produces the `OpenCascadeGTest` executable in the build/install `bin/` directory |
+| GTEST_USE_EXTERNAL | Boolean | Use an externally-provided Google Test installation instead of building from source |
+| GTEST_USE_FETCHCONTENT | Boolean | Use CMake FetchContent to download and build Google Test (default: ON) |
 | BUILD_DOC_Overview | Boolean | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this option leads to automatic search of Doxygen binaries. Its building calls Doxygen command to generate the documentation in HTML format |
+| BUILD_DOC_RefMan | Boolean | Build OCCT reference manual documentation using Doxygen |
 | BUILD_WITH_DEBUG | Boolean | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing, etc. |
 | BUILD_ENABLE_FPE_SIGNAL_HANDLER | Boolean | Enable/Disable the floating point exceptions (FPE) during DRAW execution only. Corresponding environment variable (CSF_FPE) can be changed manually in custom.bat/sh scripts without regeneration by CMake. |
+| BUILD_FORCE_RelWithDebInfo | Boolean | Generate PDB files within normal Release build (MSVC only) |
+| BUILD_OPT_PROFILE | String | Select profile for compiler and linker (Default or Production) |
+| BUILD_RELEASE_DISABLE_EXCEPTIONS | Boolean | Disables exceptions like Standard_OutOfRange in Release builds. Defines No_Exception macros for Release builds when enabled (default). These exceptions are always enabled in Debug builds, but disabled in Release for better performance |
+| BUILD_RESOURCES | Boolean | Enables regeneration of OCCT resource files |
+| BUILD_SHARED_LIBRARY_NAME_POSTFIX | String | Appends the postfix to names of output libraries |
+| BUILD_SOVERSION_NUMBERS | String | Version numbers to put into SONAME: 0 for empty, 1 for major, 2 for major.minor, 3 for major.minor.maintenance |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
+| USE_MMGR_TYPE | String | Select memory manager (NATIVE, FLEXIBLE, TBB, or JEMALLOC) |
+| USE_GIT_HASH | Boolean | Include the git hash in the OCCT version string |
 | INSTALL_DIR          | Path | Points to the installation directory. *INSTALL_DIR* is a synonym of *CMAKE_INSTALL_PREFIX*. The user can specify both *INSTALL_DIR* or *CMAKE_INSTALL_PREFIX* |
 | INSTALL_DIR_BIN      | Path | Relative path to the binaries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_BIN}) |
 | INSTALL_DIR_SCRIPT   | Path | Relative path to the scripts installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SCRIPT}) |
 | INSTALL_DIR_LIB      | Path | Relative path to the libraries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_LIB}) |
 | INSTALL_DIR_INCLUDE  | Path | Relative path to the includes installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}) |
 | INSTALL_DIR_RESOURCE | Path | Relative path to the resources installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}) |
-| INSTALL_DIR_LAYOUT   | String | Defines the structure of OCCT files (binaries, resources, headers, etc.) for the install directory. Two variants are predefined: for Windows (standard OCCT layout) and for Unix operating systems (standard Linux layout). If needed, the layout can be customized with INSTALL_DIR_* variables |
+| INSTALL_DIR_LAYOUT   | String | Defines the structure of OCCT files (binaries, resources, headers, etc.) for the install directory. Three variants are predefined: Windows, Unix (standard Linux layout), and Vcpkg (vcpkg-compliant layout). If needed, the layout can be customized with INSTALL_DIR_* variables |
 | INSTALL_DIR_DATA     | Path | Relative path to the data files installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DATA}) |
 | INSTALL_DIR_TESTS    | Path | Relative path to the tests installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_TESTS}) |
 | INSTALL_DIR_DOC      | Path | Relative path to the documentation installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DOC}) |
+| INSTALL_DIR_CMAKE    | Path | Relative path to the CMake config installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_CMAKE}) |
+| INSTALL_DIR_WITH_VERSION | Boolean | Append OCCT version to install directory names |
 | INSTALL_FREETYPE     | Boolean | Indicates whether FreeType binaries should be installed into the installation directory |
 | INSTALL_FREEIMAGE    | Boolean | Indicates whether FreeImage binaries should be installed into the installation directory |
 | INSTALL_TBB          | Boolean | Indicates whether TBB binaries should be installed into the installation directory |
 | INSTALL_VTK          | Boolean | Indicates whether VTK binaries should be installed into the installation directory |
 | INSTALL_TCL          | Boolean | Indicates whether TCL binaries should be installed into the installation directory |
+| INSTALL_TK           | Boolean | Indicates whether Tk binaries should be installed into the installation directory |
+| INSTALL_FFMPEG       | Boolean | Indicates whether FFmpeg binaries should be installed into the installation directory |
+| INSTALL_OPENVR       | Boolean | Indicates whether OpenVR binaries should be installed into the installation directory |
+| INSTALL_EIGEN        | Boolean | Indicates whether Eigen headers should be installed into the installation directory |
+| INSTALL_EGL          | Boolean | Indicates whether EGL binaries should be installed into the installation directory |
+| INSTALL_GLES2        | Boolean | Indicates whether OpenGL ES 2.0 binaries should be installed into the installation directory |
+| INSTALL_RAPIDJSON    | Boolean | Indicates whether RapidJSON headers should be installed into the installation directory |
+| INSTALL_JEMALLOC     | Boolean | Indicates whether JEMALLOC binaries should be installed into the installation directory |
+| INSTALL_GTEST        | Boolean | Indicates whether Google Test binaries should be installed into the installation directory |
 | INSTALL_TEST_CASES   | Boolean | Indicates whether non-regression OCCT test scripts should be installed into the installation directory |
 | INSTALL_DOC_Overview | Boolean | Indicates whether OCCT overview documentation should be installed into the installation directory |
+| INSTALL_DOC_RefMan | Boolean | Install OCCT reference manual documentation |
 
 @note Only the forward slashes ("/") are acceptable in the CMake options defining paths.
 
@@ -229,6 +263,7 @@ Installation is a process of extracting redistributable resources (binaries, inc
 The installation directory will be free of project files, intermediate object files and any other information related to the build routines.
 
 Normally you use the installation directory of OCCT to link against your specific application.
+This example shows the Windows layout; the Unix and Vcpkg layouts differ.
 The directory structure is as follows:
 
     data            - data files for OCCT (brep, iges, stp)

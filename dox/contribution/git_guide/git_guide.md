@@ -89,7 +89,7 @@ ssh -T git@github.com
 2. Clone your fork:
 
     ~~~~
-    git clone https://github.com/YOUR_USERNAME/OCCT.git
+    git clone https://github.com/<your-github-username>/OCCT.git
     cd OCCT
     ~~~~
 

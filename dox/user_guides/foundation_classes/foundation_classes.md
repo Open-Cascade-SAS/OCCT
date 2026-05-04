@@ -574,68 +574,6 @@ Since operators *new()* and *delete()* are inherited, this is also true for any 
 If that is done, the method *Delete()* should be also redefined to apply operator *delete* to this pointer.
 This will ensure that appropriate *delete()* function will be called, even if the object is manipulated by a handle to a base class.
 
-@subsubsection occt_fcug_2_3_2 How to configure the Memory Manager
-
-The OCCT memory manager may be configured to apply different optimization techniques to different memory blocks (depending on their size),
-or even to avoid any optimization and use C functions *malloc()* and *free()* directly.
-The configuration is defined by numeric values of the  following environment variables:
-  * *MMGT_OPT*:
-    - if set to 0 (default) every memory block is allocated in C memory heap directly (via *malloc()* and *free()* functions).
-      In this case, all other options except for *MMGT_CLEAR* are ignored;
-    - if set to 1 the memory manager performs optimizations as described below;
-    - if set to 2, Intel ® TBB optimized memory manager is used.
-  * *MMGT_CLEAR*: if set to 1 (default), every allocated memory block is cleared by zeros; if set to 0, memory block is returned as it is.
-  * *MMGT_CELLSIZE*: defines the maximal size of blocks allocated in large pools of memory. Default is 200.
-  * *MMGT_NBPAGES*: defines the size of memory chunks allocated for small blocks in pages (operating-system dependent). Default is 1000.
-  * *MMGT_THRESHOLD*: defines the maximal size of blocks that are recycled internally instead of being returned to the heap. Default is 40000.
-  * *MMGT_MMAP*: when set to 1 (default), large memory blocks are allocated using memory mapping functions of the operating system; if set to 0, they will be allocated in the C heap by *malloc()*.
-
-@subsubsection occt_fcug_2_3_3 Optimization Techniques
-
-When *MMGT_OPT* is set to 1, the following optimization techniques are used:
-  * Small blocks with a size less than *MMGT_CELLSIZE*, are not allocated separately.
-    Instead, a large pools of memory are allocated (the size of each pool is *MMGT_NBPAGES* pages).
-    Every new memory block is arranged in a spare place of the current pool.
-    When the current memory pool is completely occupied, the next one is allocated, and so on.
-
-In the current version memory pools are never returned to the system (until the process finishes).
-However, memory blocks that are released by the method *Standard::Free()* are remembered in the free lists and later reused when the next block of the same size is allocated (recycling).
-
-  * Medium-sized blocks, with a size greater than *MMGT_CELLSIZE* but less than *MMGT_THRESHOLD*, are allocated directly in the C heap (using *malloc()* and *free()*).
-    When such blocks are released by the method *Standard::Free()* they are recycled just like small blocks.
-
-However, unlike small blocks, the recycled medium blocks contained in the free lists (i.e. released by the program but held by the memory manager) can be returned to the heap by method *Standard::Purge()*.
-
-  * Large blocks with a size greater than *MMGT_THRESHOLD*, including memory pools used for small blocks, are allocated depending on the value of *MMGT_MMAP*:
-    if it is 0, these blocks are allocated in the C heap; otherwise they are allocated using operating-system specific functions managing memory mapped files.
-    Large blocks are returned to the system immediately when *Standard::Free()* is called.
-
-@subsubsection occt_fcug_2_3_4 Benefits and drawbacks
-
-The major benefit of the OCCT memory manager is explained by its recycling of small and medium blocks that makes an application work much faster
-when it constantly allocates and frees multiple memory blocks of similar sizes.
-In practical situations, the real gain on the application performance may be up to 50%.
-
-The associated drawback is that recycled memory is not returned to the operating system during program execution.
-This may lead to considerable memory consumption and even be misinterpreted as a memory leak.
-To minimize this effect it is necessary to call the method *Standard::Purge* after the completion of memory-intensive operations.
-
-The overhead expenses induced by the OCCT memory manager are:
-  * size of every allocated memory block is rounded up to 8 bytes
-    (when *MMGT_OPT* is 0 (default), the rounding is defined by the CRT; the typical value for 32-bit platforms is 4 bytes)
-  * additional 4 bytes (or 8 on 64-bit platforms) are allocated in the beginning of every memory block to hold its size
-    (or address of the next free memory block when recycled in free list) only when *MMGT_OPT* is 1.
-
-Note that these overheads may be greater or less than overheads induced by the C heap memory manager,
-so overall memory consumption may be greater in either optimized or standard modes, depending on circumstances.
-
-As a general rule, it is advisable to allocate memory through significant blocks.
-In this way, you can work with blocks of contiguous data, and processing is facilitated for the memory page manager.
-
-OCCT memory manager uses mutex to lock access to free lists, therefore it may have less performance than non-optimized mode in situations
-when different threads often make simultaneous calls to the memory manager.
-The reason is that modern implementations of *malloc()* and *free()* employ several allocation arenas and thus avoid delays waiting mutex release, which are possible in such situations.
-
 @subsection occt_fcug_2_4 Exceptions
 
 @subsubsection occt_fcug_2_4_1 Introduction

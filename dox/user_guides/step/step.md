@@ -33,7 +33,7 @@ Beyond the upper level API, which is fitted for an easy end-use, the STEP exchan
 * Conversion to/from Open Cascade or applicative data supported by drivers (OCC-BREP and XDE ard basically provided);
 * Tools for analysis, filtering, etc... including DRAW commands.
 
-These modules share common architecture and capabilities with other exchange modules of Open Cascade, like Shape Healing. Also, built-in Viewer and Converter (as Plugin for Netscape, Internet Explorer ..), are based on the same technology.
+These modules share common architecture and capabilities with other exchange modules of Open Cascade, like Shape Healing.
 
 In addition, Open Cascade provides tools to process models described using STEP: to reflect EXPRESS descriptions, to read, write and check data, to analyze the whole models ... Their key features are:
 
@@ -1272,7 +1272,7 @@ Physical file reading consists of the following steps:
 @subsubsection occt_step_4_2_1 Loading a STEP file and syntactic analysis of its contents
 In the first phase, a STEP file is syntactically checked and loaded in memory as a sequence of strings. 
 
-Syntactic check is performed on the basis of rules defined in *step.lex* and *step.yacc* files. Files *step.lex* and *step.yacc* are located in the StepFile nocdlpack development unit. These files describe text encoding of STEP data structure (for additional information see ISO 10303 Part 21). The *step.lex* file describes the lexical structure of the STEP file. It describes identifiers, numbers, delimiters, etc. The *step.yacc* file describes the syntactic structure of the file, such as entities, parameters, and headers. 
+Syntactic check is performed on the basis of rules defined in *step.lex* and *step.yacc* files. Files *step.lex* and *step.yacc* are located in the StepFile package. These files describe text encoding of STEP data structure (for additional information see ISO 10303 Part 21). The *step.lex* file describes the lexical structure of the STEP file. It describes identifiers, numbers, delimiters, etc. The *step.yacc* file describes the syntactic structure of the file, such as entities, parameters, and headers. 
 
 These files have been created only once and need to be updated only when norm ISO 10303-21 is changed. 
 
@@ -1674,8 +1674,7 @@ OCCT STEP Reader imports only Annotation Planes, outline/stroked Polylines and T
 
 OCCT STEP Reader also handles Annotations, linked directly to shapes (section 9.3.1), processing of these presentations is subject to the same restrictions as the processing of presentations, linked to GD&T semantic.
 
-#### Geometric dimensions and tolerances AP214
-Simple types of GD&T (Dimensions, Tolerances and Datums without presentations or any types of modifiers) are also handled in AP214. However, according to the Recommended Practices for the Representation and Presentation of Product Manufacturing, this implementation is obsolete.
+@note Handling of GD&T in AP214 (simple types of Dimensions, Tolerances and Datums without presentations or modifiers) is obsolete — use AP242 instead.
 
 ### Saved views
 Saved views are implemented in accordance with <a href="https://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf">Recommended practices for the Representation and Presentation of Product Manufacturing</a> section 9.4.1-9.4.4.

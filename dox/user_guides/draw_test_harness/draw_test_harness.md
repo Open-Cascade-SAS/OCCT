@@ -108,12 +108,12 @@ Where:
 * <i>-PluginFileName</i> -- defines the name of a plug-in resource file (prefix "-" is mandatory) described above. If this parameter is omitted then the default name *DrawPlugin* is used. 
 * *Key* -- defines the key(s) enumerating plug-ins to be loaded. If no keys are specified then the key named *DEFAULT* is used (if there is no such key in the file then no plug-ins are loaded). 
 
-According to the OCCT resource file management rules, to access the resource file the environment variable *CSF_DrawPluginDefaults* (and optionally *CSF_DrawPluginUserDefaults*) must be set and point to the directory storing the resource file. If it is omitted then the plug-in resource file will be searched in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory. 
+According to the OCCT resource file management rules, to access the resource file the environment variable *CSF_DrawPluginDefaults* must be set and point to the directory storing the resource file. If it is omitted then the plug-in resource file will be searched in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory. 
 
 ~~~~{.tcl}
 Draw[]        pload -DrawPlugin OCAF 
 ~~~~
-This command will search the resource file *DrawPlugin* using variable *CSF_DrawPluginDefaults* (and *CSF_DrawPluginUserDefaults*) and will start with the OCAF key. Since the *DrawPlugin* is the file shipped with Open CASCADE Technology it will be found in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory (unless this location is redefined by user's variables). The OCAF key will be recursively extracted into two toolkits/plug-ins: *TKDCAF* and *TKViewerTest* (e.g. on Windows they correspond to *TKDCAF.dll* and *TKViewerTest.dll*). Thus, commands implemented for Visualization and OCAF will be loaded and activated in Test Harness. 
+This command will search the resource file *DrawPlugin* using variable *CSF_DrawPluginDefaults* and will start with the OCAF key. Since the *DrawPlugin* is the file shipped with Open CASCADE Technology it will be found in the <i>$CSF_OCCTResourcePath/DrawResources</i> directory (unless this location is redefined by user's variables). The OCAF key will be recursively extracted into two toolkits/plug-ins: *TKDCAF* and *TKViewerTest* (e.g. on Windows they correspond to *TKDCAF.dll* and *TKViewerTest.dll*). Thus, commands implemented for Visualization and OCAF will be loaded and activated in Test Harness. 
 
 ~~~~{.tcl}
 Draw[]        pload (equivalent to pload -DrawPlugin DEFAULT). 

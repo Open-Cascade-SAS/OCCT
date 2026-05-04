@@ -158,10 +158,11 @@ To approximate a curve with respect to tangency, follow these steps:
 
 @subsection occt_modat_1_2 Direct Construction
 
-Direct Construction methods from *gce*, *GC* and *GCE2d* packages provide simplified algorithms to build elementary geometric entities such as lines, circles and curves.
+Direct Construction methods from *gce* and *GC* packages provide simplified algorithms to build elementary geometric entities such as lines, circles and curves.
+(*GC* handles both 2D and 3D construction, superseding the deprecated *GCE2d* package.)
 They complement the reference definitions provided by the *gp*, *Geom* and *Geom2d* packages.
 
-The algorithms implemented by <i>gce</i>, <i>GCE2d</i> and <i>GC</i> packages are simple:
+The algorithms implemented by <i>gce</i> and <i>GC</i> packages are simple:
 there is no creation of objects defined by advanced positional constraints (for more information on this subject, see *Geom2dGcc* and *GccAna*, which describe geometry by constraints).
 
 For example, to construct a circle from a point and a radius using the *gp* package, it is necessary to construct axis *Ax2d* before creating the circle.
@@ -187,7 +188,7 @@ If it was unsuccessful, the status gives the reason for the failure.
   }
 ~~~~
 
-In addition, <i>gce</i>, <i>GCE2d</i> and <i>GC</i> each have a <i>Root</i> class.
+In addition, <i>gce</i> and <i>GC</i> each have a <i>Root</i> class.
 This class is the root of all classes in the package, which return a status.
 The returned status (successful construction or construction error) is described by the enumeration <i>gce_ErrorType</i>.
 
@@ -261,8 +262,8 @@ gp_Lin2d l = gce_MakeLin2d(Point1,Point2);
 
 @subsubsection occt_modat_1_2_2 Geometric entities manipulated by handle
 
-*GC* and *GCE2d* packages provides an implementation of algorithms used to build entities from *Geom* and *Geom2D* packages.
-They implement the same algorithms as the *gce* package, and also contain algorithms for trimmed surfaces and curves.
+*GC* package (superseding the deprecated *GCE2d* package) provides an implementation of algorithms used to build entities from *Geom* and *Geom2d* packages.
+It implements the same algorithms as the *gce* package, and also contains algorithms for trimmed surfaces and curves.
 The following algorithms are available:
 - arc of a circle trimmed by two points,
 - arc of a circle trimmed by two parameters,
@@ -286,8 +287,8 @@ The following algorithms are available:
 - trimmed cone from two points (an axis) and a radius,
 - trimmed cone from two coaxial circles.
 
-Each class from *GCE2d* package, such as *Circle, Ellipse, Mirror*, etc., has the corresponding *MakeCircle, MakeEllipse, MakeMirror*, etc. class from *Geom2d* package.
-Besides, the class *MakeArcOfCircle* returns an object of type *TrimmedCurve* from *Geom2d*.
+Each *GC* class for 2D construction (such as *MakeCircle2d*, *MakeEllipse2d*, *MakeMirror2d*, historically in the deprecated *GCE2d* package) produces entities from the *Geom2d* package.
+Besides, the class *MakeArcOfCircle2d* returns an object of type *TrimmedCurve* from *Geom2d*.
 
 Each class from *GC* package, such as *Circle, Ellipse, Mirror*, etc., has the corresponding *MakeCircle, MakeEllipse, MakeMirror*, etc. class from *Geom* package.
 The following classes return objects of type *TrimmedCurve* from *Geom*:
@@ -377,16 +378,16 @@ The adapted curve is created in the following way:
 The algorithm is then constructed with this object:
 
 ~~~~{.cpp}
-  GCPnts_UniformDeflection myAlgo;
+  GCPnts_UniformDeflection anAlgo;
   double Deflection = ... ;
-  myAlgo.Initialize (C, Deflection);
-  if (myAlgo.IsDone())
+  anAlgo.Initialize (C, Deflection);
+  if (anAlgo.IsDone())
   {
-    int nbr = myAlgo.NbPoints();
+    int nbr = anAlgo.NbPoints();
     double param;
     for (int i = 1; i <= nbr; i++)
     {
-      param = myAlgo.Parameter (i);
+      param = anAlgo.Parameter (i);
       ...
     }
   }
@@ -492,7 +493,7 @@ This is why they are used within topological data structures, for example.
   * describe the elementary data structures of <i>Geom2d</i> objects.
 
 However, the <i>Geom2d</i> package essentially provides data structures and not algorithms.
-You can refer to the <i>GCE2d</i> package to find more evolved construction algorithms for <i>Geom2d</i> objects.
+You can refer to the <i>GC</i> package (using classes ending in *2d, e.g., <i>MakeLine2d</i>, <i>MakeCircle2d</i>) to find more evolved construction algorithms for <i>Geom2d</i> objects.
 
 @section occt_modat_3 3D Geometry
 
@@ -992,7 +993,7 @@ The following steps are performed:
 4. From the Map of edges, drawing each edge with the color corresponding to the number of faces.
 
 ~~~~{.cpp}
-  void DrawShape (const TopoDS_Shape& aShape,
+  void DrawShape (const TopoDS_Shape& theShape,
                   const int nbIsos,
                   const Quantity_Color FaceIsocolor,
                   const Quantity_Color FreeEdgeColor,
@@ -1001,14 +1002,14 @@ The following steps are performed:
   {
     // Store the edges in a Map
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edgeMap;
-    TopExp::MapShapes (aShape, TopAbs_EDGE, edgeMap);
+    TopExp::MapShapes (theShape, TopAbs_EDGE, edgeMap);
 
     // Create an array set to zero
     NCollection_Array1<int> faceCount (1, edgeMap.Extent());
     faceCount.Init (0);
 
     // Explore the faces.
-    TopExp_Explorer expFace(aShape,TopAbs_FACE);
+    TopExp_Explorer expFace(theShape,TopAbs_FACE);
     while (expFace.More())
     {
       // Draw the current face.
@@ -1025,7 +1026,7 @@ The following steps are performed:
       expFace.Next();
     }
 
-    // Draw the edges of theMap
+    // Draw the edges of aMap
     for (int i = 1; i <= edgeMap.Extent(); i++)
     {
       switch (faceCount[i])
@@ -1059,12 +1060,12 @@ The following example counts the size of a data structure as a number of *TShape
 
 ~~~~{.cpp}
   #include <TopoDS_Iterator.hxx>
-  int Size (const TopoDS_Shape& aShape)
+  int Size (const TopoDS_Shape& theShape)
   {
     // This is a recursive method.
     // The size of a shape is1 + the sizes of the subshapes.
     int size = 1;
-    for (TopoDS_Iterator It (aShape); It.More(); It.Next())
+    for (TopoDS_Iterator It (theShape); It.More(); It.Next())
     {
       size += Size (It.Value());
     }
@@ -1081,25 +1082,25 @@ One solution is to put all the Shapes in a Map so as to avoid counting them twic
   #include <TopoDS_Iterator.hxx>
   #include <NCollection_Map.hxx>
 
-  void MapShapes (const TopoDS_Shape& aShape,
-                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& aMap)
+  void MapShapes (const TopoDS_Shape& theShape,
+                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap)
   {
-    // This is a recursive auxiliary method. It stores all subShapes of aShape in a Map.
-    if (aMap.Add (aShape))
+    // This is a recursive auxiliary method. It stores all subShapes of theShape in a Map.
+    if (theMap.Add (theShape))
     {
-      // Add returns True if aShape was not already in the Map.
-      for (TopoDS_Iterator It (aShape); It.More(); It.Next())
+      // Add returns True if theShape was not already in the Map.
+      for (TopoDS_Iterator It (theShape); It.More(); It.Next())
       {
-        MapShapes (It.Value(), aMap);
+        MapShapes (It.Value(), theMap);
       }
     }
   }
 
-  int Size (const TopoDS_Shape& aShape)
+  int Size (const TopoDS_Shape& theShape)
   { 
     // Store Shapes in a Mapand return the size.
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
-    MapShapes (aShape, M);
+    MapShapes (theShape, M);
     return M.Extent();
   }
 ~~~~
@@ -1120,26 +1121,26 @@ The principal algorithm is as follows:
   #include <NCollection_Array1.hxx>
   #include <TopoDS_Location.hxx>
 
-  TopoDS_Shape Copy (const TopoDS_Shape& aShape,
-                     const TopoDS_Builder& aBuilder)
+  TopoDS_Shape Copy (const TopoDS_Shape& theShape,
+                     const TopoDS_Builder& theBuilder)
   {
-    // Copies the wholestructure of aShape using aBuilder.
+    // Copies the wholestructure of theShape using theBuilder.
     // Stores all thesub-Shapes in an IndexedMap.
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
     TopoDS_Iterator It;
     TopLoc_Location Identity;
-    TopoDS_Shape S = aShape;
+    TopoDS_Shape S = theShape;
     S.Location (Identity);
     S.Orientation(TopAbs_FORWARD);
-    theMap.Add(S);
-    for (int i = 1; i <= theMap.Extent(); i++)
+    aMap.Add(S);
+    for (int i = 1; i <= aMap.Extent(); i++)
     {
-      for (It.Initialize(theMap(i)); It.More(); It.Next())
+      for (It.Initialize(aMap(i)); It.More(); It.Next())
       {
         S = It.Value();
         S.Location(Identity);
         S.Orientation (TopAbs_FORWARD);
-        theMap.Add (S);
+        aMap.Add (S);
       }
     }
   }
@@ -1154,7 +1155,7 @@ Only the underlying TShape is of great interest.
 
 ~~~~{.cpp}
   // Create an array to store the copies.
-  NCollection_Array1<TopoDS_Shape> theCopies (1, theMap.Extent());
+  NCollection_Array1<TopoDS_Shape> theCopies (1, aMap.Extent());
 
   // Use a recursivefunction to copy the first element.
   void AuxiliaryCopy (int theIndex,
@@ -1162,12 +1163,12 @@ Only the underlying TShape is of great interest.
                       NCollection_Array1<TopoDS_Shape>& theCopies,
                       const TopoDS_Builder& theBuilder);
 
-  AuxiliaryCopy (1, theMap, theCopies, aBuilder);
+  AuxiliaryCopy (1, aMap, theCopies, theBuilder);
 
   // Get the result with the correct local reference and orientation.
   S = theCopies (1);
-  S.Location (aShape.Location());
-  S.Orientation (aShape.Orientation());
+  S.Location (theShape.Location());
+  S.Orientation (theShape.Orientation());
   return S;
 ~~~~
 
@@ -1178,7 +1179,7 @@ This method checks if the object has been copied; if not copied, then an empty c
   void AuxiliaryCopy (int index,
                       const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& sources,
                       NCollection_Array1<TopoDS_Shape>& copies,
-                      const TopoDS_Builder& aBuilder)
+                      const TopoDS_Builder& theBuilder)
   {
     // If the copy is a null Shape the copy is not done.
     if (copies[index].IsNull())
@@ -1192,10 +1193,10 @@ This method checks if the object has been copied; if not copied, then an empty c
         S = It.Value();
         S.Location (Identity);
         S.Orientation (TopAbs_FORWARD);
-        AuxiliaryCopy (sources.FindIndex (S), sources, copies, aBuilder);
+        AuxiliaryCopy (sources.FindIndex (S), sources, copies, theBuilder);
         S.Location (It.Value().Location());
         S.Orientation (It.Value().Orientation());
-        aBuilder.Add (copies[index], S);
+        theBuilder.Add (copies[index], S);
       }
     }
   }

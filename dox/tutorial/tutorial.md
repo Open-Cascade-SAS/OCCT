@@ -67,11 +67,11 @@ Since all the points you will define are only used to create the profile's curve
 To instantiate a *gp_Pnt* object, just specify the X, Y, and Z coordinates of the points in the global Cartesian coordinate system:
 
 ~~~~{.cpp}
-    gp_Pnt aPnt1(-myWidth / 2., 0, 0);
-    gp_Pnt aPnt2(-myWidth / 2., -myThickness / 4., 0);
-    gp_Pnt aPnt3(0, -myThickness / 2., 0);
-    gp_Pnt aPnt4(myWidth / 2., -myThickness / 4., 0);
-    gp_Pnt aPnt5(myWidth / 2., 0, 0);
+    gp_Pnt aPnt1(-theWidth / 2., 0, 0);
+    gp_Pnt aPnt2(-theWidth / 2., -theThickness / 4., 0);
+    gp_Pnt aPnt3(0, -theThickness / 2., 0);
+    gp_Pnt aPnt4(theWidth / 2., -theThickness / 4., 0);
+    gp_Pnt aPnt5(theWidth / 2., 0, 0);
 ~~~~
 
 Once your objects are instantiated, you can use methods provided by the class to access and modify its data. For example, to get the X coordinate of a point:
@@ -243,7 +243,7 @@ The bottle's profile is almost finished. You have created two wires: *aWire* and
     BRepBuilderAPI_MakeWire mkWire;
     mkWire.Add(aWire);
     mkWire.Add(aMirroredWire);
-    TopoDS_Wire myWireProfile = mkWire.Wire();
+    TopoDS_Wire aWireProfile = mkWire.Wire();
 ~~~~
 
 
@@ -270,7 +270,7 @@ To create a face, use the *BRepBuilderAPI_MakeFace* class. As previously explain
 When the wire lies on a plane, the surface is automatically computed.
 
 ~~~~{.cpp}
-    TopoDS_Face myFaceProfile = BRepBuilderAPI_MakeFace(myWireProfile);
+    TopoDS_Face aFaceProfile = BRepBuilderAPI_MakeFace(aWireProfile);
 ~~~~
 
 The *BRepPrimAPI* package provides all the classes to create topological primitive constructions: boxes, cones, cylinders, spheres, etc. Among them is the *BRepPrimAPI_MakePrism* class. As specified above, the prism is defined by:
@@ -278,16 +278,16 @@ The *BRepPrimAPI* package provides all the classes to create topological primiti
   * the basis shape to sweep;
   * a vector for a finite prism or a direction for finite and infinite prisms.
 
-You want the solid to be finite, swept along the Z axis and to be myHeight height. The vector, defined with the *gp_Vec* class on its X, Y and Z coordinates, is:
+You want the solid to be finite, swept along the Z axis and to be theHeight height. The vector, defined with the *gp_Vec* class on its X, Y and Z coordinates, is:
 
 ~~~~{.cpp}
-    gp_Vec aPrismVec(0, 0, myHeight);
+    gp_Vec aPrismVec(0, 0, theHeight);
 ~~~~
 
 All the necessary data to create the main body of your bottle is now available. Just apply the *BRepPrimAPI_MakePrism* class to compute the solid:
 
 ~~~~{.cpp}
-    TopoDS_Shape myBody = BRepPrimAPI_MakePrism(myFaceProfile, aPrismVec);
+    TopoDS_Shape aBody = BRepPrimAPI_MakePrism(aFaceProfile, aPrismVec);
 ~~~~
 
 
@@ -298,7 +298,7 @@ The edges of the bottle's body are very sharp. To replace them by rounded faces,
 For our purposes, we will specify that fillets must be:
 
   * applied on all edges of the shape
-  * have a radius of *myThickness* / 12
+  * have a radius of *theThickness* / 12
 
 @figure{/tutorial/images/tutorial_image008.png,"",240} height=350px
 
@@ -309,7 +309,7 @@ To apply fillets on the edges of a shape, you use the *BRepFilletAPI_MakeFillet*
   * Ask for the resulting filleted shape with the *Shape* method.
 
 ~~~~{.cpp}
-BRepFilletAPI_MakeFillet mkFillet(myBody);
+BRepFilletAPI_MakeFillet mkFillet(aBody);
 ~~~~
 
 To add the fillet description, you need to know the edges belonging to your shape. The best solution is to explore your solid to retrieve its edges. This kind of functionality is provided with the *TopExp_Explorer* class, which explores the data structure described in a *TopoDS_Shape* and extracts the sub-shapes you specifically need. 
@@ -319,7 +319,7 @@ Generally, this explorer is created by providing the following information:
   * the type of sub-shapes to be found. This information is given with the *TopAbs_ShapeEnum* enumeration.
 
 ~~~~{.cpp}
-TopExp_Explorer anEdgeExplorer(myBody, TopAbs_EDGE);
+TopExp_Explorer anEdgeExplorer(aBody, TopAbs_EDGE);
 ~~~~
 
 An explorer is usually applied in a loop by using its three main methods:
@@ -341,28 +341,28 @@ An explorer is usually applied in a loop by using its three main methods:
 In the explorer loop, you have found all the edges of the bottle shape. Each one must then be added in the *BRepFilletAPI_MakeFillet* instance with the *Add()* method. Do not forget to specify the radius of the fillet along with it.
 
 ~~~~{.cpp}
-    mkFillet.Add(myThickness / 12., anEdge);
+    mkFillet.Add(theThickness / 12., anEdge);
 ~~~~
 
 Once this is done, you perform the last step of the procedure by asking for the filleted shape.
 
 ~~~~{.cpp}
-    myBody = mkFillet.Shape();
+    aBody = mkFillet.Shape();
 ~~~~
 
 
 @subsection OCCT_TUTORIAL_SUB3_3 Adding the Neck
 
 
-To add a neck to the bottle, you will create a cylinder and fuse it to the body. The cylinder is to be positioned on the top face of the body with a radius of *myThickness* / 4. and a height of *myHeight* / 10.
+To add a neck to the bottle, you will create a cylinder and fuse it to the body. The cylinder is to be positioned on the top face of the body with a radius of *theThickness* / 4. and a height of *theHeight* / 10.
 
 @figure{/tutorial/images/tutorial_image009.png,"",240} height=350px
 
 To position the cylinder, you need to define a coordinate system with the *gp_Ax2* class defining a right-handed coordinate system from a point and two directions - the main (Z) axis direction and the X direction (the Y direction is computed from these two).
-To align the neck with the center of the top face, being in the global coordinate system (0, 0, *myHeight*), with its normal on the global Z axis, your local coordinate system can be defined as follows:
+To align the neck with the center of the top face, being in the global coordinate system (0, 0, *theHeight*), with its normal on the global Z axis, your local coordinate system can be defined as follows:
 
 ~~~~{.cpp}
-    gp_Pnt neckLocation(0, 0, myHeight);
+    gp_Pnt neckLocation(0, 0, theHeight);
     gp_Dir neckAxis = gp::DZ();
     gp_Ax2 neckAx2(neckLocation, neckAxis);
 ~~~~
@@ -373,10 +373,10 @@ To create a cylinder, use another class from the primitives construction package
   * the radius and height.
 
 ~~~~{.cpp}
-    double myNeckRadius = myThickness / 4.;
-    double myNeckHeight = myHeight / 10;
-    BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, myNeckRadius, myNeckHeight);
-    TopoDS_Shape myNeck = MKCylinder.Shape();
+    double aNeckRadius = theThickness / 4.;
+    double aNeckHeight = theHeight / 10;
+    BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, aNeckRadius, aNeckHeight);
+    TopoDS_Shape aNeck = MKCylinder.Shape();
 ~~~~
 
 You now have two separate parts: a main body and a neck that you need to fuse together.
@@ -384,7 +384,7 @@ The *BRepAlgoAPI* package provides services to perform Boolean operations betwee
 Use *BRepAlgoAPI_Fuse* to fuse the two shapes:
 
 ~~~~{.cpp}
-    myBody = BRepAlgoAPI_Fuse(myBody, myNeck);
+    aBody = BRepAlgoAPI_Fuse(aBody, aNeck);
 ~~~~
 
 
@@ -415,7 +415,7 @@ The challenging part in this procedure is to find the face to remove from your s
 To find the face with such characteristics, you will once again use an explorer to iterate on all the bottle's faces to find the appropriate one.
 
 ~~~~{.cpp}
-    for(TopExp_Explorer aFaceExplorer(myBody, TopAbs_FACE) ; aFaceExplorer.More() ; aFaceExplorer.Next()){
+    for(TopExp_Explorer aFaceExplorer(aBody, TopAbs_FACE) ; aFaceExplorer.More() ; aFaceExplorer.Next()){
         TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
     }
 ~~~~
@@ -486,8 +486,8 @@ All the necessary data are now available so you can create your hollowed solid b
 
 ~~~~{.cpp}
     BRepOffsetAPI_MakeThickSolid aSolidMaker;
-    aSolidMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
-    myBody = aSolidMaker.Shape();
+    aSolidMaker.MakeThickSolidByJoin(aBody, facesToRemove, -theThickness / 50, 1.e-3);
+    aBody = aSolidMaker.Shape();
 ~~~~
 
 
@@ -512,9 +512,9 @@ Using the same coordinate system *neckAx2* used to position the neck, you create
 Notice that one of the cylindrical surfaces is smaller than the neck. There is a good reason for this: after the thread creation, you will fuse it with the neck. So, we must make sure that the two shapes remain in contact.
 
 ~~~~{.cpp}
-    occ::handle<Geom_CylindricalSurface> aCyl1 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 0.99);
+    occ::handle<Geom_CylindricalSurface> aCyl1 = new Geom_CylindricalSurface(neckAx2, aNeckRadius * 0.99);
 
-    occ::handle<Geom_CylindricalSurface> aCyl2 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 1.05);
+    occ::handle<Geom_CylindricalSurface> aCyl2 = new Geom_CylindricalSurface(neckAx2, aNeckRadius * 1.05);
 ~~~~
 
 
@@ -553,15 +553,15 @@ Suppose that you create a 2D line on this parametric (U, V) space and compute it
 
 The helicoidal curve type is exactly what you need. On the neck's surface, the evolution laws of this curve will be:
 
-  * In V parameter: between 0 and myHeighNeck for the height description
+  * In V parameter: between 0 and aNeckHeight for the height description
   * In U parameter: between 0 and 2PI for the angle description. But, since a cylindrical surface is U periodic, you can decide to extend this angle evolution to 4PI as shown in the following drawing:
 
 @figure{/tutorial/images/tutorial_image014.png,"",440}
 
 In this (U, V) parametric space, you will create a local (X, Y) coordinate system to position the curves to be created. This coordinate system will be defined with:
 
-  * A center located in the middle of the neck's cylinder parametric space at (2*PI, myNeckHeight / 2) in U, V coordinates.
-  * A X direction defined with the (2*PI, myNeckHeight/4) vector in U, V coordinates, so that the curves occupy half of the neck's surfaces.
+  * A center located in the middle of the neck's cylinder parametric space at (2*PI, aNeckHeight / 2) in U, V coordinates.
+  * A X direction defined with the (2*PI, aNeckHeight/4) vector in U, V coordinates, so that the curves occupy half of the neck's surfaces.
   
 @figure{/tutorial/images/tutorial_image015.png,"",440}
   
@@ -572,8 +572,8 @@ To use 2D primitive geometry types of Open CASCADE Technology for defining a poi
   * To define a 2D right-handed coordinate system, use the *gp_Ax2d* class, which is computed from a point (origin of the coordinate system) and a direction - the X direction of the coordinate system. The Y direction will be automatically computed.
   
 ~~~~{.cpp}
-    gp_Pnt2d aPnt(2. * M_PI, myNeckHeight / 2.);
-    gp_Dir2d aDir(2. * M_PI, myNeckHeight / 4.);
+    gp_Pnt2d aPnt(2. * M_PI, aNeckHeight / 2.);
+    gp_Dir2d aDir(2. * M_PI, aNeckHeight / 4.);
     gp_Ax2d anAx2d(aPnt, aDir);
 ~~~~
 
@@ -590,14 +590,14 @@ You have already used the *Geom* package to define 3D geometric entities. For 2D
 Supposing that:
 
   * Both ellipses have the same major radius of 2*PI,
-  * Minor radius of the first ellipse is myNeckHeight / 10,
+  * Minor radius of the first ellipse is aNeckHeight / 10,
   * And the minor radius value of the second ellipse is a fourth of the first one,
 
 Your ellipses are defined as follows:
 
 ~~~~{.cpp}
     double aMajor = 2. * M_PI;
-    double aMinor = myNeckHeight / 10;
+    double aMinor = aNeckHeight / 10;
     occ::handle<Geom2d_Ellipse> anEllipse1 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor);
     occ::handle<Geom2d_Ellipse> anEllipse2 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor / 4);
 ~~~~
@@ -619,11 +619,10 @@ To access the point corresponding to the parameter of a curve or a surface, you 
     anEllipse1->D0(M_PI, anEllipsePnt2);
 ~~~~
 
-When creating the bottle's profile, you used classes from the *GC* package, providing algorithms to create elementary geometries.
-In 2D geometry, this kind of algorithms is found in the *GCE2d* package. Class names and behaviors are similar to those in *GC*. For example, to create a 2D segment out of two points:
+When creating the bottle's profile, you used classes from the *GC* package, providing algorithms to create elementary geometries (both 2D and 3D). For example, to create a 2D segment out of two points:
 
 ~~~~{.cpp}
-    occ::handle<Geom2d_TrimmedCurve> aSegment = GCE2d_MakeSegment(anEllipsePnt1, anEllipsePnt2);
+    occ::handle<Geom2d_TrimmedCurve> aSegment = GC_MakeSegment2d(anEllipsePnt1, anEllipsePnt2);
 ~~~~
 
 
@@ -686,21 +685,21 @@ The loft function is implemented in the *BRepOffsetAPI_ThruSections* class, whic
     BRepOffsetAPI_ThruSections aTool(true);
     aTool.AddWire(threadingWire1); aTool.AddWire(threadingWire2);
     aTool.CheckCompatibility(false);
-    TopoDS_Shape myThreading = aTool.Shape();
+    TopoDS_Shape aThreading = aTool.Shape();
 ~~~~
 
 
 @section sec5 Building the Resulting Compound
 
 
-You are almost done building the bottle. Use the *TopoDS_Compound* and *BRep_Builder* classes to build single shape from *myBody* and *myThreading*:
+You are almost done building the bottle. Use the *TopoDS_Compound* and *BRep_Builder* classes to build single shape from *aBody* and *aThreading*:
 
 ~~~~{.cpp}
     TopoDS_Compound aRes;
     BRep_Builder aBuilder;
     aBuilder.MakeCompound (aRes);
-    aBuilder.Add (aRes, myBody);
-    aBuilder.Add (aRes, myThreading);
+    aBuilder.Add (aRes, aBody);
+    aBuilder.Add (aRes, aThreading);
 ~~~~
 
 Congratulations! Your bottle is complete. Here is the result snapshot of the Tutorial application:
@@ -717,15 +716,15 @@ If you want to know more and develop major projects using Open CASCADE Technolog
 Complete definition of MakeBottle function:
 
 ~~~~{.cpp}
-    TopoDS_Shape MakeBottle(const double myWidth, const double myHeight,
-                            const double myThickness)
+    TopoDS_Shape MakeBottle(const double theWidth, const double theHeight,
+                            const double theThickness)
     {
         // Profile : Define Support Points
-        gp_Pnt aPnt1(-myWidth / 2., 0, 0);        
-        gp_Pnt aPnt2(-myWidth / 2., -myThickness / 4., 0);
-        gp_Pnt aPnt3(0, -myThickness / 2., 0);
-        gp_Pnt aPnt4(myWidth / 2., -myThickness / 4., 0);
-        gp_Pnt aPnt5(myWidth / 2., 0, 0);
+        gp_Pnt aPnt1(-theWidth / 2., 0, 0);        
+        gp_Pnt aPnt2(-theWidth / 2., -theThickness / 4., 0);
+        gp_Pnt aPnt3(0, -theThickness / 2., 0);
+        gp_Pnt aPnt4(theWidth / 2., -theThickness / 4., 0);
+        gp_Pnt aPnt5(theWidth / 2., 0, 0);
 
         // Profile : Define the Geometry
         occ::handle<Geom_TrimmedCurve> anArcOfCircle = GC_MakeArcOfCircle(aPnt2,aPnt3,aPnt4);
@@ -750,44 +749,44 @@ Complete definition of MakeBottle function:
         BRepBuilderAPI_MakeWire mkWire;
         mkWire.Add(aWire);
         mkWire.Add(aMirroredWire);
-        TopoDS_Wire myWireProfile = mkWire.Wire();
+        TopoDS_Wire aWireProfile = mkWire.Wire();
 
         // Body : Prism the Profile
-        TopoDS_Face myFaceProfile = BRepBuilderAPI_MakeFace(myWireProfile);
-        gp_Vec aPrismVec(0, 0, myHeight);
-        TopoDS_Shape myBody = BRepPrimAPI_MakePrism(myFaceProfile, aPrismVec);
+        TopoDS_Face aFaceProfile = BRepBuilderAPI_MakeFace(aWireProfile);
+        gp_Vec aPrismVec(0, 0, theHeight);
+        TopoDS_Shape aBody = BRepPrimAPI_MakePrism(aFaceProfile, aPrismVec);
 
         // Body : Apply Fillets
-        BRepFilletAPI_MakeFillet mkFillet(myBody);
-        TopExp_Explorer anEdgeExplorer(myBody, TopAbs_EDGE);
+        BRepFilletAPI_MakeFillet mkFillet(aBody);
+        TopExp_Explorer anEdgeExplorer(aBody, TopAbs_EDGE);
         while(anEdgeExplorer.More()){
             TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExplorer.Current());
             //Add edge to fillet algorithm
-            mkFillet.Add(myThickness / 12., anEdge);
+            mkFillet.Add(theThickness / 12., anEdge);
             anEdgeExplorer.Next();
         }
 
-        myBody = mkFillet.Shape();
+        aBody = mkFillet.Shape();
 
         // Body : Add the Neck
-        gp_Pnt neckLocation(0, 0, myHeight);
+        gp_Pnt neckLocation(0, 0, theHeight);
         gp_Dir neckAxis = gp::DZ();
         gp_Ax2 neckAx2(neckLocation, neckAxis);
 
-        double myNeckRadius = myThickness / 4.;
-        double myNeckHeight = myHeight / 10.;
+        double aNeckRadius = theThickness / 4.;
+        double aNeckHeight = theHeight / 10.;
 
-        BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, myNeckRadius, myNeckHeight);
-        TopoDS_Shape myNeck = MKCylinder.Shape();
+        BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, aNeckRadius, aNeckHeight);
+        TopoDS_Shape aNeck = MKCylinder.Shape();
 
-        BRepAlgoAPI_Fuse aFuser(myBody, myNeck);
+        BRepAlgoAPI_Fuse aFuser(aBody, aNeck);
         if (aFuser.IsDone())
         {
-          myBody = aFuser.Shape();
+          aBody = aFuser.Shape();
         }
         else
         {
-          // Fuse failed; proceed with unmodified myBody.
+          // Fuse failed; proceed with unmodified aBody.
           // In production code, report the error and handle the failure appropriately.
         }
 
@@ -795,7 +794,7 @@ Complete definition of MakeBottle function:
         TopoDS_Face   faceToRemove;
         double zMax = -1;
 
-        for(TopExp_Explorer aFaceExplorer(myBody, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next()){
+        for(TopExp_Explorer aFaceExplorer(aBody, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next()){
             TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
             // Check if <aFace> is the top face of the bottle's neck 
             occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace);
@@ -816,19 +815,19 @@ Complete definition of MakeBottle function:
         NCollection_List<TopoDS_Shape> facesToRemove;
         facesToRemove.Append(faceToRemove);
         BRepOffsetAPI_MakeThickSolid aSolidMaker;
-        aSolidMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
-        myBody = aSolidMaker.Shape();
+        aSolidMaker.MakeThickSolidByJoin(aBody, facesToRemove, -theThickness / 50, 1.e-3);
+        aBody = aSolidMaker.Shape();
         // Threading : Create Surfaces
-        occ::handle<Geom_CylindricalSurface> aCyl1 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 0.99);
-        occ::handle<Geom_CylindricalSurface> aCyl2 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 1.05);
+        occ::handle<Geom_CylindricalSurface> aCyl1 = new Geom_CylindricalSurface(neckAx2, aNeckRadius * 0.99);
+        occ::handle<Geom_CylindricalSurface> aCyl2 = new Geom_CylindricalSurface(neckAx2, aNeckRadius * 1.05);
 
         // Threading : Define 2D Curves
-        gp_Pnt2d aPnt(2. * M_PI, myNeckHeight / 2.);
-        gp_Dir2d aDir(2. * M_PI, myNeckHeight / 4.);
+        gp_Pnt2d aPnt(2. * M_PI, aNeckHeight / 2.);
+        gp_Dir2d aDir(2. * M_PI, aNeckHeight / 4.);
         gp_Ax2d anAx2d(aPnt, aDir);
 
         double aMajor = 2. * M_PI;
-        double aMinor = myNeckHeight / 10;
+        double aMinor = aNeckHeight / 10;
 
         occ::handle<Geom2d_Ellipse> anEllipse1 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor);
         occ::handle<Geom2d_Ellipse> anEllipse2 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor / 4);
@@ -837,7 +836,7 @@ Complete definition of MakeBottle function:
         gp_Pnt2d anEllipsePnt1 = anEllipse1->Value(0);
         gp_Pnt2d anEllipsePnt2 = anEllipse1->Value(M_PI);
 
-        occ::handle<Geom2d_TrimmedCurve> aSegment = GCE2d_MakeSegment(anEllipsePnt1, anEllipsePnt2);
+        occ::handle<Geom2d_TrimmedCurve> aSegment = GC_MakeSegment2d(anEllipsePnt1, anEllipsePnt2);
         // Threading : Build Edges and Wires
         TopoDS_Edge anEdge1OnSurf1 = BRepBuilderAPI_MakeEdge(anArc1, aCyl1);
         TopoDS_Edge anEdge2OnSurf1 = BRepBuilderAPI_MakeEdge(aSegment, aCyl1);
@@ -854,14 +853,14 @@ Complete definition of MakeBottle function:
         aTool.AddWire(threadingWire2);
         aTool.CheckCompatibility(false);
 
-        TopoDS_Shape myThreading = aTool.Shape();
+        TopoDS_Shape aThreading = aTool.Shape();
 
         // Building the Resulting Compound 
         TopoDS_Compound aRes;
         BRep_Builder aBuilder;
         aBuilder.MakeCompound (aRes);
-        aBuilder.Add (aRes, myBody);
-        aBuilder.Add (aRes, myThreading);
+        aBuilder.Add (aRes, aBody);
+        aBuilder.Add (aRes, aThreading);
 
         return aRes;
     }

@@ -64,9 +64,9 @@ void MyAisObject::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrs
   StdPrs_ShadedShape::Add (thePrs, aShape, myDrawer);
 }
 ...
-occ::handle<AIS_InteractiveContext> theCtx;
+occ::handle<AIS_InteractiveContext> aCtx;
 occ::handle<MyAisObject> aPrs = new MyAisObject();
-theCtx->Display (aPrs, true);
+aCtx->Display (aPrs, true);
 ~~~~
 
 @figure{images/ais_object_step1_shaded.png,"@c StdPrs_ShadedShape presentation builder.",409} height=409px
@@ -98,9 +98,9 @@ void MyAisObject::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrs
 This wouldn't, however, prevent application from displaying the object with another display mode like this:
 
 ~~~~{.cpp}
-occ::handle<AIS_InteractiveContext> theCtx;
+occ::handle<AIS_InteractiveContext> aCtx;
 occ::handle<MyAisObject> aPrs = new MyAisObject();
-theCtx->Display (aPrs, 100, -1, true);
+aCtx->Display (aPrs, 100, -1, true);
 ~~~~
 
 The code above will display @c MyAisObject with display mode equal to 100, and after @c @::Compute() modifications nothing will be displayed on the screen.
@@ -164,9 +164,9 @@ void MyAisObject::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrs
 Now, displaying an object with **display mode 1** will show a box:
 
 ~~~~{.cpp}
-occ::handle<AIS_InteractiveContext> theCtx;
+occ::handle<AIS_InteractiveContext> aCtx;
 occ::handle<MyAisObject> aPrs = new MyAisObject();
-theCtx->Display (aPrs, 1, 0, true);
+aCtx->Display (aPrs, 1, 0, true);
 ~~~~
 
 @figure{images/ais_object_step1_bndbox.png,"@c Prs3d_BndBox presentation builder.",409} height=409px
@@ -192,11 +192,11 @@ MyAisObject::MyAisObject()
 
 ...
 
-occ::handle<AIS_InteractiveContext> theCtx;
+occ::handle<AIS_InteractiveContext> aCtx;
 occ::handle<MyAisObject> aPrs = new MyAisObject();
-theCtx->Display (aPrs, MyAisObject::MyDispMode_Main, 0, false);
-theCtx->HilightWithColor (aPrs, aPrs->HilightAttributes(), false);
-theCtx->CurrentViewer()->Redraw();
+aCtx->Display (aPrs, MyAisObject::MyDispMode_Main, 0, false);
+aCtx->HilightWithColor (aPrs, aPrs->HilightAttributes(), false);
+aCtx->CurrentViewer()->Redraw();
 ~~~~
 
 @figure{images/ais_object_step1_highlight.png,"Highlighting by color (left) and highlighting by another display mode (right).",818} height=409px
@@ -558,9 +558,9 @@ A user should be careful to activate only the modes that actually make sense and
 Selection mode to activate could be specified while displaying the object (passing _**-1**_ instead of _**0**_ would display an object with deactivated selection):
 
 ~~~~{.cpp}
-occ::handle<AIS_InteractiveContext> theCtx;
+occ::handle<AIS_InteractiveContext> aCtx;
 occ::handle<MyAisObject> aPrs = new MyAisObject();
-theCtx->Display (aPrs, MyAisObject::MyDispMode_Main, 0, false);
+aCtx->Display (aPrs, MyAisObject::MyDispMode_Main, 0, false);
 ~~~~
 
 Later on @c AIS_InteractiveContext::SetSelectionModeActive(), or it's wrappers @c AIS_InteractiveContext::Activate() and @c AIS_InteractiveContext::Deactivate(),
@@ -894,11 +894,11 @@ To utilize it, you need adding a custom object animation to @c AIS_ViewControlle
 Somewhere in application this might look like this:
 
 ~~~~{.cpp}
-occ::handle<AIS_InteractiveContext> theCtx;
-occ::handle<AIS_ViewController> theViewCtrl;
+occ::handle<AIS_InteractiveContext> aCtx;
+occ::handle<AIS_ViewController> aViewCtrl;
 occ::handle<MyAisObject> aPrs = new MyAisObject();
-aPrs->SetAnimation (theViewCtrl->ObjectsAnimation());
-theCtx->Display (aPrs, MyAisObject::MyDispMode_Main, 0, false);
+aPrs->SetAnimation (aViewCtrl->ObjectsAnimation());
+aCtx->Display (aPrs, MyAisObject::MyDispMode_Main, 0, false);
 ~~~~
 
 @section final Final result

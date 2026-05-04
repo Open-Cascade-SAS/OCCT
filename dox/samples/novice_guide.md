@@ -36,7 +36,7 @@ Example C++ applications (using Qt, MFC, C#, WebGL, QML, Java/Android, and iOS) 
 These provide full project setups demonstrating how to integrate OCCT into various application frameworks.
 
 The overall classes introduction may be found in the @ref occt_user_guides__foundation_classes "Foundation Classes" section of the documentation.
-The @ref occt_user_guides "User Guides" contain in-depth descriptions of all major OCCT modules.
+The @ref user_guides "User Guides" contain in-depth descriptions of all major OCCT modules.
 
 @section helps Additional assistance
 

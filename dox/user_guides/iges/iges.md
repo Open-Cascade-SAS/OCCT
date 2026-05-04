@@ -604,21 +604,21 @@ The highlighted classes produce OCCT geometry.
 #include <NCollection_HSequence.hxx> 
 #include <TopoDS_Shape.hxx> 
 { 
-IGESControl_Reader myIgesReader; 
+IGESControl_Reader anIgesReader; 
 int nIgesFaces,nTransFaces; 
 
-myIgesReader.ReadFile ("MyFile.igs"); 
+anIgesReader.ReadFile ("MyFile.igs"); 
 //loads file MyFile.igs 
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> myList =  myIgesReader.GiveList("iges-faces"); 
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aList =  anIgesReader.GiveList("iges-faces"); 
 //selects all IGES faces in the file and puts them into a list  called //MyList, 
 
-nIgesFaces = myList->Length();  
-nTransFaces = myIgesReader.TransferList(myList); 
+nIgesFaces = aList->Length();  
+nTransFaces = anIgesReader.TransferList(aList); 
 //translates MyList, 
 
 std::cout << "IGES Faces: " << nIgesFaces << "   Transferred:" << nTransFaces << std::endl; 
-TopoDS_Shape sh = myIgesReader.OneShape(); 
+TopoDS_Shape sh = anIgesReader.OneShape(); 
 //and obtains the results in an OCCT shape. 
 } 
 ~~~~

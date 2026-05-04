@@ -125,7 +125,7 @@ Low-level *topological tools* provide the algorithms, which:
  * Check correct definition of shapes;
  * Determine the local and global properties of shapes (derivatives, mass-inertia properties, etc);
  * Perform affine transformations;
- * Find planes in which edges are located;
+ * Find planes on which edges are located;
  * Convert shapes to NURBS geometry;
  * Sew connected topologies (shells and wires) from separate topological elements (faces and edges).
 
@@ -268,7 +268,7 @@ Shape Healing algorithms include, but are not limited to, the following operatio
  * Upgrade and change shape characteristics:
    - reduce curve and surface degree;
    - split shapes to obtain C1 continuity;
-   - convert any types of curves or surfaces to Bezier or B-Spline curves or surfaces and back;
+   - convert any type of curve or surface to Bezier or B-Spline form and back;
    - split closed surfaces and revolution surfaces.
 
 Each sub-domain of Shape Healing has its own scope of functionality:
@@ -341,8 +341,8 @@ The tables below describe the recommended software configurations for which OCCT
 
 | OS        | Compiler |
 | --------- | ----------- |
-| Windows   | Microsoft Visual Studio 2019 or 2022 (2022 preferred) <br> LLVM (ClangCL), GCC 7.3+ (MinGW-w64)|
-| Linux     | GCC 8.0+ <br> Clang 7.0+ |
+| Windows   | Microsoft Visual Studio 2019 or 2022 (2022 preferred) <br> LLVM (ClangCL), GCC 7.3+ (MinGW-w64), Intel C++ 17.1.1+ |
+| Linux     | GCC 8.0+ <br> Clang 7.0+ <br> Intel C++ 17.1.1+ |
 | macOS | Xcode 11.0 or newer (Apple Clang 11.0+) |
 | Android   | NDK r19+, Clang |
 | Web       | Emscripten SDK 3.0 or newer (Clang) |
@@ -358,7 +358,7 @@ Pre-built third-party archives are attached to the OCCT GitHub release pages at 
 
 | Component | Where to find | Used for | Purpose |
 | --------- | ------------- | -------- | -------------------- |
-| CMake 3.16+ | https://cmake.org/ | Configuration | Build from sources |
+| CMake 3.10+ (3.16+ recommended) | https://cmake.org/ | Configuration | Build from sources |
 | Intel oneTBB 2021+ | https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0 | All | Parallelization of algorithms (alternative to built-in thread pool) |
 | OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required for using 3D Viewer |
 | OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | VR (Virtual Reality) support in 3D Viewer |
@@ -367,7 +367,7 @@ Pre-built third-party archives are attached to the OCCT GitHub release pages at 
 | FFmpeg 3.1+ | https://www.ffmpeg.org/download.html | Visualization | Video recording |
 | VTK 6.1+ | https://www.vtk.org/download/ | IVtk | VTK integration module |
 | Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Updating STEP and ExprIntrp parsers |
-| RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Reading glTF files |
+| RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Reading/writing glTF files |
 | Draco 1.4.1+ | https://github.com/google/draco | Data Exchange | Reading compressed glTF files |
 | Tcl/Tk 8.6.3+ | https://www.tcl.tk/software/tcltk/download.html | DRAW Test Harness | Tcl interpreter in Draw module |
 | Doxygen 1.8.4+ | https://www.doxygen.nl/download.html | Documentation | (Re)generating documentation |
@@ -414,9 +414,7 @@ The source tree obtained from a Git clone contains the following top-level direc
 
   * **adm**   Administration files for building and packaging OCCT;
   * **data**  CAD files in various formats for testing OCCT functionality;
-  * **doc**   Documentation in HTML and PDF format;
   * **dox**   Documentation sources in Markdown format;
-  * **inc**   Header files (generated during build);
   * **samples**  Sample applications;
   * **src**   OCCT source files, organized by module/toolkit/package;
   * **tests**  Draw Harness test scripts;
@@ -451,31 +449,19 @@ The script defines environment variables such as `PATH`, `LD_LIBRARY_PATH` (on L
   * **CASROOT** is used to define the root directory of Open CASCADE Technology;
   * **PATH** is required to define the path to OCCT binaries and 3rdparty folder;
   * **LD_LIBRARY_PATH** is required to define the path to OCCT libraries (on UNIX platforms only; **DYLD_LIBRARY_PATH** variable in case of macOS);
-  * **MMGT_OPT** (optional) if set to 1, the memory manager performs optimizations as described below; if set to 2, 
-    Intel (R) TBB optimized memory manager is used; if 0 (default), every memory block is allocated 
-    in C memory heap directly (via malloc() and free() functions). 
-    In the latter case, all other options starting with *MMGT*, except MMGT_CLEAR, are ignored;
-  * **MMGT_CLEAR** (optional) if set to 1 (default), every allocated memory block is cleared by zeros; 
-    if set to 0, memory block is returned as it is;
-  * **MMGT_CELLSIZE** (optional) defines the maximal size of blocks allocated in large pools of memory. Default is 200;
-  * **MMGT_NBPAGES** (optional) defines the size of memory chunks allocated for small blocks in pages 
-    (operating-system dependent). Default is 10000;
-  * **MMGT_THRESHOLD** (optional) defines the maximal size of blocks that are recycled internally 
-    instead of being returned to the heap. Default is 40000;
-  * **MMGT_MMAP** (optional) when set to 1 (default), large memory blocks are allocated using 
-    memory mapping functions of the operating system; if set to 0, 
-    they will be allocated in the C heap by malloc();
   * **CSF_LANGUAGE** (optional) defines default language of messages;
-  * **CSF_DEBUG** (optional, Windows only): if defined then a diagnostic message is displayed in case of an exception;
   * **CSF_DEBUG_BOP** (optional): if defined then it should specify directory where diagnostic data on problems occurred in Boolean operations will be saved;
   * **CSF_MDTVTexturesDirectory** defines the directory for available textures when using texture mapping;
   * **CSF_ShadersDirectory** (optional) defines the directory for GLSL programs for Ray Tracing renderer (embedded resources are used when variable is undefined);
+  * **CSF_ShadersDirectoryDump** (optional, development only): if defined then the GLSL source generated from OCCT shader programs will be written to this directory for debugging and inspection;
   * **CSF_SHMessage** (optional) defines the path to the messages file for *ShapeHealing*;
   * **CSF_XSMessage** (optional) defines the path to the messages file for **STEP** and **IGES** translators;
   * **CSF_StandardDefaults**, **CSF_StandardLiteDefaults**, **CSF_XCAFDefaults**, and **CSF_PluginDefaults** define paths to directory where configuration files for OCAF persistence are located (required for open/save operations with OCAF documents);
   * **CSF_IGESDefaults** and **CSF_STEPDefaults** (optional) define paths to directory where resource files of **IGES** and **STEP** translators are located;
   * **CSF_XmlOcafResource** is required in order to set the path to **XSD** resources, which defines XML grammar.
   * **CSF_MIGRATION_TYPES** is required in order to read documents that contain old data types, such as *TDataStd_Shape*;
+
+@note Variables following the pattern **CSF_\<name\>Defaults** (e.g. *CSF_PluginDefaults*, *CSF_IGESDefaults*, *CSF_STEPDefaults*, *CSF_DrawPluginDefaults*) are consumed through OCCT resource managers and plugin loaders via a dynamic composition pattern. They point to directories containing resource files (like *Plugin*, *IGES*, *STEP*); the application resolves these at runtime through the `Resource_Manager` and `TCollection_AsciiString` mechanisms rather than through direct string lookups. This design allows custom or third-party resource directories to be added without modifying OCCT source code.
 
 @section intro_license License
 

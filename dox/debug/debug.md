@@ -14,18 +14,12 @@ These include messages on internal errors and special cases encountered, timing 
 In older OCCT versions most of these messages were activated by compiler macro *DEB*, enabled by default in debug builds.
 This is now disabled by default but can be enabled by defining compiler macro *OCCT_DEBUG*.
 
-To enable this macro on Windows, set it in the CMake configuration (e.g., using `adm/templates/custom.bat.main` as a template):
-
-    set CSF_DEFINES=OCCT_DEBUG
+To enable this macro, configure the build with the CMake option `-DBUILD_WITH_DEBUG=ON`.
 
 Some algorithms use specific macros for yet more verbose messages, usually started with OCCT_DEBUG_.
 These messages can be enabled in the same way, by defining corresponding macro.
 
 Note that some header files are modified when *OCCT_DEBUG* is enabled, hence binaries built with it enabled are not compatible with client code built without this option; this is not intended for production use.
-
-@section occt_debug_exceptions Calling JIT debugger on exception
-
-On Windows platform when using Visual Studio compiler there is a possibility to start the debugger automatically if an exception is caught in a program running OCCT. For this, set environment variable *CSF_DEBUG* to any value. Note that this feature works only if you enable OCCT exception handler in your application by calling *OSD::SetSignal()*.
 
 @section occt_debug_bop Self-diagnostics in Boolean operations algorithm
 

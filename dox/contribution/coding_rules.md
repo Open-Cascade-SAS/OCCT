@@ -70,7 +70,7 @@ The following extensions should be used for source files, depending on their typ
 * <i>.hxx</i> -- C++ header files
 * <i>.lxx</i> -- additional headers containing definitions of inline methods and auxiliary code
 
-Note that .lxx files should be avoided in most cases - inline method should be placed in header file instead.
+Note that .lxx files should be avoided in most cases - inline methods should be placed in the header file instead.
 
 ### Prefix for toolkit names [MANDATORY]
 
@@ -231,7 +231,7 @@ void Average (const double** theArray,
 
 @section occt_coding_rules_3 Formatting rules
 
-To improve the open source readability and, consequently, maintainability, the following set of rules is applied.
+To improve the open-source readability and, consequently, maintainability, the following set of rules is applied.
 
 ### Clang-format [MANDATORY]
 
@@ -329,7 +329,7 @@ while (expression)
 }
 ~~~~
 
-Entering a block increases and leaving a block decreases the indentation by one tabulation.
+Entering a block increases and leaving a block decreases the indentation by one level.
 
 ### Braces around statements [MANDATORY]
 
@@ -1105,7 +1105,7 @@ vec4 ComputeLighting (in vec3 theNormal,
 //! Entry point to the Fragment Shader
 void main()
 {
-  gl_FragColor = computeLighting (normalize (Normal),
+  gl_FragColor = ComputeLighting (normalize (Normal),
                                   normalize (View),
                                   Position);
 }
