@@ -22,7 +22,7 @@
 #include <Quantity_Color.hxx>
 #include <gp_Pnt.hxx>
 
-//! Shader grid appearance (color, scale, bounds, arc, draw mode, background / inf flags).
+//! Shader grid appearance (color, scale, bounds, arc, draw mode, background / adaptive flags).
 //! Consumed only by the GPU path: V3d_View::GridDisplay -> OpenGl_View::renderGrid.
 //! No effect on the CPU path (V3d_Viewer::ActivateGrid). Snap math is independent and
 //! lives on Aspect_RectangularGrid / Aspect_CircularGrid.
@@ -226,11 +226,11 @@ public:
   //! Set axis coloring on/off.
   void SetIsDrawAxis(const bool theIsDrawAxis) { myIsDrawAxis = theIsDrawAxis; }
 
-  //! Return TRUE if the scale adapts to camera zoom to keep an apparent grid density.
+  //! Return TRUE if unbounded grid extents adapt to the camera view while preserving scale.
   bool IsInfinity() const { return myIsInfinity; }
 
-  //! Set camera-adaptive scale on/off. When enabled, Scale() is ignored in favour
-  //! of a derived value based on camera distance.
+  //! Set view-adaptive unbounded extents on/off. When enabled, Scale() and ScaleY()
+  //! remain fixed, while renderer derives temporary bounds from the current camera.
   void SetIsInfinity(const bool theIsInfinity) { myIsInfinity = theIsInfinity; }
 
 private:

@@ -2214,7 +2214,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   TCollection_AsciiString aSrcFrag =
     TCollection_AsciiString()
     + EOL
-    "vec4 gridLines2d (vec2 theUV, vec3 theColor, vec2 theScale," EOL
+    "vec4 gridLines2d (vec2 theUV, vec2 theAxisUV, vec3 theColor, vec2 theScale," EOL
     "                  bool theIsDrawAxis, float theThickness)" EOL "{" EOL
     "  vec2 aCoord      = theUV * theScale;" EOL "  vec2 aFwidth     = fwidth (aCoord);" EOL
     "  vec2 aDerivative = max (aFwidth, vec2 (theThickness));" EOL
@@ -2232,8 +2232,9 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  vec4  aColor  = vec4 (theColor, aAlpha);" EOL
     // Axis colouring in lines mode only; a "point" has no axis direction.
     EOL "  if (uIsDrawAxis != 0 && theIsDrawAxis && uDrawMode != 1)" EOL "  {" EOL
-    "    bool isYAxis = abs (aCoord.x) < aMinX;" EOL
-    "    bool isXAxis = abs (aCoord.y) < aMinY;" EOL
+    "    vec2 aAxisCoord = theAxisUV * theScale;" EOL
+    "    bool isYAxis = abs (aAxisCoord.x) < aMinX;" EOL
+    "    bool isXAxis = abs (aAxisCoord.y) < aMinY;" EOL
     "    if      (isXAxis && isYAxis) { aColor.xyz = vec3 (0.0, 0.0, 1.0); }" EOL
     "    else if (isXAxis)            { aColor.xyz = vec3 (1.0, 0.0, 0.0); }" EOL
     "    else if (isYAxis)            { aColor.xyz = vec3 (0.0, 1.0, 0.0); }" EOL "  }" EOL
@@ -2322,7 +2323,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "    aGridUv = vec2 (aR, aA);" EOL "    aScale  = vec2 (uScaleX, uAngularScale);" EOL
     "    aAxisUv = aLocal;" EOL "  }" EOL "  else" EOL "  {" EOL "    aGridUv = aStableLocal;" EOL
     "    aScale  = vec2 (uScaleX, uScaleY);" EOL "    aAxisUv = aLocal;" EOL "  }" EOL
-    "  vec4 aColor = gridLines2d (aGridUv, uColor, aScale, uGridType == 0, uThickness);" EOL
+    "  vec4 aColor = gridLines2d (aGridUv, aAxisUv, uColor, aScale, uGridType == 0, uThickness);" EOL
     "  if (uDrawMode != 1)" EOL "  {" EOL "    if (uGridType == 0)" EOL "    {" EOL
     "      if (uAccentScaleX > 0.0)" EOL "      {" EOL "        float aAccX = aLocal.x;" EOL
     "        if (uHasStableRef != 0)" EOL "        {" EOL
