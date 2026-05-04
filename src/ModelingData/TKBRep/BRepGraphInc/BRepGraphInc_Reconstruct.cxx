@@ -53,6 +53,14 @@ static void restoreEdgeRegularities(const BRepGraph_LayerRegularity* theRegulari
 
   for (const BRepGraph_LayerRegularity::RegularityEntry& aRegEntry : aRegularities->Entries)
   {
+    // Seam continuity (F1 == F2) lives on the BRep_CurveOnClosedSurface that
+    // owns the PCurve pair; the face-path PCurve installation handles it
+    // directly. BRep_Builder::Continuity would create a spurious
+    // BRep_CurveOn2Surfaces with S1 == S2 here.
+    if (aRegEntry.FaceEntity1 == aRegEntry.FaceEntity2)
+    {
+      continue;
+    }
     const TopoDS_Shape* aFaceShape1 = theCache.Seek(aRegEntry.FaceEntity1);
     const TopoDS_Shape* aFaceShape2 = theCache.Seek(aRegEntry.FaceEntity2);
     if (aFaceShape1 != nullptr && aFaceShape2 != nullptr)
@@ -772,7 +780,6 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
           aUV1     = aFwdHalf->UV1;
           aUV2     = aFwdHalf->UV2;
           aHasUV   = true;
-          aSeamContinuity = aFwdHalf->SeamContinuity;
         }
         if (aRevHalf->Curve2DRepId.IsValid())
         {
@@ -782,10 +789,14 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
             aPCFirst = aRevHalf->ParamFirst;
             aPCLast  = aRevHalf->ParamLast;
           }
-          if (aSeamContinuity == GeomAbs_C0)
-          {
-            aSeamContinuity = aRevHalf->SeamContinuity;
-          }
+        }
+        // Seam continuity lives in BRepGraph_LayerRegularity with F1 == F2.
+        if (theRegularities != nullptr)
+        {
+          theRegularities->FindContinuity(aCoEdge.EdgeDefId,
+                                          aCoEdge.FaceDefId,
+                                          aCoEdge.FaceDefId,
+                                          &aSeamContinuity);
         }
       }
       else if (aCoEdge.Curve2DRepId.IsValid())

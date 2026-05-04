@@ -34,7 +34,12 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS.hxx>
 
 #include <gtest/gtest.h>
@@ -404,28 +409,9 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
 
 TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
 {
-  // Cylinder has smooth edges between lateral face and caps.
-  // BRep stores regularity as BRep_CurveOn2Surfaces entries.
+  // Verify the regularity layer captures continuity for every (edge, F1, F2)
+  // tuple that classical BRep_Tool::Continuity reports as non-default.
   TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
-
-  // Count original regularities via BRep_Tool::Continuity.
-  int aNbOrigReg = 0;
-  for (TopExp_Explorer anEdgeExp(aCyl, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
-  {
-    const TopoDS_Edge&             anEdge = TopoDS::Edge(anEdgeExp.Current());
-    const occ::handle<BRep_TEdge>& aTEdge = occ::down_cast<BRep_TEdge>(anEdge.TShape());
-    if (aTEdge.IsNull())
-    {
-      continue;
-    }
-    for (const occ::handle<BRep_CurveRepresentation>& aCRep : aTEdge->Curves())
-    {
-      if (!occ::down_cast<BRep_CurveOn2Surfaces>(aCRep).IsNull())
-      {
-        ++aNbOrigReg;
-      }
-    }
-  }
 
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
@@ -437,14 +423,94 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
   ASSERT_FALSE(aRegularityLayer.IsNull());
 
-  // Count captured regularity entries.
-  int aNbGraphReg = 0;
+  // Find the seam edge (cylinder lateral face has one).
+  bool aSeamRegularityFound = false;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    aNbGraphReg += aRegularityLayer->NbRegularities(anEdgeIt.CurrentId());
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    if (aRegularityLayer->NbRegularities(anEdgeId) == 0)
+    {
+      continue;
+    }
+    const BRepGraph_LayerRegularity::EdgeRegularities* aRegs =
+      aRegularityLayer->FindEdgeRegularities(anEdgeId);
+    ASSERT_NE(aRegs, nullptr);
+    for (const BRepGraph_LayerRegularity::RegularityEntry& anEntry : aRegs->Entries)
+    {
+      if (anEntry.FaceEntity1 == anEntry.FaceEntity2)
+      {
+        aSeamRegularityFound = true;
+      }
+    }
   }
-  EXPECT_EQ(aNbGraphReg, aNbOrigReg)
-    << "Graph regularity count should match BRep_CurveOn2Surfaces count";
+  EXPECT_TRUE(aSeamRegularityFound)
+    << "Cylinder seam edge must produce a regularity entry with F1 == F2";
+}
+
+// Round-trip continuity: every (edge, F1, F2) value reported by classical
+// BRep_Tool::Continuity on the original shape must be reproduced after
+// shape -> graph -> shape. Guarantees the layer captures the same continuity
+// records that the old per-CoEdge field carried (BRep_Tool::MaxContinuity walks
+// the same IsRegularity()==true set: BRep_CurveOn2Surfaces + BRep_CurveOnClosedSurface).
+TEST(BRepGraph_PolygonTest, EdgeRegularity_ShapeGraphShape_RoundTrip)
+{
+  TopoDS_Shape aOriginal = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
+
+  BRepGraph aGraph;
+  registerStandardLayers(aGraph);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aOriginal);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  TopoDS_Shape aReconstructed =
+    aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
+  ASSERT_FALSE(aReconstructed.IsNull());
+
+  // Walk both originals and reconstructed in lock-step (TopExp_Explorer order)
+  // and verify every (edge, F1, F2) pair preserves its classical Continuity value.
+  using ShapeMap =
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>;
+  ShapeMap aOrigEdgeFaces, aReconEdgeFaces;
+  TopExp::MapShapesAndAncestors(aOriginal, TopAbs_EDGE, TopAbs_FACE, aOrigEdgeFaces);
+  TopExp::MapShapesAndAncestors(aReconstructed, TopAbs_EDGE, TopAbs_FACE, aReconEdgeFaces);
+  ASSERT_EQ(aOrigEdgeFaces.Extent(), aReconEdgeFaces.Extent());
+
+  uint32_t aNbCheckedPairs = 0;
+  for (int i = 1; i <= aOrigEdgeFaces.Extent(); ++i)
+  {
+    const TopoDS_Edge& aOrigEdge  = TopoDS::Edge(aOrigEdgeFaces.FindKey(i));
+    const TopoDS_Edge& aReconEdge = TopoDS::Edge(aReconEdgeFaces.FindKey(i));
+    NCollection_List<TopoDS_Shape>& aOrigFaces  = aOrigEdgeFaces.ChangeFromIndex(i);
+    NCollection_List<TopoDS_Shape>& aReconFaces = aReconEdgeFaces.ChangeFromIndex(i);
+    ASSERT_EQ(aOrigFaces.Size(), aReconFaces.Size());
+
+    NCollection_List<TopoDS_Shape>::Iterator aOrigIt(aOrigFaces);
+    NCollection_List<TopoDS_Shape>::Iterator aReconIt(aReconFaces);
+    for (; aOrigIt.More(); aOrigIt.Next(), aReconIt.Next())
+    {
+      const TopoDS_Face& aOrigF1  = TopoDS::Face(aOrigIt.Value());
+      const TopoDS_Face& aReconF1 = TopoDS::Face(aReconIt.Value());
+
+      NCollection_List<TopoDS_Shape>::Iterator aOrigIt2 = aOrigIt;
+      NCollection_List<TopoDS_Shape>::Iterator aReconIt2 = aReconIt;
+      for (; aOrigIt2.More(); aOrigIt2.Next(), aReconIt2.Next())
+      {
+        const TopoDS_Face& aOrigF2  = TopoDS::Face(aOrigIt2.Value());
+        const TopoDS_Face& aReconF2 = TopoDS::Face(aReconIt2.Value());
+        EXPECT_EQ(BRep_Tool::Continuity(aReconEdge, aReconF1, aReconF2),
+                  BRep_Tool::Continuity(aOrigEdge, aOrigF1, aOrigF2))
+          << "Continuity round-trip mismatch on edge " << i;
+        ++aNbCheckedPairs;
+      }
+    }
+
+    // Per-edge MaxContinuity round-trip: BRep_Tool walks the same IsRegularity()
+    // representations the layer captures (BRep_CurveOn2Surfaces + BRep_CurveOnClosedSurface).
+    EXPECT_EQ(BRep_Tool::MaxContinuity(aReconEdge), BRep_Tool::MaxContinuity(aOrigEdge))
+      << "MaxContinuity round-trip mismatch on edge " << i;
+  }
+  EXPECT_GT(aNbCheckedPairs, 0u) << "Test must check at least one (edge, F1, F2) pair";
 }
 
 // ============================================================

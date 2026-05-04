@@ -149,13 +149,8 @@ struct CoEdgeDef : public BaseDef
   BRepGraph_Curve2DRepId Curve2DRepId;
   double                 ParamFirst = 0.0;
   double                 ParamLast  = 0.0;
-  GeomAbs_Shape          Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs
-  gp_Pnt2d               UV1;                     //!< UV at ParamFirst
-  gp_Pnt2d               UV2;                     //!< UV at ParamLast
-
-  //! Seam continuity (C^k across the seam line on the closed surface). Meaningful
-  //! only on a seam half. The two halves carry the same value.
-  GeomAbs_Shape SeamContinuity = GeomAbs_C0;
+  gp_Pnt2d               UV1; //!< UV at ParamFirst
+  gp_Pnt2d               UV2; //!< UV at ParamLast
 
   //! Typed representation id into Storage::myPolygons2D (invalid if no polygon-on-surface).
   BRepGraph_Polygon2DRepId Polygon2DRepId;

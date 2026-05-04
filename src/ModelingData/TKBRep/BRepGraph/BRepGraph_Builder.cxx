@@ -242,8 +242,8 @@ void BRepGraph_Builder::appendImpl(BRepGraph&                                  t
                                            theOptions.Parallel,
                                            aAppendedRoots,
                                            theOptions.Populate,
-                                           aParamLayer.get(),
-                                           aRegularityLayer.get(),
+                                           aParamLayer,
+                                           aRegularityLayer,
                                            aTmpAlloc);
     if (theOutFlatRoots != nullptr)
     {
@@ -259,8 +259,8 @@ void BRepGraph_Builder::appendImpl(BRepGraph&                                  t
                                   theShape,
                                   theOptions.Parallel,
                                   theOptions.Populate,
-                                  aParamLayer.get(),
-                                  aRegularityLayer.get(),
+                                  aParamLayer,
+                                  aRegularityLayer,
                                   aTmpAlloc);
   }
 

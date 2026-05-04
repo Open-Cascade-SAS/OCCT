@@ -538,8 +538,7 @@ void initSubCoEdgeEntity(BRepGraphInc::CoEdgeDef&     theCE,
                          const TopAbs_Orientation     theOrientation,
                          const BRepGraph_Curve2DRepId theCurve2DRepId,
                          const double                 theParamFirst,
-                         const double                 theParamLast,
-                         const GeomAbs_Shape          theContinuity)
+                         const double                 theParamLast)
 {
   theCE.EdgeDefId    = theEdgeId;
   theCE.FaceDefId    = theFaceId;
@@ -547,7 +546,6 @@ void initSubCoEdgeEntity(BRepGraphInc::CoEdgeDef&     theCE,
   theCE.Curve2DRepId = theCurve2DRepId;
   theCE.ParamFirst   = theParamFirst;
   theCE.ParamLast    = theParamLast;
-  theCE.Continuity   = theContinuity;
 }
 
 } // namespace
@@ -2269,9 +2267,7 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
                             aOld.Orientation,
                             aOld.Curve2DRepId,
                             aOld.ParamFirst,
-                            aPCSplit,
-                            aOld.Continuity);
-        aNewACE.SeamContinuity = aOld.SeamContinuity;
+                            aPCSplit);
         // UV at the split-point end is left default (0,0); callers needing
         // the exact point should evaluate the Curve2DRep at aPCSplit.
         aNewACE.UV1               = aOld.UV1;
@@ -2289,9 +2285,7 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
                             aOld.Orientation,
                             aOld.Curve2DRepId,
                             aPCSplit,
-                            aOld.ParamLast,
-                            aOld.Continuity);
-        aNewBCE.SeamContinuity = aOld.SeamContinuity;
+                            aOld.ParamLast);
         // UV at the split-point start is left default (0,0) - see aNewACE.
         aNewBCE.UV2               = aOld.UV2;
         aNewBCE.Polygon2DRepId    = aOld.Polygon2DRepId;

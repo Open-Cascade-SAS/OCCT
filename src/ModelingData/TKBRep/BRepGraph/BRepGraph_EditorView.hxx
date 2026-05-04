@@ -322,6 +322,19 @@ public:
     [[nodiscard]] Standard_EXPORT bool IsSeamOnFace(const BRepGraph_EdgeId theEdge,
                                                     const BRepGraph_FaceId theFace) const;
 
+    //! Set the geometric regularity (C^k) for an edge across a pair of faces in
+    //! BRepGraph_LayerRegularity. theFace1 == theFace2 sets the seam continuity
+    //! across the closed-surface seam line. Requires the layer to be registered.
+    //! @param[in] theEdge       typed edge definition identifier
+    //! @param[in] theFace1      first face (or seam face when theFace2 == theFace1)
+    //! @param[in] theFace2      second face
+    //! @param[in] theContinuity continuity (GeomAbs_Shape)
+    //! @return true if written; false if the layer is not registered
+    Standard_EXPORT bool SetRegularity(const BRepGraph_EdgeId theEdge,
+                                       const BRepGraph_FaceId theFace1,
+                                       const BRepGraph_FaceId theFace2,
+                                       const GeomAbs_Shape    theContinuity);
+
     //! Set the tolerance of an edge definition and fire immediate notification.
     //! @param[in] theEdge      typed edge definition identifier
     //! @param[in] theTolerance new tolerance value
@@ -496,17 +509,9 @@ public:
                                   const gp_Pnt2d&                              theUV1,
                                   const gp_Pnt2d&                              theUV2);
 
-    //! Set the geometric continuity of a coedge definition.
-    Standard_EXPORT void SetContinuity(const BRepGraph_CoEdgeId theCoEdge,
-                                       const GeomAbs_Shape      theContinuity);
-    Standard_EXPORT void SetContinuity(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                       const GeomAbs_Shape                          theContinuity);
-
-    //! Set the seam-pair continuity of a coedge definition.
-    Standard_EXPORT void SetSeamContinuity(const BRepGraph_CoEdgeId theCoEdge,
-                                           const GeomAbs_Shape      theContinuity);
-    Standard_EXPORT void SetSeamContinuity(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                           const GeomAbs_Shape theContinuity);
+    //! Continuity is a property of (Edge, Face1, Face2) and lives in
+    //! BRepGraph_LayerRegularity. Use EditorView::EdgeOps::SetRegularity to write,
+    //! BRepGraph_Tool::Edge::Continuity to read.
 
     //! Set the Curve2DRep id bound to a coedge (invalid id clears the binding).
     Standard_EXPORT void SetCurve2DRepId(const BRepGraph_CoEdgeId     theCoEdge,

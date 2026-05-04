@@ -660,11 +660,10 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
                                                anOldCoEdge.ParamFirst,
                                                anOldCoEdge.ParamLast);
 
-    aNewGraph.Editor().CoEdges().SetContinuity(aNewCoEdge, anOldCoEdge.Continuity);
-
     aNewGraph.Editor().CoEdges().SetUVBox(aNewCoEdge, anOldCoEdge.UV1, anOldCoEdge.UV2);
 
-    aNewGraph.Editor().CoEdges().SetSeamContinuity(aNewCoEdge, anOldCoEdge.SeamContinuity);
+    // Continuity (inter-face and seam) lives in BRepGraph_LayerRegularity and
+    // is migrated by the layer's own remapping hooks; nothing to copy here.
 
     // If the owning face was removed, keep the coedge as free-wire usage only.
     // Drop face-bound parametric payload (PCurve/UV/continuity) to avoid stale

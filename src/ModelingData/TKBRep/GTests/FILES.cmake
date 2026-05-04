@@ -46,6 +46,7 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Transform_Test.cxx
   BRepGraph_Validate_Test.cxx
   BRepGraph_ScenarioMatrix_Test.cxx
+  BRepGraph_SeamRedesign_Test.cxx
   BRepGraph_Deduplicate_Test.cxx
   BRepTools_ReShape_Test.cxx
   TopExp_Test.cxx

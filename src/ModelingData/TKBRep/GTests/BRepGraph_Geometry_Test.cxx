@@ -25,6 +25,7 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_Builder.hxx>
+#include <BRepGraph_LayerRegularity.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -249,31 +250,27 @@ TEST(BRepGraph_GeometryTest, CoEdge_ParamRange_NonZero)
   EXPECT_GT(aCoEdgeCount, 0);
 }
 
-TEST(BRepGraph_GeometryTest, CoEdge_Continuity_Valid)
+TEST(BRepGraph_GeometryTest, Edge_Continuity_Valid)
 {
   const TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder(10.0, 20.0).Shape();
 
   BRepGraph aGraph;
+  aGraph.LayerRegistry().RegisterLayer(new BRepGraph_LayerRegularity());
   aGraph.Clear();
   [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
     BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
+  // Cylinder has at least the seam edge with C^k > C0 in BRepGraph_LayerRegularity.
   bool hasNonC0Continuity = false;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
-    for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
+    if (BRepGraph_Tool::Edge::MaxContinuity(aGraph, anEdgeIt.CurrentId()) > GeomAbs_C0)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
-      if (aCE.Continuity > GeomAbs_C0)
-      {
-        hasNonC0Continuity = true;
-      }
+      hasNonC0Continuity = true;
+      break;
     }
   }
-
   EXPECT_TRUE(hasNonC0Continuity);
 }
 
