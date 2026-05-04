@@ -2890,10 +2890,10 @@ void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
   occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   OpenGl_FrameBuffer*         anFbo =
     (theCustomFbo != nullptr && theCustomFbo->IsValid())
-      ? theCustomFbo
-      : (!aCtx->DefaultFrameBuffer().IsNull() && aCtx->DefaultFrameBuffer()->IsValid()
-           ? aCtx->DefaultFrameBuffer().operator->()
-           : nullptr);
+              ? theCustomFbo
+              : (!aCtx->DefaultFrameBuffer().IsNull() && aCtx->DefaultFrameBuffer()->IsValid()
+                   ? aCtx->DefaultFrameBuffer().operator->()
+                   : nullptr);
   if (anFbo != nullptr)
   {
     anFbo->BindBuffer(aCtx);

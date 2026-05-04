@@ -2323,10 +2323,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "    aGridUv = vec2 (aR, aA);" EOL "    aScale  = vec2 (uScaleX, uAngularScale);" EOL
     "    aAxisUv = aLocal;" EOL "  }" EOL "  else" EOL "  {" EOL "    aGridUv = aStableLocal;" EOL
     "    aScale  = vec2 (uScaleX, uScaleY);" EOL "    aAxisUv = aLocal;" EOL "  }" EOL
-    "  vec4 aColor = gridLines2d (aGridUv, aAxisUv, uColor, aScale, uGridType == 0, uThickness);" EOL
-    "  if (uDrawMode != 1)" EOL "  {" EOL "    if (uGridType == 0)" EOL "    {" EOL
-    "      if (uAccentScaleX > 0.0)" EOL "      {" EOL "        float aAccX = aLocal.x;" EOL
-    "        if (uHasStableRef != 0)" EOL "        {" EOL
+    "  vec4 aColor = gridLines2d (aGridUv, aAxisUv, uColor, aScale, uGridType == 0, "
+    "uThickness);" EOL "  if (uDrawMode != 1)" EOL "  {" EOL "    if (uGridType == 0)" EOL
+    "    {" EOL "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
+    "        float aAccX = aLocal.x;" EOL "        if (uHasStableRef != 0)" EOL "        {" EOL
     "          float aScaleAccX = max (abs (uAccentScaleX), 1e-9);" EOL
     "          float aShiftAccX = floor (uStableRefLocal.x * aScaleAccX) / aScaleAccX;" EOL
     "          aAccX -= aShiftAccX;" EOL "        }" EOL

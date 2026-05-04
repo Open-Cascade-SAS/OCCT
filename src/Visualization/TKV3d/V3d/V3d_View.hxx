@@ -929,7 +929,8 @@ public: //! @name GPU shader grid (recommended)
   //! this view; restoring the CPU rendering needs V3d_Viewer::ActivateGrid.
 
   //! Display a shader-rendered grid on the viewer's privileged plane.
-  //! @param[in] theParams appearance: color, scale, bounds, arc, draw-mode, background / view-adaptive flags
+  //! @param[in] theParams appearance: color, scale, bounds, arc, draw-mode, background /
+  //! view-adaptive flags
   Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams);
 
   //! Display a shader-rendered grid on an explicit plane (overrides the viewer's
