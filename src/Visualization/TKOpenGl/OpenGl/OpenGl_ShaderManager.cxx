@@ -1489,7 +1489,7 @@ bool OpenGl_ShaderManager::BindGridProgram()
                              GL_DEBUG_TYPE_ERROR,
                              0,
                              GL_DEBUG_SEVERITY_HIGH,
-                             "Error: infinite-grid shader failed to compile/link");
+                             "Error: GPU grid shader failed to compile/link");
       myGridProgram = new OpenGl_ShaderProgram(); // mark as invalid so we don't retry every frame
       return false;
     }

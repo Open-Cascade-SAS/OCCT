@@ -440,7 +440,7 @@ public:
   //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
   virtual void SetImageBasedLighting(bool theToEnableIBL) = 0;
 
-  //! Display a shader-rendered infinite grid on the given plane.
+  //! Display a shader-rendered grid on the given plane.
   //! The default implementation is a no-op; drivers with shader support override it.
   //! @param[in] theParams appearance parameters
   //! @param[in] thePlane  grid plane in world coordinates (origin + X/Y directions)
@@ -450,7 +450,7 @@ public:
     (void)thePlane;
   }
 
-  //! Erase the shader-rendered infinite grid.
+  //! Erase the shader-rendered grid.
   //! The default implementation is a no-op; drivers with shader support override it.
   virtual void GridErase() {}
 

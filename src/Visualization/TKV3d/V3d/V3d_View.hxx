@@ -923,13 +923,13 @@ public: //! @name CPU grid plumbing (deprecated, fed by V3d_Viewer::ActivateGrid
   Standard_EXPORT void SetGridActivity(const bool aFlag);
 
 public: //! @name GPU shader grid (recommended)
-  //! Per-view immediate-mode shader; supports infinite, AA, background, arc range.
+  //! Per-view immediate-mode shader; supports unbounded extents, AA, background, arc range.
   //! GridDisplay erases the viewer-wide CPU grid rendering on entry (snap geometry
   //! on Aspect_*Grid is preserved). GridErase only tears down the shader grid on
   //! this view; restoring the CPU rendering needs V3d_Viewer::ActivateGrid.
 
   //! Display a shader-rendered grid on the viewer's privileged plane.
-  //! @param[in] theParams appearance: color, scale, bounds, arc, draw-mode, background / inf flags
+  //! @param[in] theParams appearance: color, scale, bounds, arc, draw-mode, background / view-adaptive flags
   Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams);
 
   //! Display a shader-rendered grid on an explicit plane (overrides the viewer's

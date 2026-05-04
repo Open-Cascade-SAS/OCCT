@@ -2599,7 +2599,7 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
 
   myWorkspace->SetEnvironmentTexture(occ::handle<OpenGl_TextureSet>());
 
-  // Render shader-based infinite grid on top of opaque scene, before trihedron.
+  // Render shader-based grid on top of opaque scene, before trihedron.
   if (!theToDrawImmediate)
   {
     renderGrid();
@@ -3739,6 +3739,14 @@ void OpenGl_View::renderGrid()
 
   double aScaleX = myGridParams.Scale();
   double aScaleY = myGridParams.EffectiveScaleY();
+  if (myGridParams.IsViewAdaptive())
+  {
+    const double aTargetCellsY = std::max(1.0, std::min(200.0, aScaleY > 0.0 ? 1.0 / aScaleY : 10.0));
+    const double aViewHeight   = std::max(aCamera->Scale(), 1.0e-9);
+    const double aCellSize     = aViewHeight / aTargetCellsY;
+    aScaleX = 1.0 / aCellSize;
+    aScaleY = aScaleX;
+  }
 
   if (aContext->ShaderManager()->BindGridProgram())
   {
@@ -3773,7 +3781,7 @@ void OpenGl_View::renderGrid()
     float aHalfX  = myGridParams.SizeX() > 0.0 ? float(myGridParams.SizeX() * 0.5) : 0.0f;
     float aHalfY  = myGridParams.SizeY() > 0.0 ? float(myGridParams.SizeY() * 0.5) : 0.0f;
     float aRadius = myGridParams.Radius() > 0.0 ? float(myGridParams.Radius()) : 0.0f;
-    if (myGridParams.IsInfinity())
+    if (myGridParams.IsViewAdaptive())
     {
       const double aCosA          = std::cos(myGridParams.RotationAngle());
       const double aSinA          = std::sin(myGridParams.RotationAngle());

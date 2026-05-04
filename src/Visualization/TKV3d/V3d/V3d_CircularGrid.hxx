@@ -27,7 +27,7 @@ class Graphic3d_Group;
 
 //! @deprecated Kept for backward compatibility. CPU-generated circular grid bound to a
 //! V3d_Viewer. New code should drive grids through V3d_View::GridDisplay(Aspect_GridParams,
-//! gp_Ax3), which renders an infinite, AA, shader-based grid and supports background mode,
+//! gp_Ax3), which renders an AA, shader-based grid and supports unbounded extents, background mode,
 //! arc ranges and per-axis scales. This class consumes the same Aspect_CircularGrid
 //! parameters where the CPU path can render them; arc ranges (AngleStart/AngleEnd) are not
 //! supported by the CPU path and are reported via Message::SendWarning() and ignored.
@@ -37,8 +37,7 @@ class V3d_CircularGrid : public Aspect_CircularGrid
 public:
   //! Constructor. Builds a CPU-rendered circular grid bound to @p aViewer.
   //! Default radius is 0.5 * Viewer->DefaultViewSize(); ZOffset defaults to step / 50.
-  //! @deprecated Prefer V3d_View::GridDisplay with Aspect_GridParams for shader-based
-  //!             infinite grids.
+  //! @deprecated Prefer V3d_View::GridDisplay with Aspect_GridParams for shader-based grids.
   //! @param[in] aViewer     viewer that owns the grid (and provides DefaultViewSize)
   //! @param[in] aColor      color of the regular rings / spokes
   //! @param[in] aTenthColor color of every 10-th ring (and the diameter spokes)

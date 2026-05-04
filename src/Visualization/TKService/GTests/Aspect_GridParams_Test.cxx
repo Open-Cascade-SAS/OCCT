@@ -38,7 +38,7 @@ TEST(Aspect_GridParamsTest, Defaults_AreReasonable)
   EXPECT_EQ(Aspect_GDM_Lines, aParams.DrawMode());
   EXPECT_FALSE(aParams.IsBackground());
   EXPECT_TRUE(aParams.IsDrawAxis());
-  EXPECT_FALSE(aParams.IsInfinity());
+  EXPECT_FALSE(aParams.IsViewAdaptive());
   EXPECT_NEAR(0.0, aParams.Origin().X(), Precision::Confusion());
   EXPECT_NEAR(0.0, aParams.Origin().Y(), Precision::Confusion());
   EXPECT_NEAR(0.0, aParams.Origin().Z(), Precision::Confusion());
@@ -192,8 +192,8 @@ TEST(Aspect_GridParamsTest, Setters_RoundTrip)
   aParams.SetIsDrawAxis(false);
   EXPECT_FALSE(aParams.IsDrawAxis());
 
-  aParams.SetIsInfinity(true);
-  EXPECT_TRUE(aParams.IsInfinity());
+  aParams.SetIsViewAdaptive(true);
+  EXPECT_TRUE(aParams.IsViewAdaptive());
 }
 
 TEST(Aspect_GridParamsTest, Copy_PreservesFields)
@@ -212,7 +212,7 @@ TEST(Aspect_GridParamsTest, Copy_PreservesFields)
   aSrc.SetAngularDivisions(16);
   aSrc.SetIsBackground(true);
   aSrc.SetIsDrawAxis(false);
-  aSrc.SetIsInfinity(true);
+  aSrc.SetIsViewAdaptive(true);
   aSrc.SetSizeX(7.0);
   aSrc.SetSizeY(3.0);
   aSrc.SetRadius(2.0);
@@ -241,7 +241,7 @@ TEST(Aspect_GridParamsTest, Copy_PreservesFields)
   EXPECT_TRUE(aCopy.IsCircular());
   EXPECT_TRUE(aCopy.IsBackground());
   EXPECT_FALSE(aCopy.IsDrawAxis());
-  EXPECT_TRUE(aCopy.IsInfinity());
+  EXPECT_TRUE(aCopy.IsViewAdaptive());
   EXPECT_DOUBLE_EQ(7.0, aCopy.SizeX());
   EXPECT_DOUBLE_EQ(3.0, aCopy.SizeY());
   EXPECT_DOUBLE_EQ(2.0, aCopy.Radius());
