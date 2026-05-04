@@ -31,6 +31,15 @@
 OSD_Chronometer Chronrsnld;
 #endif
 
+namespace
+{
+static const double CosRef3D = 0.98;    // rule by tests in U4
+                                        // correspond to  11.478 d
+static const double CosRef2D    = 0.88; // correspond to 25 d
+static const int    MaxDivision = 60;   // max number of step division
+                                        // because the angle is too great in 2d (U4)
+} // namespace
+
 //==================================================================================
 // function : IsTangentExtCheck
 // purpose  : Additional check if the point (theU, theV) in parametric surface
@@ -1557,8 +1566,9 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
       // modified by NIZHNY-MKK  Fri Oct 27 12:39:37 2000
       int IndexOfPathPointDoNotCheck = 0;
       int aNbIter                    = 10;
+      int aNbBadRootIter             = 0; // consecutive iterations where Root > Tolerance
       while (!Arrive)
-      { //    as one of stop tests is not checked
+      {
         Cadre = Cadrage(BornInf, BornSup, UVap, PasC, StepSign);
         //  Border?
 
@@ -1586,8 +1596,11 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
             PasC  = PasC / 2.0;
             PasCu = std::abs(PasC * previousd2d.X());
             PasCv = std::abs(PasC * previousd2d.Y());
-            if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
+            ++aNbBadRootIter;
+            if ((PasCu <= tolerance(1) && PasCv <= tolerance(2)) || aNbBadRootIter > MaxDivision)
             {
+              // Step collapsed below tolerance, or Cadrage keeps resetting
+              // the step (preventing convergence) after too many attempts.
               if (CurrentLine->NbPoints() == 1)
                 break;
               Arrive = true;
@@ -1600,6 +1613,7 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
           }
           else
           { // test stop
+            aNbBadRootIter = 0;
             Rsnld.Root(UVap);
             Arrive = TestArretPassage(Umult, Vmult, Func, UVap, N);
             if (Arrive)
@@ -2143,11 +2157,12 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 
       PasSav = PasC;
 
-      Arrive          = false;
-      ArretAjout      = false;
-      NbDivision      = 0;
-      StatusPrecedent = IntWalk_OK;
-      int aNbIter     = 10;
+      Arrive             = false;
+      ArretAjout         = false;
+      NbDivision         = 0;
+      StatusPrecedent    = IntWalk_OK;
+      int aNbIter        = 10;
+      int aNbBadRootIter = 0; // consecutive iterations where Root > Tolerance
       while (!Arrive)
       {                                                          // as no test of stop is passed
         Cadre = Cadrage(BornInf, BornSup, Uvap, PasC, StepSign); // border?
@@ -2176,8 +2191,9 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
             PasC  = PasC / 2.;
             PasCu = std::abs(PasC * previousd2d.X());
             PasCv = std::abs(PasC * previousd2d.Y());
+            ++aNbBadRootIter;
 
-            if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
+            if ((PasCu <= tolerance(1) && PasCv <= tolerance(2)) || aNbBadRootIter > MaxDivision)
             {
               if (CurrentLine->NbPoints() == 1)
               {
@@ -2219,6 +2235,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
           }
           else
           { // there is a solution
+            aNbBadRootIter = 0;
             Rsnld.Root(Uvap);
 
             // Avoid uninitialized memory access.
@@ -2603,15 +2620,6 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 }
 
 //-- IntWalk_IWalking_5.gxx
-
-namespace
-{
-static const double CosRef3D = 0.98;    // rule by tests in U4
-                                        // correspond to  11.478 d
-static const double CosRef2D    = 0.88; // correspond to 25 d
-static const int    MaxDivision = 60;   // max number of step division
-                                        // because the angle is too great in 2d (U4)
-} // namespace
 
 IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
   TheIWFunction&                 sp,
