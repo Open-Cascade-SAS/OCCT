@@ -1170,7 +1170,7 @@ void registerFaceData(BRepGraphInc_Storage&                          theStorage,
         // Safe: no new edges are appended within this scope.
         BRepGraphInc::EdgeDef& anEdgeMut = theStorage.ChangeEdge(anEdgeIdx);
 
-        // One TopoDS_Iterator yield ↔ one CoEdge ↔ one CoEdgeRef. Seam edges
+        // One TopoDS_Iterator yield <-> one CoEdge <-> one CoEdgeRef. Seam edges
         // arrive as two yields with opposite orientations at their natural
         // positions in the wire's loop.
         BRepGraph_CoEdgeId aCoEdgeId;
