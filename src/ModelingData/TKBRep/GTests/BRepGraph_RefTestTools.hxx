@@ -28,6 +28,47 @@ namespace BRepGraph_TestTools
 {
 
 //=================================================================================================
+
+//! Connectivity-derived seam predicate: storage-only equivalent of
+//! BRepGraph_Tool::CoEdge::SeamPair. Returns the partner CoEdge id if theCoEdgeId
+//! is one half of a seam pair on its face, else an invalid id.
+inline BRepGraph_CoEdgeId SeamPairFromStorage(const BRepGraphInc_Storage& theStorage,
+                                              const BRepGraph_CoEdgeId    theCoEdgeId)
+{
+  const BRepGraphInc::CoEdgeDef& aDef = theStorage.CoEdge(theCoEdgeId);
+  if (aDef.IsRemoved || !aDef.EdgeDefId.IsValid() || !aDef.FaceDefId.IsValid())
+  {
+    return BRepGraph_CoEdgeId();
+  }
+  const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aSiblings =
+    theStorage.ReverseIndex().CoEdgesOfEdge(aDef.EdgeDefId);
+  if (aSiblings == nullptr)
+  {
+    return BRepGraph_CoEdgeId();
+  }
+  for (size_t i = 0; i < aSiblings->Size(); ++i)
+  {
+    const BRepGraph_CoEdgeId aOther = (*aSiblings)[i];
+    if (aOther == theCoEdgeId)
+      continue;
+    const BRepGraphInc::CoEdgeDef& aOtherDef = theStorage.CoEdge(aOther);
+    if (aOtherDef.IsRemoved)
+      continue;
+    if (aOtherDef.FaceDefId == aDef.FaceDefId && aOtherDef.Orientation != aDef.Orientation)
+    {
+      return aOther;
+    }
+  }
+  return BRepGraph_CoEdgeId();
+}
+
+inline bool IsSeamCoEdgeFromStorage(const BRepGraphInc_Storage& theStorage,
+                                    const BRepGraph_CoEdgeId    theCoEdgeId)
+{
+  return SeamPairFromStorage(theStorage, theCoEdgeId).IsValid();
+}
+
+//=================================================================================================
 inline NCollection_DynamicArray<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(
   const BRepGraph&       theGraph,
   const BRepGraph_WireId theWireId)

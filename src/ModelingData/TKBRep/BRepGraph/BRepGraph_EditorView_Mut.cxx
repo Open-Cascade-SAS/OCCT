@@ -14,6 +14,8 @@
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
+#include <BRepGraph_TopoView.hxx>
 
 #include <Standard_ProgramError.hxx>
 
@@ -282,6 +284,28 @@ BRepGraph_MutGuard<BRepGraphInc::EdgeDef> BRepGraph::EditorView::EdgeOps::Mut(
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   validateMutableNodeId(aStorage, BRepGraph_NodeId(theEdge));
   return BRepGraph_MutGuard<BRepGraphInc::EdgeDef>(myGraph, &aStorage.ChangeEdge(theEdge), theEdge);
+}
+
+//==================================================================================================
+
+bool BRepGraph::EditorView::EdgeOps::IsSeamOnFace(const BRepGraph_EdgeId theEdge,
+                                                  const BRepGraph_FaceId theFace) const
+{
+  if (!theEdge.IsValid() || !theFace.IsValid())
+  {
+    return false;
+  }
+  uint32_t aCount = 0;
+  for (BRepGraph_CoEdgesOfEdge anIt(*myGraph, myGraph->Topo().Edges().CoEdges(theEdge));
+       anIt.More();
+       anIt.Next())
+  {
+    if (anIt.Definition().FaceDefId == theFace && ++aCount == 2)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 //==================================================================================================

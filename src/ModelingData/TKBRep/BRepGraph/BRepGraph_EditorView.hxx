@@ -314,6 +314,14 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::EdgeDef> Mut(
       const BRepGraph_EdgeId theEdge);
 
+    //! Returns true iff the edge appears as a seam on the given face (two CoEdges
+    //! of theEdge share theFace).
+    //! @param[in] theEdge typed edge definition identifier
+    //! @param[in] theFace typed face definition identifier
+    //! @return true if the edge is a seam on the given face
+    [[nodiscard]] Standard_EXPORT bool IsSeamOnFace(const BRepGraph_EdgeId theEdge,
+                                                    const BRepGraph_FaceId theFace) const;
+
     //! Set the tolerance of an edge definition and fire immediate notification.
     //! @param[in] theEdge      typed edge definition identifier
     //! @param[in] theTolerance new tolerance value
@@ -524,10 +532,9 @@ public:
     Standard_EXPORT void ClearPCurveBinding(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut);
 
     //! Set the seam-pair id linking two coedges of a seam edge (invalid breaks the link).
-    Standard_EXPORT void SetSeamPairId(const BRepGraph_CoEdgeId theCoEdge,
-                                       const BRepGraph_CoEdgeId theSeamPairId);
-    Standard_EXPORT void SetSeamPairId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                       const BRepGraph_CoEdgeId                     theSeamPairId);
+    // To establish seam-ness, ensure two CoEdges exist on the same (Edge, Face)
+    // with opposite orientations; the seam relation is then queryable via
+    // BRepGraph_Tool::CoEdge::SeamPair.
 
     //! Rewire a coedge to a different parent edge (rebinds EdgeToCoEdges, EdgeToWires,
     //! EdgeToFaces). Caller maintains reverse indices.

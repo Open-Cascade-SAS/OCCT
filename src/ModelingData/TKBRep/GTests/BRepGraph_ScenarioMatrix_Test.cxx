@@ -41,6 +41,7 @@
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Reconstruct.hxx>
 #include <BRepGraphInc_Storage.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -220,7 +221,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
       }
       for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdges)
       {
-        if (aOrigStorage.CoEdge(aCoEdgeId).SeamPairId.IsValid())
+        if (BRepGraph_TestTools::IsSeamCoEdgeFromStorage(aOrigStorage, aCoEdgeId))
         {
           aSeamEdgeId = anEdgeId;
           break;
@@ -275,7 +276,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
       }
       for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdges)
       {
-        if (aReconStorage.CoEdge(aCoEdgeId).SeamPairId.IsValid())
+        if (BRepGraph_TestTools::IsSeamCoEdgeFromStorage(aReconStorage, aCoEdgeId))
         {
           aSeamFound = true;
           break;
@@ -598,7 +599,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
     }
     for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdges)
     {
-      if (aBaseStorage.CoEdge(aCoEdgeId).SeamPairId.IsValid())
+      if (BRepGraph_TestTools::IsSeamCoEdgeFromStorage(aBaseStorage, aCoEdgeId))
       {
         ++aBaseSeamCount;
         break; // count each seam edge once
@@ -664,7 +665,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
     }
     for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdges)
     {
-      if (aReconStorage.CoEdge(aCoEdgeId).SeamPairId.IsValid())
+      if (BRepGraph_TestTools::IsSeamCoEdgeFromStorage(aReconStorage, aCoEdgeId))
       {
         ++aReconSeamCount;
         break;
@@ -996,8 +997,10 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_ThreeBoxes_ReverseIndexPerSolid)
 
 // =============================================================================
 // Scenario 11: Sphere seam - seam CoEdges come in bidirectionally-paired pairs.
-// If a.SeamPairId == b, then b.SeamPairId must equal a. Verify post-build and
-// post-reconstruct; exercises the SeamPairId round-trip under periodic uv.
+// The seam relation is connectivity-derived (Tool::CoEdge::SeamPair walks
+// CoEdgesOfEdge filtered by face+orientation); the symmetry of that predicate
+// is structural. Verify post-build and post-reconstruct that the seam count is
+// preserved under periodic UV.
 // =============================================================================
 
 TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
@@ -1011,23 +1014,26 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   int aNbPairedCoEdges = 0;
   for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aStorage.NbCoEdges()); ++aCoEdgeId)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdgeId);
-    if (!aCoEdge.SeamPairId.IsValid())
+    const BRepGraph_CoEdgeId aPairId =
+      BRepGraph_TestTools::SeamPairFromStorage(aStorage, aCoEdgeId);
+    if (!aPairId.IsValid())
     {
       continue;
     }
     ++aNbPairedCoEdges;
 
-    ASSERT_TRUE(aCoEdge.SeamPairId.IsValid(aStorage.NbCoEdges()));
-    const BRepGraphInc::CoEdgeDef& aPaired = aStorage.CoEdge(aCoEdge.SeamPairId);
-    EXPECT_EQ(aPaired.SeamPairId, aCoEdgeId)
-      << "Seam pair must be bidirectional (forward->reverse->forward)";
+    // Symmetry: the partner's partner is us.
+    const BRepGraph_CoEdgeId aBackId =
+      BRepGraph_TestTools::SeamPairFromStorage(aStorage, aPairId);
+    EXPECT_EQ(aBackId, aCoEdgeId) << "Seam relation must be symmetric";
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdgeId);
+    const BRepGraphInc::CoEdgeDef& aPaired = aStorage.CoEdge(aPairId);
     EXPECT_EQ(aPaired.EdgeDefId, aCoEdge.EdgeDefId)
       << "Seam pair must share the same underlying EdgeDef";
   }
   EXPECT_GT(aNbPairedCoEdges, 0) << "Sphere must have at least one seam-paired coedge";
 
-  // Build the graph, audit, reconstruct, repopulate, re-verify bidirectionality.
+  // Build the graph, audit, reconstruct, repopulate, re-verify symmetry.
   BRepGraph aGraph;
   aGraph.Clear();
   [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 =
@@ -1047,15 +1053,16 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   int aNbPairedAfter = 0;
   for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aReconStorage.NbCoEdges()); ++aCoEdgeId)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aReconStorage.CoEdge(aCoEdgeId);
-    if (!aCoEdge.SeamPairId.IsValid())
+    const BRepGraph_CoEdgeId aPairId =
+      BRepGraph_TestTools::SeamPairFromStorage(aReconStorage, aCoEdgeId);
+    if (!aPairId.IsValid())
     {
       continue;
     }
     ++aNbPairedAfter;
-    const BRepGraphInc::CoEdgeDef& aPaired = aReconStorage.CoEdge(aCoEdge.SeamPairId);
-    EXPECT_EQ(aPaired.SeamPairId, aCoEdgeId)
-      << "Post-reconstruct seam pair must remain bidirectional";
+    const BRepGraph_CoEdgeId aBackId =
+      BRepGraph_TestTools::SeamPairFromStorage(aReconStorage, aPairId);
+    EXPECT_EQ(aBackId, aCoEdgeId) << "Post-reconstruct seam pair must remain symmetric";
   }
   EXPECT_EQ(aNbPairedAfter, aNbPairedCoEdges)
     << "Reconstructed sphere must preserve the same number of seam-paired coedges";
@@ -1139,7 +1146,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      if (aGraph.Topo().CoEdges().Definition(aCoEdgeId).SeamPairId.IsValid())
+      if (BRepGraph_Tool::CoEdge::IsSeam(aGraph, aCoEdgeId))
       {
         aSeamEdgeId = anEdgeId;
         break;
@@ -1174,21 +1181,22 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
   EXPECT_TRUE(aResult.IsValid()) << "Audit must remain clean after splitting a seam edge";
 
-  // Every seam-paired coedge on the live sub-edges must still be bidirectional.
+  // Every seam-paired coedge on the live sub-edges must still satisfy the
+  // symmetry of the connectivity-derived seam predicate (SeamPair(SeamPair(x))==x).
   auto checkBidirectionalOnEdge = [&](const BRepGraph_EdgeId theEdgeId) {
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
       aGraph.Topo().Edges().CoEdges(theEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      const BRepGraphInc::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
-      if (!aCoEdge.SeamPairId.IsValid())
+      const BRepGraph_CoEdgeId aPairId =
+        BRepGraph_Tool::CoEdge::SeamPair(aGraph, aCoEdgeId);
+      if (!aPairId.IsValid())
       {
         continue;
       }
-      const BRepGraphInc::CoEdgeDef& aPaired =
-        aGraph.Topo().CoEdges().Definition(aCoEdge.SeamPairId);
-      EXPECT_EQ(aPaired.SeamPairId, aCoEdgeId)
-        << "Seam pair must remain bidirectional after Split on edge " << theEdgeId.Index;
+      const BRepGraph_CoEdgeId aBackId = BRepGraph_Tool::CoEdge::SeamPair(aGraph, aPairId);
+      EXPECT_EQ(aBackId, aCoEdgeId)
+        << "Seam pair must remain symmetric after Split on edge " << theEdgeId.Index;
     }
   };
 
@@ -1218,7 +1226,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      if (aGraph.Topo().CoEdges().Definition(aCoEdgeId).SeamPairId.IsValid())
+      if (BRepGraph_Tool::CoEdge::IsSeam(aGraph, aCoEdgeId))
       {
         aSeamEdgeId = anEdgeId;
         break;

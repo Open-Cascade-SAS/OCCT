@@ -693,33 +693,6 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     }
   }
 
-  // Remap seam-pair links after all coedges have their new ids.
-  for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> anIt(theGraph); anIt.More(); anIt.Next())
-  {
-    const BRepGraph_CoEdgeId  anOldCoEdgeId = anIt.CurrentId();
-    const BRepGraph_CoEdgeId* aNewCoEdgeId  = aCoEdgeMap.Seek(anOldCoEdgeId);
-    if (aNewCoEdgeId == nullptr)
-    {
-      continue;
-    }
-
-    const BRepGraphInc::CoEdgeDef& anOldCoEdge = anIt.Current();
-    if (!anOldCoEdge.SeamPairId.IsValid())
-    {
-      continue;
-    }
-
-    const BRepGraph_CoEdgeId* aNewSeamPairId = aCoEdgeMap.Seek(anOldCoEdge.SeamPairId);
-    if (aNewSeamPairId == nullptr)
-    {
-      continue;
-    }
-
-    BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aNewCoEdge =
-      aNewGraph.Editor().CoEdges().Mut(*aNewCoEdgeId);
-    aNewGraph.Editor().CoEdges().SetSeamPairId(aNewCoEdge, *aNewSeamPairId);
-  }
-
   // Shells.
   for (BRepGraph_Iterator<BRepGraphInc::ShellDef> anIt(theGraph); anIt.More(); anIt.Next())
   {

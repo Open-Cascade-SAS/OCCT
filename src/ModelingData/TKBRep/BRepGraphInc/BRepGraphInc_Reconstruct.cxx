@@ -669,6 +669,10 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
     const TopoDS_Shape* aCachedWire = theCache.Seek(aWireNodeId);
     TopoDS_Wire         aNewWire;
 
+    // PCurve/Polygon installation must happen at most once per edge per wire,
+    // even when both halves of a seam pair appear in the wire's CoEdgeRefIds.
+    NCollection_Map<BRepGraph_EdgeId> aPCurvesInstalled(1, theCache.myTempAllocator);
+
     const auto aProcessCoEdgeForFace = [&](const BRepGraph_CoEdgeRefId theCoEdgeRefId,
                                            const bool                  theAddToWire) {
       const BRepGraphInc::CoEdgeRef& aCoEdgeRef = theStorage.CoEdgeRef(theCoEdgeRefId);
@@ -694,6 +698,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
         aBB.Add(aNewWire, anEdgeInWire);
       }
 
+      // Seam halves yield twice through CoEdgeRefIds; install PCurve/Polygon
+      // representations on the shared TEdge only once per edge.
+      if (!aPCurvesInstalled.Add(aCoEdge.EdgeDefId))
+      {
+        return;
+      }
+
       const BRepGraphInc::EdgeDef& anEdgeEnt = theStorage.Edge(aCoEdge.EdgeDefId);
 
       // Compute composed edge location within the face TShape hierarchy.
@@ -710,14 +721,74 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
         anEdge.Location(aEdgeInFaceLoc);
       }
 
-      // Collect PCurve(s): primary from this coedge, seam from paired coedge.
+      // For a seam, install BRep_CurveOnClosedSurface with PCurve()=FORWARD-half's
+      // PCurve and PCurve2()=REVERSED-half's PCurve regardless of which half is
+      // currently being visited. UV/range come from the FORWARD half too.
+      const BRepGraphInc::CoEdgeDef* aFwdHalf = nullptr;
+      const BRepGraphInc::CoEdgeDef* aRevHalf = nullptr;
+      {
+        const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aSiblings =
+          theStorage.ReverseIndex().CoEdgesOfEdge(aCoEdge.EdgeDefId);
+        if (aSiblings != nullptr)
+        {
+          for (const BRepGraph_CoEdgeId& aOtherId : *aSiblings)
+          {
+            if (aOtherId == aCoEdgeRef.CoEdgeDefId)
+              continue;
+            const BRepGraphInc::CoEdgeDef& aOther = theStorage.CoEdge(aOtherId);
+            if (aOther.IsRemoved || aOther.FaceDefId != aCoEdge.FaceDefId
+                || aOther.Orientation == aCoEdge.Orientation)
+            {
+              continue;
+            }
+            if (aCoEdge.Orientation == TopAbs_FORWARD)
+            {
+              aFwdHalf = &aCoEdge;
+              aRevHalf = &aOther;
+            }
+            else
+            {
+              aFwdHalf = &aOther;
+              aRevHalf = &aCoEdge;
+            }
+            break;
+          }
+        }
+      }
+
       occ::handle<Geom2d_Curve> aPC1, aPC2;
       double                    aPCFirst = 0.0, aPCLast = 0.0;
       gp_Pnt2d                  aUV1, aUV2;
       bool                      aHasUV          = false;
       GeomAbs_Shape             aSeamContinuity = GeomAbs_C0;
 
-      if (aCoEdge.Curve2DRepId.IsValid())
+      if (aFwdHalf != nullptr)
+      {
+        if (aFwdHalf->Curve2DRepId.IsValid())
+        {
+          aPC1     = theStorage.Curve2DRep(aFwdHalf->Curve2DRepId).Curve;
+          aPCFirst = aFwdHalf->ParamFirst;
+          aPCLast  = aFwdHalf->ParamLast;
+          aUV1     = aFwdHalf->UV1;
+          aUV2     = aFwdHalf->UV2;
+          aHasUV   = true;
+          aSeamContinuity = aFwdHalf->SeamContinuity;
+        }
+        if (aRevHalf->Curve2DRepId.IsValid())
+        {
+          aPC2 = theStorage.Curve2DRep(aRevHalf->Curve2DRepId).Curve;
+          if (aPC1.IsNull())
+          {
+            aPCFirst = aRevHalf->ParamFirst;
+            aPCLast  = aRevHalf->ParamLast;
+          }
+          if (aSeamContinuity == GeomAbs_C0)
+          {
+            aSeamContinuity = aRevHalf->SeamContinuity;
+          }
+        }
+      }
+      else if (aCoEdge.Curve2DRepId.IsValid())
       {
         aPC1     = theStorage.Curve2DRep(aCoEdge.Curve2DRepId).Curve;
         aPCFirst = aCoEdge.ParamFirst;
@@ -725,22 +796,6 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
         aUV1     = aCoEdge.UV1;
         aUV2     = aCoEdge.UV2;
         aHasUV   = true;
-      }
-
-      // For seam edges, get the paired coedge's PCurve.
-      if (aCoEdge.SeamPairId.IsValid())
-      {
-        const BRepGraphInc::CoEdgeDef& aSeamCoEdge = theStorage.CoEdge(aCoEdge.SeamPairId);
-        if (aSeamCoEdge.Curve2DRepId.IsValid())
-        {
-          aPC2            = theStorage.Curve2DRep(aSeamCoEdge.Curve2DRepId).Curve;
-          aSeamContinuity = aSeamCoEdge.SeamContinuity;
-          if (aPC1.IsNull())
-          {
-            aPCFirst = aSeamCoEdge.ParamFirst;
-            aPCLast  = aSeamCoEdge.ParamLast;
-          }
-        }
       }
 
       if (!aPC1.IsNull() && !aPC2.IsNull())
@@ -807,29 +862,90 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
         aBB.Range(anEdge, aFaceSurface, TopLoc_Location(), aPCFirst, aPCLast);
       }
 
-      // Attach PolygonOnSurface from CoEdge.
-      if (aCoEdge.Polygon2DRepId.IsValid())
+      // Attach PolygonOnSurface(s). For a seam, install both halves so
+      // BRep_Tool::PolygonOnSurface returns the correct one per orientation.
       {
-        const occ::handle<Poly_Polygon2D>& aPolyOnSurf =
-          theStorage.Polygon2DRep(aCoEdge.Polygon2DRepId).Polygon;
-        if (!aPolyOnSurf.IsNull())
+        occ::handle<Poly_Polygon2D> aPoly1, aPoly2;
+        if (aFwdHalf != nullptr)
         {
-          aBB.UpdateEdge(anEdge, aPolyOnSurf, aFaceSurface, TopLoc_Location());
+          if (aFwdHalf->Polygon2DRepId.IsValid())
+          {
+            aPoly1 = theStorage.Polygon2DRep(aFwdHalf->Polygon2DRepId).Polygon;
+          }
+          if (aRevHalf->Polygon2DRepId.IsValid())
+          {
+            aPoly2 = theStorage.Polygon2DRep(aRevHalf->Polygon2DRepId).Polygon;
+          }
+        }
+        else if (aCoEdge.Polygon2DRepId.IsValid())
+        {
+          aPoly1 = theStorage.Polygon2DRep(aCoEdge.Polygon2DRepId).Polygon;
+        }
+        if (!aPoly1.IsNull() && !aPoly2.IsNull())
+        {
+          aBB.UpdateEdge(anEdge, aPoly1, aPoly2, aFaceSurface, TopLoc_Location());
+        }
+        else if (!aPoly1.IsNull())
+        {
+          aBB.UpdateEdge(anEdge, aPoly1, aFaceSurface, TopLoc_Location());
+        }
+        else if (!aPoly2.IsNull())
+        {
+          aBB.UpdateEdge(anEdge, aPoly2, aFaceSurface, TopLoc_Location());
         }
       }
 
-      // Attach PolygonOnTriangulation from CoEdge.
-      if (aCoEdge.PolygonOnTriRepId.IsValid())
+      // Attach PolygonOnTriangulation(s). For a seam, install both halves so
+      // BRep_Tool::PolygonOnTriangulation returns the correct one per orientation.
       {
-        const BRepGraphInc::PolygonOnTriRep& aPolyOnTriRep =
-          theStorage.PolygonOnTriRep(aCoEdge.PolygonOnTriRepId);
-        if (!aPolyOnTriRep.Polygon.IsNull() && aPolyOnTriRep.TriangulationRepId.IsValid())
+        occ::handle<Poly_PolygonOnTriangulation> aN1, aN2;
+        occ::handle<Poly_Triangulation>          aTri;
+        if (aFwdHalf != nullptr)
         {
-          const occ::handle<Poly_Triangulation>& aTri =
-            theStorage.TriangulationRep(aPolyOnTriRep.TriangulationRepId).Triangulation;
-          if (!aTri.IsNull())
+          if (aFwdHalf->PolygonOnTriRepId.IsValid())
           {
-            aBB.UpdateEdge(anEdge, aPolyOnTriRep.Polygon, aTri, TopLoc_Location());
+            const BRepGraphInc::PolygonOnTriRep& aRep =
+              theStorage.PolygonOnTriRep(aFwdHalf->PolygonOnTriRepId);
+            aN1 = aRep.Polygon;
+            if (aRep.TriangulationRepId.IsValid())
+            {
+              aTri = theStorage.TriangulationRep(aRep.TriangulationRepId).Triangulation;
+            }
+          }
+          if (aRevHalf->PolygonOnTriRepId.IsValid())
+          {
+            const BRepGraphInc::PolygonOnTriRep& aRep =
+              theStorage.PolygonOnTriRep(aRevHalf->PolygonOnTriRepId);
+            aN2 = aRep.Polygon;
+            if (aTri.IsNull() && aRep.TriangulationRepId.IsValid())
+            {
+              aTri = theStorage.TriangulationRep(aRep.TriangulationRepId).Triangulation;
+            }
+          }
+        }
+        else if (aCoEdge.PolygonOnTriRepId.IsValid())
+        {
+          const BRepGraphInc::PolygonOnTriRep& aRep =
+            theStorage.PolygonOnTriRep(aCoEdge.PolygonOnTriRepId);
+          aN1 = aRep.Polygon;
+          if (aRep.TriangulationRepId.IsValid())
+          {
+            aTri = theStorage.TriangulationRep(aRep.TriangulationRepId).Triangulation;
+          }
+        }
+        if (!aTri.IsNull())
+        {
+          if (!aN1.IsNull() && !aN2.IsNull())
+          {
+            aBB.UpdateEdge(anEdge, aN1, aN2, aTri, TopLoc_Location());
+          }
+          else if (!aN1.IsNull())
+          {
+            aBB.UpdateEdge(anEdge, aN1, aTri, TopLoc_Location());
+          }
+          else if (!aN2.IsNull())
+          {
+            aBB.UpdateEdge(anEdge, aN2, aTri, TopLoc_Location());
           }
         }
       }

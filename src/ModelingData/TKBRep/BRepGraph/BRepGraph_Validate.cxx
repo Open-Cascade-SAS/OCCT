@@ -14,6 +14,7 @@
 #include <BRepGraph_Validate.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsIterator.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
@@ -148,32 +149,40 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     {
       theIssues.Append(Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.EdgeDefId out of bounds"});
     }
-    // SeamPairId consistency.
-    if (aCoEdge.SeamPairId.IsValid())
+    // Seam consistency: for every (EdgeDefId, FaceDefId) pair there are at most
+    // 2 CoEdges; if 2, they must have opposite Orientation.
+    if (aCoEdge.EdgeDefId.IsValid() && aCoEdge.FaceDefId.IsValid())
     {
-      if (!aCoEdge.SeamPairId.IsValid(theGraph.Topo().CoEdges().Nb()))
+      uint32_t aSameFaceCount       = 0;
+      bool     aHasOppositeOnSameFace = false;
+      for (BRepGraph_CoEdgesOfEdge anIt(theGraph,
+                                        theGraph.Topo().Edges().CoEdges(aCoEdge.EdgeDefId));
+           anIt.More();
+           anIt.Next())
       {
-        theIssues.Append(Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.SeamPairId out of bounds"});
+        const BRepGraph_CoEdgeId       aOtherId = anIt.CurrentId();
+        const BRepGraphInc::CoEdgeDef& aOther   = anIt.Definition();
+        if (aOther.FaceDefId != aCoEdge.FaceDefId)
+          continue;
+        ++aSameFaceCount;
+        if (aOtherId != aCoEdgeId && aOther.Orientation != aCoEdge.Orientation)
+        {
+          aHasOppositeOnSameFace = true;
+        }
       }
-      else if (aCoEdge.SeamPairId == aCoEdgeId)
+      if (aSameFaceCount > 2)
       {
         theIssues.Append(
-          Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.SeamPairId is self-reference"});
+          Issue{Severity::Error,
+                aCoEdgeId,
+                "More than 2 CoEdges share the same (EdgeDefId, FaceDefId)"});
       }
-      else
+      else if (aSameFaceCount == 2 && !aHasOppositeOnSameFace)
       {
-        const BRepGraphInc::CoEdgeDef& aPair =
-          theGraph.Topo().CoEdges().Definition(aCoEdge.SeamPairId);
-        if (aPair.SeamPairId != aCoEdgeId)
-        {
-          theIssues.Append(
-            Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.SeamPairId not bidirectional"});
-        }
-        if (aPair.FaceDefId != aCoEdge.FaceDefId)
-        {
-          theIssues.Append(
-            Issue{Severity::Error, aCoEdgeId, "CoEdgeDef seam pair has different FaceDefId"});
-        }
+        theIssues.Append(
+          Issue{Severity::Error,
+                aCoEdgeId,
+                "Seam pair CoEdges have the same Orientation"});
       }
     }
     // Rep index bounds.

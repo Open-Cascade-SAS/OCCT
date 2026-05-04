@@ -764,24 +764,6 @@ void BRepGraph::EditorView::EdgeOps::SetIsClosed(BRepGraph_MutGuard<BRepGraphInc
 
 //=================================================================================================
 
-void BRepGraph::EditorView::CoEdgeOps::SetSeamPairId(const BRepGraph_CoEdgeId theCoEdge,
-                                                     const BRepGraph_CoEdgeId theSeamPairId)
-{
-  myGraph->myData->myIncStorage.ChangeCoEdge(theCoEdge).SeamPairId = theSeamPairId;
-  myGraph->markModified(theCoEdge);
-}
-
-//=================================================================================================
-
-void BRepGraph::EditorView::CoEdgeOps::SetSeamPairId(
-  BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-  const BRepGraph_CoEdgeId                     theSeamPairId)
-{
-  theMut.Internal().SeamPairId = theSeamPairId;
-}
-
-//=================================================================================================
-
 void BRepGraph::EditorView::SolidOps::SetRefOrientation(const BRepGraph_SolidRefId theSolidRef,
                                                         const TopAbs_Orientation   theOrientation)
 {

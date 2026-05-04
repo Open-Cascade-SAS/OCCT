@@ -553,7 +553,8 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  // A cylinder has seam edges: coedges with SeamPairId valid.
+  // A cylinder has seam edges: 2 CoEdges of the same edge on the same face with
+  // opposite orientations. Count seam pairs once via the FORWARD half.
   int       aSeamPairCount = 0;
   const int aNbEdges       = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
@@ -567,9 +568,19 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
     for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdgeIdxs)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aStorage.CoEdge(aCoEdgeId);
-      if (aCE.Orientation == TopAbs_FORWARD && aCE.SeamPairId.IsValid())
+      if (aCE.Orientation != TopAbs_FORWARD)
+        continue;
+      // Look for a sibling CoEdge with the same FaceDefId and opposite orientation.
+      for (const BRepGraph_CoEdgeId& aOtherId : *aCoEdgeIdxs)
       {
-        ++aSeamPairCount;
+        if (aOtherId == aCoEdgeId)
+          continue;
+        const BRepGraphInc::CoEdgeDef& aOther = aStorage.CoEdge(aOtherId);
+        if (aOther.FaceDefId == aCE.FaceDefId && aOther.Orientation != aCE.Orientation)
+        {
+          ++aSeamPairCount;
+          break;
+        }
       }
     }
   }

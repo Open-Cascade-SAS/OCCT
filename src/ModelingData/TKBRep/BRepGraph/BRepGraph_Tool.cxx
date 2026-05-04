@@ -21,6 +21,8 @@
 #include <BRepGraph_LayerParam.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
+#include <NCollection_Map.hxx>
 #include <BRepGraph_LayerRegularity.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Definition.hxx>
@@ -467,14 +469,33 @@ BRepGraph_FaceId BRepGraph_Tool::CoEdge::FaceOf(const BRepGraph&         theGrap
 BRepGraph_CoEdgeId BRepGraph_Tool::CoEdge::SeamPair(const BRepGraph&         theGraph,
                                                     const BRepGraph_CoEdgeId theCoEdge)
 {
-  return theGraph.Topo().CoEdges().Definition(theCoEdge).SeamPairId;
+  // The seam mate is the sibling CoEdge on the same face with opposite orientation.
+  const BRepGraphInc::CoEdgeDef& aDef = theGraph.Topo().CoEdges().Definition(theCoEdge);
+  if (!aDef.EdgeDefId.IsValid() || !aDef.FaceDefId.IsValid())
+  {
+    return {};
+  }
+  for (BRepGraph_CoEdgesOfEdge anIt(theGraph, theGraph.Topo().Edges().CoEdges(aDef.EdgeDefId));
+       anIt.More();
+       anIt.Next())
+  {
+    const BRepGraph_CoEdgeId aOther = anIt.CurrentId();
+    if (aOther == theCoEdge)
+      continue;
+    const BRepGraphInc::CoEdgeDef& aOtherDef = anIt.Definition();
+    if (aOtherDef.FaceDefId == aDef.FaceDefId && aOtherDef.Orientation != aDef.Orientation)
+    {
+      return aOther;
+    }
+  }
+  return {};
 }
 
 //=================================================================================================
 
 bool BRepGraph_Tool::CoEdge::IsSeam(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
 {
-  return theGraph.Topo().CoEdges().Definition(theCoEdge).SeamPairId.IsValid();
+  return SeamPair(theGraph, theCoEdge).IsValid();
 }
 
 //=================================================================================================
@@ -601,8 +622,21 @@ bool BRepGraph_Tool::Edge::IsClosedOnFace(const BRepGraph&       theGraph,
                                           const BRepGraph_EdgeId theEdge,
                                           const BRepGraph_FaceId theFace)
 {
-  const BRepGraphInc::CoEdgeDef* aCoEdge = theGraph.Topo().Edges().FindPCurve(theEdge, theFace);
-  return aCoEdge != nullptr && aCoEdge->SeamPairId.IsValid();
+  if (!theEdge.IsValid())
+  {
+    return false;
+  }
+  uint32_t aCount = 0;
+  for (BRepGraph_CoEdgesOfEdge anIt(theGraph, theGraph.Topo().Edges().CoEdges(theEdge));
+       anIt.More();
+       anIt.Next())
+  {
+    if (anIt.Definition().FaceDefId == theFace && ++aCount == 2)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 //=================================================================================================
@@ -863,6 +897,23 @@ bool BRepGraph_Tool::Wire::IsClosed(const BRepGraph& theGraph, const BRepGraph_W
 uint32_t BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
 {
   return static_cast<uint32_t>(theGraph.Topo().Wires().Definition(theWire).CoEdgeRefIds.Size());
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph_Tool::Wire::NbDistinctEdges(const BRepGraph&       theGraph,
+                                               const BRepGraph_WireId theWire)
+{
+  // Wires are small (typically 3-8 entries); a typed Map dedup on EdgeDefId is fine.
+  NCollection_Map<BRepGraph_EdgeId> aSeenEdges;
+  for (BRepGraph_RefsCoEdgeOfWire anIt(theGraph, theWire); anIt.More(); anIt.Next())
+  {
+    const BRepGraphInc::CoEdgeRef& aRef = theGraph.Refs().CoEdges().Entry(anIt.CurrentId());
+    if (!aRef.CoEdgeDefId.IsValid())
+      continue;
+    aSeenEdges.Add(theGraph.Topo().CoEdges().Definition(aRef.CoEdgeDefId).EdgeDefId);
+  }
+  return static_cast<uint32_t>(aSeenEdges.Extent());
 }
 
 //=================================================================================================

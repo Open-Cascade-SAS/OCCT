@@ -445,7 +445,9 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedCoEdgeOps_Parity)
   EXPECT_EQ(myGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceDefId, aCoEdge.FaceDefId);
   EXPECT_EQ(myGraph.Topo().CoEdges().Curve2DRepId(aCoEdgeId),
             myGraph.Topo().CoEdges().Definition(aCoEdgeId).Curve2DRepId);
-  EXPECT_EQ(myGraph.Topo().CoEdges().Definition(aCoEdgeId).SeamPairId, aCoEdge.SeamPairId);
+  // Verify TopoView::CoEdgeOps::SeamPair and Tool::CoEdge::SeamPair agree.
+  EXPECT_EQ(myGraph.Topo().CoEdges().SeamPair(aCoEdgeId),
+            BRepGraph_Tool::CoEdge::SeamPair(myGraph, aCoEdgeId));
 }
 
 TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)

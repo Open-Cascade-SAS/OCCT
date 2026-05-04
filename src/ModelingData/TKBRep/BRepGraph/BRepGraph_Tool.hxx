@@ -608,12 +608,21 @@ public:
     [[nodiscard]] Standard_EXPORT static bool IsClosed(const BRepGraph&       theGraph,
                                                        const BRepGraph_WireId theWire);
 
-    //! Number of CoEdge references in the wire (i.e., edge count including orientation).
+    //! Number of CoEdge references in the wire (raw count: seam halves count twice,
+    //! matching TopoDS_Iterator(wire) semantics).
     //! @param[in] theGraph source graph
     //! @param[in] theWire  typed wire definition identifier
     //! @return number of coedge entries
     [[nodiscard]] Standard_EXPORT static uint32_t NbCoEdges(const BRepGraph&       theGraph,
                                                             const BRepGraph_WireId theWire);
+
+    //! Number of distinct underlying edges in the wire (seam halves count once).
+    //! @param[in] theGraph source graph
+    //! @param[in] theWire  typed wire definition identifier
+    //! @return number of distinct EdgeDefIds reachable from the wire's CoEdgeRefIds
+    [[nodiscard]] Standard_EXPORT static uint32_t NbDistinctEdges(
+      const BRepGraph&       theGraph,
+      const BRepGraph_WireId theWire);
 
     //! Returns the first owning face for this wire via the reverse-index table.
     //! Returns an invalid id if the wire has no owning face (free wire).

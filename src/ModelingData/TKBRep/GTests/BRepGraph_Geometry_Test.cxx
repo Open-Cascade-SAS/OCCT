@@ -739,7 +739,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_HasTwoCoEdges)
     BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeCylinder(5.0, 20.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Find a seam edge via CoEdge SeamPairId.
+  // Find a seam edge via the connectivity-derived BRepGraph_Tool::CoEdge::SeamPair query.
   bool aFoundSeam = false;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More() && !aFoundSeam; anEdgeIt.Next())
   {
@@ -747,11 +747,11 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_HasTwoCoEdges)
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
-      if (aCE.SeamPairId.IsValid())
+      const BRepGraph_CoEdgeId aPairId = BRepGraph_Tool::CoEdge::SeamPair(aGraph, aCoEdgeId);
+      if (aPairId.IsValid())
       {
-        // Verify the paired coedge has opposite orientation.
-        const BRepGraphInc::CoEdgeDef& aPair = aGraph.Topo().CoEdges().Definition(aCE.SeamPairId);
+        const BRepGraphInc::CoEdgeDef& aCE   = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
+        const BRepGraphInc::CoEdgeDef& aPair = aGraph.Topo().CoEdges().Definition(aPairId);
         EXPECT_NE(aCE.Orientation, aPair.Orientation)
           << "Seam coedges should have opposite orientations";
         EXPECT_EQ(aCE.FaceDefId, aPair.FaceDefId) << "Seam coedges should share the same face";
@@ -781,7 +781,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_WithOrientation)
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
-      if (!aCE.SeamPairId.IsValid())
+      if (!BRepGraph_Tool::CoEdge::IsSeam(aGraph, aCoEdgeId))
       {
         continue;
       }
@@ -849,7 +849,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_DistinguishesOrientati
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
-      if (!aCE.SeamPairId.IsValid())
+      if (!BRepGraph_Tool::CoEdge::IsSeam(aGraph, aCoEdgeId))
       {
         continue;
       }

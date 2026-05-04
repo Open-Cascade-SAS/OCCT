@@ -216,7 +216,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
 
   const BRepGraph::TopoView aDefs = aGraph.Topo();
 
-  // Look for seam edges (coedge with SeamPairId valid).
+  // Look for seam edges via the connectivity-derived IsSeam query.
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
@@ -225,7 +225,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aDefs.CoEdges().Definition(aCoEdgeId);
-      if (!aCE.SeamPairId.IsValid())
+      if (!BRepGraph_Tool::CoEdge::IsSeam(aGraph, aCoEdgeId))
       {
         continue;
       }

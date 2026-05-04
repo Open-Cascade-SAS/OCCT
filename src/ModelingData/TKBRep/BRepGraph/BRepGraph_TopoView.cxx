@@ -17,6 +17,7 @@
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <NCollection_Map.hxx>
@@ -807,17 +808,26 @@ BRepGraph_CoEdgeId BRepGraph::TopoView::CoEdgeOps::SeamPair(
   {
     return BRepGraph_CoEdgeId();
   }
-
   const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(theCoEdge);
-  if (aCoEdge.IsRemoved || !aCoEdge.SeamPairId.IsValid(aStorage.NbCoEdges()))
+  if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid() || !aCoEdge.FaceDefId.IsValid())
   {
     return BRepGraph_CoEdgeId();
   }
-  if (aStorage.CoEdge(aCoEdge.SeamPairId).IsRemoved)
+  // The seam mate is the sibling CoEdge on the same face with opposite orientation.
+  for (BRepGraph_CoEdgesOfEdge anIt(*myGraph, myGraph->Topo().Edges().CoEdges(aCoEdge.EdgeDefId));
+       anIt.More();
+       anIt.Next())
   {
-    return BRepGraph_CoEdgeId();
+    const BRepGraph_CoEdgeId aOther = anIt.CurrentId();
+    if (aOther == theCoEdge)
+      continue;
+    const BRepGraphInc::CoEdgeDef& aOtherDef = anIt.Definition();
+    if (aOtherDef.FaceDefId == aCoEdge.FaceDefId && aOtherDef.Orientation != aCoEdge.Orientation)
+    {
+      return aOther;
+    }
   }
-  return aCoEdge.SeamPairId;
+  return BRepGraph_CoEdgeId();
 }
 
 //=================================================================================================
