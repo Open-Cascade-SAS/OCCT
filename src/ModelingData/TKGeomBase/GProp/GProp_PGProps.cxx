@@ -62,8 +62,7 @@ GProp_PGProps::GProp_PGProps(const NCollection_Array1<gp_Pnt>& thePnts,
 {
   if (thePnts.Length() != theDensity.Length())
   {
-    throw Standard_DomainError(
-      "GProp_PGProps: points and density arrays have different lengths");
+    throw Standard_DomainError("GProp_PGProps: points and density arrays have different lengths");
   }
   int aPntIdx  = thePnts.Lower();
   int aDensIdx = theDensity.Lower();

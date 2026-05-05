@@ -127,7 +127,7 @@ public:
   //!
   //! The value Density (1.0 by default) is used as the density of the
   //! system analysed by Item. Sometimes the density has already been
-  //! accounted for at construction time of Item — for example when
+  //! accounted for at construction time of Item - for example when
   //! Item is a GProp_PGProps framework built to compute the global
   //! properties of a set of weighted points, or another GProp_GProps
   //! object that already retains composite global properties. In these
@@ -203,7 +203,7 @@ public:
   //! GProp::HOperator() (Huygens' theorem).
   Standard_EXPORT gp_Mat MatrixOfInertia() const;
 
-  //! Returns the static moments of inertia of the current system —
+  //! Returns the static moments of inertia of the current system -
   //! i.e. the moments of inertia about the three axes of the absolute
   //! Cartesian coordinate system.
   //!
@@ -218,7 +218,7 @@ public:
 
   //! Computes the principal properties of inertia of the current
   //! system. There is always a set of axes for which the products of
-  //! inertia of a geometric system are equal to 0 — i.e. the matrix of
+  //! inertia of a geometric system are equal to 0 - i.e. the matrix of
   //! inertia of the system is diagonal. These axes are the principal
   //! axes of inertia; their origin coincides with the centre of mass
   //! of the system. The associated moments are called the principal
