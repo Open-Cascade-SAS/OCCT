@@ -258,16 +258,16 @@ void adjustSecondToFirstPoint(const gp_Pnt2d&                  theFirstPoint,
   {
     const double anUPeriod = theSurf->UPeriod();
     const double aNewU     = ElCLib::InPeriod(theSecondPoint.X(),
-                                          theFirstPoint.X() - anUPeriod / 2,
-                                          theFirstPoint.X() + anUPeriod / 2);
+                                              theFirstPoint.X() - anUPeriod / 2,
+                                              theFirstPoint.X() + anUPeriod / 2);
     theSecondPoint.SetX(aNewU);
   }
   if (theSurf->IsVPeriodic())
   {
     const double aVPeriod = theSurf->VPeriod();
     const double aNewV    = ElCLib::InPeriod(theSecondPoint.Y(),
-                                          theFirstPoint.Y() - aVPeriod / 2,
-                                          theFirstPoint.Y() + aVPeriod / 2);
+                                             theFirstPoint.Y() - aVPeriod / 2,
+                                             theFirstPoint.Y() + aVPeriod / 2);
     theSecondPoint.SetY(aNewV);
   }
 }
@@ -2129,9 +2129,9 @@ void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
           aNewPoints2d.SetValue(i + 1, thePoints2d(i));
         }
 
-        thePoints   = aNewPoints;
-        theParams   = aNewParams;
-        thePoints2d = aNewPoints2d;
+        thePoints   = std::move(aNewPoints);
+        theParams   = std::move(aNewParams);
+        thePoints2d = std::move(aNewPoints2d);
         theIndex++;
       }
       else
