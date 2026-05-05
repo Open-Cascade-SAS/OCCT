@@ -899,9 +899,9 @@ void Geom_BSplineSurface::CheckAndSegment(const double U1,
   bool segment_in_U = true;
   bool segment_in_V = true;
   segment_in_U      = (std::abs(U1 - myUKnots.Value(myUKnots.Lower())) > EpsU)
-                      || (std::abs(U2 - myUKnots.Value(myUKnots.Upper())) > EpsU);
-  segment_in_V      = (std::abs(V1 - myVKnots.Value(myVKnots.Lower())) > EpsV)
-                      || (std::abs(V2 - myVKnots.Value(myVKnots.Upper())) > EpsV);
+                 || (std::abs(U2 - myUKnots.Value(myUKnots.Upper())) > EpsU);
+  segment_in_V = (std::abs(V1 - myVKnots.Value(myVKnots.Lower())) > EpsV)
+                 || (std::abs(V2 - myVKnots.Value(myVKnots.Upper())) > EpsV);
 
   segment(U1, U2, V1, V2, EpsU, EpsV, segment_in_U, segment_in_V);
 }
