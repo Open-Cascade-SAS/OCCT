@@ -2209,6 +2209,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 StatusPrecedent = IntWalk_OK;
                 Arrive          = false;
                 PasC            = PasSav;
+                aNbBadRootIter  = 0;
                 Rajout          = true;
                 seqAlone.Append(-lines.Length() - 1);
                 seqAjout.Append(-lines.Length() - 1);
@@ -2475,6 +2476,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 StatusPrecedent = IntWalk_OK;
                 Arrive          = false;
                 PasC            = PasSav;
+                aNbBadRootIter  = 0;
                 Rajout          = true;
                 seqAlone.Append(-lines.Length() - 1);
                 seqAjout.Append(-lines.Length() - 1);
@@ -2520,6 +2522,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 StatusPrecedent = IntWalk_OK;
                 Arrive          = false;
                 PasC            = PasSav;
+                aNbBadRootIter  = 0;
               }
               else
               {
@@ -2579,6 +2582,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
               StatusPrecedent = IntWalk_OK;
               Arrive          = false;
               PasC            = PasSav;
+              aNbBadRootIter  = 0;
               Rajout          = true;
               seqAlone.Append(-lines.Length() - 1);
               seqAjout.Append(-lines.Length() - 1);
