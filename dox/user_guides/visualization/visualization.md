@@ -476,8 +476,8 @@ for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aConte
   occ::handle<AIS_InteractiveObject> anIO = aContext->SelectedInteractive();
 }
 
-// deactivate all selection modes for aBox1
-aContext->Deactivate (aBox1);
+// deactivate all selection modes for aBox
+aContext->Deactivate (aBox);
 ~~~~
 
 It is also important to know, that there are 2 types of detection implemented for rectangular selection in OCCT:

@@ -501,7 +501,7 @@ In any case, the search stops on the first one found.
 To get the sub-shapes of a shape, which are recorded under a label, use:
 ~~~~{.cpp}
 NCollection_Sequence<TDF_Label> aSubshapes;
-bool hasSubshapes = anAssembly->GetSubShapes (aLabel, aSubShapes);
+bool hasSubshapes = anAssembly->GetSubShapes (aLabel, aSubshapes);
 ~~~~
 
 @section occt_xde_2_5 Properties
@@ -1147,9 +1147,9 @@ occ::handle<XCAFDoc_Note> aNote = ...;
 TDF_Label anItemLabel = ...;
 occ::handle<XCAFDoc_AssemblyItemRef> aRef = aNotesTool->AddNote(aNote->Label(), anItemLabel);
 Standard_GUID anAttrGUID = ...;
-occ::handle<XCAFDoc_AssemblyItemRef> aRefAttr = aNotesTool->AddNoteToAttr(aNote->Label(), anAttrGUID);
+occ::handle<XCAFDoc_AssemblyItemRef> aRefAttr = aNotesTool->AddNoteToAttr(aNote->Label(), anItemLabel, anAttrGUID);
 int aSubshape = 1;
-occ::handle<XCAFDoc_AssemblyItemRef> aRefSubshape = aNotesTool->AddNoteToSubshape(aNote->Label(), aSubshape);
+occ::handle<XCAFDoc_AssemblyItemRef> aRefSubshape = aNotesTool->AddNoteToSubshape(aNote->Label(), anItemLabel, aSubshape);
 ~~~~
 
 This code adds three child labels with `XCAFDoc_AssemblyItemRef` attribute to label `0.1.9.2`.
@@ -1177,7 +1177,7 @@ Null label will be returned if there is no corresponding annotation.
 To get all notes of the Document item use the following `XCAFDoc_NotesTool` methods:
 - `XCAFDoc_NotesTool::GetNotes`: outputs a sequence of note labels bound to a label;
 - `XCAFDoc_NotesTool::GetAttrNotes`: outputs a sequence of note labels bound to a label's attribute;
-- `XCAFDoc_NotesTool::GetAttrSubshape`: outputs a sequence of note labels bound to a sub-shape.
+- `XCAFDoc_NotesTool::GetSubshapeNotes`: outputs a sequence of note labels bound to a sub-shape.
 
 All these methods return the number of notes.
 ~~~~{.cpp}
@@ -1190,7 +1190,7 @@ NCollection_Sequence<TDF_Label> aNotesAttrSeq;
 aNotesTool->GetAttrNotes(anItemLabel, anAttrGUID, aNotesAttrSeq);
 int aSubshape = 1;
 NCollection_Sequence<TDF_Label> aNotesSubshapeSeq;
-aNotesTool->GetAttrSubshape(anItemLabel, aSubshape, aNotesSubshapeSeq);
+aNotesTool->GetSubshapeNotes(anItemLabel, aSubshape, aNotesSubshapeSeq);
 ~~~~
 
 @subsection occt_xde_2_10_6 Removing Notes
@@ -1205,9 +1205,9 @@ occ::handle<XCAFDoc_Note> aNote = ...;
 TDF_Label anItemLabel = ...;
 aNotesTool->RemoveNote(aNote->Label(), anItemLabel);
 Standard_GUID anAttrGUID = ...;
-aRefAttr = aNotesTool->RemoveAttrNote(aNote->Label(), anAttrGUID);
+aNotesTool->RemoveAttrNote(aNote->Label(), anItemLabel, anAttrGUID);
 int aSubshape = 1;
-aNotesTool->RemoveSubshapeNote(aNote->Label(), aSubshape);
+aNotesTool->RemoveSubshapeNote(aNote->Label(), anItemLabel, aSubshape);
 ~~~~
 A note will not be deleted automatically.
 Counterpart methods to remove all notes are available, too.

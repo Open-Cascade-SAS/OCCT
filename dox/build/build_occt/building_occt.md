@@ -143,7 +143,8 @@ The following table gives the full list of environment variables used at the con
 | 3RDPARTY_FREEIMAGE* | Path | Path to FreeImage binaries |
 | 3RDPARTY_TBB*  | Path | Path to TBB binaries |
 | 3RDPARTY_VTK_* | Path | Path to VTK binaries |
-| 3RDPARTY_\<PRODUCT\>_* | Path | Additional products (RAPIDJSON, DRACO, FFMPEG, OPENVR, EIGEN, EGL, GLES2, JEMALLOC, GTEST, Qt) follow the same search variable pattern: `3RDPARTY_<PRODUCT>_DIR`, `_LIBRARY_DIR`, `_INCLUDE_DIR`, `_DLL_DIR` |
+| 3RDPARTY_\<PRODUCT\>_* | Path | Additional products (RAPIDJSON, DRACO, FFMPEG, OPENVR, EIGEN, EGL, GLES2, JEMALLOC, GTEST) follow the same search variable pattern: `3RDPARTY_<PRODUCT>_DIR`, `_LIBRARY_DIR`, `_INCLUDE_DIR`, `_DLL_DIR` |
+| 3RDPARTY_QT_DIR | Path | Path to the Qt root directory; Qt detection is special-cased and does not use the generic `_LIBRARY_DIR`/`_INCLUDE_DIR`/`_DLL_DIR` variables |
 | 3RDPARTY_DOXYGEN_EXECUTABLE | Path | Path to Doxygen executable |
 | 3RDPARTY_DOT_EXECUTABLE | Path | Path to Graphviz dot executable |
 | BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODULE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |

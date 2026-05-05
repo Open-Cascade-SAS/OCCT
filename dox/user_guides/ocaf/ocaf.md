@@ -721,11 +721,12 @@ bb5aa176-c65c-4c84-862e-6b7c1fe16921.Location: TKNewFormat
 76fb4c04-ea9a-46aa-88a2-25f6a228d902.Location: TKNewFormat
 ~~~~
 
-In order to have these resource files loaded during the program execution, set the environment variable *CSF_PluginDefaults*.
-For example, set the files in the directory *MyApplicationPath/MyResources*: 
+In order to have these resource files loaded during the program execution, set the environment variables *CSF_PluginDefaults* (used by the plugin loader) and *CSF_<ResourcesName>Defaults* (built from the value returned by `ResourcesName()`, e.g. *CSF_NewFormatDefaults*).
+For example, set the files in the directory *MyApplicationPath/MyResources*:
 
 ~~~~
 setenv CSF_PluginDefaults MyApplicationPath/MyResources
+setenv CSF_NewFormatDefaults MyApplicationPath/MyResources
 ~~~~
 
 @subsubsection occt_ocaf_4_3_3 Saving a document
