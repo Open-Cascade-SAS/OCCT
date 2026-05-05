@@ -128,20 +128,138 @@ TEST(NCollection_Array2Test, CopyConstructor)
 
 TEST(NCollection_Array2Test, AssignmentOperator)
 {
-  NCollection_Array2<int> anArray1(1, 3, 1, 4);
-  anArray1.Init(123);
+  NCollection_Array2<int> anArray1(5, 7, 10, 13);
+  for (int aRowIter = anArray1.LowerRow(); aRowIter <= anArray1.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = anArray1.LowerCol(); aColIter <= anArray1.UpperCol(); ++aColIter)
+    {
+      anArray1(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
 
-  NCollection_Array2<int> anArray2(1, 3, 1, 4);
+  NCollection_Array2<int> anArray2(1, 1, 1, 1);
   anArray2.Init(0);
 
   anArray2 = anArray1; // Assign
 
-  // Verify data is copied
-  EXPECT_EQ(123, anArray2(2, 3));
+  // Verify dimensions and data are copied
+  EXPECT_EQ(anArray1.NbRows(), anArray2.NbRows());
+  EXPECT_EQ(anArray1.NbColumns(), anArray2.NbColumns());
+  EXPECT_EQ(anArray1.LowerRow(), anArray2.LowerRow());
+  EXPECT_EQ(anArray1.LowerCol(), anArray2.LowerCol());
+  EXPECT_EQ(612, anArray2(6, 12));
 
   // Modify original to ensure it was a deep copy
-  anArray1.SetValue(2, 3, 999);
-  EXPECT_EQ(123, anArray2(2, 3));
+  anArray1.SetValue(6, 12, 999);
+  EXPECT_EQ(612, anArray2(6, 12));
+}
+
+TEST(NCollection_Array2Test, AssignmentOperatorReusesOwnedStorage)
+{
+  NCollection_Array2<int> anArray(1, 5, 1, 5);
+  int*                    anInitialPointer = &anArray.ChangeFirst();
+
+  NCollection_Array2<int> aSource(10, 12, 20, 23);
+  for (int aRowIter = aSource.LowerRow(); aRowIter <= aSource.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = aSource.LowerCol(); aColIter <= aSource.UpperCol(); ++aColIter)
+    {
+      aSource(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
+
+  anArray = aSource;
+
+  EXPECT_EQ(anInitialPointer, &anArray.ChangeFirst());
+  EXPECT_EQ(10, anArray.LowerRow());
+  EXPECT_EQ(12, anArray.UpperRow());
+  EXPECT_EQ(20, anArray.LowerCol());
+  EXPECT_EQ(23, anArray.UpperCol());
+  EXPECT_EQ(1122, anArray(11, 22));
+}
+
+TEST(NCollection_Array2Test, AssignmentOperatorReusesSameSizeExternalBuffer)
+{
+  int aBuffer[4] = {0, 0, 0, 0};
+
+  NCollection_Array2<int> anArray(aBuffer, 2, 2);
+  NCollection_Array2<int> aSource(5, 6, 7, 8);
+  for (int aRowIter = aSource.LowerRow(); aRowIter <= aSource.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = aSource.LowerCol(); aColIter <= aSource.UpperCol(); ++aColIter)
+    {
+      aSource(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
+
+  anArray = aSource;
+
+  EXPECT_FALSE(anArray.IsDeletable());
+  EXPECT_EQ(5, anArray.LowerRow());
+  EXPECT_EQ(7, anArray.LowerCol());
+  EXPECT_EQ(507, aBuffer[0]);
+  EXPECT_EQ(508, aBuffer[1]);
+  EXPECT_EQ(607, aBuffer[2]);
+  EXPECT_EQ(608, aBuffer[3]);
+}
+
+TEST(NCollection_Array2Test, AssignmentOperatorDetachesDifferentSizeExternalBuffer)
+{
+  int aBuffer[4] = {1, 2, 3, 4};
+
+  NCollection_Array2<int> anArray(aBuffer, 2, 2);
+  NCollection_Array2<int> aSource(5, 6, 7, 9);
+  for (int aRowIter = aSource.LowerRow(); aRowIter <= aSource.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = aSource.LowerCol(); aColIter <= aSource.UpperCol(); ++aColIter)
+    {
+      aSource(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
+
+  anArray = aSource;
+
+  EXPECT_TRUE(anArray.IsDeletable());
+  EXPECT_NE(aBuffer, &anArray.ChangeFirst());
+  EXPECT_EQ(2, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+  EXPECT_EQ(5, anArray.LowerRow());
+  EXPECT_EQ(7, anArray.LowerCol());
+  EXPECT_EQ(1, aBuffer[0]);
+  EXPECT_EQ(2, aBuffer[1]);
+  EXPECT_EQ(3, aBuffer[2]);
+  EXPECT_EQ(4, aBuffer[3]);
+  EXPECT_EQ(608, anArray(6, 8));
+}
+
+TEST(NCollection_Array2Test, CopyValuesPreservesBounds)
+{
+  NCollection_Array2<int> aSource(5, 6, 7, 9);
+  for (int aRowIter = aSource.LowerRow(); aRowIter <= aSource.UpperRow(); ++aRowIter)
+  {
+    for (int aColIter = aSource.LowerCol(); aColIter <= aSource.UpperCol(); ++aColIter)
+    {
+      aSource(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+    }
+  }
+
+  NCollection_Array2<int> anArray(1, 2, 1, 3);
+  anArray.CopyValues(aSource);
+
+  EXPECT_EQ(1, anArray.LowerRow());
+  EXPECT_EQ(2, anArray.UpperRow());
+  EXPECT_EQ(1, anArray.LowerCol());
+  EXPECT_EQ(3, anArray.UpperCol());
+  EXPECT_EQ(507, anArray(1, 1));
+  EXPECT_EQ(609, anArray(2, 3));
+}
+
+TEST(NCollection_Array2Test, CopyValuesDifferentDimensions)
+{
+  NCollection_Array2<int> anArray(1, 2, 1, 3);
+  NCollection_Array2<int> aSource(1, 3, 1, 2);
+
+  EXPECT_THROW(anArray.CopyValues(aSource), Standard_DimensionMismatch);
 }
 
 TEST(NCollection_Array2Test, MoveConstructor)

@@ -230,7 +230,8 @@ public:
     myLowerCol = myLowerCol - UpperCol() + theUpperCol;
   }
 
-  //! Assignment
+  //! Replaces this array by a copy of theOther array.
+  //! Row and column bounds are copied from theOther.
   NCollection_Array2& Assign(const NCollection_Array2& theOther)
   {
     if (&theOther == this)
@@ -238,7 +239,26 @@ public:
       return *this;
     }
     NCollection_Array1<TheItemType>::Assign(theOther);
-    // Current implementation disable changing bounds by assigning
+    myLowerRow = theOther.myLowerRow;
+    mySizeRow  = theOther.mySizeRow;
+    myLowerCol = theOther.myLowerCol;
+    mySizeCol  = theOther.mySizeCol;
+    return *this;
+  }
+
+  //! Copies values from theOther array without changing this array bounds.
+  //! This array should be pre-allocated and have the same dimensions as theOther;
+  //! otherwise exception Standard_DimensionMismatch is thrown.
+  NCollection_Array2& CopyValues(const NCollection_Array2& theOther)
+  {
+    if (&theOther == this)
+    {
+      return *this;
+    }
+    Standard_DimensionMismatch_Raise_if(mySizeRow != theOther.mySizeRow
+                                          || mySizeCol != theOther.mySizeCol,
+                                        "NCollection_Array2::CopyValues");
+    NCollection_Array1<TheItemType>::CopyValues(theOther);
     return *this;
   }
 

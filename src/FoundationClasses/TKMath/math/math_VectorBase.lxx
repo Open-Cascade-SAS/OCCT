@@ -607,10 +607,7 @@ template <typename TheItemType>
 math_VectorBase<TheItemType>& math_VectorBase<TheItemType>::Initialized(
   const math_VectorBase<TheItemType>& theOther)
 {
-  Standard_DimensionError_Raise_if(
-    Length() != theOther.Length(),
-    "math_VectorBase::Initialized() - input vector has wrong dimensions");
-  memmove(&Array.ChangeFirst(), &theOther.Array.First(), sizeof(TheItemType) * Array.Length());
+  Array.CopyValues(theOther.Array);
   return *this;
 }
 

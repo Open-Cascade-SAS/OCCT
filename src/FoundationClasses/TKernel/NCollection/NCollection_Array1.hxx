@@ -26,6 +26,10 @@
 #include <NCollection_IndexedIterator.hxx>
 
 #include <algorithm>
+#include <cstring>
+#include <memory>
+#include <type_traits>
+#include <utility>
 
 //! The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time.
 //! The range of the index is user defined.
@@ -110,13 +114,15 @@ public:
   // Constructors
   NCollection_Array1() noexcept
       : myLowerBound(1),
-        mySize(0)
+        mySize(0),
+        myCapacity(0)
   {
   }
 
   explicit NCollection_Array1(const int theLower, const int theUpper)
       : myLowerBound(theLower),
-        mySize(theUpper - theLower + 1)
+        mySize(theUpper - theLower + 1),
+        myCapacity(mySize)
   {
     if (mySize == 0)
     {
@@ -133,6 +139,7 @@ public:
                               const bool      theUseBuffer = true)
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1),
+        myCapacity(mySize),
         myPointer(theUseBuffer ? const_cast<pointer>(&theBegin) : nullptr),
         myIsOwner(!theUseBuffer)
   {
@@ -149,7 +156,8 @@ public:
   //! Use At()/ChangeAt() or STL iterators for optimal access (no offset subtraction).
   explicit NCollection_Array1(const size_t theSize)
       : myLowerBound(0),
-        mySize(theSize)
+        mySize(theSize),
+        myCapacity(theSize)
   {
     if (mySize == 0)
     {
@@ -166,6 +174,7 @@ public:
   explicit NCollection_Array1(pointer theBegin, const size_t theSize)
       : myLowerBound(0),
         mySize(theSize),
+        myCapacity(theSize),
         myPointer(theBegin),
         myIsOwner(false)
   {
@@ -174,7 +183,8 @@ public:
   //! Copy constructor
   NCollection_Array1(const NCollection_Array1& theOther)
       : myLowerBound(theOther.myLowerBound),
-        mySize(theOther.mySize)
+        mySize(theOther.mySize),
+        myCapacity(theOther.mySize)
   {
     if (mySize == 0)
     {
@@ -189,12 +199,14 @@ public:
   NCollection_Array1(NCollection_Array1&& theOther) noexcept
       : myLowerBound(theOther.myLowerBound),
         mySize(theOther.mySize),
+        myCapacity(theOther.myCapacity),
         myPointer(theOther.myPointer),
         myIsOwner(theOther.myIsOwner)
   {
     theOther.myIsOwner    = false;
     theOther.myPointer    = nullptr;
     theOther.mySize       = 0;
+    theOther.myCapacity   = 0;
     theOther.myLowerBound = 1;
   }
 
@@ -205,7 +217,7 @@ public:
       return;
     }
     destroy(myPointer, 0, mySize);
-    myAllocator.deallocate(myPointer, mySize);
+    myAllocator.deallocate(myPointer, myCapacity);
   }
 
   //! Initialise the items with theValue
@@ -232,21 +244,31 @@ public:
   //! Upper bound
   int Upper() const noexcept { return myLowerBound + static_cast<int>(mySize) - 1; }
 
-  //! Copies data of theOther array to this.
-  //! This array should be pre-allocated and have the same length as theOther;
-  //! otherwise exception Standard_DimensionMismatch is thrown.
+  //! Replaces this array by a copy of theOther array.
+  //! Bounds and length are copied from theOther.
   NCollection_Array1& Assign(const NCollection_Array1& theOther)
   {
     if (&theOther == this)
     {
       return *this;
     }
-    Standard_DimensionMismatch_Raise_if(mySize != theOther.mySize, "NCollection_Array1::operator=");
-    for (size_t anInd = 0; anInd < mySize; anInd++)
+    assign(theOther.myPointer, theOther.mySize, theOther.myLowerBound);
+    return *this;
+  }
+
+  //! Copies values from theOther array without changing this array bounds.
+  //! This array should be pre-allocated and have the same length as theOther;
+  //! otherwise exception Standard_DimensionMismatch is thrown.
+  NCollection_Array1& CopyValues(const NCollection_Array1& theOther)
+  {
+    if (&theOther == this)
     {
-      myPointer[anInd] = theOther.myPointer[anInd];
+      return *this;
     }
-    // Current implementation disable changing bounds by assigning
+    Standard_DimensionMismatch_Raise_if(mySize != theOther.mySize,
+                                        "NCollection_Array1::CopyValues");
+    const size_t aCommonSize = (std::min)(mySize, theOther.mySize);
+    copyAssign(myPointer, theOther.myPointer, aCommonSize);
     return *this;
   }
 
@@ -263,15 +285,17 @@ public:
     if (myIsOwner)
     {
       destroy(myPointer, 0, mySize);
-      myAllocator.deallocate(myPointer, mySize);
+      myAllocator.deallocate(myPointer, myCapacity);
     }
     myLowerBound          = theOther.myLowerBound;
     mySize                = theOther.mySize;
+    myCapacity            = theOther.myCapacity;
     myPointer             = theOther.myPointer;
     myIsOwner             = theOther.myIsOwner;
     theOther.myIsOwner    = false;
     theOther.myPointer    = nullptr;
     theOther.mySize       = 0;
+    theOther.myCapacity   = 0;
     theOther.myLowerBound = 1;
     return *this;
   }
@@ -414,6 +438,28 @@ protected:
       myLowerBound = theNewLower;
       return;
     }
+    if (myIsOwner && theNewSize <= myCapacity)
+    {
+      if (theToCopyData)
+      {
+        if (theNewSize < mySize)
+        {
+          destroy(myPointer, theNewSize, mySize);
+        }
+        else
+        {
+          construct(mySize, theNewSize);
+        }
+      }
+      else
+      {
+        destroy(myPointer, 0, mySize);
+        construct(0, theNewSize);
+      }
+      myLowerBound = theNewLower;
+      mySize       = theNewSize;
+      return;
+    }
     if (myIsOwner)
     {
       if (theToCopyData)
@@ -431,7 +477,7 @@ protected:
       }
       else
       {
-        myPointer = myAllocator.allocate(theNewSize);
+        myPointer = theNewSize != 0 ? myAllocator.allocate(theNewSize) : nullptr;
         copyConstruct(aPrevPtr, aMinSize);
       }
       construct(mySize < theNewSize ? mySize : theNewSize, theNewSize);
@@ -439,12 +485,13 @@ protected:
     else
     {
       if (myIsOwner)
-        myAllocator.deallocate(aPrevPtr, mySize);
-      myPointer = myAllocator.allocate(theNewSize);
+        myAllocator.deallocate(aPrevPtr, myCapacity);
+      myPointer = theNewSize != 0 ? myAllocator.allocate(theNewSize) : nullptr;
       construct(0, theNewSize);
     }
-    mySize    = theNewSize;
-    myIsOwner = true;
+    mySize     = theNewSize;
+    myCapacity = theNewSize;
+    myIsOwner  = true;
   }
 
 protected:
@@ -500,17 +547,105 @@ protected:
     }
   }
 
-  void copyConstruct(const pointer theFrom, const size_t theCount)
+  void assign(const const_pointer theFrom, const size_t theSize, const int theLower)
+  {
+    if (myIsOwner && theSize <= myCapacity)
+    {
+      const size_t aCommonSize = (std::min)(mySize, theSize);
+      copyAssign(myPointer, theFrom, aCommonSize);
+      if (theSize > mySize)
+      {
+        copyConstruct(myPointer + mySize, theFrom + mySize, theSize - mySize);
+      }
+      else
+      {
+        destroy(myPointer, theSize, mySize);
+      }
+      myLowerBound = theLower;
+      mySize       = theSize;
+      return;
+    }
+
+    if (!myIsOwner && theSize == mySize)
+    {
+      copyAssign(myPointer, theFrom, theSize);
+      myLowerBound = theLower;
+      return;
+    }
+
+    pointer aNewPointer = nullptr;
+    if (theSize != 0)
+    {
+      aNewPointer = myAllocator.allocate(theSize);
+      copyConstruct(aNewPointer, theFrom, theSize);
+    }
+
+    if (myIsOwner)
+    {
+      destroy(myPointer, 0, mySize);
+      myAllocator.deallocate(myPointer, myCapacity);
+    }
+    myLowerBound = theLower;
+    mySize       = theSize;
+    myCapacity   = theSize;
+    myPointer    = aNewPointer;
+    myIsOwner    = true;
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<std::is_trivially_copyable<U>::value, void>::type copyAssign(
+    pointer       theTarget,
+    const_pointer theFrom,
+    const size_t  theCount)
+  {
+    if (theCount != 0)
+    {
+      std::memmove(theTarget, theFrom, theCount * sizeof(TheItemType));
+    }
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<!std::is_trivially_copyable<U>::value, void>::type copyAssign(
+    pointer       theTarget,
+    const_pointer theFrom,
+    const size_t  theCount)
   {
     for (size_t anInd = 0; anInd < theCount; anInd++)
     {
-      myAllocator.construct(myPointer + anInd, theFrom[anInd]);
+      theTarget[anInd] = theFrom[anInd];
+    }
+  }
+
+  void copyConstruct(const pointer theFrom, const size_t theCount)
+  {
+    copyConstruct(myPointer, theFrom, theCount);
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<std::is_trivially_copyable<U>::value, void>::type copyConstruct(
+    pointer       theTarget,
+    const_pointer theFrom,
+    const size_t  theCount)
+  {
+    std::uninitialized_copy_n(theFrom, theCount, theTarget);
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<!std::is_trivially_copyable<U>::value, void>::type copyConstruct(
+    pointer       theTarget,
+    const_pointer theFrom,
+    const size_t  theCount)
+  {
+    for (size_t anInd = 0; anInd < theCount; anInd++)
+    {
+      myAllocator.construct(theTarget + anInd, theFrom[anInd]);
     }
   }
 
   // ---------- PROTECTED FIELDS -----------
   int            myLowerBound;
   size_t         mySize;
+  size_t         myCapacity;
   pointer        myPointer = nullptr;
   bool           myIsOwner = false;
   allocator_type myAllocator;

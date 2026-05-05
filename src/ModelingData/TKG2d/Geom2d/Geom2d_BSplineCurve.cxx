@@ -152,15 +152,15 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const NCollection_Array1<gp_Pnt2d>& Pol
   // copy arrays
 
   myPoles.Resize(1, Poles.Length(), false);
-  myPoles.Assign(Poles);
+  myPoles.CopyValues(Poles);
 
   myWeights = BSplCLib::UnitWeights(Poles.Length());
 
   myKnots.Resize(1, Knots.Length(), false);
-  myKnots.Assign(Knots);
+  myKnots.CopyValues(Knots);
 
   myMults.Resize(1, Mults.Length(), false);
-  myMults.Assign(Mults);
+  myMults.CopyValues(Mults);
 
   updateKnots();
 }
@@ -204,11 +204,11 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const NCollection_Array1<gp_Pnt2d>& Pol
   // copy arrays
 
   myPoles.Resize(1, Poles.Length(), false);
-  myPoles.Assign(Poles);
+  myPoles.CopyValues(Poles);
   if (myRational)
   {
     myWeights.Resize(1, Weights.Length(), false);
-    myWeights.Assign(Weights);
+    myWeights.CopyValues(Weights);
   }
   else
   {
@@ -216,10 +216,10 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const NCollection_Array1<gp_Pnt2d>& Pol
   }
 
   myKnots.Resize(1, Knots.Length(), false);
-  myKnots.Assign(Knots);
+  myKnots.CopyValues(Knots);
 
   myMults.Resize(1, Mults.Length(), false);
-  myMults.Assign(Mults);
+  myMults.CopyValues(Mults);
 
   updateKnots();
 }

@@ -2052,12 +2052,12 @@ void Geom_BezierSurface::init(const NCollection_Array2<gp_Pnt>& thePoles,
   int NbVPoles = thePoles.RowLength();
 
   myPoles.Resize(1, NbUPoles, 1, NbVPoles, false);
-  myPoles = thePoles;
+  myPoles.CopyValues(thePoles);
 
   if (theWeights != nullptr)
   {
     myWeights.Resize(1, NbUPoles, 1, NbVPoles, false);
-    myWeights = *theWeights;
+    myWeights.CopyValues(*theWeights);
     Rational(myWeights, myURational, myVRational);
     if (!(myURational || myVRational))
     {

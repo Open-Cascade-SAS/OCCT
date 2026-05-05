@@ -160,7 +160,6 @@ TEST(NCollection_Array1Test, AssignmentOperator)
   // Test assignment
   NCollection_Array1<int> anArray2(11, 15);
   anArray2 = anArray1;
-  anArray2.Resize(1, 5, true); // Resize to match anArray1
 
   // Verify assignment result
   EXPECT_EQ(anArray1.Length(), anArray2.Length());
@@ -171,6 +170,136 @@ TEST(NCollection_Array1Test, AssignmentOperator)
   {
     EXPECT_EQ(anArray1(i), anArray2(i));
   }
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorDifferentSize)
+{
+  NCollection_Array1<int> anArray1(5, 8);
+  for (int anIndex = anArray1.Lower(); anIndex <= anArray1.Upper(); ++anIndex)
+  {
+    anArray1(anIndex) = anIndex * 10;
+  }
+
+  NCollection_Array1<int> anArray2(1, 2);
+  anArray2 = anArray1;
+
+  EXPECT_EQ(4, anArray2.Length());
+  EXPECT_EQ(5, anArray2.Lower());
+  EXPECT_EQ(8, anArray2.Upper());
+  for (int anIndex = anArray1.Lower(); anIndex <= anArray1.Upper(); ++anIndex)
+  {
+    EXPECT_EQ(anArray1(anIndex), anArray2(anIndex));
+  }
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorReusesOwnedStorage)
+{
+  NCollection_Array1<int> anArray(1, 10);
+  int*                    anInitialPointer = &anArray.ChangeFirst();
+
+  anArray.Resize(1, 4, true);
+
+  NCollection_Array1<int> aSource(20, 25);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    aSource(anIndex) = anIndex * 10;
+  }
+
+  anArray = aSource;
+
+  EXPECT_EQ(anInitialPointer, &anArray.ChangeFirst());
+  EXPECT_EQ(20, anArray.Lower());
+  EXPECT_EQ(25, anArray.Upper());
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    EXPECT_EQ(aSource(anIndex), anArray(anIndex));
+  }
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorReusesSameSizeExternalBuffer)
+{
+  int aBuffer[3] = {0, 0, 0};
+
+  NCollection_Array1<int> anArray(aBuffer, 3);
+  NCollection_Array1<int> aSource(7, 9);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    aSource(anIndex) = anIndex * 10;
+  }
+
+  anArray = aSource;
+
+  EXPECT_FALSE(anArray.IsDeletable());
+  EXPECT_EQ(7, anArray.Lower());
+  EXPECT_EQ(9, anArray.Upper());
+  EXPECT_EQ(70, aBuffer[0]);
+  EXPECT_EQ(80, aBuffer[1]);
+  EXPECT_EQ(90, aBuffer[2]);
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorDetachesDifferentSizeExternalBuffer)
+{
+  int aBuffer[3] = {1, 2, 3};
+
+  NCollection_Array1<int> anArray(aBuffer, 3);
+  NCollection_Array1<int> aSource(7, 10);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    aSource(anIndex) = anIndex * 10;
+  }
+
+  anArray = aSource;
+
+  EXPECT_TRUE(anArray.IsDeletable());
+  EXPECT_NE(aBuffer, &anArray.ChangeFirst());
+  EXPECT_EQ(7, anArray.Lower());
+  EXPECT_EQ(10, anArray.Upper());
+  EXPECT_EQ(1, aBuffer[0]);
+  EXPECT_EQ(2, aBuffer[1]);
+  EXPECT_EQ(3, aBuffer[2]);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    EXPECT_EQ(aSource(anIndex), anArray(anIndex));
+  }
+}
+
+TEST(NCollection_Array1Test, AssignmentOperatorEmptySource)
+{
+  NCollection_Array1<int> anArray(1, 5);
+  NCollection_Array1<int> anEmpty;
+
+  anArray = anEmpty;
+
+  EXPECT_EQ(0, anArray.Length());
+  EXPECT_EQ(1, anArray.Lower());
+  EXPECT_TRUE(anArray.IsEmpty());
+}
+
+TEST(NCollection_Array1Test, CopyValuesPreservesBounds)
+{
+  NCollection_Array1<int> aSource(1, 5);
+  for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)
+  {
+    aSource(anIndex) = anIndex * 10;
+  }
+
+  NCollection_Array1<int> anArray(11, 15);
+  anArray.CopyValues(aSource);
+
+  EXPECT_EQ(11, anArray.Lower());
+  EXPECT_EQ(15, anArray.Upper());
+  for (int anIndex = 0; anIndex < anArray.Length(); ++anIndex)
+  {
+    EXPECT_EQ(aSource(aSource.Lower() + anIndex), anArray(anArray.Lower() + anIndex));
+  }
+}
+
+TEST(NCollection_Array1Test, CopyValuesDifferentSize)
+{
+  NCollection_Array1<int> anArray(1, 5);
+  NCollection_Array1<int> aSource(1, 4);
+
+  EXPECT_THROW(anArray.CopyValues(aSource), Standard_DimensionMismatch);
 }
 
 TEST(NCollection_Array1Test, Move)
@@ -186,7 +315,6 @@ TEST(NCollection_Array1Test, Move)
   // Test Move method
   NCollection_Array1<int> anArray2(11, 15);
   anArray2.Move(anArray1);
-  anArray2.Resize(1, 5, true); // Resize to match anArray1
 
   // Verify move result
   EXPECT_EQ(5, anArray2.Length());

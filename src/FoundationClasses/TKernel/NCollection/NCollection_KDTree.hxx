@@ -488,13 +488,15 @@ public:
   }
 
   //! Copy assignment.
-  //! Uses copy-and-swap because NCollection_Array1::operator= requires same size.
   NCollection_KDTree& operator=(const NCollection_KDTree& theOther)
   {
     if (this != &theOther)
     {
-      NCollection_KDTree aCopy(theOther);
-      *this = std::move(aCopy);
+      myPoints    = theOther.myPoints;
+      myIndices   = theOther.myIndices;
+      myRadii     = theOther.myRadii;
+      myMaxRadius = theOther.myMaxRadius;
+      mySize      = theOther.mySize;
     }
     return *this;
   }
