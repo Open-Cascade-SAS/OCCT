@@ -25,13 +25,9 @@ class gp_Circ;
 class gp_Pnt;
 class gp_Lin;
 
-//! Computes the global properties of bounded curves
-//! in 3D space.
-//! It can be an elementary curve from package gp such as
-//! Lin, Circ, Elips, Parab
-//! @deprecated This class is deprecated since OCCT 8.0.0 and will be removed in a future release.
-class Standard_DEPRECATED("Deprecated since OCCT 8.0.0, will be removed in a future release")
-  GProp_CelGProps : public GProp_GProps
+//! Computes the global properties of bounded curves in 3D space.
+//! Supports elementary curves from the gp package: Lin, Circ, Elips, Parab.
+class GProp_CelGProps : public GProp_GProps
 {
 public:
   DEFINE_STANDARD_ALLOC

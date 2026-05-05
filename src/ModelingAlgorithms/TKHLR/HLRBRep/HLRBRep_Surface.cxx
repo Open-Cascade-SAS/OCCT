@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <gp_Vec.hxx>
-#include <PointSetLib_Equation.hxx>
+#include <GProp_PEquation.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Surface.hxx>
 #include <gp_Pnt.hxx>
@@ -135,7 +135,7 @@ bool HLRBRep_Surface::SideRowsOfPoles(const double                tol,
     }
   }
 
-  PointSetLib_Equation Pl(p, tol);
+  GProp_PEquation Pl(p, tol);
   if (Pl.IsPlanar())
   {
     result = std::abs(Pl.Plane().Axis().Direction().Z()) < 0.0001;

@@ -19,7 +19,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
-#include <PointSetLib_Equation.hxx>
+#include <GProp_PEquation.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 //=================================================================================================
@@ -28,8 +28,8 @@ bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& thePnts,
                                       gp_Pln&                           thePln,
                                       double&                           theMaxDist)
 {
-  PointSetLib_Equation anEq(thePnts, 0.0);
-  if (anEq.GetType() == PointSetLib_Equation::Type::None)
+  GProp_PEquation anEq(thePnts, 0.0);
+  if (anEq.GetType() == GProp_PEquation::Type::None)
   {
     return false;
   }

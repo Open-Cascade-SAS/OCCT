@@ -14,7 +14,6 @@ set(OCCT_TKMath_LIST_OF_PACKAGES
   BSplSLib
   PLib
   GeomAbs
-  PointSetLib
   Poly
   CSLib
   Convert

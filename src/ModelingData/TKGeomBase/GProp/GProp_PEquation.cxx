@@ -1,4 +1,7 @@
-// Copyright (c) 2026 OPEN CASCADE SAS
+// Created on: 1993-06-16
+// Created by: Isabelle GRIGNON
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,27 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PointSetLib_Equation.hxx>
+#include <GProp_PEquation.hxx>
 
 #include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
+#include <GProp_PGProps.hxx>
 #include <MathLin_Jacobi.hxx>
-#include <PointSetLib_Props.hxx>
 #include <Standard_NoSuchObject.hxx>
 
 //=================================================================================================
 
-PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& thePnts, double theTol)
+GProp_PEquation::GProp_PEquation(const NCollection_Array1<gp_Pnt>& thePnts, double theTol)
 {
-  // Compute barycentre and inertia via PointSetLib_Props
-  PointSetLib_Props aProps(thePnts);
+  GProp_PGProps aProps(thePnts);
   myBarycentre = aProps.CentreOfMass();
   myG          = myBarycentre;
 
-  // Get inertia matrix at centre of mass
   const gp_Mat anInertia = aProps.MatrixOfInertia();
 
-  // Eigendecomposition to find principal axes
   math_Matrix aMat(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
   {
@@ -44,7 +44,6 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
   const MathUtils::EigenResult anEigen = MathLin::Jacobi(aMat, true);
   if (!anEigen.IsDone())
   {
-    // Jacobi failed: mark type as None and initialize PCA data to safe defaults.
     myType       = Type::None;
     myAxes[0]    = gp_Vec(1.0, 0.0, 0.0);
     myAxes[1]    = gp_Vec(0.0, 1.0, 0.0);
@@ -60,7 +59,6 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
   myAxes[1]                = gp_Vec(aVecs(1, 2), aVecs(2, 2), aVecs(3, 2));
   myAxes[2]                = gp_Vec(aVecs(1, 3), aVecs(2, 3), aVecs(3, 3));
 
-  // Project all points onto principal axes to find extents
   const double aXg = myG.X();
   const double aYg = myG.Y();
   const double aZg = myG.Z();
@@ -110,7 +108,6 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
   myExtents[1] = aMax2 - aMin2;
   myExtents[2] = aMax3 - aMin3;
 
-  // Determine dimensionality by checking extent in each principal direction
   int aDimension = 3;
   int aDimCode   = 0;
   if (std::abs(myExtents[0]) <= theTol)
@@ -181,44 +178,44 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
 
 //=================================================================================================
 
-gp_Pln PointSetLib_Equation::Plane() const
+gp_Pln GProp_PEquation::Plane() const
 {
   if (!IsPlanar())
   {
-    throw Standard_NoSuchObject("PointSetLib_Equation::Plane: result is not planar");
+    throw Standard_NoSuchObject("GProp_PEquation::Plane: result is not planar");
   }
   return gp_Pln(myG, myV1);
 }
 
 //=================================================================================================
 
-gp_Lin PointSetLib_Equation::Line() const
+gp_Lin GProp_PEquation::Line() const
 {
   if (!IsLinear())
   {
-    throw Standard_NoSuchObject("PointSetLib_Equation::Line: result is not linear");
+    throw Standard_NoSuchObject("GProp_PEquation::Line: result is not linear");
   }
   return gp_Lin(myG, gp_Dir(myV1));
 }
 
 //=================================================================================================
 
-gp_Pnt PointSetLib_Equation::Point() const
+gp_Pnt GProp_PEquation::Point() const
 {
   if (!IsPoint())
   {
-    throw Standard_NoSuchObject("PointSetLib_Equation::Point: result is not a point");
+    throw Standard_NoSuchObject("GProp_PEquation::Point: result is not a point");
   }
   return myG;
 }
 
 //=================================================================================================
 
-void PointSetLib_Equation::Box(gp_Pnt& theP, gp_Vec& theV1, gp_Vec& theV2, gp_Vec& theV3) const
+void GProp_PEquation::Box(gp_Pnt& theP, gp_Vec& theV1, gp_Vec& theV2, gp_Vec& theV3) const
 {
   if (!IsSpace())
   {
-    throw Standard_NoSuchObject("PointSetLib_Equation::Box: result is not a 3D space");
+    throw Standard_NoSuchObject("GProp_PEquation::Box: result is not a 3D space");
   }
   theP  = myG;
   theV1 = myV1;
