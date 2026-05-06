@@ -296,10 +296,11 @@ TEST(NCollection_Array1Test, CopyValuesPreservesBounds)
 
 TEST(NCollection_Array1Test, CopyValuesDifferentSize)
 {
-  NCollection_Array1<int> anArray(1, 5);
-  NCollection_Array1<int> aSource(1, 4);
-
+  [[maybe_unused]] NCollection_Array1<int> anArray(1, 5);
+  [[maybe_unused]] NCollection_Array1<int> aSource(1, 4);
+#ifndef No_Exception
   EXPECT_THROW(anArray.CopyValues(aSource), Standard_DimensionMismatch);
+#endif
 }
 
 TEST(NCollection_Array1Test, Move)

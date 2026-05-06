@@ -256,10 +256,11 @@ TEST(NCollection_Array2Test, CopyValuesPreservesBounds)
 
 TEST(NCollection_Array2Test, CopyValuesDifferentDimensions)
 {
-  NCollection_Array2<int> anArray(1, 2, 1, 3);
-  NCollection_Array2<int> aSource(1, 3, 1, 2);
-
+  [[maybe_unused]] NCollection_Array2<int> anArray(1, 2, 1, 3);
+  [[maybe_unused]] NCollection_Array2<int> aSource(1, 3, 1, 2);
+#ifndef No_Exception
   EXPECT_THROW(anArray.CopyValues(aSource), Standard_DimensionMismatch);
+#endif
 }
 
 TEST(NCollection_Array2Test, MoveConstructor)
