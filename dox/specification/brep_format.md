@@ -74,7 +74,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
   \<content type\> = "DBRep_DrawableShape" \<_\\n\>\<_\\n\>;  
   \<content type\> have other values [1].  
  
-  \<version\> = ("CASCADE Topology V1, (c)  Matra-Datavision" | "CASCADE Topology V2, (c) Matra-Datavision" | "CASCADE Topology V3, (c) Open Cascade")\<_\\n\>;
+  \<version\> = ("CASCADE Topology V1, (c) Matra-Datavision" | "CASCADE Topology V2, (c) Matra-Datavision" | "CASCADE Topology V3, (c) Open Cascade")\<_\\n\>;
   The difference of the versions is described in the  document.  
  
   Sections \<locations\>, \<geometry\> and \<shapes\> are described below in separate chapters of the document.  
@@ -1193,7 +1193,7 @@ The example record is interpreted as a parabola in plane which passes through a 
  
 \<2D curve record 5\> describes a hyperbola. The  hyperbola data consist of a 2D point *P*, orthogonal 2D directions *D<sub>x</sub>* and *D<sub>y</sub>* and non-negative reals *k<sub>x</sub>* and *k<sub>y</sub>*. The hyperbola coordinate system has origin *P* and axis directions *D<sub>x</sub>* and *D<sub>y</sub>*. The hyperbola is defined by  the following parametric equation:  
  
-@f[ C(u)=P+k_{x} \cdot cosh(u) D_{x}+k_{y} \cdot sinh(u) \cdot D_{y},\; u \in (-\infty,\; \infty). @f]  
+@f[ C(u)=P+k_{x} \cdot cosh(u) \cdot D_{x}+k_{y} \cdot sinh(u) \cdot D_{y},\; u \in (-\infty,\; \infty). @f]  
  
 The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=3 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: @f$ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) @f$.  
  
@@ -1709,7 +1709,7 @@ The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.
 	<curve parameter minimal and maximal values> = <real> <_> <real>;
 
 	<curve values for parameter minimal and maximal values> =
-	real> <_> <real> <_> <real> <_> <real>;
+	<real> <_> <real> <_> <real> <_> <real>;
 @endverbatim
  
 **Description**  
@@ -1788,7 +1788,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
 **BNF-like Definition**
 
 ~~~~{.cpp}
-	<edge data> = <_> <edge data tolerance> <_> <edge data same parameter flag> <_> edge data same range flag> <_> <edge data degenerated flag> <_\n> <edge data representations>;
+	<edge data> = <_> <edge data tolerance> <_> <edge data same parameter flag> <_> <edge data same range flag> <_> <edge data degenerated flag> <_\n> <edge data representations>;
 
 	<edge data tolerance> = <real>;
 
@@ -1816,7 +1816,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
 	<location number> <_> <curve parameter minimal and maximal values>
 	[<_\n> <curve values for parameter minimal and maximal values>];
 
-	<edge data representation data 3> = (<2D curve number> <_>) ^ 2 <continuity order> <_> <surface number> <_> <location number> <_> <curve parameter minimal and maximal values> <\n> <curve values for parameter minimal and maximal values>];
+	<edge data representation data 3> = (<2D curve number> <_>) ^ 2 <continuity order> <_> <surface number> <_> <location number> <_> <curve parameter minimal and maximal values> <\n> <curve values for parameter minimal and maximal values>;
 
 	<continuity order> = "C0" | "C1" | "C2" | "C3" | "CN" | "G1" | "G2".
 
@@ -1883,7 +1883,7 @@ Flag \<face data natural restriction flag\> is  used in a special way [1].
 @verbatim
     DBRep_DrawableShape  
      
-    CASCADE Topology V1, (c)  Matra-Datavision  
+    CASCADE Topology V1, (c) Matra-Datavision  
     Locations 3  
     1  
                   0                0               1               0   

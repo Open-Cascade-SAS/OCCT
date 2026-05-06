@@ -197,9 +197,9 @@ Class *BRepOffsetAPI_MakeOffsetShape*:
 
 The code below shows new calling procedure:
 ~~~~{.cpp}
-    BRepOffsetAPI_MakeOffsetShape OffsetMaker;
-    OffsetMaker.PerformByJoin(Shape, OffsetValue, Tolerance);
-    NewShape = OffsetMaker.Shape();
+    BRepOffsetAPI_MakeOffsetShape anOffsetMaker;
+    anOffsetMaker.PerformByJoin(Shape, OffsetValue, Tolerance);
+    NewShape = anOffsetMaker.Shape();
 ~~~~
 
 Class *BRepOffsetAPI_MakeThickSolid*:
@@ -208,9 +208,9 @@ Class *BRepOffsetAPI_MakeThickSolid*:
 
 The code below shows new calling procedure:
 ~~~~{.cpp}
-    BRepOffsetAPI_MakeThickSolid BodyMaker;
-    BodyMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
-    myBody = BodyMaker.Shape();
+    BRepOffsetAPI_MakeThickSolid aBodyMaker;
+    aBodyMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
+    myBody = aBodyMaker.Shape();
 ~~~~
 
 @subsection upgrade_720_highlight Highlight style
@@ -300,7 +300,7 @@ In most cases this change should be transparent, however applications implementi
   Old definitions are preserved as deprecated aliases to the new ones;
 * Methods *Image_PixMap::PixelColor()* and *Image_PixMap::SetPixelColor()* now take/return Quantity_ColorRGBA instead of Quantity_Color/NCollection_Vec4.
 * The method BOPAlgo_Builder::Origins() returns BOPCol_DataMapOfShapeListOfShape instead of BOPCol_DataMapOfShapeShape.
-* The methods BOPDS_DS::IsToSort(const Handle(BOPDS_CommonBlock)&, Standard_Integer&) and BOPDS_DS::SortPaveBlocks(const Handle(BOPDS_CommonBlock)&) have been removed. The sorting is now performed during the addition of the Pave Blocks into Common Block.
+* The methods BOPDS_DS::IsToSort(const occ::handle<BOPDS_CommonBlock>&, Standard_Integer&) and BOPDS_DS::SortPaveBlocks(const occ::handle<BOPDS_CommonBlock>&) have been removed. The sorting is now performed during the addition of the Pave Blocks into Common Block.
 * The methods BOPAlgo_Tools::MakeBlocks() and BOPAlgo_Tools::MakeBlocksCnx() have been replaced with the single template method BOPAlgo_Tools::MakeBlocks(). The chains of connected elements are now stored into the list of list instead of data map.
 * The methods BOPAlgo_Tools::FillMap() have been replaced with the single template method BOPAlgo_Tools::FillMap().
 * Package BVH now uses opencascade::handle instead of NCollection_Handle (for classes BVH_Properties, BVH_Builder, BVH_Tree, BVH_Object).
@@ -366,7 +366,7 @@ if (!aRoots.IsNull())
     occ::handle<StdObjMgt_Persistent> aPObject = aRoot->Object();
     if (!aPObject.IsNull())
     {
-      Handle(ShapePersistent_TopoDS::HShape) aHShape = Handle(ShapePersistent_TopoDS::HShape)::DownCast(aPObject);
+      occ::handle<ShapePersistent_TopoDS::HShape> aHShape = occ::down_cast<ShapePersistent_TopoDS::HShape>(aPObject);
       if (aHShape) // Downcast to an expected type to import transient data
       {
         TopoDS_Shape aShape = aHShape->Import();
@@ -406,7 +406,7 @@ for (int i = 1; i <= shapes.Length(); ++i)
 {
   TopoDS_Shape aShape = shapes.Value(i);
   // Translate a shape to a persistent object
-  Handle(ShapePersistent_TopoDS::HShape) aPShape =
+  occ::handle<ShapePersistent_TopoDS::HShape> aPShape =
     ShapePersistent_TopoDS::Translate(aShape, aMap, ShapePersistent_WithTriangle);
   if (aPShape.IsNull())
   {
@@ -483,7 +483,7 @@ to the more lower level class BRepLib.
 
 The following obsolete features have been removed:
 * The package BOPCol has been fully removed:
-  - *BOPCol_BaseAllocator* is replaced with *Handle(NCollection_BaseAllocator)*;
+  - *BOPCol_BaseAllocator* is replaced with *occ::handle<NCollection_BaseAllocator>*;
   - *BOPCol_BoxBndTree* is replaced with *BOPTools_BoxBndTree*;
   - *BOPCol_Box2DBndTree* is removed as unused;
   - *BOPCol_DataMapOfIntegerInteger* is replaced with *TColStd_DataMapOfIntegerInteger*;
@@ -954,7 +954,7 @@ The method Select3D_SensitiveEntity::NbSubElements() has been changed to be cons
 ~~~~{.cpp}
 void BOPTools_AlgoTools::TreatCompound (const TopoDS_Shape& theS,
                                         NCollection_List<TopoDS_Shape>& theLS,
-                                        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theMap = NULL);
+                                        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theMap = nullptr);
 ~~~~
 
 @subsection upgrade_750_Adaptor2d_OffsetCurve  Offset direction change
@@ -1001,7 +1001,7 @@ class MyAlgo
 public:
   //! Algorithm entry point taking an optional Progress Indicator.
   bool Perform (const TCollection_AsciiString& theFileName,
-                const Handle(Message_ProgressIndicator)& theProgress = Handle(Message_ProgressIndicator)())
+                const occ::handle<Message_ProgressIndicator>& theProgress = occ::handle<Message_ProgressIndicator>())
   {
     Message_ProgressSentry aPSentry (theProgress, (TCollection_AsciiString("Processing ") + theFileName).ToCString(), 2);
     {
@@ -1023,7 +1023,7 @@ public:
 
 private:
   //! Nested sub-algorithm taking Progress Indicator.
-  bool perform2 (const Handle(Message_ProgressIndicator)& theProgress)
+  bool perform2 (const occ::handle<Message_ProgressIndicator>& theProgress)
   {
     Message_ProgressSentry aPSentry2 (theProgress, "Stage 2", 0, 100, 1);
     for (int anIter = 0; anIter < 100 && aPSentry2.More(); ++anIter, aPSentry2.Next()) {}
@@ -1032,7 +1032,7 @@ private:
 };
 
 // application executing an algorithm
-Handle(Message_ProgressIndicator) aProgress = new MyProgress();
+occ::handle<Message_ProgressIndicator> aProgress = new MyProgress();
 MyAlgo anAlgo;
 anAlgo.Perform ("FileName", aProgress);
 @endcode
@@ -1094,7 +1094,7 @@ public:
 };
 
 // application executing an algorithm
-Handle(Message_ProgressIndicator) aProgress = new MyProgress();
+occ::handle<Message_ProgressIndicator> aProgress = new MyProgress();
 MyAlgo anAlgo;
 anAlgo.Perform ("FileName", aProgress->Start());
 @endcode
@@ -1284,8 +1284,8 @@ Method SetProgressIndicator() has been removed due to Progress indicator mechani
 To enable progress indicator and user break in Boolean operations user has to pass progress range as a parameter to Perform or Build method.
 For example:
 ~~~~
-Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
-BRepAlgoApi_Cut(S1, S2, aProgress->Start()); // method Start() creates range for usage in cut algorithm
+occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+BRepAlgoAPI_Cut(S1, S2, aProgress->Start()); // method Start() creates range for usage in cut algorithm
 ~~~~
 
 @subsection upgrade_occt760_change_check_to_adaptors Changes in BRepLib_CheckCurveOnSurface & GeomLib_CheckCurveOnSurface interfaces
@@ -1347,7 +1347,7 @@ aValidateEdge.Process();
 @subsection upgrade_occt770_drawer_aspects Prs3d_Drawer aspects
 
 `Prs3d_Drawer` getters no more implicitly create "default" aspects.
-If specific property has not been set before to this drawer instance nor to linked drawer instance, then NULL property will be returned.
+If specific property has not been set before to this drawer instance nor to linked drawer instance, then nullptr property will be returned.
 Make sure to set property beforehand or to call `SetOwn*` / `SetupOwn*` methods to derive from defaults.
 
 @subsection upgrade_occt770_opengl OpenGL functions

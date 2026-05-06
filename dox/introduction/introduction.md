@@ -52,7 +52,7 @@ In addition, @ref intro_overview_draw "Open CASCADE DRAW Test Harness", also cal
 
 **Foundation Classes** module contains data structures and services used by higher-level Open CASCADE Technology classes:
 
-  * Primitive types, such as Boolean, Character, Integer or Real;
+  * Standard C++ primitive types (`int`, `double`, `float`, `bool`, `char`);
   * String classes that handle Unicode strings;
   * Collection classes that handle statically or dynamically sized aggregates of data, such as arrays, lists, queues, sets and hash tables (data maps).
   * Classes providing commonly used numerical algorithms and basic linear algebra calculations (addition, multiplication, transposition of vectors and matrices, solving linear systems etc).

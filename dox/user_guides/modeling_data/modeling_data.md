@@ -1032,13 +1032,13 @@ The following steps are performed:
       switch (faceCount[i])
       {
         case 0:
-          DrawEdge (TopoDS::Edge (edgemap (i)), FreeEdgeColor);
+          DrawEdge (TopoDS::Edge (edgeMap (i)), FreeEdgeColor);
           break; 
         case 1:
-          DrawEdge (TopoDS::Edge (edgemap (i)), BorderEdgeColor);
+          DrawEdge (TopoDS::Edge (edgeMap (i)), BorderEdgeColor);
           break; 
         default:
-          DrawEdge (TopoDS::Edge (edgemap (i)), SharedEdgeColor);
+          DrawEdge (TopoDS::Edge (edgeMap (i)), SharedEdgeColor);
           break;
       }
     }

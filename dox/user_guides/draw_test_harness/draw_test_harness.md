@@ -783,17 +783,17 @@ restore theBox
 #### In DrawTrSurf package:
 
 ~~~~{.cpp}
-void Set(const char*& Name,const gp_Pnt& G) ; 
-void Set(const char*& Name,const gp_Pnt2d& G) ; 
-void Set(const char*& Name, 
+void Set(const char* Name,const gp_Pnt& G) ; 
+void Set(const char* Name,const gp_Pnt2d& G) ; 
+void Set(const char* Name, 
 const occ::handle<Geom_Geometry>& G) ; 
-void Set(const char*& Name, 
+void Set(const char* Name, 
 const occ::handle<Geom2d_Curve>& C) ; 
-void Set(const char*& Name, 
+void Set(const char* Name, 
 const occ::handle<Poly_Triangulation>& T) ; 
-void Set(const char*& Name, 
+void Set(const char* Name, 
 const occ::handle<Poly_Polygon3D>& P) ; 
-void Set(const char*& Name, 
+void Set(const char* Name, 
 const occ::handle<Poly_Polygon2D>& P) ; 
 ~~~~
 
@@ -809,15 +809,15 @@ Example of *DrawTrSurf*
 ~~~~{.cpp}
 occ::handle<Geom2d_Circle> C1 = new Geom2d_Circle 
 (gce_MakeCirc2d (gp_Pnt2d(50,0), 25)); 
-DrawTrSurf::Set(char*, C1); 
+DrawTrSurf::Set("C1", C1); 
 ~~~~
 
 Example of *DBRep* 
 
 ~~~~{.cpp}
-TopoDS_Solid B; 
-B = BRepPrimAPI_MakeBox (10,10,10); 
-DBRep::Set(char*,B); 
+TopoDS_Solid aB; 
+aB = BRepPrimAPI_MakeBox (10,10,10); 
+DBRep::Set("B", aB); 
 ~~~~
 
 @subsubsection occt_draw_3_3_2 get
@@ -825,13 +825,13 @@ DBRep::Set(char*,B);
 #### In DrawTrSurf package:
  
 ~~~~{.cpp}
-occ::handle<Geom_Geometry> Get(const char*& Name) ; 
+occ::handle<Geom_Geometry> Get(const char* Name) ; 
 ~~~~
 
 #### In DBRep package:
 
 ~~~~{.cpp}
-TopoDS_Shape Get(const char*& Name, 
+TopoDS_Shape Get(const char* Name, 
 const TopAbs_ShapeEnum Typ = TopAbs_SHAPE, 
 const bool Complain 
 = true) ; 
@@ -859,7 +859,7 @@ int argc, char** argv)
 {...... 
 // Creation of a TopoDS_Shape from a Draw topological 
 // name 
-TopoDS_Solid B = DBRep::Get(argv[1]); 
+TopoDS_Shape aShape = DBRep::Get(argv[1]); 
 } 
 ~~~~
 
@@ -1055,7 +1055,7 @@ color index name
 
 **color** sets the color to a value. The index of the *color* is a value between 0 and 15. The name is an X window color name. The list of these can be found in the file *rgb.txt* in the X library directory. 
 
-The default values are: 0 White, 1 Red, 2 Green, 3 Blue, 4 Cyan, 5 Gold, 6 Magenta, 7 Marron, 8 Orange, 9 Pink, 10 Salmon, 11 Violet, 12 Yellow, 13 Khaki, 14 Coral. 
+The default values are: 0 White, 1 Red, 2 Green, 3 Blue, 4 Cyan, 5 Gold, 6 Magenta, 7 Maroon, 8 Orange, 9 Pink, 10 Salmon, 11 Violet, 12 Yellow, 13 Khaki, 14 Coral. 
 
 **Example:** 
 ~~~~{.tcl}
@@ -1512,7 +1512,7 @@ vfit
 # erase only first box
 verase b1
 # erase second box and sphere
-verseall
+veraseall
 ~~~~
 
 @subsubsection occt_draw_4_3_6 vsetdispmode
@@ -2601,7 +2601,7 @@ Syntax:
 ~~~~{.tcl}
 Children docname label
 ~~~~
-Returns the list of attributes of label.
+Returns the list of child labels of the label.
 
 Example
 ~~~~{.tcl}
@@ -2962,7 +2962,7 @@ Syntax:
 SetIntArray dfname entry lower upper value1 value2 … 
 ~~~~
 
-Finds or creates an IntegerArray attribute at *entry* label with lower and upper bounds and sets **value1*, *value2*... 
+Finds or creates an IntegerArray attribute at *entry* label with lower and upper bounds and sets *value1*, *value2*... 
 
 **Example:** 
 ~~~~{.tcl}
@@ -2994,7 +2994,7 @@ Finds or creates a RealArray attribute at *entry* label with lower and upper bou
 
 **Example:** 
 ~~~~{.tcl}
-GetRealArray D 0:2 1 4 100. 200. 300. 400. 
+SetRealArray D 0:2 1 4 100. 200. 300. 400. 
 ~~~~
 
 @subsubsection occt_draw_5_5_8  GetRealArray
@@ -3142,7 +3142,7 @@ SetUAttribute D 0:2 ${localGUID}
 
 Syntax:
 ~~~~{.tcl}
-GetUAttribute dfname entry loacalGUID 
+GetUAttribute dfname entry localGUID 
 ~~~~
 
 Finds a *UAttribute* at *entry* label with *localGUID*. 
@@ -3212,7 +3212,7 @@ box b 10 10 10
 SetShape D 0:2 b 
 ~~~~
 
-@subsubsection occt_draw_5_5_23  GetShape
+@subsubsection occt_draw_5_5_23  GetShape2
 
 Syntax:
 ~~~~{.tcl}
@@ -3644,7 +3644,7 @@ Syntax:
 AISDisplay docname entry [not_update] 
 ~~~~
 
-Displays a presantation of *AISobject* from *entry* label in AIS viewer. If *not_update* is not defined then *AISobject* is recomputed and all visualization settings are applied. 
+Displays a presentation of *AISobject* from *entry* label in AIS viewer. If *not_update* is not defined then *AISobject* is recomputed and all visualization settings are applied. 
 
 **Example:** 
 ~~~~{.tcl}
@@ -3771,7 +3771,7 @@ Syntax:
 AISMaterial docname entry [material] 
 ~~~~
 
-Sets (if *material* is defined) or gets the value of transparency for *AISPresentation* attribute of an *entry* label. *material* is integer from 0 to 20 (see @ref occt_draw_4_5_6 "meshmat" command). 
+Sets (if *material* is defined) or gets the value of material for *AISPresentation* attribute of an *entry* label. *material* is integer from 0 to 20 (see @ref occt_draw_4_5_6 "meshmat" command). 
 
 **Example:** 
 ~~~~{.tcl}
@@ -4193,7 +4193,7 @@ Note that this definition will be used for all analytical surfaces.
 # with U direction on Y 
 plane p1 10 0 0 1 0 0 0 1 0 
 
-# an horixontal plane with origin 10, -20, -5 
+# an horizontal plane with origin 10, -20, -5 
 plane p2 10 -20 -5 
 ~~~~
 
@@ -4842,7 +4842,7 @@ pscale s 0 0 0 2
   * **coord** to find the coordinates of a point.
   * **cvalue** and **2dcvalue** to compute points and derivatives on curves.
   * **svalue** to compute points and derivatives on a surface.
-  * **localprop** and **minmaxcurandif** to compute the curvature on a curve.
+  * **localprop** and **minmaxcurandinf** to compute the curvature on a curve.
   * **parameters** to compute (u,v) values for a point on a surface.
   * **proj** and **2dproj** to project a point on a curve or a surface.
   * **surface_radius** to compute the curvature on a surface.
@@ -4982,7 +4982,7 @@ Let us compute curvatures of a cylinder:
 cylinder c 5 
 surface_radius c pi 3 c1 c2 
 == Min Radius of Curvature : -5 
-== Min Radius of Curvature : infinite 
+== Max Radius of Curvature : infinite 
 ~~~~
 
 
@@ -5391,7 +5391,7 @@ range name value value
 * **orientation** -- assigns the orientation of simple and complex shapes to one of the following four values: *FORWARD, REVERSED, INTERNAL, EXTERNAL*. 
 * **complement** -- changes the current orientation of shapes to its complement: *FORWARD* to *REVERSED* and  *INTERNAL* to *EXTERNAL*. 
 * **invert** -- creates a copy of the original shape with a reversed orientation of all subshapes. For example, it may be useful to reverse the normals of a solid. 
-* *normals** -- returns the assignment of colors to orientation values. 
+* **normals** -- returns the assignment of colors to orientation values. 
 * **range** -- defines the length of a selected edge by defining the values of a starting point and an end point.
  
 **Example:** 
@@ -5479,9 +5479,9 @@ compound [name ...] compoundname
 **add** inserts shape *C* into shape *S*. Verify that *C* and *S* reference compatible types of objects: 
   * Any *Shape* can be added to a *Compound*.
   * Only a *Solid* can be added to a *CompSolid*.
-  * Only a *Shell* can *Edge* or a *Vertex* can be added into a *Solid*.
+  * Only a *Shell* can be added to a *Solid*.
   * Only a *Face* can be added to a *Shell*.
-  * Only a *Wire* and *Vertex* can be added in a *Solid*.
+  * Only a *Wire* can be added to a *Face*.
   * Only an *Edge* can be added to a *Wire*.
   * Only a *Vertex* can be added to an *Edge*.
   * Nothing can be added to a *Vertex*.
@@ -5595,7 +5595,7 @@ visoedge edge face v u1 u2
 ~~~~
 
 * **edge** creates a straight line edge between two vertices. 
-* **mkedge** generates edges from curves<.Two parameters can be given for the vertices: the first and last parameters of the curve are given by default. Vertices can also be given with their parameters, this option allows blocking the creation of new vertices. If the parameters of the vertices are not given, they are computed by projection on the curve. Instead of a 3d curve, a 2d curve and a surface can be given. 
+* **mkedge** generates edges from curves. Two parameters can be given for the vertices: the first and last parameters of the curve are given by default. Vertices can also be given with their parameters, this option allows blocking the creation of new vertices. If the parameters of the vertices are not given, they are computed by projection on the curve. Instead of a 3d curve, a 2d curve and a surface can be given. 
 
 **Example:** 
 ~~~~{.tcl}
@@ -5741,7 +5741,7 @@ profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290
 # wire continues at a tangent to the intersection x = 0 
 profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290 ix 0 ww 
 
-# continue the wire at an angle of 90 degrees until it intersects the y axis at y= -o.3 
+# continue the wire at an angle of 90 degrees until it intersects the y axis at y= -0.3 
 profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290 ix 0 r 90 ix -0.3 ww 
 
 #close the wire 
@@ -6004,7 +6004,7 @@ Primitive commands make it possible to create simple shapes. They include:
 Syntax:
 ~~~~{.tcl}
 box name [x y z] dx dy dz 
-wedge name dx dy dz ltx / xmin zmin xmax xmax 
+wedge name dx dy dz ltx / xmin zmin xmax zmax 
 ~~~~
 
 **box** creates a box parallel to the axes with dimensions *dx,dy,dz*. *x,y,z* is the corner of the box. It is the default origin. 
@@ -6036,7 +6036,6 @@ wedge w3 20 20 20 10 10 10 10
 Syntax:
 ~~~~{.tcl}
 pcylinder name [plane] radius height [angle] 
-pcone name [plane] radius1 radius2 height [angle] 
 pcone name [plane] radius1 radius2 height [angle] 
 psphere name [plane] radius1 [angle1 angle2] [angle] 
 ptorus name [plane] radius1 radius2 [angle1 angle2] [angle] 
@@ -6226,7 +6225,7 @@ polyline w3 0 0 5 5 0 5 5 5 5 2 3 5
 # create the shape 
 thrusections th issolid isruled w1 w2 w3 
 ==thrusections th issolid isruled w1 w2 w3 
-Tolerances obtenues   -- 3d : 0 
+Tolerances obtained  -- 3d : 0 
 -- 2d : 0 
 ~~~~
 
@@ -6392,7 +6391,7 @@ Blending is the creation of a new shape by rounding edges to create a fillet.
 
 Syntax:
 ~~~~{.tcl}
-dep result shape dirx diry dirz face angle x y x dx dy dz [face angle...] 
+dep result shape dirx diry dirz face angle x y z dx dy dz [face angle...] 
 ~~~~
 
 Creates a new shape by drafting one or more faces of a shape. 
@@ -7161,7 +7160,7 @@ gplate r2 4 1 p e1 0 e2 0 e3 0 e4 0 pp
 ======== Results =========== 
 DistMax=3.65622157610934e-06 
 * GEOMPLATE END* 
-Calculculation time: 0.27 
+Calculation time: 0.27 
 Loop number: 1 
 Approximation results 
 Approximation error : 0.000422195884750181 
@@ -7581,7 +7580,7 @@ modified m5 fillet_hist b_5
 
 @subsubsection occt_draw_hist_gen generated
 
-*generated* command returns the shapes Generated from the given shape in the given history. All generated shapes are put into a compound. If no shapes have been generated from the shape, the resulting compound will be empty. Note that; if the shape has generated a single shape only, it will be returned without enclosure into the compound.
+*generated* command returns the shapes Generated from the given shape in the given history. All generated shapes are put into a compound. If no shapes have been generated from the shape, the resulting compound will be empty. Note that, if the shape has generated a single shape only, it will be returned without enclosure into the compound.
 
 Syntax:
 ~~~~{.tcl}
@@ -7930,7 +7929,7 @@ The following commands are used to perform the operation using API implementatio
 * **bapibop** -- to perform API Boolean operation.
 * **bapisplit** -- to perform API Split operation.
 
-These commands have the same syntax as the analogical commands described above.
+These commands have the same syntax as the analogous commands described above.
 
 
 @subsection occt_draw_bop_options Setting options for the operation
@@ -8085,7 +8084,7 @@ bopcheck c
 ~~~~
 
 In this example one box is completely included into other box. So the output shows that all sub-shapes of b2 interfering with the solid b1.
-**bopcheck** command does not modifies the input shape, thus can be safely used.
+**bopcheck** command does not modify the input shape, thus can be safely used.
 
 
 @subsubsection occt_draw_bop_check_2 bopargcheck
@@ -8145,7 +8144,7 @@ Made faulty shape: s1si_1
 Made faulty shape: s1se_1
 Faulties for FIRST  shape found : 2
 ---------------------------------
-Shapes are not suppotrted by BOP: NO
+Shapes are not supported by BOP: NO
 Self-Intersections              : YES  Cases(1)  Total shapes(2)
 Check for SI has been aborted   : NO
 Too small edges                 : YES  Cases(1)  Total shapes(1)
@@ -8428,7 +8427,7 @@ This chapter presents some general information about Data Exchange (DE) operatio
 
 DE commands are intended for translation files of various formats (IGES,STEP) into OCCT shapes with their attributes (colors, layers etc.) 
 
-This files include a number of entities. Each entity has its own number in the file which we call label and denote as # for a STEP file and D for an IGES file. Each file has entities called roots (one or more). A full description of such entities is contained in the Users' Guides 
+These files include a number of entities. Each entity has its own number in the file which we call label and denote as # for a STEP file and D for an IGES file. Each file has entities called roots (one or more). A full description of such entities is contained in the Users' Guides 
 * for <a href="user_guides__step.html#occt_step_1">STEP format</a> and
 * for <a href="user_guides__iges.html#occt_iges_1">IGES format</a>. 
 
@@ -8711,7 +8710,7 @@ givecount <selection_name> [<selection_name>]
 
 
 Prints a number of loaded entities defined by the selection argument.
-Possible values of \<selection_name\> you can find in the “IGES FORMAT Users’s Guide”.
+Possible values of \<selection_name\> you can find in the "IGES FORMAT User's Guide".
 
 **Example:**
 ~~~~{.tcl}
@@ -8743,7 +8742,7 @@ givelist xst-model-all
 
 @subsubsection occt_draw_8_3_10  listcount
 
-Syntax:listcount \<counter\> [\<selection\> ...]
+Syntax: listcount \<counter\> [\<selection\> ...]
 
 Prints a list of entities per each type matching the criteria defined by arguments. 
 Optional <i>\<selection\></i> argument, if specified, defines a subset of entities, which are to be taken into account. Argument <i>\<counter\></i>  should be one of the currently defined counters: 
@@ -8920,7 +8919,7 @@ These commands are used for translation of IGES and STEP files into an XCAF docu
   * XDE layer’s commands
   * XDE property’s commands
 
-Reminding: All operations of translation are performed with parameters managed by command @ref occt_draw_8_3_14 "param".
+Reminder: All operations of translation are performed with parameters managed by command @ref occt_draw_8_3_14 "param".
 
 @subsubsection occt_draw_8_4_1  ReadIges
 
@@ -9000,13 +8999,13 @@ Syntax:
 XFileList  
 ~~~~
 
-Returns a list all files that were transferred by the last transfer. This command is  meant (assigned) for the assemble step file. 
+Returns a list all files that were transferred by the last transfer. This command is  meant (assigned) for the assembly STEP file. 
 
 **Example:**
 ~~~~{.tcl}
 XFileList 
 ==> *as1-ct-Bolt.stp* 
-==> *as1-ct-L-Bracktet.stp* 
+==> *as1-ct-L-Bracket.stp* 
 ==> *as1-ct-LBA.stp* 
 ==> *as1-ct-NBA.stp* 
 ==> … 
@@ -9019,7 +9018,7 @@ Syntax:
 XFileSet <filename> 
 ~~~~
 
-Sets the current file taking it from the components list of the assemble file. 
+Sets the current file taking it from the components list of the assembly file. 
 
 **Example:**
 ~~~~{.tcl}
@@ -9338,7 +9337,7 @@ Syntax:
 XRemoveShape <document> <label>
 ~~~~
 
-Removes a shape from a document (by it’s label). 
+Removes a shape from a document (by its label). 
 
 **Example:**
 ~~~~{.tcl}
@@ -9641,7 +9640,7 @@ XRemoveLayer D layer2
 
 Syntax:
 ~~~~{.tcl}
-XSetLayer XSetLayer <document> {<shape>|<label>} <layer> [shape_in_one_layer {0|1}]
+XSetLayer <document> {<shape>|<label>} <layer> [shape_in_one_layer {0|1}]
 
 ~~~~
  
@@ -9895,7 +9894,7 @@ Checks the overlapping of two given edges. If the distance between two edges is 
 checkoverlapedges e1 e2 
 ~~~~
 
-@subsubsection occt_draw_9_1_4 comtol
+@subsubsection occt_draw_9_1_4 comptol
 
 Syntax:
 ~~~~{.tcl}
@@ -9968,7 +9967,7 @@ Syntax:
 fixsmall <result> <shape> [<toler>=1.]
 ~~~~
 
-Fixes small edges in given shape by merging adjacent edges with agiven tolerance. Results are put into the shape, which is given as the result parameter. 
+Fixes small edges in given shape by merging adjacent edges with a given tolerance. Results are put into the shape, which is given as the result parameter. 
 
 **Example:**
 ~~~~{.tcl}
@@ -10221,11 +10220,11 @@ DT_ClosedSplit <result> <shape>
 ~~~~
 
 Divides all closed faces in the shape (for example cone) and returns result of given shape into shape, which is given as parameter result. Number of faces in resulting shapes will be increased. 
-Note: A closed face is a face with one or more seam. 
+Note: A closed face is a face with one or more seams. 
 
 **Example:**
 ~~~~{.tcl}
-DT_ClosetSplit r a 
+DT_ClosedSplit r a 
 ~~~~
 
 @subsubsection occt_draw_9_2_2 DT_ShapeConvert, DT_ShapeConvertRev
@@ -10430,7 +10429,7 @@ Syntax:
 pln <x1> <y1> <z1> <x2> <y2> <z2> <x3> <y3> <z3>
 ~~~~
 
-Returns plane built on three points. A plane is represented by 6 double values: coordinates of the origin point and the normal directoin.
+Returns plane built on three points. A plane is represented by 6 double values: coordinates of the origin point and the normal direction.
 
 Example: 
 ~~~~{.tcl}
@@ -10500,7 +10499,7 @@ Syntax:
 inverse <x> <y> <z>
 ~~~~
 
-Returns inversed 3D vector.
+Returns inverted 3D vector.
 
 Example: 
 ~~~~{.tcl}
@@ -10514,7 +10513,7 @@ Syntax:
 2dinverse <x> <y>
 ~~~~
 
-Returns inversed 2D vector.
+Returns inverted 2D vector.
 
 Example: 
 ~~~~{.tcl}

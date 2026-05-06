@@ -33,9 +33,9 @@ In the <i>Formats</i> method, add the format of the documents, which need to be 
 For example:
 
 ~~~~{.cpp}
-    void myApplication::Formats(NCollection_Sequence<TCollection_ExtendedString>& Formats)
+    void myApplication::Formats(NCollection_Sequence<TCollection_ExtendedString>& theFormats)
     {
-      Formats.Append(TCollection_ExtendedString ("OCAF-myApplication"));
+      theFormats.Append(TCollection_ExtendedString ("OCAF-myApplication"));
     }
 ~~~~
 
@@ -45,7 +45,7 @@ This file contains several definitions for the saving and opening mechanisms ass
 ~~~~{.cpp}
     const char* myApplication::ResourcesName()
     {
-      return const char* ("Resources");
+      return "Resources";
     }
 ~~~~
 
@@ -232,20 +232,20 @@ const Standard_GUID& MyPackage_Transformation::GetID()
 
 occ::handle<MyPackage_Transformation> MyPackage_Transformation::Set(const TDF_Label& theLabel)
 {
-  occ::handle<MyPackage_Transformation> T;
-  if (!theLabel.FindAttribute(MyPackage_Transformation::GetID(), T))
+  occ::handle<MyPackage_Transformation> aT;
+  if (!theLabel.FindAttribute(MyPackage_Transformation::GetID(), aT))
   {
-    T = new MyPackage_Transformation();
-    theLabel.AddAttribute(T);
+    aT = new MyPackage_Transformation();
+    theLabel.AddAttribute(aT);
   }
-  return T;
+  return aT;
 }
 
 //==================================================================================================
 
 gp_Trsf MyPackage_Transformation::Get() const
 {
-  gp_Trsf transformation;
+  gp_Trsf aTransformation;
   switch (myType)
   {
     case gp_Identity:
@@ -254,37 +254,37 @@ gp_Trsf MyPackage_Transformation::Get() const
     }
     case gp_Rotation:
     {
-      transformation.SetRotation(myAx1, myAngle);
+      aTransformation.SetRotation(myAx1, myAngle);
       break;
     }
     case gp_Translation:
     {
-      transformation.SetTranslation(myFirstPoint, mySecondPoint);
+      aTransformation.SetTranslation(myFirstPoint, mySecondPoint);
       break;
     }
     case gp_PntMirror:
     {
-      transformation.SetMirror(myFirstPoint);
+      aTransformation.SetMirror(myFirstPoint);
       break;
     }
     case gp_Ax1Mirror:
     {
-      transformation.SetMirror(myAx1);
+      aTransformation.SetMirror(myAx1);
       break;
     }
     case gp_Ax2Mirror:
     {
-      transformation.SetMirror(myAx2);
+      aTransformation.SetMirror(myAx2);
       break;
     }
     case gp_Scale:
     {
-      transformation.SetScale(myFirstPoint, myScale);
+      aTransformation.SetScale(myFirstPoint, myScale);
       break;
     }
     case gp_CompoundTrsf:
     {
-      transformation.SetTransformation(myFirstAx3, mySecondAx3);
+      aTransformation.SetTransformation(myFirstAx3, mySecondAx3);
       break;
     }
     case gp_Other:
@@ -292,12 +292,12 @@ gp_Trsf MyPackage_Transformation::Get() const
       break;
     }
   }
-  return transformation;
+  return aTransformation;
 }
 
 //==================================================================================================
 
-void MyPackage_Transformation::SetRotation(const gp_Ax1& theAxis, const double theAngle)
+void MyPackage_Transformation::SetRotation(const gp_Ax1& theAxis, double theAngle)
 {
   Backup();
   myType = gp_Rotation;
@@ -344,7 +344,7 @@ void MyPackage_Transformation::SetMirror(const gp_Ax2& thePlane)
 
 //==================================================================================================
 
-void MyPackage_Transformation::SetScale(const gp_Pnt& thePoint, const double theScale)
+void MyPackage_Transformation::SetScale(const gp_Pnt& thePoint, double theScale)
 {
   Backup();
   myType = gp_Scale;
@@ -373,16 +373,16 @@ const Standard_GUID& MyPackage_Transformation::ID() const
 
 void MyPackage_Transformation::Restore(const occ::handle<TDF_Attribute>& theAttribute)
 {
-  occ::handle<MyPackage_Transformation> theTransformation = occ::down_cast<MyPackage_Transformation>(theAttribute);
-  myType = theTransformation->myType;
-  myAx1 = theTransformation->myAx1;
-  myAx2 = theTransformation->myAx2;
-  myFirstAx3 = theTransformation->myFirstAx3;
-  mySecondAx3 = theTransformation->mySecondAx3;
-  myAngle = theTransformation->myAngle;
-  myScale = theTransformation->myScale;
-  myFirstPoint = theTransformation->myFirstPoint;
-  mySecondPoint = theTransformation->mySecondPoint;
+  occ::handle<MyPackage_Transformation> aTransformation = occ::down_cast<MyPackage_Transformation>(theAttribute);
+  myType = aTransformation->myType;
+  myAx1 = aTransformation->myAx1;
+  myAx2 = aTransformation->myAx2;
+  myFirstAx3 = aTransformation->myFirstAx3;
+  mySecondAx3 = aTransformation->mySecondAx3;
+  myAngle = aTransformation->myAngle;
+  myScale = aTransformation->myScale;
+  myFirstPoint = aTransformation->myFirstPoint;
+  mySecondPoint = aTransformation->mySecondPoint;
 }
 
 //==================================================================================================
@@ -397,16 +397,16 @@ occ::handle<TDF_Attribute> MyPackage_Transformation::NewEmpty() const
 void MyPackage_Transformation::Paste (const occ::handle<TDF_Attribute>& theAttribute,
                                       const occ::handle<TDF_RelocationTable>& ) const
 {
-  occ::handle<MyPackage_Transformation> theTransformation = occ::down_cast<MyPackage_Transformation>(theAttribute);
-  theTransformation->myType = myType;
-  theTransformation->myAx1 = myAx1;
-  theTransformation->myAx2 = myAx2;
-  theTransformation->myFirstAx3 = myFirstAx3;
-  theTransformation->mySecondAx3 = mySecondAx3;
-  theTransformation->myAngle = myAngle;
-  theTransformation->myScale = myScale;
-  theTransformation->myFirstPoint = myFirstPoint;
-  theTransformation->mySecondPoint = mySecondPoint;
+  occ::handle<MyPackage_Transformation> aTransformation = occ::down_cast<MyPackage_Transformation>(theAttribute);
+  aTransformation->myType = myType;
+  aTransformation->myAx1 = myAx1;
+  aTransformation->myAx2 = myAx2;
+  aTransformation->myFirstAx3 = myFirstAx3;
+  aTransformation->mySecondAx3 = mySecondAx3;
+  aTransformation->myAngle = myAngle;
+  aTransformation->myScale = myScale;
+  aTransformation->myFirstPoint = myFirstPoint;
+  aTransformation->mySecondPoint = mySecondPoint;
 }
 
 //==================================================================================================

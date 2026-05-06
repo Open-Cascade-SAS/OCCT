@@ -642,9 +642,9 @@ GeomPlate_BuildPlateSurface BPSurf(3,15,2);
 for (BRepTools_WireExplorer anExp(W); anExp.More(); anExp.Next()) 
 { 
 TopoDS_Edge E = anExp.Current(); 
-occ::handle<BRepAdaptor_Curve> C = new BRepAdaptor_Curve (E);
+occ::handle<BRepAdaptor_Curve> aCurve = new BRepAdaptor_Curve (E);
 occ::handle<BRepFill_CurveConstraint> Cont = new
-BRepFill_CurveConstraint (C, 0);
+BRepFill_CurveConstraint (aCurve, 0);
 
 BPSurf.Add(Cont); 
 } 
@@ -1213,7 +1213,7 @@ gp_Ax2 Origin = gp::XOY();
 gp_Vec Offset(x, y, 0.); 
 Origin.Translate(Offset); 
 BRepBuilderAPI_MakeEdge 
-ME(gp_Circ(Origin,R),  ang, ang+PI/2); 
+ME(gp_Circ(Origin,R),  ang, ang+M_PI/2); 
 E = ME; 
 V1 = ME.Vertex1(); 
 V2 = ME.Vertex2(); 
@@ -1230,13 +1230,13 @@ NCollection_Array1<TopoDS_Shape> theVertices(1,8);
 // using the MakeArc function described above. 
 
 double x = L/2 - R, y = H/2 - R; 
-MakeArc(x,-y,R,3.*PI/2.,theEdges(2),theVertices(2), 
+MakeArc(x,-y,R,3.*M_PI/2.,theEdges(2),theVertices(2), 
 theVertices(3)); 
 MakeArc(x,y,R,0.,theEdges(4),theVertices(4), 
 theVertices(5)); 
-MakeArc(-x,y,R,PI/2.,theEdges(6),theVertices(6), 
+MakeArc(-x,y,R,M_PI/2.,theEdges(6),theVertices(6), 
 theVertices(7)); 
-MakeArc(-x,-y,R,PI,theEdges(8),theVertices(8), 
+MakeArc(-x,-y,R,M_PI,theEdges(8),theVertices(8), 
 theVertices(1)); 
 // Create the linear edges 
 for (int i = 1; i <= 7; i += 2) 
@@ -1540,7 +1540,7 @@ double X = 20, Y = 10, Z = 15, R = 10, DY = 30;
 gp_Ax2 axes = gp::ZOX(); 
 axes.Translate(gp_Vec(X,Y,Z)); 
 TopoDS_Face F = 
-BRepPrimAPI_MakeCylinder(axes,R,DY,PI/2.); 
+BRepPrimAPI_MakeCylinder(axes,R,DY,M_PI/2.); 
 ~~~~
 @figure{/user_guides/modeling_algos/images/modeling_algos_image029.png,"Cylinder",360}
 
@@ -1564,14 +1564,14 @@ TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H);
 
   * From a radius -- builds a full  sphere. 
   * From a radius and an angle -- builds  a lune (digon).
-  * From a radius and two angles -- builds a wraparound spherical segment between two latitudes. The angles *a1* and *a2* must follow the relation: <i>PI/2 <= a1 < a2 <= PI/2 </i>. 
+  * From a radius and two angles -- builds a wraparound spherical segment between two latitudes. The angles *a1* and *a2* must follow the relation: <i>-PI/2 <= a1 < a2 <= PI/2 </i>. 
   * From a radius and three angles -- a combination of two previous methods builds a portion of spherical segment. 
 
 The following code  builds four spheres from a radius and three angles. 
 
 ~~~~{.cpp}
 double R = 30, ang = 
-	PI/2, a1 = -PI/2.3,  a2 = PI/4; 
+	M_PI/2, a1 = -M_PI/2.3,  a2 = M_PI/4; 
 TopoDS_Solid S1 = BRepPrimAPI_MakeSphere(R); 
 TopoDS_Solid S2 = BRepPrimAPI_MakeSphere(R,ang); 
 TopoDS_Solid S3 = BRepPrimAPI_MakeSphere(R,a1,a2); 
@@ -1596,8 +1596,8 @@ Note that we could  equally well choose to create Shells instead of Solids.
 The following code  builds four toroidal shells from two radii and three angles. 
 
 ~~~~{.cpp}
-double R1 = 30, R2 = 10, ang = PI, a1 = 0, 
-	a2 = PI/2; 
+double R1 = 30, R2 = 10, ang = M_PI, a1 = 0, 
+	a2 = M_PI/2; 
 TopoDS_Shell S1 = BRepPrimAPI_MakeTorus(R1,R2); 
 TopoDS_Shell S2 = BRepPrimAPI_MakeTorus(R1,R2,ang); 
 TopoDS_Shell S3 = BRepPrimAPI_MakeTorus(R1,R2,a1,a2); 
@@ -1672,7 +1672,7 @@ The following code creates a full and a partial rotation using a face, an axis a
 ~~~~{.cpp}
 TopoDS_Face F = ...; // the profile 
 gp_Ax1 axis(gp_Pnt(0,0,0),gp_Dir(0,0,1)); 
-double ang = PI/3; 
+double ang = M_PI/3; 
 TopoDS_Solid R1 = BRepPrimAPI_MakeRevol(F,axis); 
 // Full revol 
 TopoDS_Solid R2 = BRepPrimAPI_MakeRevol(F,axis,ang); 
@@ -2113,14 +2113,18 @@ void CSampleTopologicalOperationsDoc::OnEvolvedblend1()
 
 	NCollection_Array1<gp_Pnt2d>  ParAndRad(1, 6); 
 	ParAndRad(1).SetCoord(0.,  10.); 
-	ParAndRad(1).SetCoord(50.,  20.); 
-	ParAndRad(1).SetCoord(70.,  20.); 
-	ParAndRad(1).SetCoord(130.,  60.); 
-	ParAndRad(1).SetCoord(160.,  30.); 
-	ParAndRad(1).SetCoord(200.,  20.); 
+	ParAndRad(2).SetCoord(50.,  20.); 
+	ParAndRad(3).SetCoord(70.,  20.); 
+	ParAndRad(4).SetCoord(130.,  60.); 
+	ParAndRad(5).SetCoord(160.,  30.); 
+	ParAndRad(6).SetCoord(200.,  20.); 
 
 	TopExp_Explorer  ex(aBox,TopAbs_EDGE); 
-	Rake.Add(ParAndRad, TopoDS::Edge(ex.Current())); 
+	while (ex.More())
+	{
+	  Rake.Add(ParAndRad, TopoDS::Edge(ex.Current()));
+	  ex.Next();
+	}
 	TopoDS_Shape  evolvedBox = Rake.Shape(); 
 } 
 ~~~~
@@ -2294,7 +2298,7 @@ NCollection_List<TopoDS_Shape> ListOfFace;
 
 gp_Dir Direc(0.,0.,1.); 
 // Z direction 
-double Angle = 5.*PI/180.; 
+double Angle = 5.*M_PI/180.; 
 // 5 degree angle 
 gp_Pln Neutral(gp_Pnt(0.,0.,5.), Direc); 
 // Neutral plane Z=5 
@@ -2377,7 +2381,7 @@ TopoDS_Shape aShape2 = ...;
 // The original shape2 
 gp_Trsf T; 
 T.SetRotation(gp_Ax1(gp_Pnt(0.,0.,0.),gp_Vec(0.,0.,1.)), 
-2.*PI/5.); 
+2.*M_PI/5.); 
 BRepBuilderAPI_Transform theTrsf(T); 
 theTrsf.Perform(aShape1); 
 TopoDS_Shape aNewShape1 = theTrsf.Shape();
@@ -2419,7 +2423,7 @@ try {
 TopoDS_Edge E = BRepBuilderAPI_MakeEdge(P1,P2); 
 // go on with the edge 
 } 
-catch { 
+catch (...) { 
 // process the error. 
 } 
 ~~~~
@@ -2539,12 +2543,14 @@ See the example:
 //initial sewn shapes
 TopoDS_Shape aS1, aS2;  // these shapes are expected to be well sewn shells
 TopoDS_Shape aComp;
+TopoDS_Shape aF1, aF2;
 BRep_Builder aB;
 aB.MakeCompound(aComp);
 aB.Add(aComp, aS1);
 aB.Add(aComp, aS2);
-................................
+BRepBuilderAPI_Sewing aSewing;
 aSewing.Load(aComp);
+aF1 = aSewing.SewedShape();
 
 //sub shapes which should be locally sewed
 aSewing.Add(aF1);
@@ -2619,11 +2625,11 @@ In the following  sequence, a protrusion is performed, i.e. a face of the shape 
 TopoDS_Shape Sbase = ...;  // an initial shape 
 TopoDS_Face Fbase = ....; // a base of prism 
 
-gp_Dir Extrusion (.,.,.); 
+gp_Dir anExtrusion (0., 0., 1.); 
 
 // An empty face is given as the sketch face 
 
-BRepFeat_MakePrism thePrism(Sbase, Fbase, TopoDS_Face(),  Extrusion, true, true); 
+BRepFeat_MakePrism thePrism(Sbase, Fbase, TopoDS_Face(),  anExtrusion, 1, true); 
 
 thePrism.Perform (100.); 
 if (thePrism.IsDone()) { 
@@ -2672,8 +2678,8 @@ occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F);
 gp_Circ2d c(gp_Ax2d(gp_Pnt2d(200.,130.),gp_Dir2d(1.,0.)),50.);
 BRepBuilderAPI_MakeWire MW;
 occ::handle<Geom2d_Curve> aline = new Geom2d_Circle(c);
-MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,PI));
-MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,PI,2.*PI));
+MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,M_PI));
+MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,M_PI,2.*M_PI));
 BRepBuilderAPI_MakeFace MKF(surf, false);
 MKF.Add(MW.Wire());
 TopoDS_Face FP = MKF.Face();
@@ -2713,12 +2719,12 @@ TopoDS_Shape Sbase = ...;  // an initial shape
 TopoDS_Face Frevol = ....; // a base of prism 
 TopoDS_Face FUntil = ....; // face limiting the revol 
 
-gp_Dir RevolDir (.,.,.); 
-gp_Ax1 RevolAx(gp_Pnt(.,.,.), RevolDir); 
+gp_Dir aRevolDir (0., 1., 0.); 
+gp_Ax1 aRevolAx(gp_Pnt(0., 0., 0.), aRevolDir); 
 
 // An empty face is given as the sketch face 
 
-BRepFeat_MakeRevol theRevol(Sbase, Frevol, TopoDS_Face(), RevolAx,  true, true); 
+BRepFeat_MakeRevol theRevol(Sbase, Frevol, TopoDS_Face(), aRevolAx,  1, true); 
 
 theRevol.Perform(FUntil); 
 if (theRevol.IsDone()) { 
@@ -2837,7 +2843,7 @@ p2 = gp_Pnt(0.,0.,200.);
 mkw.Add(BRepBuilderAPI_MakeEdge(p1,p2)); 
 p1 = p2; 
 mkw.Add(BRepBuilderAPI_MakeEdge(p2,gp_Pnt(0.,0.,0.))); 
-TopoDS_Shape S = BRepBuilderAPI_MakePrism(BRepBuilderAPI_MakeFace 
+TopoDS_Shape S = BRepPrimAPI_MakePrism(BRepBuilderAPI_MakeFace 
 	(mkw.Wire()),gp_Vec(gp_Pnt(0.,0.,0.),gp_Pnt(0.,100.,0.))); 
 TopoDS_Wire W = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt 
 	(50.,45.,100.), 
@@ -3027,7 +3033,7 @@ For more details on commands above, refer to the @ref occt_draw_defeaturing "Def
 
 Here are the examples of defeaturing of the ANC101 model:
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im004.png,"ANC101 model",220}</td>
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im004.png,"ANC101 model",220}
 
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_rf_im005.png,"Removing the cylindrical protrusion",220}
@@ -3301,7 +3307,7 @@ For an *HLRBRep_HLRToShape* object built from an *HLRBRep_Algo* object you can a
 
 ~~~~{.cpp}
 // Build The algorithm object 
-anAlgo = new HLRBRep_Algo(); 
+occ::handle<HLRBRep_Algo> anAlgo = new HLRBRep_Algo(); 
 
 // Add Shapes into the algorithm 
 NCollection_List<TopoDS_Shape>::Iterator anIterator(myListOfShape); 
@@ -3348,7 +3354,7 @@ aHLRToShape.IsoLineHCompound();
 ~~~~{.cpp}
 
 // Build The algorithm object 
-aPolyAlgo = new HLRBRep_PolyAlgo(); 
+occ::handle<HLRBRep_PolyAlgo> aPolyAlgo = new HLRBRep_PolyAlgo(); 
 
 // Add Shapes into the algorithm 
 NCollection_List<TopoDS_Shape>::Iterator 
@@ -3453,7 +3459,7 @@ For more information on the error/warning reporting system please see the chapte
 
 @subsection occt_modalg_makeconnected_usage Usage
 
-Here is the example of usage of the *BOPAlgo_MakePeriodic* algorithm on the API level:
+Here is the example of usage of the *BOPAlgo_MakeConnected* algorithm on the API level:
 ~~~~{.cpp}
 NCollection_List<TopoDS_Shape> anArguments = ...;  // Shapes to make connected
 bool bRunParallel = ...;     // Parallel processing mode

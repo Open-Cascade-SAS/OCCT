@@ -473,7 +473,8 @@ of for each of the two "AXIS2_PLACEMENT_3D" entities referenced by it. as follow
   occ::handle<StepGeom_Axis2Placement3d> aSTEPAxis = ...;
   occ::handle<Transfer_Binder> aBinder = aReader->WS()->TransferReader()->TransientProcess()->Find(aSTEPAxis);
   occ::handle<TransferBRep_ShapeBinder> aShBinder = occ::down_cast<TransferBRep_ShapeBinder>(aBinder);
-  if (! aShBinder.IsNull())
+  if (! aShBinder.IsNull()
+   && aShBinder->Result().ShapeType() == TopAbs_FACE)
   {
     TopoDS_Face aFace = TopoDS::Face (aShBinder->Result());
     if (! aFace.IsNull())
@@ -569,12 +570,12 @@ between two translation operations, if you do not, the results from the next tra
 If several individual translations follow each other, the results give a list that can be purged with *reader.ClearShapes()*, which erases the existing results. 
 
 <h5>Checking that translation was correctly performed</h5>
-Each time you invoke *Transfer* or *TransferRoots()*,  you can display the related messages with the help of: 
+Each time you invoke *TransferOne(), TransferRoot()* or *TransferList()*, you can display the related messages with the help of: 
 ~~~~{.cpp}
 reader.PrintCheckTransfer(failsonly,mode); 
 ~~~~
 
-This check concerns the last invocation of *Transfer* or *TransferRoots()* only. 
+This check concerns the last invocation of *TransferOne(), TransferRoot()* or *TransferList()* only. 
 
 @subsubsection occt_step_2_3_6 Selecting STEP entities for translation
 
@@ -1199,9 +1200,9 @@ The table below describes STEP entities, which are created when the assembly str
 | | Geom_SphericalSurface |  spherical_surface | | 
 | | Geom_SurfaceOfLinear Extrusion | surface_of_linear_extrusion | | 
 | | Geom_SurfaceOf Revolution | surface_of_revolution | |
-| | Geom_ToroidalSurface | toroidal_surface or degenerate_toroidal_surface |   *degenerate_toroidal_surface* is produced if the minor radius is greater then the major one |
+| | Geom_ToroidalSurface | toroidal_surface or degenerate_toroidal_surface |   *degenerate_toroidal_surface* is produced if the minor radius is greater than the major one |
 | | Geom_BezierSurface | b_spline_surface_with_knots | | 
-| | Geom_BsplineSurface | b_spline_surface_with_knots or rational_b_spline_surface |  *rational_b_spline_surface* is produced if *Geom_BSplineSurface* is a rational Bspline |
+| | Geom_BSplineSurface | b_spline_surface_with_knots or rational_b_spline_surface |  *rational_b_spline_surface* is produced if *Geom_BSplineSurface* is a rational BSpline |
 | Triangulations | Poly_Triangulation | *triangulated_face* is produced for face active triangulation | |
 
 
@@ -1267,7 +1268,7 @@ Physical file reading consists of the following steps:
    2.Mapping STEP entities to the array of strings 
    3.Creating empty OCCT objects representing STEP entities 
    4.Initializing OCCT objects 
-   5.Building a references graph 
+   5. Building a references graph 
    
 @subsubsection occt_step_4_2_1 Loading a STEP file and syntactic analysis of its contents
 In the first phase, a STEP file is syntactically checked and loaded in memory as a sequence of strings. 
@@ -1303,7 +1304,7 @@ Each field of a STEP entity should be represented by a corresponding field of th
 * Update file *RWStepAP214_ReadWriteModule.cxx*. The changes should be the following: 
  * For simple types: 
     * Add a static object of class *TCollection_AsciiString* with name *Reco_NewEntity* and initialize it with a string containing the STEP type. 
-    * In constructor *WStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()* add this object onto the list with the unique integer identifier of the new entity type. 
+    * In constructor *RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()* add this object onto the list with the unique integer identifier of the new entity type. 
     * In function *RWStepAP214_ReadWriteModule::StepType()* add a new C++ case operator for this identifier. 
  * For complex types: 
     * In the method *RWStepAP214_ReadWriteModule::CaseStep()* add a code for recognition the new entity type returning its unique integer identifier. 
@@ -1769,7 +1770,7 @@ Interface_Static::SetCVal("write.step.schema", "AP242DIS");
 ~~~~
 or
 ~~~~{.cpp}
-Interface_Static::SetIVal("write.step.schema", 5));  
+Interface_Static::SetIVal("write.step.schema", 5);  
 ~~~~
 ### Saved views
 Saved Views are not exported by OCCT.

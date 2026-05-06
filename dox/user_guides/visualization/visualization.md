@@ -493,7 +493,7 @@ To change this, use the following code:
 // Assume there is a created interactive context
 const occ::handle<AIS_InteractiveContext> aContext;
 // Retrieve the current viewer selector
-const occ::handle<StdSelect_ViewerSelector3d>& aMainSelector = aContext->MainSelector();
+const occ::handle<SelectMgr_ViewerSelector>& aMainSelector = aContext->MainSelector();
 // Set the flag to allow overlap detection
 aMainSelector->AllowOverlapDetection (true);
 ~~~~
@@ -635,8 +635,8 @@ you can cancel its "infinite" status using *AIS_InteractiveObject::SetInfiniteSt
 Let us take for example the class called *IShape* representing an interactive object:
 
 ~~~~{.cpp}
-myPk_IShape::myPk_IShape (const TopoDS_Shape& aShape, PrsMgr_TypeOfPresentation theType)
-: AIS_InteractiveObject (theType), myShape (aShape) { SetHilightMode (0); }
+myPk_IShape::myPk_IShape (const TopoDS_Shape& theShape, PrsMgr_TypeOfPresentation3d theType)
+: AIS_InteractiveObject (theType), myShape (theShape) { SetHilightMode (0); }
 
 bool myPk_IShape::AcceptDisplayMode (const int theMode) const
 {
@@ -1260,7 +1260,7 @@ aScaleMap.Bind (anId, aValue);
 aBuilder->SetColorMap (aColorMap);
 aBuilder->SetInvalidColor (Quantity_NOC_BLACK);
 aBuilder->SetTextureCoords (aScaleMap);
-aMesh->AddBuilder (aBuilder, true);
+theMeshPrs->AddBuilder (aBuilder, true);
 ~~~~
 
 @subsection occt_visu_3_6 Dynamic Selection
@@ -1684,9 +1684,9 @@ aView->Update();
 Other 3D displays are also supported, including row-interlaced with passive glasses and anaglyph glasses - see *Graphic3d_StereoMode* enumeration.
 Example to activate another stereoscopic display:
 ~~~~{.cpp}
-occ::handle<V3d_View> aView;
+occ::handle<V3d_View> aView = myViewer->CreateView(); // create a view first
 aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
-aView->ChangeRenderingParams().StereoParams = Graphic3d_StereoMode_RowInterlaced;
+aView->ChangeRenderingParams().StereoMode = Graphic3d_StereoMode_RowInterlaced;
 ~~~~
 
 Supporting of VR/AR headsets in application is more involving.
@@ -2010,7 +2010,7 @@ aFirebrickMarker->SetColor (aFirebrick);
 aFirebrickMarker->SetScale (1.0f);
 aFirebrickMarker->SetType (Aspect_TOM_BALL);
 // or custom image
-aFirebrickMarker->SetMarkerImage (theImage)
+aFirebrickMarker->SetMarkerImage (theImage);
 ~~~~
 
 Create facet attributes.
@@ -2034,7 +2034,7 @@ occ::handle<Graphic3d_AspectText3d> aTextAspect = new Graphic3d_AspectText3d (aF
 
 ~~~~{.cpp}
 // create a graphic driver
-occ::handle<OpenGl_GraphicDriver> aGraphicDriver = new OpenGl_GraphicDriver (occ::handle<Aspect_DisplayConnection>());
+occ::handle<OpenGl_GraphicDriver> aGraphicDriver = new OpenGl_GraphicDriver (new Aspect_DisplayConnection());
 // create a viewer
 myViewer = new V3d_Viewer (aGraphicDriver);
 // set parameters for V3d_Viewer
@@ -2155,17 +2155,17 @@ aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d());
 Create text and markers in group *aGroup*.
 
 ~~~~{.cpp}
-static char* THE_TEXT[3] =
+static const char* THE_TEXT[3] =
 {
   "Application title",
   "My company",
   "My company address."
 };
-occ::handle<Graphic3d_ArrayOfPoints> aPtsArr = new Graphic3d_ArrayOfPoints (2, 1);
+occ::handle<Graphic3d_ArrayOfPoints> aPtsArr = new Graphic3d_ArrayOfPoints (2);
 aPtsArr->AddVertex (-40.0, -40.0, -40.0);
 aPtsArr->AddVertex (40.0, 40.0, 40.0);
 aGroup->AddPrimitiveArray (aPtsArr);
-aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectText3d());
+aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectMarker3d());
 
 for (int i = 0; i <= 2; ++i)
 {

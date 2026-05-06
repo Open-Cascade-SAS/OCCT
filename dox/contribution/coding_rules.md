@@ -159,7 +159,7 @@ void Package_MyClass::MyFunction (const gp_Pnt& thePoint); // this is preferred
 
 ### Names of class member variables
 
-The name of a class member variable should start with prefix *my* followed by the meaningful of the name starting with a capital letter.
+The name of a class member variable should start with prefix *my* followed by the meaningful part of the name starting with a capital letter.
 
 See the following examples:
 
@@ -218,13 +218,13 @@ void Average (const double** theArray,
               double&        theResult)
 {
   theResult = 0.0;
-  for (int aRow = 0; aRow < aRowsNb; ++aRow)
+  for (int aRow = 0; aRow < theRowsNb; ++aRow)
   {
-    for (int aCol = 0; aCol < aRowLen; ++aCol)
+    for (int aCol = 0; aCol < theRowLen; ++aCol)
     {
       theResult += theArray[aRow][aCol];
     }
-    theResult /= double(aRowsNb * aRowLen);
+    theResult /= double(theRowsNb * theRowLen);
   }
 }
 ~~~~
@@ -318,7 +318,7 @@ void TellMeSmthBad()
 ~~~~
 
 ### Block layout [MANDATORY]
-Figure brackets <i>{ }</i> and each operator <i>(for, if, else, try, catch)</i> should be written on a dedicated line.
+Curly braces <i>{ }</i> and each operator <i>(for, if, else, try, catch)</i> should be written on a dedicated line.
 
 In general, the layout should be as follows:
 
@@ -492,7 +492,7 @@ Accepted style is:
 //! Method computes the square value.
 //! @param theValue the input value
 //! @return squared value
-Standard_Export double Square (double theValue);
+Standard_EXPORT double Square (double theValue);
 @endverbatim
 
 ### Documenting C/C++ sources
@@ -719,7 +719,7 @@ See the following example:
       }
     ...
     private:
-      occ::handle<Slave> theSlave; // smart pointer
+      occ::handle<Slave> mySlave; // smart pointer
     ...
     }
 
@@ -732,7 +732,7 @@ See the following example:
       }
     ...
     private:
-      Master* theMaster; // simple pointer
+      Master* myMaster; // simple pointer
     ...
     }
 ~~~~
@@ -998,7 +998,7 @@ public: //! @name public methods
   //! Method computes the square value.
   //! @param theValue the input value
   //! @return squared value
-  Standard_Export double Square (const double theValue);
+  Standard_EXPORT double Square (const double theValue);
 
 private: //! @name private methods
 

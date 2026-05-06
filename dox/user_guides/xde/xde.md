@@ -734,7 +734,7 @@ if (!aColorTool->GetColor (aLabel, aCol))
 }
 ~~~~
 
-Color name can also be queried from `aCol.StringName` or `aCol.Name`.
+Color name can also be queried from `aCol.StringName()` or `aCol.Name()`.
 In this example, `aLabel` can be replaced by `aShape` directly.
 
 To get the Color attached to a Shape, with a specific color type, use:
@@ -832,7 +832,7 @@ All methods create a sub-label for the corresponding GD\&T entity of the tool ma
 Here is an example of adding a new dimension:
 ~~~~{.cpp}
 TDF_Label aDimLabel = aDimTolTool->AddDimension();
-if (!aDimLabel.IsNull())
+if (aDimLabel.IsNull())
 {
   // error processing
 }

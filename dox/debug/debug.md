@@ -174,18 +174,18 @@ Json output for Bnd_OBB (using command 'bounding v -obb -dumpJson'):
       "gp_XYZ": [1, 2, 3]
    },
    "Axes[0]": {
-       "gp_XYZ:" [1, 0, 0]
+       "gp_XYZ": [1, 0, 0]
    },
    "Axes[1]": {
-       "gp_XYZ:" [0, 1, 0]
+       "gp_XYZ": [0, 1, 0]
    },
    "Axes[2]": {
-       "gp_XYZ:" [0, 0, 1]
+       "gp_XYZ": [0, 0, 1]
    },
    "HDims[0]": 0,
    "HDims[1]": 0,
    "HDims[2]": 0,
-   "IsAABox": 1,
+   "IsAABox": 1
 }
 ~~~~
 

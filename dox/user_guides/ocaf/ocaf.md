@@ -1006,7 +1006,7 @@ The class *TNaming_Tool* provides a toolkit to read current data contained in th
 If you need to create a topological attribute for existing data, use the method *NamedShape*. 
 
 ~~~~{.cpp}
-class MyPkg_MyClass 
+class CafTest_MyClass 
 { 
 public: bool SameEdge (const occ::handle<CafTest_Line>& L1, const occ::handle<CafTest_Line>& L2); 
 }; 
@@ -1015,7 +1015,7 @@ bool CafTest_MyClass::SameEdge (const occ::handle<CafTest_Line>& L1, const occ::
 { 
   occ::handle<TNaming_NamedShape> NS1 = L1->NamedShape(); 
   occ::handle<TNaming_NamedShape> NS2 = L2->NamedShape(); 
-  return BRepTools::Compare(NS1->Shape(), NS2->Shape()); 
+  return BRepTools::Compare(TopoDS::Edge(NS1->Get()), TopoDS::Edge(NS2->Get())); 
 } 
 ~~~~
 
@@ -1167,7 +1167,7 @@ To find an attribute attached to a specific label, you use the GUID of the attri
 
 ~~~~{.cpp}
     Standard_GUID anID = MyAttributeClass::GetID();
-    bool HasAttribute = aLabel.Find(anID,anAttribute);
+    bool HasAttribute = aLabel.FindAttribute(anID,anAttribute);
 ~~~~
 
 @subsubsection occt_ocaf_6_2_2 Conventional Interface of Standard Attributes
@@ -1641,7 +1641,7 @@ for (; anIterator.More(); anIterator.Next())
 ~~~~{.cpp}
 
     // A virtual method ::Arguments() returns a list of arguments of the function.
-    void CylinderDriver::Arguments( NCollection_List<TDF_Label>& args )
+    void CylinderDriver::Arguments( NCollection_List<TDF_Label>& args ) const
     {
       // The direct arguments, located at sub-leaves of the function, are collected (see picture 2)
       TDF_ChildIterator  cIterator( Label(), false );
@@ -1660,14 +1660,14 @@ for (; anIterator.More(); anIterator.Next())
     }
 
     // A virtual method ::Results() returns a list of result leaves.
-    void CylinderDriver::Results( NCollection_List<TDF_Label>& res )
+    void CylinderDriver::Results( NCollection_List<TDF_Label>& res ) const
     {
       // The result is kept at the function  label.
       res.Append(  Label() );
     }
      
     // Execution of the function  driver.  
-    int CylinderDriver::Execute (occ::handle<TFunction_Logbook>& log)
+    int CylinderDriver::Execute (occ::handle<TFunction_Logbook>& log) const
 
     {  
       // Position of the cylinder - position of the first  function (cone)   

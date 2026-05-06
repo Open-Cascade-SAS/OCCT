@@ -105,10 +105,10 @@ Both of these classes return a *Geom_TrimmedCurve* manipulated by handle. This e
 All *GC* classes provide a casting method to obtain a result automatically with a function-like call. Note that this method will raise an exception if construction has failed. To handle possible errors more explicitly, you may use the *IsDone* and *Value* methods. For example:
 
 ~~~~{.cpp}
-    GC_MakeSegment mkSeg (aPnt1, aPnt2);
+    GC_MakeSegment aMkSeg (aPnt1, aPnt2);
     occ::handle<Geom_TrimmedCurve> aSegment1;
-    if(mkSeg.IsDone()){
-        aSegment1 = mkSeg.Value();
+    if(aMkSeg.IsDone()){
+        aSegment1 = aMkSeg.Value();
     }
     else {
     // handle error
@@ -240,10 +240,10 @@ The bottle's profile is almost finished. You have created two wires: *aWire* and
   * add all edges of the two wires by using the *Add* method on this object.
 
 ~~~~{.cpp}
-    BRepBuilderAPI_MakeWire mkWire;
-    mkWire.Add(aWire);
-    mkWire.Add(aMirroredWire);
-    TopoDS_Wire aWireProfile = mkWire.Wire();
+    BRepBuilderAPI_MakeWire aMkWire;
+    aMkWire.Add(aWire);
+    aMkWire.Add(aMirroredWire);
+    TopoDS_Wire aWireProfile = aMkWire.Wire();
 ~~~~
 
 
@@ -309,7 +309,7 @@ To apply fillets on the edges of a shape, you use the *BRepFilletAPI_MakeFillet*
   * Ask for the resulting filleted shape with the *Shape* method.
 
 ~~~~{.cpp}
-BRepFilletAPI_MakeFillet mkFillet(aBody);
+BRepFilletAPI_MakeFillet aMkFillet(aBody);
 ~~~~
 
 To add the fillet description, you need to know the edges belonging to your shape. The best solution is to explore your solid to retrieve its edges. This kind of functionality is provided with the *TopExp_Explorer* class, which explores the data structure described in a *TopoDS_Shape* and extracts the sub-shapes you specifically need. 
@@ -341,13 +341,13 @@ An explorer is usually applied in a loop by using its three main methods:
 In the explorer loop, you have found all the edges of the bottle shape. Each one must then be added in the *BRepFilletAPI_MakeFillet* instance with the *Add()* method. Do not forget to specify the radius of the fillet along with it.
 
 ~~~~{.cpp}
-    mkFillet.Add(theThickness / 12., anEdge);
+    aMkFillet.Add(theThickness / 12., anEdge);
 ~~~~
 
 Once this is done, you perform the last step of the procedure by asking for the filleted shape.
 
 ~~~~{.cpp}
-    aBody = mkFillet.Shape();
+    aBody = aMkFillet.Shape();
 ~~~~
 
 
@@ -362,9 +362,9 @@ To position the cylinder, you need to define a coordinate system with the *gp_Ax
 To align the neck with the center of the top face, being in the global coordinate system (0, 0, *theHeight*), with its normal on the global Z axis, your local coordinate system can be defined as follows:
 
 ~~~~{.cpp}
-    gp_Pnt neckLocation(0, 0, theHeight);
-    gp_Dir neckAxis = gp::DZ();
-    gp_Ax2 neckAx2(neckLocation, neckAxis);
+    gp_Pnt aNeckLocation(0, 0, theHeight);
+    gp_Dir aNeckAxis = gp::DZ();
+    gp_Ax2 neckAx2(aNeckLocation, aNeckAxis);
 ~~~~
 
 To create a cylinder, use another class from the primitives construction package: the *BRepPrimAPI_MakeCylinder* class. The information you must provide is:
@@ -375,8 +375,8 @@ To create a cylinder, use another class from the primitives construction package
 ~~~~{.cpp}
     double aNeckRadius = theThickness / 4.;
     double aNeckHeight = theHeight / 10;
-    BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, aNeckRadius, aNeckHeight);
-    TopoDS_Shape aNeck = MKCylinder.Shape();
+    BRepPrimAPI_MakeCylinder aMkCylinder(neckAx2, aNeckRadius, aNeckHeight);
+    TopoDS_Shape aNeck = aMkCylinder.Shape();
 ~~~~
 
 You now have two separate parts: a main body and a neck that you need to fuse together.
@@ -384,7 +384,11 @@ The *BRepAlgoAPI* package provides services to perform Boolean operations betwee
 Use *BRepAlgoAPI_Fuse* to fuse the two shapes:
 
 ~~~~{.cpp}
-    aBody = BRepAlgoAPI_Fuse(aBody, aNeck);
+    BRepAlgoAPI_Fuse aFuser(aBody, aNeck);
+    if (aFuser.IsDone())
+    {
+      aBody = aFuser.Shape();
+    }
 ~~~~
 
 
@@ -453,8 +457,8 @@ If this comparison is true, you know that the *aSurface* real type is *Geom_Plan
 Remember that the goal of all these conversions is to find the highest face of the bottle lying on a plane. Suppose that you have these two global variables:
 
 ~~~~{.cpp}
-    TopoDS_Face faceToRemove;
-    double zMax = -1;
+    TopoDS_Face aFaceToRemove;
+    double aZMax = -1;
 ~~~~
 
 You can easily find the plane whose origin is the biggest in Z knowing that the location of the plane is given with the *Geom_Plane::Location* method. For example:
@@ -464,9 +468,9 @@ You can easily find the plane whose origin is the biggest in Z knowing that the 
     {
       gp_Pnt aPnt = aPlane->Location();
       double aZ = aPnt.Z();
-      if(aZ > zMax){
-          zMax = aZ;
-          faceToRemove = aFace;
+      if(aZ > aZMax){
+          aZMax = aZ;
+          aFaceToRemove = aFace;
       }
     }
 ~~~~
@@ -478,16 +482,19 @@ The collection for shapes can be found in the *TopTools* package. As *BRepOffset
 @note In OCCT 8.0.0 the package-level `TCol*` typedefs are deprecated. Prefer `NCollection_*<T>` directly -- see the @ref upgrade_occt800 "Upgrade to OCCT 8.0.0".
 
 ~~~~{.cpp}
-    NCollection_List<TopoDS_Shape> facesToRemove;
-    facesToRemove.Append(faceToRemove);
+    NCollection_List<TopoDS_Shape> aFacesToRemove;
+    aFacesToRemove.Append(aFaceToRemove);
 ~~~~
 
 All the necessary data are now available so you can create your hollowed solid by calling the *BRepOffsetAPI_MakeThickSolid* MakeThickSolidByJoin method:
 
 ~~~~{.cpp}
     BRepOffsetAPI_MakeThickSolid aSolidMaker;
-    aSolidMaker.MakeThickSolidByJoin(aBody, facesToRemove, -theThickness / 50, 1.e-3);
-    aBody = aSolidMaker.Shape();
+    aSolidMaker.MakeThickSolidByJoin(aBody, aFacesToRemove, -theThickness / 50, 1.e-3);
+    if (aSolidMaker.IsDone())
+    {
+      aBody = aSolidMaker.Shape();
+    }
 ~~~~
 
 
@@ -653,8 +660,8 @@ To compute the edges out of these curves, once again use the *BRepBuilderAPI_Mak
 Now, you can create the two profiles of the threading, lying on each surface.
 
 ~~~~{.cpp}
-    TopoDS_Wire threadingWire1 = BRepBuilderAPI_MakeWire(anEdge1OnSurf1, anEdge2OnSurf1);
-    TopoDS_Wire threadingWire2 = BRepBuilderAPI_MakeWire(anEdge1OnSurf2, anEdge2OnSurf2);
+    TopoDS_Wire aThreadingWire1 = BRepBuilderAPI_MakeWire(anEdge1OnSurf1, anEdge2OnSurf1);
+    TopoDS_Wire aThreadingWire2 = BRepBuilderAPI_MakeWire(anEdge1OnSurf2, anEdge2OnSurf2);
 ~~~~
 
 Remember that these wires were built out of a surface and 2D curves.
@@ -662,8 +669,8 @@ One important data item is missing as far as these wires are concerned: there is
 When a shape contains all the necessary information except 3D curves, Open CASCADE Technology provides a tool to build them automatically. In the BRepLib tool package, you can use the *BuildCurves3d* method to compute 3D curves for all the edges of a shape.
 
 ~~~~{.cpp}
-    BRepLib::BuildCurves3d(threadingWire1);
-    BRepLib::BuildCurves3d(threadingWire2);
+    BRepLib::BuildCurves3d(aThreadingWire1);
+    BRepLib::BuildCurves3d(aThreadingWire2);
 ~~~~
 
 
@@ -683,7 +690,7 @@ The loft function is implemented in the *BRepOffsetAPI_ThruSections* class, whic
 
 ~~~~{.cpp}
     BRepOffsetAPI_ThruSections aTool(true);
-    aTool.AddWire(threadingWire1); aTool.AddWire(threadingWire2);
+    aTool.AddWire(aThreadingWire1); aTool.AddWire(aThreadingWire2);
     aTool.CheckCompatibility(false);
     TopoDS_Shape aThreading = aTool.Shape();
 ~~~~
@@ -716,8 +723,8 @@ If you want to know more and develop major projects using Open CASCADE Technolog
 Complete definition of MakeBottle function:
 
 ~~~~{.cpp}
-    TopoDS_Shape MakeBottle(const double theWidth, const double theHeight,
-                            const double theThickness)
+    TopoDS_Shape MakeBottle(double theWidth, double theHeight,
+                            double theThickness)
     {
         // Profile : Define Support Points
         gp_Pnt aPnt1(-theWidth / 2., 0, 0);        
@@ -746,10 +753,10 @@ Complete definition of MakeBottle function:
         TopoDS_Shape aMirroredShape = aBRepTrsf.Shape();
         TopoDS_Wire aMirroredWire = TopoDS::Wire(aMirroredShape);
 
-        BRepBuilderAPI_MakeWire mkWire;
-        mkWire.Add(aWire);
-        mkWire.Add(aMirroredWire);
-        TopoDS_Wire aWireProfile = mkWire.Wire();
+        BRepBuilderAPI_MakeWire aMkWire;
+        aMkWire.Add(aWire);
+        aMkWire.Add(aMirroredWire);
+        TopoDS_Wire aWireProfile = aMkWire.Wire();
 
         // Body : Prism the Profile
         TopoDS_Face aFaceProfile = BRepBuilderAPI_MakeFace(aWireProfile);
@@ -757,27 +764,27 @@ Complete definition of MakeBottle function:
         TopoDS_Shape aBody = BRepPrimAPI_MakePrism(aFaceProfile, aPrismVec);
 
         // Body : Apply Fillets
-        BRepFilletAPI_MakeFillet mkFillet(aBody);
+        BRepFilletAPI_MakeFillet aMkFillet(aBody);
         TopExp_Explorer anEdgeExplorer(aBody, TopAbs_EDGE);
         while(anEdgeExplorer.More()){
             TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExplorer.Current());
             //Add edge to fillet algorithm
-            mkFillet.Add(theThickness / 12., anEdge);
+            aMkFillet.Add(theThickness / 12., anEdge);
             anEdgeExplorer.Next();
         }
 
-        aBody = mkFillet.Shape();
+        aBody = aMkFillet.Shape();
 
         // Body : Add the Neck
-        gp_Pnt neckLocation(0, 0, theHeight);
-        gp_Dir neckAxis = gp::DZ();
-        gp_Ax2 neckAx2(neckLocation, neckAxis);
+        gp_Pnt aNeckLocation(0, 0, theHeight);
+        gp_Dir aNeckAxis = gp::DZ();
+        gp_Ax2 neckAx2(aNeckLocation, aNeckAxis);
 
         double aNeckRadius = theThickness / 4.;
         double aNeckHeight = theHeight / 10.;
 
-        BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, aNeckRadius, aNeckHeight);
-        TopoDS_Shape aNeck = MKCylinder.Shape();
+        BRepPrimAPI_MakeCylinder aMkCylinder(neckAx2, aNeckRadius, aNeckHeight);
+        TopoDS_Shape aNeck = aMkCylinder.Shape();
 
         BRepAlgoAPI_Fuse aFuser(aBody, aNeck);
         if (aFuser.IsDone())
@@ -791,8 +798,8 @@ Complete definition of MakeBottle function:
         }
 
         // Body : Create a Hollowed Solid
-        TopoDS_Face   faceToRemove;
-        double zMax = -1;
+        TopoDS_Face   aFaceToRemove;
+        double aZMax = -1;
 
         for(TopExp_Explorer aFaceExplorer(aBody, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next()){
             TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
@@ -804,18 +811,18 @@ Complete definition of MakeBottle function:
                 {
                   gp_Pnt aPnt = aPlane->Location();
                   double aZ   = aPnt.Z();
-                  if(aZ > zMax){
-                      zMax = aZ;
-                      faceToRemove = aFace;
+                  if(aZ > aZMax){
+                      aZMax = aZ;
+                      aFaceToRemove = aFace;
                   }
                 }
             }
         }
 
-        NCollection_List<TopoDS_Shape> facesToRemove;
-        facesToRemove.Append(faceToRemove);
+        NCollection_List<TopoDS_Shape> aFacesToRemove;
+        aFacesToRemove.Append(aFaceToRemove);
         BRepOffsetAPI_MakeThickSolid aSolidMaker;
-        aSolidMaker.MakeThickSolidByJoin(aBody, facesToRemove, -theThickness / 50, 1.e-3);
+        aSolidMaker.MakeThickSolidByJoin(aBody, aFacesToRemove, -theThickness / 50, 1.e-3);
         aBody = aSolidMaker.Shape();
         // Threading : Create Surfaces
         occ::handle<Geom_CylindricalSurface> aCyl1 = new Geom_CylindricalSurface(neckAx2, aNeckRadius * 0.99);
@@ -842,15 +849,15 @@ Complete definition of MakeBottle function:
         TopoDS_Edge anEdge2OnSurf1 = BRepBuilderAPI_MakeEdge(aSegment, aCyl1);
         TopoDS_Edge anEdge1OnSurf2 = BRepBuilderAPI_MakeEdge(anArc2, aCyl2);
         TopoDS_Edge anEdge2OnSurf2 = BRepBuilderAPI_MakeEdge(aSegment, aCyl2);
-        TopoDS_Wire threadingWire1 = BRepBuilderAPI_MakeWire(anEdge1OnSurf1, anEdge2OnSurf1);
-        TopoDS_Wire threadingWire2 = BRepBuilderAPI_MakeWire(anEdge1OnSurf2, anEdge2OnSurf2);
-        BRepLib::BuildCurves3d(threadingWire1);
-        BRepLib::BuildCurves3d(threadingWire2);
+        TopoDS_Wire aThreadingWire1 = BRepBuilderAPI_MakeWire(anEdge1OnSurf1, anEdge2OnSurf1);
+        TopoDS_Wire aThreadingWire2 = BRepBuilderAPI_MakeWire(anEdge1OnSurf2, anEdge2OnSurf2);
+        BRepLib::BuildCurves3d(aThreadingWire1);
+        BRepLib::BuildCurves3d(aThreadingWire2);
 
         // Create Threading 
         BRepOffsetAPI_ThruSections aTool(true);
-        aTool.AddWire(threadingWire1);
-        aTool.AddWire(threadingWire2);
+        aTool.AddWire(aThreadingWire1);
+        aTool.AddWire(aThreadingWire2);
         aTool.CheckCompatibility(false);
 
         TopoDS_Shape aThreading = aTool.Shape();

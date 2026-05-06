@@ -648,7 +648,7 @@ The input data for this step is the DS after updating Pave Blocks.
 | 4	| Access to the pave blocks of interfered shapes: <i>(PBi1, PBi2…PBiNi)</i> for edge *Ei* and <i>(PBj1, PBj2…PBjNj)</i> for  edge *Ej* | *BOPAlgo_PaveFiller::PerformEE()* |
 | 5	| Compute shrunk data for pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock", if it is necessary. | *BOPAlgo_PaveFiller::FillShrunkData()* |
 | 6	| Compute Edge/Edge interference for pave blocks *PBix* and *PBiy*. The result of the computation is a set of objects of type *IntTools_CommonPart* | *IntTools_EdgeEdge* |
-| 7.1 | For each *CommonPart* of type *VERTEX:*	Create new vertices *VNi (i =1, 2…,NbVN),* where *NbVN* is the number of new vertices. Intersect the vertices *VNi* using the steps Initialization and compute Vertex/Vertex interferences as follows: a) create a new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDS_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* |
+| 7.1 | For each *CommonPart* of type *VERTEX:*	Create new vertices *VNi (i =1, 2…,NbVN),* where *NbVN* is the number of new vertices. Intersect the vertices *VNi* using the steps Initialization and compute Vertex/Vertex interferences as follows: a) create a new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDS_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_AlgoTools::MakeNewVertex()* |
 | 7.2 |	For each *CommonPart* of type *EDGE:*	Compute the coinciding connexity chains of  pave blocks <i>(PB1C, PB2C… PNnC)k, C=0, 1…nCs,</i> where *nCs* is the number of the connexity chains. Create common blocks <i>(CBc. C=0, 1…nCs)</i> from the chains. Attach the common blocks to the pave blocks. |	*BOPAlgo_Tools::PerformCommonBlocks()* |
 | 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock" | *BOPDS_PaveBlock:: AppendExtPave()* |
 | 9	| Split common blocks CBc by the paves. | *BOPDS_DS:: UpdateCommonBlock()* |
@@ -684,7 +684,7 @@ The input data for this step is the DS after computing Vertex/Face Interferences
 | 4	| Access to the pave blocks of interfered edge <i>(PBi1, PBi2…PBiNi)</i> for edge *Ei*	| *BOPAlgo_PaveFiller::PerformEF()* |
 | 5	| Compute shrunk data for pave blocks (in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock") if it is necessary. |	*BOPAlgo_PaveFiller::FillShrunkData()* |
 | 6	| Compute Edge/Face interference for pave block *PBix*, and face *nFj*. The result of the computation is a set of objects of type *IntTools_CommonPart* | *IntTools_EdgeFace* |
-| 7.1 |	For each *CommonPart* of type *VERTEX:* Create new vertices *VNi (i=1, 2…,NbVN),* where *NbVN* is the number of new vertices. Merge vertices *VNi* as follows: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDS_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* and *BOPAlgo_PaveFiller::PerformVertices1()* |
+| 7.1 |	For each *CommonPart* of type *VERTEX:* Create new vertices *VNi (i=1, 2…,NbVN),* where *NbVN* is the number of new vertices. Merge vertices *VNi* as follows: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDS_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_AlgoTools::MakeNewVertex()* and *BOPAlgo_PaveFiller::PerformVertices1()* |
 | 7.2 | For each *CommonPart* of type *EDGE:* Create common blocks <i>(CBc. C=0, 1…nCs)</i> from pave blocks that lie on the faces. Attach the common blocks to the pave blocks. | *BOPAlgo_Tools::PerformCommonBlocks()* |
 | 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock". | *BOPDS_PaveBlock:: AppendExtPave()* |
 | 9	| Split pave blocks and common blocks *CBc* by the paves. |	*BOPAlgo_PaveFiller::PerformVertices1()*, *BOPDS_DS:: UpdatePaveBlock()* and *BOPDS_DS:: UpdateCommonBlock()* |
@@ -701,7 +701,7 @@ For each pave block *PB* take the following steps:
 | No | Contents | Implementation |
 | :--- | :--- | :--- | 
 | 1	| Get the real pave block *PBR*, which is equal to *PB* if *PB* is not a common block and to *PB<sub>1</sub>* if *PB* is a common block. *PB<sub>1</sub>* is the first pave block in the pave blocks list of the common block.  See  @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock". | *BOPAlgo_PaveFiller::MakeSplitEdges()* | 
-| 2	| Build the split edge *Esp* using the information from *DS* and *PBR*.	| *BOPTools_Tools::MakeSplitEdge()* |
+| 2	| Build the split edge *Esp* using the information from *DS* and *PBR*.	| *BOPTools_AlgoTools::MakeSplitEdge()* |
 | 3	| Compute *BOPDS_ShapeInfo* contents for Esp | *BOPAlgo_PaveFiller::MakeSplitEdges()* |
 | 4	| Append *BOPDS_ShapeInfo* contents to the DS | *BOPDS_DS::Append()* |
 
@@ -727,7 +727,7 @@ The input data for this step is the DS after computing Face/Face interferences.
 | 2.1 | Create paves PVc for the curve using existing vertices, i.e. vertices On or In (in terms of *FaceInfo*) for faces *nFi* and *nFj*. Append the paves *PVc* | *BOPAlgo_PaveFiller::PutPaveOnCurve()* and *BOPDS_PaveBlock::AppendExtPave()* |
 | 2.2 |	Create technological vertices *Vt*, which are the bounding points of an intersection curve (with the value of tolerance *Tol(Cijk)*). Each vertex *Vt* with parameter *Tt* on curve *Cijk* forms pave *PVt* on curve *Cijk*. Append technological paves. | *BOPAlgo_PaveFiller::PutBoundPaveOnCurve()* |
 | 2.3 |	Create pave blocks *PBk* for the curve using paves <i>(k=1, 2…, NbPB)</i>, where *NbPB* is the number of pave blocks |	*BOPAlgo_PaveFiller::MakeBlocks()* |
-| 2.4 |	Build draft section edges *ESk* using the pave blocks <i>(k=1, 2…, NbES)</i>, where *NbES* is the number of draft section edges	The draft section edge is created from a pave block *PBk* if *PBk* has state *In* or *On* for both faces *nFi* and *nF,j* and *PBk ≠ PBm (m=0, 1, 2… NbPBm)*, where *PBm* is an existing pave block for faces *nFi* and *nF,j* (*On* or *In* in terms of *FaceInfo*), *NbVm* is the number of existing pave blocks for faces *nFi* and *nF,j* and ≠ -- means non-coincidence (in terms of @ref specification__boolean_3_1_3 "Vertex/Face interference"). | *BOPTools_Tools::MakeEdge()* |
+| 2.4 |	Build draft section edges *ESk* using the pave blocks <i>(k=1, 2…, NbES)</i>, where *NbES* is the number of draft section edges	The draft section edge is created from a pave block *PBk* if *PBk* has state *In* or *On* for both faces *nFi* and *nF,j* and *PBk ≠ PBm (m=0, 1, 2… NbPBm)*, where *PBm* is an existing pave block for faces *nFi* and *nF,j* (*On* or *In* in terms of *FaceInfo*), *NbVm* is the number of existing pave blocks for faces *nFi* and *nF,j* and ≠ -- means non-coincidence (in terms of @ref specification__boolean_3_1_3 "Vertex/Face interference"). | *BOPTools_AlgoTools::MakeEdge()* |
 | 3	| Intersect the draft vertices *VPk (k=1, 2…, NbVP)* and the draft section edges *ESk (k=1, 2…, NbES)*. For this: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use vertices *VPk* and edges *ESk* as arguments (in terms of @ref specification__boolean_4_1 "Arguments") of *PFn*; c) invoke	method *Perform()* for *PFn*. Resulting vertices *VPXk (k=1, 2… NbVPX)* and edges *ESXk (k=1, 2… NbESX)* are obtained via mapping between *VPk, ESk* and the results of *PVn*. | *BOPAlgo_PaveFiller::PostTreatFF()* |
 | 4	| Update face info (sections about pave blocks and vertices) | *BOPAlgo_PaveFiller::PerformFF()* |
 
@@ -1075,7 +1075,7 @@ The input data for this step is:
 | No | Contents | Implementation |
 | :---- | :---- | :----- | 
 | 1	| For all arguments of the type *Type*. Create a container C of the type *Type*. | *BOPAlgo_Builder::FillImagesContainers()* |
-| 2	| Add to C the images or non-split parts of the *Original Shape*, taking into account its orientation. | *BOPAlgo_Builder::FillImagesContainers()* *BOPTools_Tools::IsSplitToReverse()* |
+| 2	| Add to C the images or non-split parts of the *Original Shape*, taking into account its orientation. | *BOPAlgo_Builder::FillImagesContainers()* *BOPTools_AlgoTools::IsSplitToReverse()* |
 | 3	| Fill *myImages*  for the *Original Shape* by the information above. | *BOPAlgo_Builder::FillImagesContainers()* | 
 
 @subsubsection specification__boolean_7_4_8	Build Result of Type Wire
@@ -1096,7 +1096,7 @@ The input data for this step is *BOPAlgo_Builder* object after building result o
 | 1.5 |	Impart to <i>(Fi1, Fi2…FiNbSp)</i> the orientation coherent with the original face *Fi*. | *BOPAlgo_Builder::BuildSplitFaces()* | 
 | 1.6 |	Fill the map mySplits with *Fi/(Fi1, Fi2…FiNbSp)* | *BOPAlgo_Builder::BuildSplitFaces()* |
 | 2 | Fill Same Domain faces | *BOPAlgo_Builder::FillSameDomainFaces* | 
-| 2.1 |  Find and collect in the contents of *mySplits* the pairs of same domain split faces <i>(Fij, Fkl)m</i>, where *m* is the number of pairs. | *BOPAlgo_Builder::FillSameDomainFaces* *BOPTools_Tools::AreFacesSameDomain()* |
+| 2.1 |  Find and collect in the contents of *mySplits* the pairs of same domain split faces <i>(Fij, Fkl)m</i>, where *m* is the number of pairs. | *BOPAlgo_Builder::FillSameDomainFaces* *BOPTools_AlgoTools::AreFacesSameDomain()* |
 | 2.2 |	Compute the connexity chains 1) of same domain faces <i>(F1C, F2C… FnC)k, C=0, 1…nCs,</i> where *nCs* is the number of connexity chains. | *BOPAlgo_Builder::FillSameDomainFaces()* | 
 | 2.3 |	Fill *myShapesSD* using the chains <i>(F1C, F2C… FnC)k</i> |	*BOPAlgo_Builder::FillSameDomainFaces()* |
 | 2.4 | Add internal vertices to split faces. | *BOPAlgo_Builder::FillSameDomainFaces()* |
@@ -1173,8 +1173,8 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 
 | No |	Contents | Implementation  |
 | :---- | :---- | :----- |
-| 1	| Correct tolerances of vertices on curves | *BOPTools_Tools::CorrectPointOnCurve()* |
-| 2	| Correct tolerances of edges on faces | *BOPTools_Tools::CorrectCurveOnSurface()* |
+| 1	| Correct tolerances of vertices on curves | *BOPTools_AlgoTools::CorrectPointOnCurve()* |
+| 2	| Correct tolerances of edges on faces | *BOPTools_AlgoTools::CorrectCurveOnSurface()* |
 
 
 @section specification__boolean_8  Splitter Algorithm
@@ -1599,7 +1599,7 @@ Let us consider two faces *F1* and *F2* that have a common part:
 @figure{/specification/boolean_operations/images/boolean_image031.png,"",230}
 
 * The result of *Fuse* operation is a compound containing split parts of arguments, i.e. 3 new faces: *F11*, *F12* and *F22*. These faces are shared through edges In this case: 
-	* the argument edge *F1* has resulting split faces *F11* and *F12* (image of *F1*)
+	* the argument face *F1* has resulting split faces *F11* and *F12* (image of *F1*)
 	* the argument face *F2* has resulting split faces *F12* and *F22* (image of *F2*)
 	* the face *F12* is common for the images of *F1* and *F2*.
 	
@@ -1722,7 +1722,7 @@ Let us consider face *F1* and solid *S2* that have overlapping vertices:
 
 * The result of *Fuse* operation is not defined because the dimension of the face (2) is not equal to the dimension of the solid (3).
 	
-* The result of *Common* operation is an empty compound because the dimension (1) of the common part between *F1* and *S2* (vertex) is less than the lower dimension of the arguments (2).
+* The result of *Common* operation is an empty compound because the dimension (0) of the common part between *F1* and *S2* (vertex) is less than the lower dimension of the arguments (2).
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
   	
@@ -1888,7 +1888,7 @@ The input data for this step is as follows:
 | :---- | :---- | :------ |
 | 1 | For the Type of the Boolean operation Common, Cut with any dimension and operation Fuse with *myDim[0] < 3* | |
 | 1.1 |	Find containers (WIRE, SHELL, COMPSOLID) in the arguments | *BOPAlgo_BOP:: BuildShape()* |
-| 1.2 |	Make connexity blocks from splits of each container that are in *myRC* |	*BOPTools_Tools::MakeConnexityBlocks()* |
+| 1.2 |	Make connexity blocks from splits of each container that are in *myRC* |	*BOPTools_AlgoTools::MakeConnexityBlocks()* |
 | 1.3 |	Build the result from shapes made from the connexity blocks | *BOPAlgo_BOP:: BuildShape()* |
 | 1.4 |	Add the remaining shapes from *myRC* to the result | *BOPAlgo_BOP:: BuildShape()* |
 | 2	| For the Type of the Boolean operation Fuse with *myDim[0] = 3* | |	
@@ -2258,7 +2258,7 @@ Cells Builder is based on the General Fuse algorithm. Thus all options of the Ge
 
 The requirements for the input shapes are the same as for General Fuse - each argument should be valid in terms of *BRepCheck_Analyzer* and *BOPAlgo_ArgumentAnalyzer*.
 
-The result of the algorithm is a compound containing the selected parts of the basic type (VERTEX, EDGE, FACE or SOLID). The default result is an empty compound. It is possible to add any Cell by using the methods *AddToRessult()* and *AddAllToResult()*. It is also possible to remove any part from the result by using methods *RemoveFromResult()* and *RemoveAllFromResult()*. The method *RemoveAllFromResult()* is also suitable for clearing the result.
+The result of the algorithm is a compound containing the selected parts of the basic type (VERTEX, EDGE, FACE or SOLID). The default result is an empty compound. It is possible to add any Cell by using the methods *AddToResult()* and *AddAllToResult()*. It is also possible to remove any part from the result by using methods *RemoveFromResult()* and *RemoveAllFromResult()*. The method *RemoveAllFromResult()* is also suitable for clearing the result.
 
 The Cells that should be added/removed to/from the result are defined through the input shapes containing the parts that should be taken *(ShapesToTake)* and the ones containing parts that should be avoided (ShapesToAvoid).
 To be taken into the result the part must be IN all shapes from *ShapesToTake* and OUT of all shapes from *ShapesToAvoid*.
@@ -2771,7 +2771,7 @@ The Gluing option is an enumeration implemented in BOPAlgo_GlueEnum.hxx:
 * BOPAlgo_GlueFull - Glue option for shapes with full coincidence.
 
 #### API level
-For setting the Gluing options for the algorithm it is just necessary to call the SetGlue(const BOPAlgo_Glue) method with appropriate value:
+For setting the Gluing options for the algorithm it is just necessary to call the SetGlue(const BOPAlgo_GlueEnum) method with appropriate value:
 ~~~~
 BOPAlgo_Builder aGF;
 //
@@ -3148,7 +3148,7 @@ The package consists of the following classes:
 * *BRepAlgoAPI_Algo* -- the root class that provides the interface for algorithms. 
 * *BRepAlgoAPI_BuilderAlgo* -- the class API level of General Fuse algorithm.
 * *BRepAlgoAPI_Splitter* -- the class API level of the Splitter algorithm.
-* *BRepAlgoAPI_BooleanOperation* -- the root class for the classes *BRepAlgoAPI_Fuse*. *BRepAlgoAPI_Common*, *BRepAlgoAPI_Cut* and *BRepAlgoAPI_Section*.
+* *BRepAlgoAPI_BooleanOperation* -- the root class for the classes *BRepAlgoAPI_Fuse*, *BRepAlgoAPI_Common*, *BRepAlgoAPI_Cut* and *BRepAlgoAPI_Section*.
 * *BRepAlgoAPI_Fuse* -- the class provides Boolean fusion operation. 
 * *BRepAlgoAPI_Common* -- the class provides Boolean common operation.
 * *BRepAlgoAPI_Cut* -- the class provides Boolean cut operation.

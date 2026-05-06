@@ -303,7 +303,7 @@ Required tools (download and install if it is required):
   - For Linux/macOS: GNU Make 4.0+
 
 Run GUI tool provided by CMake and:
-  - Specify the root folder of OCCT (`$CASROOT`, which contains *CMakelists.txt* file) by clicking **Browse Source**.
+  - Specify the root folder of OCCT (`$CASROOT`, which contains *CMakeLists.txt* file) by clicking **Browse Source**.
   - Specify the location (build folder) for CMake generated project files by clicking **Browse Build**.
 
 @figure{/build/build_occt/images/android_image001.png}

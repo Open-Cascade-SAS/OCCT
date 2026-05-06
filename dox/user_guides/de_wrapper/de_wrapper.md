@@ -381,7 +381,8 @@ Code sample to configure via transfer.
     "global.priority.STEP :   OCC DTK\n"
     "global.general.length.unit : 1\n"
     "provider.STEP.OCC.read.precision.val : 0.\n";
-  if (!aSession->Load(aString, aIsRecursive))
+  bool isRecursive = true;
+  if (!aSession->Load(aString, isRecursive))
   {
     Message::SendFail() << "Error: configuration is incorrect";
   }

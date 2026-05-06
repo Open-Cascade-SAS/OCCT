@@ -1141,7 +1141,7 @@ The maximal tolerance of sub-shapes of each kind of the resulting shape can be e
 ~~~~
 set tolerance [tolerance result]
 regexp { *FACE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_face
-regexp { *EDGE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_edgee
+regexp { *EDGE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_edge
 regexp { *VERTEX +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_vertex
 ~~~~
 

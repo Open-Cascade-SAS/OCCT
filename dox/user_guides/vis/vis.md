@@ -324,13 +324,13 @@ Picking algorithm  uses an instance of viewer selector (OCCT term), which manage
 The typical usage of *IVtk_IShapePickerAlgo* consists in the following sequence of actions:
 1. Create an instance of the picker class:
 ~~~~{.cpp}
-IVtkOCC_ShapePickerAlgo::Handle Picker = new IVtkOCC_ShapePickerAlgo();
+IVtkOCC_ShapePickerAlgo::Handle myOccPickerAlgo = new IVtkOCC_ShapePickerAlgo();
 ~~~~
 
 2. Set an instance of *IVtk_IView* class to the algorithm in order to define the viewer parameters:
 ~~~~{.cpp}
-IVtkVTK_View::Handle View = new IVtkVTK_View(Renderer);
-Picker->SetView(View);
+IVtkVTK_View::Handle aView = new IVtkVTK_View(Renderer);
+myOccPickerAlgo->SetView(aView);
 ~~~~
 3. Activate the desired selection modes using values from *IVtk_SelectionMode* enumeration. For example, the following call allows selection of edges:
 ~~~~{.cpp}
@@ -339,12 +339,12 @@ TopoDS_Shape aShape;
 ...
 IVtk_IShape::Handle shapeImpl = new IVtkOCC_Shape(aShape);
 ...
-myOccPickerAlgo->SetSelectionMode(occShape, SM_Edge);
+myOccPickerAlgo->SetSelectionMode(shapeImpl, SM_Edge);
 ~~~~
 Different selection modes can be turned on/off for a picker at the same time independently from each other.
 To turn off a selection mode the additional optional Boolean parameter is used with *false* value, for example:
 ~~~~{.cpp}
-myOccPickerAlgo->SetSelectionMode(occShape, SM_Edge, false);
+myOccPickerAlgo->SetSelectionMode(shapeImpl, SM_Edge, false);
 ~~~~
 4. Call *Pick* method passing the mouse coordinates:
 ~~~~{.cpp}

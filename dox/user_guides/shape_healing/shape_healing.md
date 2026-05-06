@@ -962,7 +962,7 @@ ShapeAnalysis_FreeBounds aCheckFreeBnd (aShape, toSplitClosed, toSplitOpen);
 // getting the results
 TopoDS_Compound aClosedWires = aCheckFreeBnd.GetClosedWires();
 // return a compound of closed free bounds
-TopoDS_Compound anOpenWires  = aCheckFreeBnd.GetClosedWires();
+TopoDS_Compound anOpenWires  = aCheckFreeBnd.GetOpenWires();
 // return a compound of open free bounds
 ~~~~
 
@@ -1115,9 +1115,9 @@ Let us split a shape according to a specified criterion.
 
 ~~~~{.cpp}
 // creation of new tools for geometry splitting by a specified criterion
-occ::handle<MyTools_SplitSurfaceTool> MySplitSurfaceTool = new MyTools_SplitSurfaceTool();
-occ::handle<MyTools_SplitCurve3DTool> MySplitCurve3Dtool = new MyTools_SplitCurve3DTool();
-occ::handle<MyTools_SplitCurve2DTool> MySplitCurve2Dtool = new MyTools_SplitCurve2DTool();
+occ::handle<MyTools_SplitSurfaceTool> aSplitSurfaceTool = new MyTools_SplitSurfaceTool();
+occ::handle<MyTools_SplitCurve3DTool> aSplitCurve3DTool = new MyTools_SplitCurve3DTool();
+occ::handle<MyTools_SplitCurve2DTool> aSplitCurve2DTool = new MyTools_SplitCurve2DTool();
 
 // creation of a tool for splitting the shape and initialization of that tool by shape
 TopoDS_Shape anInitShape = ...;
@@ -1128,14 +1128,14 @@ aShapeDivide.SetPrecision (prec);
 aShapeDivide.SetMaxTolerance (MaxTol);
 
 // setting of new splitting geometry tools in the shape splitting tools
-occ::handle<ShapeUpgrade_FaceDivide> aFaceDivide = aShapeDivide->GetSplitFaceTool();
+occ::handle<ShapeUpgrade_FaceDivide> aFaceDivide = aShapeDivide.GetSplitFaceTool();
 occ::handle<ShapeUpgrade_WireDivide> aWireDivide = aFaceDivide->GetWireDivideTool();
-aFaceDivide->SetSplitSurfaceTool (MySplitSurfaceTool);
-aWireDivide->SetSplitCurve3dTool (MySplitCurve3DTool);
-aWireDivide->SetSplitCurve2dTool (MySplitCurve2DTool);
+aFaceDivide->SetSplitSurfaceTool (aSplitSurfaceTool);
+aWireDivide->SetSplitCurve3dTool (aSplitCurve3DTool);
+aWireDivide->SetSplitCurve2dTool (aSplitCurve2DTool);
 
 // setting of the value criterion
-aShapeDivide.SetValCriterion (val);
+aShapeDivide.SetValCriterion (aVal);
             
 // shape splitting
 aShapeDivide.Perform();
@@ -1413,7 +1413,7 @@ TopoDS_Shape aResultShape = ShapeCustom::DirectFaces (anInitialShape);
 
 ~~~~{.cpp}
 ShapeCustom::DirectFaces()
-  static TopoDS_Shape DirectFaces (const TopoDS_Shape& aShape);
+  static TopoDS_Shape DirectFaces (const TopoDS_Shape& theShape);
 ~~~~
 
 This method provides conversion of indirect elementary surfaces (elementary surfaces with left-handed coordinate systems) in the shape into direct ones.
@@ -1423,7 +1423,7 @@ New 2d curves (recomputed for converted surfaces) are added to the same edges be
 
 ~~~~{.cpp}
 ShapeCustom::ScaleShape()
-  TopoDS_Shape ShapeCustom::ScaleShape (const TopoDS_Shape& aShape, const double theScale);
+  TopoDS_Shape ShapeCustom::ScaleShape (const TopoDS_Shape& theShape, const double theScale);
 ~~~~
 
 This method returns a new shape, which is a scaled original shape with a coefficient equal to the specified value of scale.
@@ -1437,7 +1437,7 @@ If the approximation result cannot be achieved with the specified continuity, th
 The method with all parameters looks as follows:
 ~~~~{.cpp}
 ShapeCustom::BsplineRestriction()
-  TopoDS_Shape ShapeCustom::BSplineRestriction (const TopoDS_Shape& aShape,
+  TopoDS_Shape ShapeCustom::BSplineRestriction (const TopoDS_Shape& theShape,
                                                 const double theTol3d, const double theTol2d,
                                                 const int theMaxDegree,
                                                 const int theMaxNbSegment,
@@ -1478,7 +1478,7 @@ The following flags define whether a specified-type geometry has been converted 
 
 ~~~~{.cpp}
 ShapeCustom::ConvertToRevolution()
-  TopoDS_Shape ShapeCustom::ConvertToRevolution (const TopoDS_Shape& aShape);
+  TopoDS_Shape ShapeCustom::ConvertToRevolution (const TopoDS_Shape& theShape);
 ~~~~
 
 This method returns a new shape with all elementary periodic surfaces converted to *Geom_SurfaceOfRevolution*. It uses the tool *ShapeCustom_ConvertToRevolution*.
@@ -1487,7 +1487,7 @@ This method returns a new shape with all elementary periodic surfaces converted 
 
 ~~~~{.cpp}
 ShapeCustom::ConvertToBSpline()
-  TopoDS_Shape ShapeCustom::ConvertToBSpline (const TopoDS_Shape& aShape,
+  TopoDS_Shape ShapeCustom::ConvertToBSpline (const TopoDS_Shape& theShape,
                                               const bool theExtrMode,
                                               const bool theRevolMode,
                                               const bool theOffsetMode);
@@ -1740,7 +1740,7 @@ TopoDS_Shape aResultSubshape1 = aContext->Apply (theSubshape1);
 
 @subsection occt_shg_5_2 Status definition
 
-*ShapExtend_Status* is used to report the status after executing some methods that can either fail, do something, or do nothing.
+*ShapeExtend_Status* is used to report the status after executing some methods that can either fail, do something, or do nothing.
 The status is a set of flags *DONEi* and *FAILi*.
 Any combination of them can be set at the same time. For exploring the status, enumeration is used.
 
@@ -1902,7 +1902,7 @@ Let us create a custom sequence of operations:
   where *Tolerance* is the name of the parameter and 0.01 is its value.
 3. Add the following string into *void ShapeProcess_OperLibrary::Init()*:
 ~~~~{.cpp}
-  ShapeProcess::RegisterOperator (MyOper, new ShapeProcess_UOperator (myFunction));
+  ShapeProcess::RegisterOperator ("MyOper", new ShapeProcess_UOperator (myFunction));
 ~~~~
   where *myFunction* is a function which implements the operation.
 4. Create this function in *ShapeProcess_OperLibrary* as follows:
@@ -1914,7 +1914,7 @@ static bool myFunction (const occ::handle<ShapeProcess_Context>& theContext)
   TopoDS_Shape aShape = aCtx->Result();
   // receive our parameter:
   double aToler = 0.0;
-  aCtx->GetReal (Tolerance, aToler);
+  aCtx->GetReal ("Tolerance", aToler);
 ~~~~
 5. Make the necessary operations with *aShape* using the received value of parameter *Tolerance* from the resource file.
 ~~~~{.cpp}

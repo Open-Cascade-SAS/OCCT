@@ -71,17 +71,10 @@ IFSelect_ReturnStatus stat  = reader.ReadFile("filename.igs");
 The loading operation  only loads the IGES file into computer memory; it does not translate it. 
 
 @subsubsection occt_iges_2_3_2 Checking the IGES file
-This step is not obligatory.  Check the loaded file with:  
+This step is not obligatory.  Check the loaded file with:
 ~~~~{.cpp}
-bool ok =  reader.Check(true); 
-~~~~
-The variable "ok is  True" is returned if no fail message was found; "ok is False" is returned if  there was at least one fail message.  
-~~~~{.cpp}
-reader.PrintCheckLoad  (failsonly, mode); 
-~~~~
-Error messages are  displayed if there are invalid or incomplete IGES entities, giving you  information on the cause of the error.  
-~~~~{.cpp}
-bool failsonly  = true or false; 
+bool failsonly = true; // or false — true shows fail messages only, false shows both fail and warning messages
+reader.PrintCheckLoad (failsonly, mode); 
 ~~~~
 If you give True, you  will see fail messages only. If you give False, you will see both fail and  warning messages.  
 
@@ -349,7 +342,7 @@ faces =  reader.GiveList("xst-type(!=SurfaceOfRevolution)");
 Perform translation  according to what you want to translate:  
 1.  Translate an entity identified  by its rank with:  
 ~~~~{.cpp}
-bool ok =  reader.Transfer (rank); 
+bool ok =  reader.TransferOne (rank); 
 ~~~~
 2.  Translate an entity  identified by its handle with: 
 ~~~~{.cpp}
@@ -377,7 +370,7 @@ reader.TransferRoots();
 
 @subsubsection occt_iges_2_3_6 Getting the  translation results
 Each successful  translation operation outputs one shape. A series of translations gives a  series of shapes.  
-Each time you invoke  *TransferEntity, Transfer* or *Transferlist*, their results are accumulated and  NbShapes increases. You can clear the results (Clear function) between two  translation operations, if you do not do this, the results from the next  translation will be added to the accumulation. *TransferRoots* operations  automatically clear all existing results before they start.  
+Each time you invoke  *TransferEntity*, *TransferOne()*, *TransferRoot()* or *TransferList*, their results are accumulated and  NbShapes increases. You can clear the results (Clear function) between two  translation operations, if you do not do this, the results from the next  translation will be added to the accumulation. *TransferRoots* operations  automatically clear all existing results before they start.  
 ~~~~{.cpp}
 int nbs =  reader.NbShapes(); 
 ~~~~
@@ -1175,7 +1168,7 @@ aWriter.SetNameMode(mode);
 
 You can perform the translation of a document by calling the  function: 
 ~~~~{.cpp}
-IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc); 
+bool aRetSt = aWriter.Transfer(doc); 
 ~~~~
 where "doc" is a variable which contains a handle to the input document for transferring  and should have a type *occ::handle\<TDocStd_Document\>*.
  
@@ -1183,11 +1176,11 @@ where "doc" is a variable which contains a handle to the input document for tran
 
 Write an IGES file with: 
 ~~~~{.cpp}
-IFSelect_ReturnStatus statw =  aWriter.WriteFile("filename.igs"); 
+bool statw = aWriter.Write("filename.igs"); 
 ~~~~
 or 
 ~~~~{.cpp}
-IFSelect_ReturnStatus statw = writer.WriteFile (S); 
+bool statw = aWriter.Write (S); 
 ~~~~
 where S is OStream.  
 

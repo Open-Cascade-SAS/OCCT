@@ -64,7 +64,7 @@ void MyAisObject::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrs
   StdPrs_ShadedShape::Add (thePrs, aShape, myDrawer);
 }
 ...
-occ::handle<AIS_InteractiveContext> aCtx;
+occ::handle<AIS_InteractiveContext> aCtx; // obtained from viewer setup
 occ::handle<MyAisObject> aPrs = new MyAisObject();
 aCtx->Display (aPrs, true);
 ~~~~
@@ -736,7 +736,7 @@ void MyAisOwner::HilightWithColor (const occ::handle<PrsMgr_PresentationManager>
     occ::handle<Graphic3d_Group> aGroup = aPrs->NewGroup();
     aGroup->SetGroupPrimitivesAspect (theStyle->ArrowAspect()->Aspect());
     gp_Trsf aTrsfInv = mySelectable->LocalTransformation().Inverted();
-    gp_Dir  aNorm (aPickPnt.Normal.x(), aPickPnt.Normal.y(), aPickPnt.Normal.z());
+    gp_Dir  aNorm (aPickPnt.Normal.X(), aPickPnt.Normal.Y(), aPickPnt.Normal.Z());
     occ::handle<Graphic3d_ArrayOfTriangles> aTris =
       Prs3d_Arrow::DrawShaded (gp_Ax1(aPickPnt.Point, aNorm).Transformed (aTrsfInv),
         1.0, 15.0,
