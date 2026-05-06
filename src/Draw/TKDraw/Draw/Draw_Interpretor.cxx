@@ -424,6 +424,16 @@ Draw_Interpretor& Draw_Interpretor::Append(const int i)
 
 //=================================================================================================
 
+Draw_Interpretor& Draw_Interpretor::Append(const size_t theResult)
+{
+  char c[100];
+  Sprintf(c, "%zu", theResult);
+  Tcl_AppendResult(myInterp, c, (const char*)nullptr);
+  return *this;
+}
+
+//=================================================================================================
+
 Draw_Interpretor& Draw_Interpretor::Append(const double r)
 {
   char s[100];
