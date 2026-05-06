@@ -114,15 +114,13 @@ public:
   // Constructors
   NCollection_Array1() noexcept
       : myLowerBound(1),
-        mySize(0),
-        myCapacity(0)
+        mySize(0)
   {
   }
 
   explicit NCollection_Array1(const int theLower, const int theUpper)
       : myLowerBound(theLower),
-        mySize(theUpper - theLower + 1),
-        myCapacity(mySize)
+        mySize(theUpper - theLower + 1)
   {
     if (mySize == 0)
     {
@@ -139,7 +137,6 @@ public:
                               const bool      theUseBuffer = true)
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1),
-        myCapacity(mySize),
         myPointer(theUseBuffer ? const_cast<pointer>(&theBegin) : nullptr),
         myIsOwner(!theUseBuffer)
   {
@@ -156,8 +153,7 @@ public:
   //! Use At()/ChangeAt() or STL iterators for optimal access (no offset subtraction).
   explicit NCollection_Array1(const size_t theSize)
       : myLowerBound(0),
-        mySize(theSize),
-        myCapacity(theSize)
+        mySize(theSize)
   {
     if (mySize == 0)
     {
@@ -174,7 +170,6 @@ public:
   explicit NCollection_Array1(pointer theBegin, const size_t theSize)
       : myLowerBound(0),
         mySize(theSize),
-        myCapacity(theSize),
         myPointer(theBegin),
         myIsOwner(false)
   {
@@ -183,8 +178,7 @@ public:
   //! Copy constructor
   NCollection_Array1(const NCollection_Array1& theOther)
       : myLowerBound(theOther.myLowerBound),
-        mySize(theOther.mySize),
-        myCapacity(theOther.mySize)
+        mySize(theOther.mySize)
   {
     if (mySize == 0)
     {
@@ -199,14 +193,12 @@ public:
   NCollection_Array1(NCollection_Array1&& theOther) noexcept
       : myLowerBound(theOther.myLowerBound),
         mySize(theOther.mySize),
-        myCapacity(theOther.myCapacity),
         myPointer(theOther.myPointer),
         myIsOwner(theOther.myIsOwner)
   {
     theOther.myIsOwner    = false;
     theOther.myPointer    = nullptr;
     theOther.mySize       = 0;
-    theOther.myCapacity   = 0;
     theOther.myLowerBound = 1;
   }
 
@@ -217,7 +209,7 @@ public:
       return;
     }
     destroy(myPointer, 0, mySize);
-    myAllocator.deallocate(myPointer, myCapacity);
+    myAllocator.deallocate(myPointer, mySize);
   }
 
   //! Initialise the items with theValue
@@ -246,6 +238,12 @@ public:
 
   //! Replaces this array by a copy of theOther array.
   //! Bounds and length are copied from theOther.
+  //! When this array wraps an external (non-owned) buffer:
+  //!  - if theOther has the same length, values are copied in place into the
+  //!    external buffer and ownership is unchanged;
+  //!  - if theOther has a different length, this array detaches from the
+  //!    external buffer and allocates a fresh owned buffer.
+  //! Use CopyValues() to preserve this array's bounds.
   NCollection_Array1& Assign(const NCollection_Array1& theOther)
   {
     if (&theOther == this)
@@ -285,17 +283,15 @@ public:
     if (myIsOwner)
     {
       destroy(myPointer, 0, mySize);
-      myAllocator.deallocate(myPointer, myCapacity);
+      myAllocator.deallocate(myPointer, mySize);
     }
     myLowerBound          = theOther.myLowerBound;
     mySize                = theOther.mySize;
-    myCapacity            = theOther.myCapacity;
     myPointer             = theOther.myPointer;
     myIsOwner             = theOther.myIsOwner;
     theOther.myIsOwner    = false;
     theOther.myPointer    = nullptr;
     theOther.mySize       = 0;
-    theOther.myCapacity   = 0;
     theOther.myLowerBound = 1;
     return *this;
   }
@@ -438,28 +434,6 @@ protected:
       myLowerBound = theNewLower;
       return;
     }
-    if (myIsOwner && theNewSize <= myCapacity)
-    {
-      if (theToCopyData)
-      {
-        if (theNewSize < mySize)
-        {
-          destroy(myPointer, theNewSize, mySize);
-        }
-        else
-        {
-          construct(mySize, theNewSize);
-        }
-      }
-      else
-      {
-        destroy(myPointer, 0, mySize);
-        construct(0, theNewSize);
-      }
-      myLowerBound = theNewLower;
-      mySize       = theNewSize;
-      return;
-    }
     if (myIsOwner)
     {
       if (theToCopyData)
@@ -468,6 +442,15 @@ protected:
         destroy(myPointer, 0, mySize);
     }
     myLowerBound = theNewLower;
+    if (theNewSize == 0)
+    {
+      if (myIsOwner)
+        myAllocator.deallocate(aPrevPtr, mySize);
+      myPointer = nullptr;
+      mySize    = 0;
+      myIsOwner = false;
+      return;
+    }
     if (theToCopyData)
     {
       const size_t aMinSize = (std::min)(theNewSize, mySize);
@@ -477,7 +460,7 @@ protected:
       }
       else
       {
-        myPointer = theNewSize != 0 ? myAllocator.allocate(theNewSize) : nullptr;
+        myPointer = myAllocator.allocate(theNewSize);
         copyConstruct(aPrevPtr, aMinSize);
       }
       construct(mySize < theNewSize ? mySize : theNewSize, theNewSize);
@@ -485,13 +468,12 @@ protected:
     else
     {
       if (myIsOwner)
-        myAllocator.deallocate(aPrevPtr, myCapacity);
-      myPointer = theNewSize != 0 ? myAllocator.allocate(theNewSize) : nullptr;
+        myAllocator.deallocate(aPrevPtr, mySize);
+      myPointer = myAllocator.allocate(theNewSize);
       construct(0, theNewSize);
     }
-    mySize     = theNewSize;
-    myCapacity = theNewSize;
-    myIsOwner  = true;
+    mySize    = theNewSize;
+    myIsOwner = true;
   }
 
 protected:
@@ -549,30 +531,12 @@ protected:
 
   void assign(const const_pointer theFrom, const size_t theSize, const int theLower)
   {
-    if (myIsOwner && theSize <= myCapacity)
-    {
-      const size_t aCommonSize = (std::min)(mySize, theSize);
-      copyAssign(myPointer, theFrom, aCommonSize);
-      if (theSize > mySize)
-      {
-        copyConstruct(myPointer + mySize, theFrom + mySize, theSize - mySize);
-      }
-      else
-      {
-        destroy(myPointer, theSize, mySize);
-      }
-      myLowerBound = theLower;
-      mySize       = theSize;
-      return;
-    }
-
-    if (!myIsOwner && theSize == mySize)
+    if (theSize == mySize)
     {
       copyAssign(myPointer, theFrom, theSize);
       myLowerBound = theLower;
       return;
     }
-
     pointer aNewPointer = nullptr;
     if (theSize != 0)
     {
@@ -583,13 +547,12 @@ protected:
     if (myIsOwner)
     {
       destroy(myPointer, 0, mySize);
-      myAllocator.deallocate(myPointer, myCapacity);
+      myAllocator.deallocate(myPointer, mySize);
     }
     myLowerBound = theLower;
     mySize       = theSize;
-    myCapacity   = theSize;
     myPointer    = aNewPointer;
-    myIsOwner    = true;
+    myIsOwner    = theSize != 0;
   }
 
   template <typename U = TheItemType>
@@ -645,7 +608,6 @@ protected:
   // ---------- PROTECTED FIELDS -----------
   int            myLowerBound;
   size_t         mySize;
-  size_t         myCapacity;
   pointer        myPointer = nullptr;
   bool           myIsOwner = false;
   allocator_type myAllocator;

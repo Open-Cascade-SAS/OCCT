@@ -759,7 +759,7 @@ void Geom_BSplineCurve::SetKnots(const NCollection_Array1<double>& K)
 {
   CheckCurveData(myPoles, K, myMults, myDeg, myPeriodic);
   ClearEvalRepresentation();
-  myKnots         = K;
+  myKnots.CopyValues(K);
   myMaxDerivInvOk = false;
   updateKnots();
 }

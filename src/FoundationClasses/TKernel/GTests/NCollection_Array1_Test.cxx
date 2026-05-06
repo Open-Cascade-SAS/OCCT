@@ -192,12 +192,10 @@ TEST(NCollection_Array1Test, AssignmentOperatorDifferentSize)
   }
 }
 
-TEST(NCollection_Array1Test, AssignmentOperatorReusesOwnedStorage)
+TEST(NCollection_Array1Test, AssignmentOperatorReusesSameSizeOwnedStorage)
 {
-  NCollection_Array1<int> anArray(1, 10);
+  NCollection_Array1<int> anArray(1, 6);
   int*                    anInitialPointer = &anArray.ChangeFirst();
-
-  anArray.Resize(1, 4, true);
 
   NCollection_Array1<int> aSource(20, 25);
   for (int anIndex = aSource.Lower(); anIndex <= aSource.Upper(); ++anIndex)

@@ -154,9 +154,9 @@ TEST(NCollection_Array2Test, AssignmentOperator)
   EXPECT_EQ(612, anArray2(6, 12));
 }
 
-TEST(NCollection_Array2Test, AssignmentOperatorReusesOwnedStorage)
+TEST(NCollection_Array2Test, AssignmentOperatorReusesSameSizeOwnedStorage)
 {
-  NCollection_Array2<int> anArray(1, 5, 1, 5);
+  NCollection_Array2<int> anArray(1, 3, 1, 4);
   int*                    anInitialPointer = &anArray.ChangeFirst();
 
   NCollection_Array2<int> aSource(10, 12, 20, 23);

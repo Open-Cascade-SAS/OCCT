@@ -930,7 +930,7 @@ void Geom2d_BSplineCurve::SetKnot(const int Index, const double K)
 void Geom2d_BSplineCurve::SetKnots(const NCollection_Array1<double>& K)
 {
   CheckCurveData(myPoles, K, myMults, myDeg, myPeriodic);
-  myKnots         = K;
+  myKnots.CopyValues(K);
   myMaxDerivInvOk = false;
   updateKnots();
 }
