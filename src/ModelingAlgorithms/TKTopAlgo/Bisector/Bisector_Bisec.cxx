@@ -578,7 +578,7 @@ const occ::handle<Geom2d_TrimmedCurve>& Bisector_Bisec::ChangeValue()
 
 //=============================================================================
 // function : ReplaceByLineIfIsToSmall
-// purpose  : If the size of an algorithmic bissectrice is negligeable it is
+// purpose  : If the size of an algorithmic bissectrice is negligible, it is
 //           replaced by a half-straight.
 //=============================================================================
 static void ReplaceByLineIfIsToSmall(occ::handle<Bisector_Curve>& Bis,
