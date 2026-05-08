@@ -353,6 +353,14 @@ public:
     myMarkerScale = theScale;
   }
 
+  //! Whether the marker is rendered as a physical sphere in view space
+  bool MarkerPhysical() const { return myMarkerPhysical; }
+
+  void SetMarkerPhysical (const bool theMarkerPhysical)
+  {
+    myMarkerPhysical = theMarkerPhysical;
+  }
+
   //! Returns marker's image texture.
   //! Could be null handle if marker aspect has been initialized as default type of marker.
   const occ::handle<Graphic3d_MarkerImage>& MarkerImage() const { return myMarkerImage; }
@@ -532,6 +540,7 @@ public:
            && myLineWidth == theOther.myLineWidth && myLineFactor == theOther.myLineFactor
            && myLinePattern == theOther.myLinePattern && myMarkerType == theOther.myMarkerType
            && myMarkerScale == theOther.myMarkerScale && myHatchStyle == theOther.myHatchStyle
+           && myMarkerPhysical == theOther.myMarkerPhysical
            && myTextFont == theOther.myTextFont && myPolygonOffset == theOther.myPolygonOffset
            && myTextStyle == theOther.myTextStyle && myTextDisplayType == theOther.myTextDisplayType
            && myTextFontAspect == theOther.myTextFontAspect && myTextAngle == theOther.myTextAngle
@@ -602,6 +611,7 @@ protected:
 
   Aspect_TypeOfMarker myMarkerType;
   float               myMarkerScale;
+  bool                myMarkerPhysical;
 
   Aspect_TypeOfStyleText   myTextStyle;
   Aspect_TypeOfDisplayText myTextDisplayType;

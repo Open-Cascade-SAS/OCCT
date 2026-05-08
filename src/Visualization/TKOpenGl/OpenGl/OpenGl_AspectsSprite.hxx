@@ -35,6 +35,8 @@ public:
 
   float MarkerSize() const { return myMarkerSize; }
 
+  bool MarkerPhysical() const { return myMarkerPhysical; }
+
   //! Return TRUE if resource is up-to-date.
   bool IsReady() const { return myIsSpriteReady; }
 
@@ -67,6 +69,7 @@ private:
                              const occ::handle<Graphic3d_MarkerImage>& theMarkerImage,
                              Aspect_TypeOfMarker                       theType,
                              float                                     theScale,
+                             bool                                      thePhysicalScale,
                              const NCollection_Vec4<float>&            theColor,
                              float&                                    theMarkerSize);
 
@@ -74,6 +77,7 @@ private:
   static void spriteKeys(const occ::handle<Graphic3d_MarkerImage>& theMarkerImage,
                          Aspect_TypeOfMarker                       theType,
                          float                                     theScale,
+                         bool                                      thePhysicalScale,
                          const NCollection_Vec4<float>&            theColor,
                          TCollection_AsciiString&                  theKey,
                          TCollection_AsciiString&                  theKeyA);
@@ -82,6 +86,7 @@ private:
   occ::handle<OpenGl_PointSprite> mySprite;
   occ::handle<OpenGl_PointSprite> mySpriteA;
   float                           myMarkerSize;
+  bool                            myMarkerPhysical;
   bool                            myIsSpriteReady;
 };
 

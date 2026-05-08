@@ -36,6 +36,7 @@ public
   bool keepArrayData;     //!< Disables freeing CPU memory after building VBOs (OFF by default)
   bool ffpEnable;         //!< Enables FFP (fixed-function pipeline), do not use built-in GLSL programs (OFF by default)
   bool usePolygonMode;    //!< Enables Polygon Mode instead of built-in GLSL programs (OFF by default; unsupported on OpenGL ES)
+  bool lineGeomDisable;   //!< Disables GLSL shader for line rendering (OFF by default)
   bool useSystemBuffer;   //!< Enables usage of system backbuffer for blitting (OFF by default on desktop OpenGL and ON on OpenGL ES for testing)
   int swapInterval;      //!< controls swap interval - 0 for VSync off and 1 for VSync on, 1 by default
   bool useZeroToOneDepth; //!< use [0, 1] depth range instead of [-1, 1] range, when possible (OFF by default)
