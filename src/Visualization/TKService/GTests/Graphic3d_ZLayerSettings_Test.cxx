@@ -58,15 +58,15 @@ TEST(Graphic3d_ZLayerSettingsTest, DefaultConstructor_DepthWriteEnabled)
 TEST(Graphic3d_ZLayerSettingsTest, SetVisible_False)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetVisible(Standard_False);
+  aSettings.SetVisible(false);
   EXPECT_FALSE(aSettings.IsVisible()) << "Visibility should be FALSE after SetVisible(false)";
 }
 
 TEST(Graphic3d_ZLayerSettingsTest, SetVisible_True)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetVisible(Standard_False);
-  aSettings.SetVisible(Standard_True);
+  aSettings.SetVisible(false);
+  aSettings.SetVisible(true);
   EXPECT_TRUE(aSettings.IsVisible()) << "Visibility should be TRUE after SetVisible(true)";
 }
 
@@ -78,15 +78,15 @@ TEST(Graphic3d_ZLayerSettingsTest, SetVisible_Toggle)
   EXPECT_TRUE(aSettings.IsVisible());
 
   // Hide
-  aSettings.SetVisible(Standard_False);
+  aSettings.SetVisible(false);
   EXPECT_FALSE(aSettings.IsVisible());
 
   // Show again
-  aSettings.SetVisible(Standard_True);
+  aSettings.SetVisible(true);
   EXPECT_TRUE(aSettings.IsVisible());
 
   // Hide again
-  aSettings.SetVisible(Standard_False);
+  aSettings.SetVisible(false);
   EXPECT_FALSE(aSettings.IsVisible());
 }
 
@@ -104,14 +104,14 @@ TEST(Graphic3d_ZLayerSettingsTest, SetName)
 TEST(Graphic3d_ZLayerSettingsTest, SetImmediate)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetImmediate(Standard_True);
+  aSettings.SetImmediate(true);
   EXPECT_TRUE(aSettings.IsImmediate()) << "IsImmediate should be TRUE after SetImmediate(true)";
 }
 
 TEST(Graphic3d_ZLayerSettingsTest, SetRaytracable)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetRaytracable(Standard_False);
+  aSettings.SetRaytracable(false);
   EXPECT_FALSE(aSettings.IsRaytracable())
     << "IsRaytracable should be FALSE after SetRaytracable(false)";
 }
@@ -119,7 +119,7 @@ TEST(Graphic3d_ZLayerSettingsTest, SetRaytracable)
 TEST(Graphic3d_ZLayerSettingsTest, SetEnableDepthTest)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetEnableDepthTest(Standard_False);
+  aSettings.SetEnableDepthTest(false);
   EXPECT_FALSE(aSettings.ToEnableDepthTest())
     << "Depth test should be disabled after SetEnableDepthTest(false)";
 }
@@ -127,7 +127,7 @@ TEST(Graphic3d_ZLayerSettingsTest, SetEnableDepthTest)
 TEST(Graphic3d_ZLayerSettingsTest, SetEnableDepthWrite)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetEnableDepthWrite(Standard_False);
+  aSettings.SetEnableDepthWrite(false);
   EXPECT_FALSE(aSettings.ToEnableDepthWrite())
     << "Depth write should be disabled after SetEnableDepthWrite(false)";
 }
@@ -139,7 +139,7 @@ TEST(Graphic3d_ZLayerSettingsTest, SetEnableDepthWrite)
 TEST(Graphic3d_ZLayerSettingsTest, DumpJson_ContainsVisibility)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetVisible(Standard_True);
+  aSettings.SetVisible(true);
 
   std::ostringstream aStream;
   aSettings.DumpJson(aStream);
@@ -152,7 +152,7 @@ TEST(Graphic3d_ZLayerSettingsTest, DumpJson_ContainsVisibility)
 TEST(Graphic3d_ZLayerSettingsTest, DumpJson_VisibilityValueTrue)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetVisible(Standard_True);
+  aSettings.SetVisible(true);
 
   std::ostringstream aStream;
   aSettings.DumpJson(aStream);
@@ -167,7 +167,7 @@ TEST(Graphic3d_ZLayerSettingsTest, DumpJson_VisibilityValueTrue)
 TEST(Graphic3d_ZLayerSettingsTest, DumpJson_VisibilityValueFalse)
 {
   Graphic3d_ZLayerSettings aSettings;
-  aSettings.SetVisible(Standard_False);
+  aSettings.SetVisible(false);
 
   std::ostringstream aStream;
   aSettings.DumpJson(aStream);
