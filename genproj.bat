@@ -27,7 +27,7 @@ rem  find Tcl
 set "TCL_EXEC=tclsh.exe"
 for %%X in (%TCL_EXEC%) do (set TCL_FOUND=%%~$PATH:X)
 
-set "TCL_EXEC2=tclsh86.exe"
+set "TCL_EXEC2=G:\tcl9.0.2\win\Release_AMD64_VC1938\tclsh90.exe"
 if not defined TCL_FOUND (
   for %%X in (%TCL_EXEC2%) do (
     set TCL_FOUND=%%~$PATH:X
