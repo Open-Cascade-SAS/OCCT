@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <IntPatch_ALineToWLine.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <Adaptor3d_Surface.hxx>
 #include <ElSLib.hxx>

@@ -30,6 +30,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
 
 //==================================================================================
 // function : ComputePasInit

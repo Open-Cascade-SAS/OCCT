@@ -14,6 +14,7 @@
 #include <IntPatch_WLineTool.hxx>
 
 #include <Adaptor3d_Surface.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <Bnd_Range.hxx>
 #include <ElCLib.hxx>

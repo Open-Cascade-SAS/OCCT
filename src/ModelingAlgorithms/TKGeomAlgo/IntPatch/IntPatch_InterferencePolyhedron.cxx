@@ -17,6 +17,7 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>

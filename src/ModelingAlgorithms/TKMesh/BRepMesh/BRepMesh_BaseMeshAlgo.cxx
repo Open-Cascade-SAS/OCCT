@@ -285,8 +285,8 @@ void BRepMesh_BaseMeshAlgo::collectNodes(const occ::handle<Poly_Triangulation>& 
   {
     if (const int* pIdx = myUsedNodes->Seek(i))
     {
-      const BRepMesh_Vertex& aVertex     = myStructure->GetNode(i);
-      const int              aNodeIndex  = *pIdx;
+      const BRepMesh_Vertex& aVertex    = myStructure->GetNode(i);
+      const int              aNodeIndex = *pIdx;
       theTriangulation->SetNode(aNodeIndex, myNodesMap->Value(aVertex.Location3d()));
       theTriangulation->SetUVNode(aNodeIndex, getNodePoint2d(aVertex));
     }

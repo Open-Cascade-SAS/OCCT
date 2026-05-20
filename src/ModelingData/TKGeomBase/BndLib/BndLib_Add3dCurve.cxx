@@ -16,6 +16,11 @@
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <GeomBndLib_Curve.hxx>
+#include <GeomBndLib_Line.hxx>
+#include <GeomBndLib_Circle.hxx>
+#include <GeomBndLib_Ellipse.hxx>
+#include <GeomBndLib_Hyperbola.hxx>
+#include <GeomBndLib_Parabola.hxx>
 
 //=================================================================================================
 
@@ -32,6 +37,29 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
                             const double           Tol,
                             Bnd_Box&               B)
 {
+  // Fast path for elementary curves: use the static Box overloads on
+  // gp_* primitives, avoiding the per-call heap allocation of Geom_Line /
+  // Geom_Circle / ... that GeomBndLib_Curve's constructor performs.
+  switch (C.GetType())
+  {
+    case GeomAbs_Line:
+      B.Add(GeomBndLib_Line::Box(C.Line(), U1, U2, Tol));
+      return;
+    case GeomAbs_Circle:
+      B.Add(GeomBndLib_Circle::Box(C.Circle(), U1, U2, Tol));
+      return;
+    case GeomAbs_Ellipse:
+      B.Add(GeomBndLib_Ellipse::Box(C.Ellipse(), U1, U2, Tol));
+      return;
+    case GeomAbs_Hyperbola:
+      B.Add(GeomBndLib_Hyperbola::Box(C.Hyperbola(), U1, U2, Tol));
+      return;
+    case GeomAbs_Parabola:
+      B.Add(GeomBndLib_Parabola::Box(C.Parabola(), U1, U2, Tol));
+      return;
+    default:
+      break;
+  }
   GeomBndLib_Curve(C).Add(U1, U2, Tol, B);
 }
 

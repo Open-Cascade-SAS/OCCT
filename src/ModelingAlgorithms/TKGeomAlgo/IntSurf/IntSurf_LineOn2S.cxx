@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IntSurf_LineOn2S, Standard_Transient)
 
 IntSurf_LineOn2S::IntSurf_LineOn2S(const IntSurf_Allocator& /*theAllocator*/)
 {
-  // The allocator hint is ignored: std::vector uses the default allocator.
-  // Profiles show this is a net win because random access through the line is
-  // O(1) instead of O(N) (NCollection_BaseSequence::Find).
+  // The allocator hint is ignored. NCollection_LinearVector uses its own
+  // contiguous buffer; random access is O(1) versus O(N) for the previous
+  // NCollection_Sequence (BaseSequence::Find dominated boolean Fuse profile).
   myBuv1.SetWhole();
   myBuv2.SetWhole();
   myBxyz.SetWhole();
@@ -31,26 +31,27 @@ IntSurf_LineOn2S::IntSurf_LineOn2S(const IntSurf_Allocator& /*theAllocator*/)
 occ::handle<IntSurf_LineOn2S> IntSurf_LineOn2S::Split(const int Index)
 {
   occ::handle<IntSurf_LineOn2S> NS = new IntSurf_LineOn2S();
-  if (Index >= 1 && Index <= static_cast<int>(mySeq.size()))
+  const int                     aN = static_cast<int>(mySeq.Size());
+  if (Index >= 1 && Index <= aN)
   {
-    for (auto it = mySeq.begin() + (Index - 1); it != mySeq.end(); ++it)
+    for (int i = Index - 1; i < aN; ++i)
     {
-      NS->Add(*it);
+      NS->Add(mySeq[i]);
     }
-    mySeq.erase(mySeq.begin() + (Index - 1), mySeq.end());
+    mySeq.Erase(static_cast<size_t>(Index - 1), static_cast<size_t>(aN));
   }
   return NS;
 }
 
 void IntSurf_LineOn2S::InsertBefore(const int index, const IntSurf_PntOn2S& P)
 {
-  if (index > static_cast<int>(mySeq.size()))
+  if (index > static_cast<int>(mySeq.Size()))
   {
-    mySeq.push_back(P);
+    mySeq.Append(P);
   }
   else
   {
-    mySeq.insert(mySeq.begin() + (index - 1), P);
+    mySeq.InsertBefore(static_cast<size_t>(index - 1), P);
   }
 
   if (!myBxyz.IsWhole())
@@ -71,9 +72,9 @@ void IntSurf_LineOn2S::InsertBefore(const int index, const IntSurf_PntOn2S& P)
 
 void IntSurf_LineOn2S::RemovePoint(const int index)
 {
-  if (index >= 1 && index <= static_cast<int>(mySeq.size()))
+  if (index >= 1 && index <= static_cast<int>(mySeq.Size()))
   {
-    mySeq.erase(mySeq.begin() + (index - 1));
+    mySeq.Erase(static_cast<size_t>(index - 1));
   }
   myBuv1.SetWhole();
   myBuv2.SetWhole();
@@ -196,7 +197,7 @@ bool IntSurf_LineOn2S::IsOutSurf2Box(const gp_Pnt2d& P2uv)
 
 void IntSurf_LineOn2S::Add(const IntSurf_PntOn2S& P)
 {
-  mySeq.push_back(P);
+  mySeq.Append(P);
   if (!myBxyz.IsWhole())
   {
     myBxyz.Add(P.Value());

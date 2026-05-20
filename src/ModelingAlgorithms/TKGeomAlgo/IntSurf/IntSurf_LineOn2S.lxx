@@ -17,7 +17,7 @@
 
 inline int IntSurf_LineOn2S::NbPoints() const
 {
-  return static_cast<int>(mySeq.size());
+  return static_cast<int>(mySeq.Size());
 }
 
 inline void IntSurf_LineOn2S::Reverse()
@@ -48,7 +48,7 @@ inline void IntSurf_LineOn2S::SetPoint(const int Index, const gp_Pnt& thePnt)
 
 inline void IntSurf_LineOn2S::Clear()
 {
-  mySeq.clear();
+  mySeq.Clear();
   myBuv1.SetWhole();
   myBuv2.SetWhole();
   myBxyz.SetWhole();
