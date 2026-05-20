@@ -22,8 +22,8 @@
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
 #include <IntSurf_PntOn2S.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_Transient.hxx>
+#include <vector>
 #include <IntSurf_Allocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
@@ -81,7 +81,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IntSurf_LineOn2S, Standard_Transient)
 
 private:
-  NCollection_Sequence<IntSurf_PntOn2S> mySeq;
+  // Contiguous storage gives O(1) random access; the previous NCollection_Sequence
+  // had O(N) operator()(i) which dominated profiles of surface-surface intersection
+  // (BOPAlgo Fuse, IntPatch_WLine::Point) — see [[occt-bench-results]].
+  std::vector<IntSurf_PntOn2S>          mySeq;
   Bnd_Box2d                             myBuv1;
   Bnd_Box2d                             myBuv2;
   Bnd_Box                               myBxyz;

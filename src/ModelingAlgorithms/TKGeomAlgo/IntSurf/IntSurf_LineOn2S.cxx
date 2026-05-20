@@ -18,9 +18,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IntSurf_LineOn2S, Standard_Transient)
 
-IntSurf_LineOn2S::IntSurf_LineOn2S(const IntSurf_Allocator& theAllocator)
-    : mySeq(theAllocator)
+IntSurf_LineOn2S::IntSurf_LineOn2S(const IntSurf_Allocator& /*theAllocator*/)
 {
+  // The allocator hint is ignored: std::vector uses the default allocator.
+  // Profiles show this is a net win because random access through the line is
+  // O(1) instead of O(N) (NCollection_BaseSequence::Find).
   myBuv1.SetWhole();
   myBuv2.SetWhole();
   myBxyz.SetWhole();
@@ -28,27 +30,27 @@ IntSurf_LineOn2S::IntSurf_LineOn2S(const IntSurf_Allocator& theAllocator)
 
 occ::handle<IntSurf_LineOn2S> IntSurf_LineOn2S::Split(const int Index)
 {
-  NCollection_Sequence<IntSurf_PntOn2S> SS;
-  mySeq.Split(Index, SS);
   occ::handle<IntSurf_LineOn2S> NS = new IntSurf_LineOn2S();
-  int                           i;
-  int                           leng = SS.Length();
-  for (i = 1; i <= leng; i++)
+  if (Index >= 1 && Index <= static_cast<int>(mySeq.size()))
   {
-    NS->Add(SS(i));
+    for (auto it = mySeq.begin() + (Index - 1); it != mySeq.end(); ++it)
+    {
+      NS->Add(*it);
+    }
+    mySeq.erase(mySeq.begin() + (Index - 1), mySeq.end());
   }
   return NS;
 }
 
 void IntSurf_LineOn2S::InsertBefore(const int index, const IntSurf_PntOn2S& P)
 {
-  if (index > mySeq.Length())
+  if (index > static_cast<int>(mySeq.size()))
   {
-    mySeq.Append(P);
+    mySeq.push_back(P);
   }
   else
   {
-    mySeq.InsertBefore(index, P);
+    mySeq.insert(mySeq.begin() + (index - 1), P);
   }
 
   if (!myBxyz.IsWhole())
@@ -69,7 +71,10 @@ void IntSurf_LineOn2S::InsertBefore(const int index, const IntSurf_PntOn2S& P)
 
 void IntSurf_LineOn2S::RemovePoint(const int index)
 {
-  mySeq.Remove(index);
+  if (index >= 1 && index <= static_cast<int>(mySeq.size()))
+  {
+    mySeq.erase(mySeq.begin() + (index - 1));
+  }
   myBuv1.SetWhole();
   myBuv2.SetWhole();
   myBxyz.SetWhole();
@@ -86,11 +91,11 @@ bool IntSurf_LineOn2S::IsOutBox(const gp_Pnt& Pxyz)
   {
     int n = NbPoints();
     myBxyz.SetVoid();
-    for (int i = 1; i <= n; i++)
+    for (const auto& pt : mySeq)
     {
-      gp_Pnt P = mySeq(i).Value();
-      myBxyz.Add(P);
+      myBxyz.Add(pt.Value());
     }
+    (void)n;
     double x0, y0, z0, x1, y1, z1;
     myBxyz.Get(x0, y0, z0, x1, y1, z1);
     x1 -= x0;
@@ -132,12 +137,11 @@ bool IntSurf_LineOn2S::IsOutSurf1Box(const gp_Pnt2d& P1uv)
 
   if (myBuv1.IsWhole())
   {
-    int    n = NbPoints();
     double pu1, pu2, pv1, pv2;
     myBuv1.SetVoid();
-    for (int i = 1; i <= n; i++)
+    for (const auto& pt : mySeq)
     {
-      mySeq(i).Parameters(pu1, pv1, pu2, pv2);
+      pt.Parameters(pu1, pv1, pu2, pv2);
       myBuv1.Add(gp_Pnt2d(pu1, pv1));
     }
     myBuv1.Get(pu1, pv1, pu2, pv2);
@@ -165,12 +169,11 @@ bool IntSurf_LineOn2S::IsOutSurf2Box(const gp_Pnt2d& P2uv)
 
   if (myBuv2.IsWhole())
   {
-    int    n = NbPoints();
     double pu1, pu2, pv1, pv2;
     myBuv2.SetVoid();
-    for (int i = 1; i <= n; i++)
+    for (const auto& pt : mySeq)
     {
-      mySeq(i).Parameters(pu1, pv1, pu2, pv2);
+      pt.Parameters(pu1, pv1, pu2, pv2);
       myBuv2.Add(gp_Pnt2d(pu2, pv2));
     }
     myBuv2.Get(pu1, pv1, pu2, pv2);
@@ -193,7 +196,7 @@ bool IntSurf_LineOn2S::IsOutSurf2Box(const gp_Pnt2d& P2uv)
 
 void IntSurf_LineOn2S::Add(const IntSurf_PntOn2S& P)
 {
-  mySeq.Append(P);
+  mySeq.push_back(P);
   if (!myBxyz.IsWhole())
   {
     myBxyz.Add(P.Value());
@@ -214,7 +217,7 @@ void IntSurf_LineOn2S::Add(const IntSurf_PntOn2S& P)
 
 void IntSurf_LineOn2S::SetUV(const int Index, const bool OnFirst, const double U, const double V)
 {
-  mySeq(Index).SetValue(OnFirst, U, V);
+  mySeq[Index - 1].SetValue(OnFirst, U, V);
 
   if (OnFirst && !myBuv1.IsWhole())
   {

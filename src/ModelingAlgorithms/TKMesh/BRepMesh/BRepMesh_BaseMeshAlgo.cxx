@@ -262,12 +262,12 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
 
     for (int i = 0; i < 3; ++i)
     {
-      if (!myUsedNodes->IsBound(aNode[i]))
+      int* pIdx = myUsedNodes->ChangeSeek(aNode[i]);
+      if (!pIdx)
       {
-        myUsedNodes->Bind(aNode[i], myUsedNodes->Length() + 1);
+        pIdx = myUsedNodes->Bound(aNode[i], myUsedNodes->Length() + 1);
       }
-
-      aNode[i] = myUsedNodes->Find(aNode[i]);
+      aNode[i] = *pIdx;
     }
 
     aRes->SetTriangle(aTriangeId, Poly_Triangle(aNode[0], aNode[1], aNode[2]));
@@ -283,11 +283,10 @@ void BRepMesh_BaseMeshAlgo::collectNodes(const occ::handle<Poly_Triangulation>& 
 {
   for (int i = 1; i <= myNodesMap->Length(); ++i)
   {
-    if (myUsedNodes->IsBound(i))
+    if (const int* pIdx = myUsedNodes->Seek(i))
     {
-      const BRepMesh_Vertex& aVertex = myStructure->GetNode(i);
-
-      const int aNodeIndex = myUsedNodes->Find(i);
+      const BRepMesh_Vertex& aVertex     = myStructure->GetNode(i);
+      const int              aNodeIndex  = *pIdx;
       theTriangulation->SetNode(aNodeIndex, myNodesMap->Value(aVertex.Location3d()));
       theTriangulation->SetUVNode(aNodeIndex, getNodePoint2d(aVertex));
     }

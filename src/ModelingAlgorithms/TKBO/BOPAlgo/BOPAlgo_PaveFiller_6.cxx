@@ -415,13 +415,16 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
           BRep_Tool::Triangulation(aF2, aLocation2);
         const bool anIsPlane2 = IsPlaneFF(aSurface2);
 
-        bool anIsFound = false;
+        bool                           anIsFound = false;
+        NCollection_DataMap<int, bool> aIsClosedF2Cache;
         for (TopoDS_Iterator aItW1(aF1); !anIsFound && aItW1.More(); aItW1.Next())
         {
           for (TopoDS_Iterator aItE1(aItW1.Value()); !anIsFound && aItE1.More(); aItE1.Next())
           {
             const TopoDS_Edge& anEdge1      = TopoDS::Edge(aItE1.Value());
             const int          anEdgeIndex1 = myDS->Index(anEdge1);
+            const bool         anIsClosed1 =
+              IsClosedFF(anEdge1, aSurface1, aTriangulation1, aLocation1, anIsPlane1);
 
             for (TopoDS_Iterator aItW2(aF2); !anIsFound && aItW2.More(); aItW2.Next())
             {
@@ -430,10 +433,13 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
                 const TopoDS_Edge& anEdge2      = TopoDS::Edge(aItE2.Value());
                 const int          anEdgeIndex2 = myDS->Index(anEdge2);
 
-                const bool anIsClosed1 =
-                  IsClosedFF(anEdge1, aSurface1, aTriangulation1, aLocation1, anIsPlane1);
-                const bool anIsClosed2 =
-                  IsClosedFF(anEdge2, aSurface2, aTriangulation2, aLocation2, anIsPlane2);
+                bool anIsClosed2;
+                if (!aIsClosedF2Cache.Find(anEdgeIndex2, anIsClosed2))
+                {
+                  anIsClosed2 =
+                    IsClosedFF(anEdge2, aSurface2, aTriangulation2, aLocation2, anIsPlane2);
+                  aIsClosedF2Cache.Bind(anEdgeIndex2, anIsClosed2);
+                }
                 if (!anIsClosed1 && !anIsClosed2)
                 {
                   continue;
