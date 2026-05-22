@@ -76,7 +76,14 @@ public:
   {
     try
     {
-      OCC_CATCH_SIGNALS
+      // OCC_CATCH_SIGNALS is intentionally omitted here.
+      // This function is called thousands of times per face-face intersection
+      // from the PSO optimizer inner loop. On UNIX/macOS, OCC_CATCH_SIGNALS
+      // expands to setjmp() which calls sigprocmask() -- a kernel syscall --
+      // making every PSO particle evaluation expensive. Signal protection is
+      // provided by the OCC_CATCH_SIGNALS in MinComputing() one level up,
+      // which converts any hardware signal to a Standard_Failure exception
+      // that the catch block below will handle.
       if (!CheckParameter(theX))
       {
         return false;
@@ -109,7 +116,8 @@ public:
   {
     try
     {
-      OCC_CATCH_SIGNALS
+      // OCC_CATCH_SIGNALS omitted: same reasoning as Value() above.
+      // MinComputing() provides the outer signal guard.
       if (!CheckParameter(theX))
       {
         return false;
