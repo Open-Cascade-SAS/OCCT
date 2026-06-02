@@ -32,6 +32,14 @@
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <ShapeFix.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
+#include <BRepBuilderAPI_MakeSolid.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -133,6 +141,96 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
     }
     DStr.ChangeCurve(ic).SetRange(parmin, parmax);
   }
+}
+
+//=======================================================================
+// function : ChFi3d_IsConsumedFace
+// purpose  : Tells whether a face has been entirely consumed by a fillet,
+//           i.e. collapsed to a zero-width band. This happens (issue #1177)
+//           when the fillet radius is large enough that the tangency line
+//           reaches the opposite edge of an adjacent face: the face is then
+//           trimmed down to a degenerate sliver of negligible area compared
+//           to its size.
+//=======================================================================
+
+static bool ChFi3d_IsConsumedFace(const TopoDS_Face& theFace)
+{
+  Bnd_Box aBox;
+  BRepBndLib::Add(theFace, aBox);
+  if (aBox.IsVoid())
+  {
+    return false;
+  }
+  const double aDiag = std::sqrt(aBox.SquareExtent());
+  if (aDiag <= Precision::Confusion())
+  {
+    return false;
+  }
+  GProp_GProps aProps;
+  BRepGProp::SurfaceProperties(theFace, aProps);
+  // A genuine face has an area comparable to the square of its size, whereas a
+  // consumed face collapses to a band whose area is at most (size * tolerance).
+  return aProps.Mass() < aDiag * Precision::Confusion();
+}
+
+//=======================================================================
+// function : ChFi3d_RemoveConsumedFaces
+// purpose  : Drop faces that the fillet has consumed down to a zero-area band
+//           and re-stitch the remaining faces (issue #1177). When a fillet
+//           reaches the opposite edge of an adjacent face, the boundary of the
+//           fillet coincides with an existing edge of the solid; sewing merges
+//           the two coincident edges into a single shared edge and closes the
+//           shell again, removing the spurious degenerate face.
+//=======================================================================
+
+static TopoDS_Shape ChFi3d_RemoveConsumedFaces(const TopoDS_Shape& theShape)
+{
+  NCollection_List<TopoDS_Shape> aGoodFaces;
+  bool                           hasConsumed = false;
+  for (TopExp_Explorer anExpF(theShape, TopAbs_FACE); anExpF.More(); anExpF.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(anExpF.Current());
+    if (ChFi3d_IsConsumedFace(aFace))
+    {
+      hasConsumed = true;
+    }
+    else
+    {
+      aGoodFaces.Append(aFace);
+    }
+  }
+  if (!hasConsumed || aGoodFaces.IsEmpty())
+  {
+    return theShape;
+  }
+
+  BRepBuilderAPI_Sewing aSewer(Precision::Confusion());
+  for (NCollection_List<TopoDS_Shape>::Iterator anIt(aGoodFaces); anIt.More(); anIt.Next())
+  {
+    aSewer.Add(anIt.Value());
+  }
+  aSewer.Perform();
+  const TopoDS_Shape aSewn = aSewer.SewedShape();
+  if (aSewn.IsNull())
+  {
+    return theShape;
+  }
+
+  // Preserve the solid nature of the input when possible.
+  if (theShape.ShapeType() == TopAbs_SOLID)
+  {
+    TopExp_Explorer anExpSh(aSewn, TopAbs_SHELL);
+    if (anExpSh.More())
+    {
+      const TopoDS_Shell&      aShell = TopoDS::Shell(anExpSh.Current());
+      BRepBuilderAPI_MakeSolid aMkSolid(aShell);
+      if (aMkSolid.IsDone())
+      {
+        return aMkSolid.Solid();
+      }
+    }
+  }
+  return aSewn;
 }
 
 //=================================================================================================
@@ -530,12 +628,12 @@ void ChFi3d_Builder::Compute()
               {
                 TopExp_Explorer     expsh2(its.Value(), TopAbs_SHELL);
                 const TopoDS_Shape& cursh = expsh2.Current();
-                B1.Add(myShapeResult, cursh);
+                B1.Add(myShapeResult, ChFi3d_RemoveConsumedFaces(cursh));
                 its.Next();
               }
               else
               {
-                B1.Add(myShapeResult, its.Value());
+                B1.Add(myShapeResult, ChFi3d_RemoveConsumedFaces(its.Value()));
                 its.Next();
               }
             }
