@@ -3433,7 +3433,13 @@ void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
                                    aFI2.FirstParameter(),
                                    aFI2.LastParameter());
       anIntersector.Perform(aPCurve1, aPCurve2, tol2d, Precision::PConfusion());
-      if (anIntersector.NbSegments() > 0 || anIntersector.NbPoints() > 0)
+      // A transversal point intersection means the two fillets genuinely cross
+      // and gouge each other: the radiuses are really too big. A segment (with no
+      // transversal point), on the other hand, means the two opposing fillets meet
+      // tangentially along a line because they exactly consume the face between
+      // them; this is a valid configuration (issue #1177) - the consumed face is
+      // removed and the fillets are stitched together downstream, so do not abort.
+      if (anIntersector.NbPoints() > 0)
       {
         throw StdFail_NotDone("StripeEdgeInter : fillets have too big radiuses");
       }

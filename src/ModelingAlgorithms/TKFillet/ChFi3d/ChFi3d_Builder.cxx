@@ -38,6 +38,10 @@
 #include <GProp_GProps.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_MakeSolid.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <BRep_Tool.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_Plane.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -174,29 +178,88 @@ static bool ChFi3d_IsConsumedFace(const TopoDS_Face& theFace)
 }
 
 //=======================================================================
+// function : ChFi3d_IsPlanar
+// purpose  : Tells whether the support surface of a face is a plane.
+//=======================================================================
+
+static bool ChFi3d_IsPlanar(const TopoDS_Face& theFace)
+{
+  const occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(theFace);
+  return !aSurf.IsNull() && aSurf->IsKind(STANDARD_TYPE(Geom_Plane));
+}
+
+//=======================================================================
 // function : ChFi3d_RemoveConsumedFaces
-// purpose  : Drop faces that the fillet has consumed down to a zero-area band
-//           and re-stitch the remaining faces (issue #1177). When a fillet
-//           reaches the opposite edge of an adjacent face, the boundary of the
-//           fillet coincides with an existing edge of the solid; sewing merges
-//           the two coincident edges into a single shared edge and closes the
-//           shell again, removing the spurious degenerate face.
+// purpose  : Drop faces that the fillet/chamfer has entirely consumed and
+//           re-stitch the remaining faces (issue #1177). Two flavours of
+//           spurious face appear when a fillet or chamfer reaches across an
+//           adjacent face to the opposite edge:
+//            - a fillet collapses the consumed face to a zero-area band whose
+//              boundary coincides with an existing edge of the solid;
+//            - two opposing chamfers leave the original planar face in place but
+//              with a self-intersecting boundary (the chamfer ridge is embedded
+//              as an interior slit), so the face is invalid yet not degenerate.
+//           Both kinds are removed; sewing then merges the now-coincident edges
+//           and closes the shell again. The invalid-face removal only kicks in
+//           when the reconstructed shape is itself invalid, so well-formed
+//           results are left untouched.
 //=======================================================================
 
 static TopoDS_Shape ChFi3d_RemoveConsumedFaces(const TopoDS_Shape& theShape)
 {
+  bool isShapeValid = true;
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      BRepCheck_Analyzer anAnalyzer(theShape);
+      isShapeValid = anAnalyzer.IsValid();
+    }
+    catch (const Standard_Failure&)
+    {
+      isShapeValid = true;
+    }
+  }
+
   NCollection_List<TopoDS_Shape> aGoodFaces;
   bool                           hasConsumed = false;
-  for (TopExp_Explorer anExpF(theShape, TopAbs_FACE); anExpF.More(); anExpF.Next())
+  if (!isShapeValid)
   {
-    const TopoDS_Face& aFace = TopoDS::Face(anExpF.Current());
-    if (ChFi3d_IsConsumedFace(aFace))
+    // Re-create the analyzer to query the validity of every face individually.
+    BRepCheck_Analyzer anAnalyzer(theShape);
+    for (TopExp_Explorer anExpF(theShape, TopAbs_FACE); anExpF.More(); anExpF.Next())
     {
-      hasConsumed = true;
+      const TopoDS_Face& aFace = TopoDS::Face(anExpF.Current());
+      bool               aConsumed = ChFi3d_IsConsumedFace(aFace);
+      if (!aConsumed && ChFi3d_IsPlanar(aFace) && !anAnalyzer.IsValid(aFace))
+      {
+        // A planar face that is invalid after reconstruction is a consumed
+        // original face whose boundary has degenerated (issue #1177).
+        aConsumed = true;
+      }
+      if (aConsumed)
+      {
+        hasConsumed = true;
+      }
+      else
+      {
+        aGoodFaces.Append(aFace);
+      }
     }
-    else
+  }
+  else
+  {
+    for (TopExp_Explorer anExpF(theShape, TopAbs_FACE); anExpF.More(); anExpF.Next())
     {
-      aGoodFaces.Append(aFace);
+      const TopoDS_Face& aFace = TopoDS::Face(anExpF.Current());
+      if (ChFi3d_IsConsumedFace(aFace))
+      {
+        hasConsumed = true;
+      }
+      else
+      {
+        aGoodFaces.Append(aFace);
+      }
     }
   }
   if (!hasConsumed || aGoodFaces.IsEmpty())

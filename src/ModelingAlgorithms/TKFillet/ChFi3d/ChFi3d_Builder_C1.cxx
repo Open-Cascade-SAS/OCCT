@@ -1167,7 +1167,11 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
           continue;
         }
         anIntersector.Perform(aCorkPCurve, anOtherPCurve, tol2d, Precision::PConfusion());
-        if (anIntersector.NbSegments() > 0 || anIntersector.NbPoints() > 0)
+        // A transversal point intersection means the fillets really cross and
+        // gouge each other (radiuses too big). A segment alone means they meet
+        // tangentially because the face between them is fully consumed - a valid
+        // configuration handled downstream (issue #1177), so do not abort.
+        if (anIntersector.NbPoints() > 0)
         {
           throw StdFail_NotDone("OneCorner : fillets have too big radiuses");
         }
@@ -1196,7 +1200,9 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
                                         anOtherCur->FirstParameter(),
                                         anOtherCur->LastParameter());
       anIntersector.Perform(aCorkPCurve, anOtherPCurve, tol2d, Precision::PConfusion());
-      if (anIntersector.NbSegments() > 0 || anIntersector.NbPoints() > 0)
+      // See remark above: only a transversal crossing means the radiuses are
+      // really too big; a tangential meeting segment is valid (issue #1177).
+      if (anIntersector.NbPoints() > 0)
       {
         throw StdFail_NotDone("OneCorner : fillets have too big radiuses");
       }
