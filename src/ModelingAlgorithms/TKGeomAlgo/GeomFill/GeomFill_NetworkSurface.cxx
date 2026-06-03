@@ -15,6 +15,7 @@
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <GeomFill_Profiler.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_LinearVector.hxx>
@@ -60,32 +61,29 @@ void reparametrizeSurface(occ::handle<Geom_BSplineSurface>& theSurface)
   theSurface->SetVKnots(aVKnots);
 }
 
-bool sameCurveSpace(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves)
+bool prepareCurveFamily(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves)
 {
-  if (theCurves.Size() < 1 || theCurves.At(0).IsNull())
-  {
-    return false;
-  }
-
-  const occ::handle<Geom_BSplineCurve>& aFirst = theCurves.At(0);
+  GeomFill_Profiler aProfiler;
   for (size_t aCurveIdx = 0; aCurveIdx < theCurves.Size(); ++aCurveIdx)
   {
-    const occ::handle<Geom_BSplineCurve>& aCurve = theCurves.At(aCurveIdx);
-    if (aCurve.IsNull() || aCurve->IsRational() || aCurve->Degree() != aFirst->Degree()
-        || aCurve->NbPoles() != aFirst->NbPoles() || aCurve->NbKnots() != aFirst->NbKnots())
+    if (theCurves.At(aCurveIdx).IsNull() || theCurves.At(aCurveIdx)->IsRational())
     {
       return false;
     }
+    aProfiler.AddCurve(theCurves.At(aCurveIdx));
+  }
 
-    for (int aKnotIdx = 1; aKnotIdx <= aFirst->NbKnots(); ++aKnotIdx)
+  aProfiler.Perform(Precision::PConfusion());
+  for (size_t aCurveIdx = 0; aCurveIdx < theCurves.Size(); ++aCurveIdx)
+  {
+    theCurves.ChangeAt(aCurveIdx) =
+      occ::down_cast<Geom_BSplineCurve>(aProfiler.Curve(static_cast<int>(aCurveIdx) + 1));
+    if (theCurves.At(aCurveIdx).IsNull() || theCurves.At(aCurveIdx)->IsRational())
     {
-      if (std::abs(aCurve->Knot(aKnotIdx) - aFirst->Knot(aKnotIdx)) > Precision::PConfusion()
-          || aCurve->Multiplicity(aKnotIdx) != aFirst->Multiplicity(aKnotIdx))
-      {
-        return false;
-      }
+      return false;
     }
   }
+
   return true;
 }
 
@@ -510,20 +508,23 @@ bool canSetPeriodic(const occ::handle<Geom_BSplineSurface>& theSurface,
 bool isReadyToBuild(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
                     const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
                     const NCollection_Array1<double>&                         theProfileParameters,
-                    const NCollection_Array1<double>&                         theGuideParameters)
+                    const NCollection_Array1<double>&                         theGuideParameters,
+                    const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints)
 {
   return theProfiles.Length() >= 2 && theGuides.Length() >= 2
          && theProfiles.Length() == theProfileParameters.Length()
          && theGuides.Length() == theGuideParameters.Length()
-         && checkParameters(theProfileParameters) && checkParameters(theGuideParameters)
-         && sameCurveSpace(theProfiles) && sameCurveSpace(theGuides);
+         && theIntersectionPoints.ColLength() == theGuideParameters.Length()
+         && theIntersectionPoints.RowLength() == theProfileParameters.Length()
+         && checkParameters(theProfileParameters) && checkParameters(theGuideParameters);
 }
 
 occ::handle<Geom_BSplineSurface> makeNetworkSurface(
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
   const NCollection_Array1<double>&                         theProfileParameters,
-  const NCollection_Array1<double>&                         theGuideParameters)
+  const NCollection_Array1<double>&                         theGuideParameters,
+  const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints)
 {
   SkinningBasis anUBasis;
   anUBasis.Init(theGuideParameters);
@@ -553,18 +554,7 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
     return nullptr;
   }
 
-  NCollection_Array2<gp_Pnt> aReferencePoles(1,
-                                             theGuideParameters.Length(),
-                                             1,
-                                             theProfileParameters.Length());
-  const size_t               aNbProfiles = theProfileParameters.Size();
-  for (size_t aPoleIdx = 0; aPoleIdx < aReferencePoles.Size(); ++aPoleIdx)
-  {
-    const size_t aGuideIdx   = aPoleIdx / aNbProfiles;
-    const size_t aProfileIdx = aPoleIdx % aNbProfiles;
-    aReferencePoles.NCollection_Array1<gp_Pnt>::ChangeAt(aPoleIdx) =
-      theProfiles.At(aProfileIdx)->Value(theGuideParameters.At(aGuideIdx));
-  }
+  NCollection_Array2<gp_Pnt> aReferencePoles(theIntersectionPoints);
 
   int anInversionProblem = 0;
   BSplSLib::Interpolate(anUBasis.Degree,
@@ -596,10 +586,9 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
 
 bool applyPeriodicity(occ::handle<Geom_BSplineSurface>& theSurface,
                       const bool                        theIsUClosed,
-                      const bool                        theIsVClosed,
-                      const double                      theTolerance)
+                      const bool                        theIsVClosed)
 {
-  const double aTolerance = std::max(theTolerance, Precision::Confusion());
+  const double aTolerance = Precision::Confusion();
   if (theIsUClosed)
   {
     if (!canSetPeriodic(theSurface, true, aTolerance))
@@ -633,6 +622,7 @@ void GeomFill_NetworkSurface::Init(
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
   const NCollection_Array1<double>&                         theProfileParameters,
   const NCollection_Array1<double>&                         theGuideParameters,
+  const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints,
   double                                                    theTolerance,
   bool                                                      theIsUClosed,
   bool                                                      theIsVClosed)
@@ -641,6 +631,7 @@ void GeomFill_NetworkSurface::Init(
   myGuides            = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theGuides);
   myProfileParameters = NCollection_Array1<double>(theProfileParameters);
   myGuideParameters   = NCollection_Array1<double>(theGuideParameters);
+  myIntersectionPoints = NCollection_Array2<gp_Pnt>(theIntersectionPoints);
   myTolerance         = theTolerance;
   myIsUClosed         = theIsUClosed;
   myIsVClosed         = theIsVClosed;
@@ -655,7 +646,11 @@ void GeomFill_NetworkSurface::Perform()
   myStatus = ResultStatus::NotStarted;
   mySurface.Nullify();
 
-  if (!isReadyToBuild(myProfiles, myGuides, myProfileParameters, myGuideParameters))
+  if (!isReadyToBuild(myProfiles,
+                      myGuides,
+                      myProfileParameters,
+                      myGuideParameters,
+                      myIntersectionPoints))
   {
     myStatus = ResultStatus::InvalidInput;
     return;
@@ -663,14 +658,24 @@ void GeomFill_NetworkSurface::Perform()
 
   try
   {
-    mySurface = makeNetworkSurface(myProfiles, myGuides, myProfileParameters, myGuideParameters);
+    if (!prepareCurveFamily(myProfiles) || !prepareCurveFamily(myGuides))
+    {
+      myStatus = ResultStatus::ConstructionFailed;
+      return;
+    }
+
+    mySurface = makeNetworkSurface(myProfiles,
+                                   myGuides,
+                                   myProfileParameters,
+                                   myGuideParameters,
+                                   myIntersectionPoints);
     if (mySurface.IsNull())
     {
       myStatus = ResultStatus::ConstructionFailed;
       return;
     }
 
-    if (!applyPeriodicity(mySurface, myIsUClosed, myIsVClosed, myTolerance))
+    if (!applyPeriodicity(mySurface, myIsUClosed, myIsVClosed))
     {
       mySurface.Nullify();
       myStatus = ResultStatus::PeriodicityFailed;

@@ -102,14 +102,6 @@ void addIntervalMidpoints(NCollection_LinearVector<double>& theParameters, const
   }
 }
 
-//! Copies vector values into an OCCT handle array.
-occ::handle<NCollection_HArray1<double>> toHArray(const math_Vector& theValues,
-                                                  const int          theNbValues)
-{
-  NCollection_Array1<double> anArray(theValues(1), 1, theNbValues);
-  return new NCollection_HArray1<double>(anArray);
-}
-
 //! Wraps a linear vector into a 1-based Array1 view without copying its storage.
 template <typename T>
 NCollection_Array1<T> toOneBasedArrayView(NCollection_LinearVector<T>& theValues)
@@ -160,6 +152,24 @@ struct OrderedCurve
   size_t Index = 0;
   double Rank  = 0.0;
 };
+
+//! Returns average values of matrix columns.
+math_Vector columnMeans(const math_Matrix& theParams)
+{
+  const math_Vector aOnes(theParams.LowerRow(), theParams.UpperRow(), 1.0);
+  math_Vector       aSums = theParams.Transposed() * aOnes;
+  aSums /= static_cast<double>(theParams.RowNumber());
+  return aSums;
+}
+
+//! Returns average values of matrix rows.
+math_Vector rowMeans(const math_Matrix& theParams)
+{
+  const math_Vector aOnes(theParams.LowerCol(), theParams.UpperCol(), 1.0);
+  math_Vector       aSums = theParams * aOnes;
+  aSums /= static_cast<double>(theParams.ColNumber());
+  return aSums;
+}
 
 //! Attempts to store a contact from two close 3D points.
 void updateContact(const occ::handle<Geom_BSplineCurve>& theProfile,
@@ -279,13 +289,16 @@ double snappedParameter(const occ::handle<Geom_BSplineCurve>& theCurve,
   return theParameter;
 }
 
-//! Snaps profile/guide parameter matrices to exact curve boundaries.
-void snapParameterTables(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
-                         const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
-                         NCollection_Array2<double>&                               theProfileParams,
-                         NCollection_Array2<double>&                               theGuideParams,
-                         const double                                              theTolerance)
+//! Normalizes intersections after ordering and returns detected closed directions.
+bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                           const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                           NCollection_Array2<double>&                               theProfileParams,
+                           NCollection_Array2<double>&                               theGuideParams,
+                           const double                                              theTolerance,
+                           bool&                                                     theIsUClosed,
+                           bool&                                                     theIsVClosed)
 {
+  const double aTol = std::max(theTolerance, Precision::Confusion());
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
     for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
@@ -300,81 +313,11 @@ void snapParameterTables(const NCollection_Array1<occ::handle<Geom_BSplineCurve>
                          theTolerance);
     }
   }
-}
 
-//! Returns maximum endpoint distance between two curves.
-double endGap(const occ::handle<Geom_BSplineCurve>& theFirst,
-              const occ::handle<Geom_BSplineCurve>& theLast)
-{
-  const double aStartGap =
-    theFirst->Value(theFirst->FirstParameter()).Distance(theLast->Value(theLast->FirstParameter()));
-  const double anEndGap =
-    theFirst->Value(theFirst->LastParameter()).Distance(theLast->Value(theLast->LastParameter()));
-  return std::max(aStartGap, anEndGap);
-}
-
-//! Returns maximum point gap between two profile columns.
-double columnGap(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
-                 const NCollection_Array2<double>&                         theParams,
-                 const size_t                                              theFirstCol,
-                 const size_t                                              theLastCol)
-{
-  double aGap = 0.0;
-  for (size_t aRow = 0; aRow < theProfiles.Size(); ++aRow)
-  {
-    aGap = std::max(aGap,
-                    theProfiles.At(aRow)
-                      ->Value(theParams.At(aRow, theFirstCol))
-                      .Distance(theProfiles.At(aRow)->Value(theParams.At(aRow, theLastCol))));
-  }
-  return aGap;
-}
-
-//! Returns maximum point gap between two guide rows.
-double rowGap(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
-              const NCollection_Array2<double>&                         theParams,
-              const size_t                                              theFirstRow,
-              const size_t                                              theLastRow)
-{
-  double aGap = 0.0;
-  for (size_t aCol = 0; aCol < theGuides.Size(); ++aCol)
-  {
-    aGap = std::max(aGap,
-                    theGuides.At(aCol)
-                      ->Value(theParams.At(theFirstRow, aCol))
-                      .Distance(theGuides.At(aCol)->Value(theParams.At(theLastRow, aCol))));
-  }
-  return aGap;
-}
-
-//! Computes U/V closed flags.
-void detectClosure(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
-                   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
-                   const NCollection_Array2<double>&                         theProfileParams,
-                   const NCollection_Array2<double>&                         theGuideParams,
-                   const double                                              theTolerance,
-                   bool&                                                     theIsUClosed,
-                   bool&                                                     theIsVClosed)
-{
-  const double aTol = std::max(theTolerance, Precision::Confusion());
-
+  double       aUGap        = 0.0;
+  double       aVGap        = 0.0;
   const size_t aLastProfile = theProfiles.Size() - 1;
   const size_t aLastGuide   = theGuides.Size() - 1;
-  theIsUClosed              = endGap(theGuides.At(0), theGuides.At(aLastGuide)) <= aTol
-                              && columnGap(theProfiles, theProfileParams, 0, aLastGuide) <= aTol;
-  theIsVClosed              = endGap(theProfiles.At(0), theProfiles.At(aLastProfile)) <= aTol
-                              && rowGap(theGuides, theGuideParams, 0, aLastProfile) <= aTol;
-}
-
-//! Checks that the stored parameter grid evaluates to coincident 3D points.
-bool isIntersectionTableValid(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
-                              const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
-                              const NCollection_Array2<double>& theProfileParams,
-                              const NCollection_Array2<double>& theGuideParams,
-                              const double                      theTolerance)
-{
-  const double aTol = std::max(theTolerance, Precision::Confusion());
-
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
     for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
@@ -387,47 +330,53 @@ bool isIntersectionTableValid(const NCollection_Array1<occ::handle<Geom_BSplineC
       {
         return false;
       }
+      if (aGuideIdx == 0 || aGuideIdx == aLastGuide)
+      {
+        aUGap = std::max(aUGap,
+                         aProfilePoint.Distance(theProfiles.At(aProfileIdx)->Value(
+                           theProfileParams.At(aProfileIdx, aLastGuide - aGuideIdx))));
+      }
+      if (aProfileIdx == 0 || aProfileIdx == aLastProfile)
+      {
+        aVGap = std::max(aVGap,
+                         aGuidePoint.Distance(theGuides.At(aGuideIdx)->Value(
+                           theGuideParams.At(aLastProfile - aProfileIdx, aGuideIdx))));
+      }
+    }
+  }
+
+  theIsUClosed = aUGap <= aTol;
+  theIsVClosed = aVGap <= aTol;
+  if (theIsUClosed)
+  {
+    for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+    {
+      theProfileParams.ChangeAt(aProfileIdx, 0) =
+        theProfiles.At(aProfileIdx)->FirstParameter();
+      theProfileParams.ChangeAt(aProfileIdx, aLastGuide) =
+        theProfiles.At(aProfileIdx)->LastParameter();
+    }
+  }
+  if (theIsVClosed)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+    {
+      theGuideParams.ChangeAt(0, aGuideIdx) =
+        theGuides.At(aGuideIdx)->FirstParameter();
+      theGuideParams.ChangeAt(aLastProfile, aGuideIdx) =
+        theGuides.At(aGuideIdx)->LastParameter();
     }
   }
   return true;
 }
 
-//! Computes a robust median value.
-double medianRank(NCollection_LinearVector<double>& theValues)
-{
-  if (theValues.IsEmpty())
-  {
-    return 0.0;
-  }
-
-  std::sort(theValues.begin(), theValues.end());
-  const size_t aMid = theValues.Size() / 2;
-  return (theValues.Size() % 2) == 1 ? theValues.Value(aMid)
-                                     : 0.5 * (theValues.Value(aMid - 1) + theValues.Value(aMid));
-}
-
-//! Orders rows or columns of the given parameter matrix.
-NCollection_LinearVector<OrderedCurve> orderedCurves(const math_Matrix& theParams,
-                                                     const bool         theToOrderRows)
+//! Orders curves by their mean position in the opposite parameter family.
+NCollection_LinearVector<OrderedCurve> orderedCurves(const math_Vector& theRanks)
 {
   NCollection_LinearVector<OrderedCurve> anOrder;
-  NCollection_LinearVector<double>       aSamples;
-  const size_t                           aNbRows    = static_cast<size_t>(theParams.RowNumber());
-  const size_t                           aNbCols    = static_cast<size_t>(theParams.ColNumber());
-  const size_t                           aNbCurves  = theToOrderRows ? aNbRows : aNbCols;
-  const size_t                           aNbSamples = theToOrderRows ? aNbCols : aNbRows;
-
-  for (size_t aCurveIdx = 0; aCurveIdx < aNbCurves; ++aCurveIdx)
+  for (int aRankIdx = theRanks.Lower(); aRankIdx <= theRanks.Upper(); ++aRankIdx)
   {
-    aSamples.Clear();
-    for (size_t aSampleIdx = 0; aSampleIdx < aNbSamples; ++aSampleIdx)
-    {
-      aSamples.Append(
-        theToOrderRows
-          ? theParams(static_cast<int>(aCurveIdx) + 1, static_cast<int>(aSampleIdx) + 1)
-          : theParams(static_cast<int>(aSampleIdx) + 1, static_cast<int>(aCurveIdx) + 1));
-    }
-    anOrder.Append({aCurveIdx, medianRank(aSamples)});
+    anOrder.Append({static_cast<size_t>(aRankIdx - theRanks.Lower()), theRanks(aRankIdx)});
   }
 
   std::sort(anOrder.begin(),
@@ -436,6 +385,34 @@ NCollection_LinearVector<OrderedCurve> orderedCurves(const math_Matrix& theParam
               return theLeft.Rank < theRight.Rank;
             });
   return anOrder;
+}
+
+//! Checks that every row and column advances in its own curve parameter direction.
+bool isMonotoneLayout(const math_Matrix& theProfileParams, const math_Matrix& theGuideParams)
+{
+  const double aTol = parameterResolution(0.0, 1.0);
+  for (int aRow = theProfileParams.LowerRow(); aRow <= theProfileParams.UpperRow(); ++aRow)
+  {
+    for (int aCol = theProfileParams.LowerCol() + 1; aCol <= theProfileParams.UpperCol(); ++aCol)
+    {
+      if (theProfileParams(aRow, aCol) <= theProfileParams(aRow, aCol - 1) + aTol)
+      {
+        return false;
+      }
+    }
+  }
+
+  for (int aCol = theGuideParams.LowerCol(); aCol <= theGuideParams.UpperCol(); ++aCol)
+  {
+    for (int aRow = theGuideParams.LowerRow() + 1; aRow <= theGuideParams.UpperRow(); ++aRow)
+    {
+      if (theGuideParams(aRow, aCol) <= theGuideParams(aRow - 1, aCol) + aTol)
+      {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 //! Returns a curve handle oriented as requested.
@@ -474,9 +451,9 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
   math_Matrix aGuideParamMatrix   = toMatrix(theGuideParams);
 
   const NCollection_LinearVector<OrderedCurve> aProfileOrder =
-    orderedCurves(aGuideParamMatrix, true);
+    orderedCurves(rowMeans(aGuideParamMatrix));
   const NCollection_LinearVector<OrderedCurve> aGuideOrder =
-    orderedCurves(aProfileParamMatrix, false);
+    orderedCurves(columnMeans(aProfileParamMatrix));
 
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(theProfiles.Lower(),
                                                                theProfiles.Upper());
@@ -535,6 +512,11 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
     }
   }
 
+  if (!isMonotoneLayout(aProfileParamResult, aGuideParamResult))
+  {
+    return false;
+  }
+
   theProfiles      = aProfiles;
   theGuides        = aGuides;
   theProfileParams = aProfileParams;
@@ -542,11 +524,11 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
   return true;
 }
 
-//! Scalar map used to convert target parameters back to the source curve.
+//! Monotone scalar map converting target parameters back to the source curve.
 class ScalarLaw
 {
 public:
-  //! Builds an interpolation law from two monotone parameter lists.
+  //! Stores a strictly increasing piecewise-linear parameter map.
   bool Init(const math_Vector& theSource, const math_Vector& theTarget, const int theNbValues)
   {
     if (theNbValues < 2)
@@ -554,37 +536,55 @@ public:
       return false;
     }
 
-    occ::handle<NCollection_HArray1<double>> aSource = toHArray(theSource, theNbValues);
-    occ::handle<NCollection_HArray1<double>> aTarget = toHArray(theTarget, theNbValues);
-
-    Law_Interpolate anInterpolator(aSource, aTarget, false, Precision::PConfusion());
-    anInterpolator.Perform();
-    if (!anInterpolator.IsDone())
+    mySource.Clear();
+    myTarget.Clear();
+    for (int aParamIdx = 1; aParamIdx <= theNbValues; ++aParamIdx)
     {
-      return false;
+      if (!mySource.IsEmpty()
+          && (theSource(aParamIdx) <= mySource.Last() + Precision::PConfusion()
+              || theTarget(aParamIdx) <= myTarget.Last() + Precision::PConfusion()))
+      {
+        return false;
+      }
+      mySource.Append(theSource(aParamIdx));
+      myTarget.Append(theTarget(aParamIdx));
     }
-
-    myLaw         = anInterpolator.Curve();
-    myFirstSource = theSource(1);
-    myLastSource  = theSource(theNbValues);
-    return !myLaw.IsNull();
+    return true;
   }
 
-  //! Evaluates the scalar law and clamps to source bounds.
+  //! Evaluates the map by linear interpolation and clamps to source bounds.
   double Value(const double theTargetParameter) const
   {
-    if (myLaw.IsNull())
+    if (mySource.IsEmpty())
     {
-      return myFirstSource;
+      return 0.0;
     }
-    const double aValue = myLaw->Value(theTargetParameter);
-    return std::max(myFirstSource, std::min(myLastSource, aValue));
+    if (theTargetParameter <= myTarget.First())
+    {
+      return mySource.First();
+    }
+    if (theTargetParameter >= myTarget.Last())
+    {
+      return mySource.Last();
+    }
+
+    for (size_t aParamIdx = 1; aParamIdx < myTarget.Size(); ++aParamIdx)
+    {
+      if (theTargetParameter <= myTarget.Value(aParamIdx))
+      {
+        const double aT0     = myTarget.Value(aParamIdx - 1);
+        const double aT1     = myTarget.Value(aParamIdx);
+        const double aWeight = (theTargetParameter - aT0) / (aT1 - aT0);
+        return mySource.Value(aParamIdx - 1)
+               + aWeight * (mySource.Value(aParamIdx) - mySource.Value(aParamIdx - 1));
+      }
+    }
+    return mySource.Last();
   }
 
 private:
-  occ::handle<Law_BSpline> myLaw;
-  double                   myFirstSource = 0.0;
-  double                   myLastSource  = 1.0;
+  NCollection_LinearVector<double> mySource;
+  NCollection_LinearVector<double> myTarget;
 };
 
 //! Appends a monotone source/target pair.
@@ -748,24 +748,6 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
   return !theCurve.IsNull();
 }
 
-//! Returns average values of matrix columns.
-math_Vector columnMeans(const math_Matrix& theParams)
-{
-  const math_Vector aOnes(theParams.LowerRow(), theParams.UpperRow(), 1.0);
-  math_Vector       aSums = theParams.Transposed() * aOnes;
-  aSums /= static_cast<double>(theParams.RowNumber());
-  return aSums;
-}
-
-//! Returns average values of matrix rows.
-math_Vector rowMeans(const math_Matrix& theParams)
-{
-  const math_Vector aOnes(theParams.LowerCol(), theParams.UpperCol(), 1.0);
-  math_Vector       aSums = theParams * aOnes;
-  aSums /= static_cast<double>(theParams.ColNumber());
-  return aSums;
-}
-
 //! Reconstructs curves so all intersections share averaged parameters.
 bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
                         NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
@@ -861,63 +843,22 @@ public:
     return reorderNetwork(myProfiles, myGuides, myProfileParams, myGuideParams);
   }
 
-  //! Snaps near-boundary intersection parameters.
-  void SnapIntersectionParameters()
+  //! Snaps, validates, and detects closed directions in the intersection table.
+  bool NormalizeIntersectionParameters(bool& theIsUClosed, bool& theIsVClosed)
   {
-    snapParameterTables(myProfiles, myGuides, myProfileParams, myGuideParams, myTolerance);
-  }
-
-  //! Detects closed network directions.
-  void DetectClosedDirections(bool& theIsUClosed, bool& theIsVClosed) const
-  {
-    detectClosure(myProfiles,
-                  myGuides,
-                  myProfileParams,
-                  myGuideParams,
-                  myTolerance,
-                  theIsUClosed,
-                  theIsVClosed);
-  }
-
-  //! Forces boundary intersection parameters to exact ends for detected closed directions.
-  void AdjustClosedBoundaries(const bool theIsUClosed, const bool theIsVClosed)
-  {
-    if (theIsUClosed)
-    {
-      const size_t aLastGuideIdx = myGuides.Size() - 1;
-      for (size_t aProfileIdx = 0; aProfileIdx < myProfiles.Size(); ++aProfileIdx)
-      {
-        myProfileParams.ChangeAt(aProfileIdx, 0) = myProfiles.At(aProfileIdx)->FirstParameter();
-        myProfileParams.ChangeAt(aProfileIdx, aLastGuideIdx) =
-          myProfiles.At(aProfileIdx)->LastParameter();
-      }
-    }
-    if (theIsVClosed)
-    {
-      const size_t aLastProfileIdx = myProfiles.Size() - 1;
-      for (size_t aGuideIdx = 0; aGuideIdx < myGuides.Size(); ++aGuideIdx)
-      {
-        myGuideParams.ChangeAt(0, aGuideIdx) = myGuides.At(aGuideIdx)->FirstParameter();
-        myGuideParams.ChangeAt(aLastProfileIdx, aGuideIdx) =
-          myGuides.At(aGuideIdx)->LastParameter();
-      }
-    }
+    return normalizeContactTable(myProfiles,
+                                 myGuides,
+                                 myProfileParams,
+                                 myGuideParams,
+                                 myTolerance,
+                                 theIsUClosed,
+                                 theIsVClosed);
   }
 
   //! Rebuilds curves to shared averaged network parameters.
   bool EqualizeIntersectionParameters()
   {
     return equalizeParameters(myProfiles, myGuides, myProfileParams, myGuideParams);
-  }
-
-  //! Checks that the stored network parameters still describe coincident intersections.
-  bool CheckIntersectionTable() const
-  {
-    return isIntersectionTableValid(myProfiles,
-                                    myGuides,
-                                    myProfileParams,
-                                    myGuideParams,
-                                    myTolerance);
   }
 
 private:

@@ -20,12 +20,8 @@
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomConvert.hxx>
 #include <GeomFill_NetworkSurface.hxx>
-#include <GeomFill_Profiler.hxx>
 #include <GeomLib_Interpolate.hxx>
 #include <GeomLib_Tool.hxx>
-#include <Law_BSpline.hxx>
-#include <Law_Interpolate.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
@@ -77,10 +73,11 @@ void GeomFill_Gordon::Perform()
     return;
   }
 
-  aNetwork.SnapIntersectionParameters();
-
-  aNetwork.DetectClosedDirections(myIsUClosed, myIsVClosed);
-  aNetwork.AdjustClosedBoundaries(myIsUClosed, myIsVClosed);
+  if (!aNetwork.NormalizeIntersectionParameters(myIsUClosed, myIsVClosed))
+  {
+    myStatus = ResultStatus::CompatibilityFailed;
+    return;
+  }
 
   if (!aNetwork.EqualizeIntersectionParameters())
   {
@@ -88,36 +85,10 @@ void GeomFill_Gordon::Perform()
     return;
   }
 
-  if (!aNetwork.CheckIntersectionTable())
+  if (!aNetwork.NormalizeIntersectionParameters(myIsUClosed, myIsVClosed))
   {
     myStatus = ResultStatus::CompatibilityFailed;
     return;
-  }
-
-  GeomFill_Profiler aProfileProfiler;
-  for (size_t aProfileIdx = 0; aProfileIdx < myProfiles.Size(); ++aProfileIdx)
-  {
-    aProfileProfiler.AddCurve(myProfiles.At(aProfileIdx));
-  }
-  aProfileProfiler.Perform(Precision::PConfusion());
-
-  for (size_t aProfileIdx = 0; aProfileIdx < myProfiles.Size(); ++aProfileIdx)
-  {
-    myProfiles.ChangeAt(aProfileIdx) =
-      occ::down_cast<Geom_BSplineCurve>(aProfileProfiler.Curve(static_cast<int>(aProfileIdx) + 1));
-  }
-
-  GeomFill_Profiler aGuideProfiler;
-  for (size_t aGuideIdx = 0; aGuideIdx < myGuides.Size(); ++aGuideIdx)
-  {
-    aGuideProfiler.AddCurve(myGuides.At(aGuideIdx));
-  }
-  aGuideProfiler.Perform(Precision::PConfusion());
-
-  for (size_t aGuideIdx = 0; aGuideIdx < myGuides.Size(); ++aGuideIdx)
-  {
-    myGuides.ChangeAt(aGuideIdx) =
-      occ::down_cast<Geom_BSplineCurve>(aGuideProfiler.Curve(static_cast<int>(aGuideIdx) + 1));
   }
 
   math_Matrix aProfileParamMatrix = GordonUtilities::toMatrix(myProfileParams);
@@ -126,11 +97,25 @@ void GeomFill_Gordon::Perform()
   math_Vector aGuideParamValues   = GordonUtilities::columnMeans(aProfileParamMatrix);
   math_Vector aProfileParamValues = GordonUtilities::rowMeans(aGuideParamMatrix);
 
+  NCollection_Array2<gp_Pnt> anIntersectionPoints(1,
+                                                  static_cast<int>(myGuides.Size()),
+                                                  1,
+                                                  static_cast<int>(myProfiles.Size()));
+  for (size_t aProfileIdx = 0; aProfileIdx < myProfiles.Size(); ++aProfileIdx)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < myGuides.Size(); ++aGuideIdx)
+    {
+      anIntersectionPoints(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
+        myProfiles.At(aProfileIdx)->Value(myProfileParams.At(aProfileIdx, aGuideIdx));
+    }
+  }
+
   GeomFill_NetworkSurface aNetworkSurface;
   aNetworkSurface.Init(myProfiles,
                        myGuides,
                        aProfileParamValues.Array1(),
                        aGuideParamValues.Array1(),
+                       anIntersectionPoints,
                        myTolerance,
                        myIsUClosed,
                        myIsVClosed);

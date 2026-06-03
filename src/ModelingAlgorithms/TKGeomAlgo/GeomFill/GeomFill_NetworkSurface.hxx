@@ -21,13 +21,15 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <gp_Pnt.hxx>
 
 //! Low-level Gordon surface construction from a compatible B-spline curve network.
 //!
 //! This class builds the final surface for an already prepared Gordon network:
 //! input curves must be non-rational B-spline curves, consistently ordered,
-//! consistently reparametrized, and compatible inside each family
-//! (same degree, knots, multiplicities, and number of poles).
+//! and consistently reparametrized. Curve families are made compatible by
+//! the builder before skinning.
 //!
 //! Profile skin, guide skin, and an intersection-grid reference surface are
 //! built in B-spline form and aligned to a common knot basis. The final surface
@@ -65,6 +67,7 @@ public:
   //! @param[in] theGuides            guide curves evaluated in V direction
   //! @param[in] theProfileParameters V parameters locating profiles on guide skin
   //! @param[in] theGuideParameters   U parameters locating guides on profile skin
+  //! @param[in] theIntersectionPoints validated profile/guide contact grid
   //! @param[in] theTolerance         geometric tolerance for closed-seam checks
   //! @param[in] theIsUClosed         indicates that first/last guide curves close the U seam
   //! @param[in] theIsVClosed         indicates that first/last profile curves close the V seam
@@ -72,6 +75,7 @@ public:
                             const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
                             const NCollection_Array1<double>& theProfileParameters,
                             const NCollection_Array1<double>& theGuideParameters,
+                            const NCollection_Array2<gp_Pnt>& theIntersectionPoints,
                             double                            theTolerance,
                             bool                              theIsUClosed,
                             bool                              theIsVClosed);
@@ -94,6 +98,7 @@ private:
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> myGuides;
   NCollection_Array1<double>                         myProfileParameters;
   NCollection_Array1<double>                         myGuideParameters;
+  NCollection_Array2<gp_Pnt>                         myIntersectionPoints;
   occ::handle<Geom_BSplineSurface>                   mySurface;
   double                                             myTolerance = 0.0;
   bool                                               myIsUClosed = false;
