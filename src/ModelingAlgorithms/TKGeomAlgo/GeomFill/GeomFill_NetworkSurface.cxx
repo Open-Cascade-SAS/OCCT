@@ -161,7 +161,7 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
   NCollection_Array2<gp_Pnt>            aPoles(1, aBaseProfile->NbPoles(), 1, theProfiles.Length());
   NCollection_Array1<gp_Pnt>            aColumn(1, theProfiles.Length());
   NCollection_Array1<int>               aContactOrders(theProfileParameters.Lower(),
-                                                       theProfileParameters.Upper());
+                                         theProfileParameters.Upper());
   aContactOrders.Init(0);
 
   for (int aUPoleIdx = 1; aUPoleIdx <= aBaseProfile->NbPoles(); ++aUPoleIdx)
@@ -285,13 +285,13 @@ void appendKnot(const int                         theDegree,
                 NCollection_LinearVector<double>& theKnots,
                 NCollection_LinearVector<int>&    theMults)
 {
-  const bool   isBoundary = std::abs(theKnot - theStart) <= Precision::PConfusion()
-                            || std::abs(theKnot - theEnd) <= Precision::PConfusion();
-  const int    aMaxMult   = isBoundary ? theDegree + 1 : theDegree;
-  const int    aMult      = std::min(theMult, aMaxMult);
-  const double aKnot      = std::abs(theKnot - theStart) <= Precision::PConfusion() ? theStart
-                            : std::abs(theKnot - theEnd) <= Precision::PConfusion() ? theEnd
-                                                                                    : theKnot;
+  const bool isBoundary = std::abs(theKnot - theStart) <= Precision::PConfusion()
+                          || std::abs(theKnot - theEnd) <= Precision::PConfusion();
+  const int    aMaxMult = isBoundary ? theDegree + 1 : theDegree;
+  const int    aMult    = std::min(theMult, aMaxMult);
+  const double aKnot    = std::abs(theKnot - theStart) <= Precision::PConfusion() ? theStart
+                          : std::abs(theKnot - theEnd) <= Precision::PConfusion() ? theEnd
+                                                                                  : theKnot;
   theKnots.Append(aKnot);
   theMults.Append(aMult);
 }
@@ -485,9 +485,9 @@ occ::handle<Geom_BSplineSurface> makeBooleanSum(
   {
     for (int aVIdx = 1; aVIdx <= theProfileSurface->NbVPoles(); ++aVIdx)
     {
-      const gp_XYZ aPole         = theProfileSurface->Pole(aUIdx, aVIdx).XYZ()
-                                   + theGuideSurface->Pole(aUIdx, aVIdx).XYZ()
-                                   - theTensorSurface->Pole(aUIdx, aVIdx).XYZ();
+      const gp_XYZ aPole = theProfileSurface->Pole(aUIdx, aVIdx).XYZ()
+                           + theGuideSurface->Pole(aUIdx, aVIdx).XYZ()
+                           - theTensorSurface->Pole(aUIdx, aVIdx).XYZ();
       aResultPoles(aUIdx, aVIdx) = gp_Pnt(aPole);
     }
   }
