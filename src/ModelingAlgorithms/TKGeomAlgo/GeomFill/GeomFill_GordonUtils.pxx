@@ -771,17 +771,20 @@ bool redistributeNetworkParameters(NCollection_Array1<occ::handle<Geom_BSplineCu
     aAvgGuideParams.ChangeAt(aProfileIdx) = aSum / static_cast<double>(aNbGuid);
   }
 
+  NCollection_Array1<double> anOldProfileParams(1, static_cast<int>(aNbGuid));
+  NCollection_Array1<double> aNewProfileParams(1, static_cast<int>(aNbGuid));
   for (int aProfileIdx = 1; aProfileIdx <= static_cast<int>(aNbProf); ++aProfileIdx)
   {
-    NCollection_Array1<double> anOldParams(1, static_cast<int>(aNbGuid));
-    NCollection_Array1<double> aNewParams(1, static_cast<int>(aNbGuid));
     for (int aGuideIdx = 1; aGuideIdx <= static_cast<int>(aNbGuid); ++aGuideIdx)
     {
-      anOldParams(aGuideIdx) = theProfileParams(aProfileIdx, aGuideIdx);
-      aNewParams(aGuideIdx)  = aAvgProfileParams.At(static_cast<size_t>(aGuideIdx - 1));
+      anOldProfileParams(aGuideIdx) = theProfileParams(aProfileIdx, aGuideIdx);
+      aNewProfileParams(aGuideIdx)  = aAvgProfileParams.At(static_cast<size_t>(aGuideIdx - 1));
     }
 
-    if (!reparamCurve(theProfiles(aProfileIdx), anOldParams, aNewParams, theTolerance))
+    if (!reparamCurve(theProfiles(aProfileIdx),
+                      anOldProfileParams,
+                      aNewProfileParams,
+                      theTolerance))
     {
       return false;
     }
@@ -793,17 +796,17 @@ bool redistributeNetworkParameters(NCollection_Array1<occ::handle<Geom_BSplineCu
     }
   }
 
+  NCollection_Array1<double> anOldGuideParams(1, static_cast<int>(aNbProf));
+  NCollection_Array1<double> aNewGuideParams(1, static_cast<int>(aNbProf));
   for (int aGuideIdx = 1; aGuideIdx <= static_cast<int>(aNbGuid); ++aGuideIdx)
   {
-    NCollection_Array1<double> anOldParams(1, static_cast<int>(aNbProf));
-    NCollection_Array1<double> aNewParams(1, static_cast<int>(aNbProf));
     for (int aProfileIdx = 1; aProfileIdx <= static_cast<int>(aNbProf); ++aProfileIdx)
     {
-      anOldParams(aProfileIdx) = theGuideParams(aProfileIdx, aGuideIdx);
-      aNewParams(aProfileIdx)  = aAvgGuideParams.At(static_cast<size_t>(aProfileIdx - 1));
+      anOldGuideParams(aProfileIdx) = theGuideParams(aProfileIdx, aGuideIdx);
+      aNewGuideParams(aProfileIdx)  = aAvgGuideParams.At(static_cast<size_t>(aProfileIdx - 1));
     }
 
-    if (!reparamCurve(theGuides(aGuideIdx), anOldParams, aNewParams, theTolerance))
+    if (!reparamCurve(theGuides(aGuideIdx), anOldGuideParams, aNewGuideParams, theTolerance))
     {
       return false;
     }

@@ -124,16 +124,14 @@ void makeInterpolationBasis(const NCollection_Array1<double>& theParameters,
 bool interpolatePoles(const int                         theDegree,
                       const NCollection_Array1<double>& theFlatKnots,
                       const NCollection_Array1<double>& theParameters,
+                      const NCollection_Array1<int>&    theContactOrders,
                       NCollection_Array1<gp_Pnt>&       thePoles)
 {
-  NCollection_Array1<int> aContactOrders(theParameters.Lower(), theParameters.Upper());
-  aContactOrders.Init(0);
-
   int anInversionProblem = 0;
   BSplCLib::Interpolate(theDegree,
                         theFlatKnots,
                         theParameters,
-                        aContactOrders,
+                        theContactOrders,
                         thePoles,
                         anInversionProblem);
   return anInversionProblem == 0;
@@ -162,6 +160,9 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
   const occ::handle<Geom_BSplineCurve>& aBaseProfile = theProfiles(theProfiles.Lower());
   NCollection_Array2<gp_Pnt>            aPoles(1, aBaseProfile->NbPoles(), 1, theProfiles.Length());
   NCollection_Array1<gp_Pnt>            aColumn(1, theProfiles.Length());
+  NCollection_Array1<int>               aContactOrders(theProfileParameters.Lower(),
+                                                       theProfileParameters.Upper());
+  aContactOrders.Init(0);
 
   for (int aUPoleIdx = 1; aUPoleIdx <= aBaseProfile->NbPoles(); ++aUPoleIdx)
   {
@@ -169,7 +170,7 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
     {
       aColumn(aProfileIdx) = theProfiles(aProfileIdx)->Pole(aUPoleIdx);
     }
-    if (!interpolatePoles(theVDegree, theVFlatKnots, theProfileParameters, aColumn))
+    if (!interpolatePoles(theVDegree, theVFlatKnots, theProfileParameters, aContactOrders, aColumn))
     {
       return nullptr;
     }
@@ -199,6 +200,8 @@ occ::handle<Geom_BSplineSurface> makeGuideSkin(
   const occ::handle<Geom_BSplineCurve>& aBaseGuide = theGuides(theGuides.Lower());
   NCollection_Array2<gp_Pnt>            aPoles(1, theGuides.Length(), 1, aBaseGuide->NbPoles());
   NCollection_Array1<gp_Pnt>            aRow(1, theGuides.Length());
+  NCollection_Array1<int> aContactOrders(theGuideParameters.Lower(), theGuideParameters.Upper());
+  aContactOrders.Init(0);
 
   for (int aVPoleIdx = 1; aVPoleIdx <= aBaseGuide->NbPoles(); ++aVPoleIdx)
   {
@@ -206,7 +209,7 @@ occ::handle<Geom_BSplineSurface> makeGuideSkin(
     {
       aRow(aGuideIdx) = theGuides(aGuideIdx)->Pole(aVPoleIdx);
     }
-    if (!interpolatePoles(theUDegree, theUFlatKnots, theGuideParameters, aRow))
+    if (!interpolatePoles(theUDegree, theUFlatKnots, theGuideParameters, aContactOrders, aRow))
     {
       return nullptr;
     }
@@ -282,13 +285,13 @@ void appendKnot(const int                         theDegree,
                 NCollection_LinearVector<double>& theKnots,
                 NCollection_LinearVector<int>&    theMults)
 {
-  const bool isBoundary = std::abs(theKnot - theStart) <= Precision::PConfusion()
-                          || std::abs(theKnot - theEnd) <= Precision::PConfusion();
-  const int    aMaxMult = isBoundary ? theDegree + 1 : theDegree;
-  const int    aMult    = std::min(theMult, aMaxMult);
-  const double aKnot    = std::abs(theKnot - theStart) <= Precision::PConfusion() ? theStart
-                          : std::abs(theKnot - theEnd) <= Precision::PConfusion() ? theEnd
-                                                                                  : theKnot;
+  const bool   isBoundary = std::abs(theKnot - theStart) <= Precision::PConfusion()
+                            || std::abs(theKnot - theEnd) <= Precision::PConfusion();
+  const int    aMaxMult   = isBoundary ? theDegree + 1 : theDegree;
+  const int    aMult      = std::min(theMult, aMaxMult);
+  const double aKnot      = std::abs(theKnot - theStart) <= Precision::PConfusion() ? theStart
+                            : std::abs(theKnot - theEnd) <= Precision::PConfusion() ? theEnd
+                                                                                    : theKnot;
   theKnots.Append(aKnot);
   theMults.Append(aMult);
 }
@@ -482,9 +485,9 @@ occ::handle<Geom_BSplineSurface> makeBooleanSum(
   {
     for (int aVIdx = 1; aVIdx <= theProfileSurface->NbVPoles(); ++aVIdx)
     {
-      const gp_XYZ aPole = theProfileSurface->Pole(aUIdx, aVIdx).XYZ()
-                           + theGuideSurface->Pole(aUIdx, aVIdx).XYZ()
-                           - theTensorSurface->Pole(aUIdx, aVIdx).XYZ();
+      const gp_XYZ aPole         = theProfileSurface->Pole(aUIdx, aVIdx).XYZ()
+                                   + theGuideSurface->Pole(aUIdx, aVIdx).XYZ()
+                                   - theTensorSurface->Pole(aUIdx, aVIdx).XYZ();
       aResultPoles(aUIdx, aVIdx) = gp_Pnt(aPole);
     }
   }
