@@ -36,8 +36,8 @@
 //!
 //! This class accepts arbitrary Geom_Curve inputs, handles conversion to BSpline,
 //! intersection detection, network sorting, curve reparametrization for
-//! compatibility, then delegates to GeomFill_GordonBuilder for the core
-//! mathematical construction.
+//! compatibility, then evaluates a transfinite interpolation surface over the
+//! compatible network.
 //!
 //! Usage:
 //! @code
@@ -85,50 +85,12 @@ public:
   [[nodiscard]] Standard_EXPORT const occ::handle<Geom_BSplineSurface>& Surface() const;
 
 private:
-  //! Converts all input curves to BSpline and reparametrizes to [0,1].
-  bool convertToBSpline();
-
-  //! Computes all profile x guide intersections using GeomAPI_ExtremaCurveCurve.
-  //! Fills myProfileParams and myGuideParams.
-  //! @return true if all N x M intersections were found
-  bool computeIntersections();
-
-  //! Sorts the network so profiles are ordered left-to-right
-  //! and guides bottom-to-top, based on intersection parameters.
-  bool sortNetwork();
-
-  //! Snaps intersection parameters that are near curve start/end boundaries
-  //! to the exact boundary values, eliminating numerical inaccuracies.
-  //! Based on occ_gordon's EliminateInaccuraciesNetworkIntersections.
-  void eliminateInaccuracies();
-
-  //! Validates that profiles and guides actually intersect at their claimed
-  //! parameters within tolerance after reparametrization.
-  //! Based on occ_gordon's CheckCurveNetworkCompatibility.
-  //! @return true if all intersection points are within tolerance
-  bool checkNetworkCompatibility() const;
-
-  //! Averages intersection parameters and reparametrizes curves
-  //! so intersections occur at averaged target parameters.
-  //! Uses approximation-based approach with kink detection and
-  //! intelligent sample distribution for robustness.
-  bool reparametrize();
-
-  //! Computes the geometric scale factor from all curve endpoints.
-  //! Used for scale-relative tolerance computations.
-  void computeScale();
-
-  //! Detects whether the curve network is closed in U or V direction.
-  //! Sets myIsUClosed and myIsVClosed flags.
-  void detectClosedness();
-
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> myProfiles;
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> myGuides;
   NCollection_Array2<double>                         myProfileParams;
   NCollection_Array2<double>                         myGuideParams;
   occ::handle<Geom_BSplineSurface>                   mySurface;
   double                                             myTolerance     = 0.0;
-  double                                             myScale         = 1.0;
   bool                                               myIsUClosed     = false;
   bool                                               myIsVClosed     = false;
   bool                                               myToUseParallel = false;
