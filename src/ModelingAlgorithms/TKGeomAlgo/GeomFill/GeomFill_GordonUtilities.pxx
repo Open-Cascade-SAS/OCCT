@@ -215,9 +215,9 @@ void appendContact(const occ::handle<Geom_BSplineCurve>& theProfile,
                    const double                          theTolerance,
                    ContactSet&                           theContacts)
 {
-  const gp_Pnt  aProfilePoint = theProfile->Value(theProfileParam);
-  const gp_Pnt  aGuidePoint   = theGuide->Value(theGuideParam);
-  const double aGap = aProfilePoint.Distance(aGuidePoint);
+  const gp_Pnt aProfilePoint = theProfile->Value(theProfileParam);
+  const gp_Pnt aGuidePoint   = theGuide->Value(theGuideParam);
+  const double aGap          = aProfilePoint.Distance(aGuidePoint);
   if (aGap > theTolerance)
   {
     return;
@@ -276,7 +276,10 @@ void appendBoundaryContacts(const occ::handle<Geom_BSplineCurve>& theProfile,
   for (const double aProfileParam : aProfileBounds)
   {
     double aGuideParam = 0.0;
-    if (GeomLib_Tool::Parameter(theGuide, theProfile->Value(aProfileParam), theTolerance, aGuideParam))
+    if (GeomLib_Tool::Parameter(theGuide,
+                                theProfile->Value(aProfileParam),
+                                theTolerance,
+                                aGuideParam))
     {
       appendContact(theProfile, theGuide, aProfileParam, aGuideParam, theTolerance, theContacts);
     }
@@ -284,7 +287,10 @@ void appendBoundaryContacts(const occ::handle<Geom_BSplineCurve>& theProfile,
   for (const double aGuideParam : aGuideBounds)
   {
     double aProfileParam = 0.0;
-    if (GeomLib_Tool::Parameter(theProfile, theGuide->Value(aGuideParam), theTolerance, aProfileParam))
+    if (GeomLib_Tool::Parameter(theProfile,
+                                theGuide->Value(aGuideParam),
+                                theTolerance,
+                                aProfileParam))
     {
       appendContact(theProfile, theGuide, aProfileParam, aGuideParam, theTolerance, theContacts);
     }
@@ -353,7 +359,7 @@ bool chooseNearestContacts(const NCollection_LinearVector<ContactSet>& theContac
       {
         return false;
       }
-      const Contact& aContact = aSet.Candidates.First();
+      const Contact& aContact                           = aSet.Candidates.First();
       theProfileParams.ChangeAt(aProfileIdx, aGuideIdx) = aContact.ProfileParam;
       theGuideParams.ChangeAt(aProfileIdx, aGuideIdx)   = aContact.GuideParam;
     }
@@ -366,7 +372,7 @@ bool fillContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& 
                       const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
                       NCollection_Array2<double>&                               theProfileParams,
                       NCollection_Array2<double>&                               theGuideParams,
-                      NCollection_LinearVector<ContactSet>&                      theContactSets,
+                      NCollection_LinearVector<ContactSet>&                     theContactSets,
                       const double                                              theTolerance,
                       const bool                                                theToUseParallel)
 {
@@ -390,10 +396,10 @@ bool fillContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& 
         return;
       }
 
-      const size_t  aProfileIdx = static_cast<size_t>(thePairIdx / aNbGuides);
-      const size_t  aGuideIdx   = static_cast<size_t>(thePairIdx % aNbGuides);
-      ContactSet& aContactSet =
-        theContactSets.ChangeValue(contactIndex(aProfileIdx, aGuideIdx, static_cast<size_t>(aNbGuides)));
+      const size_t aProfileIdx = static_cast<size_t>(thePairIdx / aNbGuides);
+      const size_t aGuideIdx   = static_cast<size_t>(thePairIdx % aNbGuides);
+      ContactSet&  aContactSet = theContactSets.ChangeValue(
+        contactIndex(aProfileIdx, aGuideIdx, static_cast<size_t>(aNbGuides)));
       aContactSet =
         collectContacts(theProfiles.At(aProfileIdx), theGuides.At(aGuideIdx), theTolerance);
       if (aContactSet.Candidates.IsEmpty())
@@ -597,8 +603,7 @@ void openClosedBoundaryCandidates(
   bool         isURepeated = true;
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
-    const gp_Pnt aFirst =
-      theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, 0));
+    const gp_Pnt aFirst = theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, 0));
     const gp_Pnt aLast =
       theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, aLastGuide));
     if (aFirst.Distance(aLast) > aTol)
@@ -661,30 +666,30 @@ double orientedParameter(const occ::handle<Geom_BSplineCurve>& theCurve,
 
 //! Scores an oriented contact against the expected grid position.
 double orderedContactScore(const Contact& theContact,
-                           const double  theProfileParam,
-                           const double  theGuideParam,
-                           const double  theProfileTarget,
-                           const double  theGuideTarget,
-                           const double  theTolerance)
+                           const double   theProfileParam,
+                           const double   theGuideParam,
+                           const double   theProfileTarget,
+                           const double   theGuideTarget,
+                           const double   theTolerance)
 {
   return theContact.Gap / std::max(theTolerance, Precision::Confusion())
          + std::abs(theProfileParam - theProfileTarget) + std::abs(theGuideParam - theGuideTarget);
 }
 
 //! Selects one contact compatible with already selected row/column predecessors.
-bool chooseOrderedContact(const ContactSet&                  theContacts,
+bool chooseOrderedContact(const ContactSet&                     theContacts,
                           const occ::handle<Geom_BSplineCurve>& theProfile,
                           const occ::handle<Geom_BSplineCurve>& theGuide,
-                          const bool                         theProfileForward,
-                          const bool                         theGuideForward,
-                          const double                       theProfileTarget,
-                          const double                       theGuideTarget,
-                          const double                       thePreviousProfileParam,
-                          const double                       thePreviousGuideParam,
-                          const bool                         theHasPreviousProfile,
-                          const bool                         theHasPreviousGuide,
-                          const double                       theTolerance,
-                          Contact&                           theSelected)
+                          const bool                            theProfileForward,
+                          const bool                            theGuideForward,
+                          const double                          theProfileTarget,
+                          const double                          theGuideTarget,
+                          const double                          thePreviousProfileParam,
+                          const double                          thePreviousGuideParam,
+                          const bool                            theHasPreviousProfile,
+                          const bool                            theHasPreviousGuide,
+                          const double                          theTolerance,
+                          Contact&                              theSelected)
 {
   const double aParamTol = parameterResolution(0.0, 1.0);
   double       aBest     = RealLast();
@@ -708,8 +713,8 @@ bool chooseOrderedContact(const ContactSet&                  theContacts,
                                               theTolerance);
     if (aScore < aBest)
     {
-      aBest       = aScore;
-      theSelected = aCandidate;
+      aBest                    = aScore;
+      theSelected              = aCandidate;
       theSelected.ProfileParam = aProfileParam;
       theSelected.GuideParam   = aGuideParam;
     }
@@ -722,7 +727,7 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
                     NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
                     NCollection_Array2<double>&                         theProfileParams,
                     NCollection_Array2<double>&                         theGuideParams,
-                    const NCollection_LinearVector<ContactSet>&          theContactSets,
+                    const NCollection_LinearVector<ContactSet>&         theContactSets,
                     const double                                        theTolerance)
 {
   if (theProfiles.Size() < 2 || theGuides.Size() < 2)
@@ -784,9 +789,9 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
       const size_t aSrcGuideIdx = aGuideOrder.Value(aGuideIdx).Index;
       const double aProfileTarget =
         aGuideOrder.Size() == 1 ? 0.0 : static_cast<double>(aGuideIdx) / (aGuideOrder.Size() - 1);
-      const double aGuideTarget =
-        aProfileOrder.Size() == 1 ? 0.0
-                                  : static_cast<double>(aProfileIdx) / (aProfileOrder.Size() - 1);
+      const double aGuideTarget = aProfileOrder.Size() == 1
+                                    ? 0.0
+                                    : static_cast<double>(aProfileIdx) / (aProfileOrder.Size() - 1);
       const double aPreviousProfileParam =
         aGuideIdx == 0
           ? 0.0
@@ -1050,7 +1055,7 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
   math_Vector anOldProfileParams(1, static_cast<int>(theGuides.Size()));
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
-    const int aProfileRow = static_cast<int>(aProfileIdx) + 1;
+    const int aProfileRow     = static_cast<int>(aProfileIdx) + 1;
     bool      isAlreadyTarget = true;
     for (int aCol = anOldProfileParams.Lower(); aCol <= anOldProfileParams.Upper(); ++aCol)
     {
@@ -1076,7 +1081,7 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
   math_Vector anOldGuideParams(1, static_cast<int>(theProfiles.Size()));
   for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
   {
-    const int aGuideCol = static_cast<int>(aGuideIdx) + 1;
+    const int aGuideCol       = static_cast<int>(aGuideIdx) + 1;
     bool      isAlreadyTarget = true;
     for (int aRow = anOldGuideParams.Lower(); aRow <= anOldGuideParams.Upper(); ++aRow)
     {

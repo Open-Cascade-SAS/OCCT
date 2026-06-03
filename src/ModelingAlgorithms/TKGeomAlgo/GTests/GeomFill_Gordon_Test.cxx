@@ -433,7 +433,7 @@ TEST(GeomFill_Gordon, MixedCurveTypes_ProducesValidSurface)
                        aGordon.Surface()->UKnot(1),
                        aGordon.Surface()->VKnot(1),
                        gp_Pnt(0, 0, 0),
-	                       0.01);
+                       0.01);
 }
 
 TEST(GeomFill_Gordon, PeriodicBSplineProfiles_AreExpandedBeforeConstruction)

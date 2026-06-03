@@ -342,12 +342,12 @@ bool makeTripleProductBasis(const NCollection_Array1<double>& theKnots,
 bool multiplyByDenominators(const occ::handle<Geom_BSplineSurface>& theSurface,
                             const occ::handle<Geom_BSplineSurface>& theFirstDenominator,
                             const occ::handle<Geom_BSplineSurface>& theSecondDenominator,
-                            const int                              theUDegree,
-                            const int                              theVDegree,
-                            const NCollection_Array1<double>&      theUFlatKnots,
-                            const NCollection_Array1<double>&      theVFlatKnots,
-                            NCollection_Array2<gp_Pnt>&            theNumerator,
-                            NCollection_Array2<double>&            theDenominator)
+                            const int                               theUDegree,
+                            const int                               theVDegree,
+                            const NCollection_Array1<double>&       theUFlatKnots,
+                            const NCollection_Array1<double>&       theVFlatKnots,
+                            NCollection_Array2<gp_Pnt>&             theNumerator,
+                            NCollection_Array2<double>&             theDenominator)
 {
   DenominatorProductEvaluator aMultiplier(theFirstDenominator, theSecondDenominator);
 
@@ -381,13 +381,10 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
 {
   const occ::handle<Geom_BSplineCurve>& aBaseProfile = theProfiles(theProfiles.Lower());
   NCollection_Array2<gp_Pnt>            aPoles(1, aBaseProfile->NbPoles(), 1, theProfiles.Length());
-  NCollection_Array2<double>            aWeights(1,
-                                      aBaseProfile->NbPoles(),
-                                      1,
-                                      theProfiles.Length());
-  NCollection_Array1<gp_Pnt>            aColumn(1, theProfiles.Length());
-  NCollection_Array1<double>            aColumnWeights(1, theProfiles.Length());
-  NCollection_Array1<int>               aContactOrders(theProfileParameters.Lower(),
+  NCollection_Array2<double> aWeights(1, aBaseProfile->NbPoles(), 1, theProfiles.Length());
+  NCollection_Array1<gp_Pnt> aColumn(1, theProfiles.Length());
+  NCollection_Array1<double> aColumnWeights(1, theProfiles.Length());
+  NCollection_Array1<int>    aContactOrders(theProfileParameters.Lower(),
                                          theProfileParameters.Upper());
   aContactOrders.Init(0);
 
@@ -434,10 +431,7 @@ occ::handle<Geom_BSplineSurface> makeGuideSkin(
 {
   const occ::handle<Geom_BSplineCurve>& aBaseGuide = theGuides(theGuides.Lower());
   NCollection_Array2<gp_Pnt>            aPoles(1, theGuides.Length(), 1, aBaseGuide->NbPoles());
-  NCollection_Array2<double>            aWeights(1,
-                                      theGuides.Length(),
-                                      1,
-                                      aBaseGuide->NbPoles());
+  NCollection_Array2<double>            aWeights(1, theGuides.Length(), 1, aBaseGuide->NbPoles());
   NCollection_Array1<gp_Pnt>            aRow(1, theGuides.Length());
   NCollection_Array1<double>            aRowWeights(1, theGuides.Length());
   NCollection_Array1<int> aContactOrders(theGuideParameters.Lower(), theGuideParameters.Upper());
@@ -815,11 +809,10 @@ bool isReadyToBuild(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& th
                     const NCollection_Array1<double>&                         theProfileParameters,
                     const NCollection_Array1<double>&                         theGuideParameters,
                     const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints,
-                    const NCollection_Array2<double>&                         theIntersectionWeights)
+                    const NCollection_Array2<double>& theIntersectionWeights)
 {
-  return theProfiles.Length() >= 2 && theGuides.Length() >= 2
-         && !hasPeriodicCurve(theProfiles) && !hasPeriodicCurve(theGuides)
-         && theProfiles.Length() == theProfileParameters.Length()
+  return theProfiles.Length() >= 2 && theGuides.Length() >= 2 && !hasPeriodicCurve(theProfiles)
+         && !hasPeriodicCurve(theGuides) && theProfiles.Length() == theProfileParameters.Length()
          && theGuides.Length() == theGuideParameters.Length()
          && theIntersectionPoints.ColLength() == theGuideParameters.Length()
          && theIntersectionPoints.RowLength() == theProfileParameters.Length()
@@ -942,16 +935,16 @@ void GeomFill_NetworkSurface::Init(
   bool                                                      theIsUClosed,
   bool                                                      theIsVClosed)
 {
-  myProfiles           = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theProfiles);
-  myGuides             = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theGuides);
-  myProfileParameters  = NCollection_Array1<double>(theProfileParameters);
-  myGuideParameters    = NCollection_Array1<double>(theGuideParameters);
-  myIntersectionPoints = NCollection_Array2<gp_Pnt>(theIntersectionPoints);
+  myProfiles            = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theProfiles);
+  myGuides              = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theGuides);
+  myProfileParameters   = NCollection_Array1<double>(theProfileParameters);
+  myGuideParameters     = NCollection_Array1<double>(theGuideParameters);
+  myIntersectionPoints  = NCollection_Array2<gp_Pnt>(theIntersectionPoints);
   myIntersectionWeights = NCollection_Array2<double>(theIntersectionWeights);
-  myTolerance          = theTolerance;
-  myIsUClosed          = theIsUClosed;
-  myIsVClosed          = theIsVClosed;
-  myStatus             = ResultStatus::NotStarted;
+  myTolerance           = theTolerance;
+  myIsUClosed           = theIsUClosed;
+  myIsVClosed           = theIsVClosed;
+  myStatus              = ResultStatus::NotStarted;
   mySurface.Nullify();
 }
 
