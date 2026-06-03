@@ -120,17 +120,11 @@ void GeomFill_Gordon::Perform()
       occ::down_cast<Geom_BSplineCurve>(aGuideProfiler.Curve(static_cast<int>(aGuideIdx) + 1));
   }
 
-  const size_t aNbProf = myProfiles.Size();
-  const size_t aNbGuid = myGuides.Size();
-
   math_Matrix aProfileParamMatrix = GordonUtilities::toMatrix(myProfileParams);
   math_Matrix aGuideParamMatrix   = GordonUtilities::toMatrix(myGuideParams);
 
-  math_Vector aGuideParamValues(1, static_cast<int>(aNbGuid));
-  GordonUtilities::columnMeans(aProfileParamMatrix, aGuideParamValues);
-
-  math_Vector aProfileParamValues(1, static_cast<int>(aNbProf));
-  GordonUtilities::rowMeans(aGuideParamMatrix, aProfileParamValues);
+  math_Vector aGuideParamValues   = GordonUtilities::columnMeans(aProfileParamMatrix);
+  math_Vector aProfileParamValues = GordonUtilities::rowMeans(aGuideParamMatrix);
 
   GeomFill_NetworkSurface aNetworkSurface;
   aNetworkSurface.Init(myProfiles,

@@ -189,7 +189,7 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
   NCollection_Array2<gp_Pnt>            aPoles(1, aBaseProfile->NbPoles(), 1, theProfiles.Length());
   NCollection_Array1<gp_Pnt>            aColumn(1, theProfiles.Length());
   NCollection_Array1<int>               aContactOrders(theProfileParameters.Lower(),
-                                         theProfileParameters.Upper());
+                                                       theProfileParameters.Upper());
   aContactOrders.Init(0);
 
   for (int aUPoleIdx = 1; aUPoleIdx <= aBaseProfile->NbPoles(); ++aUPoleIdx)
@@ -455,44 +455,29 @@ bool alignSurfaces(occ::handle<Geom_BSplineSurface>& theProfileSurface,
   return true;
 }
 
-bool samePoleTable(const occ::handle<Geom_BSplineSurface>& theSurface1,
-                   const occ::handle<Geom_BSplineSurface>& theSurface2)
-{
-  return theSurface1->NbUPoles() == theSurface2->NbUPoles()
-         && theSurface1->NbVPoles() == theSurface2->NbVPoles();
-}
-
-//! Moves the copied profile poles by the guide correction measured from the reference surface.
-void applyGuideDeviation(const occ::handle<Geom_BSplineSurface>& theGuideSurface,
-                         const occ::handle<Geom_BSplineSurface>& theReferenceSurface,
-                         NCollection_Array2<gp_Pnt>&             thePoles)
-{
-  for (int aUIdx = thePoles.LowerRow(); aUIdx <= thePoles.UpperRow(); ++aUIdx)
-  {
-    for (int aVIdx = thePoles.LowerCol(); aVIdx <= thePoles.UpperCol(); ++aVIdx)
-    {
-      gp_Pnt aPole = thePoles.Value(aUIdx, aVIdx);
-      aPole.Translate(
-        gp_Vec(theReferenceSurface->Pole(aUIdx, aVIdx), theGuideSurface->Pole(aUIdx, aVIdx)));
-      thePoles.SetValue(aUIdx, aVIdx, aPole);
-    }
-  }
-}
-
 //! Builds the final network surface by correcting the profile skin with guide deviations.
 occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
   const occ::handle<Geom_BSplineSurface>& theProfileSurface,
   const occ::handle<Geom_BSplineSurface>& theGuideSurface,
   const occ::handle<Geom_BSplineSurface>& theReferenceSurface)
 {
-  if (!samePoleTable(theProfileSurface, theGuideSurface)
-      || !samePoleTable(theProfileSurface, theReferenceSurface))
+  if (theProfileSurface->NbUPoles() != theGuideSurface->NbUPoles()
+      || theProfileSurface->NbUPoles() != theReferenceSurface->NbUPoles()
+      || theProfileSurface->NbVPoles() != theGuideSurface->NbVPoles()
+      || theProfileSurface->NbVPoles() != theReferenceSurface->NbVPoles())
   {
     return nullptr;
   }
 
-  NCollection_Array2<gp_Pnt> aResultPoles(theProfileSurface->Poles());
-  applyGuideDeviation(theGuideSurface, theReferenceSurface, aResultPoles);
+  NCollection_Array2<gp_Pnt>        aResultPoles(theProfileSurface->Poles());
+  const NCollection_Array2<gp_Pnt>& aGuidePoles     = theGuideSurface->Poles();
+  const NCollection_Array2<gp_Pnt>& aReferencePoles = theReferenceSurface->Poles();
+  for (size_t aPoleIdx = 0; aPoleIdx < aResultPoles.Size(); ++aPoleIdx)
+  {
+    aResultPoles.NCollection_Array1<gp_Pnt>::ChangeAt(aPoleIdx).Translate(
+      gp_Vec(aReferencePoles.NCollection_Array1<gp_Pnt>::At(aPoleIdx),
+             aGuidePoles.NCollection_Array1<gp_Pnt>::At(aPoleIdx)));
+  }
 
   return new Geom_BSplineSurface(aResultPoles,
                                  theProfileSurface->UKnots(),
@@ -503,25 +488,18 @@ occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
                                  theProfileSurface->VDegree());
 }
 
-bool canSetUPeriodic(const occ::handle<Geom_BSplineSurface>& theSurface, const double theTolerance)
+bool canSetPeriodic(const occ::handle<Geom_BSplineSurface>& theSurface,
+                    const bool                              theAlongU,
+                    const double                            theTolerance)
 {
-  for (int aVIdx = 1; aVIdx <= theSurface->NbVPoles(); ++aVIdx)
+  const int aNbChecks = theAlongU ? theSurface->NbVPoles() : theSurface->NbUPoles();
+  for (int aCheckIdx = 1; aCheckIdx <= aNbChecks; ++aCheckIdx)
   {
-    if (theSurface->Pole(1, aVIdx).Distance(theSurface->Pole(theSurface->NbUPoles(), aVIdx))
-        > theTolerance)
-    {
-      return false;
-    }
-  }
-  return true;
-}
-
-bool canSetVPeriodic(const occ::handle<Geom_BSplineSurface>& theSurface, const double theTolerance)
-{
-  for (int aUIdx = 1; aUIdx <= theSurface->NbUPoles(); ++aUIdx)
-  {
-    if (theSurface->Pole(aUIdx, 1).Distance(theSurface->Pole(aUIdx, theSurface->NbVPoles()))
-        > theTolerance)
+    const gp_Pnt aFirstPole =
+      theAlongU ? theSurface->Pole(1, aCheckIdx) : theSurface->Pole(aCheckIdx, 1);
+    const gp_Pnt aLastPole = theAlongU ? theSurface->Pole(theSurface->NbUPoles(), aCheckIdx)
+                                       : theSurface->Pole(aCheckIdx, theSurface->NbVPoles());
+    if (aFirstPole.Distance(aLastPole) > theTolerance)
     {
       return false;
     }
@@ -541,87 +519,6 @@ bool isReadyToBuild(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& th
          && sameCurveSpace(theProfiles) && sameCurveSpace(theGuides);
 }
 
-//! Temporary surfaces sharing one Gordon network before final correction.
-struct NetworkSkins
-{
-  occ::handle<Geom_BSplineSurface> Profile;
-  occ::handle<Geom_BSplineSurface> Guide;
-  occ::handle<Geom_BSplineSurface> Reference;
-
-  bool Init(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
-            const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
-            const NCollection_Array1<double>&                         theProfileParameters,
-            const NCollection_Array1<double>&                         theGuideParameters,
-            const SkinningBasis&                                      theUBasis,
-            const SkinningBasis&                                      theVBasis)
-  {
-    Profile = makeProfileSkin(theProfiles,
-                              theProfileParameters,
-                              theVBasis.Degree,
-                              theVBasis.Knots,
-                              theVBasis.Mults,
-                              theVBasis.FlatKnots);
-    if (Profile.IsNull())
-    {
-      return false;
-    }
-
-    Guide = makeGuideSkin(theGuides,
-                          theGuideParameters,
-                          theUBasis.Degree,
-                          theUBasis.Knots,
-                          theUBasis.Mults,
-                          theUBasis.FlatKnots);
-    if (Guide.IsNull())
-    {
-      return false;
-    }
-
-    NCollection_Array2<gp_Pnt> aReferencePoles(1,
-                                               theGuideParameters.Length(),
-                                               1,
-                                               theProfileParameters.Length());
-    for (int aGuideIdx = 1; aGuideIdx <= theGuideParameters.Length(); ++aGuideIdx)
-    {
-      for (int aProfileIdx = 1; aProfileIdx <= theProfileParameters.Length(); ++aProfileIdx)
-      {
-        aReferencePoles(aGuideIdx, aProfileIdx) =
-          theProfiles(aProfileIdx)->Value(theGuideParameters(aGuideIdx));
-      }
-    }
-
-    int anInversionProblem = 0;
-    BSplSLib::Interpolate(theUBasis.Degree,
-                          theVBasis.Degree,
-                          theUBasis.FlatKnots,
-                          theVBasis.FlatKnots,
-                          theGuideParameters,
-                          theProfileParameters,
-                          aReferencePoles,
-                          anInversionProblem);
-    if (anInversionProblem != 0)
-    {
-      return false;
-    }
-
-    Reference = new Geom_BSplineSurface(aReferencePoles,
-                                        theUBasis.Knots,
-                                        theVBasis.Knots,
-                                        theUBasis.Mults,
-                                        theVBasis.Mults,
-                                        theUBasis.Degree,
-                                        theVBasis.Degree);
-    return true;
-  }
-
-  bool PrepareCommonBasis() { return alignSurfaces(Profile, Guide, Reference); }
-
-  occ::handle<Geom_BSplineSurface> CorrectedProfile() const
-  {
-    return makeCorrectedProfileSkin(Profile, Guide, Reference);
-  }
-};
-
 occ::handle<Geom_BSplineSurface> makeNetworkSurface(
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
@@ -634,15 +531,67 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
   SkinningBasis aVBasis;
   aVBasis.Init(theProfileParameters);
 
-  NetworkSkins aSkins;
-  if (!aSkins
-         .Init(theProfiles, theGuides, theProfileParameters, theGuideParameters, anUBasis, aVBasis)
-      || !aSkins.PrepareCommonBasis())
+  occ::handle<Geom_BSplineSurface> aProfileSurface = makeProfileSkin(theProfiles,
+                                                                     theProfileParameters,
+                                                                     aVBasis.Degree,
+                                                                     aVBasis.Knots,
+                                                                     aVBasis.Mults,
+                                                                     aVBasis.FlatKnots);
+  if (aProfileSurface.IsNull())
   {
     return nullptr;
   }
 
-  return aSkins.CorrectedProfile();
+  occ::handle<Geom_BSplineSurface> aGuideSurface = makeGuideSkin(theGuides,
+                                                                 theGuideParameters,
+                                                                 anUBasis.Degree,
+                                                                 anUBasis.Knots,
+                                                                 anUBasis.Mults,
+                                                                 anUBasis.FlatKnots);
+  if (aGuideSurface.IsNull())
+  {
+    return nullptr;
+  }
+
+  NCollection_Array2<gp_Pnt> aReferencePoles(1,
+                                             theGuideParameters.Length(),
+                                             1,
+                                             theProfileParameters.Length());
+  const size_t               aNbProfiles = theProfileParameters.Size();
+  for (size_t aPoleIdx = 0; aPoleIdx < aReferencePoles.Size(); ++aPoleIdx)
+  {
+    const size_t aGuideIdx   = aPoleIdx / aNbProfiles;
+    const size_t aProfileIdx = aPoleIdx % aNbProfiles;
+    aReferencePoles.NCollection_Array1<gp_Pnt>::ChangeAt(aPoleIdx) =
+      theProfiles.At(aProfileIdx)->Value(theGuideParameters.At(aGuideIdx));
+  }
+
+  int anInversionProblem = 0;
+  BSplSLib::Interpolate(anUBasis.Degree,
+                        aVBasis.Degree,
+                        anUBasis.FlatKnots,
+                        aVBasis.FlatKnots,
+                        theGuideParameters,
+                        theProfileParameters,
+                        aReferencePoles,
+                        anInversionProblem);
+  if (anInversionProblem != 0)
+  {
+    return nullptr;
+  }
+
+  occ::handle<Geom_BSplineSurface> aReferenceSurface = new Geom_BSplineSurface(aReferencePoles,
+                                                                               anUBasis.Knots,
+                                                                               aVBasis.Knots,
+                                                                               anUBasis.Mults,
+                                                                               aVBasis.Mults,
+                                                                               anUBasis.Degree,
+                                                                               aVBasis.Degree);
+  if (!alignSurfaces(aProfileSurface, aGuideSurface, aReferenceSurface))
+  {
+    return nullptr;
+  }
+  return makeCorrectedProfileSkin(aProfileSurface, aGuideSurface, aReferenceSurface);
 }
 
 bool applyPeriodicity(occ::handle<Geom_BSplineSurface>& theSurface,
@@ -653,7 +602,7 @@ bool applyPeriodicity(occ::handle<Geom_BSplineSurface>& theSurface,
   const double aTolerance = std::max(theTolerance, Precision::Confusion());
   if (theIsUClosed)
   {
-    if (!canSetUPeriodic(theSurface, aTolerance))
+    if (!canSetPeriodic(theSurface, true, aTolerance))
     {
       return false;
     }
@@ -662,7 +611,7 @@ bool applyPeriodicity(occ::handle<Geom_BSplineSurface>& theSurface,
 
   if (theIsVClosed)
   {
-    if (!canSetVPeriodic(theSurface, aTolerance))
+    if (!canSetPeriodic(theSurface, false, aTolerance))
     {
       return false;
     }
