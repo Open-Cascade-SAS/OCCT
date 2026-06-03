@@ -14,8 +14,6 @@
 #include <GeomFill_Gordon.hxx>
 
 #include <BSplCLib.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomConvert.hxx>
@@ -25,7 +23,6 @@
 #include <NCollection_LinearVector.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
-#include <Standard_Failure.hxx>
 #include <StdFail_NotDone.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
@@ -97,25 +94,12 @@ void GeomFill_Gordon::Perform()
   math_Vector aGuideParamValues   = GordonUtilities::columnMeans(aProfileParamMatrix);
   math_Vector aProfileParamValues = GordonUtilities::rowMeans(aGuideParamMatrix);
 
-  NCollection_Array2<gp_Pnt> anIntersectionPoints(1,
-                                                  static_cast<int>(myGuides.Size()),
-                                                  1,
-                                                  static_cast<int>(myProfiles.Size()));
-  for (size_t aProfileIdx = 0; aProfileIdx < myProfiles.Size(); ++aProfileIdx)
-  {
-    for (size_t aGuideIdx = 0; aGuideIdx < myGuides.Size(); ++aGuideIdx)
-    {
-      anIntersectionPoints(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
-        myProfiles.At(aProfileIdx)->Value(myProfileParams.At(aProfileIdx, aGuideIdx));
-    }
-  }
-
   GeomFill_NetworkSurface aNetworkSurface;
   aNetworkSurface.Init(myProfiles,
                        myGuides,
                        aProfileParamValues.Array1(),
                        aGuideParamValues.Array1(),
-                       anIntersectionPoints,
+                       aNetwork.IntersectionPoints(),
                        myTolerance,
                        myIsUClosed,
                        myIsVClosed);

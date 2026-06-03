@@ -299,6 +299,8 @@ bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurv
                            bool&                                                     theIsVClosed)
 {
   const double aTol = std::max(theTolerance, Precision::Confusion());
+
+  // Boundary snaps are done before validation so closed seams use exact end parameters.
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
     for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
@@ -318,6 +320,8 @@ bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurv
   double       aVGap        = 0.0;
   const size_t aLastProfile = theProfiles.Size() - 1;
   const size_t aLastGuide   = theGuides.Size() - 1;
+
+  // One pass validates all contacts and measures only the two possible seam gaps.
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
     for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
@@ -391,6 +395,8 @@ NCollection_LinearVector<OrderedCurve> orderedCurves(const math_Vector& theRanks
 bool isMonotoneLayout(const math_Matrix& theProfileParams, const math_Matrix& theGuideParams)
 {
   const double aTol = parameterResolution(0.0, 1.0);
+
+  // Ambiguous or folded grids are rejected instead of being repaired heuristically.
   for (int aRow = theProfileParams.LowerRow(); aRow <= theProfileParams.UpperRow(); ++aRow)
   {
     for (int aCol = theProfileParams.LowerCol() + 1; aCol <= theProfileParams.UpperCol(); ++aCol)
@@ -608,9 +614,9 @@ void pushConstraint(math_Vector& theSource,
   theTarget(theNbConstraints) = std::max(0.0, std::min(1.0, theTargetParam));
 }
 
-//! Builds the target sample list from network values and source knots.
-NCollection_LinearVector<double> samplingParameters(const occ::handle<Geom_BSplineCurve>& theCurve,
-                                                    const math_Vector& theTargets)
+//! Builds target-space samples from constraints and deterministic interval subdivision.
+NCollection_LinearVector<double> samplingParameters(const math_Vector& theTargets,
+                                                    const size_t       theNbSourcePoles)
 {
   NCollection_LinearVector<double> aSamples;
   appendUnitParameter(aSamples, 0.0);
@@ -620,44 +626,13 @@ NCollection_LinearVector<double> samplingParameters(const occ::handle<Geom_BSpli
     appendUnitParameter(aSamples, theTargets(aParamIdx));
   }
 
-  const double aFirst = theCurve->FirstParameter();
-  const double aLast  = theCurve->LastParameter();
-  const double aRange = aLast - aFirst;
-  if (aRange > Precision::PConfusion())
-  {
-    for (int aKnotIdx = 1; aKnotIdx <= theCurve->NbKnots(); ++aKnotIdx)
-    {
-      appendUnitParameter(aSamples, (theCurve->Knot(aKnotIdx) - aFirst) / aRange);
-    }
-  }
-
-  GeomAdaptor_Curve aCurveAdaptor(theCurve);
-  try
-  {
-    const double aLength =
-      GCPnts_AbscissaPoint::Length(aCurveAdaptor, aFirst, aLast, Precision::Confusion());
-    if (aLength > Precision::Confusion())
-    {
-      const double aDeflection =
-        std::max(aLength / static_cast<double>(theCurve->NbPoles() * 8), Precision::Confusion());
-      GCPnts_QuasiUniformDeflection aSampler(aCurveAdaptor, aDeflection, aFirst, aLast, GeomAbs_C1);
-      if (aSampler.IsDone())
-      {
-        for (int aPointIdx = 1; aPointIdx <= aSampler.NbPoints(); ++aPointIdx)
-        {
-          appendUnitParameter(aSamples, (aSampler.Parameter(aPointIdx) - aFirst) / aRange);
-        }
-      }
-    }
-  }
-  catch (Standard_Failure const&)
-  {
-  }
-
   compactParameters(aSamples);
+
+  // The rebuilt curve is parameter-driven; extra samples are deterministic.
   addIntervalMidpoints(aSamples,
                        std::max(static_cast<size_t>(interpolationDegree() + 1),
-                                static_cast<size_t>(theCurve->NbPoles()) * 2));
+                                std::max(theNbSourcePoles * 2,
+                                         static_cast<size_t>(theTargets.Length()) + 2)));
   return aSamples;
 }
 
@@ -713,7 +688,8 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
   }
 
   const GeomAdaptor_Curve          aCurveAdaptor(theCurve);
-  NCollection_LinearVector<double> aSamples = samplingParameters(theCurve, theTargetParams);
+  NCollection_LinearVector<double> aSamples =
+    samplingParameters(theTargetParams, static_cast<size_t>(theCurve->NbPoles()));
   NCollection_LinearVector<gp_Pnt> aPoints;
   NCollection_LinearVector<double> aParameters;
   for (size_t aSampleIdx = 0; aSampleIdx < aSamples.Size(); ++aSampleIdx)
@@ -798,6 +774,27 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
   return true;
 }
 
+//! Evaluates the validated profile parameters into a guide/profile point grid.
+NCollection_Array2<gp_Pnt> contactPointGrid(
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+  const NCollection_Array2<double>&                         theProfileParams)
+{
+  NCollection_Array2<gp_Pnt> aPoints(1,
+                                     theProfileParams.RowLength(),
+                                     1,
+                                     theProfileParams.ColLength());
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < static_cast<size_t>(theProfileParams.RowLength());
+         ++aGuideIdx)
+    {
+      aPoints(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
+        theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, aGuideIdx));
+    }
+  }
+  return aPoints;
+}
+
 } // namespace
 
 //! Performs the preparatory network operations required before Gordon surface construction.
@@ -859,6 +856,12 @@ public:
   bool EqualizeIntersectionParameters()
   {
     return equalizeParameters(myProfiles, myGuides, myProfileParams, myGuideParams);
+  }
+
+  //! Returns the validated contact points in guide/profile grid order.
+  NCollection_Array2<gp_Pnt> IntersectionPoints() const
+  {
+    return contactPointGrid(myProfiles, myProfileParams);
   }
 
 private:

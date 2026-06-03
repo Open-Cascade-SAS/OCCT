@@ -554,6 +554,7 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
     return nullptr;
   }
 
+  // The reference surface starts from the same contact grid validated during preparation.
   NCollection_Array2<gp_Pnt> aReferencePoles(theIntersectionPoints);
 
   int anInversionProblem = 0;
