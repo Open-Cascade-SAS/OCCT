@@ -119,13 +119,43 @@ math_Matrix toMatrix(NCollection_Array2<double>& theParams)
                      static_cast<int>(theParams.RowLength()));
 }
 
-//! Normalizes an input curve family to non-rational, non-periodic B-splines on [0, 1].
+//! Expands a periodic B-spline period into explicit non-periodic storage.
+bool exposePeriod(occ::handle<Geom_BSplineCurve>& theCurve)
+{
+  if (!theCurve->IsPeriodic())
+  {
+    return true;
+  }
+
+  try
+  {
+    const double aFirst = theCurve->FirstParameter();
+    const double aLast  = theCurve->LastParameter();
+    if (aLast <= aFirst + Precision::PConfusion())
+    {
+      return false;
+    }
+
+    theCurve->Segment(aFirst, aLast, Precision::PConfusion());
+    if (theCurve->IsPeriodic())
+    {
+      theCurve->SetNotPeriodic();
+    }
+  }
+  catch (Standard_Failure const&)
+  {
+    return false;
+  }
+  return !theCurve->IsPeriodic();
+}
+
+//! Normalizes an input curve family to explicit non-periodic B-splines on [0, 1].
 bool makeUnitCurves(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves)
 {
   for (size_t aCurveIdx = 0; aCurveIdx < theCurves.Size(); ++aCurveIdx)
   {
     occ::handle<Geom_BSplineCurve>& aCurve = theCurves.ChangeAt(aCurveIdx);
-    if (aCurve.IsNull() || aCurve->IsRational() || aCurve->IsPeriodic())
+    if (aCurve.IsNull() || !exposePeriod(aCurve))
     {
       return false;
     }
@@ -386,6 +416,30 @@ NCollection_LinearVector<OrderedCurve> orderedCurves(const math_Vector& theRanks
             [](const OrderedCurve& theLeft, const OrderedCurve& theRight) {
               return theLeft.Rank < theRight.Rank;
             });
+  const double aTol = parameterResolution(0.0, 1.0);
+  if (anOrder.Size() > 2 && std::abs(anOrder.Value(0).Rank - anOrder.Value(1).Rank) <= aTol)
+  {
+    NCollection_LinearVector<OrderedCurve> anOpenedOrder;
+    anOpenedOrder.Append(anOrder.Value(0));
+    for (size_t anOrderIdx = 2; anOrderIdx < anOrder.Size(); ++anOrderIdx)
+    {
+      anOpenedOrder.Append(anOrder.Value(anOrderIdx));
+    }
+    anOpenedOrder.Append(anOrder.Value(1));
+    return anOpenedOrder;
+  }
+  if (anOrder.Size() > 2
+      && std::abs(anOrder.Last().Rank - anOrder.Value(anOrder.Size() - 2).Rank) <= aTol)
+  {
+    NCollection_LinearVector<OrderedCurve> anOpenedOrder;
+    anOpenedOrder.Append(anOrder.Value(anOrder.Size() - 2));
+    for (size_t anOrderIdx = 0; anOrderIdx + 2 < anOrder.Size(); ++anOrderIdx)
+    {
+      anOpenedOrder.Append(anOrder.Value(anOrderIdx));
+    }
+    anOpenedOrder.Append(anOrder.Last());
+    return anOpenedOrder;
+  }
   return anOrder;
 }
 
@@ -417,6 +471,60 @@ bool isMonotoneLayout(const math_Matrix& theProfileParams, const math_Matrix& th
     }
   }
   return true;
+}
+
+//! Opens duplicated seam contacts to exact boundary parameters before monotone validation.
+void openClosedBoundaryCandidates(
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+  NCollection_Array2<double>&                               theProfileParams,
+  NCollection_Array2<double>&                               theGuideParams)
+{
+  const double aTol        = Precision::Confusion();
+  const size_t aLastGuide  = theGuides.Size() - 1;
+  const size_t aLastProf   = theProfiles.Size() - 1;
+  bool         isURepeated = true;
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    const gp_Pnt aFirst =
+      theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, 0));
+    const gp_Pnt aLast =
+      theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, aLastGuide));
+    if (aFirst.Distance(aLast) > aTol)
+    {
+      isURepeated = false;
+      break;
+    }
+  }
+  if (isURepeated)
+  {
+    for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+    {
+      theProfileParams.ChangeAt(aProfileIdx, 0) = theProfiles.At(aProfileIdx)->FirstParameter();
+      theProfileParams.ChangeAt(aProfileIdx, aLastGuide) =
+        theProfiles.At(aProfileIdx)->LastParameter();
+    }
+  }
+
+  bool isVRepeated = true;
+  for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+  {
+    const gp_Pnt aFirst = theGuides.At(aGuideIdx)->Value(theGuideParams.At(0, aGuideIdx));
+    const gp_Pnt aLast  = theGuides.At(aGuideIdx)->Value(theGuideParams.At(aLastProf, aGuideIdx));
+    if (aFirst.Distance(aLast) > aTol)
+    {
+      isVRepeated = false;
+      break;
+    }
+  }
+  if (isVRepeated)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+    {
+      theGuideParams.ChangeAt(0, aGuideIdx)         = theGuides.At(aGuideIdx)->FirstParameter();
+      theGuideParams.ChangeAt(aLastProf, aGuideIdx) = theGuides.At(aGuideIdx)->LastParameter();
+    }
+  }
 }
 
 //! Returns a curve handle oriented as requested.
@@ -515,6 +623,8 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
                           aGuideForward.Value(aGuideIdx));
     }
   }
+
+  openClosedBoundaryCandidates(aProfiles, aGuides, aProfileParams, aGuideParams);
 
   if (!isMonotoneLayout(aProfileParamResult, aGuideParamResult))
   {
@@ -639,6 +749,11 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
                   const math_Vector&              theSourceParams,
                   const math_Vector&              theTargetParams)
 {
+  if (theCurve->IsRational())
+  {
+    return false;
+  }
+
   math_Vector  aSource(1, theSourceParams.Length() + 2);
   math_Vector  aTarget(1, theTargetParams.Length() + 2);
   int          aNbConstraints = 0;
@@ -738,9 +853,17 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
     const int aProfileRow = static_cast<int>(aProfileIdx) + 1;
+    bool      isAlreadyTarget = true;
     for (int aCol = anOldProfileParams.Lower(); aCol <= anOldProfileParams.Upper(); ++aCol)
     {
       anOldProfileParams(aCol) = aProfileParams(aProfileRow, aCol);
+      isAlreadyTarget =
+        isAlreadyTarget
+        && std::abs(anOldProfileParams(aCol) - aProfileTargets(aCol)) <= Precision::PConfusion();
+    }
+    if (isAlreadyTarget)
+    {
+      continue;
     }
     if (!rebuildCurve(theProfiles.ChangeAt(aProfileIdx), anOldProfileParams, aProfileTargets))
     {
@@ -756,9 +879,17 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
   for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
   {
     const int aGuideCol = static_cast<int>(aGuideIdx) + 1;
+    bool      isAlreadyTarget = true;
     for (int aRow = anOldGuideParams.Lower(); aRow <= anOldGuideParams.Upper(); ++aRow)
     {
       anOldGuideParams(aRow) = aGuideParams(aRow, aGuideCol);
+      isAlreadyTarget =
+        isAlreadyTarget
+        && std::abs(anOldGuideParams(aRow) - aGuideTargets(aRow)) <= Precision::PConfusion();
+    }
+    if (isAlreadyTarget)
+    {
+      continue;
     }
     if (!rebuildCurve(theGuides.ChangeAt(aGuideIdx), anOldGuideParams, aGuideTargets))
     {
@@ -791,6 +922,51 @@ NCollection_Array2<gp_Pnt> contactPointGrid(
     }
   }
   return aPoints;
+}
+
+//! Evaluates the denominator of a rational B-spline curve at a contact parameter.
+double curveWeightAt(const occ::handle<Geom_BSplineCurve>& theCurve, const double theParameter)
+{
+  if (!theCurve->IsRational())
+  {
+    return 1.0;
+  }
+
+  int    anExtrapMode[2] = {theCurve->Degree(), theCurve->Degree()};
+  gp_Pnt aPoint;
+  double aWeight = 1.0;
+  BSplCLib::Eval(theParameter,
+                 theCurve->IsPeriodic(),
+                 false,
+                 anExtrapMode[0],
+                 theCurve->Degree(),
+                 theCurve->KnotSequence(),
+                 theCurve->Poles(),
+                 theCurve->WeightsArray(),
+                 aPoint,
+                 aWeight);
+  return aWeight;
+}
+
+//! Evaluates rational contact weights in guide/profile grid order.
+NCollection_Array2<double> contactWeightGrid(
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+  const NCollection_Array2<double>&                         theProfileParams)
+{
+  NCollection_Array2<double> aWeights(1,
+                                      theProfileParams.RowLength(),
+                                      1,
+                                      theProfileParams.ColLength());
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < static_cast<size_t>(theProfileParams.RowLength());
+         ++aGuideIdx)
+    {
+      aWeights(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
+        curveWeightAt(theProfiles.At(aProfileIdx), theProfileParams.At(aProfileIdx, aGuideIdx));
+    }
+  }
+  return aWeights;
 }
 
 } // namespace
@@ -860,6 +1036,12 @@ public:
   NCollection_Array2<gp_Pnt> IntersectionPoints() const
   {
     return contactPointGrid(myProfiles, myProfileParams);
+  }
+
+  //! Returns rational contact weights in guide/profile grid order.
+  NCollection_Array2<double> IntersectionWeights() const
+  {
+    return contactWeightGrid(myProfiles, myProfileParams);
   }
 
 private:

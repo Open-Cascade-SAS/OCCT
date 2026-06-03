@@ -23,6 +23,7 @@
 #include <NCollection_LinearVector.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+#include <Standard_Failure.hxx>
 #include <StdFail_NotDone.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
@@ -100,6 +101,7 @@ void GeomFill_Gordon::Perform()
                        aProfileParamValues.Array1(),
                        aGuideParamValues.Array1(),
                        aNetwork.IntersectionPoints(),
+                       aNetwork.IntersectionWeights(),
                        myTolerance,
                        myIsUClosed,
                        myIsVClosed);

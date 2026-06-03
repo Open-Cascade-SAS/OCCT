@@ -12,6 +12,8 @@
 // commercial license or contractual agreement.
 
 #include <BSplCLib.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepTools.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Line.hxx>
@@ -20,6 +22,7 @@
 #include <GeomFill_Gordon.hxx>
 #include <GeomFill_NetworkSurface.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
@@ -71,6 +74,107 @@ occ::handle<Geom_BSplineCurve> makeQuadraticBSpline(const gp_Pnt& theP1,
   aMults(2) = 3;
 
   return new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+}
+
+NCollection_Array2<gp_Pnt> makeIntersectionGrid(
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+  const NCollection_Array1<double>&                         theGuideParams)
+{
+  NCollection_Array2<gp_Pnt> aPoints(1,
+                                     static_cast<int>(theGuideParams.Size()),
+                                     1,
+                                     static_cast<int>(theProfiles.Size()));
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < theGuideParams.Size(); ++aGuideIdx)
+    {
+      aPoints(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
+        theProfiles.At(aProfileIdx)->Value(theGuideParams.At(aGuideIdx));
+    }
+  }
+  return aPoints;
+}
+
+NCollection_Array2<double> makeUnitWeightGrid(
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+  const NCollection_Array1<double>&                         theGuideParams)
+{
+  NCollection_Array2<double> aWeights(1,
+                                      static_cast<int>(theGuideParams.Size()),
+                                      1,
+                                      static_cast<int>(theProfiles.Size()));
+  aWeights.Init(1.0);
+  return aWeights;
+}
+
+occ::handle<Geom_BSplineCurve> makeRationalQuadraticBSpline(const gp_Pnt& theP1,
+                                                            const gp_Pnt& theP2,
+                                                            const gp_Pnt& theP3,
+                                                            const double  theMiddleWeight)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  aPoles(1) = theP1;
+  aPoles(2) = theP2;
+  aPoles(3) = theP3;
+
+  NCollection_Array1<double> aWeights(1, 3);
+  aWeights(1) = 1.0;
+  aWeights(2) = theMiddleWeight;
+  aWeights(3) = 1.0;
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults(1) = 3;
+  aMults(2) = 3;
+
+  return new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 2);
+}
+
+occ::handle<Geom_BSplineCurve> makeWeightedLinearBSpline(const gp_Pnt& theP1,
+                                                         const gp_Pnt& theP2,
+                                                         const double  theWeight)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 2);
+  aPoles(1) = theP1;
+  aPoles(2) = theP2;
+
+  NCollection_Array1<double> aWeights(1, 2);
+  aWeights(1) = theWeight;
+  aWeights(2) = theWeight;
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults(1) = 2;
+  aMults(2) = 2;
+
+  return new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 1, false, false);
+}
+
+occ::handle<Geom_BSplineCurve> makePeriodicProfile(const double theY)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 5);
+  aPoles(1) = gp_Pnt(1.0, theY, 0.0);
+  aPoles(2) = gp_Pnt(0.309, theY, 0.951);
+  aPoles(3) = gp_Pnt(-0.809, theY, 0.588);
+  aPoles(4) = gp_Pnt(-0.809, theY, -0.588);
+  aPoles(5) = gp_Pnt(0.309, theY, -0.951);
+
+  NCollection_Array1<double> aKnots(1, 6);
+  for (int aKnotIdx = 1; aKnotIdx <= 6; ++aKnotIdx)
+  {
+    aKnots(aKnotIdx) = 0.2 * static_cast<double>(aKnotIdx - 1);
+  }
+
+  NCollection_Array1<int> aMults(1, 6);
+  aMults.Init(1);
+
+  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
 }
 
 //! Helper: create a cubic BSpline through 4 interpolation points on [0,1].
@@ -286,7 +390,29 @@ TEST(GeomFill_Gordon, MixedCurveTypes_ProducesValidSurface)
                        aGordon.Surface()->UKnot(1),
                        aGordon.Surface()->VKnot(1),
                        gp_Pnt(0, 0, 0),
-                       0.01);
+	                       0.01);
+}
+
+TEST(GeomFill_Gordon, PeriodicBSplineProfiles_AreExpandedBeforeConstruction)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makePeriodicProfile(0.0);
+  aProfiles(2) = makePeriodicProfile(0.5);
+  aProfiles(3) = makePeriodicProfile(1.0);
+  ASSERT_TRUE(occ::down_cast<Geom_BSplineCurve>(aProfiles(1))->IsPeriodic());
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(aProfiles(1)->Value(0.0), aProfiles(3)->Value(0.0));
+  aGuides(2) = makeLinearBSpline(aProfiles(1)->Value(0.5), aProfiles(3)->Value(0.5));
+  aGuides(3) = makeLinearBSpline(aProfiles(1)->Value(1.0), aProfiles(3)->Value(1.0));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone());
+  ASSERT_FALSE(aGordon.Surface().IsNull());
+  EXPECT_TRUE(aGordon.Surface()->IsUPeriodic());
 }
 
 TEST(GeomFill_Gordon, FourByThreeGrid_NonUniformParams)
@@ -1147,8 +1273,15 @@ TEST(GeomFill_Gordon, NetworkSurface_UClosedNetwork_ProducesUPeriodicSurface)
   aGuideParams(3) = 1.0;
 
   GeomFill_NetworkSurface aNetwork;
-  aNetwork
-    .Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion(), true, false);
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParams,
+                aGuideParams,
+                makeIntersectionGrid(aProfiles, aGuideParams),
+                makeUnitWeightGrid(aProfiles, aGuideParams),
+                Precision::Confusion(),
+                true,
+                false);
   aNetwork.Perform();
 
   ASSERT_TRUE(aNetwork.IsDone());
@@ -1156,6 +1289,115 @@ TEST(GeomFill_Gordon, NetworkSurface_UClosedNetwork_ProducesUPeriodicSurface)
   const occ::handle<Geom_BSplineSurface>& aSurf = aNetwork.Surface();
   ASSERT_FALSE(aSurf.IsNull());
   EXPECT_TRUE(aSurf->IsUPeriodic());
+}
+
+TEST(GeomFill_Gordon, NetworkSurface_InvalidPreparedNetworkReportsStatus)
+{
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 1);
+  aProfiles(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 2);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  NCollection_Array1<double> aProfileParams(1, 1);
+  aProfileParams(1) = 0.0;
+
+  NCollection_Array1<double> aGuideParams(1, 2);
+  aGuideParams(1) = 0.0;
+  aGuideParams(2) = 1.0;
+
+  GeomFill_NetworkSurface aNetwork;
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParams,
+                aGuideParams,
+                makeIntersectionGrid(aProfiles, aGuideParams),
+                makeUnitWeightGrid(aProfiles, aGuideParams),
+                Precision::Confusion(),
+                false,
+                false);
+  EXPECT_EQ(aNetwork.Status(), GeomFill_NetworkSurface::ResultStatus::NotStarted);
+
+  aNetwork.Perform();
+
+  EXPECT_FALSE(aNetwork.IsDone());
+  EXPECT_EQ(aNetwork.Status(), GeomFill_NetworkSurface::ResultStatus::InvalidInput);
+  EXPECT_THROW((void)aNetwork.Surface(), StdFail_NotDone);
+}
+
+TEST(GeomFill_Gordon, NetworkSurface_CompatibleRationalWeightsProducesRationalSurface)
+{
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 3);
+  aProfiles(1) =
+    makeRationalQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0.5, 0, 0), gp_Pnt(1, 0, 0), 0.5);
+  aProfiles(2) =
+    makeRationalQuadraticBSpline(gp_Pnt(0, 0.5, 0), gp_Pnt(0.5, 0.5, 0), gp_Pnt(1, 0.5, 0), 0.5);
+  aProfiles(3) =
+    makeRationalQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(0.5, 1, 0), gp_Pnt(1, 1, 0), 0.5);
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 3);
+  aGuides(1) = makeWeightedLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0), 1.0);
+  aGuides(2) = makeWeightedLinearBSpline(gp_Pnt(0.5, 0, 0), gp_Pnt(0.5, 1, 0), 0.75);
+  aGuides(3) = makeWeightedLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0), 1.0);
+
+  NCollection_Array1<double> aProfileParams(1, 3);
+  aProfileParams(1) = 0.0;
+  aProfileParams(2) = 0.5;
+  aProfileParams(3) = 1.0;
+
+  NCollection_Array1<double> aGuideParams(1, 3);
+  aGuideParams(1) = 0.0;
+  aGuideParams(2) = 0.5;
+  aGuideParams(3) = 1.0;
+
+  NCollection_Array2<double> aWeights(1, 3, 1, 3);
+  for (int aProfileIdx = 1; aProfileIdx <= 3; ++aProfileIdx)
+  {
+    aWeights(1, aProfileIdx) = 1.0;
+    aWeights(2, aProfileIdx) = 0.75;
+    aWeights(3, aProfileIdx) = 1.0;
+  }
+
+  GeomFill_NetworkSurface aNetwork;
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParams,
+                aGuideParams,
+                makeIntersectionGrid(aProfiles, aGuideParams),
+                aWeights,
+                Precision::Confusion(),
+                false,
+                false);
+  aNetwork.Perform();
+
+  ASSERT_TRUE(aNetwork.IsDone());
+
+  const occ::handle<Geom_BSplineSurface>& aSurface = aNetwork.Surface();
+  EXPECT_TRUE(aSurface->IsURational() || aSurface->IsVRational());
+}
+
+TEST(GeomFill_Gordon, RationalProfilesWithPolynomialGuidesProducesSurface)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) =
+    makeRationalQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0.5, 0, 0), gp_Pnt(1, 0, 0), 0.5);
+  aProfiles(2) =
+    makeRationalQuadraticBSpline(gp_Pnt(0, 0.5, 0), gp_Pnt(0.5, 0.5, 0), gp_Pnt(1, 0.5, 0), 0.5);
+  aProfiles(3) =
+    makeRationalQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(0.5, 1, 0), gp_Pnt(1, 1, 0), 0.5);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(0.5, 0, 0), gp_Pnt(0.5, 1, 0));
+  aGuides(3) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone());
+  EXPECT_TRUE(aGordon.Surface()->IsURational() || aGordon.Surface()->IsVRational());
 }
 
 TEST(GeomFill_Gordon, NetworkSurface_VClosedNetwork_ProducesVPeriodicSurface)
@@ -1181,8 +1423,15 @@ TEST(GeomFill_Gordon, NetworkSurface_VClosedNetwork_ProducesVPeriodicSurface)
   aGuideParams(3) = 1.0;
 
   GeomFill_NetworkSurface aNetwork;
-  aNetwork
-    .Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion(), false, true);
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParams,
+                aGuideParams,
+                makeIntersectionGrid(aProfiles, aGuideParams),
+                makeUnitWeightGrid(aProfiles, aGuideParams),
+                Precision::Confusion(),
+                false,
+                true);
   aNetwork.Perform();
 
   ASSERT_TRUE(aNetwork.IsDone());

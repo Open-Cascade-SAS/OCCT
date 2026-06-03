@@ -15,6 +15,7 @@
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <BSplSLib_EvaluatorFunction.hxx>
 #include <GeomFill_Profiler.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray1.hxx>
@@ -61,12 +62,72 @@ void reparametrizeSurface(occ::handle<Geom_BSplineSurface>& theSurface)
   theSurface->SetVKnots(aVKnots);
 }
 
+bool hasRationalCurve(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves)
+{
+  for (size_t aCurveIdx = 0; aCurveIdx < theCurves.Size(); ++aCurveIdx)
+  {
+    if (!theCurves.At(aCurveIdx).IsNull() && theCurves.At(aCurveIdx)->IsRational())
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool hasPeriodicCurve(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves)
+{
+  for (size_t aCurveIdx = 0; aCurveIdx < theCurves.Size(); ++aCurveIdx)
+  {
+    if (theCurves.At(aCurveIdx).IsNull() || theCurves.At(aCurveIdx)->IsPeriodic())
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool isCompatibleCurveFamily(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves)
+{
+  if (theCurves.IsEmpty() || theCurves.First().IsNull())
+  {
+    return false;
+  }
+
+  const occ::handle<Geom_BSplineCurve>& aReference = theCurves.First();
+  const bool                            isRational = aReference->IsRational();
+  for (size_t aCurveIdx = 1; aCurveIdx < theCurves.Size(); ++aCurveIdx)
+  {
+    const occ::handle<Geom_BSplineCurve>& aCurve = theCurves.At(aCurveIdx);
+    if (aCurve.IsNull() || aCurve->IsRational() != isRational
+        || aCurve->Degree() != aReference->Degree() || aCurve->NbPoles() != aReference->NbPoles()
+        || aCurve->NbKnots() != aReference->NbKnots())
+    {
+      return false;
+    }
+    for (size_t aKnotIdx = 0; aKnotIdx < static_cast<size_t>(aCurve->NbKnots()); ++aKnotIdx)
+    {
+      const int aKnot = static_cast<int>(aKnotIdx) + 1;
+      if (aCurve->Multiplicity(aKnot) != aReference->Multiplicity(aKnot)
+          || std::abs(aCurve->Knot(aKnot) - aReference->Knot(aKnot)) > Precision::PConfusion())
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 bool prepareCurveFamily(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves)
 {
+  if (hasRationalCurve(theCurves))
+  {
+    return isCompatibleCurveFamily(theCurves);
+  }
+
   GeomFill_Profiler aProfiler;
   for (size_t aCurveIdx = 0; aCurveIdx < theCurves.Size(); ++aCurveIdx)
   {
-    if (theCurves.At(aCurveIdx).IsNull() || theCurves.At(aCurveIdx)->IsRational())
+    if (theCurves.At(aCurveIdx).IsNull())
     {
       return false;
     }
@@ -78,7 +139,7 @@ bool prepareCurveFamily(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theC
   {
     theCurves.ChangeAt(aCurveIdx) =
       occ::down_cast<Geom_BSplineCurve>(aProfiler.Curve(static_cast<int>(aCurveIdx) + 1));
-    if (theCurves.At(aCurveIdx).IsNull() || theCurves.At(aCurveIdx)->IsRational())
+    if (theCurves.At(aCurveIdx).IsNull())
     {
       return false;
     }
@@ -130,7 +191,8 @@ bool interpolatePoles(const int                         theDegree,
                       const NCollection_Array1<double>& theFlatKnots,
                       const NCollection_Array1<double>& theParameters,
                       const NCollection_Array1<int>&    theContactOrders,
-                      NCollection_Array1<gp_Pnt>&       thePoles)
+                      NCollection_Array1<gp_Pnt>&       thePoles,
+                      NCollection_Array1<double>&       theWeights)
 {
   int anInversionProblem = 0;
   BSplCLib::Interpolate(theDegree,
@@ -138,8 +200,14 @@ bool interpolatePoles(const int                         theDegree,
                         theParameters,
                         theContactOrders,
                         thePoles,
+                        theWeights,
                         anInversionProblem);
   return anInversionProblem == 0;
+}
+
+double poleWeight(const occ::handle<Geom_BSplineCurve>& theCurve, const int thePoleIdx)
+{
+  return theCurve->IsRational() ? theCurve->Weight(thePoleIdx) : 1.0;
 }
 
 bool sameKnotRange(const NCollection_Array1<double>& theKnots1,
@@ -175,6 +243,134 @@ struct SkinningBasis
   }
 };
 
+//! Evaluates the homogeneous denominator of a B-spline surface.
+double denominatorValue(const occ::handle<Geom_BSplineSurface>& theSurface,
+                        const double                            theU,
+                        const double                            theV)
+{
+  double aWeight = 1.0;
+  gp_Pnt aNumerator;
+  BSplSLib::HomogeneousD0(theU,
+                          theV,
+                          0,
+                          0,
+                          theSurface->Poles(),
+                          &theSurface->WeightsArray(),
+                          theSurface->UKnots(),
+                          theSurface->VKnots(),
+                          &theSurface->UMultiplicities(),
+                          &theSurface->VMultiplicities(),
+                          theSurface->UDegree(),
+                          theSurface->VDegree(),
+                          true,
+                          true,
+                          false,
+                          false,
+                          aWeight,
+                          aNumerator);
+  return aWeight;
+}
+
+//! Multiplier for the product of two surface denominators.
+class DenominatorProductEvaluator : public BSplSLib_EvaluatorFunction
+{
+public:
+  DenominatorProductEvaluator(const occ::handle<Geom_BSplineSurface>& theFirst,
+                              const occ::handle<Geom_BSplineSurface>& theSecond)
+      : myFirst(theFirst),
+        mySecond(theSecond)
+  {
+  }
+
+  void Evaluate(const int    theDerivativeRequest,
+                const double theU,
+                const double theV,
+                double&      theResult,
+                int&         theErrorCode) const override
+  {
+    if (theDerivativeRequest != 0 || myFirst.IsNull() || mySecond.IsNull())
+    {
+      theErrorCode = 1;
+      return;
+    }
+
+    theResult    = denominatorValue(myFirst, theU, theV) * denominatorValue(mySecond, theU, theV);
+    theErrorCode = 0;
+  }
+
+private:
+  occ::handle<Geom_BSplineSurface> myFirst;
+  occ::handle<Geom_BSplineSurface> mySecond;
+};
+
+bool makeTripleProductBasis(const NCollection_Array1<double>& theKnots,
+                            const NCollection_Array1<int>&    theMults,
+                            const int                         theDegree,
+                            int&                              theProductDegree,
+                            NCollection_Array1<double>&       theProductKnots,
+                            NCollection_Array1<int>&          theProductMults,
+                            NCollection_Array1<double>&       theProductFlatKnots)
+{
+  theProductDegree = 3 * theDegree;
+  if (theProductDegree > Geom_BSplineSurface::MaxDegree())
+  {
+    return false;
+  }
+
+  theProductKnots.Resize(theKnots.Lower(), theKnots.Upper(), false);
+  theProductMults.Resize(theMults.Lower(), theMults.Upper(), false);
+  int aFlatLength = 0;
+  for (int aKnotIdx = theKnots.Lower(); aKnotIdx <= theKnots.Upper(); ++aKnotIdx)
+  {
+    theProductKnots(aKnotIdx) = theKnots(aKnotIdx);
+    if (aKnotIdx == theKnots.Lower() || aKnotIdx == theKnots.Upper())
+    {
+      theProductMults(aKnotIdx) = theProductDegree + 1;
+    }
+    else
+    {
+      theProductMults(aKnotIdx) = std::min(theProductDegree, 2 * theDegree + theMults(aKnotIdx));
+    }
+    aFlatLength += theProductMults(aKnotIdx);
+  }
+
+  theProductFlatKnots.Resize(1, aFlatLength, false);
+  BSplCLib::KnotSequence(theProductKnots, theProductMults, theProductFlatKnots);
+  return true;
+}
+
+bool multiplyByDenominators(const occ::handle<Geom_BSplineSurface>& theSurface,
+                            const occ::handle<Geom_BSplineSurface>& theFirstDenominator,
+                            const occ::handle<Geom_BSplineSurface>& theSecondDenominator,
+                            const int                              theUDegree,
+                            const int                              theVDegree,
+                            const NCollection_Array1<double>&      theUFlatKnots,
+                            const NCollection_Array1<double>&      theVFlatKnots,
+                            NCollection_Array2<gp_Pnt>&            theNumerator,
+                            NCollection_Array2<double>&            theDenominator)
+{
+  DenominatorProductEvaluator aMultiplier(theFirstDenominator, theSecondDenominator);
+
+  int aStatus = 0;
+  BSplSLib::FunctionMultiply(aMultiplier,
+                             theSurface->UDegree(),
+                             theSurface->VDegree(),
+                             theSurface->UKnots(),
+                             theSurface->VKnots(),
+                             &theSurface->UMultiplicities(),
+                             &theSurface->VMultiplicities(),
+                             theSurface->Poles(),
+                             &theSurface->WeightsArray(),
+                             theUFlatKnots,
+                             theVFlatKnots,
+                             theUDegree,
+                             theVDegree,
+                             theNumerator,
+                             theDenominator,
+                             aStatus);
+  return aStatus == 0;
+}
+
 occ::handle<Geom_BSplineSurface> makeProfileSkin(
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
   const NCollection_Array1<double>&                         theProfileParameters,
@@ -185,7 +381,12 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
 {
   const occ::handle<Geom_BSplineCurve>& aBaseProfile = theProfiles(theProfiles.Lower());
   NCollection_Array2<gp_Pnt>            aPoles(1, aBaseProfile->NbPoles(), 1, theProfiles.Length());
+  NCollection_Array2<double>            aWeights(1,
+                                      aBaseProfile->NbPoles(),
+                                      1,
+                                      theProfiles.Length());
   NCollection_Array1<gp_Pnt>            aColumn(1, theProfiles.Length());
+  NCollection_Array1<double>            aColumnWeights(1, theProfiles.Length());
   NCollection_Array1<int>               aContactOrders(theProfileParameters.Lower(),
                                          theProfileParameters.Upper());
   aContactOrders.Init(0);
@@ -194,19 +395,27 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
   {
     for (int aProfileIdx = 1; aProfileIdx <= theProfiles.Length(); ++aProfileIdx)
     {
-      aColumn(aProfileIdx) = theProfiles(aProfileIdx)->Pole(aUPoleIdx);
+      aColumn(aProfileIdx)        = theProfiles(aProfileIdx)->Pole(aUPoleIdx);
+      aColumnWeights(aProfileIdx) = poleWeight(theProfiles(aProfileIdx), aUPoleIdx);
     }
-    if (!interpolatePoles(theVDegree, theVFlatKnots, theProfileParameters, aContactOrders, aColumn))
+    if (!interpolatePoles(theVDegree,
+                          theVFlatKnots,
+                          theProfileParameters,
+                          aContactOrders,
+                          aColumn,
+                          aColumnWeights))
     {
       return nullptr;
     }
     for (int aVIdx = 1; aVIdx <= theProfiles.Length(); ++aVIdx)
     {
-      aPoles(aUPoleIdx, aVIdx) = aColumn(aVIdx);
+      aPoles(aUPoleIdx, aVIdx)   = aColumn(aVIdx);
+      aWeights(aUPoleIdx, aVIdx) = aColumnWeights(aVIdx);
     }
   }
 
   return new Geom_BSplineSurface(aPoles,
+                                 aWeights,
                                  aBaseProfile->Knots(),
                                  theVKnots,
                                  aBaseProfile->Multiplicities(),
@@ -225,7 +434,12 @@ occ::handle<Geom_BSplineSurface> makeGuideSkin(
 {
   const occ::handle<Geom_BSplineCurve>& aBaseGuide = theGuides(theGuides.Lower());
   NCollection_Array2<gp_Pnt>            aPoles(1, theGuides.Length(), 1, aBaseGuide->NbPoles());
+  NCollection_Array2<double>            aWeights(1,
+                                      theGuides.Length(),
+                                      1,
+                                      aBaseGuide->NbPoles());
   NCollection_Array1<gp_Pnt>            aRow(1, theGuides.Length());
+  NCollection_Array1<double>            aRowWeights(1, theGuides.Length());
   NCollection_Array1<int> aContactOrders(theGuideParameters.Lower(), theGuideParameters.Upper());
   aContactOrders.Init(0);
 
@@ -233,19 +447,27 @@ occ::handle<Geom_BSplineSurface> makeGuideSkin(
   {
     for (int aGuideIdx = 1; aGuideIdx <= theGuides.Length(); ++aGuideIdx)
     {
-      aRow(aGuideIdx) = theGuides(aGuideIdx)->Pole(aVPoleIdx);
+      aRow(aGuideIdx)        = theGuides(aGuideIdx)->Pole(aVPoleIdx);
+      aRowWeights(aGuideIdx) = poleWeight(theGuides(aGuideIdx), aVPoleIdx);
     }
-    if (!interpolatePoles(theUDegree, theUFlatKnots, theGuideParameters, aContactOrders, aRow))
+    if (!interpolatePoles(theUDegree,
+                          theUFlatKnots,
+                          theGuideParameters,
+                          aContactOrders,
+                          aRow,
+                          aRowWeights))
     {
       return nullptr;
     }
     for (int aUIdx = 1; aUIdx <= theGuides.Length(); ++aUIdx)
     {
-      aPoles(aUIdx, aVPoleIdx) = aRow(aUIdx);
+      aPoles(aUIdx, aVPoleIdx)   = aRow(aUIdx);
+      aWeights(aUIdx, aVPoleIdx) = aRowWeights(aUIdx);
     }
   }
 
   return new Geom_BSplineSurface(aPoles,
+                                 aWeights,
                                  theUKnots,
                                  aBaseGuide->Knots(),
                                  theUMults,
@@ -467,23 +689,106 @@ occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
     return nullptr;
   }
 
-  NCollection_Array2<gp_Pnt>        aResultPoles(theProfileSurface->Poles());
-  const NCollection_Array2<gp_Pnt>& aGuidePoles     = theGuideSurface->Poles();
-  const NCollection_Array2<gp_Pnt>& aReferencePoles = theReferenceSurface->Poles();
+  int                        aUDegree = 0;
+  int                        aVDegree = 0;
+  NCollection_Array1<double> aUKnots;
+  NCollection_Array1<int>    aUMults;
+  NCollection_Array1<double> aUFlatKnots;
+  NCollection_Array1<double> aVKnots;
+  NCollection_Array1<int>    aVMults;
+  NCollection_Array1<double> aVFlatKnots;
+  if (!makeTripleProductBasis(theProfileSurface->UKnots(),
+                              theProfileSurface->UMultiplicities(),
+                              theProfileSurface->UDegree(),
+                              aUDegree,
+                              aUKnots,
+                              aUMults,
+                              aUFlatKnots)
+      || !makeTripleProductBasis(theProfileSurface->VKnots(),
+                                 theProfileSurface->VMultiplicities(),
+                                 theProfileSurface->VDegree(),
+                                 aVDegree,
+                                 aVKnots,
+                                 aVMults,
+                                 aVFlatKnots))
+  {
+    return nullptr;
+  }
+
+  const int aNbUPoles = aUFlatKnots.Length() - aUDegree - 1;
+  const int aNbVPoles = aVFlatKnots.Length() - aVDegree - 1;
+  if (aNbUPoles < 2 || aNbVPoles < 2)
+  {
+    return nullptr;
+  }
+
+  NCollection_Array2<gp_Pnt> aProfileNumerator(1, aNbUPoles, 1, aNbVPoles);
+  NCollection_Array2<double> aProfileDenominator(1, aNbUPoles, 1, aNbVPoles);
+  NCollection_Array2<gp_Pnt> aGuideNumerator(1, aNbUPoles, 1, aNbVPoles);
+  NCollection_Array2<double> aGuideDenominator(1, aNbUPoles, 1, aNbVPoles);
+  NCollection_Array2<gp_Pnt> aReferenceNumerator(1, aNbUPoles, 1, aNbVPoles);
+  NCollection_Array2<double> aReferenceDenominator(1, aNbUPoles, 1, aNbVPoles);
+
+  if (!multiplyByDenominators(theProfileSurface,
+                              theGuideSurface,
+                              theReferenceSurface,
+                              aUDegree,
+                              aVDegree,
+                              aUFlatKnots,
+                              aVFlatKnots,
+                              aProfileNumerator,
+                              aProfileDenominator)
+      || !multiplyByDenominators(theGuideSurface,
+                                 theProfileSurface,
+                                 theReferenceSurface,
+                                 aUDegree,
+                                 aVDegree,
+                                 aUFlatKnots,
+                                 aVFlatKnots,
+                                 aGuideNumerator,
+                                 aGuideDenominator)
+      || !multiplyByDenominators(theReferenceSurface,
+                                 theProfileSurface,
+                                 theGuideSurface,
+                                 aUDegree,
+                                 aVDegree,
+                                 aUFlatKnots,
+                                 aVFlatKnots,
+                                 aReferenceNumerator,
+                                 aReferenceDenominator))
+  {
+    return nullptr;
+  }
+
+  NCollection_Array2<gp_Pnt> aResultPoles(1, aNbUPoles, 1, aNbVPoles);
+  NCollection_Array2<double> aResultWeights(1, aNbUPoles, 1, aNbVPoles);
   for (size_t aPoleIdx = 0; aPoleIdx < aResultPoles.Size(); ++aPoleIdx)
   {
-    aResultPoles.NCollection_Array1<gp_Pnt>::ChangeAt(aPoleIdx).Translate(
-      gp_Vec(aReferencePoles.NCollection_Array1<gp_Pnt>::At(aPoleIdx),
-             aGuidePoles.NCollection_Array1<gp_Pnt>::At(aPoleIdx)));
+    const double aWeight = aProfileDenominator.NCollection_Array1<double>::At(aPoleIdx);
+    if (aWeight <= Precision::Confusion()
+        || std::abs(aGuideDenominator.NCollection_Array1<double>::At(aPoleIdx) - aWeight)
+             > Precision::Confusion()
+        || std::abs(aReferenceDenominator.NCollection_Array1<double>::At(aPoleIdx) - aWeight)
+             > Precision::Confusion())
+    {
+      return nullptr;
+    }
+
+    const gp_XYZ aNumerator = aProfileNumerator.NCollection_Array1<gp_Pnt>::At(aPoleIdx).XYZ()
+                              + aGuideNumerator.NCollection_Array1<gp_Pnt>::At(aPoleIdx).XYZ()
+                              - aReferenceNumerator.NCollection_Array1<gp_Pnt>::At(aPoleIdx).XYZ();
+    aResultWeights.NCollection_Array1<double>::ChangeAt(aPoleIdx) = aWeight;
+    aResultPoles.NCollection_Array1<gp_Pnt>::ChangeAt(aPoleIdx)   = gp_Pnt(aNumerator / aWeight);
   }
 
   return new Geom_BSplineSurface(aResultPoles,
-                                 theProfileSurface->UKnots(),
-                                 theProfileSurface->VKnots(),
-                                 theProfileSurface->UMultiplicities(),
-                                 theProfileSurface->VMultiplicities(),
-                                 theProfileSurface->UDegree(),
-                                 theProfileSurface->VDegree());
+                                 aResultWeights,
+                                 aUKnots,
+                                 aVKnots,
+                                 aUMults,
+                                 aVMults,
+                                 aUDegree,
+                                 aVDegree);
 }
 
 bool canSetPeriodic(const occ::handle<Geom_BSplineSurface>& theSurface,
@@ -509,13 +814,17 @@ bool isReadyToBuild(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& th
                     const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
                     const NCollection_Array1<double>&                         theProfileParameters,
                     const NCollection_Array1<double>&                         theGuideParameters,
-                    const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints)
+                    const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints,
+                    const NCollection_Array2<double>&                         theIntersectionWeights)
 {
   return theProfiles.Length() >= 2 && theGuides.Length() >= 2
+         && !hasPeriodicCurve(theProfiles) && !hasPeriodicCurve(theGuides)
          && theProfiles.Length() == theProfileParameters.Length()
          && theGuides.Length() == theGuideParameters.Length()
          && theIntersectionPoints.ColLength() == theGuideParameters.Length()
          && theIntersectionPoints.RowLength() == theProfileParameters.Length()
+         && theIntersectionWeights.ColLength() == theGuideParameters.Length()
+         && theIntersectionWeights.RowLength() == theProfileParameters.Length()
          && checkParameters(theProfileParameters) && checkParameters(theGuideParameters);
 }
 
@@ -524,7 +833,8 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
   const NCollection_Array1<double>&                         theProfileParameters,
   const NCollection_Array1<double>&                         theGuideParameters,
-  const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints)
+  const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints,
+  const NCollection_Array2<double>&                         theIntersectionWeights)
 {
   SkinningBasis anUBasis;
   anUBasis.Init(theGuideParameters);
@@ -556,6 +866,7 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
 
   // The reference surface starts from the same contact grid validated during preparation.
   NCollection_Array2<gp_Pnt> aReferencePoles(theIntersectionPoints);
+  NCollection_Array2<double> aReferenceWeights(theIntersectionWeights);
 
   int anInversionProblem = 0;
   BSplSLib::Interpolate(anUBasis.Degree,
@@ -565,6 +876,7 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
                         theGuideParameters,
                         theProfileParameters,
                         aReferencePoles,
+                        aReferenceWeights,
                         anInversionProblem);
   if (anInversionProblem != 0)
   {
@@ -572,6 +884,7 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
   }
 
   occ::handle<Geom_BSplineSurface> aReferenceSurface = new Geom_BSplineSurface(aReferencePoles,
+                                                                               aReferenceWeights,
                                                                                anUBasis.Knots,
                                                                                aVBasis.Knots,
                                                                                anUBasis.Mults,
@@ -624,6 +937,7 @@ void GeomFill_NetworkSurface::Init(
   const NCollection_Array1<double>&                         theProfileParameters,
   const NCollection_Array1<double>&                         theGuideParameters,
   const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints,
+  const NCollection_Array2<double>&                         theIntersectionWeights,
   double                                                    theTolerance,
   bool                                                      theIsUClosed,
   bool                                                      theIsVClosed)
@@ -633,6 +947,7 @@ void GeomFill_NetworkSurface::Init(
   myProfileParameters  = NCollection_Array1<double>(theProfileParameters);
   myGuideParameters    = NCollection_Array1<double>(theGuideParameters);
   myIntersectionPoints = NCollection_Array2<gp_Pnt>(theIntersectionPoints);
+  myIntersectionWeights = NCollection_Array2<double>(theIntersectionWeights);
   myTolerance          = theTolerance;
   myIsUClosed          = theIsUClosed;
   myIsVClosed          = theIsVClosed;
@@ -651,7 +966,8 @@ void GeomFill_NetworkSurface::Perform()
                       myGuides,
                       myProfileParameters,
                       myGuideParameters,
-                      myIntersectionPoints))
+                      myIntersectionPoints,
+                      myIntersectionWeights))
   {
     myStatus = ResultStatus::InvalidInput;
     return;
@@ -669,7 +985,8 @@ void GeomFill_NetworkSurface::Perform()
                                    myGuides,
                                    myProfileParameters,
                                    myGuideParameters,
-                                   myIntersectionPoints);
+                                   myIntersectionPoints,
+                                   myIntersectionWeights);
     if (mySurface.IsNull())
     {
       myStatus = ResultStatus::ConstructionFailed;

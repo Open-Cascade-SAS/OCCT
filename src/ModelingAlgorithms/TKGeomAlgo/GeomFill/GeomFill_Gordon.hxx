@@ -33,9 +33,9 @@
 //! curve networks.
 //!
 //! This class accepts arbitrary Geom_Curve inputs, handles conversion to BSpline,
-//! intersection detection, network sorting, curve reparametrization for
-//! compatibility, then evaluates a transfinite interpolation surface over the
-//! compatible network.
+//! expands periodic B-splines into explicit non-periodic form, finds intersections,
+//! sorts the network, reparametrizes curves for compatibility, then evaluates a
+//! transfinite interpolation surface over the compatible network.
 //!
 //! Usage:
 //! @code
@@ -49,7 +49,10 @@
 //! @endcode
 //!
 //! Limitations:
-//! - Non-rational curves only
+//! - Every profile must intersect every guide in one well-defined point.
+//! - Rational networks are combined by exact common-denominator multiplication.
+//!   Construction can fail if the resulting product degree exceeds OCCT's
+//!   B-spline degree limit.
 class GeomFill_Gordon
 {
 public:
