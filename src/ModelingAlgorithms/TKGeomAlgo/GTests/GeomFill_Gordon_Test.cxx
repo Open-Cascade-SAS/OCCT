@@ -28,6 +28,8 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <filesystem>
+#include <string>
 
 namespace
 {
@@ -177,6 +179,7 @@ TEST(GeomFill_Gordon, EmptyInput_NotDone)
   aGordon.Perform();
 
   EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::InvalidInput);
 }
 
 TEST(GeomFill_Gordon, SingleProfileOrGuide_NotDone)
@@ -193,12 +196,14 @@ TEST(GeomFill_Gordon, SingleProfileOrGuide_NotDone)
   aGordon.Perform();
 
   EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::InvalidInput);
 }
 
 TEST(GeomFill_Gordon, NotDone_BeforePerform)
 {
   GeomFill_Gordon aGordon;
   EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::NotStarted);
   EXPECT_THROW((void)aGordon.Surface(), StdFail_NotDone);
 }
 

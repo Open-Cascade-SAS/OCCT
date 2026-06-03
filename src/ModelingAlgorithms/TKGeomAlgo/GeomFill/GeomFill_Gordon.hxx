@@ -27,9 +27,7 @@
 //! High-level Gordon surface construction from arbitrary curve networks.
 //!
 //! A Gordon surface (transfinite interpolation) constructs a smooth B-spline
-//! surface from a network of intersecting profile (V) and guide (U) curves
-//! using the Boolean sum formula:
-//!   S = S_profiles + S_guides - S_tensor
+//! surface from a network of intersecting profile (V) and guide (U) curves.
 //!
 //! This generalizes the existing GeomFill_Coons (4-boundary patch) to N x M
 //! curve networks.
@@ -57,6 +55,20 @@ class GeomFill_Gordon
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Result state of the last Perform() call.
+  enum class ResultStatus
+  {
+    NotStarted,              //!< Perform() has not been called since initialization.
+    Done,                    //!< Surface has been constructed.
+    InvalidInput,            //!< Input network has too few profile or guide curves.
+    ConversionFailed,        //!< Curves could not be converted/reparametrized to B-splines.
+    IntersectionFailed,      //!< Full profile/guide intersection table could not be built.
+    OrderingFailed,          //!< Network curves could not be ordered consistently.
+    ReparametrizationFailed, //!< Intersections could not be equalized in parameter space.
+    CompatibilityFailed,     //!< Prepared network failed geometric compatibility checks.
+    ConstructionFailed       //!< Final B-spline surface construction has failed.
+  };
+
   //! Creates an empty Gordon surface algorithm.
   Standard_EXPORT GeomFill_Gordon();
 
@@ -79,7 +91,10 @@ public:
   [[nodiscard]] bool IsParallelMode() const { return myToUseParallel; }
 
   //! Returns true if the surface was successfully constructed.
-  [[nodiscard]] bool IsDone() const { return myIsDone; }
+  [[nodiscard]] bool IsDone() const { return myStatus == ResultStatus::Done; }
+
+  //! Returns the result state of the last Perform() call.
+  [[nodiscard]] ResultStatus Status() const { return myStatus; }
 
   //! Returns the resulting Gordon B-spline surface.
   [[nodiscard]] Standard_EXPORT const occ::handle<Geom_BSplineSurface>& Surface() const;
@@ -94,7 +109,7 @@ private:
   bool                                               myIsUClosed     = false;
   bool                                               myIsVClosed     = false;
   bool                                               myToUseParallel = false;
-  bool                                               myIsDone        = false;
+  ResultStatus                                       myStatus        = ResultStatus::NotStarted;
 };
 
 #endif // _GeomFill_Gordon_HeaderFile

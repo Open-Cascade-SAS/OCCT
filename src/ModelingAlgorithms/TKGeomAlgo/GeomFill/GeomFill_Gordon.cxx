@@ -14,109 +14,83 @@
 #include <GeomFill_Gordon.hxx>
 
 #include <BSplCLib.hxx>
-#include <Geom2dAPI_Interpolate.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
-#include <GeomAPI_Interpolate.hxx>
 #include <GeomConvert.hxx>
 #include <GeomFill_NetworkSurface.hxx>
 #include <GeomFill_Profiler.hxx>
+#include <GeomLib_Interpolate.hxx>
+#include <GeomLib_Tool.hxx>
+#include <Law_BSpline.hxx>
+#include <Law_Interpolate.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+#include <Standard_Failure.hxx>
 #include <StdFail_NotDone.hxx>
-#include <gp_Pnt2d.hxx>
+#include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
 #include <algorithm>
 #include <atomic>
 
-#include "GeomFill_GordonUtils.pxx"
-
-namespace GordonUtils = GeomFill_GordonUtils;
+#include "GeomFill_GordonUtilities.pxx"
 
 //=================================================================================================
 
 void GeomFill_Gordon::Perform()
 {
-  myIsDone = false;
+  myStatus = ResultStatus::NotStarted;
+  mySurface.Nullify();
 
   if (myProfiles.Size() < 2 || myGuides.Size() < 2)
   {
+    myStatus = ResultStatus::InvalidInput;
     return;
   }
 
-  if (!GordonUtils::normalizeCurveDomains(myProfiles, myGuides))
+  GordonUtilities::NetworkPreparation aNetwork(myProfiles,
+                                               myGuides,
+                                               myProfileParams,
+                                               myGuideParams,
+                                               myTolerance,
+                                               myToUseParallel);
+
+  if (!aNetwork.ConvertCurvesToUnitInterval())
   {
+    myStatus = ResultStatus::ConversionFailed;
     return;
   }
 
-  if (!GordonUtils::locateIntersections(myProfiles,
-                                        myGuides,
-                                        myProfileParams,
-                                        myGuideParams,
-                                        myTolerance,
-                                        myToUseParallel))
+  if (!aNetwork.FillIntersectionParameters())
   {
+    myStatus = ResultStatus::IntersectionFailed;
     return;
   }
 
-  if (!GordonUtils::arrangeNetwork(myProfiles, myGuides, myProfileParams, myGuideParams))
+  if (!aNetwork.ReorderNetwork())
   {
+    myStatus = ResultStatus::OrderingFailed;
     return;
   }
 
-  GordonUtils::snapBoundaryParameters(myProfiles,
-                                      myGuides,
-                                      myProfileParams,
-                                      myGuideParams,
-                                      myTolerance);
+  aNetwork.SnapIntersectionParameters();
 
-  GordonUtils::markClosedSeams(myProfiles,
-                               myGuides,
-                               myProfileParams,
-                               myGuideParams,
-                               myTolerance,
-                               myIsUClosed,
-                               myIsVClosed);
+  aNetwork.DetectClosedDirections(myIsUClosed, myIsVClosed);
+  aNetwork.AdjustClosedBoundaries(myIsUClosed, myIsVClosed);
 
-  if (myIsUClosed)
+  if (!aNetwork.EqualizeIntersectionParameters())
   {
-    const size_t aLastGuideIdx = myGuides.Size() - 1;
-    for (size_t aProfileIdx = 0; aProfileIdx < myProfiles.Size(); ++aProfileIdx)
-    {
-      myProfileParams.ChangeAt(aProfileIdx, 0) = myProfiles.At(aProfileIdx)->FirstParameter();
-      myProfileParams.ChangeAt(aProfileIdx, aLastGuideIdx) =
-        myProfiles.At(aProfileIdx)->LastParameter();
-    }
-  }
-  if (myIsVClosed)
-  {
-    const size_t aLastProfileIdx = myProfiles.Size() - 1;
-    for (size_t aGuideIdx = 0; aGuideIdx < myGuides.Size(); ++aGuideIdx)
-    {
-      myGuideParams.ChangeAt(0, aGuideIdx)               = myGuides.At(aGuideIdx)->FirstParameter();
-      myGuideParams.ChangeAt(aLastProfileIdx, aGuideIdx) = myGuides.At(aGuideIdx)->LastParameter();
-    }
-  }
-
-  if (!GordonUtils::redistributeNetworkParameters(myProfiles,
-                                                  myGuides,
-                                                  myProfileParams,
-                                                  myGuideParams,
-                                                  myTolerance))
-  {
+    myStatus = ResultStatus::ReparametrizationFailed;
     return;
   }
 
-  if (!GordonUtils::isIntersectionGridConsistent(myProfiles,
-                                                 myGuides,
-                                                 myProfileParams,
-                                                 myGuideParams,
-                                                 myTolerance))
+  if (!aNetwork.CheckIntersectionTable())
   {
+    myStatus = ResultStatus::CompatibilityFailed;
     return;
   }
 
@@ -149,33 +123,20 @@ void GeomFill_Gordon::Perform()
   const size_t aNbProf = myProfiles.Size();
   const size_t aNbGuid = myGuides.Size();
 
-  NCollection_Array1<double> aGuideParamValues(1, static_cast<int>(aNbGuid));
-  for (size_t aGuideIdx = 0; aGuideIdx < aGuideParamValues.Size(); ++aGuideIdx)
-  {
-    double aSum = 0.0;
-    for (size_t aProfileIdx = 0; aProfileIdx < aNbProf; ++aProfileIdx)
-    {
-      aSum += myProfileParams.At(aProfileIdx, aGuideIdx);
-    }
-    aGuideParamValues.ChangeAt(aGuideIdx) = aSum / static_cast<double>(aNbProf);
-  }
+  math_Matrix aProfileParamMatrix = GordonUtilities::toMatrix(myProfileParams);
+  math_Matrix aGuideParamMatrix   = GordonUtilities::toMatrix(myGuideParams);
 
-  NCollection_Array1<double> aProfileParamValues(1, static_cast<int>(aNbProf));
-  for (size_t aProfileIdx = 0; aProfileIdx < aProfileParamValues.Size(); ++aProfileIdx)
-  {
-    double aSum = 0.0;
-    for (size_t aGuideIdx = 0; aGuideIdx < aNbGuid; ++aGuideIdx)
-    {
-      aSum += myGuideParams.At(aProfileIdx, aGuideIdx);
-    }
-    aProfileParamValues.ChangeAt(aProfileIdx) = aSum / static_cast<double>(aNbGuid);
-  }
+  math_Vector aGuideParamValues(1, static_cast<int>(aNbGuid));
+  GordonUtilities::columnMeans(aProfileParamMatrix, aGuideParamValues);
+
+  math_Vector aProfileParamValues(1, static_cast<int>(aNbProf));
+  GordonUtilities::rowMeans(aGuideParamMatrix, aProfileParamValues);
 
   GeomFill_NetworkSurface aNetworkSurface;
   aNetworkSurface.Init(myProfiles,
                        myGuides,
-                       aProfileParamValues,
-                       aGuideParamValues,
+                       aProfileParamValues.Array1(),
+                       aGuideParamValues.Array1(),
                        myTolerance,
                        myIsUClosed,
                        myIsVClosed);
@@ -183,11 +144,12 @@ void GeomFill_Gordon::Perform()
 
   if (!aNetworkSurface.IsDone())
   {
+    myStatus = ResultStatus::ConstructionFailed;
     return;
   }
 
   mySurface = aNetworkSurface.Surface();
-  myIsDone  = true;
+  myStatus  = ResultStatus::Done;
 }
 
 //=================================================================================================
@@ -201,7 +163,7 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
                            double                                             theTolerance)
 {
   myTolerance = theTolerance;
-  myIsDone    = false;
+  myStatus    = ResultStatus::NotStarted;
   myIsUClosed = false;
   myIsVClosed = false;
   mySurface.Nullify();
@@ -240,7 +202,7 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
 
 const occ::handle<Geom_BSplineSurface>& GeomFill_Gordon::Surface() const
 {
-  if (!myIsDone)
+  if (!IsDone())
   {
     throw StdFail_NotDone("GeomFill_Gordon::Surface");
   }

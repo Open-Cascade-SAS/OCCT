@@ -29,12 +29,11 @@
 //! consistently reparametrized, and compatible inside each family
 //! (same degree, knots, multiplicities, and number of poles).
 //!
-//! The construction follows the B-spline Boolean sum formula:
-//!   S = S_profiles + S_guides - S_tensor
-//!
-//! Profile skin, guide skin, and tensor-product interpolation surfaces are
-//! built in B-spline form, aligned to a common knot basis, then combined
-//! pole-by-pole. No point-grid surface approximation is performed here.
+//! Profile skin, guide skin, and an intersection-grid reference surface are
+//! built in B-spline form and aligned to a common knot basis. The final surface
+//! is obtained by moving the profile-skin poles by the guide-skin deviation
+//! measured from this reference surface. No point-grid surface approximation is
+//! performed here.
 //!
 //! This class does not find curve intersections, sort the network, convert
 //! arbitrary curves, or reparametrize the input. These operations are handled
@@ -47,6 +46,16 @@ class GeomFill_NetworkSurface
 {
 public:
   DEFINE_STANDARD_ALLOC
+
+  //! Result state of the last Perform() call.
+  enum class ResultStatus
+  {
+    NotStarted,         //!< Perform() has not been called since initialization.
+    Done,               //!< Surface has been constructed.
+    InvalidInput,       //!< Prepared network does not satisfy builder requirements.
+    ConstructionFailed, //!< Internal B-spline construction has failed.
+    PeriodicityFailed   //!< Closed seam could not be converted to periodic form.
+  };
 
   //! Creates an empty network surface algorithm.
   Standard_EXPORT GeomFill_NetworkSurface();
@@ -67,11 +76,14 @@ public:
                             bool                              theIsUClosed,
                             bool                              theIsVClosed);
 
-  //! Performs the pole-based Gordon surface construction.
+  //! Performs the pole-based network surface construction.
   Standard_EXPORT void Perform();
 
   //! Returns true if the surface was successfully constructed.
-  [[nodiscard]] bool IsDone() const { return myIsDone; }
+  [[nodiscard]] bool IsDone() const { return myStatus == ResultStatus::Done; }
+
+  //! Returns the result state of the last Perform() call.
+  [[nodiscard]] ResultStatus Status() const { return myStatus; }
 
   //! Returns the constructed B-spline surface.
   //! @throws StdFail_NotDone if Perform() has not completed successfully.
@@ -86,7 +98,7 @@ private:
   double                                             myTolerance = 0.0;
   bool                                               myIsUClosed = false;
   bool                                               myIsVClosed = false;
-  bool                                               myIsDone    = false;
+  ResultStatus                                       myStatus    = ResultStatus::NotStarted;
 };
 
 #endif // _GeomFill_NetworkSurface_HeaderFile

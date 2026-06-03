@@ -64,7 +64,7 @@ set(OCCT_GeomFill_FILES
   GeomFill_Generator.lxx
   GeomFill_Gordon.cxx
   GeomFill_Gordon.hxx
-  GeomFill_GordonUtils.pxx
+  GeomFill_GordonUtilities.pxx
   GeomFill_NetworkSurface.cxx
   GeomFill_NetworkSurface.hxx
   GeomFill_GuideTrihedronAC.cxx
