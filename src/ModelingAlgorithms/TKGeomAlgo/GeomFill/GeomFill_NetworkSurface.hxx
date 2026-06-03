@@ -56,11 +56,17 @@ public:
   //! Result state of the last Perform() call.
   enum class ResultStatus
   {
-    NotStarted,         //!< Perform() has not been called since initialization.
-    Done,               //!< Surface has been constructed.
-    InvalidInput,       //!< Prepared network does not satisfy builder requirements.
-    ConstructionFailed, //!< Internal B-spline construction has failed.
-    PeriodicityFailed   //!< Closed seam could not be converted to periodic form.
+    NotStarted,              //!< Perform() has not been called since initialization.
+    Done,                    //!< Surface has been constructed.
+    InvalidInput,            //!< Prepared network does not satisfy builder requirements.
+    CurveCompatibilityFailed, //!< Curve families could not be converted to a compatible basis.
+    SkinningFailed,           //!< Profile or guide skin interpolation has failed.
+    ReferenceSurfaceFailed,   //!< Intersection-grid reference surface could not be built.
+    KnotAlignmentFailed,      //!< Intermediate surfaces could not be aligned to one knot basis.
+    RationalDegreeOverflow,   //!< Exact rational product degree exceeds OCCT's B-spline limit.
+    RationalConstructionFailed, //!< Exact rational numerator/denominator construction has failed.
+    ConstructionFailed,       //!< Internal B-spline construction has failed.
+    PeriodicityFailed         //!< Closed seam could not be converted to periodic form.
   };
 
   //! Creates an empty network surface algorithm.

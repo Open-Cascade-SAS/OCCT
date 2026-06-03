@@ -156,6 +156,30 @@ occ::handle<Geom_BSplineCurve> makeWeightedLinearBSpline(const gp_Pnt& theP1,
   return new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 1, false, false);
 }
 
+occ::handle<Geom_BSplineCurve> makeRationalLineBSpline(const gp_Pnt& theP1,
+                                                       const gp_Pnt& theP2,
+                                                       const int     theDegree)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, theDegree + 1);
+  NCollection_Array1<double> aWeights(1, theDegree + 1);
+  for (int aPoleIdx = 1; aPoleIdx <= theDegree + 1; ++aPoleIdx)
+  {
+    const double aRatio = static_cast<double>(aPoleIdx - 1) / static_cast<double>(theDegree);
+    aPoles(aPoleIdx)   = gp_Pnt(theP1.XYZ() * (1.0 - aRatio) + theP2.XYZ() * aRatio);
+    aWeights(aPoleIdx) = (aPoleIdx == (theDegree + 2) / 2) ? 0.5 : 1.0;
+  }
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults(1) = theDegree + 1;
+  aMults(2) = theDegree + 1;
+
+  return new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, theDegree);
+}
+
 occ::handle<Geom_BSplineCurve> makePeriodicProfile(const double theY)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 5);
@@ -1466,6 +1490,81 @@ TEST(GeomFill_Gordon, NetworkSurface_CompatibleRationalWeightsProducesRationalSu
   EXPECT_TRUE(aSurface->IsURational() || aSurface->IsVRational());
 }
 
+TEST(GeomFill_Gordon, NetworkSurface_IncompatibleRationalFamilyReportsStatus)
+{
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 2);
+  aProfiles(1) =
+    makeRationalQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0.5, 0, 0), gp_Pnt(1, 0, 0), 0.5);
+  aProfiles(2) = makeWeightedLinearBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), 1.0);
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 2);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  NCollection_Array1<double> aProfileParams(1, 2);
+  aProfileParams(1) = 0.0;
+  aProfileParams(2) = 1.0;
+
+  NCollection_Array1<double> aGuideParams(1, 2);
+  aGuideParams(1) = 0.0;
+  aGuideParams(2) = 1.0;
+
+  GeomFill_NetworkSurface aNetwork;
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParams,
+                aGuideParams,
+                makeIntersectionGrid(aProfiles, aGuideParams),
+                makeUnitWeightGrid(aProfiles, aGuideParams),
+                Precision::Confusion(),
+                false,
+                false);
+  aNetwork.Perform();
+
+  EXPECT_FALSE(aNetwork.IsDone());
+  EXPECT_EQ(aNetwork.Status(), GeomFill_NetworkSurface::ResultStatus::CurveCompatibilityFailed);
+}
+
+TEST(GeomFill_Gordon, NetworkSurface_RationalDegreeOverflowReportsStatus)
+{
+  constexpr int aDegree = 9;
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 3);
+  aProfiles(1) = makeRationalLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), aDegree);
+  aProfiles(2) = makeRationalLineBSpline(gp_Pnt(0, 0.5, 0), gp_Pnt(1, 0.5, 0), aDegree);
+  aProfiles(3) = makeRationalLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), aDegree);
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 3);
+  aGuides(1) = makeRationalLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0), aDegree);
+  aGuides(2) = makeRationalLineBSpline(gp_Pnt(0.5, 0, 0), gp_Pnt(0.5, 1, 0), aDegree);
+  aGuides(3) = makeRationalLineBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0), aDegree);
+
+  NCollection_Array1<double> aProfileParams(1, 3);
+  aProfileParams(1) = 0.0;
+  aProfileParams(2) = 0.5;
+  aProfileParams(3) = 1.0;
+
+  NCollection_Array1<double> aGuideParams(1, 3);
+  aGuideParams(1) = 0.0;
+  aGuideParams(2) = 0.5;
+  aGuideParams(3) = 1.0;
+
+  GeomFill_NetworkSurface aNetwork;
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParams,
+                aGuideParams,
+                makeIntersectionGrid(aProfiles, aGuideParams),
+                makeUnitWeightGrid(aProfiles, aGuideParams),
+                Precision::Confusion(),
+                false,
+                false);
+  aNetwork.Perform();
+
+  EXPECT_FALSE(aNetwork.IsDone());
+  EXPECT_EQ(aNetwork.Status(), GeomFill_NetworkSurface::ResultStatus::RationalDegreeOverflow);
+}
+
 TEST(GeomFill_Gordon, RationalProfilesWithPolynomialGuidesProducesSurface)
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
@@ -1486,7 +1585,56 @@ TEST(GeomFill_Gordon, RationalProfilesWithPolynomialGuidesProducesSurface)
   aGordon.Perform();
 
   ASSERT_TRUE(aGordon.IsDone());
+  EXPECT_FALSE(aGordon.IsApproximate());
   EXPECT_TRUE(aGordon.Surface()->IsURational() || aGordon.Surface()->IsVRational());
+}
+
+TEST(GeomFill_Gordon, ApproximateFallbackCanRecoverRationalDegreeOverflow)
+{
+  constexpr int aDegree = 9;
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makeRationalLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), aDegree);
+  aProfiles(2) = makeRationalLineBSpline(gp_Pnt(0, 0.5, 0), gp_Pnt(1, 0.5, 0), aDegree);
+  aProfiles(3) = makeRationalLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), aDegree);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeRationalLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0), aDegree);
+  aGuides(2) = makeRationalLineBSpline(gp_Pnt(0.5, 0, 0), gp_Pnt(0.5, 1, 0), aDegree);
+  aGuides(3) = makeRationalLineBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0), aDegree);
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.SetApproximationMode(GeomFill_Gordon::ApproximationMode::AllowApproximateFallback);
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_FALSE(aGordon.Surface().IsNull());
+}
+
+TEST(GeomFill_Gordon, ExactOnlyReportsRationalDegreeOverflow)
+{
+  constexpr int aDegree = 9;
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makeRationalLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), aDegree);
+  aProfiles(2) = makeRationalLineBSpline(gp_Pnt(0, 0.5, 0), gp_Pnt(1, 0.5, 0), aDegree);
+  aProfiles(3) = makeRationalLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), aDegree);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeRationalLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0), aDegree);
+  aGuides(2) = makeRationalLineBSpline(gp_Pnt(0.5, 0, 0), gp_Pnt(0.5, 1, 0), aDegree);
+  aGuides(3) = makeRationalLineBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0), aDegree);
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  EXPECT_EQ(aGordon.GetApproximationMode(), GeomFill_Gordon::ApproximationMode::ExactOnly);
+  aGordon.Perform();
+
+  EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::RationalDegreeOverflow);
 }
 
 TEST(GeomFill_Gordon, NetworkSurface_VClosedNetwork_ProducesVPeriodicSurface)

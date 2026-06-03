@@ -673,13 +673,15 @@ bool alignSurfaces(occ::handle<Geom_BSplineSurface>& theProfileSurface,
 occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
   const occ::handle<Geom_BSplineSurface>& theProfileSurface,
   const occ::handle<Geom_BSplineSurface>& theGuideSurface,
-  const occ::handle<Geom_BSplineSurface>& theReferenceSurface)
+  const occ::handle<Geom_BSplineSurface>& theReferenceSurface,
+  GeomFill_NetworkSurface::ResultStatus&  theStatus)
 {
   if (theProfileSurface->NbUPoles() != theGuideSurface->NbUPoles()
       || theProfileSurface->NbUPoles() != theReferenceSurface->NbUPoles()
       || theProfileSurface->NbVPoles() != theGuideSurface->NbVPoles()
       || theProfileSurface->NbVPoles() != theReferenceSurface->NbVPoles())
   {
+    theStatus = GeomFill_NetworkSurface::ResultStatus::RationalConstructionFailed;
     return nullptr;
   }
 
@@ -706,6 +708,7 @@ occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
                                  aVMults,
                                  aVFlatKnots))
   {
+    theStatus = GeomFill_NetworkSurface::ResultStatus::RationalDegreeOverflow;
     return nullptr;
   }
 
@@ -713,6 +716,7 @@ occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
   const int aNbVPoles = aVFlatKnots.Length() - aVDegree - 1;
   if (aNbUPoles < 2 || aNbVPoles < 2)
   {
+    theStatus = GeomFill_NetworkSurface::ResultStatus::RationalConstructionFailed;
     return nullptr;
   }
 
@@ -751,6 +755,7 @@ occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
                                  aReferenceNumerator,
                                  aReferenceDenominator))
   {
+    theStatus = GeomFill_NetworkSurface::ResultStatus::RationalConstructionFailed;
     return nullptr;
   }
 
@@ -765,6 +770,7 @@ occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
         || std::abs(aReferenceDenominator.NCollection_Array1<double>::At(aPoleIdx) - aWeight)
              > Precision::Confusion())
     {
+      theStatus = GeomFill_NetworkSurface::ResultStatus::RationalConstructionFailed;
       return nullptr;
     }
 
@@ -827,8 +833,11 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
   const NCollection_Array1<double>&                         theProfileParameters,
   const NCollection_Array1<double>&                         theGuideParameters,
   const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints,
-  const NCollection_Array2<double>&                         theIntersectionWeights)
+  const NCollection_Array2<double>&                         theIntersectionWeights,
+  GeomFill_NetworkSurface::ResultStatus&                    theStatus)
 {
+  theStatus = GeomFill_NetworkSurface::ResultStatus::ConstructionFailed;
+
   SkinningBasis anUBasis;
   anUBasis.Init(theGuideParameters);
 
@@ -843,6 +852,7 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
                                                                      aVBasis.FlatKnots);
   if (aProfileSurface.IsNull())
   {
+    theStatus = GeomFill_NetworkSurface::ResultStatus::SkinningFailed;
     return nullptr;
   }
 
@@ -854,6 +864,7 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
                                                                  anUBasis.FlatKnots);
   if (aGuideSurface.IsNull())
   {
+    theStatus = GeomFill_NetworkSurface::ResultStatus::SkinningFailed;
     return nullptr;
   }
 
@@ -873,6 +884,7 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
                         anInversionProblem);
   if (anInversionProblem != 0)
   {
+    theStatus = GeomFill_NetworkSurface::ResultStatus::ReferenceSurfaceFailed;
     return nullptr;
   }
 
@@ -886,9 +898,10 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
                                                                                aVBasis.Degree);
   if (!alignSurfaces(aProfileSurface, aGuideSurface, aReferenceSurface))
   {
+    theStatus = GeomFill_NetworkSurface::ResultStatus::KnotAlignmentFailed;
     return nullptr;
   }
-  return makeCorrectedProfileSkin(aProfileSurface, aGuideSurface, aReferenceSurface);
+  return makeCorrectedProfileSkin(aProfileSurface, aGuideSurface, aReferenceSurface, theStatus);
 }
 
 bool applyPeriodicity(occ::handle<Geom_BSplineSurface>& theSurface,
@@ -970,19 +983,21 @@ void GeomFill_NetworkSurface::Perform()
   {
     if (!prepareCurveFamily(myProfiles) || !prepareCurveFamily(myGuides))
     {
-      myStatus = ResultStatus::ConstructionFailed;
+      myStatus = ResultStatus::CurveCompatibilityFailed;
       return;
     }
 
+    ResultStatus aSurfaceStatus = ResultStatus::ConstructionFailed;
     mySurface = makeNetworkSurface(myProfiles,
                                    myGuides,
                                    myProfileParameters,
                                    myGuideParameters,
                                    myIntersectionPoints,
-                                   myIntersectionWeights);
+                                   myIntersectionWeights,
+                                   aSurfaceStatus);
     if (mySurface.IsNull())
     {
-      myStatus = ResultStatus::ConstructionFailed;
+      myStatus = aSurfaceStatus;
       return;
     }
 

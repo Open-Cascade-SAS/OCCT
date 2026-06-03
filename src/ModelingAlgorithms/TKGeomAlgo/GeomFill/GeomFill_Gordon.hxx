@@ -54,6 +54,9 @@
 //! - Rational networks are combined by exact common-denominator multiplication.
 //!   Construction can fail if the resulting product degree exceeds OCCT's
 //!   B-spline degree limit.
+//! - ApproximationMode::AllowApproximateFallback may build a sampled surface
+//!   when exact construction fails. Such a surface is marked by IsApproximate()
+//!   and does not guarantee exact interpolation of the input curves.
 class GeomFill_Gordon
 {
 public:
@@ -70,7 +73,23 @@ public:
     OrderingFailed,          //!< Network curves could not be ordered consistently.
     ReparametrizationFailed, //!< Intersections could not be equalized in parameter space.
     CompatibilityFailed,     //!< Prepared network failed geometric compatibility checks.
+    CurveCompatibilityFailed, //!< Prepared curve families are not B-spline compatible.
+    RationalReparametrizationFailed, //!< Rational curves require unsupported exact reparametrization.
+    SkinningFailed,           //!< Intermediate profile/guide skinning has failed.
+    ReferenceSurfaceFailed,   //!< Intersection-grid reference surface could not be built.
+    KnotAlignmentFailed,      //!< Intermediate surfaces could not be aligned.
+    RationalDegreeOverflow,   //!< Exact rational product degree exceeds OCCT's B-spline limit.
+    RationalConstructionFailed, //!< Exact rational numerator/denominator construction has failed.
+    PeriodicityFailed,        //!< Closed seam could not be converted to periodic form.
+    ApproximationFailed,      //!< Optional approximate fallback has failed.
     ConstructionFailed       //!< Final B-spline surface construction has failed.
+  };
+
+  //! Controls behavior when exact pole-based construction fails.
+  enum class ApproximationMode
+  {
+    ExactOnly,                //!< Report exact construction failure (default).
+    AllowApproximateFallback  //!< Try a sampled B-spline fallback without exact interpolation.
   };
 
   //! Creates an empty Gordon surface algorithm.
@@ -91,11 +110,22 @@ public:
   //! By default, single-thread mode is used.
   void SetParallelMode(bool theToUseParallel) { myToUseParallel = theToUseParallel; }
 
+  //! Sets optional fallback behavior for failures in exact B-spline construction.
+  //! Approximate fallback results should be checked by IsApproximate().
+  void SetApproximationMode(ApproximationMode theMode) { myApproximationMode = theMode; }
+
+  //! Returns current fallback behavior.
+  [[nodiscard]] ApproximationMode GetApproximationMode() const { return myApproximationMode; }
+
   //! Returns true if internal parallel processing is enabled.
   [[nodiscard]] bool IsParallelMode() const { return myToUseParallel; }
 
   //! Returns true if the surface was successfully constructed.
   [[nodiscard]] bool IsDone() const { return myStatus == ResultStatus::Done; }
+
+  //! Returns true if the resulting surface was produced by approximate fallback.
+  //! Approximate results do not have the exact Gordon interpolation guarantee.
+  [[nodiscard]] bool IsApproximate() const { return myIsApproximate; }
 
   //! Returns the result state of the last Perform() call.
   [[nodiscard]] ResultStatus Status() const { return myStatus; }
@@ -113,6 +143,9 @@ private:
   bool                                               myIsUClosed     = false;
   bool                                               myIsVClosed     = false;
   bool                                               myToUseParallel = false;
+  bool                                               myIsApproximate = false;
+  ApproximationMode                                  myApproximationMode =
+    ApproximationMode::ExactOnly;
   ResultStatus                                       myStatus        = ResultStatus::NotStarted;
 };
 
