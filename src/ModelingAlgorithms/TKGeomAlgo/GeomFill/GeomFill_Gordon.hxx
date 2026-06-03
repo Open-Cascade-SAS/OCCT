@@ -66,31 +66,32 @@ public:
   //! Result state of the last Perform() call.
   enum class ResultStatus
   {
-    NotStarted,              //!< Perform() has not been called since initialization.
-    Done,                    //!< Surface has been constructed.
-    InvalidInput,            //!< Input network has too few profile or guide curves.
-    ConversionFailed,        //!< Curves could not be converted/reparametrized to B-splines.
-    IntersectionFailed,      //!< Full profile/guide intersection table could not be built.
-    OrderingFailed,          //!< Network curves could not be ordered consistently.
-    ReparametrizationFailed, //!< Intersections could not be equalized in parameter space.
-    CompatibilityFailed,     //!< Prepared network failed geometric compatibility checks.
-    CurveCompatibilityFailed, //!< Prepared curve families are not B-spline compatible.
-    RationalReparametrizationFailed, //!< Rational curves require unsupported exact reparametrization.
-    SkinningFailed,           //!< Intermediate profile/guide skinning has failed.
-    ReferenceSurfaceFailed,   //!< Intersection-grid reference surface could not be built.
-    KnotAlignmentFailed,      //!< Intermediate surfaces could not be aligned.
-    RationalDegreeOverflow,   //!< Exact rational product degree exceeds OCCT's B-spline limit.
+    NotStarted,                      //!< Perform() has not been called since initialization.
+    Done,                            //!< Surface has been constructed.
+    InvalidInput,                    //!< Input network has too few profile or guide curves.
+    ConversionFailed,                //!< Curves could not be converted/reparametrized to B-splines.
+    IntersectionFailed,              //!< Full profile/guide intersection table could not be built.
+    OrderingFailed,                  //!< Network curves could not be ordered consistently.
+    ReparametrizationFailed,         //!< Intersections could not be equalized in parameter space.
+    CompatibilityFailed,             //!< Prepared network failed geometric compatibility checks.
+    CurveCompatibilityFailed,        //!< Prepared curve families are not B-spline compatible.
+    RationalReparametrizationFailed, //!< Rational curves require unsupported exact
+                                     //!< reparametrization.
+    SkinningFailed,                  //!< Intermediate profile/guide skinning has failed.
+    ReferenceSurfaceFailed,          //!< Intersection-grid reference surface could not be built.
+    KnotAlignmentFailed,             //!< Intermediate surfaces could not be aligned.
+    RationalDegreeOverflow,     //!< Exact rational product degree exceeds OCCT's B-spline limit.
     RationalConstructionFailed, //!< Exact rational numerator/denominator construction has failed.
-    PeriodicityFailed,        //!< Closed seam could not be converted to periodic form.
-    ApproximationFailed,      //!< Optional approximate fallback has failed.
-    ConstructionFailed       //!< Final B-spline surface construction has failed.
+    PeriodicityFailed,          //!< Closed seam could not be converted to periodic form.
+    ApproximationFailed,        //!< Optional approximate fallback has failed.
+    ConstructionFailed          //!< Final B-spline surface construction has failed.
   };
 
   //! Controls behavior when exact pole-based construction fails.
   enum class ApproximationMode
   {
-    ExactOnly,                //!< Report exact construction failure (default).
-    AllowApproximateFallback  //!< Try a sampled B-spline fallback without exact interpolation.
+    ExactOnly,               //!< Report exact construction failure (default).
+    AllowApproximateFallback //!< Try a sampled B-spline fallback without exact interpolation.
   };
 
   //! Creates an empty Gordon surface algorithm.
@@ -145,9 +146,8 @@ private:
   bool                                               myIsVClosed     = false;
   bool                                               myToUseParallel = false;
   bool                                               myIsApproximate = false;
-  ApproximationMode                                  myApproximationMode =
-    ApproximationMode::ExactOnly;
-  ResultStatus                                       myStatus        = ResultStatus::NotStarted;
+  ApproximationMode myApproximationMode                              = ApproximationMode::ExactOnly;
+  ResultStatus      myStatus                                         = ResultStatus::NotStarted;
 };
 
 #endif // _GeomFill_Gordon_HeaderFile

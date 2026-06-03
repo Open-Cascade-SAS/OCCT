@@ -55,7 +55,8 @@ bool hasRationalCurve(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& 
   return hasRationalCurve(theProfiles) || hasRationalCurve(theGuides);
 }
 
-GeomFill_Gordon::ResultStatus mapNetworkStatus(const GeomFill_NetworkSurface::ResultStatus theStatus)
+GeomFill_Gordon::ResultStatus mapNetworkStatus(
+  const GeomFill_NetworkSurface::ResultStatus theStatus)
 {
   switch (theStatus)
   {
@@ -189,7 +190,7 @@ occ::handle<Geom_BSplineSurface> approximatePreparedNetwork(
     const double aU = static_cast<double>(aUIdx) / static_cast<double>(aNbUSamples - 1);
     for (size_t aVIdx = 0; aVIdx < aNbVSamples; ++aVIdx)
     {
-      const double aV = static_cast<double>(aVIdx) / static_cast<double>(aNbVSamples - 1);
+      const double aV     = static_cast<double>(aVIdx) / static_cast<double>(aNbVSamples - 1);
       const gp_XYZ aPoint = aProfileSurface->Value(aU, aV).XYZ()
                             + aGuideSurface->Value(aU, aV).XYZ()
                             - aReferenceSurface->Value(aU, aV).XYZ();
@@ -247,12 +248,13 @@ void GeomFill_Gordon::Perform()
   }
 
   bool aHasApproximateReparametrization = false;
-  if (!aNetwork.EqualizeIntersectionParameters(
-        myApproximationMode == ApproximationMode::AllowApproximateFallback,
-        aHasApproximateReparametrization))
+  if (!aNetwork.EqualizeIntersectionParameters(myApproximationMode
+                                                 == ApproximationMode::AllowApproximateFallback,
+                                               aHasApproximateReparametrization))
   {
-    myStatus = hasRationalCurve(myProfiles, myGuides) ? ResultStatus::RationalReparametrizationFailed
-                                                      : ResultStatus::ReparametrizationFailed;
+    myStatus = hasRationalCurve(myProfiles, myGuides)
+                 ? ResultStatus::RationalReparametrizationFailed
+                 : ResultStatus::ReparametrizationFailed;
     return;
   }
 
@@ -303,7 +305,7 @@ void GeomFill_Gordon::Perform()
     return;
   }
 
-  mySurface = aNetworkSurface.Surface();
+  mySurface       = aNetworkSurface.Surface();
   myIsApproximate = aHasApproximateReparametrization;
   myStatus        = ResultStatus::Done;
 }
@@ -318,10 +320,10 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
                            const NCollection_Array1<occ::handle<Geom_Curve>>& theGuides,
                            double                                             theTolerance)
 {
-  myTolerance = theTolerance;
-  myStatus    = ResultStatus::NotStarted;
-  myIsUClosed = false;
-  myIsVClosed = false;
+  myTolerance     = theTolerance;
+  myStatus        = ResultStatus::NotStarted;
+  myIsUClosed     = false;
+  myIsVClosed     = false;
   myIsApproximate = false;
   mySurface.Nullify();
 

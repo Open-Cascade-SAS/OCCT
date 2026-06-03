@@ -165,8 +165,8 @@ occ::handle<Geom_BSplineCurve> makeRationalLineBSpline(const gp_Pnt& theP1,
   for (int aPoleIdx = 1; aPoleIdx <= theDegree + 1; ++aPoleIdx)
   {
     const double aRatio = static_cast<double>(aPoleIdx - 1) / static_cast<double>(theDegree);
-    aPoles(aPoleIdx)   = gp_Pnt(theP1.XYZ() * (1.0 - aRatio) + theP2.XYZ() * aRatio);
-    aWeights(aPoleIdx) = (aPoleIdx == (theDegree + 2) / 2) ? 0.5 : 1.0;
+    aPoles(aPoleIdx)    = gp_Pnt(theP1.XYZ() * (1.0 - aRatio) + theP2.XYZ() * aRatio);
+    aWeights(aPoleIdx)  = (aPoleIdx == (theDegree + 2) / 2) ? 0.5 : 1.0;
   }
 
   NCollection_Array1<double> aKnots(1, 2);
@@ -1667,12 +1667,10 @@ TEST(GeomFill_Gordon, ExactOnlyReportsRationalDegreeOverflow)
 TEST(GeomFill_Gordon, ExactOnlyReportsRationalReparametrizationFailure)
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
-  aProfiles(1) =
-    makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
+  aProfiles(1) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
   aProfiles(2) =
     makeRationalQuadraticLineBSpline(gp_Pnt(0, 0.4, 0), gp_Pnt(1, 0.4, 0), 1.0, 1.8, 0.7);
-  aProfiles(3) =
-    makeRationalQuadraticLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), 0.8, 0.65, 1.5);
+  aProfiles(3) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), 0.8, 0.65, 1.5);
 
   NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
   aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
@@ -1691,12 +1689,10 @@ TEST(GeomFill_Gordon, ExactOnlyReportsRationalReparametrizationFailure)
 TEST(GeomFill_Gordon, ApproximateFallbackCanReparametrizeRationalCurves)
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
-  aProfiles(1) =
-    makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
+  aProfiles(1) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
   aProfiles(2) =
     makeRationalQuadraticLineBSpline(gp_Pnt(0, 0.4, 0), gp_Pnt(1, 0.4, 0), 1.0, 1.8, 0.7);
-  aProfiles(3) =
-    makeRationalQuadraticLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), 0.8, 0.65, 1.5);
+  aProfiles(3) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), 0.8, 0.65, 1.5);
 
   NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
   aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));

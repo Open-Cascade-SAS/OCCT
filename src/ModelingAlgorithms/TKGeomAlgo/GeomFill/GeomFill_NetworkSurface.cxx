@@ -988,7 +988,7 @@ void GeomFill_NetworkSurface::Perform()
     }
 
     ResultStatus aSurfaceStatus = ResultStatus::ConstructionFailed;
-    mySurface = makeNetworkSurface(myProfiles,
+    mySurface                   = makeNetworkSurface(myProfiles,
                                    myGuides,
                                    myProfileParameters,
                                    myGuideParameters,
