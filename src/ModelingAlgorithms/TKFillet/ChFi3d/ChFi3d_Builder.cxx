@@ -161,8 +161,7 @@ static bool ChFi3d_IsConsumedFace(const TopoDS_Face& theFace)
   const double                 aTol = Precision::Confusion();
   // Re-use the same strip/spot detection as ShapeFix_FixSmallFace: a consumed
   // face is a zero-width band bounded by two edges confused along their length.
-  return aChecker.CheckStripFace(theFace, aE1, aE2, aTol)
-         || aChecker.CheckSpotFace(theFace, aTol);
+  return aChecker.CheckStripFace(theFace, aE1, aE2, aTol) || aChecker.CheckSpotFace(theFace, aTol);
 }
 
 //=======================================================================
