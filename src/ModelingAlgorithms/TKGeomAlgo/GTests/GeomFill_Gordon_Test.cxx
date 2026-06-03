@@ -180,6 +180,33 @@ occ::handle<Geom_BSplineCurve> makeRationalLineBSpline(const gp_Pnt& theP1,
   return new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, theDegree);
 }
 
+occ::handle<Geom_BSplineCurve> makeRationalQuadraticLineBSpline(const gp_Pnt& theP1,
+                                                                const gp_Pnt& theP2,
+                                                                const double  theStartWeight,
+                                                                const double  theMiddleWeight,
+                                                                const double  theEndWeight)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  aPoles(1) = theP1;
+  aPoles(2) = gp_Pnt((theP1.XYZ() + theP2.XYZ()) * 0.5);
+  aPoles(3) = theP2;
+
+  NCollection_Array1<double> aWeights(1, 3);
+  aWeights(1) = theStartWeight;
+  aWeights(2) = theMiddleWeight;
+  aWeights(3) = theEndWeight;
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults(1) = 3;
+  aMults(2) = 3;
+
+  return new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 2);
+}
+
 occ::handle<Geom_BSplineCurve> makePeriodicProfile(const double theY)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 5);
@@ -1635,6 +1662,55 @@ TEST(GeomFill_Gordon, ExactOnlyReportsRationalDegreeOverflow)
   EXPECT_FALSE(aGordon.IsDone());
   EXPECT_FALSE(aGordon.IsApproximate());
   EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::RationalDegreeOverflow);
+}
+
+TEST(GeomFill_Gordon, ExactOnlyReportsRationalReparametrizationFailure)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) =
+    makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
+  aProfiles(2) =
+    makeRationalQuadraticLineBSpline(gp_Pnt(0, 0.4, 0), gp_Pnt(1, 0.4, 0), 1.0, 1.8, 0.7);
+  aProfiles(3) =
+    makeRationalQuadraticLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), 0.8, 0.65, 1.5);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(0.4, 0, 0), gp_Pnt(0.4, 1, 0));
+  aGuides(3) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::RationalReparametrizationFailed);
+}
+
+TEST(GeomFill_Gordon, ApproximateFallbackCanReparametrizeRationalCurves)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) =
+    makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
+  aProfiles(2) =
+    makeRationalQuadraticLineBSpline(gp_Pnt(0, 0.4, 0), gp_Pnt(1, 0.4, 0), 1.0, 1.8, 0.7);
+  aProfiles(3) =
+    makeRationalQuadraticLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), 0.8, 0.65, 1.5);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(0.4, 0, 0), gp_Pnt(0.4, 1, 0));
+  aGuides(3) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.SetApproximationMode(GeomFill_Gordon::ApproximationMode::AllowApproximateFallback);
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_FALSE(aGordon.Surface().IsNull());
 }
 
 TEST(GeomFill_Gordon, NetworkSurface_VClosedNetwork_ProducesVPeriodicSurface)

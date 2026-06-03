@@ -246,7 +246,10 @@ void GeomFill_Gordon::Perform()
     return;
   }
 
-  if (!aNetwork.EqualizeIntersectionParameters())
+  bool aHasApproximateReparametrization = false;
+  if (!aNetwork.EqualizeIntersectionParameters(
+        myApproximationMode == ApproximationMode::AllowApproximateFallback,
+        aHasApproximateReparametrization))
   {
     myStatus = hasRationalCurve(myProfiles, myGuides) ? ResultStatus::RationalReparametrizationFailed
                                                       : ResultStatus::ReparametrizationFailed;
@@ -301,7 +304,8 @@ void GeomFill_Gordon::Perform()
   }
 
   mySurface = aNetworkSurface.Surface();
-  myStatus  = ResultStatus::Done;
+  myIsApproximate = aHasApproximateReparametrization;
+  myStatus        = ResultStatus::Done;
 }
 
 //=================================================================================================

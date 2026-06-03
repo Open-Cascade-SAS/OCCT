@@ -950,11 +950,17 @@ NCollection_LinearVector<double> samplingParameters(const math_Vector& theTarget
 //! Rebuilds one curve through target-parameter samples.
 bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
                   const math_Vector&              theSourceParams,
-                  const math_Vector&              theTargetParams)
+                  const math_Vector&              theTargetParams,
+                  const bool                      theAllowApproximateRational,
+                  bool&                           theDidApproximate)
 {
   if (theCurve->IsRational())
   {
-    return false;
+    if (!theAllowApproximateRational)
+    {
+      return false;
+    }
+    theDidApproximate = true;
   }
 
   math_Vector  aSource(1, theSourceParams.Length() + 2);
@@ -1044,7 +1050,9 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
 bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
                         NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
                         NCollection_Array2<double>&                         theProfileParams,
-                        NCollection_Array2<double>&                         theGuideParams)
+                        NCollection_Array2<double>&                         theGuideParams,
+                        const bool theAllowApproximateRational,
+                        bool&      theDidApproximate)
 {
   math_Matrix aProfileParams = toMatrix(theProfileParams);
   math_Matrix aGuideParams   = toMatrix(theGuideParams);
@@ -1068,7 +1076,11 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
     {
       continue;
     }
-    if (!rebuildCurve(theProfiles.ChangeAt(aProfileIdx), anOldProfileParams, aProfileTargets))
+    if (!rebuildCurve(theProfiles.ChangeAt(aProfileIdx),
+                      anOldProfileParams,
+                      aProfileTargets,
+                      theAllowApproximateRational,
+                      theDidApproximate))
     {
       return false;
     }
@@ -1094,7 +1106,11 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
     {
       continue;
     }
-    if (!rebuildCurve(theGuides.ChangeAt(aGuideIdx), anOldGuideParams, aGuideTargets))
+    if (!rebuildCurve(theGuides.ChangeAt(aGuideIdx),
+                      anOldGuideParams,
+                      aGuideTargets,
+                      theAllowApproximateRational,
+                      theDidApproximate))
     {
       return false;
     }
@@ -1194,7 +1210,7 @@ public:
   {
   }
 
-  //! Converts all curves to compatible unit-domain non-rational B-splines.
+  //! Converts all curves to explicit unit-domain B-splines.
   bool ConvertCurvesToUnitInterval()
   {
     return makeUnitCurves(myProfiles) && makeUnitCurves(myGuides);
@@ -1236,9 +1252,16 @@ public:
   }
 
   //! Rebuilds curves to shared averaged network parameters.
-  bool EqualizeIntersectionParameters()
+  //! Rational curves are rebuilt only when approximate fallback is allowed.
+  bool EqualizeIntersectionParameters(const bool theAllowApproximateRational,
+                                      bool&      theDidApproximate)
   {
-    return equalizeParameters(myProfiles, myGuides, myProfileParams, myGuideParams);
+    return equalizeParameters(myProfiles,
+                              myGuides,
+                              myProfileParams,
+                              myGuideParams,
+                              theAllowApproximateRational,
+                              theDidApproximate);
   }
 
   //! Returns the validated contact points in guide/profile grid order.

@@ -55,8 +55,9 @@
 //!   Construction can fail if the resulting product degree exceeds OCCT's
 //!   B-spline degree limit.
 //! - ApproximationMode::AllowApproximateFallback may build a sampled surface
-//!   when exact construction fails. Such a surface is marked by IsApproximate()
-//!   and does not guarantee exact interpolation of the input curves.
+//!   when exact construction fails, or rebuild rational curves approximately
+//!   when exact reparametrization is required. Such a surface is marked by
+//!   IsApproximate() and does not guarantee exact interpolation of the input curves.
 class GeomFill_Gordon
 {
 public:
