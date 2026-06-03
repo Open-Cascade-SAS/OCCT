@@ -187,7 +187,7 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
   NCollection_Array2<gp_Pnt>            aPoles(1, aBaseProfile->NbPoles(), 1, theProfiles.Length());
   NCollection_Array1<gp_Pnt>            aColumn(1, theProfiles.Length());
   NCollection_Array1<int>               aContactOrders(theProfileParameters.Lower(),
-                                                       theProfileParameters.Upper());
+                                         theProfileParameters.Upper());
   aContactOrders.Init(0);
 
   for (int aUPoleIdx = 1; aUPoleIdx <= aBaseProfile->NbPoles(); ++aUPoleIdx)
@@ -628,15 +628,15 @@ void GeomFill_NetworkSurface::Init(
   bool                                                      theIsUClosed,
   bool                                                      theIsVClosed)
 {
-  myProfiles          = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theProfiles);
-  myGuides            = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theGuides);
-  myProfileParameters = NCollection_Array1<double>(theProfileParameters);
-  myGuideParameters   = NCollection_Array1<double>(theGuideParameters);
+  myProfiles           = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theProfiles);
+  myGuides             = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(theGuides);
+  myProfileParameters  = NCollection_Array1<double>(theProfileParameters);
+  myGuideParameters    = NCollection_Array1<double>(theGuideParameters);
   myIntersectionPoints = NCollection_Array2<gp_Pnt>(theIntersectionPoints);
-  myTolerance         = theTolerance;
-  myIsUClosed         = theIsUClosed;
-  myIsVClosed         = theIsVClosed;
-  myStatus            = ResultStatus::NotStarted;
+  myTolerance          = theTolerance;
+  myIsUClosed          = theIsUClosed;
+  myIsVClosed          = theIsVClosed;
+  myStatus             = ResultStatus::NotStarted;
   mySurface.Nullify();
 }
 

@@ -292,11 +292,11 @@ double snappedParameter(const occ::handle<Geom_BSplineCurve>& theCurve,
 //! Normalizes intersections after ordering and returns detected closed directions.
 bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
                            const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
-                           NCollection_Array2<double>&                               theProfileParams,
-                           NCollection_Array2<double>&                               theGuideParams,
-                           const double                                              theTolerance,
-                           bool&                                                     theIsUClosed,
-                           bool&                                                     theIsVClosed)
+                           NCollection_Array2<double>& theProfileParams,
+                           NCollection_Array2<double>& theGuideParams,
+                           const double                theTolerance,
+                           bool&                       theIsUClosed,
+                           bool&                       theIsVClosed)
 {
   const double aTol = std::max(theTolerance, Precision::Confusion());
 
@@ -337,8 +337,9 @@ bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurv
       if (aGuideIdx == 0 || aGuideIdx == aLastGuide)
       {
         aUGap = std::max(aUGap,
-                         aProfilePoint.Distance(theProfiles.At(aProfileIdx)->Value(
-                           theProfileParams.At(aProfileIdx, aLastGuide - aGuideIdx))));
+                         aProfilePoint.Distance(
+                           theProfiles.At(aProfileIdx)
+                             ->Value(theProfileParams.At(aProfileIdx, aLastGuide - aGuideIdx))));
       }
       if (aProfileIdx == 0 || aProfileIdx == aLastProfile)
       {
@@ -355,8 +356,7 @@ bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurv
   {
     for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
     {
-      theProfileParams.ChangeAt(aProfileIdx, 0) =
-        theProfiles.At(aProfileIdx)->FirstParameter();
+      theProfileParams.ChangeAt(aProfileIdx, 0) = theProfiles.At(aProfileIdx)->FirstParameter();
       theProfileParams.ChangeAt(aProfileIdx, aLastGuide) =
         theProfiles.At(aProfileIdx)->LastParameter();
     }
@@ -365,10 +365,8 @@ bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurv
   {
     for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
     {
-      theGuideParams.ChangeAt(0, aGuideIdx) =
-        theGuides.At(aGuideIdx)->FirstParameter();
-      theGuideParams.ChangeAt(aLastProfile, aGuideIdx) =
-        theGuides.At(aGuideIdx)->LastParameter();
+      theGuideParams.ChangeAt(0, aGuideIdx)            = theGuides.At(aGuideIdx)->FirstParameter();
+      theGuideParams.ChangeAt(aLastProfile, aGuideIdx) = theGuides.At(aGuideIdx)->LastParameter();
     }
   }
   return true;
@@ -465,13 +463,13 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
                                                                theProfiles.Upper());
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(theGuides.Lower(), theGuides.Upper());
   NCollection_Array2<double>                         aProfileParams(theProfileParams.LowerRow(),
-                                                                    theProfileParams.UpperRow(),
-                                                                    theProfileParams.LowerCol(),
-                                                                    theProfileParams.UpperCol());
+                                            theProfileParams.UpperRow(),
+                                            theProfileParams.LowerCol(),
+                                            theProfileParams.UpperCol());
   NCollection_Array2<double>                         aGuideParams(theGuideParams.LowerRow(),
-                                                                  theGuideParams.UpperRow(),
-                                                                  theGuideParams.LowerCol(),
-                                                                  theGuideParams.UpperCol());
+                                          theGuideParams.UpperRow(),
+                                          theGuideParams.LowerCol(),
+                                          theGuideParams.UpperCol());
   math_Matrix                                        aProfileParamResult = toMatrix(aProfileParams);
   math_Matrix                                        aGuideParamResult   = toMatrix(aGuideParams);
 
@@ -479,10 +477,10 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
   for (size_t aProfileIdx = 0; aProfileIdx < aProfileOrder.Size(); ++aProfileIdx)
   {
     const size_t aSrcProfileIdx = aProfileOrder.Value(aProfileIdx).Index;
-    const bool   isForward = aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
-                                                 static_cast<int>(aGuideOrder.First().Index) + 1)
-                             <= aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
-                                                    static_cast<int>(aGuideOrder.Last().Index) + 1);
+    const bool   isForward      = aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
+                                               static_cast<int>(aGuideOrder.First().Index) + 1)
+                           <= aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
+                                                  static_cast<int>(aGuideOrder.Last().Index) + 1);
     aProfiles.ChangeAt(aProfileIdx) = orientedCurve(theProfiles.At(aSrcProfileIdx), isForward);
     aProfileForward.Append(isForward);
   }
@@ -491,10 +489,10 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
   for (size_t aGuideIdx = 0; aGuideIdx < aGuideOrder.Size(); ++aGuideIdx)
   {
     const size_t aSrcGuideIdx = aGuideOrder.Value(aGuideIdx).Index;
-    const bool   isForward = aGuideParamMatrix(static_cast<int>(aProfileOrder.First().Index) + 1,
-                                               static_cast<int>(aSrcGuideIdx) + 1)
-                             <= aGuideParamMatrix(static_cast<int>(aProfileOrder.Last().Index) + 1,
-                                                  static_cast<int>(aSrcGuideIdx) + 1);
+    const bool   isForward    = aGuideParamMatrix(static_cast<int>(aProfileOrder.First().Index) + 1,
+                                             static_cast<int>(aSrcGuideIdx) + 1)
+                           <= aGuideParamMatrix(static_cast<int>(aProfileOrder.Last().Index) + 1,
+                                                static_cast<int>(aSrcGuideIdx) + 1);
     aGuides.ChangeAt(aGuideIdx) = orientedCurve(theGuides.At(aSrcGuideIdx), isForward);
     aGuideForward.Append(isForward);
   }
@@ -629,10 +627,10 @@ NCollection_LinearVector<double> samplingParameters(const math_Vector& theTarget
   compactParameters(aSamples);
 
   // The rebuilt curve is parameter-driven; extra samples are deterministic.
-  addIntervalMidpoints(aSamples,
-                       std::max(static_cast<size_t>(interpolationDegree() + 1),
-                                std::max(theNbSourcePoles * 2,
-                                         static_cast<size_t>(theTargets.Length()) + 2)));
+  addIntervalMidpoints(
+    aSamples,
+    std::max(static_cast<size_t>(interpolationDegree() + 1),
+             std::max(theNbSourcePoles * 2, static_cast<size_t>(theTargets.Length()) + 2)));
   return aSamples;
 }
 
