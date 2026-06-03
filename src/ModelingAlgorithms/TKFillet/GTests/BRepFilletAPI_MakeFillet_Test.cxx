@@ -61,6 +61,126 @@
 
 #include <gtest/gtest.h>
 
+// Regression for fillets that must remove an intervening face or meet on opposite
+// edges of a prism. Related reports:
+// - https://github.com/Open-Cascade-SAS/OCCT/issues/1177
+// - https://github.com/FreeCAD/FreeCAD/issues/5561 (OCC tracker #25478)
+// DRAW repro (OCCT #1177): box 10 10 10 / blend result box 10 box_10
+
+// Single edge: radius equals the full span on adjacent faces (9.999 works, 10 fails).
+TEST(BRepFilletAPI_MakeFilletTest, Issue1177_FilletToOpposingEdge_SucceedsWithoutCrash)
+{
+  const double aSize = 10.0;
+
+  BRepPrimAPI_MakeBox aBoxMaker(aSize, aSize, aSize);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(aSize, anEdge);
+
+  ASSERT_NO_THROW(aFillet.Build()) << "Fillet build must not crash";
+
+  EXPECT_TRUE(aFillet.IsDone()) << "Fillet radius equal to box size should succeed (issue #1177)";
+
+  if (!aFillet.IsDone())
+  {
+    return;
+  }
+
+  const TopoDS_Shape& aResult = aFillet.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aResult);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+// Two parallel edges on the same face: each fillet radius is half the span so they
+// should meet and remove the strip between them (FreeCAD #5561: two 10 mm fillets
+// on a 20 mm thick body; OCCT #1177 DRAW: blend result box 5 box_10 5 box_9).
+TEST(BRepFilletAPI_MakeFilletTest, Issue1177_OpposingFilletsMeet_SucceedsWithoutCrash)
+{
+  const double aSize   = 10.0;
+  const double aRadius = 0.5 * aSize;
+
+  BRepPrimAPI_MakeBox aBoxMaker(aSize, aSize, aSize);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  // Collect all edges of the first face of the box; edges 1 and 3 (in wire order)
+  // are the two opposing parallel edges that bound the face on opposite sides.
+  TopExp_Explorer aFaceExp(aBox, TopAbs_FACE);
+  ASSERT_TRUE(aFaceExp.More());
+  const TopoDS_Face aFace = TopoDS::Face(aFaceExp.Current());
+
+  NCollection_Sequence<TopoDS_Edge> aFaceEdges;
+  for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+  {
+    aFaceEdges.Append(TopoDS::Edge(anEdgeExp.Current()));
+  }
+  ASSERT_GE(aFaceEdges.Length(), 4) << "Box face must have at least 4 edges";
+
+  const TopoDS_Edge anEdgeLow  = aFaceEdges.Value(1);
+  const TopoDS_Edge anEdgeHigh = aFaceEdges.Value(3);
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(aRadius, anEdgeLow);
+  aFillet.Add(aRadius, anEdgeHigh);
+
+  ASSERT_NO_THROW(aFillet.Build()) << "Fillet build must not crash";
+
+  EXPECT_TRUE(aFillet.IsDone())
+    << "Opposing fillets that should meet must succeed (issues #1177, FreeCAD #5561)";
+
+  if (!aFillet.IsDone())
+  {
+    return;
+  }
+
+  const TopoDS_Shape& aResult = aFillet.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aResult);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+// Fillet every edge of a flat 50x50x10 slab with radius 5. The top and bottom
+// fillets of each 50x10 side face (5 + 5) exactly consume the 10 mm height, so
+// the intervening side faces must be removed and the opposing fillets must meet
+// cleanly, leaving no degenerate mid edges (issue #1177).
+TEST(BRepFilletAPI_MakeFilletTest, Issue1177_FilletAllEdgesFlatBox_SucceedsWithoutCrash)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(50.0, 50.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    aFillet.Add(5.0, TopoDS::Edge(anExp.Current()));
+  }
+
+  ASSERT_NO_THROW(aFillet.Build()) << "Fillet build must not crash";
+
+  EXPECT_TRUE(aFillet.IsDone())
+    << "Filleting all edges of a 50x50x10 slab with r=5 should succeed (issue #1177)";
+
+  if (!aFillet.IsDone())
+  {
+    return;
+  }
+
+  const TopoDS_Shape& aResult = aFillet.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aResult);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
 TEST(BRepFilletAPI_MakeFilletTest, FilletOneEdge)
 {
   BRepPrimAPI_MakeBox aBoxMaker(20.0, 20.0, 20.0);
