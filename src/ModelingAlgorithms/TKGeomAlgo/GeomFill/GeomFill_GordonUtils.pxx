@@ -298,9 +298,9 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   const int aNbBreaks         = aNbInteriorParams;
 
   // Determine sample count from interpolation constraints.
-  const int aMaxCp         = theCurve->NbPoles();
-  const int aReparamDegree = reparametrizationDegree();
-  const int aDegreeSpan    = aReparamDegree + 1;
+  const int    aMaxCp         = theCurve->NbPoles();
+  const int    aReparamDegree = reparametrizationDegree();
+  const int    aDegreeSpan    = aReparamDegree + 1;
   const size_t aNbSamples =
     static_cast<size_t>(std::max({aMaxCp * aDegreeSpan,
                                   aDegreeSpan * aDegreeSpan * std::max(1, aReparamDegree - 1),

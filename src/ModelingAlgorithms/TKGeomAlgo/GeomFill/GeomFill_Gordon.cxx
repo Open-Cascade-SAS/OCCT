@@ -54,11 +54,11 @@ void GeomFill_Gordon::Perform()
   }
 
   if (!GordonUtils::locateIntersections(myProfiles,
-                           myGuides,
-                           myProfileParams,
-                           myGuideParams,
-                           myTolerance,
-                           myToUseParallel))
+                                        myGuides,
+                                        myProfileParams,
+                                        myGuideParams,
+                                        myTolerance,
+                                        myToUseParallel))
   {
     return;
   }
@@ -68,15 +68,19 @@ void GeomFill_Gordon::Perform()
     return;
   }
 
-  GordonUtils::snapBoundaryParameters(myProfiles, myGuides, myProfileParams, myGuideParams, myTolerance);
+  GordonUtils::snapBoundaryParameters(myProfiles,
+                                      myGuides,
+                                      myProfileParams,
+                                      myGuideParams,
+                                      myTolerance);
 
   GordonUtils::markClosedSeams(myProfiles,
-                  myGuides,
-                  myProfileParams,
-                  myGuideParams,
-                  myTolerance,
-                  myIsUClosed,
-                  myIsVClosed);
+                               myGuides,
+                               myProfileParams,
+                               myGuideParams,
+                               myTolerance,
+                               myIsUClosed,
+                               myIsVClosed);
 
   if (myIsUClosed)
   {
@@ -99,19 +103,19 @@ void GeomFill_Gordon::Perform()
   }
 
   if (!GordonUtils::redistributeNetworkParameters(myProfiles,
-                                     myGuides,
-                                     myProfileParams,
-                                     myGuideParams,
-                                     myTolerance))
+                                                  myGuides,
+                                                  myProfileParams,
+                                                  myGuideParams,
+                                                  myTolerance))
   {
     return;
   }
 
   if (!GordonUtils::isIntersectionGridConsistent(myProfiles,
-                                    myGuides,
-                                    myProfileParams,
-                                    myGuideParams,
-                                    myTolerance))
+                                                 myGuides,
+                                                 myProfileParams,
+                                                 myGuideParams,
+                                                 myTolerance))
   {
     return;
   }

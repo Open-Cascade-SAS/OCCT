@@ -1142,7 +1142,8 @@ TEST(GeomFill_Gordon, NetworkSurface_UClosedNetwork_ProducesUPeriodicSurface)
   aGuideParams(3) = 1.0;
 
   GeomFill_NetworkSurface aNetwork;
-  aNetwork.Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion(), true, false);
+  aNetwork
+    .Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion(), true, false);
   aNetwork.Perform();
 
   ASSERT_TRUE(aNetwork.IsDone());
@@ -1175,7 +1176,8 @@ TEST(GeomFill_Gordon, NetworkSurface_VClosedNetwork_ProducesVPeriodicSurface)
   aGuideParams(3) = 1.0;
 
   GeomFill_NetworkSurface aNetwork;
-  aNetwork.Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion(), false, true);
+  aNetwork
+    .Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion(), false, true);
   aNetwork.Perform();
 
   ASSERT_TRUE(aNetwork.IsDone());

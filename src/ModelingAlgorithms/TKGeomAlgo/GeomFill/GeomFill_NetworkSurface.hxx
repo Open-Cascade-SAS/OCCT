@@ -59,14 +59,13 @@ public:
   //! @param[in] theTolerance         geometric tolerance for closed-seam checks
   //! @param[in] theIsUClosed         indicates that first/last guide curves close the U seam
   //! @param[in] theIsVClosed         indicates that first/last profile curves close the V seam
-  Standard_EXPORT void Init(
-    const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
-    const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
-    const NCollection_Array1<double>&                         theProfileParameters,
-    const NCollection_Array1<double>&                         theGuideParameters,
-    double                                                    theTolerance,
-    bool                                                      theIsUClosed,
-    bool                                                      theIsVClosed);
+  Standard_EXPORT void Init(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                            const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                            const NCollection_Array1<double>& theProfileParameters,
+                            const NCollection_Array1<double>& theGuideParameters,
+                            double                            theTolerance,
+                            bool                              theIsUClosed,
+                            bool                              theIsVClosed);
 
   //! Performs the pole-based Gordon surface construction.
   Standard_EXPORT void Perform();

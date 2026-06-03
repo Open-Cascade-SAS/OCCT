@@ -129,7 +129,12 @@ bool interpolatePoles(const int                         theDegree,
   aContactOrders.Init(0);
 
   int anInversionProblem = 0;
-  BSplCLib::Interpolate(theDegree, theFlatKnots, theParameters, aContactOrders, thePoles, anInversionProblem);
+  BSplCLib::Interpolate(theDegree,
+                        theFlatKnots,
+                        theParameters,
+                        aContactOrders,
+                        thePoles,
+                        anInversionProblem);
   return anInversionProblem == 0;
 }
 
@@ -232,12 +237,16 @@ occ::handle<Geom_BSplineSurface> makeTensorSurface(
   const NCollection_Array1<int>&                            theVMults,
   const NCollection_Array1<double>&                         theVFlatKnots)
 {
-  NCollection_Array2<gp_Pnt> aPoles(1, theGuideParameters.Length(), 1, theProfileParameters.Length());
+  NCollection_Array2<gp_Pnt> aPoles(1,
+                                    theGuideParameters.Length(),
+                                    1,
+                                    theProfileParameters.Length());
   for (int aGuideIdx = 1; aGuideIdx <= theGuideParameters.Length(); ++aGuideIdx)
   {
     for (int aProfileIdx = 1; aProfileIdx <= theProfileParameters.Length(); ++aProfileIdx)
     {
-      aPoles(aGuideIdx, aProfileIdx) = theProfiles(aProfileIdx)->Value(theGuideParameters(aGuideIdx));
+      aPoles(aGuideIdx, aProfileIdx) =
+        theProfiles(aProfileIdx)->Value(theGuideParameters(aGuideIdx));
     }
   }
 
@@ -255,16 +264,22 @@ occ::handle<Geom_BSplineSurface> makeTensorSurface(
     return nullptr;
   }
 
-  return new Geom_BSplineSurface(aPoles, theUKnots, theVKnots, theUMults, theVMults, theUDegree, theVDegree);
+  return new Geom_BSplineSurface(aPoles,
+                                 theUKnots,
+                                 theVKnots,
+                                 theUMults,
+                                 theVMults,
+                                 theUDegree,
+                                 theVDegree);
 }
 
-void mergeKnots(const int                                      theDegree,
-                const NCollection_Array1<double>&              theKnots1,
-                const NCollection_Array1<int>&                 theMults1,
-                const NCollection_Array1<double>&              theKnots2,
-                const NCollection_Array1<int>&                 theMults2,
-                occ::handle<NCollection_HArray1<double>>&      theMergedKnots,
-                occ::handle<NCollection_HArray1<int>>&         theMergedMults)
+void mergeKnots(const int                                 theDegree,
+                const NCollection_Array1<double>&         theKnots1,
+                const NCollection_Array1<int>&            theMults1,
+                const NCollection_Array1<double>&         theKnots2,
+                const NCollection_Array1<int>&            theMults2,
+                occ::handle<NCollection_HArray1<double>>& theMergedKnots,
+                occ::handle<NCollection_HArray1<int>>&    theMergedMults)
 {
   double aStart = 0.0;
   double anEnd  = 0.0;
@@ -292,8 +307,10 @@ bool alignSurfaces(occ::handle<Geom_BSplineSurface>& theProfileSurface,
                    occ::handle<Geom_BSplineSurface>& theGuideSurface,
                    occ::handle<Geom_BSplineSurface>& theTensorSurface)
 {
-  const int aUDegree = std::max({theProfileSurface->UDegree(), theGuideSurface->UDegree(), theTensorSurface->UDegree()});
-  const int aVDegree = std::max({theProfileSurface->VDegree(), theGuideSurface->VDegree(), theTensorSurface->VDegree()});
+  const int aUDegree = std::max(
+    {theProfileSurface->UDegree(), theGuideSurface->UDegree(), theTensorSurface->UDegree()});
+  const int aVDegree = std::max(
+    {theProfileSurface->VDegree(), theGuideSurface->VDegree(), theTensorSurface->VDegree()});
 
   theProfileSurface->IncreaseDegree(aUDegree, aVDegree);
   theGuideSurface->IncreaseDegree(aUDegree, aVDegree);
@@ -355,13 +372,31 @@ bool alignSurfaces(occ::handle<Geom_BSplineSurface>& theProfileSurface,
     return false;
   }
 
-  theProfileSurface->InsertUKnots(aUKnots->Array1(), aUMults->Array1(), Precision::PConfusion(), false);
-  theGuideSurface->InsertUKnots(aUKnots->Array1(), aUMults->Array1(), Precision::PConfusion(), false);
-  theTensorSurface->InsertUKnots(aUKnots->Array1(), aUMults->Array1(), Precision::PConfusion(), false);
+  theProfileSurface->InsertUKnots(aUKnots->Array1(),
+                                  aUMults->Array1(),
+                                  Precision::PConfusion(),
+                                  false);
+  theGuideSurface->InsertUKnots(aUKnots->Array1(),
+                                aUMults->Array1(),
+                                Precision::PConfusion(),
+                                false);
+  theTensorSurface->InsertUKnots(aUKnots->Array1(),
+                                 aUMults->Array1(),
+                                 Precision::PConfusion(),
+                                 false);
 
-  theProfileSurface->InsertVKnots(aVKnots->Array1(), aVMults->Array1(), Precision::PConfusion(), false);
-  theGuideSurface->InsertVKnots(aVKnots->Array1(), aVMults->Array1(), Precision::PConfusion(), false);
-  theTensorSurface->InsertVKnots(aVKnots->Array1(), aVMults->Array1(), Precision::PConfusion(), false);
+  theProfileSurface->InsertVKnots(aVKnots->Array1(),
+                                  aVMults->Array1(),
+                                  Precision::PConfusion(),
+                                  false);
+  theGuideSurface->InsertVKnots(aVKnots->Array1(),
+                                aVMults->Array1(),
+                                Precision::PConfusion(),
+                                false);
+  theTensorSurface->InsertVKnots(aVKnots->Array1(),
+                                 aVMults->Array1(),
+                                 Precision::PConfusion(),
+                                 false);
   return true;
 }
 
