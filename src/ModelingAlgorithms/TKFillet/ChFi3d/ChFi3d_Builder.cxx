@@ -217,7 +217,7 @@ static TopoDS_Shape ChFi3d_RemoveConsumedFaces(const TopoDS_Shape& theShape)
     BRepCheck_Analyzer anAnalyzer(theShape);
     for (TopExp_Explorer anExpF(theShape, TopAbs_FACE); anExpF.More(); anExpF.Next())
     {
-      const TopoDS_Face& aFace = TopoDS::Face(anExpF.Current());
+      const TopoDS_Face& aFace     = TopoDS::Face(anExpF.Current());
       bool               aConsumed = ChFi3d_IsConsumedFace(aFace);
       if (!aConsumed && ChFi3d_IsPlanar(aFace) && !anAnalyzer.IsValid(aFace))
       {

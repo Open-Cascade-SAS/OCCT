@@ -774,7 +774,7 @@ bool ChFi3d_Builder::SplitKPart(const occ::handle<ChFiDS_SurfData>&             
   // interior domain. Retaining points and segments lets such a fully spanning
   // segment be turned into a valid domain instead of being discarded (which
   // previously left NbDomains() == 0 and aborted the stripe).
-  Geom2dHatch_Hatcher     H1(Inter, tol2d, tolapp3d, true, true),
+  Geom2dHatch_Hatcher H1(Inter, tol2d, tolapp3d, true, true),
     H2(Inter, tol2d, tolapp3d, true, true);
   int                       ie;
   occ::handle<Geom2d_Curve> C1 = Data->InterferenceOnS1().PCurveOnFace();
