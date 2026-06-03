@@ -17,6 +17,21 @@
 namespace GordonUtilities
 {
 
+//! Result of resolving one profile/guide contact.
+struct Contact
+{
+  bool   IsValid      = false;
+  double ProfileParam = 0.0;
+  double GuideParam   = 0.0;
+  double Gap          = RealLast();
+};
+
+//! Stores all admissible contacts for one profile/guide pair.
+struct ContactSet
+{
+  NCollection_LinearVector<Contact> Candidates;
+};
+
 namespace
 {
 
@@ -166,21 +181,6 @@ bool makeUnitCurves(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurve
   }
   return true;
 }
-
-//! Result of resolving one profile/guide contact.
-struct Contact
-{
-  bool   IsValid      = false;
-  double ProfileParam = 0.0;
-  double GuideParam   = 0.0;
-  double Gap          = RealLast();
-};
-
-//! Stores all admissible contacts for one profile/guide pair.
-struct ContactSet
-{
-  NCollection_LinearVector<Contact> Candidates;
-};
 
 //! Index and rank pair for ordering curves.
 struct OrderedCurve
