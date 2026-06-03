@@ -177,6 +177,27 @@ occ::handle<Geom_BSplineCurve> makePeriodicProfile(const double theY)
   return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
 }
 
+occ::handle<Geom_BSplineCurve> makePeriodicGuide(const double theX)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 5);
+  aPoles(1) = gp_Pnt(theX, 1.0, 0.0);
+  aPoles(2) = gp_Pnt(theX, 0.309, 0.951);
+  aPoles(3) = gp_Pnt(theX, -0.809, 0.588);
+  aPoles(4) = gp_Pnt(theX, -0.809, -0.588);
+  aPoles(5) = gp_Pnt(theX, 0.309, -0.951);
+
+  NCollection_Array1<double> aKnots(1, 6);
+  for (int aKnotIdx = 1; aKnotIdx <= 6; ++aKnotIdx)
+  {
+    aKnots(aKnotIdx) = 0.2 * static_cast<double>(aKnotIdx - 1);
+  }
+
+  NCollection_Array1<int> aMults(1, 6);
+  aMults.Init(1);
+
+  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
+}
+
 //! Helper: create a cubic BSpline through 4 interpolation points on [0,1].
 occ::handle<Geom_BSplineCurve> makeCubicInterpBSpline(const gp_Pnt& theP1,
                                                       const gp_Pnt& theP2,
@@ -218,6 +239,28 @@ occ::handle<Geom_BSplineCurve> makeSineBSpline(double theXStart,
     double aZ = theAmplitude * std::sin(M_PI * aT);
     aPnts->SetValue(i, gp_Pnt(aX, theY, aZ));
     aParams->SetValue(i, aT);
+  }
+
+  GeomAPI_Interpolate anInterp(aPnts, aParams, false, Precision::Confusion());
+  anInterp.Perform();
+  return anInterp.Curve();
+}
+
+occ::handle<Geom_BSplineCurve> makeMeanderingProfile(const double theY)
+{
+  occ::handle<NCollection_HArray1<gp_Pnt>> aPnts = new NCollection_HArray1<gp_Pnt>(1, 7);
+  aPnts->SetValue(1, gp_Pnt(0.0, theY, 0.0));
+  aPnts->SetValue(2, gp_Pnt(0.62, theY + 0.04, 0.01));
+  aPnts->SetValue(3, gp_Pnt(0.38, theY - 0.04, -0.01));
+  aPnts->SetValue(4, gp_Pnt(0.5, theY, 0.0));
+  aPnts->SetValue(5, gp_Pnt(0.64, theY + 0.03, 0.01));
+  aPnts->SetValue(6, gp_Pnt(0.44, theY - 0.02, -0.01));
+  aPnts->SetValue(7, gp_Pnt(1.0, theY, 0.0));
+
+  occ::handle<NCollection_HArray1<double>> aParams = new NCollection_HArray1<double>(1, 7);
+  for (int aParamIdx = 1; aParamIdx <= 7; ++aParamIdx)
+  {
+    aParams->SetValue(aParamIdx, static_cast<double>(aParamIdx - 1) / 6.0);
   }
 
   GeomAPI_Interpolate anInterp(aPnts, aParams, false, Precision::Confusion());
@@ -413,6 +456,52 @@ TEST(GeomFill_Gordon, PeriodicBSplineProfiles_AreExpandedBeforeConstruction)
   ASSERT_TRUE(aGordon.IsDone());
   ASSERT_FALSE(aGordon.Surface().IsNull());
   EXPECT_TRUE(aGordon.Surface()->IsUPeriodic());
+}
+
+TEST(GeomFill_Gordon, PeriodicBSplineGuides_AreExpandedBeforeConstruction)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makePeriodicGuide(0.0);
+  aGuides(2) = makePeriodicGuide(0.5);
+  aGuides(3) = makePeriodicGuide(1.0);
+  ASSERT_TRUE(occ::down_cast<Geom_BSplineCurve>(aGuides(1))->IsPeriodic());
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makeLinearBSpline(aGuides(1)->Value(0.0), aGuides(3)->Value(0.0));
+  aProfiles(2) = makeLinearBSpline(aGuides(1)->Value(0.5), aGuides(3)->Value(0.5));
+  aProfiles(3) = makeLinearBSpline(aGuides(1)->Value(1.0), aGuides(3)->Value(1.0));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone());
+  ASSERT_FALSE(aGordon.Surface().IsNull());
+  EXPECT_TRUE(aGordon.Surface()->IsVPeriodic());
+}
+
+TEST(GeomFill_Gordon, MultipleIntersections_SelectsMonotoneBranch)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makeMeanderingProfile(0.0);
+  aProfiles(2) = makeMeanderingProfile(0.5);
+  aProfiles(3) = makeMeanderingProfile(1.0);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.0, 1.0, 0.0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(0.5, 0.0, 0.0), gp_Pnt(0.5, 1.0, 0.0));
+  aGuides(3) = makeLinearBSpline(gp_Pnt(1.0, 0.0, 0.0), gp_Pnt(1.0, 1.0, 0.0));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, 1.0e-5);
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  ASSERT_FALSE(aGordon.Surface().IsNull());
+  verifyPointOnSurface(aGordon.Surface(), 0.0, 0.0, gp_Pnt(0.0, 0.0, 0.0), 1.0e-3);
+  verifyPointOnSurface(aGordon.Surface(), 1.0, 0.0, gp_Pnt(1.0, 0.0, 0.0), 1.0e-3);
+  verifyPointOnSurface(aGordon.Surface(), 0.0, 1.0, gp_Pnt(0.0, 1.0, 0.0), 1.0e-3);
+  verifyPointOnSurface(aGordon.Surface(), 1.0, 1.0, gp_Pnt(1.0, 1.0, 0.0), 1.0e-3);
 }
 
 TEST(GeomFill_Gordon, FourByThreeGrid_NonUniformParams)

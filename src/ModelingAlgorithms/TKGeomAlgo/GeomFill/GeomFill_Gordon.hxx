@@ -49,7 +49,8 @@
 //! @endcode
 //!
 //! Limitations:
-//! - Every profile must intersect every guide in one well-defined point.
+//! - Every profile must intersect every guide. Multiple contacts are accepted
+//!   only when they contain a single monotone branch over the ordered network.
 //! - Rational networks are combined by exact common-denominator multiplication.
 //!   Construction can fail if the resulting product degree exceeds OCCT's
 //!   B-spline degree limit.
