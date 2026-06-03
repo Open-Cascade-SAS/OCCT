@@ -361,9 +361,9 @@ void detectClosure(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& the
   const size_t aLastProfile = theProfiles.Size() - 1;
   const size_t aLastGuide   = theGuides.Size() - 1;
   theIsUClosed              = endGap(theGuides.At(0), theGuides.At(aLastGuide)) <= aTol
-                              && columnGap(theProfiles, theProfileParams, 0, aLastGuide) <= aTol;
-  theIsVClosed              = endGap(theProfiles.At(0), theProfiles.At(aLastProfile)) <= aTol
-                              && rowGap(theGuides, theGuideParams, 0, aLastProfile) <= aTol;
+                 && columnGap(theProfiles, theProfileParams, 0, aLastGuide) <= aTol;
+  theIsVClosed = endGap(theProfiles.At(0), theProfiles.At(aLastProfile)) <= aTol
+                 && rowGap(theGuides, theGuideParams, 0, aLastProfile) <= aTol;
 }
 
 //! Checks that the stored parameter grid evaluates to coincident 3D points.
@@ -482,13 +482,13 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
                                                                theProfiles.Upper());
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(theGuides.Lower(), theGuides.Upper());
   NCollection_Array2<double>                         aProfileParams(theProfileParams.LowerRow(),
-                                                                    theProfileParams.UpperRow(),
-                                                                    theProfileParams.LowerCol(),
-                                                                    theProfileParams.UpperCol());
+                                            theProfileParams.UpperRow(),
+                                            theProfileParams.LowerCol(),
+                                            theProfileParams.UpperCol());
   NCollection_Array2<double>                         aGuideParams(theGuideParams.LowerRow(),
-                                                                  theGuideParams.UpperRow(),
-                                                                  theGuideParams.LowerCol(),
-                                                                  theGuideParams.UpperCol());
+                                          theGuideParams.UpperRow(),
+                                          theGuideParams.LowerCol(),
+                                          theGuideParams.UpperCol());
   math_Matrix                                        aProfileParamResult = toMatrix(aProfileParams);
   math_Matrix                                        aGuideParamResult   = toMatrix(aGuideParams);
 
@@ -496,10 +496,10 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
   for (size_t aProfileIdx = 0; aProfileIdx < aProfileOrder.Size(); ++aProfileIdx)
   {
     const size_t aSrcProfileIdx = aProfileOrder.Value(aProfileIdx).Index;
-    const bool   isForward = aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
-                                                 static_cast<int>(aGuideOrder.First().Index) + 1)
-                             <= aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
-                                                    static_cast<int>(aGuideOrder.Last().Index) + 1);
+    const bool   isForward      = aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
+                                               static_cast<int>(aGuideOrder.First().Index) + 1)
+                           <= aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
+                                                  static_cast<int>(aGuideOrder.Last().Index) + 1);
     aProfiles.ChangeAt(aProfileIdx) = orientedCurve(theProfiles.At(aSrcProfileIdx), isForward);
     aProfileForward.Append(isForward);
   }
@@ -508,10 +508,10 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
   for (size_t aGuideIdx = 0; aGuideIdx < aGuideOrder.Size(); ++aGuideIdx)
   {
     const size_t aSrcGuideIdx = aGuideOrder.Value(aGuideIdx).Index;
-    const bool   isForward = aGuideParamMatrix(static_cast<int>(aProfileOrder.First().Index) + 1,
-                                               static_cast<int>(aSrcGuideIdx) + 1)
-                             <= aGuideParamMatrix(static_cast<int>(aProfileOrder.Last().Index) + 1,
-                                                  static_cast<int>(aSrcGuideIdx) + 1);
+    const bool   isForward    = aGuideParamMatrix(static_cast<int>(aProfileOrder.First().Index) + 1,
+                                             static_cast<int>(aSrcGuideIdx) + 1)
+                           <= aGuideParamMatrix(static_cast<int>(aProfileOrder.Last().Index) + 1,
+                                                static_cast<int>(aSrcGuideIdx) + 1);
     aGuides.ChangeAt(aGuideIdx) = orientedCurve(theGuides.At(aSrcGuideIdx), isForward);
     aGuideForward.Append(isForward);
   }
