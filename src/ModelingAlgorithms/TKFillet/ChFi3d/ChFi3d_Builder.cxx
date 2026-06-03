@@ -32,10 +32,7 @@
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <ShapeFix.hxx>
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepGProp.hxx>
-#include <GProp_GProps.hxx>
+#include <ShapeAnalysis_CheckSmallFace.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_MakeSolid.hxx>
 #include <BRepCheck_Analyzer.hxx>
@@ -159,22 +156,13 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
 
 static bool ChFi3d_IsConsumedFace(const TopoDS_Face& theFace)
 {
-  Bnd_Box aBox;
-  BRepBndLib::Add(theFace, aBox);
-  if (aBox.IsVoid())
-  {
-    return false;
-  }
-  const double aDiag = std::sqrt(aBox.SquareExtent());
-  if (aDiag <= Precision::Confusion())
-  {
-    return false;
-  }
-  GProp_GProps aProps;
-  BRepGProp::SurfaceProperties(theFace, aProps);
-  // A genuine face has an area comparable to the square of its size, whereas a
-  // consumed face collapses to a band whose area is at most (size * tolerance).
-  return aProps.Mass() < aDiag * Precision::Confusion();
+  ShapeAnalysis_CheckSmallFace aChecker;
+  TopoDS_Edge                  aE1, aE2;
+  const double                 aTol = Precision::Confusion();
+  // Re-use the same strip/spot detection as ShapeFix_FixSmallFace: a consumed
+  // face is a zero-width band bounded by two edges confused along their length.
+  return aChecker.CheckStripFace(theFace, aE1, aE2, aTol)
+         || aChecker.CheckSpotFace(theFace, aTol);
 }
 
 //=======================================================================
