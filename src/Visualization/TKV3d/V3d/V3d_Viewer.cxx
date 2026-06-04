@@ -798,8 +798,7 @@ void V3d_Viewer::ShowGridEcho(const occ::handle<V3d_View>& theView,
   }
 
   if (!theView->IsShaderGridActive() && theVertex.X() == myGridEchoLastVert.X()
-      && theVertex.Y() == myGridEchoLastVert.Y()
-      && theVertex.Z() == myGridEchoLastVert.Z())
+      && theVertex.Y() == myGridEchoLastVert.Y() && theVertex.Z() == myGridEchoLastVert.Z())
   {
     return;
   }

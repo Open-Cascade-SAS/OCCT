@@ -2264,12 +2264,12 @@ void AIS_ViewController::handleCameraActions(const occ::handle<AIS_InteractiveCo
                                              const occ::handle<V3d_View>&               theView,
                                              const AIS_WalkDelta&                       theWalk)
 {
-  const bool hasGridEcho = theView->IsGridActive() && theView->Viewer()->GridEcho();
-  const bool hasShaderGridEcho = hasGridEcho && theView->IsShaderGridActive();
+  const bool            hasGridEcho = theView->IsGridActive() && theView->Viewer()->GridEcho();
+  const bool            hasShaderGridEcho = hasGridEcho && theView->IsShaderGridActive();
   NCollection_Vec2<int> aMoveToAfterCamera =
     HasPreviousMoveTo() ? PreviousMoveTo() : LastMousePosition();
-  bool toUpdateMoveToAfterCamera = hasShaderGridEcho && !theWalk.IsEmpty();
-  bool toHideGridEchoAfterCamera = false;
+  bool       toUpdateMoveToAfterCamera = hasShaderGridEcho && !theWalk.IsEmpty();
+  bool       toHideGridEchoAfterCamera = false;
   const bool isMouseRotation =
     (myGL.OrbitRotation.ToRotate || myGL.ViewRotation.ToRotate || myGL.ZRotate.ToRotate)
     && myToAllowRotation;

@@ -5045,7 +5045,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   double                   aNewArcStart = 0.0, aNewArcEnd = 0.0;
   Quantity_Color           aNewColor, aNewTenthColor;
   bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasRadius = false,
-       hasZOffset = false;
+       hasZOffset   = false;
   bool isShaderGrid = false, hasGridOff = false, hasScale = false, hasArc = false;
   bool hasGridType = false, hasGridMode = false;
   bool hasColor = false, hasTenthColor = false;
@@ -5185,7 +5185,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-scale")
     {
-      hasScale      = true;
+      hasScale         = true;
       hasShaderOnlyOpt = true;
       aGridParams.SetScale(Draw::Atof(theArgVec[++anArgIter]));
     }
@@ -5196,20 +5196,20 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-background")
     {
-      hasShaderOnlyOpt  = true;
-      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      hasShaderOnlyOpt = true;
+      const int aVal   = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsBackground(aVal != 0);
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-drawaxis")
     {
-      hasShaderOnlyOpt  = true;
-      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      hasShaderOnlyOpt = true;
+      const int aVal   = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsDrawAxis(aVal != 0);
     }
     else if (anArgIter + 1 < theArgNb && (anArg == "-viewadaptive" || anArg == "-adaptive"))
     {
-      hasShaderOnlyOpt  = true;
-      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      hasShaderOnlyOpt = true;
+      const int aVal   = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsViewAdaptive(aVal != 0);
     }
     else if (anArg == "-gpu" || anArg == "-shader")

@@ -2198,8 +2198,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("vec2 uLocalOriginShift", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(
-    Graphic3d_ShaderObject::ShaderVariable("vec2 uAccentLocalOriginShift",
-                                           Graphic3d_TOS_FRAGMENT));
+    Graphic3d_ShaderObject::ShaderVariable("vec2 uAccentLocalOriginShift", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("float uRadialOriginShift", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uAccentRadialOriginShift",
@@ -2224,14 +2223,11 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     TCollection_AsciiString()
     + EOL
     "float gridLine1d (float theCoord, float theShift, float theScale, float theThickness)" EOL
-    "{" EOL
-    "  float aCoord = (theCoord - theShift) * theScale;" EOL
-    "  float aPixelWidth = fwidth (aCoord);" EOL
-    "  if (!(aPixelWidth >= 0.0)) { return 0.0; }" EOL
+    "{" EOL "  float aCoord = (theCoord - theShift) * theScale;" EOL
+    "  float aPixelWidth = fwidth (aCoord);" EOL "  if (!(aPixelWidth >= 0.0)) { return 0.0; }" EOL
     "  float aDist  = abs (fract (aCoord + 0.5) - 0.5);" EOL
     "  float aWidth = max (aPixelWidth, theThickness);" EOL
-    "  if (aWidth == 0.0) { return 0.0; }" EOL
-    "  return 1.0 - min (aDist / aWidth, 1.0);" EOL "}"
+    "  if (aWidth == 0.0) { return 0.0; }" EOL "  return 1.0 - min (aDist / aWidth, 1.0);" EOL "}"
 
     EOL "vec4 gridLines2d (vec2 theUV, vec2 theAxisUV, vec3 theColor, vec2 theScale," EOL
     "                  vec2 theShift, bool theIsDrawAxis, float theThickness)" EOL "{" EOL
@@ -2247,11 +2243,9 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "    else if (anAxisY > 0.0)                  { aColor.xyz = vec3 (0.0, 1.0, 0.0); }" EOL
     "  }" EOL "  return aColor;" EOL "}"
 
-    EOL
-    "vec4 gridLines1d (float theCoord, float theShift, float theScale, vec3 theColor, float "
-    "theThickness)" EOL
-    "{" EOL "  return vec4 (theColor, gridLine1d (theCoord, theShift, theScale, theThickness));"
-    EOL "}"
+    EOL "vec4 gridLines1d (float theCoord, float theShift, float theScale, vec3 theColor, float "
+    "theThickness)" EOL "{" EOL
+    "  return vec4 (theColor, gridLine1d (theCoord, theShift, theScale, theThickness));" EOL "}"
 
     EOL "vec4 overlayGrid (vec4 theBase, vec4 theAccent)" EOL "{" EOL
     "  return theAccent.a >= theBase.a ? theAccent : theBase;" EOL "}"
@@ -2260,26 +2254,14 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  vec4 aView = occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);" EOL
     "  return aView.xyz / aView.w;" EOL "}"
 
-    EOL
-    "bool intersectPlaneView (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL
-    "{" EOL
+    EOL "bool intersectPlaneView (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL "{" EOL
     "  vec3 aRayOrigin = uIsPerspective != 0 ? vec3 (0.0) : theNearPoint;" EOL
-    "  vec3 aRayTarget = theFarPoint;" EOL
-    "  vec3 aDir = aRayTarget - aRayOrigin;" EOL
-    "  float aDenom = dot (uPlaneNView, aDir);" EOL
-    "  if (aDenom == 0.0)" EOL
-    "  {" EOL
-    "    theHit = theNearPoint;" EOL
-    "    return false;" EOL
-    "  }" EOL
+    "  vec3 aRayTarget = theFarPoint;" EOL "  vec3 aDir = aRayTarget - aRayOrigin;" EOL
+    "  float aDenom = dot (uPlaneNView, aDir);" EOL "  if (aDenom == 0.0)" EOL "  {" EOL
+    "    theHit = theNearPoint;" EOL "    return false;" EOL "  }" EOL
     "  float aT = dot (uPlaneNView, uPlaneOriginView - aRayOrigin) / aDenom;" EOL
-    "  if (uIsPerspective != 0 && aT < 0.0)" EOL
-    "  {" EOL
-    "    theHit = theNearPoint;" EOL
-    "    return false;" EOL
-    "  }" EOL
-    "  theHit = aRayOrigin + aT * aDir;" EOL
-    "  return true;" EOL
+    "  if (uIsPerspective != 0 && aT < 0.0)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
+    "    return false;" EOL "  }" EOL "  theHit = aRayOrigin + aT * aDir;" EOL "  return true;" EOL
     "}" EOL
 
     EOL "const float GRID_TWO_PI = 6.28318530718;"
@@ -2288,12 +2270,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     // Intersect in view space: the camera is the numerical origin, so zoom and
     // world-coordinate magnitude do not destabilize the line phase.
     EOL "  vec3 aNearPoint = unprojectView (vNdc.x, vNdc.y, uNdcNear);" EOL
-    "  vec3 aFarPoint  = unprojectView (vNdc.x, vNdc.y, 1.0);" EOL
-    "  vec3 aHit;" EOL
+    "  vec3 aFarPoint  = unprojectView (vNdc.x, vNdc.y, 1.0);" EOL "  vec3 aHit;" EOL
     "  if (!intersectPlaneView (aNearPoint, aFarPoint, aHit)) { discard; }" EOL
     "  vec3 aLocalAbs3  = aHit - uPlaneOriginView;" EOL
-    "  vec2 aLocal      = vec2 (dot (aLocalAbs3, uPlaneXView), dot (aLocalAbs3, uPlaneYView));"
-    EOL
+    "  vec2 aLocal      = vec2 (dot (aLocalAbs3, uPlaneXView), dot (aLocalAbs3, uPlaneYView));" EOL
     "  vec3 aLocalGrid3 = aHit - uPlaneRefView;" EOL
     "  vec2 aLocalGrid  = vec2 (dot (aLocalGrid3, uPlaneXView), dot (aLocalGrid3, "
     "uPlaneYView));"
@@ -2303,8 +2283,8 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  float aBoundFade = 1.0;" EOL "  if (uBounds.z > 0.0)" EOL "  {" EOL
     "    float aFwBR = fwidth (aR);" EOL "    if (aR > uBounds.z) { discard; }" EOL
     "    if (uIsBoundFade != 0)" EOL "    {" EOL
-    "      aBoundFade *= 1.0 - smoothstep (uBounds.z - aFwBR, uBounds.z, aR);" EOL
-    "    }" EOL "  }" EOL "  if (uArcBounded != 0)" EOL "  {" EOL
+    "      aBoundFade *= 1.0 - smoothstep (uBounds.z - aFwBR, uBounds.z, aR);" EOL "    }" EOL
+    "  }" EOL "  if (uArcBounded != 0)" EOL "  {" EOL
     "    float aSpan = uArcRange.y - uArcRange.x;" EOL
     "    if (aSpan < 0.0) { aSpan += GRID_TWO_PI; }" EOL "    float aDelta = aA - uArcRange.x;" EOL
     "    if (aDelta < 0.0) { aDelta += GRID_TWO_PI; }" EOL
@@ -2313,33 +2293,28 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     // optional fade inside the boundary, never to expand the valid area.
     "    float aFwBX = fwidth (abs (aLocal.x));" EOL
     "    if (abs (aLocal.x) > uBounds.x) { discard; }" EOL "    if (uIsBoundFade != 0)" EOL
-    "    {" EOL
-    "      aBoundFade *= 1.0 - smoothstep (uBounds.x - aFwBX, uBounds.x, abs "
+    "    {" EOL "      aBoundFade *= 1.0 - smoothstep (uBounds.x - aFwBX, uBounds.x, abs "
     "(aLocal.x));" EOL "    }" EOL "  }" EOL "  if (uBounds.y > 0.0)" EOL "  {" EOL
     "    float aFwBY = fwidth (abs (aLocal.y));" EOL
     "    if (abs (aLocal.y) > uBounds.y) { discard; }" EOL "    if (uIsBoundFade != 0)" EOL
-    "    {" EOL
-    "      aBoundFade *= 1.0 - smoothstep (uBounds.y - aFwBY, uBounds.y, abs "
+    "    {" EOL "      aBoundFade *= 1.0 - smoothstep (uBounds.y - aFwBY, uBounds.y, abs "
     "(aLocal.y));" EOL "    }" EOL "  }"
 
     // Grid coordinates depend on uGridType: 0=rectangular (X/Y), 1=circular (radius/angle).
-    EOL "  vec2 aGridUv;" EOL "  vec2 aScale;" EOL "  vec2 aAxisUv;" EOL
-    "  if (uGridType == 1)" EOL "  {" EOL
-    "    aGridUv = vec2 (aR, aA);" EOL "    aScale  = vec2 (uScaleX, uAngularScale);" EOL
+    EOL "  vec2 aGridUv;" EOL "  vec2 aScale;" EOL "  vec2 aAxisUv;" EOL "  if (uGridType == 1)" EOL
+    "  {" EOL "    aGridUv = vec2 (aR, aA);" EOL "    aScale  = vec2 (uScaleX, uAngularScale);" EOL
     "    aAxisUv = aLocal;" EOL "  }" EOL "  else" EOL "  {" EOL "    aGridUv = aLocalGrid;" EOL
     "    aScale  = vec2 (uScaleX, uScaleY);" EOL "    aAxisUv = aLocal;" EOL "  }" EOL
     "  vec2 aGridShift = uGridType == 1 ? vec2 (uRadialOriginShift, 0.0) : vec2 (0.0);" EOL
     "  vec4 aColor = gridLines2d (aGridUv, aAxisUv, uColor, aScale, aGridShift, "
     "uGridType == 0, uThickness);" EOL "  if (uDrawMode != 1)" EOL "  {" EOL
-    "    if (uGridType == 0)" EOL
-    "    {" EOL "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
+    "    if (uGridType == 0)" EOL "    {" EOL "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
     "        aColor = overlayGrid (aColor, gridLines1d (aLocal.x, uAccentLocalOriginShift.x, "
     "uAccentScaleX, uAccentColor, uThickness));" EOL "      }" EOL
     "      if (uAccentScaleY > 0.0)" EOL "      {" EOL
     "        aColor = overlayGrid (aColor, gridLines1d (aLocal.y, uAccentLocalOriginShift.y, "
     "uAccentScaleY, uAccentColor, uThickness));" EOL "      }" EOL "    }" EOL "    else" EOL
-    "    {" EOL
-    "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
+    "    {" EOL "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
     "        aColor = overlayGrid (aColor, gridLines1d (aR, uAccentRadialOriginShift, "
     "uAccentScaleX, uAccentColor, uThickness));" EOL "      }" EOL
     "      if (uAccentAngularScale > 0.0)" EOL "      {" EOL
@@ -2355,8 +2330,8 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "      else if (abs (aAxisUv.x) < aDerivAxis.x)" EOL "      {" EOL
     "        aColor = vec4 (0.0, 1.0, 0.0, 1.0);" EOL "      }" EOL "    }" EOL "  }"
 
-    EOL "  if (aColor.a == 0.0) { discard; }" EOL
-    "  aColor.a *= aBoundFade;" EOL "  occFragColor = aColor;" EOL "}";
+    EOL "  if (aColor.a == 0.0) { discard; }" EOL "  aColor.a *= aBoundFade;" EOL
+    "  occFragColor = aColor;" EOL "}";
 
   // Requires gl_VertexID (GL 3.0/ES 3.0+) and fwidth.
   if (myGapi == Aspect_GraphicsLibrary_OpenGL)

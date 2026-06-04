@@ -1801,9 +1801,7 @@ void V3d_View::ConvertToGrid(const int theXp,
 
 //=================================================================================================
 
-bool V3d_View::ConvertToGrid(const int         theXp,
-                             const int         theYp,
-                             Graphic3d_Vertex& theGridPoint) const
+bool V3d_View::ConvertToGrid(const int theXp, const int theYp, Graphic3d_Vertex& theGridPoint) const
 {
   if (myShaderGridActive)
   {
