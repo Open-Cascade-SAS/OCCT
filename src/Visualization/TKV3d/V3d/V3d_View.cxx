@@ -1785,6 +1785,31 @@ void V3d_View::ConvertToGrid(const int theXp,
                              double&   theYg,
                              double&   theZg) const
 {
+  Graphic3d_Vertex aGridPoint;
+  if (ConvertToGrid(theXp, theYp, aGridPoint))
+  {
+    aGridPoint.Coord(theXg, theYg, theZg);
+    return;
+  }
+
+  NCollection_Vec3<double> anXYZ;
+  Convert(theXp, theYp, anXYZ.x(), anXYZ.y(), anXYZ.z());
+  theXg = anXYZ.x();
+  theYg = anXYZ.y();
+  theZg = anXYZ.z();
+}
+
+//=================================================================================================
+
+bool V3d_View::ConvertToGrid(const int         theXp,
+                             const int         theYp,
+                             Graphic3d_Vertex& theGridPoint) const
+{
+  if (myShaderGridActive)
+  {
+    return myView->ShaderGridEcho(theXp, theYp, theGridPoint);
+  }
+
   NCollection_Vec3<double> anXYZ;
   Convert(theXp, theYp, anXYZ.x(), anXYZ.y(), anXYZ.z());
 
@@ -1792,13 +1817,32 @@ void V3d_View::ConvertToGrid(const int theXp,
   aVrp.SetCoord(anXYZ.x(), anXYZ.y(), anXYZ.z());
   if (MyViewer->IsGridActive())
   {
-    Graphic3d_Vertex aNewVrp = Compute(aVrp);
-    aNewVrp.Coord(theXg, theYg, theZg);
+    theGridPoint = Compute(aVrp);
+    return true;
   }
-  else
+
+  return false;
+}
+
+//=================================================================================================
+
+bool V3d_View::ConvertToGridEcho(const int         theXp,
+                                 const int         theYp,
+                                 Graphic3d_Vertex& theGridPoint,
+                                 Graphic3d_Vertex& theEchoPoint) const
+{
+  if (myShaderGridActive)
   {
-    aVrp.Coord(theXg, theYg, theZg);
+    return myView->ShaderGridEcho(theXp, theYp, theGridPoint, theEchoPoint);
   }
+
+  if (!ConvertToGrid(theXp, theYp, theGridPoint))
+  {
+    return false;
+  }
+
+  theEchoPoint = theGridPoint;
+  return true;
 }
 
 //=================================================================================================
@@ -1810,6 +1854,23 @@ void V3d_View::ConvertToGrid(const double theX,
                              double&      theYg,
                              double&      theZg) const
 {
+  if (myShaderGridActive)
+  {
+    int aXp = 0, aYp = 0;
+    Convert(theX, theY, theZ, aXp, aYp);
+    Graphic3d_Vertex aShaderGridPoint;
+    if (myView->ShaderGridEcho(aXp, aYp, aShaderGridPoint))
+    {
+      aShaderGridPoint.Coord(theXg, theYg, theZg);
+      return;
+    }
+
+    theXg = theX;
+    theYg = theY;
+    theZg = theZ;
+    return;
+  }
+
   if (MyViewer->IsGridActive())
   {
     Graphic3d_Vertex aVrp(theX, theY, theZ);
@@ -3544,10 +3605,6 @@ void V3d_View::GridDisplay(const Aspect_GridParams& theParams)
 
 void V3d_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
 {
-  // Mutual exclusion: the CPU grid renders into a viewer-wide Graphic3d_Structure
-  // (visible in every active view), so enabling the per-view shader grid hides the
-  // CPU rendering at the viewer level. Snap geometry (Aspect_*Grid) is left alive
-  // and only the structure is erased; SetGrid / ActivateGrid restores it.
   if (!MyGrid.IsNull() && MyGrid->IsDisplayed())
   {
     MyGrid->Erase();

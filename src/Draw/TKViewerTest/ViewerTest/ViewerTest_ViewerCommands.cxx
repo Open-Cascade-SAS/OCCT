@@ -5038,19 +5038,20 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     return 1;
   }
 
-  Aspect_GridType          aType = aViewer->GridType();
-  Aspect_GridDrawMode      aMode = aViewer->GridDrawMode();
+  Aspect_GridType          aType = Aspect_GT_Rectangular;
+  Aspect_GridDrawMode      aMode = Aspect_GDM_Lines;
   NCollection_Vec2<double> aNewOriginXY, aNewStepXY, aNewSizeXY;
   double                   aNewRadius = 0.0, aNewRotAngle = 0.0, aNewZOffset = 0.0;
   double                   aNewArcStart = 0.0, aNewArcEnd = 0.0;
   Quantity_Color           aNewColor, aNewTenthColor;
   bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasRadius = false,
        hasZOffset = false;
-  bool isGpuGrid = false, hasGridOff = false, hasScale = false, hasArc = false;
+  bool isShaderGrid = false, hasGridOff = false, hasScale = false, hasArc = false;
+  bool hasGridType = false, hasGridMode = false;
   bool hasColor = false, hasTenthColor = false;
-  // Tracks whether any GPU-grid-only option was passed; used to warn when
-  // such options are silently ignored on the CPU path.
-  bool                   hasGpuOnlyOpt = false;
+  // Tracks whether any shader-grid-only option was passed; used to warn when
+  // such options are ignored by the non-shader grid path.
+  bool                   hasShaderOnlyOpt = false;
   Aspect_GridParams      aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
@@ -5067,15 +5068,17 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       anArgNext.LowerCase();
       if (anArgNext == "r" || anArgNext == "rect" || anArgNext == "rectangular")
       {
-        aType = Aspect_GT_Rectangular;
+        aType       = Aspect_GT_Rectangular;
+        hasGridType = true;
       }
       else if (anArgNext == "c" || anArgNext == "circ" || anArgNext == "circular")
       {
-        aType = Aspect_GT_Circular;
+        aType       = Aspect_GT_Circular;
+        hasGridType = true;
       }
       else if (anArgNext == "gpu" || anArgNext == "shader")
       {
-        isGpuGrid = true;
+        isShaderGrid = true;
       }
       else
       {
@@ -5089,11 +5092,13 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       anArgNext.LowerCase();
       if (anArgNext == "l" || anArgNext == "line" || anArgNext == "lines")
       {
-        aMode = Aspect_GDM_Lines;
+        aMode       = Aspect_GDM_Lines;
+        hasGridMode = true;
       }
       else if (anArgNext == "p" || anArgNext == "point" || anArgNext == "points")
       {
-        aMode = Aspect_GDM_Points;
+        aMode       = Aspect_GDM_Points;
+        hasGridMode = true;
       }
       else
       {
@@ -5158,9 +5163,8 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArgIter + 3 < theArgNb && (anArg == "-color"))
     {
-      // Colors feed both backends through different sinks: aGridParams here
-      // for the GPU path, and Aspect_Grid::SetColors at the end of this
-      // function for the CPU path (so V3d_Viewer::syncViews picks them up).
+      // Colors feed both implementations through different sinks: aGridParams here
+      // for the shader path, and Aspect_Grid::SetColors at the end of this function.
       hasColor  = true;
       aNewColor = Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
                                  Draw::Atof(theArgVec[anArgIter + 2]),
@@ -5182,35 +5186,35 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     else if (anArgIter + 1 < theArgNb && anArg == "-scale")
     {
       hasScale      = true;
-      hasGpuOnlyOpt = true;
+      hasShaderOnlyOpt = true;
       aGridParams.SetScale(Draw::Atof(theArgVec[++anArgIter]));
     }
     else if (anArgIter + 1 < theArgNb && (anArg == "-linethickness" || anArg == "-thickness"))
     {
-      hasGpuOnlyOpt = true;
+      hasShaderOnlyOpt = true;
       aGridParams.SetLineThickness(Draw::Atof(theArgVec[++anArgIter]));
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-background")
     {
-      hasGpuOnlyOpt  = true;
+      hasShaderOnlyOpt  = true;
       const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsBackground(aVal != 0);
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-drawaxis")
     {
-      hasGpuOnlyOpt  = true;
+      hasShaderOnlyOpt  = true;
       const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsDrawAxis(aVal != 0);
     }
     else if (anArgIter + 1 < theArgNb && (anArg == "-viewadaptive" || anArg == "-adaptive"))
     {
-      hasGpuOnlyOpt  = true;
+      hasShaderOnlyOpt  = true;
       const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsViewAdaptive(aVal != 0);
     }
     else if (anArg == "-gpu" || anArg == "-shader")
     {
-      isGpuGrid = true;
+      isShaderGrid = true;
     }
     else if (anArgIter + 2 < theArgNb && anArg == "-arc")
     {
@@ -5223,19 +5227,23 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArg == "r" || anArg == "rect" || anArg == "rectangular")
     {
-      aType = Aspect_GT_Rectangular;
+      aType       = Aspect_GT_Rectangular;
+      hasGridType = true;
     }
     else if (anArg == "c" || anArg == "circ" || anArg == "circular")
     {
-      aType = Aspect_GT_Circular;
+      aType       = Aspect_GT_Circular;
+      hasGridType = true;
     }
     else if (anArg == "l" || anArg == "line" || anArg == "lines")
     {
-      aMode = Aspect_GDM_Lines;
+      aMode       = Aspect_GDM_Lines;
+      hasGridMode = true;
     }
     else if (anArg == "p" || anArg == "point" || anArg == "points")
     {
-      aMode = Aspect_GDM_Points;
+      aMode       = Aspect_GDM_Points;
+      hasGridMode = true;
     }
     else if (anArg == "off")
     {
@@ -5248,43 +5256,49 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
   }
 
-  if (isGpuGrid && hasGridOff)
+  if (isShaderGrid && hasGridOff)
   {
-    Message::SendFail("Syntax error: 'off' cannot be combined with GPU grid display");
+    Message::SendFail("Syntax error: 'off' cannot be combined with shader grid display");
     return 1;
   }
 
-  // GPU-only options (-scale, -lineThickness, -background, -drawAxis,
+  // Shader-only options (-scale, -lineThickness, -background, -drawAxis,
   // -viewAdaptive) are stored on Aspect_GridParams and consumed only by the
-  // shader path. Silently ignoring them on the CPU path leaves the user
+  // shader path. Silently ignoring them on the non-shader path leaves the user
   // wondering why nothing changed; warn explicitly.
-  if (hasGpuOnlyOpt && !isGpuGrid && !hasGridOff)
+  if (hasShaderOnlyOpt && !isShaderGrid && !hasGridOff)
   {
     Message::SendWarning("vgrid: -scale / -lineThickness / -background / -drawAxis / "
-                         "-viewAdaptive are GPU-grid only; pass -gpu (or -type gpu) to apply.");
+                         "-viewAdaptive are shader-grid only; pass -gpu (or -type gpu) to apply.");
   }
 
-  if (isGpuGrid || hasGridOff)
+  if (!isShaderGrid)
+  {
+    if (!hasGridType)
+    {
+      aType = aViewer->GridType();
+    }
+    if (!hasGridMode)
+    {
+      aMode = aViewer->GridDrawMode();
+    }
+  }
+
+  if (isShaderGrid || hasGridOff)
   {
     if (hasGridOff)
     {
       aView->GridErase();
     }
-    if (isGpuGrid)
+    if (isShaderGrid)
     {
-      // The shader grid keeps a real Aspect_Grid to back snap selection, so we
-      // route through ActivateGrid(rect|circ) first and override the display
-      // with shader-specific params afterwards. Decide the shape from aType
-      // or from the presence of circular-only options.
-      const bool   isGpuCircular = aType == Aspect_GT_Circular || hasRadius || hasArc;
-      const double anOrigX       = hasOrigin ? aNewOriginXY.x() : 0.0;
-      const double anOrigY       = hasOrigin ? aNewOriginXY.y() : 0.0;
-      const double aRotAngle     = hasRotAngle ? aNewRotAngle : 0.0;
+      const bool   isShaderCircular = aType == Aspect_GT_Circular || hasRadius || hasArc;
+      const double anOrigX          = hasOrigin ? aNewOriginXY.x() : 0.0;
+      const double anOrigY          = hasOrigin ? aNewOriginXY.y() : 0.0;
+      const double aRotAngle        = hasRotAngle ? aNewRotAngle : 0.0;
 
-      if (isGpuCircular)
+      if (isShaderCircular)
       {
-        // Radial step + angular divisions. `-step R N` supplies both; otherwise
-        // use sensible defaults that keep snap consistent with the visible grid.
         double aRadiusStep    = 1.0;
         int    aDivisionCount = 16;
         if (hasStep)
@@ -5296,29 +5310,12 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
         {
           aRadiusStep = 1.0 / aGridParams.Scale();
         }
-        aViewer->SetCircularGridValues(anOrigX, anOrigY, aRadiusStep, aDivisionCount, aRotAngle);
-        // Arc range reaches the circular grid base before ActivateGrid's first
-        // syncViews fires (otherwise syncViews would overwrite our override).
-        if (hasArc)
-        {
-          if (occ::handle<Aspect_CircularGrid> aCircGrid =
-                occ::down_cast<Aspect_CircularGrid>(aViewer->Grid(true)))
-          {
-            aCircGrid->SetArcRange(aNewArcStart, aNewArcEnd);
-          }
-        }
-        aViewer->ActivateGrid(Aspect_GT_Circular, aMode);
-
         aGridParams.SetScale(1.0 / aRadiusStep);
-        aGridParams.SetScaleY(0.0); // unused in circular mode
+        aGridParams.SetScaleY(0.0);
         aGridParams.SetAngularDivisions(aDivisionCount);
       }
       else
       {
-        // Rectangular shader grid. Derive step from explicit -step or from the
-        // Aspect_GridParams scale; fall back to 1 world unit so the default is
-        // immediately useful (Aspect_GridParams::Scale defaults to 0.01 which
-        // would give step 100 - too coarse for typical scenes).
         if (!hasScale)
         {
           if (hasStep)
@@ -5332,23 +5329,13 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
             aGridParams.SetScaleY(1.0);
           }
         }
-        const double aInfStepX = 1.0 / aGridParams.Scale();
-        const double aInfStepY = 1.0 / aGridParams.EffectiveScaleY();
-        aViewer->SetRectangularGridValues(anOrigX, anOrigY, aInfStepX, aInfStepY, aRotAngle);
-        aViewer->ActivateGrid(Aspect_GT_Rectangular, aMode);
-
         aGridParams.SetAngularDivisions(0);
       }
 
-      // Convert origin to the same world-offset convention used by V3d
-      // syncViews so the shader's aPlaneOrigin matches snap's aPnt0.
-      const gp_Ax3 aPlane = aViewer->PrivilegedPlane();
-      const gp_XYZ aOriginOffset =
-        aPlane.XDirection().XYZ() * -anOrigX + aPlane.YDirection().XYZ() * -anOrigY;
-      aGridParams.SetOrigin(gp_Pnt(aOriginOffset));
+      aGridParams.SetOrigin(gp_Pnt(-anOrigX, -anOrigY, 0.0));
       aGridParams.SetDrawMode(aMode);
       aGridParams.SetRotationAngle(aRotAngle);
-      if (hasSize && !isGpuCircular)
+      if (hasSize && !isShaderCircular)
       {
         aGridParams.SetSizeX(aNewSizeXY.x());
         aGridParams.SetSizeY(aNewSizeXY.y());
@@ -5363,9 +5350,9 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       }
       aView->GridDisplay(aGridParams);
     }
-    if (hasGridOff && !isGpuGrid)
+    if (hasGridOff && !isShaderGrid)
     {
-      // plain 'vgrid off' still deactivates the classical grid
+      // Plain 'vgrid off' still deactivates the viewer-managed grid.
       aViewer->DeactivateGrid();
     }
     return 0;
@@ -5476,7 +5463,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
   }
   // Apply -color / -tenthColor to the active grid so V3d syncViews picks
-  // them up on the next display. GPU-grid display drives these through
+  // them up on the next display. Shader-grid display drives these through
   // aGridParams directly (set earlier in the parser loop).
   if (hasColor || hasTenthColor)
   {
@@ -6581,8 +6568,7 @@ static int VMoveTo(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
         return 1;
       }
 
-      const bool toEchoGrid =
-        aContext->CurrentViewer()->IsGridActive() && aContext->CurrentViewer()->GridEcho();
+      const bool toEchoGrid = aView->IsGridActive() && aContext->CurrentViewer()->GridEcho();
       if (toEchoGrid)
       {
         aContext->CurrentViewer()->HideGridEcho(aView);
@@ -14284,17 +14270,14 @@ vgrid [off] [-type {rect|circ|gpu|shader}] [-gpu] [-mode {line|point}] [-origin 
       [-step StepRadius NbDivisions] [-radius Radius] [-arc AngleStart AngleEnd]
       [-color R G B] [-tenthColor R G B] [-scale N] [-lineThickness T]
       [-background {0|1}] [-drawAxis {0|1}] [-viewAdaptive {0|1}]
-Two render backends are available:
-  - '-type rect' / '-type circ' (default) draws the legacy CPU grid into a
-    bounded Graphic3d_Structure shared by every active view.
-  - '-type gpu' / '-gpu' activates the shader-rendered grid on the active view.
+Two grid implementations are available:
+  - '-type rect' / '-type circ' draws the viewer grid shared by every active view.
+  - '-type gpu' / '-gpu' activates the shader grid on the active view.
     Without '-size' or '-radius' it is unbounded; combine with '-size DX DY'
     for a rectangle, '-radius R' for a disc, '-arc S E' for a wedge.
-'-color', '-tenthColor' apply to both backends. '-scale', '-lineThickness',
-'-background', '-drawAxis', '-viewAdaptive {0|1}' are GPU-grid only. Switching
-to GPU-grid display hides the CPU grid in the viewer; switching back to a CPU
-grid type erases the shader grid in the active view. 'off' deactivates whichever
-grid is currently visible.
+'-color', '-tenthColor' apply to both implementations. '-scale',
+'-lineThickness', '-background', '-drawAxis', '-viewAdaptive {0|1}' are
+shader-grid only. 'off' deactivates the active grid in the current view/viewer.
 )" /* [vgrid] */);
 
   addCmd("vpriviledgedplane", VPriviledgedPlane, /* [vpriviledgedplane] */ R"(

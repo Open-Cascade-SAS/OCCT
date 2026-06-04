@@ -36,6 +36,7 @@ class Aspect_Window;
 class Graphic3d_Group;
 class Graphic3d_Structure;
 class Graphic3d_TextureEnv;
+class Graphic3d_Vertex;
 
 //! Defines the application object VIEW for the
 //! VIEWER application.
@@ -671,6 +672,21 @@ public:
                                      double&   Yg,
                                      double&   Zg) const;
 
+  //! Converts the projected point into the nearest visible grid point.
+  //! @return TRUE when an active grid accepts the point; FALSE otherwise.
+  //! Unlike the double-output overload, this method has no unproject fallback
+  //! and is intended for grid echo / snap-hit callers.
+  Standard_EXPORT bool ConvertToGrid(const int         Xp,
+                                     const int         Yp,
+                                     Graphic3d_Vertex& theGridPoint) const;
+
+  //! Converts the projected point into the nearest visible grid point and echo display point.
+  //! The echo display point is suitable only for displaying the grid echo marker.
+  Standard_EXPORT bool ConvertToGridEcho(const int         Xp,
+                                         const int         Yp,
+                                         Graphic3d_Vertex& theGridPoint,
+                                         Graphic3d_Vertex& theEchoPoint) const;
+
   //! Converts the point into the nearest grid point
   //! and display the grid marker.
   Standard_EXPORT void ConvertToGrid(const double X,
@@ -907,11 +923,9 @@ public:
                                  const double                         theResolution = 0.0,
                                  const bool theToEnlargeIfLine                      = true) const;
 
-public: //! @name CPU grid plumbing (deprecated, fed by V3d_Viewer::ActivateGrid)
-  //! Snap + CPU rendering. The CPU grid lives on the viewer's structure manager
-  //! and is visible in every active view; SetGrid on a view that has the shader
-  //! grid enabled erases the shader grid on this view, the CPU grid is left
-  //! intact (or re-displayed by V3d_Viewer::ActivateGrid).
+public: //! @name Viewer grid plumbing
+  //! Viewer-managed grid plane and snap object. It is separate from the per-view
+  //! shader grid controlled by GridDisplay().
 
   //! Defines or updates the grid plane and snap object on this view.
   //! @param[in] aPlane grid plane (origin + axes)
@@ -922,11 +936,15 @@ public: //! @name CPU grid plumbing (deprecated, fed by V3d_Viewer::ActivateGrid
   //! @param[in] aFlag true to enable snap, false to disable
   Standard_EXPORT void SetGridActivity(const bool aFlag);
 
-public: //! @name GPU shader grid (recommended)
-  //! Per-view immediate-mode shader; supports unbounded extents, AA, background, arc range.
-  //! GridDisplay erases the viewer-wide CPU grid rendering on entry (snap geometry
-  //! on Aspect_*Grid is preserved). GridErase only tears down the shader grid on
-  //! this view; restoring the CPU rendering needs V3d_Viewer::ActivateGrid.
+  //! Return TRUE if either viewer-managed grid or per-view shader grid is active.
+  bool IsGridActive() const { return MyViewer->IsGridActive() || myShaderGridActive; }
+
+  //! Return TRUE if the per-view shader grid is active.
+  bool IsShaderGridActive() const { return myShaderGridActive; }
+
+public: //! @name Shader grid
+  //! Per-view immediate-mode shader grid; supports unbounded extents, AA, background,
+  //! circular grids, arc range and view-adaptive spacing.
 
   //! Display a shader-rendered grid on the viewer's privileged plane.
   //! @param[in] theParams appearance: color, scale, bounds, arc, draw-mode, background /

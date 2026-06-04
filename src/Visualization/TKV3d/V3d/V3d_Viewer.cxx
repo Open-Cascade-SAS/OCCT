@@ -797,7 +797,8 @@ void V3d_Viewer::ShowGridEcho(const occ::handle<V3d_View>& theView,
     myGridEchoGroup->SetPrimitivesAspect(myGridEchoAspect);
   }
 
-  if (theVertex.X() == myGridEchoLastVert.X() && theVertex.Y() == myGridEchoLastVert.Y()
+  if (!theView->IsShaderGridActive() && theVertex.X() == myGridEchoLastVert.X()
+      && theVertex.Y() == myGridEchoLastVert.Y()
       && theVertex.Z() == myGridEchoLastVert.Z())
   {
     return;

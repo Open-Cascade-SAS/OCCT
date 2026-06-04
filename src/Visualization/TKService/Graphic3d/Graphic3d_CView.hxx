@@ -24,6 +24,7 @@
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_DiagnosticInfo.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
+#include <Graphic3d_Vertex.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Shared.hxx>
@@ -453,6 +454,33 @@ public:
   //! Erase the shader-rendered grid.
   //! The default implementation is a no-op; drivers with shader support override it.
   virtual void GridErase() {}
+
+  //! Return snapped point for the shader-rendered grid under the window pixel.
+  //! The default implementation is a no-op; drivers with shader grid support override it.
+  virtual bool ShaderGridEcho(const int theX, const int theY, Graphic3d_Vertex& thePoint) const
+  {
+    (void)theX;
+    (void)theY;
+    (void)thePoint;
+    return false;
+  }
+
+  //! Return snapped point and display point for the shader-rendered grid under the window pixel.
+  //! The snapped point is the geometric grid point in world coordinates.
+  //! The display point is a clip-safe proxy projected to the same window position for echo marker
+  //! presentation; it should not be used as the geometric snap result.
+  virtual bool ShaderGridEcho(const int         theX,
+                              const int         theY,
+                              Graphic3d_Vertex& thePoint,
+                              Graphic3d_Vertex& theDisplayPoint) const
+  {
+    if (!ShaderGridEcho(theX, theY, thePoint))
+    {
+      return false;
+    }
+    theDisplayPoint = thePoint;
+    return true;
+  }
 
   //! Returns environment texture set for the view.
   const occ::handle<Graphic3d_TextureEnv>& TextureEnv() const { return myTextureEnvData; }

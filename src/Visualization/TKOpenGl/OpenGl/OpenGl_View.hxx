@@ -229,6 +229,17 @@ public:
   //! Erase the shader-rendered grid.
   Standard_EXPORT void GridErase() override;
 
+  //! Return snapped point for the shader-rendered grid under the window pixel.
+  Standard_EXPORT bool ShaderGridEcho(const int         theX,
+                                      const int         theY,
+                                      Graphic3d_Vertex& thePoint) const override;
+
+  //! Return snapped point and clip-safe display point for the shader-rendered grid echo marker.
+  Standard_EXPORT bool ShaderGridEcho(const int         theX,
+                                      const int         theY,
+                                      Graphic3d_Vertex& thePoint,
+                                      Graphic3d_Vertex& theDisplayPoint) const override;
+
   //! Returns number of mipmap levels used in specular IBL map.
   //! 0 if PBR environment is not created.
   Standard_EXPORT unsigned int SpecIBLMapLevels() const;

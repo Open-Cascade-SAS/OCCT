@@ -22,10 +22,8 @@
 #include <Quantity_Color.hxx>
 #include <gp_Pnt.hxx>
 
-//! Shader grid appearance (color, scale, bounds, arc, draw mode, background / adaptive flags).
-//! Consumed only by the GPU path: V3d_View::GridDisplay -> OpenGl_View::renderGrid.
-//! No effect on the CPU path (V3d_Viewer::ActivateGrid). Snap math is independent and
-//! lives on Aspect_RectangularGrid / Aspect_CircularGrid.
+//! Grid appearance for V3d_View::GridDisplay: color, scale, bounds, arc, draw mode,
+//! background and adaptive flags.
 class Aspect_GridParams
 {
 public:
@@ -183,8 +181,7 @@ public:
   //! Return signed plane-normal offset applied at render time.
   double ZOffset() const { return myZOffset; }
 
-  //! Set signed plane-normal offset applied at render time (display only;
-  //! snap math stays on the unshifted plane).
+  //! Set signed plane-normal offset applied at render and echo time.
   void SetZOffset(const double theOffset) { myZOffset = theOffset; }
 
   //! Return arc start angle (radians). Meaningful only when IsArc() is true.
@@ -229,10 +226,8 @@ public:
   //! Return TRUE if grid spacing and visible extents adapt to the camera view.
   bool IsViewAdaptive() const { return myIsViewAdaptive; }
 
-  //! Set view-adaptive grid on/off. When enabled, renderer derives temporary
-  //! cell spacing and bounds from the current camera. The inverse of ScaleY()
-  //! (or Scale() when ScaleY() is zero) is used as the target number of cells
-  //! across the view height.
+  //! Set view-adaptive grid on/off. When enabled, shader renderer keeps the
+  //! screen-space grid step stable by scaling the cell spacing with camera zoom.
   void SetIsViewAdaptive(const bool theIsViewAdaptive) { myIsViewAdaptive = theIsViewAdaptive; }
 
 private:
