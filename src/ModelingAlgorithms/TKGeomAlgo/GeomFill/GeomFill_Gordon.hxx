@@ -94,6 +94,32 @@ public:
     AllowApproximateFallback //!< Try a sampled B-spline fallback without exact interpolation.
   };
 
+  //! Construction stage reached by the last Perform() call.
+  enum class BuildStage
+  {
+    NotStarted,        //!< Perform() has not started.
+    InputConversion,   //!< Input curves are being converted to working B-splines.
+    ContactDiscovery,  //!< Profile/guide contacts are being collected.
+    NetworkOrdering,   //!< Contacts and curves are being ordered into a monotone network.
+    Reparametrization, //!< Curves are being rebuilt to shared network parameters.
+    ExactConstruction, //!< Exact B-spline network surface is being constructed.
+    Validation,        //!< Result is being checked against prepared curves.
+    Approximation      //!< Optional sampled fallback is being built.
+  };
+
+  //! Diagnostics for the last Perform() call.
+  struct BuildReport
+  {
+    ResultStatus Status                     = ResultStatus::NotStarted;
+    BuildStage   FailedStage                = BuildStage::NotStarted;
+    bool         IsApproximate              = false;
+    double       MaxContactGap              = 0.0;
+    double       MaxReparametrizationDeviation = 0.0;
+    double       MaxProfileDeviation        = 0.0;
+    double       MaxGuideDeviation          = 0.0;
+    double       MaxApproximationDeviation  = 0.0;
+  };
+
   //! Creates an empty Gordon surface algorithm.
   Standard_EXPORT GeomFill_Gordon();
 
@@ -123,19 +149,24 @@ public:
   [[nodiscard]] bool IsParallelMode() const { return myToUseParallel; }
 
   //! Returns true if the surface was successfully constructed.
-  [[nodiscard]] bool IsDone() const { return myStatus == ResultStatus::Done; }
+  [[nodiscard]] bool IsDone() const { return myReport.Status == ResultStatus::Done; }
 
   //! Returns true if the resulting surface was produced by approximate fallback.
   //! Approximate results do not have the exact Gordon interpolation guarantee.
-  [[nodiscard]] bool IsApproximate() const { return myIsApproximate; }
+  [[nodiscard]] bool IsApproximate() const { return myReport.IsApproximate; }
 
   //! Returns the result state of the last Perform() call.
-  [[nodiscard]] ResultStatus Status() const { return myStatus; }
+  [[nodiscard]] ResultStatus Status() const { return myReport.Status; }
+
+  //! Returns diagnostics for the last Perform() call.
+  [[nodiscard]] const BuildReport& Report() const { return myReport; }
 
   //! Returns the resulting Gordon B-spline surface.
   [[nodiscard]] Standard_EXPORT const occ::handle<Geom_BSplineSurface>& Surface() const;
 
 private:
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> myInputProfiles;
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> myInputGuides;
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> myProfiles;
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> myGuides;
   NCollection_Array2<double>                         myProfileParams;
@@ -145,9 +176,8 @@ private:
   bool                                               myIsUClosed     = false;
   bool                                               myIsVClosed     = false;
   bool                                               myToUseParallel = false;
-  bool                                               myIsApproximate = false;
   ApproximationMode myApproximationMode                              = ApproximationMode::ExactOnly;
-  ResultStatus      myStatus                                         = ResultStatus::NotStarted;
+  BuildReport       myReport;
 };
 
 #endif // _GeomFill_Gordon_HeaderFile

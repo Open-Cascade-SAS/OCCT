@@ -21,6 +21,7 @@
 #include <NCollection_HArray1.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <StdFail_NotDone.hxx>
 #include <gp_Vec.hxx>
@@ -38,6 +39,22 @@ bool checkParameters(const NCollection_Array1<double>& theParameters)
   for (size_t aParamIdx = 1; aParamIdx < theParameters.Size(); ++aParamIdx)
   {
     if (theParameters.At(aParamIdx) <= theParameters.At(aParamIdx - 1) + Precision::PConfusion())
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool checkWeights(const NCollection_Array2<double>& theWeights)
+{
+  if (theWeights.IsEmpty())
+  {
+    return false;
+  }
+  for (size_t aWeightIdx = 0; aWeightIdx < theWeights.Size(); ++aWeightIdx)
+  {
+    if (theWeights.NCollection_Array1<double>::At(aWeightIdx) <= Precision::Confusion())
     {
       return false;
     }
@@ -685,6 +702,31 @@ occ::handle<Geom_BSplineSurface> makeCorrectedProfileSkin(
     return nullptr;
   }
 
+  if (!theProfileSurface->IsURational() && !theProfileSurface->IsVRational()
+      && !theGuideSurface->IsURational() && !theGuideSurface->IsVRational()
+      && !theReferenceSurface->IsURational() && !theReferenceSurface->IsVRational())
+  {
+    const NCollection_Array2<gp_Pnt>& aProfilePoles   = theProfileSurface->Poles();
+    const NCollection_Array2<gp_Pnt>& aGuidePoles     = theGuideSurface->Poles();
+    const NCollection_Array2<gp_Pnt>& aReferencePoles = theReferenceSurface->Poles();
+    NCollection_Array2<gp_Pnt>        aResultPoles(aProfilePoles);
+    for (size_t aPoleIdx = 0; aPoleIdx < aResultPoles.Size(); ++aPoleIdx)
+    {
+      const gp_XYZ aPoint = aProfilePoles.NCollection_Array1<gp_Pnt>::At(aPoleIdx).XYZ()
+                            + aGuidePoles.NCollection_Array1<gp_Pnt>::At(aPoleIdx).XYZ()
+                            - aReferencePoles.NCollection_Array1<gp_Pnt>::At(aPoleIdx).XYZ();
+      aResultPoles.NCollection_Array1<gp_Pnt>::ChangeAt(aPoleIdx) = gp_Pnt(aPoint);
+    }
+
+    return new Geom_BSplineSurface(aResultPoles,
+                                   theProfileSurface->UKnots(),
+                                   theProfileSurface->VKnots(),
+                                   theProfileSurface->UMultiplicities(),
+                                   theProfileSurface->VMultiplicities(),
+                                   theProfileSurface->UDegree(),
+                                   theProfileSurface->VDegree());
+  }
+
   int                        aUDegree = 0;
   int                        aVDegree = 0;
   NCollection_Array1<double> aUKnots;
@@ -824,7 +866,8 @@ bool isReadyToBuild(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& th
          && theIntersectionPoints.RowLength() == theProfileParameters.Length()
          && theIntersectionWeights.ColLength() == theGuideParameters.Length()
          && theIntersectionWeights.RowLength() == theProfileParameters.Length()
-         && checkParameters(theProfileParameters) && checkParameters(theGuideParameters);
+         && checkParameters(theProfileParameters) && checkParameters(theGuideParameters)
+         && checkWeights(theIntersectionWeights);
 }
 
 occ::handle<Geom_BSplineSurface> makeNetworkSurface(
@@ -906,9 +949,10 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
 
 bool applyPeriodicity(occ::handle<Geom_BSplineSurface>& theSurface,
                       const bool                        theIsUClosed,
-                      const bool                        theIsVClosed)
+                      const bool                        theIsVClosed,
+                      const double                      theTolerance)
 {
-  const double aTolerance = Precision::Confusion();
+  const double aTolerance = std::max(theTolerance, Precision::Confusion());
   if (theIsUClosed)
   {
     if (!canSetPeriodic(theSurface, true, aTolerance))
@@ -981,6 +1025,8 @@ void GeomFill_NetworkSurface::Perform()
 
   try
   {
+    OCC_CATCH_SIGNALS
+
     if (!prepareCurveFamily(myProfiles) || !prepareCurveFamily(myGuides))
     {
       myStatus = ResultStatus::CurveCompatibilityFailed;
@@ -1001,7 +1047,7 @@ void GeomFill_NetworkSurface::Perform()
       return;
     }
 
-    if (!applyPeriodicity(mySurface, myIsUClosed, myIsVClosed))
+    if (!applyPeriodicity(mySurface, myIsUClosed, myIsVClosed, myTolerance))
     {
       mySurface.Nullify();
       myStatus = ResultStatus::PeriodicityFailed;

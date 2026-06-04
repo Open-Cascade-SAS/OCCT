@@ -355,6 +355,13 @@ TEST(GeomFill_Gordon, SimpleLineNetwork_ProducesValidSurface)
   aGordon.Perform();
 
   ASSERT_TRUE(aGordon.IsDone());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::Done);
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
+  EXPECT_LE(aGordon.Report().MaxContactGap, Precision::Confusion());
+  EXPECT_LE(aGordon.Report().MaxProfileDeviation, 1.0e-7);
+  EXPECT_LE(aGordon.Report().MaxGuideDeviation, 1.0e-7);
 
   const occ::handle<Geom_BSplineSurface>& aSurf = aGordon.Surface();
   ASSERT_FALSE(aSurf.IsNull());
@@ -402,6 +409,79 @@ TEST(GeomFill_Gordon, NotDone_BeforePerform)
   GeomFill_Gordon aGordon;
   EXPECT_FALSE(aGordon.IsDone());
   EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::NotStarted);
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::NotStarted);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
+  EXPECT_THROW((void)aGordon.Surface(), StdFail_NotDone);
+}
+
+TEST(GeomFill_Gordon, ReinitResetsReportAndSurface)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 2);
+  aProfiles(1) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 1.0);
+  aProfiles(2) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 1, 0), gp_Dir(1, 0, 0)), 0.0, 1.0);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 2);
+  aGuides(1) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 0.0, 1.0);
+  aGuides(2) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(1, 0, 0), gp_Dir(0, 1, 0)), 0.0, 1.0);
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  ASSERT_TRUE(aGordon.IsDone());
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
+  ASSERT_FALSE(aGordon.Surface().IsNull());
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aOneProfile(1, 1);
+  aOneProfile(1) =
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 1.0);
+  NCollection_Array1<occ::handle<Geom_Curve>> aOneGuide(1, 1);
+  aOneGuide(1) =
+    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 0.0, 1.0);
+
+  aGordon.Init(aOneProfile, aOneGuide, Precision::Confusion());
+  EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::NotStarted);
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::NotStarted);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
+  EXPECT_NEAR(aGordon.Report().MaxContactGap, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxProfileDeviation, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxGuideDeviation, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxApproximationDeviation, 0.0, 1.0e-12);
+  EXPECT_THROW((void)aGordon.Surface(), StdFail_NotDone);
+
+  aGordon.Perform();
+  EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::InvalidInput);
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::InvalidInput);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::InputConversion);
+}
+
+TEST(GeomFill_Gordon, DisjointNetworkReportsContactDiscoveryFailure)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 2);
+  aProfiles(1) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 1.0);
+  aProfiles(2) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 1, 0), gp_Dir(1, 0, 0)), 0.0, 1.0);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 2);
+  aGuides(1) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(2, 0, 0), gp_Dir(0, 1, 0)), 0.0, 1.0);
+  aGuides(2) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(3, 0, 0), gp_Dir(0, 1, 0)), 0.0, 1.0);
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+
+  EXPECT_FALSE(aGordon.IsDone());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::IntersectionFailed);
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::IntersectionFailed);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::ContactDiscovery);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
+  EXPECT_NEAR(aGordon.Report().MaxContactGap, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
   EXPECT_THROW((void)aGordon.Surface(), StdFail_NotDone);
 }
 
@@ -460,7 +540,7 @@ TEST(GeomFill_Gordon, CurvedBSplineNetwork_ProducesValidSurface)
 
   gp_Pnt aMidPt = aSurf->Value(0.5 * (aSurf->UKnot(1) + aSurf->UKnot(aSurf->NbUKnots())),
                                0.5 * (aSurf->VKnot(1) + aSurf->VKnot(aSurf->NbVKnots())));
-  EXPECT_GT(aMidPt.Z(), 0.05) << "Surface should have Z-bump at center";
+  EXPECT_NEAR(aMidPt.Z(), 0.3, 1.0e-6) << "Surface should have Z-bump at center";
 }
 
 TEST(GeomFill_Gordon, MixedCurveTypes_ProducesValidSurface)
@@ -702,10 +782,8 @@ TEST(GeomFill_Gordon, CubicInterpolatedNetwork_ProducesValidSurface)
   // Verify some Z variation exists (the S-curve shape).
   gp_Pnt aP1 = aSurf->Value(aUMid * 0.5, aVMid);
   gp_Pnt aP2 = aSurf->Value(aUMid * 1.5, aVMid);
-  EXPECT_NE(aP1.Z(), 0.0) << "Surface should have Z variation from S-curve profiles";
-  // The S-curve should make these two have opposite Z signs.
-  EXPECT_TRUE((aP1.Z() > 0 && aP2.Z() < 0) || (aP1.Z() < 0 && aP2.Z() > 0))
-    << "S-curve should produce opposite Z signs at quarter and three-quarter points";
+  EXPECT_NEAR(aP1.Z(), 0.6328125, 1.0e-9) << "S-curve first lobe should be preserved";
+  EXPECT_NEAR(aP2.Z(), -0.6328125, 1.0e-9) << "S-curve second lobe should be preserved";
 }
 
 TEST(GeomFill_Gordon, SinusoidalProfiles_SurfacePreservesShape)
@@ -734,7 +812,7 @@ TEST(GeomFill_Gordon, SinusoidalProfiles_SurfacePreservesShape)
   double aVMid = 0.5 * (aSurf->VKnot(1) + aSurf->VKnot(aSurf->NbVKnots()));
 
   gp_Pnt aMidPt = aSurf->Value(aUMid, aVMid);
-  EXPECT_GT(aMidPt.Z(), 0.2) << "Center should have significant Z from sinusoidal profiles";
+  EXPECT_NEAR(aMidPt.Z(), 0.5, 0.05) << "Center should preserve middle sine amplitude";
 }
 
 TEST(GeomFill_Gordon, ThreeByThreeGrid_SurfaceInterpolatesAllCurves)
@@ -1028,8 +1106,8 @@ TEST(GeomFill_Gordon, NonPlanarNetwork_CurvesInBothDirections)
   double aUMid  = 0.5 * (aSurf->UKnot(1) + aSurf->UKnot(aSurf->NbUKnots()));
   double aVMid  = 0.5 * (aSurf->VKnot(1) + aSurf->VKnot(aSurf->NbVKnots()));
   gp_Pnt aMidPt = aSurf->Value(aUMid, aVMid);
-  EXPECT_GT(std::abs(aMidPt.Z()), 0.01)
-    << "Non-planar network should produce non-planar surface at center";
+  EXPECT_NEAR(aMidPt.Z(), 0.35, 0.05)
+    << "Non-planar network should preserve combined profile/guide elevation";
 }
 
 TEST(GeomFill_Gordon, SurfaceContinuity_IsSmooth)
@@ -1131,7 +1209,7 @@ TEST(GeomFill_Gordon, ArcLikeProfiles_NonRational)
   double aUMid  = 0.5 * (aSurf->UKnot(1) + aSurf->UKnot(aSurf->NbUKnots()));
   double aVMid  = 0.5 * (aSurf->VKnot(1) + aSurf->VKnot(aSurf->NbVKnots()));
   gp_Pnt aMidPt = aSurf->Value(aUMid, aVMid);
-  EXPECT_GT(aMidPt.Z(), 0.1) << "Surface center should have positive Z from arc-like profiles";
+  EXPECT_NEAR(aMidPt.Z(), 0.3, 0.05) << "Surface center should match arc-like profile height";
 }
 
 TEST(GeomFill_Gordon, RepeatPerform_GivesSameResult)
@@ -1158,8 +1236,8 @@ TEST(GeomFill_Gordon, RepeatPerform_GivesSameResult)
     0.5 * (aGordon.Surface()->VKnot(1) + aGordon.Surface()->VKnot(aGordon.Surface()->NbVKnots()));
   gp_Pnt aMid1 = aGordon.Surface()->Value(aUMid1, aVMid1);
 
-  // Re-init with same data and perform again.
-  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  // Perform again without reinitializing. The algorithm should rebuild its
+  // working curves from immutable input handles.
   aGordon.Perform();
   ASSERT_TRUE(aGordon.IsDone());
   double aUMid2 =
@@ -1170,6 +1248,7 @@ TEST(GeomFill_Gordon, RepeatPerform_GivesSameResult)
 
   EXPECT_NEAR(aMid1.Distance(aMid2), 0.0, Precision::Confusion())
     << "Repeated Perform should give same result";
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
 }
 
 TEST(GeomFill_Gordon, HighDensityNetwork_SixBySix)
@@ -1387,7 +1466,7 @@ TEST(GeomFill_Gordon, WavySurface_SinusoidalProfilesAndGuides)
   double aUMid  = 0.5 * (aSurf->UKnot(1) + aSurf->UKnot(aSurf->NbUKnots()));
   double aVMid  = 0.5 * (aSurf->VKnot(1) + aSurf->VKnot(aSurf->NbVKnots()));
   gp_Pnt aMidPt = aSurf->Value(aUMid, aVMid);
-  EXPECT_GT(aMidPt.Z(), 0.3) << "Center should have large Z from sinusoidal profiles";
+  EXPECT_NEAR(aMidPt.Z(), 0.6, 0.05) << "Center should match middle sine amplitude";
 }
 
 TEST(GeomFill_Gordon, NetworkSurface_UClosedNetwork_ProducesUPeriodicSurface)
@@ -1431,6 +1510,50 @@ TEST(GeomFill_Gordon, NetworkSurface_UClosedNetwork_ProducesUPeriodicSurface)
   EXPECT_TRUE(aSurf->IsUPeriodic());
 }
 
+TEST(GeomFill_Gordon, NetworkSurface_UClosedNetwork_UsesInputToleranceForPeriodicity)
+{
+  constexpr double aSeamGap = 1.0e-5;
+  constexpr double aTolerance = 1.0e-4;
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 3);
+  aProfiles(1) =
+    makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), gp_Pnt(aSeamGap, 0, 0));
+  aProfiles(2) =
+    makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 1), gp_Pnt(aSeamGap, 1, 0));
+  aProfiles(3) =
+    makeQuadraticBSpline(gp_Pnt(0, 2, 0), gp_Pnt(1, 2, 0), gp_Pnt(aSeamGap, 2, 0));
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 2, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 2, 0));
+  aGuides(3) = makeLinearBSpline(gp_Pnt(aSeamGap, 0, 0), gp_Pnt(aSeamGap, 2, 0));
+
+  NCollection_Array1<double> aProfileParams(1, 3);
+  aProfileParams(1) = 0.0;
+  aProfileParams(2) = 0.5;
+  aProfileParams(3) = 1.0;
+
+  NCollection_Array1<double> aGuideParams(1, 3);
+  aGuideParams(1) = 0.0;
+  aGuideParams(2) = 0.5;
+  aGuideParams(3) = 1.0;
+
+  GeomFill_NetworkSurface aNetwork;
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParams,
+                aGuideParams,
+                makeIntersectionGrid(aProfiles, aGuideParams),
+                makeUnitWeightGrid(aProfiles, aGuideParams),
+                aTolerance,
+                true,
+                false);
+  aNetwork.Perform();
+
+  ASSERT_TRUE(aNetwork.IsDone()) << static_cast<int>(aNetwork.Status());
+  EXPECT_TRUE(aNetwork.Surface()->IsUPeriodic());
+}
+
 TEST(GeomFill_Gordon, NetworkSurface_InvalidPreparedNetworkReportsStatus)
 {
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 1);
@@ -1464,6 +1587,43 @@ TEST(GeomFill_Gordon, NetworkSurface_InvalidPreparedNetworkReportsStatus)
   EXPECT_FALSE(aNetwork.IsDone());
   EXPECT_EQ(aNetwork.Status(), GeomFill_NetworkSurface::ResultStatus::InvalidInput);
   EXPECT_THROW((void)aNetwork.Surface(), StdFail_NotDone);
+}
+
+TEST(GeomFill_Gordon, NetworkSurface_InvalidWeightsReportsInvalidInput)
+{
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 2);
+  aProfiles(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+  aProfiles(2) = makeLinearBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0));
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 2);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  NCollection_Array1<double> aProfileParams(1, 2);
+  aProfileParams(1) = 0.0;
+  aProfileParams(2) = 1.0;
+
+  NCollection_Array1<double> aGuideParams(1, 2);
+  aGuideParams(1) = 0.0;
+  aGuideParams(2) = 1.0;
+
+  NCollection_Array2<double> aWeights = makeUnitWeightGrid(aProfiles, aGuideParams);
+  aWeights(2, 2) = 0.0;
+
+  GeomFill_NetworkSurface aNetwork;
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParams,
+                aGuideParams,
+                makeIntersectionGrid(aProfiles, aGuideParams),
+                aWeights,
+                Precision::Confusion(),
+                false,
+                false);
+  aNetwork.Perform();
+
+  EXPECT_FALSE(aNetwork.IsDone());
+  EXPECT_EQ(aNetwork.Status(), GeomFill_NetworkSurface::ResultStatus::InvalidInput);
 }
 
 TEST(GeomFill_Gordon, NetworkSurface_CompatibleRationalWeightsProducesRationalSurface)
@@ -1637,6 +1797,10 @@ TEST(GeomFill_Gordon, ApproximateFallbackCanRecoverRationalDegreeOverflow)
 
   ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
   EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
+  EXPECT_TRUE(aGordon.Report().IsApproximate);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
+  EXPECT_NEAR(aGordon.Report().MaxApproximationDeviation, 0.015625557595219788, 1.0e-12);
   EXPECT_FALSE(aGordon.Surface().IsNull());
 }
 
@@ -1662,6 +1826,9 @@ TEST(GeomFill_Gordon, ExactOnlyReportsRationalDegreeOverflow)
   EXPECT_FALSE(aGordon.IsDone());
   EXPECT_FALSE(aGordon.IsApproximate());
   EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::RationalDegreeOverflow);
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::RationalDegreeOverflow);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::ExactConstruction);
+  EXPECT_FALSE(aGordon.Report().IsApproximate);
 }
 
 TEST(GeomFill_Gordon, ExactOnlyReportsRationalReparametrizationFailure)
@@ -1684,6 +1851,9 @@ TEST(GeomFill_Gordon, ExactOnlyReportsRationalReparametrizationFailure)
   EXPECT_FALSE(aGordon.IsDone());
   EXPECT_FALSE(aGordon.IsApproximate());
   EXPECT_EQ(aGordon.Status(), GeomFill_Gordon::ResultStatus::RationalReparametrizationFailed);
+  EXPECT_EQ(aGordon.Report().Status,
+            GeomFill_Gordon::ResultStatus::RationalReparametrizationFailed);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::Reparametrization);
 }
 
 TEST(GeomFill_Gordon, ApproximateFallbackCanReparametrizeRationalCurves)
@@ -1706,7 +1876,51 @@ TEST(GeomFill_Gordon, ApproximateFallbackCanReparametrizeRationalCurves)
 
   ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
   EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
+  EXPECT_TRUE(aGordon.Report().IsApproximate);
+  EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
   EXPECT_FALSE(aGordon.Surface().IsNull());
+}
+
+TEST(GeomFill_Gordon, ApproximateFallbackRepeatPerformKeepsReportStable)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), 1.0, 0.45, 1.0);
+  aProfiles(2) =
+    makeRationalQuadraticLineBSpline(gp_Pnt(0, 0.4, 0), gp_Pnt(1, 0.4, 0), 1.0, 1.8, 0.7);
+  aProfiles(3) = makeRationalQuadraticLineBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 0), 0.8, 0.65, 1.5);
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(0.4, 0, 0), gp_Pnt(0.4, 1, 0));
+  aGuides(3) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.SetApproximationMode(GeomFill_Gordon::ApproximationMode::AllowApproximateFallback);
+
+  aGordon.Perform();
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
+  EXPECT_TRUE(aGordon.Report().IsApproximate);
+  EXPECT_NEAR(aGordon.Report().MaxContactGap, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxApproximationDeviation, 0.0, 1.0e-12);
+  const gp_Pnt aFirstCenter = aGordon.Surface()->Value(0.5, 0.5);
+
+  aGordon.Perform();
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_TRUE(aGordon.IsApproximate());
+  EXPECT_EQ(aGordon.Report().Status, GeomFill_Gordon::ResultStatus::Done);
+  EXPECT_EQ(aGordon.Report().FailedStage, GeomFill_Gordon::BuildStage::NotStarted);
+  EXPECT_TRUE(aGordon.Report().IsApproximate);
+  EXPECT_NEAR(aGordon.Report().MaxContactGap, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxReparametrizationDeviation, 0.0, 1.0e-12);
+  EXPECT_NEAR(aGordon.Report().MaxApproximationDeviation, 0.0, 1.0e-12);
+  const gp_Pnt aSecondCenter = aGordon.Surface()->Value(0.5, 0.5);
+  EXPECT_NEAR(aFirstCenter.Distance(aSecondCenter), 0.0, Precision::Confusion());
 }
 
 TEST(GeomFill_Gordon, NetworkSurface_VClosedNetwork_ProducesVPeriodicSurface)

@@ -25,6 +25,7 @@
 #include <NCollection_LinearVector.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <StdFail_NotDone.hxx>
 #include <math_Matrix.hxx>
@@ -129,12 +130,13 @@ NCollection_Array2<gp_Pnt> profileSampleGrid(
                                      static_cast<int>(theNbUSamples),
                                      1,
                                      static_cast<int>(theProfiles.Size()));
-  for (size_t aUIdx = 0; aUIdx < theNbUSamples; ++aUIdx)
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
-    const double aU = static_cast<double>(aUIdx) / static_cast<double>(theNbUSamples - 1);
-    for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+    const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
+    for (size_t aUIdx = 0; aUIdx < theNbUSamples; ++aUIdx)
     {
-      aPoints.ChangeAt(aUIdx, aProfileIdx) = theProfiles.At(aProfileIdx)->Value(aU);
+      const double aU = static_cast<double>(aUIdx) / static_cast<double>(theNbUSamples - 1);
+      aPoints.ChangeAt(aUIdx, aProfileIdx) = aProfileAdaptor.EvalD0(aU);
     }
   }
   return aPoints;
@@ -151,10 +153,11 @@ NCollection_Array2<gp_Pnt> guideSampleGrid(
                                      static_cast<int>(theNbVSamples));
   for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
   {
+    const GeomAdaptor_Curve aGuideAdaptor(theGuides.At(aGuideIdx));
     for (size_t aVIdx = 0; aVIdx < theNbVSamples; ++aVIdx)
     {
       const double aV = static_cast<double>(aVIdx) / static_cast<double>(theNbVSamples - 1);
-      aPoints.ChangeAt(aGuideIdx, aVIdx) = theGuides.At(aGuideIdx)->Value(aV);
+      aPoints.ChangeAt(aGuideIdx, aVIdx) = aGuideAdaptor.EvalD0(aV);
     }
   }
   return aPoints;
@@ -200,21 +203,144 @@ occ::handle<Geom_BSplineSurface> approximatePreparedNetwork(
   return approximateGrid(aPoints, theTolerance);
 }
 
+void resetReport(GeomFill_Gordon::BuildReport& theReport)
+{
+  theReport = GeomFill_Gordon::BuildReport();
+}
+
+void setStatus(GeomFill_Gordon::BuildReport&       theReport,
+               const GeomFill_Gordon::ResultStatus theNewStatus,
+               const GeomFill_Gordon::BuildStage   theStage)
+{
+  theReport.Status      = theNewStatus;
+  theReport.FailedStage = theNewStatus == GeomFill_Gordon::ResultStatus::Done
+                            ? GeomFill_Gordon::BuildStage::NotStarted
+                            : theStage;
+}
+
+bool copyWorkingCurves(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theInput,
+                       NCollection_Array1<occ::handle<Geom_BSplineCurve>>&       theWorking)
+{
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    for (size_t aCurveIdx = 0; aCurveIdx < theInput.Size(); ++aCurveIdx)
+    {
+      if (theInput.At(aCurveIdx).IsNull())
+      {
+        return false;
+      }
+      theWorking.ChangeAt(aCurveIdx) =
+        occ::down_cast<Geom_BSplineCurve>(theInput.At(aCurveIdx)->Copy());
+      if (theWorking.At(aCurveIdx).IsNull())
+      {
+        return false;
+      }
+    }
+  }
+  catch (Standard_Failure const&)
+  {
+    return false;
+  }
+  return true;
+}
+
+double surfaceStartParameter(const occ::handle<Geom_BSplineSurface>& theSurface, const bool theIsU)
+{
+  return theIsU ? theSurface->UKnot(1) : theSurface->VKnot(1);
+}
+
+double surfaceEndParameter(const occ::handle<Geom_BSplineSurface>& theSurface, const bool theIsU)
+{
+  return theIsU ? theSurface->UKnot(theSurface->NbUKnots())
+                : theSurface->VKnot(theSurface->NbVKnots());
+}
+
+double surfaceParameter(const occ::handle<Geom_BSplineSurface>& theSurface,
+                        const bool                              theIsU,
+                        const double                            theUnitParameter)
+{
+  const double aFirst = surfaceStartParameter(theSurface, theIsU);
+  return aFirst + theUnitParameter * (surfaceEndParameter(theSurface, theIsU) - aFirst);
+}
+
+double maxProfileDeviation(const occ::handle<Geom_BSplineSurface>&                   theSurface,
+                           const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                           const math_Vector&                                        theProfileParams)
+{
+  constexpr int THE_NB_SAMPLES = 24;
+  double        aMaxDeviation  = 0.0;
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
+    const double aV = surfaceParameter(theSurface,
+                                       false,
+                                       theProfileParams(static_cast<int>(aProfileIdx) + 1));
+    for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
+    {
+      const double aParam = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
+      const double aU     = surfaceParameter(theSurface, true, aParam);
+      aMaxDeviation =
+        std::max(aMaxDeviation,
+                 aProfileAdaptor.EvalD0(aParam).Distance(theSurface->Value(aU, aV)));
+    }
+  }
+  return aMaxDeviation;
+}
+
+double maxGuideDeviation(const occ::handle<Geom_BSplineSurface>&                   theSurface,
+                         const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                         const math_Vector&                                        theGuideParams)
+{
+  constexpr int THE_NB_SAMPLES = 24;
+  double        aMaxDeviation  = 0.0;
+  for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+  {
+    const GeomAdaptor_Curve aGuideAdaptor(theGuides.At(aGuideIdx));
+    const double aU =
+      surfaceParameter(theSurface, true, theGuideParams(static_cast<int>(aGuideIdx) + 1));
+    for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
+    {
+      const double aParam = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
+      const double aV     = surfaceParameter(theSurface, false, aParam);
+      aMaxDeviation =
+        std::max(aMaxDeviation, aGuideAdaptor.EvalD0(aParam).Distance(theSurface->Value(aU, aV)));
+    }
+  }
+  return aMaxDeviation;
+}
+
 } // namespace
 
 //=================================================================================================
 
 void GeomFill_Gordon::Perform()
 {
-  myStatus = ResultStatus::NotStarted;
+  resetReport(myReport);
   mySurface.Nullify();
-  myIsApproximate = false;
+  myIsUClosed     = false;
+  myIsVClosed     = false;
 
-  if (myProfiles.Size() < 2 || myGuides.Size() < 2)
+  if (myInputProfiles.Size() < 2 || myInputGuides.Size() < 2)
   {
-    myStatus = ResultStatus::InvalidInput;
+    setStatus(myReport, ResultStatus::InvalidInput, BuildStage::InputConversion);
     return;
   }
+
+  myProfiles = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, myInputProfiles.Length());
+  myGuides   = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, myInputGuides.Length());
+  if (!copyWorkingCurves(myInputProfiles, myProfiles)
+      || !copyWorkingCurves(myInputGuides, myGuides))
+  {
+    setStatus(myReport, ResultStatus::ConversionFailed, BuildStage::InputConversion);
+    return;
+  }
+
+  myProfileParams =
+    NCollection_Array2<double>(1, myInputProfiles.Length(), 1, myInputGuides.Length());
+  myGuideParams =
+    NCollection_Array2<double>(1, myInputProfiles.Length(), 1, myInputGuides.Length());
 
   GordonUtilities::NetworkPreparation aNetwork(myProfiles,
                                                myGuides,
@@ -225,25 +351,26 @@ void GeomFill_Gordon::Perform()
 
   if (!aNetwork.ConvertCurvesToUnitInterval())
   {
-    myStatus = ResultStatus::ConversionFailed;
+    setStatus(myReport, ResultStatus::ConversionFailed, BuildStage::InputConversion);
     return;
   }
 
   if (!aNetwork.FillIntersectionParameters())
   {
-    myStatus = ResultStatus::IntersectionFailed;
+    setStatus(myReport, ResultStatus::IntersectionFailed, BuildStage::ContactDiscovery);
     return;
   }
+  myReport.MaxContactGap = aNetwork.MaxContactGap();
 
   if (!aNetwork.ReorderNetwork())
   {
-    myStatus = ResultStatus::OrderingFailed;
+    setStatus(myReport, ResultStatus::OrderingFailed, BuildStage::NetworkOrdering);
     return;
   }
 
   if (!aNetwork.NormalizeIntersectionParameters(myIsUClosed, myIsVClosed))
   {
-    myStatus = ResultStatus::CompatibilityFailed;
+    setStatus(myReport, ResultStatus::CompatibilityFailed, BuildStage::NetworkOrdering);
     return;
   }
 
@@ -252,15 +379,17 @@ void GeomFill_Gordon::Perform()
                                                  == ApproximationMode::AllowApproximateFallback,
                                                aHasApproximateReparametrization))
   {
-    myStatus = hasRationalCurve(myProfiles, myGuides)
-                 ? ResultStatus::RationalReparametrizationFailed
-                 : ResultStatus::ReparametrizationFailed;
+    setStatus(myReport,
+              hasRationalCurve(myProfiles, myGuides) ? ResultStatus::RationalReparametrizationFailed
+                                                     : ResultStatus::ReparametrizationFailed,
+              BuildStage::Reparametrization);
     return;
   }
+  myReport.MaxReparametrizationDeviation = aNetwork.MaxReparametrizationDeviation();
 
   if (!aNetwork.NormalizeIntersectionParameters(myIsUClosed, myIsVClosed))
   {
-    myStatus = ResultStatus::CompatibilityFailed;
+    setStatus(myReport, ResultStatus::CompatibilityFailed, BuildStage::Reparametrization);
     return;
   }
 
@@ -294,20 +423,29 @@ void GeomFill_Gordon::Perform()
                                              myTolerance);
       if (!mySurface.IsNull())
       {
-        myIsApproximate = true;
-        myStatus        = ResultStatus::Done;
+        myReport.IsApproximate = true;
+        myReport.MaxApproximationDeviation =
+          std::max(maxProfileDeviation(mySurface, myProfiles, aProfileParamValues),
+                   maxGuideDeviation(mySurface, myGuides, aGuideParamValues));
+        setStatus(myReport, ResultStatus::Done, BuildStage::Approximation);
         return;
       }
-      myStatus = ResultStatus::ApproximationFailed;
+      setStatus(myReport, ResultStatus::ApproximationFailed, BuildStage::Approximation);
       return;
     }
-    myStatus = anExactStatus;
+    setStatus(myReport, anExactStatus, BuildStage::ExactConstruction);
     return;
   }
 
-  mySurface       = aNetworkSurface.Surface();
-  myIsApproximate = aHasApproximateReparametrization;
-  myStatus        = ResultStatus::Done;
+  mySurface                        = aNetworkSurface.Surface();
+  myReport.MaxProfileDeviation     = maxProfileDeviation(mySurface, myProfiles, aProfileParamValues);
+  myReport.MaxGuideDeviation       = maxGuideDeviation(mySurface, myGuides, aGuideParamValues);
+  myReport.IsApproximate           = aHasApproximateReparametrization;
+  myReport.MaxApproximationDeviation = myReport.IsApproximate
+                                         ? std::max(myReport.MaxProfileDeviation,
+                                                    myReport.MaxGuideDeviation)
+                                         : 0.0;
+  setStatus(myReport, ResultStatus::Done, BuildStage::Validation);
 }
 
 //=================================================================================================
@@ -321,10 +459,9 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
                            double                                             theTolerance)
 {
   myTolerance     = theTolerance;
-  myStatus        = ResultStatus::NotStarted;
   myIsUClosed     = false;
   myIsVClosed     = false;
-  myIsApproximate = false;
+  resetReport(myReport);
   mySurface.Nullify();
 
   const size_t aNbProf = theProfiles.Size();
@@ -333,23 +470,27 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
   if (aNbProf < 2 || aNbGuid < 2)
   {
     // Store counts but don't try to convert - Perform() will check and return.
-    myProfiles = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbProf));
-    myGuides   = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbGuid));
+    myInputProfiles =
+      NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbProf));
+    myInputGuides =
+      NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbGuid));
     return;
   }
 
-  // Convert input arrays to BSpline storage arrays.
-  myProfiles = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbProf));
-  myGuides   = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbGuid));
+  // Convert input arrays to immutable B-spline seeds. Perform() deep-copies these
+  // seeds before applying destructive preparation steps.
+  myInputProfiles =
+    NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbProf));
+  myInputGuides = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbGuid));
 
   for (size_t aProfileIdx = 0; aProfileIdx < aNbProf; ++aProfileIdx)
   {
-    myProfiles.ChangeAt(aProfileIdx) =
+    myInputProfiles.ChangeAt(aProfileIdx) =
       GeomConvert::CurveToBSplineCurve(theProfiles.At(aProfileIdx));
   }
   for (size_t aGuideIdx = 0; aGuideIdx < aNbGuid; ++aGuideIdx)
   {
-    myGuides.ChangeAt(aGuideIdx) = GeomConvert::CurveToBSplineCurve(theGuides.At(aGuideIdx));
+    myInputGuides.ChangeAt(aGuideIdx) = GeomConvert::CurveToBSplineCurve(theGuides.At(aGuideIdx));
   }
 
   // Initialize parameter matrices.

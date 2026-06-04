@@ -144,6 +144,8 @@ bool exposePeriod(occ::handle<Geom_BSplineCurve>& theCurve)
 
   try
   {
+    OCC_CATCH_SIGNALS
+
     const double aFirst = theCurve->FirstParameter();
     const double aLast  = theCurve->LastParameter();
     if (aLast <= aFirst + Precision::PConfusion())
@@ -215,8 +217,10 @@ void appendContact(const occ::handle<Geom_BSplineCurve>& theProfile,
                    const double                          theTolerance,
                    ContactSet&                           theContacts)
 {
-  const gp_Pnt aProfilePoint = theProfile->Value(theProfileParam);
-  const gp_Pnt aGuidePoint   = theGuide->Value(theGuideParam);
+  const GeomAdaptor_Curve aProfileAdaptor(theProfile);
+  const GeomAdaptor_Curve aGuideAdaptor(theGuide);
+  const gp_Pnt            aProfilePoint = aProfileAdaptor.EvalD0(theProfileParam);
+  const gp_Pnt            aGuidePoint   = aGuideAdaptor.EvalD0(theGuideParam);
   const double aGap          = aProfilePoint.Distance(aGuidePoint);
   if (aGap > theTolerance)
   {
@@ -273,11 +277,13 @@ void appendBoundaryContacts(const occ::handle<Geom_BSplineCurve>& theProfile,
 {
   const double aProfileBounds[2] = {theProfile->FirstParameter(), theProfile->LastParameter()};
   const double aGuideBounds[2]   = {theGuide->FirstParameter(), theGuide->LastParameter()};
+  const GeomAdaptor_Curve aProfileAdaptor(theProfile);
+  const GeomAdaptor_Curve aGuideAdaptor(theGuide);
   for (const double aProfileParam : aProfileBounds)
   {
     double aGuideParam = 0.0;
     if (GeomLib_Tool::Parameter(theGuide,
-                                theProfile->Value(aProfileParam),
+                                aProfileAdaptor.EvalD0(aProfileParam),
                                 theTolerance,
                                 aGuideParam))
     {
@@ -288,7 +294,7 @@ void appendBoundaryContacts(const occ::handle<Geom_BSplineCurve>& theProfile,
   {
     double aProfileParam = 0.0;
     if (GeomLib_Tool::Parameter(theProfile,
-                                theGuide->Value(aGuideParam),
+                                aGuideAdaptor.EvalD0(aGuideParam),
                                 theTolerance,
                                 aProfileParam))
     {
@@ -297,14 +303,89 @@ void appendBoundaryContacts(const occ::handle<Geom_BSplineCurve>& theProfile,
   }
 }
 
+bool appendLinearSegmentContact(const occ::handle<Geom_BSplineCurve>& theProfile,
+                                const occ::handle<Geom_BSplineCurve>& theGuide,
+                                const double                          theTolerance,
+                                ContactSet&                           theContacts)
+{
+  if (theProfile->Degree() != 1 || theGuide->Degree() != 1 || theProfile->NbPoles() != 2
+      || theGuide->NbPoles() != 2)
+  {
+    return false;
+  }
+
+  const double aProfileFirst = theProfile->FirstParameter();
+  const double aProfileLast  = theProfile->LastParameter();
+  const double aGuideFirst   = theGuide->FirstParameter();
+  const double aGuideLast    = theGuide->LastParameter();
+  if (aProfileLast <= aProfileFirst + Precision::PConfusion()
+      || aGuideLast <= aGuideFirst + Precision::PConfusion())
+  {
+    return true;
+  }
+
+  const GeomAdaptor_Curve aProfileAdaptor(theProfile);
+  const GeomAdaptor_Curve aGuideAdaptor(theGuide);
+  const gp_Pnt            aP0 = aProfileAdaptor.EvalD0(aProfileFirst);
+  const gp_Pnt            aP1 = aProfileAdaptor.EvalD0(aProfileLast);
+  const gp_Pnt            aQ0 = aGuideAdaptor.EvalD0(aGuideFirst);
+  const gp_Pnt            aQ1 = aGuideAdaptor.EvalD0(aGuideLast);
+
+  const gp_XYZ aU = aP1.XYZ() - aP0.XYZ();
+  const gp_XYZ aV = aQ1.XYZ() - aQ0.XYZ();
+  const gp_XYZ aW = aP0.XYZ() - aQ0.XYZ();
+  const double aA = aU.SquareModulus();
+  const double aB = aU.Dot(aV);
+  const double aC = aV.SquareModulus();
+  const double aD = aU.Dot(aW);
+  const double aE = aV.Dot(aW);
+  if (aA <= gp::Resolution() || aC <= gp::Resolution())
+  {
+    return true;
+  }
+
+  const double aDenom = aA * aC - aB * aB;
+  if (std::abs(aDenom) <= gp::Resolution())
+  {
+    return false;
+  }
+
+  double       aS     = 0.0;
+  double       aT     = 0.0;
+  aS = std::clamp((aB * aE - aC * aD) / aDenom, 0.0, 1.0);
+  aT = (aB * aS + aE) / aC;
+  if (aT < 0.0)
+  {
+    aT = 0.0;
+    aS = std::clamp(-aD / aA, 0.0, 1.0);
+  }
+  else if (aT > 1.0)
+  {
+    aT = 1.0;
+    aS = std::clamp((aB - aD) / aA, 0.0, 1.0);
+  }
+
+  appendContact(theProfile,
+                theGuide,
+                aProfileFirst + aS * (aProfileLast - aProfileFirst),
+                aGuideFirst + aT * (aGuideLast - aGuideFirst),
+                theTolerance,
+                theContacts);
+  return true;
+}
+
 //! Returns all close contacts detected for one profile/guide pair.
 ContactSet collectContacts(const occ::handle<Geom_BSplineCurve>& theProfile,
                            const occ::handle<Geom_BSplineCurve>& theGuide,
                            const double                          theTolerance)
 {
-  GeomAPI_ExtremaCurveCurve anExtrema(theProfile, theGuide);
-
   ContactSet aContacts;
+  if (appendLinearSegmentContact(theProfile, theGuide, theTolerance, aContacts))
+  {
+    return aContacts;
+  }
+
+  GeomAPI_ExtremaCurveCurve anExtrema(theProfile, theGuide);
   for (int anExtIdx = 1; anExtIdx <= anExtrema.NbExtrema(); ++anExtIdx)
   {
     gp_Pnt aProfilePoint;
@@ -365,6 +446,21 @@ bool chooseNearestContacts(const NCollection_LinearVector<ContactSet>& theContac
     }
   }
   return true;
+}
+
+//! Returns the largest best-contact gap in a complete contact table.
+double maxNearestContactGap(const NCollection_LinearVector<ContactSet>& theContacts)
+{
+  double aMaxGap = 0.0;
+  for (size_t aSetIdx = 0; aSetIdx < theContacts.Size(); ++aSetIdx)
+  {
+    const ContactSet& aSet = theContacts.Value(aSetIdx);
+    if (!aSet.Candidates.IsEmpty())
+    {
+      aMaxGap = std::max(aMaxGap, aSet.Candidates.First().Gap);
+    }
+  }
+  return aMaxGap;
 }
 
 //! Builds all profile/guide contacts.
@@ -471,28 +567,31 @@ bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurv
   // One pass validates all contacts and measures only the two possible seam gaps.
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
+    const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
     for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
     {
+      const GeomAdaptor_Curve aGuideAdaptor(theGuides.At(aGuideIdx));
       const gp_Pnt aProfilePoint =
-        theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, aGuideIdx));
+        aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aGuideIdx));
       const gp_Pnt aGuidePoint =
-        theGuides.At(aGuideIdx)->Value(theGuideParams.At(aProfileIdx, aGuideIdx));
+        aGuideAdaptor.EvalD0(theGuideParams.At(aProfileIdx, aGuideIdx));
       if (aProfilePoint.Distance(aGuidePoint) > aTol)
       {
         return false;
       }
       if (aGuideIdx == 0 || aGuideIdx == aLastGuide)
       {
+        const gp_Pnt aOppositePoint =
+          aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aLastGuide - aGuideIdx));
         aUGap = std::max(aUGap,
-                         aProfilePoint.Distance(
-                           theProfiles.At(aProfileIdx)
-                             ->Value(theProfileParams.At(aProfileIdx, aLastGuide - aGuideIdx))));
+                         aProfilePoint.Distance(aOppositePoint));
       }
       if (aProfileIdx == 0 || aProfileIdx == aLastProfile)
       {
+        const gp_Pnt aOppositePoint =
+          aGuideAdaptor.EvalD0(theGuideParams.At(aLastProfile - aProfileIdx, aGuideIdx));
         aVGap = std::max(aVGap,
-                         aGuidePoint.Distance(theGuides.At(aGuideIdx)->Value(
-                           theGuideParams.At(aLastProfile - aProfileIdx, aGuideIdx))));
+                         aGuidePoint.Distance(aOppositePoint));
       }
     }
   }
@@ -595,17 +694,18 @@ void openClosedBoundaryCandidates(
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
   NCollection_Array2<double>&                               theProfileParams,
-  NCollection_Array2<double>&                               theGuideParams)
+  NCollection_Array2<double>&                               theGuideParams,
+  const double                                               theTolerance)
 {
-  const double aTol        = Precision::Confusion();
+  const double aTol        = std::max(theTolerance, Precision::Confusion());
   const size_t aLastGuide  = theGuides.Size() - 1;
   const size_t aLastProf   = theProfiles.Size() - 1;
   bool         isURepeated = true;
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
-    const gp_Pnt aFirst = theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, 0));
-    const gp_Pnt aLast =
-      theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, aLastGuide));
+    const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
+    const gp_Pnt aFirst = aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, 0));
+    const gp_Pnt aLast  = aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aLastGuide));
     if (aFirst.Distance(aLast) > aTol)
     {
       isURepeated = false;
@@ -625,8 +725,9 @@ void openClosedBoundaryCandidates(
   bool isVRepeated = true;
   for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
   {
-    const gp_Pnt aFirst = theGuides.At(aGuideIdx)->Value(theGuideParams.At(0, aGuideIdx));
-    const gp_Pnt aLast  = theGuides.At(aGuideIdx)->Value(theGuideParams.At(aLastProf, aGuideIdx));
+    const GeomAdaptor_Curve aGuideAdaptor(theGuides.At(aGuideIdx));
+    const gp_Pnt            aFirst = aGuideAdaptor.EvalD0(theGuideParams.At(0, aGuideIdx));
+    const gp_Pnt            aLast  = aGuideAdaptor.EvalD0(theGuideParams.At(aLastProf, aGuideIdx));
     if (aFirst.Distance(aLast) > aTol)
     {
       isVRepeated = false;
@@ -827,7 +928,7 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
     }
   }
 
-  openClosedBoundaryCandidates(aProfiles, aGuides, aProfileParams, aGuideParams);
+  openClosedBoundaryCandidates(aProfiles, aGuides, aProfileParams, aGuideParams, theTolerance);
 
   if (!isMonotoneLayout(aProfileParamResult, aGuideParamResult))
   {
@@ -952,7 +1053,8 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
                   const math_Vector&              theSourceParams,
                   const math_Vector&              theTargetParams,
                   const bool                      theAllowApproximateRational,
-                  bool&                           theDidApproximate)
+                  bool&                           theDidApproximate,
+                  double&                         theMaxDeviation)
 {
   if (theCurve->IsRational())
   {
@@ -1043,6 +1145,19 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
   }
 
   theCurve = anInterpolator.Curve();
+  if (theCurve.IsNull())
+  {
+    return false;
+  }
+
+  const GeomAdaptor_Curve aNewCurveAdaptor(theCurve);
+  for (size_t aSampleIdx = 0; aSampleIdx < aSamples.Size(); ++aSampleIdx)
+  {
+    const double aTargetParam = aSamples.Value(aSampleIdx);
+    const gp_Pnt aSourcePoint = aCurveAdaptor.EvalD0(aLaw.Value(aTargetParam));
+    const gp_Pnt aNewPoint    = aNewCurveAdaptor.EvalD0(aTargetParam);
+    theMaxDeviation           = std::max(theMaxDeviation, aSourcePoint.Distance(aNewPoint));
+  }
   return !theCurve.IsNull();
 }
 
@@ -1052,7 +1167,8 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
                         NCollection_Array2<double>&                         theProfileParams,
                         NCollection_Array2<double>&                         theGuideParams,
                         const bool theAllowApproximateRational,
-                        bool&      theDidApproximate)
+                        bool&      theDidApproximate,
+                        double&    theMaxDeviation)
 {
   math_Matrix aProfileParams = toMatrix(theProfileParams);
   math_Matrix aGuideParams   = toMatrix(theGuideParams);
@@ -1080,7 +1196,8 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
                       anOldProfileParams,
                       aProfileTargets,
                       theAllowApproximateRational,
-                      theDidApproximate))
+                      theDidApproximate,
+                      theMaxDeviation))
     {
       return false;
     }
@@ -1110,7 +1227,8 @@ bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theP
                       anOldGuideParams,
                       aGuideTargets,
                       theAllowApproximateRational,
-                      theDidApproximate))
+                      theDidApproximate,
+                      theMaxDeviation))
     {
       return false;
     }
@@ -1133,11 +1251,12 @@ NCollection_Array2<gp_Pnt> contactPointGrid(
                                      theProfileParams.ColLength());
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
+    const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
     for (size_t aGuideIdx = 0; aGuideIdx < static_cast<size_t>(theProfileParams.RowLength());
          ++aGuideIdx)
     {
       aPoints(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
-        theProfiles.At(aProfileIdx)->Value(theProfileParams.At(aProfileIdx, aGuideIdx));
+        aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aGuideIdx));
     }
   }
   return aPoints;
@@ -1219,13 +1338,15 @@ public:
   //! Computes the profile/guide intersection parameter tables.
   bool FillIntersectionParameters()
   {
-    return fillContactTable(myProfiles,
-                            myGuides,
-                            myProfileParams,
-                            myGuideParams,
-                            myContactSets,
-                            myTolerance,
-                            myToUseParallel);
+    const bool isDone = fillContactTable(myProfiles,
+                                         myGuides,
+                                         myProfileParams,
+                                         myGuideParams,
+                                         myContactSets,
+                                         myTolerance,
+                                         myToUseParallel);
+    myMaxContactGap   = isDone ? maxNearestContactGap(myContactSets) : 0.0;
+    return isDone;
   }
 
   //! Reorders and orients the curve network.
@@ -1256,13 +1377,21 @@ public:
   bool EqualizeIntersectionParameters(const bool theAllowApproximateRational,
                                       bool&      theDidApproximate)
   {
+    myMaxReparametrizationDeviation = 0.0;
     return equalizeParameters(myProfiles,
                               myGuides,
                               myProfileParams,
                               myGuideParams,
                               theAllowApproximateRational,
-                              theDidApproximate);
+                              theDidApproximate,
+                              myMaxReparametrizationDeviation);
   }
+
+  //! Returns the largest best-contact gap found during contact discovery.
+  double MaxContactGap() const { return myMaxContactGap; }
+
+  //! Returns the largest measured curve rebuild deviation.
+  double MaxReparametrizationDeviation() const { return myMaxReparametrizationDeviation; }
 
   //! Returns the validated contact points in guide/profile grid order.
   NCollection_Array2<gp_Pnt> IntersectionPoints() const
@@ -1283,6 +1412,8 @@ private:
   NCollection_Array2<double>&                         myGuideParams;
   NCollection_LinearVector<ContactSet>                myContactSets;
   double                                              myTolerance;
+  double                                              myMaxContactGap = 0.0;
+  double                                              myMaxReparametrizationDeviation = 0.0;
   bool                                                myToUseParallel;
 };
 
