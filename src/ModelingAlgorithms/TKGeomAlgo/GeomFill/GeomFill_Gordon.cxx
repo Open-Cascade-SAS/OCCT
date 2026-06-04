@@ -267,23 +267,21 @@ double surfaceParameter(const occ::handle<Geom_BSplineSurface>& theSurface,
 
 double maxProfileDeviation(const occ::handle<Geom_BSplineSurface>&                   theSurface,
                            const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
-                           const math_Vector&                                        theProfileParams)
+                           const math_Vector& theProfileParams)
 {
   constexpr int THE_NB_SAMPLES = 24;
   double        aMaxDeviation  = 0.0;
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
     const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
-    const double aV = surfaceParameter(theSurface,
-                                       false,
-                                       theProfileParams(static_cast<int>(aProfileIdx) + 1));
+    const double            aV =
+      surfaceParameter(theSurface, false, theProfileParams(static_cast<int>(aProfileIdx) + 1));
     for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
     {
       const double aParam = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
       const double aU     = surfaceParameter(theSurface, true, aParam);
       aMaxDeviation =
-        std::max(aMaxDeviation,
-                 aProfileAdaptor.EvalD0(aParam).Distance(theSurface->Value(aU, aV)));
+        std::max(aMaxDeviation, aProfileAdaptor.EvalD0(aParam).Distance(theSurface->Value(aU, aV)));
     }
   }
   return aMaxDeviation;
@@ -298,7 +296,7 @@ double maxGuideDeviation(const occ::handle<Geom_BSplineSurface>&                
   for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
   {
     const GeomAdaptor_Curve aGuideAdaptor(theGuides.At(aGuideIdx));
-    const double aU =
+    const double            aU =
       surfaceParameter(theSurface, true, theGuideParams(static_cast<int>(aGuideIdx) + 1));
     for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
     {
@@ -319,8 +317,8 @@ void GeomFill_Gordon::Perform()
 {
   resetReport(myReport);
   mySurface.Nullify();
-  myIsUClosed     = false;
-  myIsVClosed     = false;
+  myIsUClosed = false;
+  myIsVClosed = false;
 
   if (myInputProfiles.Size() < 2 || myInputGuides.Size() < 2)
   {
@@ -437,14 +435,13 @@ void GeomFill_Gordon::Perform()
     return;
   }
 
-  mySurface                        = aNetworkSurface.Surface();
-  myReport.MaxProfileDeviation     = maxProfileDeviation(mySurface, myProfiles, aProfileParamValues);
-  myReport.MaxGuideDeviation       = maxGuideDeviation(mySurface, myGuides, aGuideParamValues);
-  myReport.IsApproximate           = aHasApproximateReparametrization;
-  myReport.MaxApproximationDeviation = myReport.IsApproximate
-                                         ? std::max(myReport.MaxProfileDeviation,
-                                                    myReport.MaxGuideDeviation)
-                                         : 0.0;
+  mySurface                    = aNetworkSurface.Surface();
+  myReport.MaxProfileDeviation = maxProfileDeviation(mySurface, myProfiles, aProfileParamValues);
+  myReport.MaxGuideDeviation   = maxGuideDeviation(mySurface, myGuides, aGuideParamValues);
+  myReport.IsApproximate       = aHasApproximateReparametrization;
+  myReport.MaxApproximationDeviation =
+    myReport.IsApproximate ? std::max(myReport.MaxProfileDeviation, myReport.MaxGuideDeviation)
+                           : 0.0;
   setStatus(myReport, ResultStatus::Done, BuildStage::Validation);
 }
 
@@ -458,9 +455,9 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
                            const NCollection_Array1<occ::handle<Geom_Curve>>& theGuides,
                            double                                             theTolerance)
 {
-  myTolerance     = theTolerance;
-  myIsUClosed     = false;
-  myIsVClosed     = false;
+  myTolerance = theTolerance;
+  myIsUClosed = false;
+  myIsVClosed = false;
   resetReport(myReport);
   mySurface.Nullify();
 

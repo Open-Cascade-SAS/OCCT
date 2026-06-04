@@ -110,14 +110,14 @@ public:
   //! Diagnostics for the last Perform() call.
   struct BuildReport
   {
-    ResultStatus Status                     = ResultStatus::NotStarted;
-    BuildStage   FailedStage                = BuildStage::NotStarted;
-    bool         IsApproximate              = false;
-    double       MaxContactGap              = 0.0;
+    ResultStatus Status                        = ResultStatus::NotStarted;
+    BuildStage   FailedStage                   = BuildStage::NotStarted;
+    bool         IsApproximate                 = false;
+    double       MaxContactGap                 = 0.0;
     double       MaxReparametrizationDeviation = 0.0;
-    double       MaxProfileDeviation        = 0.0;
-    double       MaxGuideDeviation          = 0.0;
-    double       MaxApproximationDeviation  = 0.0;
+    double       MaxProfileDeviation           = 0.0;
+    double       MaxGuideDeviation             = 0.0;
+    double       MaxApproximationDeviation     = 0.0;
   };
 
   //! Creates an empty Gordon surface algorithm.

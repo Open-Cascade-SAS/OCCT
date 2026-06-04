@@ -434,11 +434,9 @@ TEST(GeomFill_Gordon, ReinitResetsReportAndSurface)
   ASSERT_FALSE(aGordon.Surface().IsNull());
 
   NCollection_Array1<occ::handle<Geom_Curve>> aOneProfile(1, 1);
-  aOneProfile(1) =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 1.0);
+  aOneProfile(1) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 1.0);
   NCollection_Array1<occ::handle<Geom_Curve>> aOneGuide(1, 1);
-  aOneGuide(1) =
-    new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 0.0, 1.0);
+  aOneGuide(1) = new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 0.0, 1.0);
 
   aGordon.Init(aOneProfile, aOneGuide, Precision::Confusion());
   EXPECT_FALSE(aGordon.IsDone());
@@ -1512,16 +1510,13 @@ TEST(GeomFill_Gordon, NetworkSurface_UClosedNetwork_ProducesUPeriodicSurface)
 
 TEST(GeomFill_Gordon, NetworkSurface_UClosedNetwork_UsesInputToleranceForPeriodicity)
 {
-  constexpr double aSeamGap = 1.0e-5;
+  constexpr double aSeamGap   = 1.0e-5;
   constexpr double aTolerance = 1.0e-4;
 
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 3);
-  aProfiles(1) =
-    makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), gp_Pnt(aSeamGap, 0, 0));
-  aProfiles(2) =
-    makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 1), gp_Pnt(aSeamGap, 1, 0));
-  aProfiles(3) =
-    makeQuadraticBSpline(gp_Pnt(0, 2, 0), gp_Pnt(1, 2, 0), gp_Pnt(aSeamGap, 2, 0));
+  aProfiles(1) = makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), gp_Pnt(aSeamGap, 0, 0));
+  aProfiles(2) = makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 1), gp_Pnt(aSeamGap, 1, 0));
+  aProfiles(3) = makeQuadraticBSpline(gp_Pnt(0, 2, 0), gp_Pnt(1, 2, 0), gp_Pnt(aSeamGap, 2, 0));
 
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 3);
   aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 2, 0));
@@ -1608,7 +1603,7 @@ TEST(GeomFill_Gordon, NetworkSurface_InvalidWeightsReportsInvalidInput)
   aGuideParams(2) = 1.0;
 
   NCollection_Array2<double> aWeights = makeUnitWeightGrid(aProfiles, aGuideParams);
-  aWeights(2, 2) = 0.0;
+  aWeights(2, 2)                      = 0.0;
 
   GeomFill_NetworkSurface aNetwork;
   aNetwork.Init(aProfiles,

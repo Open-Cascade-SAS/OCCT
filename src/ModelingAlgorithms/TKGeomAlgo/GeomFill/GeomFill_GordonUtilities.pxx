@@ -221,7 +221,7 @@ void appendContact(const occ::handle<Geom_BSplineCurve>& theProfile,
   const GeomAdaptor_Curve aGuideAdaptor(theGuide);
   const gp_Pnt            aProfilePoint = aProfileAdaptor.EvalD0(theProfileParam);
   const gp_Pnt            aGuidePoint   = aGuideAdaptor.EvalD0(theGuideParam);
-  const double aGap          = aProfilePoint.Distance(aGuidePoint);
+  const double            aGap          = aProfilePoint.Distance(aGuidePoint);
   if (aGap > theTolerance)
   {
     return;
@@ -350,10 +350,10 @@ bool appendLinearSegmentContact(const occ::handle<Geom_BSplineCurve>& theProfile
     return false;
   }
 
-  double       aS     = 0.0;
-  double       aT     = 0.0;
-  aS = std::clamp((aB * aE - aC * aD) / aDenom, 0.0, 1.0);
-  aT = (aB * aS + aE) / aC;
+  double aS = 0.0;
+  double aT = 0.0;
+  aS        = std::clamp((aB * aE - aC * aD) / aDenom, 0.0, 1.0);
+  aT        = (aB * aS + aE) / aC;
   if (aT < 0.0)
   {
     aT = 0.0;
@@ -571,10 +571,9 @@ bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurv
     for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
     {
       const GeomAdaptor_Curve aGuideAdaptor(theGuides.At(aGuideIdx));
-      const gp_Pnt aProfilePoint =
+      const gp_Pnt            aProfilePoint =
         aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aGuideIdx));
-      const gp_Pnt aGuidePoint =
-        aGuideAdaptor.EvalD0(theGuideParams.At(aProfileIdx, aGuideIdx));
+      const gp_Pnt aGuidePoint = aGuideAdaptor.EvalD0(theGuideParams.At(aProfileIdx, aGuideIdx));
       if (aProfilePoint.Distance(aGuidePoint) > aTol)
       {
         return false;
@@ -583,15 +582,13 @@ bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurv
       {
         const gp_Pnt aOppositePoint =
           aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aLastGuide - aGuideIdx));
-        aUGap = std::max(aUGap,
-                         aProfilePoint.Distance(aOppositePoint));
+        aUGap = std::max(aUGap, aProfilePoint.Distance(aOppositePoint));
       }
       if (aProfileIdx == 0 || aProfileIdx == aLastProfile)
       {
         const gp_Pnt aOppositePoint =
           aGuideAdaptor.EvalD0(theGuideParams.At(aLastProfile - aProfileIdx, aGuideIdx));
-        aVGap = std::max(aVGap,
-                         aGuidePoint.Distance(aOppositePoint));
+        aVGap = std::max(aVGap, aGuidePoint.Distance(aOppositePoint));
       }
     }
   }
@@ -695,7 +692,7 @@ void openClosedBoundaryCandidates(
   const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
   NCollection_Array2<double>&                               theProfileParams,
   NCollection_Array2<double>&                               theGuideParams,
-  const double                                               theTolerance)
+  const double                                              theTolerance)
 {
   const double aTol        = std::max(theTolerance, Precision::Confusion());
   const size_t aLastGuide  = theGuides.Size() - 1;
@@ -704,8 +701,8 @@ void openClosedBoundaryCandidates(
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
     const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
-    const gp_Pnt aFirst = aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, 0));
-    const gp_Pnt aLast  = aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aLastGuide));
+    const gp_Pnt            aFirst = aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, 0));
+    const gp_Pnt aLast = aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aLastGuide));
     if (aFirst.Distance(aLast) > aTol)
     {
       isURepeated = false;
@@ -1412,7 +1409,7 @@ private:
   NCollection_Array2<double>&                         myGuideParams;
   NCollection_LinearVector<ContactSet>                myContactSets;
   double                                              myTolerance;
-  double                                              myMaxContactGap = 0.0;
+  double                                              myMaxContactGap                 = 0.0;
   double                                              myMaxReparametrizationDeviation = 0.0;
   bool                                                myToUseParallel;
 };
