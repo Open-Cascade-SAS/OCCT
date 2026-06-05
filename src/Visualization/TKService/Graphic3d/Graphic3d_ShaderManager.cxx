@@ -2229,6 +2229,11 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  float aWidth = max (aPixelWidth, theThickness);" EOL
     "  if (aWidth == 0.0) { return 0.0; }" EOL "  return 1.0 - min (aDist / aWidth, 1.0);" EOL "}"
 
+    EOL "float axisLine1d (float theCoord, float theThickness)" EOL "{" EOL
+    "  float aWidth = max (fwidth (theCoord), theThickness);" EOL
+    "  if (aWidth == 0.0) { return 0.0; }" EOL
+    "  return 1.0 - min (abs (theCoord) / aWidth, 1.0);" EOL "}"
+
     EOL "vec4 gridLines2d (vec2 theUV, vec2 theAxisUV, vec3 theColor, vec2 theScale," EOL
     "                  vec2 theShift, bool theIsDrawAxis, float theThickness)" EOL "{" EOL
     "  float aAlphaX = gridLine1d (theUV.x, theShift.x, theScale.x, theThickness);" EOL
@@ -2236,11 +2241,14 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  float aAlpha  = uDrawMode == 1 ? aAlphaX * aAlphaY : max (aAlphaX, aAlphaY);" EOL
     "  vec4  aColor  = vec4 (theColor, aAlpha);" EOL
     "  if (uIsDrawAxis != 0 && theIsDrawAxis && uDrawMode != 1)" EOL "  {" EOL
-    "    float anAxisX = gridLine1d (theAxisUV.y, 0.0, 1.0, theThickness);" EOL
-    "    float anAxisY = gridLine1d (theAxisUV.x, 0.0, 1.0, theThickness);" EOL
-    "    if      (anAxisX > 0.0 && anAxisY > 0.0) { aColor.xyz = vec3 (0.0, 0.0, 1.0); }" EOL
-    "    else if (anAxisX > 0.0)                  { aColor.xyz = vec3 (1.0, 0.0, 0.0); }" EOL
-    "    else if (anAxisY > 0.0)                  { aColor.xyz = vec3 (0.0, 1.0, 0.0); }" EOL
+    "    float anAxisX = axisLine1d (theAxisUV.y, theThickness);" EOL
+    "    float anAxisY = axisLine1d (theAxisUV.x, theThickness);" EOL
+    "    if      (anAxisX > 0.0 && anAxisY > 0.0) { aColor = vec4 (0.0, 0.0, 1.0, max "
+    "(aColor.a, max (anAxisX, anAxisY))); }" EOL
+    "    else if (anAxisX > 0.0)                  { aColor = vec4 (1.0, 0.0, 0.0, max "
+    "(aColor.a, anAxisX)); }" EOL
+    "    else if (anAxisY > 0.0)                  { aColor = vec4 (0.0, 1.0, 0.0, max "
+    "(aColor.a, anAxisY)); }" EOL
     "  }" EOL "  return aColor;" EOL "}"
 
     EOL "vec4 gridLines1d (float theCoord, float theShift, float theScale, vec3 theColor, float "
@@ -2322,13 +2330,15 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "uAccentColor, uThickness));" EOL "      }" EOL "    }" EOL
     // For circular grid, paint X/Y axis lines explicitly using plane-local coords.
     "    if (uIsDrawAxis != 0 && uGridType == 1)" EOL "    {" EOL
-    "      vec2 aDerivAxis = max (fwidth (aAxisUv), vec2 (uThickness));" EOL
-    "      if (abs (aAxisUv.x) < aDerivAxis.x && abs (aAxisUv.y) < aDerivAxis.y)" EOL "      {" EOL
+    "      float anAxisX = axisLine1d (aAxisUv.y, uThickness);" EOL
+    "      float anAxisY = axisLine1d (aAxisUv.x, uThickness);" EOL
+    "      if (anAxisX > 0.0 && anAxisY > 0.0)" EOL "      {" EOL
     "        aColor = vec4 (0.0, 0.0, 1.0, 1.0);" EOL "      }" EOL
-    "      else if (abs (aAxisUv.y) < aDerivAxis.y)" EOL "      {" EOL
-    "        aColor = vec4 (1.0, 0.0, 0.0, 1.0);" EOL "      }" EOL
-    "      else if (abs (aAxisUv.x) < aDerivAxis.x)" EOL "      {" EOL
-    "        aColor = vec4 (0.0, 1.0, 0.0, 1.0);" EOL "      }" EOL "    }" EOL "  }"
+    "      else if (anAxisX > 0.0)" EOL "      {" EOL
+    "        aColor = vec4 (1.0, 0.0, 0.0, max (aColor.a, anAxisX));" EOL "      }" EOL
+    "      else if (anAxisY > 0.0)" EOL "      {" EOL
+    "        aColor = vec4 (0.0, 1.0, 0.0, max (aColor.a, anAxisY));" EOL "      }" EOL
+    "    }" EOL "  }"
 
     EOL "  if (aColor.a == 0.0) { discard; }" EOL "  aColor.a *= aBoundFade;" EOL
     "  occFragColor = aColor;" EOL "}";
