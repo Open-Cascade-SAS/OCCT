@@ -84,7 +84,7 @@ static bool isSameAngle(const double theFirst, const double theSecond)
   aDelta        = std::min(aDelta, THE_TWO_PI - aDelta);
   return aDelta <= Precision::Angular();
 }
-}
+} // namespace
 
 //=================================================================================================
 
@@ -571,8 +571,8 @@ bool OpenGl_ShaderGrid::echoDisplayPoint(const occ::handle<Graphic3d_Camera>& th
   {
     return false;
   }
-  const double aDisplayZ    = theCamera->IsZeroToOneDepth() ? 0.5 : 0.0;
-  theDisplayPoint           = theCamera->UnProject(gp_Pnt(aProjSnapped.X(), aProjSnapped.Y(), aDisplayZ));
+  const double aDisplayZ = theCamera->IsZeroToOneDepth() ? 0.5 : 0.0;
+  theDisplayPoint = theCamera->UnProject(gp_Pnt(aProjSnapped.X(), aProjSnapped.Y(), aDisplayZ));
   return isFinitePoint(theDisplayPoint);
 }
 

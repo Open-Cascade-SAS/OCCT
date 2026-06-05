@@ -47,8 +47,7 @@ public:
   void Erase();
 
   //! Add helper bounds required by camera Z fitting.
-  void AddZFitBounds(Bnd_Box&                             theGraphicBox,
-                     const occ::handle<Graphic3d_Camera>& theCamera) const;
+  void AddZFitBounds(Bnd_Box& theGraphicBox, const occ::handle<Graphic3d_Camera>& theCamera) const;
 
   //! Return snapped point for the grid under the window pixel.
   bool Echo(const occ::handle<Graphic3d_Camera>& theCamera,
