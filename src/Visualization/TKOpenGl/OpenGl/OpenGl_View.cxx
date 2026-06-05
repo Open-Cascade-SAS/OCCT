@@ -294,6 +294,117 @@ static bool isShaderGridPointInBounds(const Aspect_GridParams& theParams,
          && (theParams.SizeY() <= 0.0 || std::abs(theLocalY) <= theParams.SizeY() * 0.5);
 }
 
+//! Return TRUE if the angle belongs to the grid arc.
+static bool shaderGridArcContains(const double theStart, const double theEnd, const double theAngle)
+{
+  const double aTwoPi = 2.0 * M_PI;
+  double       aSpan = theEnd - theStart;
+  if (aSpan < 0.0)
+  {
+    aSpan += aTwoPi;
+  }
+
+  double aDelta = theAngle - theStart;
+  if (aDelta < 0.0)
+  {
+    aDelta += aTwoPi;
+  }
+  return aDelta <= aSpan;
+}
+
+//! Add local shader-grid point into world-space bounding box.
+static void addShaderGridLocalPoint(Bnd_Box&       theBox,
+                                    const gp_Pnt&  theOrigin,
+                                    const gp_XYZ&  theX,
+                                    const gp_XYZ&  theY,
+                                    const double   theLocalX,
+                                    const double   theLocalY)
+{
+  theBox.Add(gp_Pnt(theOrigin.XYZ() + theX * theLocalX + theY * theLocalY));
+}
+
+//! Add exactly known finite shader-grid extents to a bounding box.
+//!
+//! Unbounded shader grids have no finite world-space box; in that case only the
+//! plane origin is added so the grid plane can still participate in Z fitting
+//! without inventing artificial viewport-dependent extents.
+static void addShaderGridFiniteBounds(Bnd_Box&                 theBox,
+                                      const Aspect_GridParams& theParams,
+                                      const gp_Ax3&            thePlane)
+{
+  gp_Pnt anOrigin;
+  gp_XYZ aGridX, aGridY, aGridN;
+  shaderGridFrame(theParams, thePlane, anOrigin, aGridX, aGridY, aGridN);
+
+  addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, 0.0, 0.0);
+  if (theParams.IsCircular())
+  {
+    const double aRadius = theParams.Radius();
+    if (aRadius <= 0.0)
+    {
+      return;
+    }
+
+    if (!theParams.IsArc())
+    {
+      addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, aRadius, 0.0);
+      addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, -aRadius, 0.0);
+      addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, 0.0, aRadius);
+      addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, 0.0, -aRadius);
+      return;
+    }
+
+    auto addArcPoint = [&](const double theAngle) {
+      addShaderGridLocalPoint(theBox,
+                              anOrigin,
+                              aGridX,
+                              aGridY,
+                              aRadius * std::cos(theAngle),
+                              aRadius * std::sin(theAngle));
+    };
+
+    addArcPoint(theParams.AngleStart());
+    addArcPoint(theParams.AngleEnd());
+
+    const double aCardinalAngles[] = {0.0, M_PI * 0.5, M_PI, -M_PI * 0.5};
+    for (const double anAngle : aCardinalAngles)
+    {
+      if (shaderGridArcContains(theParams.AngleStart(), theParams.AngleEnd(), anAngle))
+      {
+        addArcPoint(anAngle);
+      }
+    }
+    return;
+  }
+
+  const double aHalfX = theParams.SizeX() > 0.0 ? theParams.SizeX() * 0.5 : 0.0;
+  const double aHalfY = theParams.SizeY() > 0.0 ? theParams.SizeY() * 0.5 : 0.0;
+  if (aHalfX <= 0.0 && aHalfY <= 0.0)
+  {
+    return;
+  }
+
+  if (aHalfX > 0.0 && aHalfY > 0.0)
+  {
+    addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, -aHalfX, -aHalfY);
+    addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, aHalfX, -aHalfY);
+    addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, aHalfX, aHalfY);
+    addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, -aHalfX, aHalfY);
+    return;
+  }
+
+  if (aHalfX > 0.0)
+  {
+    addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, -aHalfX, 0.0);
+    addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, aHalfX, 0.0);
+  }
+  if (aHalfY > 0.0)
+  {
+    addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, 0.0, -aHalfY);
+    addShaderGridLocalPoint(theBox, anOrigin, aGridX, aGridY, 0.0, aHalfY);
+  }
+}
+
 //! Chooses compatible internal color format for OIT frame buffer.
 static bool chooseOitColorConfiguration(const occ::handle<OpenGl_Context>& theGlContext,
                                         const int                          theConfigIndex,
@@ -1102,6 +1213,12 @@ Bnd_Box OpenGl_View::MinMaxValues(const bool theToIncludeAuxiliary) const
   }
 
   Bnd_Box aBox = base_type::MinMaxValues(theToIncludeAuxiliary);
+
+  if (theToIncludeAuxiliary && myToShowGrid && myGridParams.DrawMode() != Aspect_GDM_None
+      && !myGridParams.IsBackground())
+  {
+    addShaderGridFiniteBounds(aBox, myGridParams, myGridPlane);
+  }
 
   // make sure that stats overlay isn't clamped on hardware with unavailable depth clamping
   if (theToIncludeAuxiliary && myRenderParams.ToShowStats
@@ -4095,21 +4212,12 @@ void OpenGl_View::renderGrid()
   aContext->core11fwd->glGetIntegerv(GL_BLEND_DST_ALPHA, &aPrevBlendDstA);
   const occ::handle<OpenGl_ShaderProgram> aPrevProgram = aContext->ActiveProgram();
 
-  const double                       aZNearKeep = aCamera->ZNear();
-  const double                       aZFarKeep  = aCamera->ZFar();
-  const Graphic3d_Camera::Projection aProjKeep  = aCamera->ProjectionType();
+  const Graphic3d_Camera::Projection aProjKeep = aCamera->ProjectionType();
 
   gp_Pnt aPlaneOrigin;
   gp_XYZ aXRotated, aYRotated, aNDir;
   shaderGridFrame(myGridParams, myGridPlane, aPlaneOrigin, aXRotated, aYRotated, aNDir);
 
-  Bnd_Box      aBnd      = MinMaxValues(true);
-  const gp_Pnt aPlaneLoc = myGridPlane.Location();
-  if (myGridParams.IsBackground() || aBnd.IsVoid() || aBnd.IsOut(aPlaneLoc))
-  {
-    aBnd.Add(aPlaneLoc);
-    aCamera->ZFitAll(1.0, aBnd, aBnd);
-  }
   if (myGridParams.IsBackground())
   {
     aCamera->SetProjectionType(Graphic3d_Camera::Projection_Orthographic);
@@ -4180,7 +4288,7 @@ void OpenGl_View::renderGrid()
     aProg->SetUniform(aContext, "uAngularScale", GLfloat(aAngularScale));
     aProg->SetUniform(aContext, "uDrawMode", myGridParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
     aProg->SetUniform(aContext, "uIsPerspective", aCamera->IsOrthographic() ? 0 : 1);
-    aProg->SetUniform(aContext, "uNdcNear", GLfloat(aCamera->IsZeroToOneDepth() ? 0.0f : -1.0f));
+    aProg->SetUniform(aContext, "uIsZeroToOneDepth", aCamera->IsZeroToOneDepth() ? 1 : 0);
 
     NCollection_Vec2<float> aLocalOriginShift(0.0f, 0.0f);
     NCollection_Vec2<float> anAccentLocalOriginShift(0.0f, 0.0f);
@@ -4256,7 +4364,6 @@ void OpenGl_View::renderGrid()
   aContext->BindProgram(aPrevProgram);
   aContext->core30->glBindVertexArray((GLuint)aPrevVao);
 
-  aCamera->SetZRange(aZNearKeep, aZFarKeep);
   aCamera->SetProjectionType(aProjKeep);
 
   aContext->WorldViewState.Pop();
