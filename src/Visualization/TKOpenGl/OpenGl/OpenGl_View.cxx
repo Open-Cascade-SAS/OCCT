@@ -4235,6 +4235,7 @@ void OpenGl_View::renderGrid()
   aContext->ApplyWorldViewMatrix();
 
   aContext->core11fwd->glEnable(GL_DEPTH_TEST);
+  aContext->core11fwd->glDepthFunc(GL_LEQUAL);
   aContext->core11fwd->glDepthMask(GL_FALSE);
   aContext->core11fwd->glEnable(GL_BLEND);
   aContext->core11fwd->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

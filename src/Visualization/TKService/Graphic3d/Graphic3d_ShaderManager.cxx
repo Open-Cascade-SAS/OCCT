@@ -2262,6 +2262,11 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  vec4 aView = occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);" EOL
     "  return aView.xyz / aView.w;" EOL "}"
 
+    EOL "float fragmentDepthFromView (vec3 theViewPnt)" EOL "{" EOL
+    "  vec4 aClip = occProjectionMatrix * vec4 (theViewPnt, 1.0);" EOL
+    "  float aNdcZ = aClip.z / aClip.w;" EOL
+    "  return uNdcNear == 0.0 ? aNdcZ : (aNdcZ * 0.5 + 0.5);" EOL "}"
+
     EOL "bool intersectPlaneView (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL "{" EOL
     "  vec3 aRayOrigin = uIsPerspective != 0 ? vec3 (0.0) : theNearPoint;" EOL
     "  vec3 aRayTarget = theFarPoint;" EOL "  vec3 aDir = aRayTarget - aRayOrigin;" EOL
@@ -2280,6 +2285,9 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     EOL "  vec3 aNearPoint = unprojectView (vNdc.x, vNdc.y, uNdcNear);" EOL
     "  vec3 aFarPoint  = unprojectView (vNdc.x, vNdc.y, 1.0);" EOL "  vec3 aHit;" EOL
     "  if (!intersectPlaneView (aNearPoint, aFarPoint, aHit)) { discard; }" EOL
+    "  float aFragDepth = fragmentDepthFromView (aHit);" EOL
+    "  if (aFragDepth < 0.0 || aFragDepth > 1.0) { discard; }" EOL
+    "  gl_FragDepth = aFragDepth;" EOL
     "  vec3 aLocalAbs3  = aHit - uPlaneOriginView;" EOL
     "  vec2 aLocal      = vec2 (dot (aLocalAbs3, uPlaneXView), dot (aLocalAbs3, uPlaneYView));" EOL
     "  vec3 aLocalGrid3 = aHit - uPlaneRefView;" EOL

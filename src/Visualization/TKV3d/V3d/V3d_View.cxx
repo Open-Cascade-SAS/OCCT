@@ -3582,6 +3582,10 @@ void V3d_View::SetGrid(const gp_Ax3& aPlane, const occ::handle<Aspect_Grid>& aGr
 
 void V3d_View::SetGridActivity(const bool AFlag)
 {
+  if (MyGrid.IsNull())
+  {
+    return;
+  }
   if (AFlag)
   {
     MyGrid->Activate();
