@@ -78,8 +78,7 @@ void OpenGl_ShaderGrid::frame(gp_Pnt& theOrigin, gp_XYZ& theX, gp_XYZ& theY, gp_
   theN               = myPlane.Direction().XYZ();
 
   const gp_Pnt& anOriginLocal = myParams.Origin();
-  theOrigin.SetXYZ(myPlane.Location().XYZ() + aRawX * anOriginLocal.X()
-                   + aRawY * anOriginLocal.Y()
+  theOrigin.SetXYZ(myPlane.Location().XYZ() + aRawX * anOriginLocal.X() + aRawY * anOriginLocal.Y()
                    + theN * (anOriginLocal.Z() + myParams.ZOffset()));
 }
 
@@ -96,9 +95,9 @@ void OpenGl_ShaderGrid::effectiveScale(const occ::handle<Graphic3d_Camera>& theC
     return;
   }
 
-  const double aCurrentScale =
-    !theCamera.IsNull() && theCamera->Scale() > Precision::Confusion() ? theCamera->Scale()
-                                                                        : Precision::Confusion();
+  const double aCurrentScale = !theCamera.IsNull() && theCamera->Scale() > Precision::Confusion()
+                                 ? theCamera->Scale()
+                                 : Precision::Confusion();
   theScaleX /= aCurrentScale;
   theScaleY /= aCurrentScale;
 }
@@ -280,10 +279,10 @@ bool OpenGl_ShaderGrid::planeLocalHit(const occ::handle<Graphic3d_Camera>& theCa
     return false;
   }
 
-  const gp_XYZ aHit = aRayOriginP.XYZ() + aRay * aT;
+  const gp_XYZ aHit    = aRayOriginP.XYZ() + aRay * aT;
   const gp_XYZ aLocal3 = aHit - aPlaneOrigin.XYZ();
-  theLocalX = aLocal3.Dot(aPlaneX);
-  theLocalY = aLocal3.Dot(aPlaneY);
+  theLocalX            = aLocal3.Dot(aPlaneX);
+  theLocalY            = aLocal3.Dot(aPlaneY);
   if (theHit != nullptr)
   {
     *theHit = aHit;
@@ -293,9 +292,8 @@ bool OpenGl_ShaderGrid::planeLocalHit(const occ::handle<Graphic3d_Camera>& theCa
 
 //=================================================================================================
 
-void OpenGl_ShaderGrid::addViewFootprintBounds(
-  Bnd_Box&                             theBox,
-  const occ::handle<Graphic3d_Camera>& theCamera) const
+void OpenGl_ShaderGrid::addViewFootprintBounds(Bnd_Box&                             theBox,
+                                               const occ::handle<Graphic3d_Camera>& theCamera) const
 {
   const double aSamples[][2] = {{-1.0, -1.0}, {1.0, -1.0}, {1.0, 1.0}, {-1.0, 1.0}, {0.0, 0.0}};
   for (const double* aSample : aSamples)
@@ -438,8 +436,8 @@ bool OpenGl_ShaderGrid::Echo(const occ::handle<Graphic3d_Camera>& theCamera,
     return false;
   }
 
-  const double aNdcX = 2.0 * double(theX) / double(theWidth) - 1.0;
-  const double aNdcY = 2.0 * double(theHeight - 1 - theY) / double(theHeight) - 1.0;
+  const double aNdcX   = 2.0 * double(theX) / double(theWidth) - 1.0;
+  const double aNdcY   = 2.0 * double(theHeight - 1 - theY) / double(theHeight) - 1.0;
   double       aLocalX = 0.0;
   double       aLocalY = 0.0;
   if (!planeLocalHit(theCamera, aNdcX, aNdcY, aLocalX, aLocalY))
@@ -523,8 +521,7 @@ bool OpenGl_ShaderGrid::Echo(const occ::handle<Graphic3d_Camera>& theCamera,
     {
       const double aSnapRadius = std::round(aRadius / aRadiusStep) * aRadiusStep;
       const double aSnapAngle  = std::round(anAngle / anAngleStep) * anAngleStep;
-      if (!isPointInBounds(aSnapRadius * std::cos(aSnapAngle),
-                           aSnapRadius * std::sin(aSnapAngle)))
+      if (!isPointInBounds(aSnapRadius * std::cos(aSnapAngle), aSnapRadius * std::sin(aSnapAngle)))
       {
         return false;
       }
@@ -688,8 +685,8 @@ void OpenGl_ShaderGrid::SetUniforms(const occ::handle<OpenGl_Context>&       the
   theProgram->SetUniform(theContext, "uGridType", myParams.IsCircular() ? 1 : 0);
   theProgram->SetUniform(theContext, "uIsBackground", myParams.IsBackground() ? 1 : 0);
 
-  const double aAngularScale = myParams.IsCircular() ? double(myParams.AngularDivisions()) / M_PI
-                                                      : 0.0;
+  const double aAngularScale =
+    myParams.IsCircular() ? double(myParams.AngularDivisions()) / M_PI : 0.0;
   theProgram->SetUniform(theContext, "uAngularScale", GLfloat(aAngularScale));
   theProgram->SetUniform(theContext, "uDrawMode", myParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
   theProgram->SetUniform(theContext, "uIsPerspective", theCamera->IsOrthographic() ? 0 : 1);
@@ -700,18 +697,17 @@ void OpenGl_ShaderGrid::SetUniforms(const occ::handle<OpenGl_Context>&       the
   NCollection_Vec2<float> anAccentLocalOriginShift(0.0f, 0.0f);
   float                   aRadialOriginShift        = 0.0f;
   float                   anAccentRadialOriginShift = 0.0f;
-  double                  aLocalRefX = 0.0;
-  double                  aLocalRefY = 0.0;
+  double                  aLocalRefX                = 0.0;
+  double                  aLocalRefY                = 0.0;
   if (referenceLocal(theCamera, aLocalRefX, aLocalRefY))
   {
     if (myParams.IsCircular())
     {
-      const double aRadiusRef = std::sqrt(aLocalRefX * aLocalRefX + aLocalRefY * aLocalRefY);
-      aRadialOriginShift      = float(snappedLocalShift(aRadiusRef, aScaleX));
-      anAccentRadialOriginShift =
-        myParams.AccentScaleX() > Precision::Confusion()
-          ? float(snappedLocalShift(aRadiusRef, myParams.AccentScaleX()))
-          : aRadialOriginShift;
+      const double aRadiusRef   = std::sqrt(aLocalRefX * aLocalRefX + aLocalRefY * aLocalRefY);
+      aRadialOriginShift        = float(snappedLocalShift(aRadiusRef, aScaleX));
+      anAccentRadialOriginShift = myParams.AccentScaleX() > Precision::Confusion()
+                                    ? float(snappedLocalShift(aRadiusRef, myParams.AccentScaleX()))
+                                    : aRadialOriginShift;
     }
     else
     {
@@ -737,7 +733,9 @@ void OpenGl_ShaderGrid::SetUniforms(const occ::handle<OpenGl_Context>&       the
   theProgram->SetUniform(theContext, "uLocalOriginShift", aLocalOriginShift);
   theProgram->SetUniform(theContext, "uAccentLocalOriginShift", anAccentLocalOriginShift);
   theProgram->SetUniform(theContext, "uRadialOriginShift", GLfloat(aRadialOriginShift));
-  theProgram->SetUniform(theContext, "uAccentRadialOriginShift", GLfloat(anAccentRadialOriginShift));
+  theProgram->SetUniform(theContext,
+                         "uAccentRadialOriginShift",
+                         GLfloat(anAccentRadialOriginShift));
 
   const float aHalfX  = myParams.SizeX() > 0.0 ? float(myParams.SizeX() * 0.5) : 0.0f;
   const float aHalfY  = myParams.SizeY() > 0.0 ? float(myParams.SizeY() * 0.5) : 0.0f;

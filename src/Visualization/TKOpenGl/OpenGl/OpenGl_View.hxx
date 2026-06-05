@@ -164,8 +164,7 @@ public:
   Standard_EXPORT Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary) const override;
 
   //! Return primary and graphical bounding boxes used by camera Z fitting.
-  Standard_EXPORT void ZFitAllBounds(Bnd_Box& thePrimaryBox,
-                                     Bnd_Box& theGraphicBox) const override;
+  Standard_EXPORT void ZFitAllBounds(Bnd_Box& thePrimaryBox, Bnd_Box& theGraphicBox) const override;
 
   //! Returns pointer to an assigned framebuffer object.
   Standard_EXPORT occ::handle<Standard_Transient> FBO() const override;

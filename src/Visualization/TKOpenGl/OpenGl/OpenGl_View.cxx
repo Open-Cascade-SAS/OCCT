@@ -3624,7 +3624,7 @@ bool OpenGl_View::ShaderGridEcho(const int         theX,
     return false;
   }
 
-  int aWidth = 0;
+  int aWidth  = 0;
   int aHeight = 0;
   Window()->Size(aWidth, aHeight);
   return myShaderGrid.Echo(Camera(), aWidth, aHeight, theX, theY, thePoint, theDisplayPoint);

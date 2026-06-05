@@ -2252,8 +2252,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "    else if (anAxisX > 0.0)                  { aColor = vec4 (1.0, 0.0, 0.0, max "
     "(aColor.a, anAxisX)); }" EOL
     "    else if (anAxisY > 0.0)                  { aColor = vec4 (0.0, 1.0, 0.0, max "
-    "(aColor.a, anAxisY)); }" EOL
-    "  }" EOL "  return aColor;" EOL "}"
+    "(aColor.a, anAxisY)); }" EOL "  }" EOL "  return aColor;" EOL "}"
 
     EOL "vec4 gridLines1d (float theCoord, float theShift, float theScale, vec3 theColor, float "
     "theThickness)" EOL "{" EOL
@@ -2266,29 +2265,26 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  vec4 aView = occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);" EOL
     "  return aView.xyz / aView.w;" EOL "}"
 
-    EOL "float gridNdcNear()" EOL "{" EOL
-    "  return uIsZeroToOneDepth != 0 ? 0.0 : -1.0;" EOL "}"
+    EOL "float gridNdcNear()" EOL "{" EOL "  return uIsZeroToOneDepth != 0 ? 0.0 : -1.0;" EOL "}"
 
     EOL "float gridDepthFromNdc (float theNdcZ)" EOL "{" EOL
     "  return uIsZeroToOneDepth != 0 ? theNdcZ : (theNdcZ * 0.5 + 0.5);" EOL "}"
 
     EOL "float fragmentDepthFromView (vec3 theViewPnt)" EOL "{" EOL
     "  vec4 aClip = occProjectionMatrix * vec4 (theViewPnt, 1.0);" EOL
-    "  float aNdcZ = aClip.z / aClip.w;" EOL
-    "  return gridDepthFromNdc (aNdcZ);" EOL "}"
+    "  float aNdcZ = aClip.z / aClip.w;" EOL "  return gridDepthFromNdc (aNdcZ);" EOL "}"
 
     EOL "bool intersectPlaneView (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL "{" EOL
     "  vec3 aRayOrigin = uIsPerspective != 0 ? vec3 (0.0) : theNearPoint;" EOL
     "  vec3 aRayTarget = theFarPoint;" EOL "  vec3 aDir = aRayTarget - aRayOrigin;" EOL
-    "  float aDirLen = length (aDir);" EOL
-    "  if (aDirLen == 0.0) { return false; }" EOL
+    "  float aDirLen = length (aDir);" EOL "  if (aDirLen == 0.0) { return false; }" EOL
     "  float aDenomN = dot (uPlaneNView, aDir / aDirLen);" EOL
     "  if (abs (aDenomN) <= uParallelTolerance) { return false; }" EOL
     "  float aDenom = dot (uPlaneNView, aDir);" EOL
     "  float aT = dot (uPlaneNView, uPlaneOriginView - aRayOrigin) / aDenom;" EOL
-    "  if (uIsBackground == 0 && uIsPerspective != 0 && aT < 0.0)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
-    "    return false;" EOL "  }" EOL "  theHit = aRayOrigin + aT * aDir;" EOL "  return true;" EOL
-    "}" EOL
+    "  if (uIsBackground == 0 && uIsPerspective != 0 && aT < 0.0)" EOL "  {" EOL
+    "    theHit = theNearPoint;" EOL "    return false;" EOL "  }" EOL
+    "  theHit = aRayOrigin + aT * aDir;" EOL "  return true;" EOL "}" EOL
 
     EOL "const float GRID_TWO_PI = 6.28318530718;"
 
@@ -2296,8 +2292,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  float aSpan = uArcRange.y - uArcRange.x;" EOL
     "  if (aSpan < 0.0) { aSpan += GRID_TWO_PI; }" EOL
     "  float aDelta = theAngle - uArcRange.x;" EOL
-    "  if (aDelta < 0.0) { aDelta += GRID_TWO_PI; }" EOL
-    "  return aDelta <= aSpan;" EOL "}"
+    "  if (aDelta < 0.0) { aDelta += GRID_TWO_PI; }" EOL "  return aDelta <= aSpan;" EOL "}"
 
     EOL "void main()" EOL "{"
     // Intersect in view space: the camera is the numerical origin, so zoom and
@@ -2305,14 +2300,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     EOL "  vec3 aNearPoint = unprojectView (vNdc.x, vNdc.y, gridNdcNear());" EOL
     "  vec3 aFarPoint  = unprojectView (vNdc.x, vNdc.y, 1.0);" EOL "  vec3 aHit;" EOL
     "  if (!intersectPlaneView (aNearPoint, aFarPoint, aHit)) { discard; }" EOL
-    "  float aFragDepth = fragmentDepthFromView (aHit);" EOL
-    "  if (uIsBackground == 0)" EOL "  {" EOL
-    "    if (aFragDepth < 0.0) { discard; }" EOL
-    "    gl_FragDepth = min (aFragDepth, 1.0);" EOL
-    "  }" EOL "  else" EOL "  {" EOL
-    "    gl_FragDepth = 1.0;" EOL
-    "  }" EOL
-    "  vec3 aLocalAbs3  = aHit - uPlaneOriginView;" EOL
+    "  float aFragDepth = fragmentDepthFromView (aHit);" EOL "  if (uIsBackground == 0)" EOL
+    "  {" EOL "    if (aFragDepth < 0.0) { discard; }" EOL
+    "    gl_FragDepth = min (aFragDepth, 1.0);" EOL "  }" EOL "  else" EOL "  {" EOL
+    "    gl_FragDepth = 1.0;" EOL "  }" EOL "  vec3 aLocalAbs3  = aHit - uPlaneOriginView;" EOL
     "  vec2 aLocal      = vec2 (dot (aLocalAbs3, uPlaneXView), dot (aLocalAbs3, uPlaneYView));" EOL
     "  vec3 aLocalGrid3 = aHit - uPlaneRefView;" EOL
     "  vec2 aLocalGrid  = vec2 (dot (aLocalGrid3, uPlaneXView), dot (aLocalGrid3, "
@@ -2366,8 +2357,8 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "      else if (anAxisX > 0.0)" EOL "      {" EOL
     "        aColor = vec4 (1.0, 0.0, 0.0, max (aColor.a, anAxisX));" EOL "      }" EOL
     "      else if (anAxisY > 0.0)" EOL "      {" EOL
-    "        aColor = vec4 (0.0, 1.0, 0.0, max (aColor.a, anAxisY));" EOL "      }" EOL
-    "    }" EOL "  }"
+    "        aColor = vec4 (0.0, 1.0, 0.0, max (aColor.a, anAxisY));" EOL "      }" EOL "    }" EOL
+    "  }"
 
     EOL "  if (aColor.a == 0.0) { discard; }" EOL "  aColor.a *= aBoundFade;" EOL
     "  occFragColor = aColor;" EOL "}";

@@ -5300,7 +5300,11 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       {
         double aRadiusStep    = 0.0;
         int    aDivisionCount = 0;
-        aViewer->CircularGridValues(anOrigXY.x(), anOrigXY.y(), aRadiusStep, aDivisionCount, aRotAngle);
+        aViewer->CircularGridValues(anOrigXY.x(),
+                                    anOrigXY.y(),
+                                    aRadiusStep,
+                                    aDivisionCount,
+                                    aRotAngle);
         if (hasOrigin)
         {
           anOrigXY = aNewOriginXY;
@@ -5333,7 +5337,11 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       else
       {
         NCollection_Vec2<double> aStepXY(1.0, 1.0);
-        aViewer->RectangularGridValues(anOrigXY.x(), anOrigXY.y(), aStepXY.x(), aStepXY.y(), aRotAngle);
+        aViewer->RectangularGridValues(anOrigXY.x(),
+                                       anOrigXY.y(),
+                                       aStepXY.x(),
+                                       aStepXY.y(),
+                                       aRotAngle);
         if (hasOrigin)
         {
           anOrigXY = aNewOriginXY;

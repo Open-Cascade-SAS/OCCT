@@ -38,17 +38,17 @@ public:
   const Aspect_GridParams& Params() const { return myParams; }
 
   //! Store grid state. Returns FALSE when parameters cannot produce a shader grid.
-  bool Display(const Aspect_GridParams&               theParams,
-               const gp_Ax3&                          thePlane,
-               const occ::handle<Graphic3d_Camera>&   theCamera,
-               const occ::handle<OpenGl_Context>&     theContext);
+  bool Display(const Aspect_GridParams&             theParams,
+               const gp_Ax3&                        thePlane,
+               const occ::handle<Graphic3d_Camera>& theCamera,
+               const occ::handle<OpenGl_Context>&   theContext);
 
   //! Clear grid state.
   void Erase();
 
   //! Add bounds required by camera Z fitting.
-  void AddZFitBounds(Bnd_Box&                           thePrimaryBox,
-                     Bnd_Box&                           theGraphicBox,
+  void AddZFitBounds(Bnd_Box&                             thePrimaryBox,
+                     Bnd_Box&                             theGraphicBox,
                      const occ::handle<Graphic3d_Camera>& theCamera) const;
 
   //! Return snapped point for the grid under the window pixel.
@@ -66,10 +66,10 @@ public:
                  Graphic3d_Vertex&                    theGridPoint) const;
 
   //! Upload shader uniforms for current grid state.
-  void SetUniforms(const occ::handle<OpenGl_Context>&        theContext,
-                   const occ::handle<OpenGl_ShaderProgram>&  theProgram,
-                   const occ::handle<Graphic3d_Camera>&      theCamera,
-                   const NCollection_Mat4<float>&            theWorldView) const;
+  void SetUniforms(const occ::handle<OpenGl_Context>&       theContext,
+                   const occ::handle<OpenGl_ShaderProgram>& theProgram,
+                   const occ::handle<Graphic3d_Camera>&     theCamera,
+                   const NCollection_Mat4<float>&           theWorldView) const;
 
   //! Return worldview matrix to use for drawing.
   NCollection_Mat4<float> DrawWorldView(const NCollection_Mat4<float>& theCurrentWorldView) const;
@@ -98,7 +98,7 @@ private:
   void addFiniteBounds(Bnd_Box& theBox) const;
 
   //! Add view footprint bounds to the box.
-  void addViewFootprintBounds(Bnd_Box&                           theBox,
+  void addViewFootprintBounds(Bnd_Box&                             theBox,
                               const occ::handle<Graphic3d_Camera>& theCamera) const;
 
   //! Intersect camera ray at NDC point with the grid plane.
@@ -107,7 +107,7 @@ private:
                      const double                         theNdcY,
                      double&                              theLocalX,
                      double&                              theLocalY,
-                     gp_XYZ*                              theHit = nullptr,
+                     gp_XYZ*                              theHit            = nullptr,
                      const bool                           theToRejectBehind = true) const;
 
   //! Return stable visible reference point in local coordinates.

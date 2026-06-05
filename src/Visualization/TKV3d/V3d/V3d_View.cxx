@@ -1854,7 +1854,7 @@ void V3d_View::ConvertToGrid(const double theX,
   if (myShaderGridActive)
   {
     const Graphic3d_Vertex aPoint(theX, theY, theZ);
-    Graphic3d_Vertex aShaderGridPoint;
+    Graphic3d_Vertex       aShaderGridPoint;
     if (myView->ShaderGridSnapPoint(aPoint, aShaderGridPoint))
     {
       aShaderGridPoint.Coord(theXg, theYg, theZg);
