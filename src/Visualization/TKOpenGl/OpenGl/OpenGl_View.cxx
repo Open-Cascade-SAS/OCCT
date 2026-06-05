@@ -3582,21 +3582,18 @@ void OpenGl_View::updatePBREnvironment(const occ::handle<OpenGl_Context>& theCtx
 
 //=================================================================================================
 
-bool OpenGl_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+void OpenGl_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
 {
   const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   if (!aCtx.IsNull() && aCtx->core30 == nullptr)
   {
-    return false;
+    myShaderGrid.Erase();
+    Invalidate();
+    return;
   }
 
-  if (!myShaderGrid.Display(theParams, thePlane, Camera(), aCtx))
-  {
-    return false;
-  }
-
+  myShaderGrid.Display(theParams, thePlane, Camera(), aCtx);
   Invalidate();
-  return true;
 }
 
 //=================================================================================================

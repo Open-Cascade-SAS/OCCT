@@ -3605,11 +3605,7 @@ void V3d_View::GridDisplay(const Aspect_GridParams& theParams)
 
 void V3d_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
 {
-  if (!myView->GridDisplay(theParams, thePlane))
-  {
-    myShaderGridActive = false;
-    return;
-  }
+  myView->GridDisplay(theParams, thePlane);
 
   if (!MyGrid.IsNull() && MyGrid->IsDisplayed())
   {

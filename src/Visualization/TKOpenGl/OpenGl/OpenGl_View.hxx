@@ -228,7 +228,7 @@ public:
   Standard_EXPORT void SetImageBasedLighting(bool theToEnableIBL) override;
 
   //! Display a shader-rendered grid on the given plane.
-  Standard_EXPORT bool GridDisplay(const Aspect_GridParams& theParams,
+  Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams,
                                    const gp_Ax3&            thePlane) override;
 
   //! Erase the shader-rendered grid.

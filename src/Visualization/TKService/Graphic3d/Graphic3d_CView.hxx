@@ -449,14 +449,13 @@ public:
   virtual void SetImageBasedLighting(bool theToEnableIBL) = 0;
 
   //! Display a shader-rendered grid on the given plane.
-  //! The default implementation returns FALSE; drivers with shader support override it.
+  //! The default implementation is a no-op; drivers with shader support override it.
   //! @param[in] theParams appearance parameters
   //! @param[in] thePlane  grid plane in world coordinates (origin + X/Y directions)
-  virtual bool GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+  virtual void GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
   {
     (void)theParams;
     (void)thePlane;
-    return false;
   }
 
   //! Erase the shader-rendered grid.
