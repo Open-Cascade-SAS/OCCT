@@ -2196,6 +2196,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("int uIsZeroToOneDepth", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uIsBackground", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uParallelTolerance", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("vec2 uLocalOriginShift", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("vec2 uAccentLocalOriginShift", Graphic3d_TOS_FRAGMENT));
@@ -2276,10 +2280,13 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     EOL "bool intersectPlaneView (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL "{" EOL
     "  vec3 aRayOrigin = uIsPerspective != 0 ? vec3 (0.0) : theNearPoint;" EOL
     "  vec3 aRayTarget = theFarPoint;" EOL "  vec3 aDir = aRayTarget - aRayOrigin;" EOL
-    "  float aDenom = dot (uPlaneNView, aDir);" EOL "  if (aDenom == 0.0)" EOL "  {" EOL
-    "    return false;" EOL "  }" EOL
+    "  float aDirLen = length (aDir);" EOL
+    "  if (aDirLen == 0.0) { return false; }" EOL
+    "  float aDenomN = dot (uPlaneNView, aDir / aDirLen);" EOL
+    "  if (abs (aDenomN) <= uParallelTolerance) { return false; }" EOL
+    "  float aDenom = dot (uPlaneNView, aDir);" EOL
     "  float aT = dot (uPlaneNView, uPlaneOriginView - aRayOrigin) / aDenom;" EOL
-    "  if (uIsPerspective != 0 && aT < 0.0)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
+    "  if (uIsBackground == 0 && uIsPerspective != 0 && aT < 0.0)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
     "    return false;" EOL "  }" EOL "  theHit = aRayOrigin + aT * aDir;" EOL "  return true;" EOL
     "}" EOL
 
@@ -2299,8 +2306,12 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  vec3 aFarPoint  = unprojectView (vNdc.x, vNdc.y, 1.0);" EOL "  vec3 aHit;" EOL
     "  if (!intersectPlaneView (aNearPoint, aFarPoint, aHit)) { discard; }" EOL
     "  float aFragDepth = fragmentDepthFromView (aHit);" EOL
-    "  if (aFragDepth < 0.0 || aFragDepth > 1.0) { discard; }" EOL
-    "  gl_FragDepth = aFragDepth;" EOL
+    "  if (uIsBackground == 0)" EOL "  {" EOL
+    "    if (aFragDepth < 0.0) { discard; }" EOL
+    "    gl_FragDepth = min (aFragDepth, 1.0);" EOL
+    "  }" EOL "  else" EOL "  {" EOL
+    "    gl_FragDepth = 1.0;" EOL
+    "  }" EOL
     "  vec3 aLocalAbs3  = aHit - uPlaneOriginView;" EOL
     "  vec2 aLocal      = vec2 (dot (aLocalAbs3, uPlaneXView), dot (aLocalAbs3, uPlaneYView));" EOL
     "  vec3 aLocalGrid3 = aHit - uPlaneRefView;" EOL

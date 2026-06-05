@@ -25,6 +25,7 @@
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_SceneGeometry.hxx>
+#include <OpenGl_ShaderGrid.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_TileSampler.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -162,6 +163,10 @@ public:
   //! @return computed bounding box
   Standard_EXPORT Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary) const override;
 
+  //! Return primary and graphical bounding boxes used by camera Z fitting.
+  Standard_EXPORT void ZFitAllBounds(Bnd_Box& thePrimaryBox,
+                                     Bnd_Box& theGraphicBox) const override;
+
   //! Returns pointer to an assigned framebuffer object.
   Standard_EXPORT occ::handle<Standard_Transient> FBO() const override;
 
@@ -223,7 +228,7 @@ public:
   Standard_EXPORT void SetImageBasedLighting(bool theToEnableIBL) override;
 
   //! Display a shader-rendered grid on the given plane.
-  Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams,
+  Standard_EXPORT bool GridDisplay(const Aspect_GridParams& theParams,
                                    const gp_Ax3&            thePlane) override;
 
   //! Erase the shader-rendered grid.
@@ -239,6 +244,10 @@ public:
                                       const int         theY,
                                       Graphic3d_Vertex& thePoint,
                                       Graphic3d_Vertex& theDisplayPoint) const override;
+
+  //! Return snapped point for the shader-rendered grid from an arbitrary world point.
+  Standard_EXPORT bool ShaderGridSnapPoint(const Graphic3d_Vertex& thePoint,
+                                           Graphic3d_Vertex&       theGridPoint) const override;
 
   //! Returns number of mipmap levels used in specular IBL map.
   //! 0 if PBR environment is not created.
@@ -550,11 +559,8 @@ protected: //! @name Background parameters
   OpenGl_Aspects*            myTextureParams;                     //!< Stores texture and its parameters for textured background
   OpenGl_Aspects*            myCubeMapParams;                     //!< Stores cubemap and its parameters for cubemap background
   OpenGl_Aspects*            myColoredQuadParams;                 //!< Stores parameters for gradient (corner mode) background
-  Aspect_GridParams          myGridParams;                        //!< parameters of shader grid
-  gp_Ax3                     myGridPlane;                         //!< grid plane in world coordinates
-  NCollection_Mat4<float>    myGridRefViewMatrix;                 //!< worldview captured at GridDisplay() for pan/rotate compensation
+  OpenGl_ShaderGrid          myShaderGrid;                        //!< shader grid state and geometry model
   unsigned int               myGridVao;                           //!< dedicated VAO for textureless grid draw
-  bool                       myToShowGrid;                        //!< flag indicating the grid is active
   OpenGl_BackgroundArray*    myBackgrounds[Graphic3d_TypeOfBackground_NB]; //!< Array of primitive arrays of different background types
                                                   // clang-format on
   occ::handle<OpenGl_TextureSet> myTextureEnv;

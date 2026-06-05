@@ -175,6 +175,13 @@ public:
   //! @return computed bounding box
   Standard_EXPORT virtual Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary = false) const;
 
+  //! Return primary and graphical bounding boxes used by camera Z fitting.
+  virtual void ZFitAllBounds(Bnd_Box& thePrimaryBox, Bnd_Box& theGraphicBox) const
+  {
+    thePrimaryBox = MinMaxValues(false);
+    theGraphicBox = MinMaxValues(true);
+  }
+
   //! Returns the coordinates of the boundary box of all structures in the set <theSet>.
   //! If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
   //! also includes minimum and maximum limits of graphical elements
@@ -442,13 +449,14 @@ public:
   virtual void SetImageBasedLighting(bool theToEnableIBL) = 0;
 
   //! Display a shader-rendered grid on the given plane.
-  //! The default implementation is a no-op; drivers with shader support override it.
+  //! The default implementation returns FALSE; drivers with shader support override it.
   //! @param[in] theParams appearance parameters
   //! @param[in] thePlane  grid plane in world coordinates (origin + X/Y directions)
-  virtual void GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+  virtual bool GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
   {
     (void)theParams;
     (void)thePlane;
+    return false;
   }
 
   //! Erase the shader-rendered grid.
@@ -480,6 +488,16 @@ public:
     }
     theDisplayPoint = thePoint;
     return true;
+  }
+
+  //! Return snapped point for the shader-rendered grid from an arbitrary world point.
+  //! The default implementation is a no-op; drivers with shader grid support override it.
+  virtual bool ShaderGridSnapPoint(const Graphic3d_Vertex& thePoint,
+                                   Graphic3d_Vertex&       theGridPoint) const
+  {
+    (void)thePoint;
+    (void)theGridPoint;
+    return false;
   }
 
   //! Returns environment texture set for the view.

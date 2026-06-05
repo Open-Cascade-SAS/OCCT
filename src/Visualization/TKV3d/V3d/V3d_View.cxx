@@ -445,10 +445,9 @@ void V3d_View::AutoZFit() const
 
 void V3d_View::ZFitAll(const double theScaleFactor) const
 {
-  Bnd_Box aMinMaxBox = myView->MinMaxValues(false); // applicative min max boundaries
-                                                    // clang-format off
-  Bnd_Box aGraphicBox  = myView->MinMaxValues (true);  // real graphical boundaries (not accounting infinite flag).
-                                                    // clang-format on
+  Bnd_Box aMinMaxBox;
+  Bnd_Box aGraphicBox;
+  myView->ZFitAllBounds(aMinMaxBox, aGraphicBox);
 
   myView->Camera()->ZFitAll(theScaleFactor, aMinMaxBox, aGraphicBox);
 }
@@ -1854,10 +1853,9 @@ void V3d_View::ConvertToGrid(const double theX,
 {
   if (myShaderGridActive)
   {
-    int aXp = 0, aYp = 0;
-    Convert(theX, theY, theZ, aXp, aYp);
+    const Graphic3d_Vertex aPoint(theX, theY, theZ);
     Graphic3d_Vertex aShaderGridPoint;
-    if (myView->ShaderGridEcho(aXp, aYp, aShaderGridPoint))
+    if (myView->ShaderGridSnapPoint(aPoint, aShaderGridPoint))
     {
       aShaderGridPoint.Coord(theXg, theYg, theZg);
       return;
@@ -3607,12 +3605,17 @@ void V3d_View::GridDisplay(const Aspect_GridParams& theParams)
 
 void V3d_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
 {
+  if (!myView->GridDisplay(theParams, thePlane))
+  {
+    myShaderGridActive = false;
+    return;
+  }
+
   if (!MyGrid.IsNull() && MyGrid->IsDisplayed())
   {
     MyGrid->Erase();
   }
-  myShaderGridActive = true;
-  myView->GridDisplay(theParams, thePlane);
+  myShaderGridActive = theParams.DrawMode() != Aspect_GDM_None;
 }
 
 //=================================================================================================
