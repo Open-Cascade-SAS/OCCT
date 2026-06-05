@@ -21,6 +21,69 @@
 namespace
 {
 static constexpr double THE_TWO_PI = 2.0 * M_PI;
+
+static bool isFiniteCoord(const double theValue)
+{
+  return std::isfinite(theValue) && !Precision::IsInfinite(theValue);
+}
+
+static bool isFinitePoint(const gp_Pnt& thePoint)
+{
+  return isFiniteCoord(thePoint.X()) && isFiniteCoord(thePoint.Y()) && isFiniteCoord(thePoint.Z());
+}
+
+static bool isFinitePoint(const gp_XYZ& thePoint)
+{
+  return isFiniteCoord(thePoint.X()) && isFiniteCoord(thePoint.Y()) && isFiniteCoord(thePoint.Z());
+}
+
+static double normalizedAngle(const double theAngle)
+{
+  double anAngle = std::fmod(theAngle, THE_TWO_PI);
+  if (anAngle < 0.0)
+  {
+    anAngle += THE_TWO_PI;
+  }
+  return anAngle;
+}
+
+static double positiveAngleSpan(const double theStart, const double theEnd)
+{
+  double aSpan = std::fmod(theEnd - theStart, THE_TWO_PI);
+  if (aSpan < 0.0)
+  {
+    aSpan += THE_TWO_PI;
+  }
+
+  if (std::abs(aSpan) <= Precision::Angular()
+      && std::abs(theEnd - theStart) >= THE_TWO_PI - Precision::Angular())
+  {
+    return THE_TWO_PI;
+  }
+  return aSpan;
+}
+
+static bool isSamePoint(const gp_Pnt& theFirst, const gp_Pnt& theSecond)
+{
+  return theFirst.SquareDistance(theSecond) <= Precision::SquareConfusion();
+}
+
+static bool isSameDirection(const gp_Dir& theFirst, const gp_Dir& theSecond)
+{
+  return theFirst.Angle(theSecond) <= Precision::Angular();
+}
+
+static bool isSameScalar(const double theFirst, const double theSecond)
+{
+  return std::abs(theFirst - theSecond) <= Precision::Confusion();
+}
+
+static bool isSameAngle(const double theFirst, const double theSecond)
+{
+  double aDelta = std::abs(normalizedAngle(theFirst) - normalizedAngle(theSecond));
+  aDelta        = std::min(aDelta, THE_TWO_PI - aDelta);
+  return aDelta <= Precision::Angular();
+}
 }
 
 //=================================================================================================
@@ -35,6 +98,12 @@ bool OpenGl_ShaderGrid::Display(const Aspect_GridParams&             theParams,
     Erase();
     return true;
   }
+
+  const bool wasShown       = myIsShown;
+  const bool wasBackground  = wasShown && myParams.IsBackground();
+  const bool hasSameAnchor  = wasShown && hasSameAnchorFrame(theParams, thePlane);
+  const bool toCaptureFrame = theParams.IsBackground() && !theContext.IsNull()
+                              && (!wasShown || !wasBackground || !hasSameAnchor);
 
   myParams  = theParams;
   myPlane   = thePlane;
@@ -51,7 +120,7 @@ bool OpenGl_ShaderGrid::Display(const Aspect_GridParams&             theParams,
     }
   }
 
-  if (theParams.IsBackground() && !theContext.IsNull())
+  if (toCaptureFrame)
   {
     myRefViewMatrix = theContext->WorldViewState.Current();
   }
@@ -108,18 +177,18 @@ bool OpenGl_ShaderGrid::angleInArc(const double theStart,
                                    const double theEnd,
                                    const double theAngle)
 {
-  double aSpan = theEnd - theStart;
-  if (aSpan < 0.0)
+  const double aSpan = positiveAngleSpan(theStart, theEnd);
+  if (aSpan >= THE_TWO_PI - Precision::Angular())
   {
-    aSpan += THE_TWO_PI;
+    return true;
   }
 
-  double aDelta = theAngle - theStart;
+  double aDelta = normalizedAngle(theAngle) - normalizedAngle(theStart);
   if (aDelta < 0.0)
   {
     aDelta += THE_TWO_PI;
   }
-  return aDelta <= aSpan;
+  return aDelta <= aSpan + Precision::Angular();
 }
 
 //=================================================================================================
@@ -156,7 +225,11 @@ void OpenGl_ShaderGrid::addLocalPoint(Bnd_Box&      theBox,
                                       const double  theLocalX,
                                       const double  theLocalY)
 {
-  theBox.Add(gp_Pnt(theOrigin.XYZ() + theX * theLocalX + theY * theLocalY));
+  const gp_Pnt aPoint(theOrigin.XYZ() + theX * theLocalX + theY * theLocalY);
+  if (isFinitePoint(aPoint))
+  {
+    theBox.Add(aPoint);
+  }
 }
 
 //=================================================================================================
@@ -309,14 +382,16 @@ void OpenGl_ShaderGrid::addViewFootprintBounds(Bnd_Box&                         
     {
       continue;
     }
-    theBox.Add(gp_Pnt(aHit));
+    if (isFinitePoint(aHit))
+    {
+      theBox.Add(gp_Pnt(aHit));
+    }
   }
 }
 
 //=================================================================================================
 
-void OpenGl_ShaderGrid::AddZFitBounds(Bnd_Box&                             thePrimaryBox,
-                                      Bnd_Box&                             theGraphicBox,
+void OpenGl_ShaderGrid::AddZFitBounds(Bnd_Box&                             theGraphicBox,
                                       const occ::handle<Graphic3d_Camera>& theCamera) const
 {
   if (!myIsShown || myParams.DrawMode() == Aspect_GDM_None || myParams.IsBackground())
@@ -340,9 +415,22 @@ void OpenGl_ShaderGrid::AddZFitBounds(Bnd_Box&                             thePr
   }
   if (!aGridBox.IsVoid())
   {
-    thePrimaryBox.Add(aGridBox);
     theGraphicBox.Add(aGridBox);
   }
+}
+
+//=================================================================================================
+
+bool OpenGl_ShaderGrid::hasSameAnchorFrame(const Aspect_GridParams& theParams,
+                                           const gp_Ax3&            thePlane) const
+{
+  return isSamePoint(myPlane.Location(), thePlane.Location())
+         && isSameDirection(myPlane.Direction(), thePlane.Direction())
+         && isSameDirection(myPlane.XDirection(), thePlane.XDirection())
+         && isSameDirection(myPlane.YDirection(), thePlane.YDirection())
+         && isSamePoint(myParams.Origin(), theParams.Origin())
+         && isSameAngle(myParams.RotationAngle(), theParams.RotationAngle())
+         && isSameScalar(myParams.ZOffset(), theParams.ZOffset());
 }
 
 //=================================================================================================
@@ -412,12 +500,80 @@ NCollection_Vec3<float> OpenGl_ShaderGrid::viewDirection(
 
 //=================================================================================================
 
-gp_Pnt OpenGl_ShaderGrid::echoDisplayPoint(const occ::handle<Graphic3d_Camera>& theCamera,
-                                           const gp_XYZ&                        theSnapped)
+bool OpenGl_ShaderGrid::acceptEchoCandidate(const occ::handle<Graphic3d_Camera>& theCamera,
+                                            const int                            theWidth,
+                                            const int                            theHeight,
+                                            const int                            theX,
+                                            const int                            theY,
+                                            const gp_Pnt&                        theGridOrigin,
+                                            const gp_XYZ&                        theGridX,
+                                            const gp_XYZ&                        theGridY,
+                                            const double                         theLocalX,
+                                            const double                         theLocalY,
+                                            gp_XYZ&                              theBestSnapped,
+                                            double&                              theBestDist2,
+                                            bool& theHasBestPoint) const
+{
+  if (!isPointInBounds(theLocalX, theLocalY))
+  {
+    return false;
+  }
+
+  const gp_XYZ aCandidate = theGridOrigin.XYZ() + theGridX * theLocalX + theGridY * theLocalY;
+  if (!isFinitePoint(aCandidate))
+  {
+    return false;
+  }
+  if (!theCamera->IsOrthographic()
+      && theCamera->Direction().XYZ().Dot(aCandidate - theCamera->Eye().XYZ())
+           <= Precision::Confusion())
+  {
+    return false;
+  }
+
+  const gp_Pnt aProj = theCamera->Project(gp_Pnt(aCandidate));
+  if (!isFinitePoint(aProj))
+  {
+    return false;
+  }
+
+  const double aPx    = (aProj.X() + 1.0) * 0.5 * double(theWidth);
+  const double aPy    = double(theHeight - 1) - (aProj.Y() + 1.0) * 0.5 * double(theHeight);
+  const double aDistX = aPx - double(theX);
+  const double aDistY = aPy - double(theY);
+  if (!isFiniteCoord(aDistX) || !isFiniteCoord(aDistY))
+  {
+    return false;
+  }
+
+  const double aDist2 = aDistX * aDistX + aDistY * aDistY;
+  if (!isFiniteCoord(aDist2))
+  {
+    return false;
+  }
+  if (!theHasBestPoint || aDist2 < theBestDist2)
+  {
+    theHasBestPoint = true;
+    theBestDist2    = aDist2;
+    theBestSnapped  = aCandidate;
+  }
+  return true;
+}
+
+//=================================================================================================
+
+bool OpenGl_ShaderGrid::echoDisplayPoint(const occ::handle<Graphic3d_Camera>& theCamera,
+                                         const gp_XYZ&                        theSnapped,
+                                         gp_Pnt&                              theDisplayPoint)
 {
   const gp_Pnt aProjSnapped = theCamera->Project(gp_Pnt(theSnapped));
+  if (!isFinitePoint(aProjSnapped))
+  {
+    return false;
+  }
   const double aDisplayZ    = theCamera->IsZeroToOneDepth() ? 0.5 : 0.0;
-  return theCamera->UnProject(gp_Pnt(aProjSnapped.X(), aProjSnapped.Y(), aDisplayZ));
+  theDisplayPoint           = theCamera->UnProject(gp_Pnt(aProjSnapped.X(), aProjSnapped.Y(), aDisplayZ));
+  return isFinitePoint(theDisplayPoint);
 }
 
 //=================================================================================================
@@ -466,28 +622,19 @@ bool OpenGl_ShaderGrid::Echo(const occ::handle<Graphic3d_Camera>& theCamera,
   double     aBestDist2     = RealLast();
   bool       hasBestPoint   = false;
   auto       addCandidate   = [&](const double theLocalX, const double theLocalY) {
-    if (!isPointInBounds(theLocalX, theLocalY))
-    {
-      return;
-    }
-    const gp_XYZ aCandidate = aGridOrigin.XYZ() + aGridX * theLocalX + aGridY * theLocalY;
-    if (!theCamera->IsOrthographic()
-        && theCamera->Direction().XYZ().Dot(aCandidate - theCamera->Eye().XYZ()) <= 0.0)
-    {
-      return;
-    }
-    const gp_Pnt aProj  = theCamera->Project(gp_Pnt(aCandidate));
-    const double aPx    = (aProj.X() + 1.0) * 0.5 * double(theWidth);
-    const double aPy    = double(theHeight - 1) - (aProj.Y() + 1.0) * 0.5 * double(theHeight);
-    const double aDistX = aPx - double(theX);
-    const double aDistY = aPy - double(theY);
-    const double aDist2 = aDistX * aDistX + aDistY * aDistY;
-    if (!hasBestPoint || aDist2 < aBestDist2)
-    {
-      hasBestPoint = true;
-      aBestDist2   = aDist2;
-      aSnapped     = aCandidate;
-    }
+    acceptEchoCandidate(theCamera,
+                        theWidth,
+                        theHeight,
+                        theX,
+                        theY,
+                        aGridOrigin,
+                        aGridX,
+                        aGridY,
+                        theLocalX,
+                        theLocalY,
+                        aSnapped,
+                        aBestDist2,
+                        hasBestPoint);
   };
 
   if (myParams.IsCircular())
@@ -521,12 +668,22 @@ bool OpenGl_ShaderGrid::Echo(const occ::handle<Graphic3d_Camera>& theCamera,
     {
       const double aSnapRadius = std::round(aRadius / aRadiusStep) * aRadiusStep;
       const double aSnapAngle  = std::round(anAngle / anAngleStep) * anAngleStep;
-      if (!isPointInBounds(aSnapRadius * std::cos(aSnapAngle), aSnapRadius * std::sin(aSnapAngle)))
+      if (!acceptEchoCandidate(theCamera,
+                               theWidth,
+                               theHeight,
+                               theX,
+                               theY,
+                               aGridOrigin,
+                               aGridX,
+                               aGridY,
+                               aSnapRadius * std::cos(aSnapAngle),
+                               aSnapRadius * std::sin(aSnapAngle),
+                               aSnapped,
+                               aBestDist2,
+                               hasBestPoint))
       {
         return false;
       }
-      aSnapped += aGridX * (aSnapRadius * std::cos(aSnapAngle))
-                  + aGridY * (aSnapRadius * std::sin(aSnapAngle));
     }
   }
   else
@@ -555,16 +712,36 @@ bool OpenGl_ShaderGrid::Echo(const occ::handle<Graphic3d_Camera>& theCamera,
     {
       aLocalX = std::round(aLocalX / aStepX) * aStepX;
       aLocalY = std::round(aLocalY / aStepY) * aStepY;
-      if (!isPointInBounds(aLocalX, aLocalY))
+      if (!acceptEchoCandidate(theCamera,
+                               theWidth,
+                               theHeight,
+                               theX,
+                               theY,
+                               aGridOrigin,
+                               aGridX,
+                               aGridY,
+                               aLocalX,
+                               aLocalY,
+                               aSnapped,
+                               aBestDist2,
+                               hasBestPoint))
       {
         return false;
       }
-      aSnapped += aGridX * aLocalX + aGridY * aLocalY;
     }
   }
 
+  if (!hasBestPoint)
+  {
+    return false;
+  }
+
   thePoint.SetCoord(aSnapped.X(), aSnapped.Y(), aSnapped.Z());
-  const gp_Pnt aDisplayP = echoDisplayPoint(theCamera, aSnapped);
+  gp_Pnt aDisplayP;
+  if (!echoDisplayPoint(theCamera, aSnapped, aDisplayP))
+  {
+    return false;
+  }
   theDisplayPoint.SetCoord(aDisplayP.X(), aDisplayP.Y(), aDisplayP.Z());
   return true;
 }

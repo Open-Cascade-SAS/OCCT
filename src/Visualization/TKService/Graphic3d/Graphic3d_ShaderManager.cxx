@@ -2156,8 +2156,8 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   occ::handle<Graphic3d_ShaderProgram> aProgSrc = new Graphic3d_ShaderProgram();
 
   Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
-  // Pass only NDC.xy to the fragment; the fragment shader maps it to grid-local
-  // coordinates through a CPU-built projective transform.
+  // Pass only NDC.xy to the fragment; each fragment reconstructs its view-space
+  // ray and intersects it with the grid plane.
   aStageInOuts.Append(
     Graphic3d_ShaderObject::ShaderVariable("vec2 vNdc",
                                            Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
@@ -2288,11 +2288,23 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
 
     EOL "const float GRID_TWO_PI = 6.28318530718;"
 
-    EOL "bool gridAngleInArc (float theAngle)" EOL "{" EOL
-    "  float aSpan = uArcRange.y - uArcRange.x;" EOL
+    EOL "float gridNormalizeAngle (float theAngle)" EOL "{" EOL
+    "  float anAngle = mod (theAngle, GRID_TWO_PI);" EOL
+    "  if (anAngle < 0.0) { anAngle += GRID_TWO_PI; }" EOL "  return anAngle;" EOL "}"
+
+    EOL "float gridPositiveAngleSpan (float theStart, float theEnd)" EOL "{" EOL
+    "  float aSpan = mod (theEnd - theStart, GRID_TWO_PI);" EOL
     "  if (aSpan < 0.0) { aSpan += GRID_TWO_PI; }" EOL
-    "  float aDelta = theAngle - uArcRange.x;" EOL
-    "  if (aDelta < 0.0) { aDelta += GRID_TWO_PI; }" EOL "  return aDelta <= aSpan;" EOL "}"
+    "  if (abs (aSpan) <= uParallelTolerance && abs (theEnd - theStart) >= GRID_TWO_PI - "
+    "uParallelTolerance)" EOL "  {" EOL "    return GRID_TWO_PI;" EOL "  }" EOL
+    "  return aSpan;" EOL "}"
+
+    EOL "bool gridAngleInArc (float theAngle)" EOL "{" EOL
+    "  float aSpan = gridPositiveAngleSpan (uArcRange.x, uArcRange.y);" EOL
+    "  if (aSpan >= GRID_TWO_PI - uParallelTolerance) { return true; }" EOL
+    "  float aDelta = gridNormalizeAngle (theAngle) - gridNormalizeAngle (uArcRange.x);" EOL
+    "  if (aDelta < 0.0) { aDelta += GRID_TWO_PI; }" EOL
+    "  return aDelta <= aSpan + uParallelTolerance;" EOL "}"
 
     EOL "void main()" EOL "{"
     // Intersect in view space: the camera is the numerical origin, so zoom and

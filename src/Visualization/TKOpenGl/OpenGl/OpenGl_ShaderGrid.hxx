@@ -46,9 +46,8 @@ public:
   //! Clear grid state.
   void Erase();
 
-  //! Add bounds required by camera Z fitting.
-  void AddZFitBounds(Bnd_Box&                             thePrimaryBox,
-                     Bnd_Box&                             theGraphicBox,
+  //! Add helper bounds required by camera Z fitting.
+  void AddZFitBounds(Bnd_Box&                             theGraphicBox,
                      const occ::handle<Graphic3d_Camera>& theCamera) const;
 
   //! Return snapped point for the grid under the window pixel.
@@ -118,6 +117,24 @@ private:
   //! Return local shift snapped to a grid phase.
   static double snappedLocalShift(const double theLocal, const double theScale);
 
+  //! Return TRUE if previous and new grid definitions share the same background anchor frame.
+  bool hasSameAnchorFrame(const Aspect_GridParams& theParams, const gp_Ax3& thePlane) const;
+
+  //! Accept echo candidate if it is visible and closer to the requested pixel.
+  bool acceptEchoCandidate(const occ::handle<Graphic3d_Camera>& theCamera,
+                           const int                            theWidth,
+                           const int                            theHeight,
+                           const int                            theX,
+                           const int                            theY,
+                           const gp_Pnt&                        theGridOrigin,
+                           const gp_XYZ&                        theGridX,
+                           const gp_XYZ&                        theGridY,
+                           const double                         theLocalX,
+                           const double                         theLocalY,
+                           gp_XYZ&                              theBestSnapped,
+                           double&                              theBestDist2,
+                           bool&                                theHasBestPoint) const;
+
   //! Convert point to current draw view coordinates.
   static NCollection_Vec3<float> viewPoint(const NCollection_Mat4<float>& theWorldView,
                                            const gp_Pnt&                  thePoint);
@@ -127,8 +144,9 @@ private:
                                                const gp_XYZ&                  theDirection);
 
   //! Return display-safe echo marker point.
-  static gp_Pnt echoDisplayPoint(const occ::handle<Graphic3d_Camera>& theCamera,
-                                 const gp_XYZ&                        theSnapped);
+  static bool echoDisplayPoint(const occ::handle<Graphic3d_Camera>& theCamera,
+                               const gp_XYZ&                        theSnapped,
+                               gp_Pnt&                              theDisplayPoint);
 
   //! Return TRUE if angle belongs to arc.
   static bool angleInArc(const double theStart, const double theEnd, const double theAngle);

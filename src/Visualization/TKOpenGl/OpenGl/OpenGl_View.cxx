@@ -909,7 +909,7 @@ void OpenGl_View::ZFitAllBounds(Bnd_Box& thePrimaryBox, Bnd_Box& theGraphicBox) 
 {
   thePrimaryBox = base_type::MinMaxValues(false);
   theGraphicBox = MinMaxValues(true);
-  myShaderGrid.AddZFitBounds(thePrimaryBox, theGraphicBox, Camera());
+  myShaderGrid.AddZFitBounds(theGraphicBox, Camera());
 }
 
 //=================================================================================================
