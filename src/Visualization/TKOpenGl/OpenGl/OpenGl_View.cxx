@@ -294,97 +294,6 @@ static bool isShaderGridPointInBounds(const Aspect_GridParams& theParams,
          && (theParams.SizeY() <= 0.0 || std::abs(theLocalY) <= theParams.SizeY() * 0.5);
 }
 
-//! Add visible view-ray hits on the shader grid plane to the Z-fit box.
-static void addShaderGridViewRayBounds(Bnd_Box&                             theBox,
-                                       const occ::handle<Graphic3d_Camera>& theCamera,
-                                       const gp_Pnt&                        thePlaneOrigin,
-                                       const gp_XYZ&                        thePlaneNormal)
-{
-  if (theCamera.IsNull())
-  {
-    return;
-  }
-
-  const double aNearZ        = theCamera->IsZeroToOneDepth() ? 0.0 : -1.0;
-  const gp_Pnt aNdcSamples[] = {gp_Pnt(-1.0, -1.0, 0.0),
-                                gp_Pnt(1.0, -1.0, 0.0),
-                                gp_Pnt(-1.0, 1.0, 0.0),
-                                gp_Pnt(1.0, 1.0, 0.0),
-                                gp_Pnt(0.0, 0.0, 0.0)};
-  for (const gp_Pnt& aNdcSample : aNdcSamples)
-  {
-    const gp_Pnt aNearP = theCamera->UnProject(gp_Pnt(aNdcSample.X(), aNdcSample.Y(), aNearZ));
-    const gp_Pnt aFarP  = theCamera->UnProject(gp_Pnt(aNdcSample.X(), aNdcSample.Y(), 1.0));
-    const gp_XYZ aRay   = aFarP.XYZ() - aNearP.XYZ();
-    const double aDenom = thePlaneNormal.Dot(aRay);
-    if (std::abs(aDenom) <= Precision::Angular())
-    {
-      continue;
-    }
-
-    const double aT = thePlaneNormal.Dot(thePlaneOrigin.XYZ() - aNearP.XYZ()) / aDenom;
-    if (aT < 0.0)
-    {
-      continue;
-    }
-    theBox.Add(gp_Pnt(aNearP.XYZ() + aRay * aT));
-  }
-}
-
-//! Add a finite patch of the shader grid plane to the Z-fit box.
-//! The shader grid is rendered by ray/plane intersection, not by a structure with
-//! own bounds, so empty scenes still need an explicit depth range covering the
-//! plane patch that can become visible.
-static void addShaderGridZFitBounds(Bnd_Box&                             theBox,
-                                    const Aspect_GridParams&             theParams,
-                                    const gp_Pnt&                        thePlaneOrigin,
-                                    const gp_XYZ&                        theGridX,
-                                    const gp_XYZ&                        theGridY,
-                                    const gp_XYZ&                        theGridN,
-                                    const occ::handle<Graphic3d_Camera>& theCamera,
-                                    const double                         theViewHeight)
-{
-  if (theParams.IsViewAdaptive())
-  {
-    addShaderGridViewRayBounds(theBox, theCamera, thePlaneOrigin, theGridN);
-  }
-
-  double aHalfX  = theParams.SizeX() > 0.0 ? theParams.SizeX() * 0.5 : 0.0;
-  double aHalfY  = theParams.SizeY() > 0.0 ? theParams.SizeY() * 0.5 : 0.0;
-  double aRadius = theParams.Radius();
-  if (aHalfX <= 0.0 && aHalfY <= 0.0 && aRadius <= 0.0)
-  {
-    aHalfX  = theViewHeight;
-    aHalfY  = theViewHeight;
-    aRadius = theParams.IsCircular() ? theViewHeight : 0.0;
-  }
-
-  if (theParams.IsCircular())
-  {
-    const double anExtent = aRadius > 0.0 ? aRadius : std::max(aHalfX, aHalfY);
-    theBox.Add(gp_Pnt(thePlaneOrigin.XYZ() + theGridX * anExtent));
-    theBox.Add(gp_Pnt(thePlaneOrigin.XYZ() - theGridX * anExtent));
-    theBox.Add(gp_Pnt(thePlaneOrigin.XYZ() + theGridY * anExtent));
-    theBox.Add(gp_Pnt(thePlaneOrigin.XYZ() - theGridY * anExtent));
-  }
-  else
-  {
-    if (aHalfX <= 0.0)
-    {
-      aHalfX = theViewHeight;
-    }
-    if (aHalfY <= 0.0)
-    {
-      aHalfY = theViewHeight;
-    }
-    theBox.Add(gp_Pnt(thePlaneOrigin.XYZ() + theGridX * aHalfX + theGridY * aHalfY));
-    theBox.Add(gp_Pnt(thePlaneOrigin.XYZ() + theGridX * aHalfX - theGridY * aHalfY));
-    theBox.Add(gp_Pnt(thePlaneOrigin.XYZ() - theGridX * aHalfX + theGridY * aHalfY));
-    theBox.Add(gp_Pnt(thePlaneOrigin.XYZ() - theGridX * aHalfX - theGridY * aHalfY));
-  }
-  theBox.Add(thePlaneOrigin);
-}
-
 //! Chooses compatible internal color format for OIT frame buffer.
 static bool chooseOitColorConfiguration(const occ::handle<OpenGl_Context>& theGlContext,
                                         const int                          theConfigIndex,
@@ -4194,17 +4103,11 @@ void OpenGl_View::renderGrid()
   gp_XYZ aXRotated, aYRotated, aNDir;
   shaderGridFrame(myGridParams, myGridPlane, aPlaneOrigin, aXRotated, aYRotated, aNDir);
 
-  if (myGridParams.IsBackground())
+  Bnd_Box      aBnd      = MinMaxValues(true);
+  const gp_Pnt aPlaneLoc = myGridPlane.Location();
+  if (myGridParams.IsBackground() || aBnd.IsVoid() || aBnd.IsOut(aPlaneLoc))
   {
-    Bnd_Box aBnd = MinMaxValues(true);
-    addShaderGridZFitBounds(aBnd,
-                            myGridParams,
-                            aPlaneOrigin,
-                            aXRotated,
-                            aYRotated,
-                            aNDir,
-                            aCamera,
-                            aCamera->Scale());
+    aBnd.Add(aPlaneLoc);
     aCamera->ZFitAll(1.0, aBnd, aBnd);
   }
   if (myGridParams.IsBackground())
