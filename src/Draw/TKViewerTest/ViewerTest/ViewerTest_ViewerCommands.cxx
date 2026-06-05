@@ -5292,23 +5292,39 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     if (isShaderGrid)
     {
-      const bool   isShaderCircular = aType == Aspect_GT_Circular || hasRadius || hasArc;
-      const double anOrigX          = hasOrigin ? aNewOriginXY.x() : 0.0;
-      const double anOrigY          = hasOrigin ? aNewOriginXY.y() : 0.0;
-      const double aRotAngle        = hasRotAngle ? aNewRotAngle : 0.0;
+      const bool isShaderCircular = aType == Aspect_GT_Circular || hasRadius || hasArc;
+      NCollection_Vec2<double> anOrigXY(0.0, 0.0);
+      double                   aRotAngle = 0.0;
 
       if (isShaderCircular)
       {
-        double aRadiusStep    = 1.0;
-        int    aDivisionCount = 16;
+        double aRadiusStep    = 0.0;
+        int    aDivisionCount = 0;
+        aViewer->CircularGridValues(anOrigXY.x(), anOrigXY.y(), aRadiusStep, aDivisionCount, aRotAngle);
+        if (hasOrigin)
+        {
+          anOrigXY = aNewOriginXY;
+        }
+        if (hasRotAngle)
+        {
+          aRotAngle = aNewRotAngle;
+        }
         if (hasStep)
         {
           aRadiusStep    = aNewStepXY.x();
-          aDivisionCount = int(aNewStepXY.y() > 0 ? aNewStepXY.y() : aDivisionCount);
+          aDivisionCount = int(aNewStepXY.y());
         }
         else if (hasScale && aGridParams.Scale() > 0.0)
         {
           aRadiusStep = 1.0 / aGridParams.Scale();
+        }
+        if (aRadiusStep <= 0.0)
+        {
+          aRadiusStep = 1.0;
+        }
+        if (aDivisionCount <= 0)
+        {
+          aDivisionCount = 16;
         }
         aGridParams.SetScale(1.0 / aRadiusStep);
         aGridParams.SetScaleY(0.0);
@@ -5316,6 +5332,16 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       }
       else
       {
+        NCollection_Vec2<double> aStepXY(1.0, 1.0);
+        aViewer->RectangularGridValues(anOrigXY.x(), anOrigXY.y(), aStepXY.x(), aStepXY.y(), aRotAngle);
+        if (hasOrigin)
+        {
+          anOrigXY = aNewOriginXY;
+        }
+        if (hasRotAngle)
+        {
+          aRotAngle = aNewRotAngle;
+        }
         if (!hasScale)
         {
           if (hasStep)
@@ -5325,14 +5351,14 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
           }
           else
           {
-            aGridParams.SetScale(1.0);
-            aGridParams.SetScaleY(1.0);
+            aGridParams.SetScale(aStepXY.x() > 0.0 ? 1.0 / aStepXY.x() : 1.0);
+            aGridParams.SetScaleY(aStepXY.y() > 0.0 ? 1.0 / aStepXY.y() : 1.0);
           }
         }
         aGridParams.SetAngularDivisions(0);
       }
 
-      aGridParams.SetOrigin(gp_Pnt(-anOrigX, -anOrigY, 0.0));
+      aGridParams.SetOrigin(gp_Pnt(-anOrigXY.x(), -anOrigXY.y(), 0.0));
       aGridParams.SetDrawMode(aMode);
       aGridParams.SetRotationAngle(aRotAngle);
       if (hasSize && !isShaderCircular)
