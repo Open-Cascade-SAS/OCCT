@@ -17,6 +17,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraph_VersionStamp.hxx>
+#include <NCollection_LinearVector.hxx>
 
 //! @brief Read-only view for RefId/RefUID-based reference storage.
 //!
@@ -24,13 +25,14 @@
 //! - typed reference entry access (Shell, Face, ...)
 //! - reference counts
 //! - RefUID lookup and reverse lookup through BRepGraph::UIDs()
-//! - stale tracking via BRepGraph_VersionStamp through BRepGraph::UIDs()
+//! - freshness checks via BRepGraph_VersionStamp through BRepGraph::UIDs()
 //!
 //! Identity semantics:
 //! - RefId (kind + index) is graph-local and may change after Compact().
 //!   Use it for in-graph traversal and short-lived mutation logic.
-//! - RefUID (kind + counter + generation) is stable across index remapping
-//!   and intended for longer-lived identity tracking.
+//! - RefUID (kind + counter) is stable across index remapping and intended
+//!   for longer-lived identity tracking. Graph generation is carried by
+//!   BRepGraph_VersionStamp when freshness checks are needed.
 //!
 //! ## RefsView vs TopoView naming
 //! RefsView accessors take reference IDs (BRepGraph_ShellRefId, BRepGraph_FaceRefId)
@@ -52,7 +54,7 @@
 //!     const BRepGraphInc::FaceRef& aFR = aRefs.Faces().Entry(aFaceRefId);
 //!     if (aFR.IsRemoved)
 //!       continue;
-//!     // use aFR.FaceDefId, aFR.Orientation, aFR.Location ...
+//!     // use aFR.FaceId, aFR.Orientation, aFR.Location ...
 //!   }
 //! @endcode
 //!
@@ -72,8 +74,8 @@ public:
   class ShellOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT uint32_t Nb() const;
+    [[nodiscard]] Standard_EXPORT uint32_t NbActive() const;
 
     [[nodiscard]] BRepGraph_ShellRefId StartId() const { return BRepGraph_ShellRefId::Start(); }
 
@@ -81,26 +83,26 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRef& Entry(
       const BRepGraph_ShellRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_ShellRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_ShellRefId>& IdsOf(
       const BRepGraph_SolidId theSolid) const;
 
   private:
     friend class RefsView;
 
-    explicit ShellOps(const BRepGraph* theGraph)
+    explicit ShellOps(BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
 
-    const BRepGraph* myGraph;
+    BRepGraph* myGraph;
   };
 
   //! @brief Face reference queries.
   class FaceOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT uint32_t Nb() const;
+    [[nodiscard]] Standard_EXPORT uint32_t NbActive() const;
 
     [[nodiscard]] BRepGraph_FaceRefId StartId() const { return BRepGraph_FaceRefId::Start(); }
 
@@ -108,26 +110,26 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceRef& Entry(
       const BRepGraph_FaceRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_FaceRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_FaceRefId>& IdsOf(
       const BRepGraph_ShellId theShell) const;
 
   private:
     friend class RefsView;
 
-    explicit FaceOps(const BRepGraph* theGraph)
+    explicit FaceOps(BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
 
-    const BRepGraph* myGraph;
+    BRepGraph* myGraph;
   };
 
   //! @brief Wire reference queries.
   class WireOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT uint32_t Nb() const;
+    [[nodiscard]] Standard_EXPORT uint32_t NbActive() const;
 
     [[nodiscard]] BRepGraph_WireRefId StartId() const { return BRepGraph_WireRefId::Start(); }
 
@@ -135,53 +137,26 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireRef& Entry(
       const BRepGraph_WireRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_WireRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_WireRefId>& IdsOf(
       const BRepGraph_FaceId theFace) const;
 
   private:
     friend class RefsView;
 
-    explicit WireOps(const BRepGraph* theGraph)
+    explicit WireOps(BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
 
-    const BRepGraph* myGraph;
-  };
-
-  //! @brief Coedge reference queries.
-  class CoEdgeOps
-  {
-  public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
-
-    [[nodiscard]] BRepGraph_CoEdgeRefId StartId() const { return BRepGraph_CoEdgeRefId::Start(); }
-
-    [[nodiscard]] BRepGraph_CoEdgeRefId EndId() const { return BRepGraph_CoEdgeRefId(Nb()); }
-
-    [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeRef& Entry(
-      const BRepGraph_CoEdgeRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CoEdgeRefId>& IdsOf(
-      const BRepGraph_WireId theWire) const;
-
-  private:
-    friend class RefsView;
-
-    explicit CoEdgeOps(const BRepGraph* theGraph)
-        : myGraph(theGraph)
-    {
-    }
-
-    const BRepGraph* myGraph;
+    BRepGraph* myGraph;
   };
 
   //! @brief Vertex reference queries.
   class VertexOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT uint32_t Nb() const;
+    [[nodiscard]] Standard_EXPORT uint32_t NbActive() const;
 
     [[nodiscard]] BRepGraph_VertexRefId StartId() const { return BRepGraph_VertexRefId::Start(); }
 
@@ -193,20 +168,20 @@ public:
   private:
     friend class RefsView;
 
-    explicit VertexOps(const BRepGraph* theGraph)
+    explicit VertexOps(BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
 
-    const BRepGraph* myGraph;
+    BRepGraph* myGraph;
   };
 
   //! @brief Solid reference queries.
   class SolidOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT uint32_t Nb() const;
+    [[nodiscard]] Standard_EXPORT uint32_t NbActive() const;
 
     [[nodiscard]] BRepGraph_SolidRefId StartId() const { return BRepGraph_SolidRefId::Start(); }
 
@@ -214,26 +189,26 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidRef& Entry(
       const BRepGraph_SolidRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_SolidRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_SolidRefId>& IdsOf(
       const BRepGraph_CompSolidId theCompSolid) const;
 
   private:
     friend class RefsView;
 
-    explicit SolidOps(const BRepGraph* theGraph)
+    explicit SolidOps(BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
 
-    const BRepGraph* myGraph;
+    BRepGraph* myGraph;
   };
 
   //! @brief Generic child reference queries.
   class ChildOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT uint32_t Nb() const;
+    [[nodiscard]] Standard_EXPORT uint32_t NbActive() const;
 
     [[nodiscard]] BRepGraph_ChildRefId StartId() const { return BRepGraph_ChildRefId::Start(); }
 
@@ -241,26 +216,28 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRef& Entry(
       const BRepGraph_ChildRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_ChildRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_ChildRefId>& IdsOf(
       const BRepGraph_CompoundId theCompound) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_ChildRefId>&
+      IdsReferencing(const BRepGraph_NodeId theChild) const;
 
   private:
     friend class RefsView;
 
-    explicit ChildOps(const BRepGraph* theGraph)
+    explicit ChildOps(BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
 
-    const BRepGraph* myGraph;
+    BRepGraph* myGraph;
   };
 
   //! @brief Occurrence reference queries.
   class OccurrenceOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT uint32_t Nb() const;
+    [[nodiscard]] Standard_EXPORT uint32_t NbActive() const;
 
     [[nodiscard]] BRepGraph_OccurrenceRefId StartId() const
     {
@@ -274,18 +251,20 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRef& Entry(
       const BRepGraph_OccurrenceRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_OccurrenceRefId>& IdsOf(
       const BRepGraph_ProductId theProduct) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_OccurrenceRefId>&
+      IdsReferencing(const BRepGraph_NodeId theChild) const;
 
   private:
     friend class RefsView;
 
-    explicit OccurrenceOps(const BRepGraph* theGraph)
+    explicit OccurrenceOps(BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
 
-    const BRepGraph* myGraph;
+    BRepGraph* myGraph;
   };
 
   //! Grouped shell reference queries.
@@ -296,9 +275,6 @@ public:
 
   //! Grouped wire reference queries.
   [[nodiscard]] const WireOps& Wires() const { return myWires; }
-
-  //! Grouped coedge reference queries.
-  [[nodiscard]] const CoEdgeOps& CoEdges() const { return myCoEdges; }
 
   //! Grouped vertex reference queries.
   [[nodiscard]] const VertexOps& Vertices() const { return myVertices; }
@@ -329,19 +305,18 @@ public:
   [[nodiscard]] Standard_EXPORT TopLoc_Location LocalLocation(const BRepGraph_RefId theRef) const;
 
   //! Return the orientation carried by the specified typed RefId.
-  //! CoEdgeRef, OccurrenceRef, and invalid refs return TopAbs_FORWARD.
+  //! OccurrenceRef and invalid refs return TopAbs_FORWARD.
   [[nodiscard]] Standard_EXPORT TopAbs_Orientation Orientation(const BRepGraph_RefId theRef) const;
 
 private:
   friend class BRepGraph;
   friend struct BRepGraph_Data;
 
-  explicit RefsView(const BRepGraph* theGraph)
+  explicit RefsView(BRepGraph* theGraph)
       : myGraph(theGraph),
         myShells(theGraph),
         myFaces(theGraph),
         myWires(theGraph),
-        myCoEdges(theGraph),
         myVertices(theGraph),
         mySolids(theGraph),
         myChildren(theGraph),
@@ -349,11 +324,10 @@ private:
   {
   }
 
-  const BRepGraph* myGraph;
+  BRepGraph* myGraph;
   ShellOps         myShells;
   FaceOps          myFaces;
   WireOps          myWires;
-  CoEdgeOps        myCoEdges;
   VertexOps        myVertices;
   SolidOps         mySolids;
   ChildOps         myChildren;

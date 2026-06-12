@@ -12,12 +12,18 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraphAlgo_Parameters.hxx>
+#include <BRepGraphAlgo_Regularity.hxx>
+#include <BRepGraph_Iterator.hxx>
+#include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_TopoView.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
 #include <Precision.hxx>
 
 #include <gtest/gtest.h>
@@ -31,13 +37,13 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     myBoxGraph.Clear();
-    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
-      BRepGraph_Builder::Add(myBoxGraph, aBoxMaker.Shape());
+    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
+      myBoxGraph.Shapes().Add(aBoxMaker.Shape());
 
     BRepPrimAPI_MakeCylinder aCylMaker(5.0, 15.0);
     myCylGraph.Clear();
-    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
-      BRepGraph_Builder::Add(myCylGraph, aCylMaker.Shape());
+    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
+      myCylGraph.Shapes().Add(aCylMaker.Shape());
   }
 
   BRepGraph myBoxGraph;
@@ -70,7 +76,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Face_Bounds_BoxFaceHasFiniteBounds)
 TEST_F(BRepGraph_QuerySurfaceTest, Face_Bounds_CylinderFaceReturnsSurfaceBounds)
 {
   // Verify that Bounds() returns the same values as Surface()->Bounds() for each face.
-  const int aNbFaces = myCylGraph.Topo().Faces().Nb();
+  const uint32_t aNbFaces = myCylGraph.Topo().Faces().Nb();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
     if (!BRepGraph_Tool::Face::HasSurface(myCylGraph, aFaceId))
@@ -101,10 +107,10 @@ TEST_F(BRepGraph_QuerySurfaceTest, Wire_FaceOf_ReturnsValidFace)
 TEST_F(BRepGraph_QuerySurfaceTest, Wire_IsOuter_FirstWireOfBoxFaceIsOuter)
 {
   const BRepGraph_FaceId aFaceId(0);
-  const BRepGraph_WireId anOuterWire = BRepGraph_Tool::Face::OuterWireId(myBoxGraph, aFaceId);
+  const BRepGraph_WireId anOuterWire = BRepGraph_Tool::Face::OuterWire(myBoxGraph, aFaceId);
   ASSERT_TRUE(anOuterWire.IsValid());
   EXPECT_TRUE(BRepGraph_Tool::Wire::IsOuter(myBoxGraph, anOuterWire))
-    << "OuterWireId-found wire should be flagged IsOuter";
+    << "OuterWire-found wire should be flagged IsOuter";
 }
 
 TEST_F(BRepGraph_QuerySurfaceTest, Edge_NbFaces_BoxEdgeHasExactlyTwoFaces)
@@ -121,7 +127,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Edge_NbFaces_BoxEdgeHasExactlyTwoFaces)
 
 TEST_F(BRepGraph_QuerySurfaceTest, Edge_IsManifold_BoxEdgesAreManifold)
 {
-  const int aNbEdges = myBoxGraph.Topo().Edges().Nb();
+  const uint32_t aNbEdges = myBoxGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     EXPECT_TRUE(BRepGraph_Tool::Edge::IsManifold(myBoxGraph, anEdgeId))
@@ -131,9 +137,93 @@ TEST_F(BRepGraph_QuerySurfaceTest, Edge_IsManifold_BoxEdgesAreManifold)
   }
 }
 
+TEST_F(BRepGraph_QuerySurfaceTest, Edge_IsClosed_BoxEdgesAreOpen)
+{
+  const uint32_t aNbEdges = myBoxGraph.Topo().Edges().Nb();
+  ASSERT_GT(aNbEdges, 0);
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
+  {
+    EXPECT_FALSE(BRepGraph_Tool::Edge::IsClosed(myBoxGraph, anEdgeId))
+      << "Box edge " << anEdgeId.Index << " has distinct endpoints, should not be IsClosed";
+  }
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Edge_IsClosed_DerivedFromVertexTopology)
+{
+  const BRepGraph_EdgeId anEdgeId(0);
+  ASSERT_TRUE(anEdgeId.IsValid(myBoxGraph.Topo().Edges().Nb()));
+  // Box edges have distinct start/end vertices, so IsClosed is derived as false.
+  EXPECT_FALSE(BRepGraph_Tool::Edge::IsClosed(myBoxGraph, anEdgeId));
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, CoEdge_PolygonOnTriangulation_RoundTrip)
+{
+  ASSERT_GT(myBoxGraph.Topo().CoEdges().Nb(), 0);
+  const BRepGraph_CoEdgeId aCoEdgeId(0);
+  const BRepGraph_FaceId   aFaceId  = BRepGraph_Tool::CoEdge::FaceOf(myBoxGraph, aCoEdgeId);
+  EXPECT_FALSE(myBoxGraph.Mesh().Persistent().CoEdges().HasPolygonOnTriangulation(aCoEdgeId));
+  EXPECT_TRUE(myBoxGraph.Mesh().Persistent().CoEdges().PolygonOnTriangulation(aCoEdgeId).IsNull());
+
+  occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(1, 1, false);
+  myBoxGraph.Editor().Faces().SetPersistentTriangulation(aFaceId, aTri);
+
+  occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
+    new Poly_PolygonOnTriangulation(2, false);
+  myBoxGraph.Editor().CoEdges().SetPersistentPolygonOnTri(aCoEdgeId, aPolyOnTri);
+
+  EXPECT_TRUE(myBoxGraph.Mesh().Persistent().CoEdges().HasPolygonOnTriangulation(aCoEdgeId));
+  EXPECT_EQ(myBoxGraph.Mesh().Persistent().CoEdges().PolygonOnTriangulation(aCoEdgeId).get(),
+            aPolyOnTri.get());
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Edge_PolygonOnTriangulation_ResolvesViaFace)
+{
+  ASSERT_GT(myBoxGraph.Topo().CoEdges().Nb(), 0);
+  const BRepGraph_CoEdgeId aCoEdgeId(0);
+  const BRepGraph_EdgeId   anEdgeId = BRepGraph_Tool::CoEdge::EdgeOf(myBoxGraph, aCoEdgeId);
+  const BRepGraph_FaceId   aFaceId  = BRepGraph_Tool::CoEdge::FaceOf(myBoxGraph, aCoEdgeId);
+  ASSERT_TRUE(anEdgeId.IsValid());
+  ASSERT_TRUE(aFaceId.IsValid());
+
+  EXPECT_FALSE(myBoxGraph.Mesh().Persistent().Edges().HasPolygonOnTriangulation(anEdgeId, aFaceId));
+
+  occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(1, 1, false);
+  myBoxGraph.Editor().Faces().SetPersistentTriangulation(aFaceId, aTri);
+
+  occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
+    new Poly_PolygonOnTriangulation(2, false);
+  myBoxGraph.Editor().CoEdges().SetPersistentPolygonOnTri(aCoEdgeId, aPolyOnTri);
+
+  EXPECT_TRUE(myBoxGraph.Mesh().Persistent().Edges().HasPolygonOnTriangulation(anEdgeId, aFaceId));
+  EXPECT_EQ(myBoxGraph.Mesh().Persistent().Edges().PolygonOnTriangulation(anEdgeId, aFaceId).get(),
+            aPolyOnTri.get());
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Face_CachedTriangulation_DefaultEmpty)
+{
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(myBoxGraph.Topo().Faces().Nb()); ++aFaceId)
+  {
+    EXPECT_FALSE(myBoxGraph.Mesh().Cache().Faces().Has(aFaceId));
+    EXPECT_TRUE(myBoxGraph.Mesh().Cache().Faces().Triangulation(aFaceId).IsNull());
+  }
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Face_CachedTriangulation_SetAndRead)
+{
+  ASSERT_GT(myBoxGraph.Topo().Faces().Nb(), 0);
+  const BRepGraph_FaceId aFaceId(0);
+
+  occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(1, 1, false);
+
+  myBoxGraph.Mesh().Editor().Faces().SetCachedTriangulation(aFaceId, aTri);
+
+  EXPECT_TRUE(myBoxGraph.Mesh().Cache().Faces().Has(aFaceId));
+  EXPECT_EQ(myBoxGraph.Mesh().Cache().Faces().Triangulation(aFaceId).get(), aTri.get());
+}
+
 TEST_F(BRepGraph_QuerySurfaceTest, Vertex_NbEdges_BoxVertexHasThreeEdges)
 {
-  const int aNbVertices = myBoxGraph.Topo().Vertices().Nb();
+  const uint32_t aNbVertices = myBoxGraph.Topo().Vertices().Nb();
   for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aNbVertices); ++aVertexId)
   {
     const int aNbEdges = BRepGraph_Tool::Vertex::NbEdges(myBoxGraph, aVertexId);
@@ -153,4 +243,52 @@ TEST_F(BRepGraph_QuerySurfaceTest, Shell_NbFaces_BoxShellHasSixFaces)
   ASSERT_GE(myBoxGraph.Topo().Shells().Nb(), 1);
   EXPECT_EQ(BRepGraph_Tool::Shell::NbFaces(myBoxGraph, BRepGraph_ShellId::Start()), 6)
     << "Box shell should reference 6 faces";
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Vertex_ParametersDerivedFromGraph)
+{
+  ASSERT_GT(myBoxGraph.Topo().Vertices().Nb(), 0);
+  ASSERT_GT(myBoxGraph.Topo().Edges().Nb(), 0);
+  const BRepGraph_VertexId aVertexId(0);
+  const NCollection_LinearVector<BRepGraph_EdgeId>& anEdges =
+    myBoxGraph.Topo().Vertices().Edges(aVertexId);
+  ASSERT_FALSE(anEdges.IsEmpty());
+  const BRepGraph_EdgeId anEdgeId = anEdges.Value(0);
+
+  EXPECT_TRUE(BRepGraphAlgo_Parameters::HasPointOnCurve(myBoxGraph, aVertexId, anEdgeId));
+  EXPECT_GT(BRepGraphAlgo_Parameters::NbPointsOnCurve(myBoxGraph, aVertexId), 0u);
+  EXPECT_TRUE(BRepGraphAlgo_Parameters::HasPointOnCurve(myBoxGraph, aVertexId, anEdgeId));
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Edge_RegularityDerivedFromGraph)
+{
+  bool hasRegularity = false;
+  for (BRepGraph_EdgeIterator anEdgeIt(myBoxGraph); anEdgeIt.More(); anEdgeIt.Next())
+  {
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    if (BRepGraphAlgo_Regularity::NbRegularities(myBoxGraph, anEdgeId) > 0)
+    {
+      hasRegularity = true;
+      EXPECT_GE(BRepGraphAlgo_Regularity::MaxContinuity(myBoxGraph, anEdgeId), GeomAbs_C0);
+      break;
+    }
+  }
+  EXPECT_TRUE(hasRegularity);
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Face_RegularityEdgesDerivedFromGraph)
+{
+  ASSERT_GT(myBoxGraph.Topo().Faces().Nb(), 0);
+  bool hasFaceRegularityEdges = false;
+  for (BRepGraph_FaceId aFace = myBoxGraph.Topo().Faces().StartId();
+       aFace < myBoxGraph.Topo().Faces().EndId();
+       ++aFace)
+  {
+    if (!BRepGraphAlgo_Regularity::EdgesForFace(myBoxGraph, aFace).IsEmpty())
+    {
+      hasFaceRegularityEdges = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(hasFaceRegularityEdges);
 }

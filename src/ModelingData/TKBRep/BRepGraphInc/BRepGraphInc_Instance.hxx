@@ -48,10 +48,14 @@ struct Instance
   TypedIdT           DefId;
   TopLoc_Location    Location;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
+
+  //! Returns true if the instance references an existing definition id.
+  [[nodiscard]] bool IsValid() const { return DefId.IsValid(); }
 };
 
 using VertexInstance     = Instance<BRepGraph_VertexId>;
 using CoEdgeInstance     = Instance<BRepGraph_CoEdgeId>;
+using WireInstance       = Instance<BRepGraph_WireId>;
 using FaceInstance       = Instance<BRepGraph_FaceId>;
 using ShellInstance      = Instance<BRepGraph_ShellId>;
 using SolidInstance      = Instance<BRepGraph_SolidId>;
@@ -66,12 +70,6 @@ using ProductInstance    = Instance<BRepGraph_ProductId>;
 //! Implicitly convertible from any typed Instance via BRepGraph_NodeId::Typed
 //! implicit conversion to BRepGraph_NodeId.
 using NodeInstance = Instance<BRepGraph_NodeId>;
-
-//! Wire instance with an additional flag indicating whether this is the outer wire.
-struct WireInstance : Instance<BRepGraph_WireId>
-{
-  bool IsOuter = false;
-};
 
 } // namespace BRepGraphInc
 

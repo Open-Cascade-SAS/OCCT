@@ -491,17 +491,9 @@ public:
   //! Returns a span as Array1 with shared memory.
   //! Modifying the vector or the array may invalidate the shared buffer.
   //! @return array view of the vector data
-  NCollection_Array1<TheItemType> ToArray1()
+  NCollection_Array1<TheItemType> ToArray1() const
   {
     return NCollection_Array1<TheItemType>(myData, mySize);
-  }
-
-  //! Returns a read-only span as Array1 with shared memory.
-  //! Modifying the vector may invalidate the shared buffer.
-  //! @return const array view of the vector data
-  NCollection_Array1<const TheItemType> ToArray1() const
-  {
-    return NCollection_Array1<const TheItemType>(myData, mySize);
   }
 
   //! @return iterator to the first element.

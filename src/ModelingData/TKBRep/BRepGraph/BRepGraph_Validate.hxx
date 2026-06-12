@@ -15,16 +15,15 @@
 #define _BRepGraph_Validate_HeaderFile
 
 #include <BRepGraph.hxx>
-
 #include <BRepGraph_NodeId.hxx>
-#include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TCollection_AsciiString.hxx>
 
 //! @brief Structural invariant checker for BRepGraph.
 //!
 //! Read-only algorithm that verifies the graph's internal consistency:
-//! cross-reference bounds, reverse index symmetry, incidence ref consistency,
+//! cross-reference bounds, relation symmetry, incidence ref consistency,
 //! geometry reference validity, removed-node isolation, and wire connectivity.
 //!
 //! Distinct from BRepGraphCheck (geometric shape validity). This class
@@ -35,12 +34,13 @@
 //! | Check                          | Lightweight | Audit |
 //! |--------------------------------|:-----------:|:-----:|
 //! | Active entity count boundary   |     YES     |  YES  |
+//! | Document root product sanity   |     YES     |  YES  |
 //! | Cross-reference bounds         |      -      |  YES  |
 //! | Reverse-index consistency      |      -      |  YES  |
 //! | Face-count cache consistency   |      -      |  YES  |
 //! | Incidence ref consistency      |      -      |  YES  |
 //! | Geometry representation refs   |      -      |  YES  |
-//! | Removed-node isolation         |      -      |  YES  |
+//! | Removed-node isolation         |     YES     |  YES  |
 //! | Wire edge connectivity         |      -      |  YES  |
 //! | Entity ID positional integrity |      -      |  YES  |
 //! | UID round-trip integrity       |      -      |  YES  |
@@ -50,7 +50,7 @@
 //!
 //! | Mode | What it checks | Cost | Recommended use |
 //! |------|----------------|------|-----------------|
-//! | `Lightweight` | Active entity count boundary only | Low | Hot-path release builds when the
+//! | `Lightweight` | Active entity count boundary plus removed-node isolation | Low | Hot-path release builds when the
 //! graph structure is already trusted | | `Audit` | Full structural audit from cross-reference
 //! bounds through assembly DAG cycle detection | Higher | Default validation mode for production
 //! pipelines, test gates, and API-boundary verification |
@@ -89,30 +89,13 @@ public:
   //! Aggregated validation result.
   struct Result
   {
-    NCollection_DynamicArray<Issue> Issues;
+    NCollection_LinearVector<Issue> Issues;
 
     //! True if no Error-level issues were found.
-    [[nodiscard]] bool IsValid() const
-    {
-      for (const Issue& anIssue : Issues)
-      {
-        if (anIssue.Sev == Severity::Error)
-          return false;
-      }
-      return true;
-    }
+    [[nodiscard]] Standard_EXPORT bool IsValid() const;
 
     //! Count issues of a given severity.
-    [[nodiscard]] int NbIssues(const Severity theSev) const
-    {
-      int aCount = 0;
-      for (const Issue& anIssue : Issues)
-      {
-        if (anIssue.Sev == theSev)
-          ++aCount;
-      }
-      return aCount;
-    }
+    [[nodiscard]] Standard_EXPORT int NbIssues(const Severity theSev) const;
   };
 
   //! Validation options.
@@ -158,8 +141,11 @@ public:
   [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph,
                                                       const Options&   theOptions);
 
-private:
   BRepGraph_Validate() = delete;
+
+private:
+  static void CheckOwnedUseReferences(const BRepGraph&                                     theGraph,
+                                      NCollection_LinearVector<BRepGraph_Validate::Issue>& theIssues);
 };
 
 #endif // _BRepGraph_Validate_HeaderFile

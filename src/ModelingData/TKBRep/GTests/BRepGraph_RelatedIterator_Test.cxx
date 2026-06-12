@@ -16,7 +16,7 @@
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RelatedIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_ShapesView.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -69,8 +69,8 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     myGraph.Clear();
-    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
-      BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
+    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
+      myGraph.Shapes().Add(aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -120,13 +120,15 @@ TEST_F(BRepGraph_RelatedIteratorTest, AssemblyNodes_YieldNoRelations)
 {
   // Assembly/container nodes have no topological relations - use ChildExplorer instead.
   const BRepGraph_ProductId aPartProduct =
-    myGraph.Editor().Products().LinkProductToTopology(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
-  const BRepGraph_ProductId aRootAssembly = myGraph.Editor().Products().CreateEmptyProduct();
+    myGraph.Editor().Products().Add(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
+  myGraph.Editor().Products().AppendDocumentRoot(aPartProduct);
+  const BRepGraph_ProductId aRootAssembly = myGraph.Editor().Products().Add();
+  myGraph.Editor().Products().AppendDocumentRoot(aRootAssembly);
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
   const BRepGraph_OccurrenceId anOccurrenceId =
-    myGraph.Editor().Products().LinkProducts(aRootAssembly, aPartProduct, TopLoc_Location(aTrsf));
+    myGraph.Editor().Products().Append(aRootAssembly, aPartProduct, TopLoc_Location(aTrsf));
   ASSERT_TRUE(anOccurrenceId.IsValid());
 
   BRepGraph_RelatedIterator aProductIt(myGraph, BRepGraph_NodeId(aRootAssembly));
@@ -150,8 +152,9 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeReferencedByFace_RemovedFaceIsSkipped)
   const BRepGraph_EdgeId anEdgeId(0);
 
   // Find the two faces that reference this edge.
-  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
-  ASSERT_EQ(aFaces.Length(), 2);
+  const NCollection_LinearVector<BRepGraph_FaceId>& aFaces =
+    myGraph.Topo().Edges().Faces(anEdgeId);
+  ASSERT_EQ(aFaces.Size(), 2);
 
   // Remove the first face.
   const BRepGraph_FaceId aRemovedFace = aFaces.Value(0);
@@ -230,9 +233,9 @@ TEST(BRepGraph_RelatedIteratorStandalone, Compound_YieldsNoRelations)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
-    BRepGraph_Builder::Add(aGraph, aCompound);
-  ASSERT_TRUE(aGraph.IsDone());
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
+    aGraph.Shapes().Add(aCompound);
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_CompoundId aCompoundId;
   for (BRepGraph_CompoundIterator anIt(aGraph); anIt.More(); anIt.Next())
@@ -281,14 +284,14 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_AllRelationsSequential)
     }
   }
 
-  EXPECT_EQ(aFaces.Length(), 2);
-  EXPECT_EQ(aVertices.Length(), 2);
+  EXPECT_EQ(aFaces.Size(), 2);
+  EXPECT_EQ(aVertices.Size(), 2);
   // All yielded nodes must be distinct.
-  if (aFaces.Length() == 2)
+  if (aFaces.Size() == 2)
   {
     EXPECT_NE(aFaces.Value(0), aFaces.Value(1));
   }
-  if (aVertices.Length() == 2)
+  if (aVertices.Size() == 2)
   {
     EXPECT_NE(aVertices.Value(0), aVertices.Value(1));
   }
@@ -300,9 +303,9 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_RemovedFace_CorrectTransition)
   const BRepGraph_NodeId anEdgeNode(anEdgeId);
 
   // Remove one parent face.
-  const NCollection_DynamicArray<BRepGraph_FaceId>& aParentFaces =
+  const NCollection_LinearVector<BRepGraph_FaceId>& aParentFaces =
     myGraph.Topo().Edges().Faces(anEdgeId);
-  ASSERT_EQ(aParentFaces.Length(), 2);
+  ASSERT_EQ(aParentFaces.Size(), 2);
   myGraph.Editor().Gen().RemoveNode(aParentFaces.Value(0));
 
   // Iterate - expect 1 face + 2 vertices, confirming correct stage transition.
@@ -329,11 +332,11 @@ TEST_F(BRepGraph_RelatedIteratorTest, VertexOfBox_AllParentEdgesYielded)
     }
   }
 
-  EXPECT_EQ(anEdges.Length(), 3);
+  EXPECT_EQ(anEdges.Size(), 3);
   // All yielded edges must be distinct.
-  for (int i = 0; i < anEdges.Length(); ++i)
+  for (size_t i = 0; i < anEdges.Size(); ++i)
   {
-    for (int j = i + 1; j < anEdges.Length(); ++j)
+    for (size_t j = i + 1; j < anEdges.Size(); ++j)
     {
       EXPECT_NE(anEdges.Value(i), anEdges.Value(j));
     }

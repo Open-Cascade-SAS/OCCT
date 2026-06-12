@@ -23,6 +23,8 @@
 #include <limits>
 #include <utility>
 
+class BRepGraph;
+
 //! Lightweight typed index into a per-kind reference vector inside BRepGraph.
 //!
 //! The pair (Kind, Index) forms a unique reference identifier within one graph
@@ -35,12 +37,28 @@ struct BRepGraph_RefId
     Shell      = 0, //!< Shell reference entries (usage of shell definitions)
     Face       = 1, //!< Face reference entries (usage of face definitions)
     Wire       = 2, //!< Wire reference entries (usage of wire definitions)
-    CoEdge     = 3, //!< CoEdge reference entries (usage of coedge definitions)
-    Vertex     = 4, //!< Vertex reference entries (usage of vertex definitions)
-    Solid      = 5, //!< Solid reference entries (usage of solid definitions)
-    Child      = 6, //!< Generic child references (usage of mixed node definitions)
-    Occurrence = 7  //!< Occurrence references (usage of occurrence definitions)
+    Vertex     = 3, //!< Vertex reference entries (usage of vertex definitions)
+    Solid      = 4, //!< Solid reference entries (usage of solid definitions)
+    Child      = 5, //!< Generic child references (usage of mixed node definitions)
+    Occurrence = 6  //!< Occurrence references (usage of occurrence definitions)
   };
+
+  //! True if the kind value is one of the supported reference kinds.
+  static bool IsValidKind(const Kind theKind)
+  {
+    switch (theKind)
+    {
+      case Kind::Shell:
+      case Kind::Face:
+      case Kind::Wire:
+      case Kind::Vertex:
+      case Kind::Solid:
+      case Kind::Child:
+      case Kind::Occurrence:
+        return true;
+    }
+    return false;
+  }
 
   //! @brief Compile-time typed wrapper around BRepGraph_RefId.
   //!
@@ -78,11 +96,17 @@ struct BRepGraph_RefId
     //! Invalid sentinel id.
     [[nodiscard]] static Typed Invalid() { return Typed(); }
 
-    [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
+    [[nodiscard]] bool IsValid() const
+    {
+      return BRepGraph_RefId::IsValidKind(TheKind) && Index != THE_INVALID_INDEX;
+    }
 
     //! True if this id points to an allocated slot within [0, theMaxCount).
     //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
-    [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
+    [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const
+    {
+      return IsValid() && Index < theMaxCount;
+    }
 
     template <typename CountProviderT>
     [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
@@ -102,7 +126,11 @@ struct BRepGraph_RefId
 
     static Typed FromRefId(const BRepGraph_RefId theRefId)
     {
-      Standard_ASSERT_VOID(theRefId.RefKind == TheKind, "RefId kind mismatch");
+      Standard_ASSERT_RETURN(theRefId.RefKind == TheKind, "RefId kind mismatch", Typed());
+      if (!theRefId.IsValid())
+      {
+        return Typed();
+      }
       return Typed(theRefId.Index);
     }
 
@@ -165,12 +193,23 @@ struct BRepGraph_RefId
     {
       return theRhs != theLhs;
     }
+
+    //! Return true if this reference entry has been soft-removed in the given graph.
+    [[nodiscard]] bool IsRemoved(const BRepGraph& theGraph) const
+    {
+      return BRepGraph_RefId(*this).IsRemoved(theGraph);
+    }
+
+    //! Return true if this reference entry has an active owner in the given graph.
+    [[nodiscard]] bool IsOwned(const BRepGraph& theGraph) const
+    {
+      return BRepGraph_RefId(*this).IsOwned(theGraph);
+    }
   };
 
   static bool IsTopologyRefKind(const Kind theKind)
   {
-    return static_cast<int>(theKind) >= static_cast<int>(Kind::Shell)
-           && static_cast<int>(theKind) <= static_cast<int>(Kind::Child);
+    return IsValidKind(theKind) && theKind >= Kind::Shell && theKind <= Kind::Child;
   }
 
   static constexpr uint32_t THE_START_INDEX   = 0u;
@@ -203,11 +242,17 @@ struct BRepGraph_RefId
     return BRepGraph_RefId(theKind, THE_INVALID_INDEX);
   }
 
-  [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
+  [[nodiscard]] bool IsValid() const
+  {
+    return IsValidKind(RefKind) && Index != THE_INVALID_INDEX;
+  }
 
   //! True if this id points to an allocated slot within [0, theMaxCount).
   //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
-  [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
+  [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const
+  {
+    return IsValid() && Index < theMaxCount;
+  }
 
   template <typename CountProviderT>
   [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
@@ -233,7 +278,9 @@ struct BRepGraph_RefId
   bool operator<(const BRepGraph_RefId& theOther) const
   {
     if (RefKind != theOther.RefKind)
+    {
       return static_cast<int>(RefKind) < static_cast<int>(theOther.RefKind);
+    }
     return Index < theOther.Index;
   }
 
@@ -281,8 +328,6 @@ struct BRepGraph_RefId
         return std::forward<FuncT>(theFunc)(Typed<Kind::Face>::FromRefId(theRefId));
       case Kind::Wire:
         return std::forward<FuncT>(theFunc)(Typed<Kind::Wire>::FromRefId(theRefId));
-      case Kind::CoEdge:
-        return std::forward<FuncT>(theFunc)(Typed<Kind::CoEdge>::FromRefId(theRefId));
       case Kind::Vertex:
         return std::forward<FuncT>(theFunc)(Typed<Kind::Vertex>::FromRefId(theRefId));
       case Kind::Solid:
@@ -296,12 +341,17 @@ struct BRepGraph_RefId
     Standard_ASSERT_VOID(false, "BRepGraph_RefId::Visit: unhandled Kind");
     return std::forward<FuncT>(theFunc)(Typed<Kind::Shell>());
   }
+
+  //! Return true if this reference entry has been soft-removed in the given graph.
+  [[nodiscard]] bool IsRemoved(const BRepGraph& theGraph) const;
+
+  //! Return true if this reference entry has an active owner in the given graph.
+  [[nodiscard]] bool IsOwned(const BRepGraph& theGraph) const;
 };
 
 using BRepGraph_ShellRefId      = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Shell>;
 using BRepGraph_FaceRefId       = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Face>;
 using BRepGraph_WireRefId       = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Wire>;
-using BRepGraph_CoEdgeRefId     = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::CoEdge>;
 using BRepGraph_VertexRefId     = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Vertex>;
 using BRepGraph_SolidRefId      = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Solid>;
 using BRepGraph_ChildRefId      = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Child>;

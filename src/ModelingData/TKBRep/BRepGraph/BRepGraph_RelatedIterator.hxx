@@ -22,6 +22,7 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <NCollection_ForwardRange.hxx>
+#include <NCollection_LinearVector.hxx>
 
 //! @brief Single-level iterator over semantically related topology nodes.
 //! @see BRepGraph class comment "Iterator guide" for choosing between iterator types.
@@ -50,14 +51,18 @@ public:
     SeamPair,         //!< CoEdge -> CoEdge (seam twin)
   };
 
+  //! Internal traversal stage tracking which sub-iteration is active.
   enum class Stage
   {
-    First,
-    Second,
-    Third,
-    Finished,
+    First,     //!< Primary relation iteration.
+    Second,    //!< Secondary relation iteration.
+    Third,     //!< Tertiary relation iteration.
+    Finished,  //!< All relations exhausted.
   };
 
+  //! Construct an iterator over all semantically related nodes of the given source node.
+  //! @param[in] theGraph graph containing the node
+  //! @param[in] theNode  source node whose relations are iterated
   BRepGraph_RelatedIterator(const BRepGraph& theGraph, const BRepGraph_NodeId theNode)
       : myGraph(&theGraph),
         myNode(theNode)
@@ -65,8 +70,10 @@ public:
     advance();
   }
 
+  //! True if another related node is available.
   [[nodiscard]] bool More() const { return myHasCurrent; }
 
+  //! Advance to the next related node.
   void Next()
   {
     if (!myHasCurrent)
@@ -76,8 +83,10 @@ public:
     advance();
   }
 
+  //! Return the current related node id.
   [[nodiscard]] const BRepGraph_NodeId& Current() const { return myCurrent; }
 
+  //! Return the relation kind explaining why the current node is related.
   [[nodiscard]] RelationKind CurrentRelation() const { return myRelation; }
 
   //! Returns an STL-compatible iterator for range-based for loops.
@@ -90,18 +99,7 @@ public:
   NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
-  [[nodiscard]] bool setCurrent(const BRepGraph_NodeId theNode, const RelationKind theRelation)
-  {
-    if (!theNode.IsValid() || myGraph->Topo().Gen().IsRemoved(theNode))
-    {
-      return false;
-    }
-
-    myCurrent    = theNode;
-    myRelation   = theRelation;
-    myHasCurrent = true;
-    return true;
-  }
+  [[nodiscard]] bool setCurrent(const BRepGraph_NodeId theNode, const RelationKind theRelation);
 
   template <class IteratorT>
   [[nodiscard]] bool advanceRefChildren(IteratorT theIterator, const RelationKind theRelation)
@@ -114,7 +112,15 @@ private:
       }
 
       myIndex                           = theIterator.Index() + 1;
-      const BRepGraph_NodeId aChildNode = myGraph->Refs().ChildNode(theIterator.CurrentId());
+      BRepGraph_NodeId aChildNode;
+      if constexpr (std::is_convertible_v<decltype(theIterator.CurrentId()), BRepGraph_RefId>)
+      {
+        aChildNode = myGraph->Refs().ChildNode(theIterator.CurrentId());
+      }
+      else
+      {
+        aChildNode = BRepGraph_NodeId(theIterator.CurrentId());
+      }
       return setCurrent(aChildNode, theRelation);
     }
 
@@ -138,79 +144,9 @@ private:
     return false;
   }
 
-  [[nodiscard]] bool advanceFaceBoundaryEdge()
-  {
-    const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::FromNodeId(myNode);
-    for (BRepGraph_DefsWireOfFace aWireIt(*myGraph, aFaceId); aWireIt.More(); aWireIt.Next())
-    {
-      if (aWireIt.Index() < myIndex)
-      {
-        continue;
-      }
+  [[nodiscard]] bool advanceFaceBoundaryEdge();
 
-      for (BRepGraph_DefsEdgeOfWire anEdgeIt(*myGraph, aWireIt.CurrentId()); anEdgeIt.More();
-           anEdgeIt.Next())
-      {
-        if (aWireIt.Index() == myIndex && anEdgeIt.Index() < myInnerIndex)
-        {
-          continue;
-        }
-
-        myIndex      = aWireIt.Index();
-        myInnerIndex = anEdgeIt.Index() + 1;
-        return setCurrent(BRepGraph_NodeId(anEdgeIt.CurrentId()), RelationKind::BoundaryEdge);
-      }
-
-      myIndex      = aWireIt.Index() + 1;
-      myInnerIndex = 0;
-    }
-
-    return false;
-  }
-
-  [[nodiscard]] bool advanceAdjacentFace()
-  {
-    const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::FromNodeId(myNode);
-    for (BRepGraph_DefsWireOfFace aWireIt(*myGraph, aFaceId); aWireIt.More(); aWireIt.Next())
-    {
-      if (aWireIt.Index() < myIndex)
-      {
-        continue;
-      }
-
-      for (BRepGraph_DefsCoEdgeOfWire aCoEdgeIt(*myGraph, aWireIt.CurrentId()); aCoEdgeIt.More();
-           aCoEdgeIt.Next())
-      {
-        if (aWireIt.Index() == myIndex && aCoEdgeIt.Index() < myInnerIndex)
-        {
-          continue;
-        }
-
-        const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces =
-          myGraph->Topo().Edges().Faces(aCoEdgeIt.Current().EdgeDefId);
-        for (; myDeepIndex < static_cast<uint32_t>(aFaces.Size()); ++myDeepIndex)
-        {
-          const BRepGraph_FaceId anAdjacentFaceId = aFaces.Value(static_cast<size_t>(myDeepIndex));
-          if (anAdjacentFaceId == aFaceId)
-          {
-            continue;
-          }
-
-          myIndex      = aWireIt.Index();
-          myInnerIndex = aCoEdgeIt.Index();
-          ++myDeepIndex;
-          return setCurrent(BRepGraph_NodeId(anAdjacentFaceId), RelationKind::AdjacentFace);
-        }
-
-        myDeepIndex = 0;
-      }
-
-      myIndex      = aWireIt.Index() + 1;
-      myInnerIndex = 0;
-    }
-
-    return false;
-  }
+  [[nodiscard]] bool advanceAdjacentFace();
 
   [[nodiscard]] bool advanceEdgeVertex()
   {
@@ -219,13 +155,16 @@ private:
       RelationKind::IncidentVertex);
   }
 
-  //! Advance through a reverse-index iterator (e.g. BRepGraph_FacesOfEdge).
+  //! Advance through a relation iterator (e.g. BRepGraph_FacesOfEdge).
   //! Constructs a ParentsOf starting at myIndex for O(1) amortized resumption.
   template <typename TypedIdT>
-  [[nodiscard]] bool advanceParents(const NCollection_DynamicArray<TypedIdT>& theParents,
+  [[nodiscard]] bool advanceParents(const NCollection_LinearVector<TypedIdT>& theParents,
                                     const RelationKind                        theRelation)
   {
-    BRepGraph_ReverseIterator::ParentsOf<TypedIdT> anIt(*myGraph, theParents, myIndex);
+    BRepGraph_ReverseIterator::ParentsOf<TypedIdT, NCollection_LinearVector<TypedIdT>> anIt(
+      *myGraph,
+      theParents,
+      myIndex);
     if (anIt.More())
     {
       myIndex = anIt.Index() + 1;
@@ -235,136 +174,18 @@ private:
     return false;
   }
 
-  void advance()
+  template <typename IteratorT>
+  [[nodiscard]] bool advanceParentIterator(IteratorT theIterator, const RelationKind theRelation)
   {
-    myHasCurrent = false;
-    if (!myNode.IsValid() || myGraph->Topo().Gen().IsRemoved(myNode))
+    if (theIterator.More())
     {
-      return;
+      myIndex = theIterator.Index() + 1;
+      return setCurrent(BRepGraph_NodeId(theIterator.CurrentId()), theRelation);
     }
-
-    for (;;)
-    {
-      switch (myNode.NodeKind)
-      {
-        // Container/assembly nodes have no topological relations.
-        // Use BRepGraph_ChildExplorer / BRepGraph_ParentExplorer for navigation.
-        case BRepGraph_NodeId::Kind::Solid:
-        case BRepGraph_NodeId::Kind::Shell:
-        case BRepGraph_NodeId::Kind::Compound:
-        case BRepGraph_NodeId::Kind::CompSolid:
-        case BRepGraph_NodeId::Kind::Product:
-        case BRepGraph_NodeId::Kind::Occurrence:
-          return;
-        case BRepGraph_NodeId::Kind::Face: {
-          if (myStage == Stage::First)
-          {
-            if (advanceFaceBoundaryEdge())
-            {
-              return;
-            }
-            myStage      = Stage::Second;
-            myIndex      = 0;
-            myInnerIndex = 0;
-            myDeepIndex  = 0;
-          }
-          if (myStage == Stage::Second)
-          {
-            if (advanceAdjacentFace())
-            {
-              return;
-            }
-            myStage = Stage::Third;
-            myIndex = 0;
-          }
-          if (myStage == Stage::Third)
-          {
-            myStage = Stage::Finished;
-            return (void)setCurrent(BRepGraph_NodeId(myGraph->Topo().Faces().OuterWire(
-                                      BRepGraph_FaceId::FromNodeId(myNode))),
-                                    RelationKind::OuterWire);
-          }
-          return;
-        }
-        case BRepGraph_NodeId::Kind::Edge: {
-          if (myStage == Stage::First)
-          {
-            if (advanceParents(myGraph->Topo().Edges().Faces(BRepGraph_EdgeId::FromNodeId(myNode)),
-                               RelationKind::ReferencedByFace))
-            {
-              return;
-            }
-            myStage = Stage::Second;
-            myIndex = 0;
-          }
-          if (advanceEdgeVertex())
-          {
-            return;
-          }
-          return;
-        }
-        case BRepGraph_NodeId::Kind::Wire: {
-          if (myStage == Stage::First)
-          {
-            if (advanceRefChildren(
-                  BRepGraph_RefsCoEdgeOfWire(*myGraph, BRepGraph_WireId::FromNodeId(myNode)),
-                  RelationKind::WireCoEdge))
-            {
-              return;
-            }
-            myStage = Stage::Second;
-            myIndex = 0;
-          }
-          if (advanceParents(myGraph->Topo().Wires().Faces(BRepGraph_WireId::FromNodeId(myNode)),
-                             RelationKind::OwningFace))
-          {
-            return;
-          }
-          return;
-        }
-        case BRepGraph_NodeId::Kind::Vertex: {
-          if (advanceParents(
-                myGraph->Topo().Vertices().Edges(BRepGraph_VertexId::FromNodeId(myNode)),
-                RelationKind::IncidentEdge))
-          {
-            return;
-          }
-          return;
-        }
-        case BRepGraph_NodeId::Kind::CoEdge: {
-          const BRepGraph_CoEdgeId aCoEdgeId = BRepGraph_CoEdgeId::FromNodeId(myNode);
-          if (myStage == Stage::First)
-          {
-            myStage = Stage::Second;
-            if (setCurrent(BRepGraph_NodeId(BRepGraph_Tool::CoEdge::EdgeOf(*myGraph, aCoEdgeId)),
-                           RelationKind::ParentEdge))
-            {
-              return;
-            }
-          }
-          if (myStage == Stage::Second)
-          {
-            myStage = Stage::Third;
-            if (setCurrent(BRepGraph_NodeId(BRepGraph_Tool::CoEdge::FaceOf(*myGraph, aCoEdgeId)),
-                           RelationKind::OwningFace))
-            {
-              return;
-            }
-          }
-          if (myStage == Stage::Third)
-          {
-            myStage = Stage::Finished;
-            if (setCurrent(BRepGraph_NodeId(BRepGraph_Tool::CoEdge::SeamPair(*myGraph, aCoEdgeId)),
-                           RelationKind::SeamPair))
-            {
-              return;
-            }
-          }
-          return;
-        }
-      }
-    }
+    return false;
   }
+
+  void advance();
 
 private:
   const BRepGraph* myGraph;

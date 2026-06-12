@@ -14,6 +14,7 @@
 #include <BRepGraph_VersionStamp.hxx>
 
 #include <Standard_UUID.hxx>
+#include <Standard_HashUtils.hxx>
 
 #include <cstring>
 
@@ -27,15 +28,15 @@ Standard_GUID BRepGraph_VersionStamp::ToGUID(const Standard_GUID& theGraphGUID) 
 
   size_t aCounter = 0;
   int    aKind    = 0;
-  if (myDomain == Domain::Entity)
+  if (myDomain == Domain::Node)
   {
-    aCounter = myUID.Counter();
-    aKind    = static_cast<int>(myUID.Kind());
+    aCounter = myNodeUID.Counter;
+    aKind    = static_cast<int>(myNodeUID.Kind);
   }
-  else if (myDomain == Domain::Ref)
+  else if (myDomain == Domain::Reference)
   {
-    aCounter = myRefUID.Counter();
-    aKind    = static_cast<int>(myRefUID.Kind());
+    aCounter = myRefUID.Counter;
+    aKind    = static_cast<int>(myRefUID.Kind);
   }
 
   uint8_t aBuffer[sizeof(aGraphUUID) + sizeof(aDomain) + sizeof(aCounter) + sizeof(aKind)
@@ -81,4 +82,73 @@ Standard_GUID BRepGraph_VersionStamp::ToGUID(const Standard_GUID& theGraphGUID) 
   std::memcpy(aDst + THE_QUARTER * 2, &aH3, THE_QUARTER);
   std::memcpy(aDst + THE_QUARTER * 3, &aH4, THE_QUARTER);
   return Standard_GUID(aResultUUID);
+}
+
+//=================================================================================================
+
+bool BRepGraph_VersionStamp::operator==(const BRepGraph_VersionStamp& theOther) const
+{
+  if (!IsValid() && !theOther.IsValid())
+  {
+    return true;
+  }
+  if (myDomain != theOther.myDomain)
+  {
+    return false;
+  }
+  if (myMutationGen != theOther.myMutationGen || myGeneration != theOther.myGeneration)
+  {
+    return false;
+  }
+  if (myDomain == Domain::Node)
+  {
+    return myNodeUID == theOther.myNodeUID;
+  }
+  if (myDomain == Domain::Reference)
+  {
+    return myRefUID == theOther.myRefUID;
+  }
+  return myNodeUID == theOther.myNodeUID && myRefUID == theOther.myRefUID;
+}
+
+//=================================================================================================
+
+bool BRepGraph_VersionStamp::IsSameItem(const BRepGraph_VersionStamp& theOther) const
+{
+  if (myDomain != theOther.myDomain)
+  {
+    return false;
+  }
+  if (myDomain == Domain::Node)
+  {
+    return myNodeUID == theOther.myNodeUID;
+  }
+  if (myDomain == Domain::Reference)
+  {
+    return myRefUID == theOther.myRefUID;
+  }
+  return myNodeUID == theOther.myNodeUID && myRefUID == theOther.myRefUID;
+}
+
+//=================================================================================================
+
+size_t BRepGraph_VersionStamp::HashValue() const
+{
+  size_t aCombination[4];
+  aCombination[0] = opencascade::hash(static_cast<int>(myDomain));
+  if (myDomain == Domain::Node)
+  {
+    aCombination[1] = myNodeUID.HashValue();
+  }
+  else if (myDomain == Domain::Reference)
+  {
+    aCombination[1] = myRefUID.HashValue();
+  }
+  else
+  {
+    aCombination[1] = opencascade::hash(0);
+  }
+  aCombination[2] = opencascade::hash(myMutationGen);
+  aCombination[3] = opencascade::hash(myGeneration);
+  return opencascade::hashBytes(aCombination, sizeof(aCombination));
 }

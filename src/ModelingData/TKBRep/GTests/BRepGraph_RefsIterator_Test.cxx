@@ -17,7 +17,7 @@
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_ShapesView.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -37,9 +37,9 @@
 namespace
 {
 template <typename IteratorT>
-static int countIterator(IteratorT theIterator)
+static uint32_t countIterator(IteratorT theIterator)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (; theIterator.More(); theIterator.Next())
   {
     ++aCount;
@@ -57,25 +57,6 @@ static TopoDS_Edge makeEdgeWithInternalVertex()
   aBuilder.MakeVertex(anInternalVertex, gp_Pnt(5, 0, 0), Precision::Confusion());
   aBuilder.Add(anEdge, anInternalVertex.Oriented(TopAbs_INTERNAL));
   return anEdge;
-}
-
-static TopoDS_Face makeFaceWithDirectVertex()
-{
-  BRep_Builder                  aBuilder;
-  const occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face                   aFace;
-  aBuilder.MakeFace(aFace, aPlane, Precision::Confusion());
-
-  BRepBuilderAPI_MakeEdge aMakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Wire             aWire;
-  aBuilder.MakeWire(aWire);
-  aBuilder.Add(aWire, aMakeEdge.Edge());
-  aBuilder.Add(aFace, aWire);
-
-  TopoDS_Vertex aDirectVertex;
-  aBuilder.MakeVertex(aDirectVertex, gp_Pnt(5, 5, 0), Precision::Confusion());
-  aBuilder.Add(aFace, aDirectVertex.Oriented(TopAbs_INTERNAL));
-  return aFace;
 }
 
 static TopoDS_Face wrapEdgeInFace(const TopoDS_Edge& theEdge)
@@ -99,8 +80,8 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     myGraph.Clear();
-    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
-      BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
+    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
+      myGraph.Shapes().Add(aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -111,7 +92,7 @@ TEST_F(BRepGraph_RefsIteratorTest, BoxHierarchy_YieldsReferenceIds)
   EXPECT_EQ(countIterator(BRepGraph_RefsShellOfSolid(myGraph, BRepGraph_SolidId::Start())), 1);
   EXPECT_EQ(countIterator(BRepGraph_RefsFaceOfShell(myGraph, BRepGraph_ShellId::Start())), 6);
   EXPECT_EQ(countIterator(BRepGraph_RefsWireOfFace(myGraph, BRepGraph_FaceId::Start())), 1);
-  EXPECT_EQ(countIterator(BRepGraph_RefsCoEdgeOfWire(myGraph, BRepGraph_WireId::Start())), 4);
+  EXPECT_EQ(countIterator(BRepGraph_CoEdgesOfWire(myGraph, BRepGraph_WireId::Start())), 4);
   EXPECT_EQ(countIterator(BRepGraph_RefsVertexOfEdge(myGraph, BRepGraph_EdgeId::Start())), 2);
 }
 
@@ -121,31 +102,19 @@ TEST_F(BRepGraph_RefsIteratorTest, CurrentId_ResolvesToExpectedEntry)
   ASSERT_TRUE(anIt.More());
 
   const BRepGraphInc::WireRef& aWireRef = myGraph.Refs().Wires().Entry(anIt.CurrentId());
-  EXPECT_TRUE(aWireRef.WireDefId.IsValid(myGraph.Topo().Wires().Nb()));
+  EXPECT_TRUE(aWireRef.ChildWireId.IsValid(myGraph.Topo().Wires().Nb()));
 }
 
-TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfEdge_ExposesInternalVertexRef)
+TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfEdge_ExposesBoundaryVertexRefsOnly)
 {
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
-    BRepGraph_Builder::Add(aGraph, wrapEdgeInFace(makeEdgeWithInternalVertex()));
-
-  BRepGraph_EdgeId aEdgeWithInternal;
-  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    if (anEdgeIt.Current().InternalVertexRefIds.Length() == 1)
-    {
-      aEdgeWithInternal = anEdgeIt.CurrentId();
-      break;
-    }
-  }
-
-  ASSERT_TRUE(aEdgeWithInternal.IsValid());
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
+    aGraph.Shapes().Add(wrapEdgeInFace(makeEdgeWithInternalVertex()));
 
   bool aFoundInternal = false;
-  int  aCount         = 0;
-  for (BRepGraph_RefsVertexOfEdge anIt(aGraph, aEdgeWithInternal); anIt.More(); anIt.Next())
+  uint32_t aCount     = 0;
+  for (BRepGraph_RefsVertexOfEdge anIt(aGraph, BRepGraph_EdgeId::Start()); anIt.More(); anIt.Next())
   {
     ++aCount;
     const BRepGraphInc::VertexRef& aVertexRef = aGraph.Refs().Vertices().Entry(anIt.CurrentId());
@@ -155,23 +124,8 @@ TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfEdge_ExposesInternalVertexRef
     }
   }
 
-  EXPECT_EQ(aCount, 3);
-  EXPECT_TRUE(aFoundInternal);
-}
-
-TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfFace_ExposesDirectVertexRef)
-{
-  BRepGraph aGraph;
-  aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
-    BRepGraph_Builder::Add(aGraph, makeFaceWithDirectVertex());
-
-  BRepGraph_RefsVertexOfFace anIt(aGraph, BRepGraph_FaceId::Start());
-  ASSERT_TRUE(anIt.More());
-
-  const BRepGraphInc::VertexRef& aVertexRef = aGraph.Refs().Vertices().Entry(anIt.CurrentId());
-  EXPECT_EQ(aVertexRef.Orientation, TopAbs_INTERNAL);
-  EXPECT_TRUE(aVertexRef.VertexDefId.IsValid(aGraph.Topo().Vertices().Nb()));
+  EXPECT_EQ(aCount, 2);
+  EXPECT_FALSE(aFoundInternal);
 }
 
 TEST_F(BRepGraph_RefsIteratorTest, ChildOfCompound_EnumeratesChildRefs)
@@ -180,96 +134,45 @@ TEST_F(BRepGraph_RefsIteratorTest, ChildOfCompound_EnumeratesChildRefs)
     myGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 0.01);
   ASSERT_TRUE(aLooseVertex.IsValid());
 
-  NCollection_DynamicArray<BRepGraph_NodeId> aChildren;
+  NCollection_LinearVector<BRepGraph_NodeId> aChildren;
   aChildren.Append(BRepGraph_SolidId::Start());
   aChildren.Append(aLooseVertex);
-  const BRepGraph_CompoundId aCompound = myGraph.Editor().Compounds().Add(aChildren);
+  const BRepGraph_CompoundId aCompound = myGraph.Editor().Compounds().Add(aChildren.ToArray1());
 
   ASSERT_TRUE(aCompound.IsValid());
   BRepGraph_RefsChildOfCompound anIt(myGraph, aCompound);
   ASSERT_TRUE(anIt.More());
-  EXPECT_EQ(myGraph.Refs().Children().Entry(anIt.CurrentId()).ChildDefId.NodeKind,
+  EXPECT_EQ(myGraph.Refs().Children().Entry(anIt.CurrentId()).ChildNodeId.NodeKind,
             BRepGraph_NodeId::Kind::Solid);
   anIt.Next();
   ASSERT_TRUE(anIt.More());
-  EXPECT_EQ(myGraph.Refs().Children().Entry(anIt.CurrentId()).ChildDefId.NodeKind,
+  EXPECT_EQ(myGraph.Refs().Children().Entry(anIt.CurrentId()).ChildNodeId.NodeKind,
             BRepGraph_NodeId::Kind::Vertex);
 }
 
 TEST_F(BRepGraph_RefsIteratorTest, OccurrenceOfProduct_EnumeratesOccurrenceRefs)
 {
   const BRepGraph_ProductId aPart =
-    myGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
-  const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().CreateEmptyProduct();
+    myGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
+  myGraph.Editor().Products().AppendDocumentRoot(aPart);
+  const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().Add();
+  myGraph.Editor().Products().AppendDocumentRoot(anAssembly);
   ASSERT_TRUE(aPart.IsValid());
   ASSERT_TRUE(anAssembly.IsValid());
 
   EXPECT_TRUE(
-    myGraph.Editor().Products().LinkProducts(anAssembly, aPart, TopLoc_Location()).IsValid());
+    myGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location()).IsValid());
   EXPECT_TRUE(
-    myGraph.Editor().Products().LinkProducts(anAssembly, aPart, TopLoc_Location()).IsValid());
+    myGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location()).IsValid());
 
   EXPECT_EQ(countIterator(BRepGraph_RefsOccurrenceOfProduct(myGraph, anAssembly)), 2);
 }
 
-TEST_F(BRepGraph_RefsIteratorTest, AuxChildRefsOfShellAndSolid_EnumerateInjectedChildRefs)
-{
-  NCollection_DynamicArray<BRepGraph_NodeId> aShellChildren;
-  aShellChildren.Append(BRepGraph_WireId::Start());
-  aShellChildren.Append(BRepGraph_EdgeId::Start());
-  const BRepGraph_CompoundId aShellSeed = myGraph.Editor().Compounds().Add(aShellChildren);
-  ASSERT_TRUE(aShellSeed.IsValid());
-
-  {
-    BRepGraph_MutGuard<BRepGraphInc::ShellDef> aShell =
-      myGraph.Editor().Shells().Mut(BRepGraph_ShellId::Start());
-    for (const BRepGraph_ChildRefId& aRefId :
-         myGraph.Topo().Compounds().Definition(aShellSeed).ChildRefIds)
-    {
-      aShell.Internal().AuxChildRefIds.Append(aRefId);
-    }
-  }
-
-  BRepGraph_RefsChildOfShell aShellIt(myGraph, BRepGraph_ShellId::Start());
-  ASSERT_TRUE(aShellIt.More());
-  EXPECT_EQ(myGraph.Refs().Children().Entry(aShellIt.CurrentId()).ChildDefId.NodeKind,
-            BRepGraph_NodeId::Kind::Wire);
-  aShellIt.Next();
-  ASSERT_TRUE(aShellIt.More());
-  EXPECT_EQ(myGraph.Refs().Children().Entry(aShellIt.CurrentId()).ChildDefId.NodeKind,
-            BRepGraph_NodeId::Kind::Edge);
-
-  NCollection_DynamicArray<BRepGraph_NodeId> aSolidChildren;
-  aSolidChildren.Append(BRepGraph_EdgeId(1));
-  aSolidChildren.Append(BRepGraph_VertexId::Start());
-  const BRepGraph_CompoundId aSolidSeed = myGraph.Editor().Compounds().Add(aSolidChildren);
-  ASSERT_TRUE(aSolidSeed.IsValid());
-
-  {
-    BRepGraph_MutGuard<BRepGraphInc::SolidDef> aSolid =
-      myGraph.Editor().Solids().Mut(BRepGraph_SolidId::Start());
-    for (const BRepGraph_ChildRefId& aRefId :
-         myGraph.Topo().Compounds().Definition(aSolidSeed).ChildRefIds)
-    {
-      aSolid.Internal().AuxChildRefIds.Append(aRefId);
-    }
-  }
-
-  BRepGraph_RefsChildOfSolid aSolidIt(myGraph, BRepGraph_SolidId::Start());
-  ASSERT_TRUE(aSolidIt.More());
-  EXPECT_EQ(myGraph.Refs().Children().Entry(aSolidIt.CurrentId()).ChildDefId.NodeKind,
-            BRepGraph_NodeId::Kind::Edge);
-  aSolidIt.Next();
-  ASSERT_TRUE(aSolidIt.More());
-  EXPECT_EQ(myGraph.Refs().Children().Entry(aSolidIt.CurrentId()).ChildDefId.NodeKind,
-            BRepGraph_NodeId::Kind::Vertex);
-}
-
 TEST_F(BRepGraph_RefsIteratorTest, RemovedWireRef_IsSkipped)
 {
-  const NCollection_DynamicArray<BRepGraph_WireRefId>& aWireRefs =
+  const NCollection_LinearVector<BRepGraph_WireRefId>& aWireRefs =
     myGraph.Refs().Wires().IdsOf(BRepGraph_FaceId::Start());
-  ASSERT_EQ(aWireRefs.Length(), 1);
+  ASSERT_EQ(aWireRefs.Size(), 1);
 
   myGraph.Editor().Gen().RemoveRef(aWireRefs.Value(0));
 

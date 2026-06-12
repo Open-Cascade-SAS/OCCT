@@ -23,6 +23,8 @@
 #include <limits>
 #include <utility>
 
+class BRepGraph;
+
 //! Lightweight typed index into a per-kind node vector inside BRepGraph.
 //!
 //! The pair (NodeKind, Index) forms a unique node identifier within one graph
@@ -54,11 +56,32 @@ struct BRepGraph_NodeId
     Occurrence = 11  //!< Placed instance of a product within a parent product
   };
 
+  //! True if the kind value is one of the supported node kinds.
+  static bool IsValidKind(const Kind theKind)
+  {
+    switch (theKind)
+    {
+      case Kind::Solid:
+      case Kind::Shell:
+      case Kind::Face:
+      case Kind::Wire:
+      case Kind::Edge:
+      case Kind::Vertex:
+      case Kind::Compound:
+      case Kind::CompSolid:
+      case Kind::CoEdge:
+      case Kind::Product:
+      case Kind::Occurrence:
+        return true;
+    }
+    return false;
+  }
+
   //! @brief Compile-time typed wrapper around BRepGraph_NodeId.
   //!
   //! Provides compile-time kind safety: a Typed<Kind::Face>
   //! cannot be accidentally used where a Typed<Kind::Edge> is expected.
-  //! Implicitly converts to BRepGraph_NodeId for backward compatibility.
+  //! Implicitly converts to BRepGraph_NodeId for API continuity.
   //!
   //! @tparam TheKind the BRepGraph_NodeId::Kind this typed id represents
   template <Kind TheKind>
@@ -97,11 +120,17 @@ struct BRepGraph_NodeId
     [[nodiscard]] static Typed Invalid() { return Typed(); }
 
     //! True if this id points to an allocated node slot.
-    [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
+    [[nodiscard]] bool IsValid() const
+    {
+      return BRepGraph_NodeId::IsValidKind(TheKind) && Index != THE_INVALID_INDEX;
+    }
 
     //! True if this id points to an allocated slot within [0, theMaxCount).
     //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
-    [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
+    [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const
+    {
+      return IsValid() && Index < theMaxCount;
+    }
 
     //! True if this id is within the dense range exposed by a provider with Nb().
     template <typename CountProviderT>
@@ -127,7 +156,11 @@ struct BRepGraph_NodeId
     //! @param[in] theId untyped NodeId to convert
     static Typed FromNodeId(const BRepGraph_NodeId theId)
     {
-      Standard_ASSERT_VOID(theId.NodeKind == TheKind, "NodeId kind mismatch");
+      Standard_ASSERT_RETURN(theId.NodeKind == TheKind, "NodeId kind mismatch", Typed());
+      if (!theId.IsValid())
+      {
+        return Typed();
+      }
       return Typed(theId.Index);
     }
 
@@ -192,15 +225,30 @@ struct BRepGraph_NodeId
     {
       return theRhs != theLhs;
     }
+
+    //! Return true if this node has been soft-removed in the given graph.
+    [[nodiscard]] bool IsRemoved(const BRepGraph& theGraph) const
+    {
+      return BRepGraph_NodeId(*this).IsRemoved(theGraph);
+    }
+
+    //! Return true if this node has an active owner in the given graph.
+    [[nodiscard]] bool IsOwned(const BRepGraph& theGraph) const
+    {
+      return BRepGraph_NodeId(*this).IsOwned(theGraph);
+    }
   };
 
   //! True if the kind is a core topology kind (Solid..CoEdge).
-  static bool IsTopologyKind(const Kind theKind) { return static_cast<int>(theKind) <= 8; }
+  static bool IsTopologyKind(const Kind theKind)
+  {
+    return IsValidKind(theKind) && theKind >= Kind::Solid && theKind <= Kind::CoEdge;
+  }
 
   //! True if the kind is an assembly kind (Product or Occurrence).
   static bool IsAssemblyKind(const Kind theKind)
   {
-    return theKind == Kind::Product || theKind == Kind::Occurrence;
+    return IsValidKind(theKind) && (theKind == Kind::Product || theKind == Kind::Occurrence);
   }
 
   //! Total number of dense kind slots used by per-kind arrays.
@@ -239,11 +287,17 @@ struct BRepGraph_NodeId
   }
 
   //! True if this id points to an allocated node slot.
-  [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
+  [[nodiscard]] bool IsValid() const
+  {
+    return IsValidKind(NodeKind) && Index != THE_INVALID_INDEX;
+  }
 
   //! True if this id points to an allocated slot within [0, theMaxCount).
   //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
-  [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
+  [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const
+  {
+    return IsValid() && Index < theMaxCount;
+  }
 
   //! True if this id is within the dense range exposed by a provider with Nb().
   template <typename CountProviderT>
@@ -271,7 +325,9 @@ struct BRepGraph_NodeId
   bool operator<(const BRepGraph_NodeId& theOther) const
   {
     if (NodeKind != theOther.NodeKind)
+    {
       return static_cast<int>(NodeKind) < static_cast<int>(theOther.NodeKind);
+    }
     return Index < theOther.Index;
   }
 
@@ -340,6 +396,12 @@ struct BRepGraph_NodeId
     Standard_ASSERT_VOID(false, "BRepGraph_NodeId::Visit: unhandled Kind");
     return std::forward<FuncT>(theFunc)(Typed<Kind::Vertex>());
   }
+
+  //! Return true if this node has been soft-removed in the given graph.
+  [[nodiscard]] bool IsRemoved(const BRepGraph& theGraph) const;
+
+  //! Return true if this node has an active owner in the given graph.
+  [[nodiscard]] bool IsOwned(const BRepGraph& theGraph) const;
 };
 
 // Convenience type aliases for typed NodeIds.

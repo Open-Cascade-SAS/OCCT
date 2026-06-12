@@ -23,8 +23,8 @@
 //! followed by CommitMutation validation. Guarantees exception-safe cleanup:
 //! when this guard owns deferred mode, it is always closed and boundary checks
 //! are executed at scope exit. EndDeferredInvalidation() batch-propagates
-//! SubtreeGen upward, then CommitMutation() validates reverse-index consistency
-//! and active-entity counts.
+//! SubtreeGen upward, then CommitMutation() validates relation consistency and
+//! active-entity counts.
 //!
 //! Re-entrant: if deferred mode is already active (e.g., nested guard),
 //! the inner guard is a no-op. Only the outermost guard flushes and commits,
@@ -55,10 +55,12 @@ public:
         myOwnsScope(!theGraph.Editor().IsDeferredMode())
   {
     if (myOwnsScope)
+    {
       myGraph.Editor().BeginDeferredInvalidation();
+    }
   }
 
-  //! End deferred invalidation and validate reverse index + active counts.
+  //! End deferred invalidation and validate relations + active counts.
   ~BRepGraph_DeferredScope()
   {
     if (myOwnsScope)

@@ -14,8 +14,8 @@
 #ifndef _BRepGraphInc_Representation_HeaderFile
 #define _BRepGraphInc_Representation_HeaderFile
 
-#include <BRepGraph_RepId.hxx>
-
+#include <BRepGraphInc_RepId.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -23,81 +23,81 @@
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Standard_Handle.hxx>
 
-//! @brief Geometry and mesh representation structs for the incidence-table model.
+//! @brief Geometry representation records for the BRepGraph incidence storage.
 //!
-//! Each representation struct wraps a single piece of geometry or discretization
-//! data (surface, curve, triangulation, polygon) with a typed RepId address
-//! and lifecycle tracking fields. Representations are stored in flat per-kind
-//! vectors in BRepGraphInc_Storage and referenced from definitions by typed RepId.
+//! Curve parameter ranges live in curve-use records because the use record
+//! is not reusable - the interval belongs to the owning edge/coedge curve use,
+//! not to a shared geometric curve.
 namespace BRepGraphInc
 {
 
-//! Fields shared by every representation entity.
-struct BaseRep
+//! 3D curve use for edges. Owned by a single edge.
+struct EdgeCurve3DRep
 {
-  using TypeId = BRepGraph_RepId;
+  using TypeId = BRepGraph_EdgeCurve3DRepId;
 
-  uint32_t OwnGen    = 0;     //!< Per-rep mutation counter
-  bool     IsRemoved = false; //!< Soft-removal flag
+  BRepGraph_EdgeId ParentEdgeId;              //!< Owning edge identifier
+  occ::handle<Geom_Curve> Curve;              //!< 3D curve geometry
+  double ParamFirst = 0.0;                    //!< First curve parameter
+  double ParamLast  = 0.0;                    //!< Last curve parameter
 };
 
-//! Surface geometry representation for faces.
-struct SurfaceRep : public BaseRep
+//! 3D polygon use for edges. Owned by a single edge.
+struct EdgePolygon3DRep
 {
-  using TypeId = BRepGraph_SurfaceRepId;
+  using TypeId = BRepGraph_EdgePolygon3DRepId;
 
-  occ::handle<Geom_Surface> Surface; //!< The geometric surface
+  BRepGraph_EdgeId ParentEdgeId;              //!< Owning edge identifier
+  occ::handle<Poly_Polygon3D> Polygon;        //!< 3D polygon geometry
 };
 
-//! 3D curve geometry representation for edges.
-struct Curve3DRep : public BaseRep
+//! 2D parametric curve (PCurve) use for coedges. Owned by a single coedge.
+struct CoEdgeCurve2DRep
 {
-  using TypeId = BRepGraph_Curve3DRepId;
+  using TypeId = BRepGraph_CoEdgeCurve2DRepId;
 
-  occ::handle<Geom_Curve> Curve; //!< The 3D curve geometry
+  BRepGraph_CoEdgeId ParentCoEdgeId;          //!< Owning coedge identifier
+  occ::handle<Geom2d_Curve> Curve;            //!< 2D parametric curve geometry
+  double ParamFirst = 0.0;                    //!< First curve parameter
+  double ParamLast  = 0.0;                    //!< Last curve parameter
 };
 
-//! 2D parametric curve (PCurve) representation for coedges.
-struct Curve2DRep : public BaseRep
+//! 2D polygon-on-surface use for coedges. Owned by a single coedge.
+struct CoEdgePolygon2DRep
 {
-  using TypeId = BRepGraph_Curve2DRepId;
+  using TypeId = BRepGraph_CoEdgePolygon2DRepId;
 
-  occ::handle<Geom2d_Curve> Curve; //!< The 2D parametric curve
+  BRepGraph_CoEdgeId ParentCoEdgeId;          //!< Owning coedge identifier
+  occ::handle<Poly_Polygon2D> Polygon;        //!< 2D polygon geometry
 };
 
-//! Triangulation mesh representation for faces.
-struct TriangulationRep : public BaseRep
+//! Polygon-on-triangulation use for coedges. Owned by a single coedge.
+struct CoEdgePolygonOnTriRep
 {
-  using TypeId = BRepGraph_TriangulationRepId;
+  using TypeId = BRepGraph_CoEdgePolygonOnTriRepId;
 
-  occ::handle<Poly_Triangulation> Triangulation; //!< The mesh
+  BRepGraph_CoEdgeId ParentCoEdgeId;          //!< Owning coedge identifier
+  occ::handle<Poly_PolygonOnTriangulation> Polygon; //!< Polygon-on-triangulation geometry
 };
 
-//! 3D polygon discretization for edges.
-struct Polygon3DRep : public BaseRep
+//! Surface geometry use for faces. Owned by a single face.
+struct FaceSurfaceRep
 {
-  using TypeId = BRepGraph_Polygon3DRepId;
+  using TypeId = BRepGraph_FaceSurfaceRepId;
 
-  occ::handle<Poly_Polygon3D> Polygon; //!< The 3D polygon
+  BRepGraph_FaceId ParentFaceId;              //!< Owning face identifier
+  occ::handle<Geom_Surface> Surface;          //!< Surface geometry
 };
 
-//! 2D polygon-on-surface discretization for coedges.
-struct Polygon2DRep : public BaseRep
+//! Triangulation mesh use for faces. Owned by a single face.
+struct FaceTriangulationRep
 {
-  using TypeId = BRepGraph_Polygon2DRepId;
+  using TypeId = BRepGraph_FaceTriangulationRepId;
 
-  occ::handle<Poly_Polygon2D> Polygon; //!< The 2D polygon on surface parametric space
-};
-
-//! Polygon-on-triangulation for coedges.
-//! Links a polygon to a specific triangulation rep (global index, not face-local).
-struct PolygonOnTriRep : public BaseRep
-{
-  using TypeId = BRepGraph_PolygonOnTriRepId;
-
-  occ::handle<Poly_PolygonOnTriangulation> Polygon; //!< Polygon indices into triangulation
-  BRepGraph_TriangulationRepId TriangulationRepId;  //!< Typed id into myTriangulationsRep
+  BRepGraph_FaceId ParentFaceId;              //!< Owning face identifier
+  occ::handle<Poly_Triangulation> Triangulation; //!< Triangulation mesh
 };
 
 } // namespace BRepGraphInc

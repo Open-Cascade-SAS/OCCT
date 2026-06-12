@@ -16,14 +16,11 @@
 
 #include <BRepGraph_NodeId.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <NCollection_DynamicArray.hxx>
-
-class BRepGraphInc_Storage;
-class BRepGraph_LayerParam;
-class BRepGraph_LayerRegularity;
+class BRepGraph;
 
 //! @brief Backend reconstruction helpers over incidence-table storage.
 //!
@@ -55,98 +52,52 @@ public:
     {
       Cache& myCache;
 
-      explicit TempScope(Cache& theCache)
-          : myCache(theCache)
-      {
-        if (myCache.myTempScopeDepth == 0 && !myCache.myTempAllocator.IsNull())
-          myCache.myTempAllocator->Reset(false);
-        ++myCache.myTempScopeDepth;
-      }
-
-      ~TempScope()
-      {
-        --myCache.myTempScopeDepth;
-        if (myCache.myTempScopeDepth == 0 && !myCache.myTempAllocator.IsNull())
-          myCache.myTempAllocator->Reset(false);
-      }
+      explicit TempScope(Cache& theCache);
+      ~TempScope();
     };
 
-    Cache()
-        : myAllocator(new NCollection_IncAllocator()),
-          myTempAllocator(new NCollection_IncAllocator())
-    {
-      for (int aKindIdx = 0; aKindIdx < THE_KIND_COUNT; ++aKindIdx)
-      {
-        myKinds[aKindIdx] =
-          NCollection_DynamicArray<TopoDS_Shape>(THE_DEFAULT_INCREMENT, myAllocator);
-      }
-    }
+    Cache();
 
     //! Seek a cached shape. Returns nullptr if not yet cached.
-    const TopoDS_Shape* Seek(const BRepGraph_NodeId theNode) const
-    {
-      const int aKindIdx = static_cast<int>(theNode.NodeKind);
-      if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
-        return nullptr;
-      const NCollection_DynamicArray<TopoDS_Shape>& aVec = myKinds[aKindIdx];
-      if (theNode.Index >= aVec.Size())
-        return nullptr;
-      const TopoDS_Shape& aShape = aVec.Value(static_cast<size_t>(theNode.Index));
-      return aShape.IsNull() ? nullptr : &aShape;
-    }
+    [[nodiscard]] const TopoDS_Shape* Seek(
+      const BRepGraph_NodeId theNode) const;
 
     //! Bind a reconstructed shape to a node. Grows the vector as needed.
-    void Bind(const BRepGraph_NodeId theNode, const TopoDS_Shape& theShape)
-    {
-      const int aKindIdx = static_cast<int>(theNode.NodeKind);
-      if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
-        return;
-      NCollection_DynamicArray<TopoDS_Shape>& aVec = myKinds[aKindIdx];
-      aVec.SetValue(static_cast<size_t>(theNode.Index), theShape);
-    }
+    void Bind(const BRepGraph_NodeId theNode,
+              const TopoDS_Shape&    theShape);
 
     //! Check if a node is already cached.
-    bool IsBound(const BRepGraph_NodeId theNode) const { return Seek(theNode) != nullptr; }
+    [[nodiscard]] bool IsBound(const BRepGraph_NodeId theNode) const { return Seek(theNode) != nullptr; }
   };
 
   //! Reconstruct a TopoDS_Shape from an entity node.
   //! Creates a local cache internally; shared vertices/edges are not reused
   //! across calls.
-  //! @param[in] theStorage  incidence storage
-  //! @param[in] theNode     entity node id
+  //! @param[in] theGraph  graph owning the storage and caches
+  //! @param[in] theNode   entity node id
   //! @return reconstructed shape
-  static Standard_EXPORT TopoDS_Shape
-    Node(const BRepGraphInc_Storage&      theStorage,
-         const BRepGraph_NodeId           theNode,
-         const BRepGraph_LayerParam*      theParams       = nullptr,
-         const BRepGraph_LayerRegularity* theRegularities = nullptr);
+  static Standard_EXPORT TopoDS_Shape Node(const BRepGraph&       theGraph,
+                                           const BRepGraph_NodeId theNode);
 
   //! Reconstruct a TopoDS_Shape with a shared cache for sub-shape reuse.
   //! Vertices and edges already in theCache are returned directly.
-  //! @param[in]     theStorage  incidence storage
-  //! @param[in]     theNode     entity node id
-  //! @param[in,out] theCache    shared cache for vertex/edge/face shapes
+  //! @param[in]     theGraph  graph owning the storage and caches
+  //! @param[in]     theNode   entity node id
+  //! @param[in,out] theCache  shared cache for vertex/edge/face shapes
   //! @return reconstructed shape
-  static Standard_EXPORT TopoDS_Shape
-    Node(const BRepGraphInc_Storage&      theStorage,
-         const BRepGraph_NodeId           theNode,
-         Cache&                           theCache,
-         const BRepGraph_LayerParam*      theParams       = nullptr,
-         const BRepGraph_LayerRegularity* theRegularities = nullptr);
+  static Standard_EXPORT TopoDS_Shape Node(const BRepGraph&       theGraph,
+                                           const BRepGraph_NodeId theNode,
+                                           Cache&                 theCache);
 
   //! Reconstruct a face with shared edge/vertex cache for multi-face contexts.
-  //! @param[in] theStorage    incidence storage
-  //! @param[in] theFaceId     face entity id
-  //! @param[in,out] theCache  shared cache for edge and vertex shapes
+  //! @param[in]     theGraph   graph owning the storage and caches
+  //! @param[in]     theFaceId  face entity id
+  //! @param[in,out] theCache   shared cache for edge and vertex shapes
   //! @return reconstructed face shape
-  static Standard_EXPORT TopoDS_Shape
-    FaceWithCache(const BRepGraphInc_Storage&      theStorage,
-                  const BRepGraph_FaceId           theFaceId,
-                  Cache&                           theCache,
-                  const BRepGraph_LayerParam*      theParams       = nullptr,
-                  const BRepGraph_LayerRegularity* theRegularities = nullptr);
+  static Standard_EXPORT TopoDS_Shape FaceWithCache(const BRepGraph&       theGraph,
+                                                    const BRepGraph_FaceId theFaceId,
+                                                    Cache&                 theCache);
 
-private:
   BRepGraphInc_Reconstruct() = delete;
 };
 

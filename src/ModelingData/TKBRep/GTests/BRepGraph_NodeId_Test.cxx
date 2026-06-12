@@ -13,7 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
 #include <gtest/gtest.h>
@@ -24,7 +24,7 @@ TEST(BRepGraph_NodeIdTest, Construction_DefaultInvalid)
 {
   BRepGraph_FaceId aFace;
   EXPECT_FALSE(aFace.IsValid());
-  EXPECT_EQ(aFace.Index, -1);
+  EXPECT_EQ(aFace.Index, BRepGraph_FaceId::THE_INVALID_INDEX);
 }
 
 TEST(BRepGraph_NodeIdTest, Construction_FromIndex)
@@ -59,15 +59,14 @@ TEST(BRepGraph_NodeIdTest, ImplicitConversion_PassToFunction)
   // Typed ids work with existing APIs that take BRepGraph_NodeId.
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
-    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
-  ASSERT_TRUE(aGraph.IsDone());
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_FaceId aFace(0);
   // AdjacentFaces takes BRepGraph_FaceId - typed id works directly.
-  NCollection_DynamicArray<BRepGraph_FaceId> aAdj =
-    aGraph.Topo().Faces().Adjacent(aFace, aGraph.Allocator());
-  EXPECT_GT(aAdj.Length(), 0);
+  NCollection_LinearVector<BRepGraph_FaceId> aAdj = aGraph.Topo().Faces().Adjacent(aFace);
+  EXPECT_GT(aAdj.Size(), 0);
 }
 
 TEST(BRepGraph_NodeIdTest, FromNodeId_CorrectKind)
@@ -169,8 +168,47 @@ TEST(BRepGraph_NodeIdTest, TypedArithmetic_IndexZeroBoundary)
   EXPECT_EQ(aZero.Index, 0);
   EXPECT_TRUE(aZero.IsValid());
 
-  // Subtract to -1  produces invalid id (allowed by constructor).
+  // Subtract to the invalid sentinel produces an invalid id.
   const BRepGraph_EdgeId anInvalid = aZero - 1;
-  EXPECT_EQ(anInvalid.Index, -1);
+  EXPECT_EQ(anInvalid.Index, BRepGraph_EdgeId::THE_INVALID_INDEX);
   EXPECT_FALSE(anInvalid.IsValid());
+}
+
+TEST(BRepGraph_NodeIdTest, InvalidKind_IsRejected)
+{
+  constexpr uint32_t     THE_RESERVED_KIND = 9u;
+  const BRepGraph_NodeId aNode(static_cast<BRepGraph_NodeId::Kind>(THE_RESERVED_KIND), 0u);
+
+  EXPECT_FALSE(BRepGraph_NodeId::IsValidKind(aNode.NodeKind));
+  EXPECT_FALSE(aNode.IsValid());
+  EXPECT_FALSE(aNode.IsValid(10u));
+  EXPECT_FALSE(BRepGraph_NodeId::IsTopologyKind(aNode.NodeKind));
+  EXPECT_FALSE(BRepGraph_NodeId::IsAssemblyKind(aNode.NodeKind));
+}
+
+TEST(BRepGraph_NodeIdTest, FromNodeId_WrongKindReturnsInvalid)
+{
+  const BRepGraph_NodeId aNode(BRepGraph_NodeId::Kind::Face, 3u);
+  const BRepGraph_EdgeId anEdge = BRepGraph_EdgeId::FromNodeId(aNode);
+
+  EXPECT_FALSE(anEdge.IsValid());
+  EXPECT_EQ(anEdge.Index, BRepGraph_EdgeId::THE_INVALID_INDEX);
+}
+
+TEST(BRepGraph_NodeIdTest, OutOfRangeMetadataQueriesReturnFalse)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  const BRepGraph_VertexId anOutOfRangeVertex(aGraph.Topo().Vertices().Nb());
+  EXPECT_FALSE(anOutOfRangeVertex.IsRemoved(aGraph));
+  EXPECT_FALSE(anOutOfRangeVertex.IsOwned(aGraph));
+
+  const BRepGraph_NodeId anOutOfRangeFace(BRepGraph_NodeId::Kind::Face,
+                                          aGraph.Topo().Faces().Nb());
+  EXPECT_FALSE(anOutOfRangeFace.IsRemoved(aGraph));
+  EXPECT_FALSE(anOutOfRangeFace.IsOwned(aGraph));
 }

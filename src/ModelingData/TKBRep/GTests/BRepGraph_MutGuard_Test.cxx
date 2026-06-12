@@ -14,13 +14,13 @@
 // Regression coverage for BRepGraph_MutGuard<T>: move semantics, inert-state
 // detection (operator bool()), and exception-path notification safety.
 //
-// MutGuard owns exactly one markModified/markRefModified/markRepModified call
-// per scope. A move transfers that obligation; a moved-from guard must be
-// inert. An exception inside the scope must not skip the notification nor
-// propagate a noexcept-violation from the guard's destructor.
+// MutGuard owns exactly one definition/ref mutation notification per scope. A
+// move transfers that obligation; a moved-from guard must be inert. An
+// exception inside the scope must not skip the notification nor propagate a
+// noexcept-violation from the guard's destructor.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_MutGuard.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -39,8 +39,8 @@ BRepGraph makeBoxGraph()
 {
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
-    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   return aGraph;
 }
 
@@ -49,7 +49,7 @@ BRepGraph makeBoxGraph()
 TEST(BRepGraph_MutGuardTest, OperatorBool_TrueWhenOwned_FalseAfterMove)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
     aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
@@ -63,7 +63,7 @@ TEST(BRepGraph_MutGuardTest, OperatorBool_TrueWhenOwned_FalseAfterMove)
 TEST(BRepGraph_MutGuardTest, DereferenceAfterMove_Throws)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
     aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
@@ -80,7 +80,7 @@ TEST(BRepGraph_MutGuardTest, DereferenceAfterMove_Throws)
 TEST(BRepGraph_MutGuardTest, MoveAssignmentFlushesThenTransfers)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   const uint32_t aGenBefore =
     aGraph.Topo().Vertices().Definition(BRepGraph_VertexId::Start()).OwnGen;
@@ -110,7 +110,7 @@ TEST(BRepGraph_MutGuardTest, MoveAssignmentFlushesThenTransfers)
 TEST(BRepGraph_MutGuardTest, ExceptionInsideScope_StillNotifies)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   const uint32_t aGenBefore =
     aGraph.Topo().Vertices().Definition(BRepGraph_VertexId::Start()).OwnGen;
@@ -137,7 +137,7 @@ TEST(BRepGraph_MutGuardTest, ExceptionInsideScope_StillNotifies)
 TEST(BRepGraph_MutGuardTest, MovedFrom_DoesNotDoubleNotify)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   const uint32_t aGenBefore =
     aGraph.Topo().Vertices().Definition(BRepGraph_VertexId::Start()).OwnGen;
@@ -159,7 +159,7 @@ TEST(BRepGraph_MutGuardTest, MovedFrom_DoesNotDoubleNotify)
 TEST(BRepGraph_MutGuardTest, RefGuard_SameMoveSemantics)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Refs().Faces().Nb(), 0);
 
   const BRepGraph_FaceRefId                 aRefId(0);
@@ -169,4 +169,80 @@ TEST(BRepGraph_MutGuardTest, RefGuard_SameMoveSemantics)
   BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMoved(std::move(aGuard));
   EXPECT_FALSE(static_cast<bool>(aGuard));
   EXPECT_TRUE(static_cast<bool>(aMoved));
+}
+
+TEST(BRepGraph_MutGuardTest, DuplicateGuard_Rejected)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard1 =
+    aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
+  EXPECT_TRUE(static_cast<bool>(aGuard1));
+
+  // Attempting to acquire a second guard on the same vertex must throw.
+  EXPECT_THROW({
+    auto aDuplicate = aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
+    (void)aDuplicate;
+  }, Standard_ProgramError);
+}
+
+TEST(BRepGraph_MutGuardTest, GuardAllowsGuardedSetter)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aGuard =
+      aGraph.Editor().Edges().Mut(BRepGraph_EdgeId(0));
+    // Guarded setter must NOT self-block via requireUnlocked.
+    aGraph.Editor().Edges().SetTolerance(aGuard, 0.5);
+    EXPECT_TRUE(aGuard.IsDirty());
+  }
+}
+
+TEST(BRepGraph_MutGuardTest, GuardBlocksStructuralRemoval)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
+    aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
+  EXPECT_TRUE(static_cast<bool>(aGuard));
+
+  // Structural removal must throw while a guard is active on the item.
+  EXPECT_THROW(
+    aGraph.Editor().Gen().RemoveNode(BRepGraph_VertexId::Start()),
+    Standard_ProgramError);
+}
+
+TEST(BRepGraph_MutGuardTest, GuardReleasedOnDestruction_CanReacquire)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
+      aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
+    EXPECT_TRUE(static_cast<bool>(aGuard));
+  }
+  // Guard destroyed — should be able to acquire again.
+  BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard2 =
+    aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
+  EXPECT_TRUE(static_cast<bool>(aGuard2));
+}
+
+TEST(BRepGraph_MutGuardTest, ClearRejectsActiveGuard)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
+      aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
+    EXPECT_TRUE(static_cast<bool>(aGuard));
+    EXPECT_THROW(aGraph.Clear(), Standard_ProgramError);
+  }
+
+  EXPECT_NO_THROW(aGraph.Clear());
 }

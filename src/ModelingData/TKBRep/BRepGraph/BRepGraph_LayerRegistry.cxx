@@ -13,16 +13,71 @@
 
 #include <BRepGraph_LayerRegistry.hxx>
 
+#include <BRepGraph.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_ProgramError.hxx>
+
+#include <limits>
+#include <mutex>
 
 //=================================================================================================
 
-int BRepGraph_LayerRegistry::RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer)
+BRepGraph_LayerRegistry::BRepGraph_LayerRegistry() = default;
+
+//=================================================================================================
+
+BRepGraph_LayerRegistry::BRepGraph_LayerRegistry(BRepGraph_LayerRegistry&& theOther) noexcept
 {
-  if (theLayer.IsNull())
+  std::unique_lock<std::shared_mutex> aLock(theOther.myMutex);
+  myLayers                          = std::move(theOther.myLayers);
+  myGuidToSlot                      = std::move(theOther.myGuidToSlot);
+  mySubscribedKindsMask             = theOther.mySubscribedKindsMask;
+  mySubscribedRefKindsMask          = theOther.mySubscribedRefKindsMask;
+  myGraph                           = theOther.myGraph;
+  theOther.mySubscribedKindsMask    = 0;
+  theOther.mySubscribedRefKindsMask = 0;
+  theOther.myGraph                  = nullptr;
+}
+
+//=================================================================================================
+
+BRepGraph_LayerRegistry& BRepGraph_LayerRegistry::operator=(
+  BRepGraph_LayerRegistry&& theOther) noexcept
+{
+  if (this != &theOther)
   {
-    return -1;
+    std::unique_lock<std::shared_mutex> aThisLock(myMutex, std::defer_lock);
+    std::unique_lock<std::shared_mutex> anOtherLock(theOther.myMutex, std::defer_lock);
+    std::lock(aThisLock, anOtherLock);
+
+    detachAllLocked();
+    myLayers                          = std::move(theOther.myLayers);
+    myGuidToSlot                      = std::move(theOther.myGuidToSlot);
+    mySubscribedKindsMask             = theOther.mySubscribedKindsMask;
+    mySubscribedRefKindsMask          = theOther.mySubscribedRefKindsMask;
+    myGraph                           = theOther.myGraph;
+    theOther.mySubscribedKindsMask    = 0;
+    theOther.mySubscribedRefKindsMask = 0;
+    theOther.myGraph                  = nullptr;
   }
+  return *this;
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph_LayerRegistry::RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer)
+{
+  std::unique_lock<std::shared_mutex> aLock(myMutex);
+  return registerLayerLocked(theLayer);
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph_LayerRegistry::registerLayerLocked(const occ::handle<BRepGraph_Layer>& theLayer)
+{
+  Standard_ProgramError_Raise_if(theLayer.IsNull(),
+                                 "BRepGraph_LayerRegistry::RegisterLayer() - null layer");
 
   const Standard_GUID& aGUID = theLayer->ID();
   const uint32_t*      aSlot = myGuidToSlot.Seek(aGUID);
@@ -31,35 +86,38 @@ int BRepGraph_LayerRegistry::RegisterLayer(const occ::handle<BRepGraph_Layer>& t
     const occ::handle<BRepGraph_Layer>& aPrev = myLayers.Value(static_cast<size_t>(*aSlot));
     if (!aPrev.IsNull() && aPrev.get() != theLayer.get())
     {
-      aPrev->setOwningGraph(nullptr);
+      aPrev->detachContext();
     }
-    theLayer->setOwningGraph(myOwningGraph);
+    theLayer->attachGraph(myGraph);
     myLayers.ChangeValue(static_cast<size_t>(*aSlot)) = theLayer;
     recomputeSubscribedKindsMask();
-    return static_cast<int>(*aSlot);
+    return *aSlot;
   }
 
+  Standard_OutOfRange_Raise_if(myLayers.Size() > std::numeric_limits<uint32_t>::max(),
+                               "BRepGraph_LayerRegistry - too many registered layers");
   const uint32_t aNewSlot = static_cast<uint32_t>(myLayers.Size());
-  theLayer->setOwningGraph(myOwningGraph);
+  theLayer->attachGraph(myGraph);
   myLayers.Append(theLayer);
   myGuidToSlot.Bind(aGUID, aNewSlot);
   mySubscribedKindsMask |= theLayer->SubscribedKinds();
   mySubscribedRefKindsMask |= theLayer->SubscribedRefKinds();
-  return static_cast<int>(aNewSlot);
+  return aNewSlot;
 }
 
 //=================================================================================================
 
 void BRepGraph_LayerRegistry::UnregisterLayer(const Standard_GUID& theGUID)
 {
-  const uint32_t* aSlotPtr = myGuidToSlot.Seek(theGUID);
+  std::unique_lock<std::shared_mutex> aLock(myMutex);
+  const uint32_t*                     aSlotPtr = myGuidToSlot.Seek(theGUID);
   if (aSlotPtr == nullptr)
   {
     return;
   }
 
   const uint32_t                     aSlot     = *aSlotPtr;
-  const uint32_t                     aLastSlot = static_cast<uint32_t>(myLayers.Size()) - 1;
+  const uint32_t                     aLastSlot = static_cast<uint32_t>(myLayers.Size() - 1);
   const occ::handle<BRepGraph_Layer> aRemoved  = myLayers.Value(static_cast<size_t>(aSlot));
   if (aSlot != aLastSlot)
   {
@@ -73,27 +131,46 @@ void BRepGraph_LayerRegistry::UnregisterLayer(const Standard_GUID& theGUID)
   recomputeSubscribedKindsMask();
   if (!aRemoved.IsNull())
   {
-    aRemoved->setOwningGraph(nullptr);
+    aRemoved->detachContext();
   }
 }
 
 //=================================================================================================
 
-void BRepGraph_LayerRegistry::SetOwningGraph(BRepGraph* theGraph) noexcept
+void BRepGraph_LayerRegistry::Attach(BRepGraph* theGraph) noexcept
 {
-  myOwningGraph = theGraph;
+  std::unique_lock<std::shared_mutex> aLock(myMutex);
+  myGraph = theGraph;
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
     if (!aLayer.IsNull())
     {
-      aLayer->setOwningGraph(theGraph);
+      aLayer->attachGraph(myGraph);
     }
   }
 }
 
 //=================================================================================================
 
+void BRepGraph_LayerRegistry::Detach() noexcept
+{
+  std::unique_lock<std::shared_mutex> aLock(myMutex);
+  detachAllLocked();
+  myGraph = nullptr;
+}
+
+//=================================================================================================
+
 occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::FindLayer(const Standard_GUID& theGUID) const
+{
+  std::shared_lock<std::shared_mutex> aLock(myMutex);
+  return findLayerLocked(theGUID);
+}
+
+//=================================================================================================
+
+occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::findLayerLocked(
+  const Standard_GUID& theGUID) const
 {
   const uint32_t* aSlot = myGuidToSlot.Seek(theGUID);
   return aSlot != nullptr ? myLayers.Value(static_cast<size_t>(*aSlot))
@@ -102,29 +179,90 @@ occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::FindLayer(const Standard_G
 
 //=================================================================================================
 
-int BRepGraph_LayerRegistry::FindSlot(const Standard_GUID& theGUID) const
+bool BRepGraph_LayerRegistry::FindSlot(const Standard_GUID& theGUID, uint32_t& theSlot) const
 {
-  const uint32_t* aSlot = myGuidToSlot.Seek(theGUID);
-  return aSlot != nullptr ? static_cast<int>(*aSlot) : -1;
+  std::shared_lock<std::shared_mutex> aLock(myMutex);
+  const uint32_t*                     aSlot = myGuidToSlot.Seek(theGUID);
+  if (aSlot == nullptr)
+  {
+    return false;
+  }
+  theSlot = *aSlot;
+  return true;
 }
 
 //=================================================================================================
 
-const occ::handle<BRepGraph_Layer>& BRepGraph_LayerRegistry::Layer(const int theSlot) const
+occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::Layer(const uint32_t theSlot) const
 {
-  Standard_OutOfRange_Raise_if(theSlot < 0 || static_cast<uint32_t>(theSlot) >= myLayers.Size(),
-                               "BRepGraph_LayerRegistry::Layer() - invalid slot");
+  std::shared_lock<std::shared_mutex> aLock(myMutex);
+  if (static_cast<size_t>(theSlot) >= myLayers.Size())
+  {
+    return occ::handle<BRepGraph_Layer>();
+  }
   return myLayers.Value(static_cast<size_t>(theSlot));
 }
 
 //=================================================================================================
 
-void BRepGraph_LayerRegistry::DispatchOnNodeRemoved(const BRepGraph_NodeId theNode,
-                                                    const BRepGraph_NodeId theReplacement) noexcept
+occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::layerAt(const uint32_t theSlot) const
 {
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  std::shared_lock<std::shared_mutex> aLock(myMutex);
+  if (static_cast<size_t>(theSlot) >= myLayers.Size())
   {
-    aLayer->OnNodeRemoved(theNode, theReplacement);
+    return occ::handle<BRepGraph_Layer>();
+  }
+  return myLayers.Value(static_cast<size_t>(theSlot));
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::DispatchOnNodeRemoved(const BRepGraph_NodeId theNode) noexcept
+{
+  for (uint32_t aSlot = 0;; ++aSlot)
+  {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
+    aLayer->OnNodeRemoved(theNode);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::DispatchOnItemRemoved(const BRepGraph_ItemId theItem) noexcept
+{
+  if (!theItem.IsValid())
+  {
+    return;
+  }
+
+  for (uint32_t aSlot = 0;; ++aSlot)
+  {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
+    aLayer->OnItemRemoved(theItem);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::DispatchOnNodeReplaced(const BRepGraph_NodeId theOldNode,
+                                                     const BRepGraph_NodeId theNewNode) noexcept
+{
+  for (uint32_t aSlot = 0;; ++aSlot)
+  {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
+    aLayer->OnNodeReplaced(theOldNode, theNewNode);
   }
 }
 
@@ -132,14 +270,22 @@ void BRepGraph_LayerRegistry::DispatchOnNodeRemoved(const BRepGraph_NodeId theNo
 
 void BRepGraph_LayerRegistry::DispatchNodeModified(const BRepGraph_NodeId theNode) noexcept
 {
-  if (!HasModificationSubscribers())
   {
-    return;
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    if (mySubscribedKindsMask == 0)
+    {
+      return;
+    }
   }
 
   const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  for (uint32_t aSlot = 0;; ++aSlot)
   {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
     if ((aLayer->SubscribedKinds() & aKindBit) != 0)
     {
       aLayer->OnNodeModified(theNode);
@@ -149,17 +295,47 @@ void BRepGraph_LayerRegistry::DispatchNodeModified(const BRepGraph_NodeId theNod
 
 //=================================================================================================
 
-void BRepGraph_LayerRegistry::DispatchNodesModified(
-  const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes,
-  const int                                         theModifiedKindsMask) noexcept
+void BRepGraph_LayerRegistry::DispatchItemModified(const BRepGraph_ItemId theItem) noexcept
 {
-  if (!HasModificationSubscribers() || theModifiedKindsMask == 0)
+  if (!theItem.IsValid())
   {
     return;
   }
 
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  switch (theItem.ItemDomain())
   {
+    case BRepGraph_ItemId::Domain::Node:
+      DispatchNodeModified(theItem.NodeId());
+      return;
+    case BRepGraph_ItemId::Domain::Reference:
+      DispatchRefModified(theItem.RefId());
+      return;
+    case BRepGraph_ItemId::Domain::None:
+      return;
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::DispatchNodesModified(
+  const NCollection_Array1<BRepGraph_NodeId>& theModifiedNodes,
+  const int                                   theModifiedKindsMask) noexcept
+{
+  {
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    if (mySubscribedKindsMask == 0 || theModifiedKindsMask == 0)
+    {
+      return;
+    }
+  }
+
+  for (uint32_t aSlot = 0;; ++aSlot)
+  {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
     if ((aLayer->SubscribedKinds() & theModifiedKindsMask) != 0)
     {
       aLayer->OnNodesModified(theModifiedNodes);
@@ -169,12 +345,60 @@ void BRepGraph_LayerRegistry::DispatchNodesModified(
 
 //=================================================================================================
 
-void BRepGraph_LayerRegistry::DispatchOnCompact(
-  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept
+void BRepGraph_LayerRegistry::CopyLayersTo(
+  BRepGraph&                                                         theTargetGraph,
+  const NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId>& theItemRemap,
+  const BRepGraph_CopyRemap::Mode                                    theMode) const
 {
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  if (theMode == BRepGraph_CopyRemap::Mode::Compact)
   {
-    aLayer->OnCompact(theRemapMap);
+    BRepGraph_LayerRegistry&            aSelf = const_cast<BRepGraph_LayerRegistry&>(*this);
+    std::unique_lock<std::shared_mutex> aLock(aSelf.myMutex);
+    BRepGraph*                          aSourceGraph = myGraph;
+    // Compact: collect old layer handles, unregister all, call CopyTo on each
+    // which creates fresh layers in the target (same graph) via Ensure<T>().
+    NCollection_LinearVector<occ::handle<BRepGraph_Layer>> aOldLayers(myLayers.Size());
+    for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+    {
+      if (!aLayer.IsNull())
+      {
+        aOldLayers.Append(aLayer);
+      }
+    }
+
+    aSelf.detachAllLocked();
+    aSelf.myLayers.Clear();
+    aSelf.myGuidToSlot.Clear();
+    aSelf.mySubscribedKindsMask    = 0;
+    aSelf.mySubscribedRefKindsMask = 0;
+    aLock.unlock();
+
+    // Call CopyTo on each old (now detached) layer.
+    const BRepGraph_CopyRemap aCopy(*aSourceGraph, theTargetGraph, theItemRemap, theMode);
+    for (const occ::handle<BRepGraph_Layer>& aLayer : aOldLayers)
+    {
+      aLayer->CopyTo(aCopy);
+    }
+  }
+  else
+  {
+    BRepGraph* aSourceGraph = nullptr;
+    {
+      std::shared_lock<std::shared_mutex> aLock(myMutex);
+      aSourceGraph = myGraph;
+    }
+
+    // Copy: standard pass-through to each layer's CopyTo.
+    const BRepGraph_CopyRemap aCopy(*aSourceGraph, theTargetGraph, theItemRemap, theMode);
+    for (uint32_t aSlot = 0;; ++aSlot)
+    {
+      occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+      if (aLayer.IsNull())
+      {
+        return;
+      }
+      aLayer->CopyTo(aCopy);
+    }
   }
 }
 
@@ -182,8 +406,13 @@ void BRepGraph_LayerRegistry::DispatchOnCompact(
 
 void BRepGraph_LayerRegistry::ClearAll() noexcept
 {
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  for (uint32_t aSlot = 0;; ++aSlot)
   {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
     aLayer->Clear();
   }
 }
@@ -192,8 +421,13 @@ void BRepGraph_LayerRegistry::ClearAll() noexcept
 
 void BRepGraph_LayerRegistry::InvalidateAll() noexcept
 {
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  for (uint32_t aSlot = 0;; ++aSlot)
   {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
     aLayer->InvalidateAll();
   }
 }
@@ -202,8 +436,13 @@ void BRepGraph_LayerRegistry::InvalidateAll() noexcept
 
 void BRepGraph_LayerRegistry::DispatchOnRefRemoved(const BRepGraph_RefId theRef) noexcept
 {
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  for (uint32_t aSlot = 0;; ++aSlot)
   {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
     aLayer->OnRefRemoved(theRef);
   }
 }
@@ -212,14 +451,22 @@ void BRepGraph_LayerRegistry::DispatchOnRefRemoved(const BRepGraph_RefId theRef)
 
 void BRepGraph_LayerRegistry::DispatchRefModified(const BRepGraph_RefId theRef) noexcept
 {
-  if (!HasRefModificationSubscribers())
   {
-    return;
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    if (mySubscribedRefKindsMask == 0)
+    {
+      return;
+    }
   }
 
   const int aRefKindBit = BRepGraph_Layer::RefKindBit(theRef.RefKind);
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  for (uint32_t aSlot = 0;; ++aSlot)
   {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
     if ((aLayer->SubscribedRefKinds() & aRefKindBit) != 0)
     {
       aLayer->OnRefModified(theRef);
@@ -230,19 +477,40 @@ void BRepGraph_LayerRegistry::DispatchRefModified(const BRepGraph_RefId theRef) 
 //=================================================================================================
 
 void BRepGraph_LayerRegistry::DispatchRefsModified(
-  const NCollection_DynamicArray<BRepGraph_RefId>& theModifiedRefs,
-  const int                                        theModifiedRefKindsMask) noexcept
+  const NCollection_Array1<BRepGraph_RefId>& theModifiedRefs,
+  const int                                  theModifiedRefKindsMask) noexcept
 {
-  if (!HasRefModificationSubscribers() || theModifiedRefKindsMask == 0)
   {
-    return;
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    if (mySubscribedRefKindsMask == 0 || theModifiedRefKindsMask == 0)
+    {
+      return;
+    }
   }
 
-  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  for (uint32_t aSlot = 0;; ++aSlot)
   {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
     if ((aLayer->SubscribedRefKinds() & theModifiedRefKindsMask) != 0)
     {
-      aLayer->OnRefsModified(theModifiedRefs, theModifiedRefKindsMask);
+      aLayer->OnRefsModified(theModifiedRefs);
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::detachAllLocked() noexcept
+{
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  {
+    if (!aLayer.IsNull())
+    {
+      aLayer->detachContext();
     }
   }
 }

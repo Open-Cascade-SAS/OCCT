@@ -15,11 +15,16 @@
 #define _BRepGraph_EditorView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_ItemId.hxx>
 #include <BRepGraph_MutGuard.hxx>
+#include <BRepGraph_SupplementEditor.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_ParityOrientation.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Pnt2d.hxx>
@@ -45,8 +50,9 @@ class Poly_PolygonOnTriangulation;
 //!   faces, shells, solids, compounds) and assembly nodes (products, occurrences)
 //!   without an existing TopoDS_Shape.
 //! - Field-level RAII-scoped mutation via Mut*() guards (Edges().Mut, Faces().Mut,
-//!   Products().Mut, Occurrences().Mut, Reps().MutSurface, etc.) with automatic cache invalidation
-//!   and upward SubtreeGen propagation on guard destruction.
+//!   Products().Mut, Occurrences().Mut, Edges().Mut, Faces().Mut,
+//!   etc.) with automatic cache invalidation and upward SubtreeGen propagation on
+//!   guard destruction.
 //! - Incremental shape appending, soft-deletion of nodes, and deferred invalidation
 //!   mode for batched structural edit loops under external serialization.
 //! Obtained via BRepGraph::Editor().
@@ -54,7 +60,8 @@ class Poly_PolygonOnTriangulation;
 //! Each Ops class is accessed via a non-const reference accessor:
 //!   theGraph.Editor().Vertices().Add(...)
 //!   theGraph.Editor().Edges().Add(...)
-//!   theGraph.Editor().CoEdges().SetPCurve(...)
+//!   theGraph.Editor().CoEdges().Add(edge, face, curve2d, first, last, ori)
+//!   theGraph.Editor().Products().Add(shapeRoot, placement)
 //!   theGraph.Editor().Gen().RemoveNode(...)
 //!
 //! Contract notes:
@@ -71,99 +78,6 @@ class Poly_PolygonOnTriangulation;
 class BRepGraph::EditorView
 {
 public:
-  //! Representation mutation guards (Surface, Curve3D, Curve2D, Triangulation,
-  //! Polygon3D, Polygon2D, PolygonOnTri). All `Mut*()` accessors raise
-  //! `Standard_ProgramError` for null, out-of-range, or removed typed ids.
-  //! Access via `BRepGraph::EditorView::Reps()`.
-  class RepOps
-  {
-  public:
-    //! Return scoped mutable surface representation guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> MutSurface(
-      const BRepGraph_SurfaceRepId theSurface);
-    //! Return scoped mutable 3D curve representation guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Curve3DRep> MutCurve3D(
-      const BRepGraph_Curve3DRepId theCurve);
-    //! Return scoped mutable 2D curve representation guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Curve2DRep> MutCurve2D(
-      const BRepGraph_Curve2DRepId theCurve);
-    //! Return scoped mutable triangulation representation guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::TriangulationRep>
-      MutTriangulation(const BRepGraph_TriangulationRepId theTriangulation);
-    //! Return scoped mutable 3D polygon representation guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> MutPolygon3D(
-      const BRepGraph_Polygon3DRepId thePolygon);
-    //! Return scoped mutable 2D polygon representation guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Polygon2DRep> MutPolygon2D(
-      const BRepGraph_Polygon2DRepId thePolygon);
-    //! Return scoped mutable polygon-on-triangulation representation guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep> MutPolygonOnTri(
-      const BRepGraph_PolygonOnTriRepId thePolygon);
-
-    //! Set the surface handle on a SurfaceRep.
-    Standard_EXPORT void SetSurface(const BRepGraph_SurfaceRepId     theRep,
-                                    const occ::handle<Geom_Surface>& theSurface);
-    Standard_EXPORT void SetSurface(BRepGraph_MutGuard<BRepGraphInc::SurfaceRep>& theMut,
-                                    const occ::handle<Geom_Surface>&              theSurface);
-
-    //! Set the 3D curve handle on a Curve3DRep.
-    Standard_EXPORT void SetCurve3D(const BRepGraph_Curve3DRepId   theRep,
-                                    const occ::handle<Geom_Curve>& theCurve);
-    Standard_EXPORT void SetCurve3D(BRepGraph_MutGuard<BRepGraphInc::Curve3DRep>& theMut,
-                                    const occ::handle<Geom_Curve>&                theCurve);
-
-    //! Set the 2D curve handle on a Curve2DRep.
-    Standard_EXPORT void SetCurve2D(const BRepGraph_Curve2DRepId     theRep,
-                                    const occ::handle<Geom2d_Curve>& theCurve);
-    Standard_EXPORT void SetCurve2D(BRepGraph_MutGuard<BRepGraphInc::Curve2DRep>& theMut,
-                                    const occ::handle<Geom2d_Curve>&              theCurve);
-
-    //! Set the triangulation handle on a TriangulationRep.
-    Standard_EXPORT void SetTriangulation(const BRepGraph_TriangulationRepId     theRep,
-                                          const occ::handle<Poly_Triangulation>& theTri);
-    Standard_EXPORT void SetTriangulation(
-      BRepGraph_MutGuard<BRepGraphInc::TriangulationRep>& theMut,
-      const occ::handle<Poly_Triangulation>&              theTri);
-
-    //! Set the polygon handle on a Polygon3DRep.
-    Standard_EXPORT void SetPolygon3D(const BRepGraph_Polygon3DRepId     theRep,
-                                      const occ::handle<Poly_Polygon3D>& thePolygon);
-    Standard_EXPORT void SetPolygon3D(BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep>& theMut,
-                                      const occ::handle<Poly_Polygon3D>&              thePolygon);
-
-    //! Set the polygon handle on a Polygon2DRep.
-    Standard_EXPORT void SetPolygon2D(const BRepGraph_Polygon2DRepId     theRep,
-                                      const occ::handle<Poly_Polygon2D>& thePolygon);
-    Standard_EXPORT void SetPolygon2D(BRepGraph_MutGuard<BRepGraphInc::Polygon2DRep>& theMut,
-                                      const occ::handle<Poly_Polygon2D>&              thePolygon);
-
-    //! Set the polygon-on-triangulation handle on a PolygonOnTriRep.
-    Standard_EXPORT void SetPolygonOnTri(
-      const BRepGraph_PolygonOnTriRepId               theRep,
-      const occ::handle<Poly_PolygonOnTriangulation>& thePolygon);
-    Standard_EXPORT void SetPolygonOnTri(
-      BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep>& theMut,
-      const occ::handle<Poly_PolygonOnTriangulation>&    thePolygon);
-
-    //! Set the triangulation rep id linked to a PolygonOnTriRep.
-    Standard_EXPORT void SetPolygonOnTriTriangulationId(
-      const BRepGraph_PolygonOnTriRepId  theRep,
-      const BRepGraph_TriangulationRepId theTriRep);
-    Standard_EXPORT void SetPolygonOnTriTriangulationId(
-      BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep>& theMut,
-      const BRepGraph_TriangulationRepId                 theTriRep);
-
-  private:
-    friend class EditorView;
-
-    explicit RepOps(BRepGraph* theGraph)
-        : myGraph(theGraph)
-    {
-    }
-
-    BRepGraph* myGraph;
-  };
-
   //! @brief Vertex creation operations.
   class VertexOps
   {
@@ -204,31 +118,19 @@ public:
                                       const double                                 theTolerance);
 
     //! Set the orientation of a vertex reference.
-    Standard_EXPORT void SetRefOrientation(const BRepGraph_VertexRefId theVertexRef,
-                                           const TopAbs_Orientation    theOrientation);
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_VertexRefId           theVertexRef,
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Set the orientation inside a batched mutation scope.
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
-                                           const TopAbs_Orientation theOrientation);
-
-    //! Set the local location of a vertex reference and fire immediate notification.
-    //! @param[in] theVertexRef typed vertex reference identifier
-    //! @param[in] theLoc       new local location
-    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_VertexRefId theVertexRef,
-                                             const TopLoc_Location&      theLoc);
-
-    //! Set the local location of a vertex reference inside a batched mutation scope.
-    //! @param[in] theMut active mutable vertex reference guard
-    //! @param[in] theLoc new local location
-    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
-                                             const TopLoc_Location&                       theLoc);
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Rewire a vertex reference to a different vertex def (rebinds VertexToEdges if parent is
     //! Edge).
-    Standard_EXPORT void SetRefVertexDefId(const BRepGraph_VertexRefId theVertexRef,
-                                           const BRepGraph_VertexId    theVertex);
-    Standard_EXPORT void SetRefVertexDefId(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
-                                           const BRepGraph_VertexId                     theVertex);
+    Standard_EXPORT void SetRefChildVertexId(const BRepGraph_VertexRefId theVertexRef,
+                                             const BRepGraph_VertexId    theVertex);
+    Standard_EXPORT void SetRefChildVertexId(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
+                                             const BRepGraph_VertexId theVertex);
 
   private:
     friend class EditorView;
@@ -261,18 +163,6 @@ public:
                                                        const double                   theLast,
                                                        const double                   theTolerance);
 
-    //! Add an internal or external direct vertex usage to an edge definition.
-    //! The vertex is stored in EdgeDef.InternalVertexRefIds; boundary start/end
-    //! vertices remain owned by StartVertexRefId and EndVertexRefId.
-    //! @param[in] theEdgeEntity   typed edge definition identifier
-    //! @param[in] theVertexEntity typed vertex definition identifier
-    //! @param[in] theOri          orientation of the direct vertex usage on the edge
-    //! @return typed vertex reference identifier, or invalid if inputs are not active
-    [[nodiscard]] Standard_EXPORT BRepGraph_VertexRefId
-      AddInternalVertex(const BRepGraph_EdgeId   theEdgeEntity,
-                        const BRepGraph_VertexId theVertexEntity,
-                        const TopAbs_Orientation theOri = TopAbs_INTERNAL);
-
     //! Split a single edge definition at a vertex and 3D-curve parameter.
     //! Creates two new EdgeDef slots, splits all PCurve nodes at the corresponding
     //! 2D parameter, and updates every wire that contained the original edge.
@@ -287,53 +177,40 @@ public:
                                BRepGraph_EdgeId&        theSubA,
                                BRepGraph_EdgeId&        theSubB);
 
-    //! Detach one exact direct vertex ref from an edge definition.
-    //! Supports both boundary fixed slots (StartVertexRefId / EndVertexRefId) and
-    //! entries stored in EdgeDef.InternalVertexRefIds.
-    //! @param[in] theEdgeDefId   edge definition identifier
+    //! Detach one exact edge-owned vertex ref from an edge definition.
+    //! Supports only the persisted boundary slots (StartVertexRefId /
+    //! EndVertexRefId). Supplemental direct-vertex usages are stored in
+    //! BRepGraph_LayerTopoSupplement and are not removed through this API.
+    //! @param[in] theChildEdgeId   edge definition identifier
     //! @param[in] theVertexRefId exact edge-owned vertex reference identifier
     //! @return true if the active edge-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveVertex(const BRepGraph_EdgeId      theEdgeDefId,
+    [[nodiscard]] Standard_EXPORT bool RemoveVertex(const BRepGraph_EdgeId      theChildEdgeId,
                                                     const BRepGraph_VertexRefId theVertexRefId);
 
     //! Remap one edge-owned vertex reference to point at a different vertex
     //! definition, preserving the existing orientation and local location.
     //! Intended for boundary-vertex substitution without a full edge rebuild
     //! (e.g. stitching shared endpoints after a ShapeFix pass).
-    //! @param[in] theEdgeDefId       edge owning the vertex reference
-    //! @param[in] theOldVertexRefId  exact vertex reference to remap (boundary or internal)
-    //! @param[in] theNewVertexDefId  replacement vertex definition
+    //! @param[in] theChildEdgeId       edge owning the vertex reference
+    //! @param[in] theOldVertexRefId  exact boundary vertex reference to remap
+    //! @param[in] theNewChildVertexId  replacement vertex definition
     //! @return typed id of the newly created vertex reference, or invalid if
     //!         any input was inactive or the old ref did not belong to this edge
     [[nodiscard]] Standard_EXPORT BRepGraph_VertexRefId
-      ReplaceVertex(const BRepGraph_EdgeId      theEdgeDefId,
+      ReplaceVertex(const BRepGraph_EdgeId      theChildEdgeId,
                     const BRepGraph_VertexRefId theOldVertexRefId,
-                    const BRepGraph_VertexId    theNewVertexDefId);
+                    const BRepGraph_VertexId    theNewChildVertexId);
 
     //! Return scoped mutable edge definition guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::EdgeDef> Mut(
       const BRepGraph_EdgeId theEdge);
 
-    //! Returns true iff the edge appears as a seam on the given face (two CoEdges
-    //! of theEdge share theFace).
-    //! @param[in] theEdge typed edge definition identifier
-    //! @param[in] theFace typed face definition identifier
-    //! @return true if the edge is a seam on the given face
-    [[nodiscard]] Standard_EXPORT bool IsSeamOnFace(const BRepGraph_EdgeId theEdge,
-                                                    const BRepGraph_FaceId theFace) const;
-
-    //! Set the geometric regularity (C^k) for an edge across a pair of faces in
-    //! BRepGraph_LayerRegularity. theFace1 == theFace2 sets the seam continuity
-    //! across the closed-surface seam line. Requires the layer to be registered.
-    //! @param[in] theEdge       typed edge definition identifier
-    //! @param[in] theFace1      first face (or seam face when theFace2 == theFace1)
-    //! @param[in] theFace2      second face
-    //! @param[in] theContinuity continuity (GeomAbs_Shape)
-    //! @return true if written; false if the layer is not registered
-    Standard_EXPORT bool SetRegularity(const BRepGraph_EdgeId theEdge,
-                                       const BRepGraph_FaceId theFace1,
-                                       const BRepGraph_FaceId theFace2,
-                                       const GeomAbs_Shape    theContinuity);
+    //! Reverse the edge: swap StartVertexRefId and EndVertexRefId. Used by
+    //! healing/sewing when a caller wants the edge's boundary order flipped.
+    //! Does not alter the parametric range (callers needing reparametrization
+    //! should follow up with SetParamRange).
+    //! @param[in] theEdge edge definition identifier
+    Standard_EXPORT void Reverse(const BRepGraph_EdgeId theEdge);
 
     //! Set the tolerance of an edge definition and fire immediate notification.
     //! @param[in] theEdge      typed edge definition identifier
@@ -354,46 +231,38 @@ public:
                                        const double                               theFirst,
                                        const double                               theLast);
 
-    //! Set the SameParameter flag of an edge definition.
-    Standard_EXPORT void SetSameParameter(const BRepGraph_EdgeId theEdge,
-                                          const bool             theSameParameter);
-    Standard_EXPORT void SetSameParameter(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                          const bool theSameParameter);
+    //! Set the 3D curve on an edge. Creates an owned EdgeCurve3DRep record
+    //! and an associated Curve3DRep for edge geometry access.
+    //! @param[in] theEdge  edge definition identifier
+    //! @param[in] theCurve 3D curve geometry (must not be null)
+    //! @param[in] theFirst first curve parameter
+    //! @param[in] theLast  last curve parameter
+    Standard_EXPORT void SetCurve(const BRepGraph_EdgeId         theEdge,
+                                  const occ::handle<Geom_Curve>& theCurve,
+                                  const double                   theFirst,
+                                  const double                   theLast);
 
-    //! Set the SameRange flag of an edge definition.
-    Standard_EXPORT void SetSameRange(const BRepGraph_EdgeId theEdge, const bool theSameRange);
-    Standard_EXPORT void SetSameRange(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                      const bool                                 theSameRange);
+    //! Clear the 3D curve on an edge. Removes the owned use record binding.
+    //! @param[in] theEdge edge definition identifier
+    Standard_EXPORT void ClearCurve(const BRepGraph_EdgeId theEdge);
 
-    //! Set the IsDegenerate flag of an edge definition.
-    Standard_EXPORT void SetDegenerate(const BRepGraph_EdgeId theEdge, const bool theIsDegenerate);
-    Standard_EXPORT void SetDegenerate(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                       const bool                                 theIsDegenerate);
+    //! Set the persistent 3D polygon on an edge. Creates an owned EdgePolygon3DRep record.
+    //! @param[in] theEdge    edge definition identifier
+    //! @param[in] thePolygon 3D polygon (must not be null)
+    Standard_EXPORT void SetPersistentPolygon3D(const BRepGraph_EdgeId             theEdge,
+                                                const occ::handle<Poly_Polygon3D>& thePolygon);
 
-    //! Set the Curve3DRep id bound to an edge (invalid id clears the binding).
-    Standard_EXPORT void SetCurve3DRepId(const BRepGraph_EdgeId       theEdge,
-                                         const BRepGraph_Curve3DRepId theRep);
-    Standard_EXPORT void SetCurve3DRepId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                         const BRepGraph_Curve3DRepId               theRep);
+    //! Clear the persistent 3D polygon on an edge.
+    //! @param[in] theEdge edge definition identifier
+    Standard_EXPORT void ClearPersistentPolygon3D(const BRepGraph_EdgeId theEdge);
 
-    //! Set the Polygon3DRep id bound to an edge (invalid id clears the binding).
-    Standard_EXPORT void SetPolygon3DRepId(const BRepGraph_EdgeId         theEdge,
-                                           const BRepGraph_Polygon3DRepId theRep);
-    Standard_EXPORT void SetPolygon3DRepId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                           const BRepGraph_Polygon3DRepId             theRep);
-
-    //! Set the IsClosed flag (StartVertex == EndVertex topology) of an edge.
-    Standard_EXPORT void SetIsClosed(const BRepGraph_EdgeId theEdge, const bool theIsClosed);
-    Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                     const bool                                 theIsClosed);
-
-    //! Set the start vertex-ref id (rebinds VertexToEdges). Caller maintains reverse indices.
+    //! Set the start vertex-ref id and rebind the vertex-to-edge relation.
     Standard_EXPORT void SetStartVertexRefId(const BRepGraph_EdgeId      theEdge,
                                              const BRepGraph_VertexRefId theVertexRef);
     Standard_EXPORT void SetStartVertexRefId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
                                              const BRepGraph_VertexRefId theVertexRef);
 
-    //! Set the end vertex-ref id (rebinds VertexToEdges). Caller maintains reverse indices.
+    //! Set the end vertex-ref id and rebind the vertex-to-edge relation.
     Standard_EXPORT void SetEndVertexRefId(const BRepGraph_EdgeId      theEdge,
                                            const BRepGraph_VertexRefId theVertexRef);
     Standard_EXPORT void SetEndVertexRefId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
@@ -414,16 +283,6 @@ public:
   class CoEdgeOps
   {
   public:
-    //! Create a new Curve2DRep in storage and return its typed identifier.
-    //! Use this when assigning a new PCurve to an existing CoEdge entity
-    //! via Editor().MutCoEdge() inside a larger mutation sequence.
-    //! For one-shot creation and binding of a face-context PCurve, use
-    //! AddPCurve().
-    //! @param[in] theCurve2d the 2D parametric curve handle
-    //! @return typed Curve2DRep identifier, or invalid if the curve is null
-    [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
-      CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d);
-
     //! Assign or clear the PCurve bound to an existing coedge.
     //! Creates a new Curve2DRep for non-null curves and stores its id on the coedge.
     //! Pass a null handle to clear the stored PCurve binding.
@@ -432,34 +291,40 @@ public:
     Standard_EXPORT void SetPCurve(const BRepGraph_CoEdgeId         theCoEdge,
                                    const occ::handle<Geom2d_Curve>& theCurve2d);
 
-    //! Attach a PCurve to an edge for a given face context.
-    //! Creates a new CoEdge entity with Curve2DRep and updates reverse indices.
+    //! Create a new CoEdge entity linking an edge with an orientation.
+    //! The CoEdge is free-floating (no parent wire); bind it to a wire
+    //! via WireOps::Add().
+    //! @param[in] theEdge       typed edge definition identifier
+    //! @param[in] theOrientation orientation of the edge in the wire
+    //! @return typed coedge identifier, or invalid if the edge is invalid
+    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId
+      Add(const BRepGraph_EdgeId theEdge, const BRepGraphInc::ParityOrientation theOrientation);
+
+    //! Create a new CoEdge entity with a PCurve for a given edge-face pair.
+    //! Creates a new CoEdge entity with Curve2DRep and updates relation tables.
     //! This always appends a new CoEdge entry for the edge-face pair; callers
     //! should avoid duplicate creation unless multiple bindings are intentional
     //! for the modeled topology.
-    //! Prefer this route when the caller needs to add a face-context PCurve in
-    //! one operation. For editing an already identified CoEdge inside a larger
-    //! mutation sequence, use CreateCurve2DRep() with Editor().MutCoEdge().
+    //! For editing an already identified CoEdge inside a larger
+    //! mutation sequence, use CoEdges().SetPCurve().
     //! @param[in] theEdgeEntity      typed edge definition identifier
     //! @param[in] theFaceEntity      typed face definition identifier
     //! @param[in] theCurve2d         2D curve geometry
     //! @param[in] theFirst           first curve parameter
     //! @param[in] theLast            last curve parameter
     //! @param[in] theEdgeOrientation edge orientation on the face
-    Standard_EXPORT void AddPCurve(const BRepGraph_EdgeId           theEdgeEntity,
-                                   const BRepGraph_FaceId           theFaceEntity,
-                                   const occ::handle<Geom2d_Curve>& theCurve2d,
-                                   const double                     theFirst,
-                                   const double                     theLast,
-                                   const TopAbs_Orientation theEdgeOrientation = TopAbs_FORWARD);
+    //! @return typed coedge identifier, or invalid if inputs are not active
+    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId
+      Add(const BRepGraph_EdgeId                theEdgeEntity,
+          const BRepGraph_FaceId                theFaceEntity,
+          const occ::handle<Geom2d_Curve>&      theCurve2d,
+          const double                          theFirst,
+          const double                          theLast,
+          const BRepGraphInc::ParityOrientation theEdgeOrientation = TopAbs_FORWARD);
 
     //! Return scoped mutable coedge definition guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> Mut(
       const BRepGraph_CoEdgeId theCoEdge);
-
-    //! Return scoped mutable coedge reference guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> MutRef(
-      const BRepGraph_CoEdgeRefId theCoEdgeRef);
 
     //! Set the parametric range of a coedge definition and fire immediate notification.
     //! @param[in] theCoEdge  typed coedge definition identifier
@@ -477,83 +342,61 @@ public:
                                        double                                       theFirst,
                                        double                                       theLast);
 
-    //! Set the local location of a coedge reference and fire immediate notification.
-    //! @param[in] theCoEdgeRef typed coedge reference identifier
-    //! @param[in] theLoc       new local location
-    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_CoEdgeRefId theCoEdgeRef,
-                                             const TopLoc_Location&      theLoc);
-
-    //! Set the local location of a coedge reference inside a batched mutation scope.
-    //! @param[in] theMut active mutable coedge reference guard
-    //! @param[in] theLoc new local location
-    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
-                                             const TopLoc_Location&                       theLoc);
-
-    //! Rewire a coedge reference to a different coedge def (rebinds CoEdgeToWires + EdgeToWires).
-    Standard_EXPORT void SetRefCoEdgeDefId(const BRepGraph_CoEdgeRefId theCoEdgeRef,
-                                           const BRepGraph_CoEdgeId    theCoEdge);
-    Standard_EXPORT void SetRefCoEdgeDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
-                                           const BRepGraph_CoEdgeId                     theCoEdge);
-
     //! Set the orientation of a coedge definition.
-    Standard_EXPORT void SetOrientation(const BRepGraph_CoEdgeId theCoEdge,
-                                        const TopAbs_Orientation theOrientation);
+    Standard_EXPORT void SetOrientation(const BRepGraph_CoEdgeId              theCoEdge,
+                                        const BRepGraphInc::ParityOrientation theOrientation);
     Standard_EXPORT void SetOrientation(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                        const TopAbs_Orientation theOrientation);
+                                        const BRepGraphInc::ParityOrientation theOrientation);
 
-    //! Set the UV box (UV1 = at ParamFirst, UV2 = at ParamLast) of a coedge definition.
-    Standard_EXPORT void SetUVBox(const BRepGraph_CoEdgeId theCoEdge,
-                                  const gp_Pnt2d&          theUV1,
-                                  const gp_Pnt2d&          theUV2);
-    Standard_EXPORT void SetUVBox(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                  const gp_Pnt2d&                              theUV1,
-                                  const gp_Pnt2d&                              theUV2);
+    //! Set the PCurve on a coedge. Creates an owned CoEdgeCurve2DRep record.
+    //! @param[in] theCoEdge  coedge definition identifier
+    //! @param[in] theCurve2d 2D curve geometry (must not be null)
+    //! @param[in] theFirst   first curve parameter
+    //! @param[in] theLast    last curve parameter
+    Standard_EXPORT void SetPCurve(const BRepGraph_CoEdgeId         theCoEdge,
+                                   const occ::handle<Geom2d_Curve>& theCurve2d,
+                                   const double                     theFirst,
+                                   const double                     theLast);
 
-    //! Continuity is a property of (Edge, Face1, Face2) and lives in
-    //! BRepGraph_LayerRegularity. Use EditorView::EdgeOps::SetRegularity to write,
-    //! BRepGraph_Tool::Edge::Continuity to read.
+    //! Clear the PCurve on a coedge.
+    //! @param[in] theCoEdge coedge definition identifier
+    Standard_EXPORT void ClearPCurve(const BRepGraph_CoEdgeId theCoEdge);
 
-    //! Set the Curve2DRep id bound to a coedge (invalid id clears the binding).
-    Standard_EXPORT void SetCurve2DRepId(const BRepGraph_CoEdgeId     theCoEdge,
-                                         const BRepGraph_Curve2DRepId theRep);
-    Standard_EXPORT void SetCurve2DRepId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                         const BRepGraph_Curve2DRepId                 theRep);
+    //! Set the persistent 2D polygon on a coedge.
+    //! @param[in] theCoEdge  coedge definition identifier
+    //! @param[in] thePolygon 2D polygon (must not be null)
+    Standard_EXPORT void SetPersistentPolygon2D(const BRepGraph_CoEdgeId           theCoEdge,
+                                                const occ::handle<Poly_Polygon2D>& thePolygon);
 
-    //! Set the Polygon2DRep id bound to a coedge.
-    Standard_EXPORT void SetPolygon2DRepId(const BRepGraph_CoEdgeId       theCoEdge,
-                                           const BRepGraph_Polygon2DRepId theRep);
-    Standard_EXPORT void SetPolygon2DRepId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                           const BRepGraph_Polygon2DRepId               theRep);
+    //! Set the persistent polygon-on-triangulation on a coedge.
+    //! The triangulation is resolved via CoEdgeDef.FaceId → FaceDef.TriangulationRepId.
+    //! @param[in] theCoEdge       coedge definition identifier
+    //! @param[in] thePolygon      polygon-on-triangulation (must not be null)
+    Standard_EXPORT void SetPersistentPolygonOnTri(
+      const BRepGraph_CoEdgeId                        theCoEdge,
+      const occ::handle<Poly_PolygonOnTriangulation>& thePolygon);
 
-    //! Set the PolygonOnTriRep id bound to a coedge.
-    Standard_EXPORT void SetPolygonOnTriRepId(const BRepGraph_CoEdgeId          theCoEdge,
-                                              const BRepGraph_PolygonOnTriRepId theRep);
-    Standard_EXPORT void SetPolygonOnTriRepId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                              const BRepGraph_PolygonOnTriRepId            theRep);
-
-    //! Drop face-bound parametric payload (PCurve, param range, continuity, UVs)
+    //! Drop face-bound parametric representation (PCurve, param range, continuity, UVs)
     //! while keeping structural links - used when the owning face is removed.
-    Standard_EXPORT void ClearPCurveBinding(const BRepGraph_CoEdgeId theCoEdge);
-    Standard_EXPORT void ClearPCurveBinding(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut);
+    Standard_EXPORT void ResetPCurveBinding(const BRepGraph_CoEdgeId theCoEdge);
+    Standard_EXPORT void ResetPCurveBinding(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut);
 
     //! Set the seam-pair id linking two coedges of a seam edge (invalid breaks the link).
     // To establish seam-ness, ensure two CoEdges exist on the same (Edge, Face)
     // with opposite orientations; the seam relation is then queryable via
     // BRepGraph_Tool::CoEdge::SeamPair.
 
-    //! Rewire a coedge to a different parent edge (rebinds EdgeToCoEdges, EdgeToWires,
-    //! EdgeToFaces). Caller maintains reverse indices.
-    Standard_EXPORT void SetEdgeDefId(const BRepGraph_CoEdgeId theCoEdge,
-                                      const BRepGraph_EdgeId   theEdge);
-    Standard_EXPORT void SetEdgeDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                      const BRepGraph_EdgeId                       theEdge);
+    //! Rewire a coedge to a different child edge and rebind edge parent/use relations.
+    Standard_EXPORT void SetChildEdgeId(const BRepGraph_CoEdgeId theCoEdge,
+                                        const BRepGraph_EdgeId   theEdge);
+    Standard_EXPORT void SetChildEdgeId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                        const BRepGraph_EdgeId                       theEdge);
 
-    //! Rewire a coedge to a different owning face (rebinds EdgeToFaces). Caller maintains reverse
-    //! indices.
-    Standard_EXPORT void SetFaceDefId(const BRepGraph_CoEdgeId theCoEdge,
-                                      const BRepGraph_FaceId   theFace);
-    Standard_EXPORT void SetFaceDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                      const BRepGraph_FaceId                       theFace);
+    //! Rewire a coedge to a different owning face and rebind edge-to-face relations.
+    Standard_EXPORT void SetFaceId(const BRepGraph_CoEdgeId theCoEdge,
+                                   const BRepGraph_FaceId   theFace);
+    Standard_EXPORT void SetFaceId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                   const BRepGraph_FaceId                       theFace);
 
   private:
     friend class EditorView;
@@ -570,36 +413,113 @@ public:
   class WireOps
   {
   public:
-    //! Add a wire definition to the graph.
-    //! Each pair is (EdgeDefId, OrientationInWire).
-    //! @param[in] theEdges ordered edge entries
+    //! Status returned by wire coedge-order prechecks.
+    enum class CoEdgeOrderStatus
+    {
+      Ready,                //!< Input is valid and already connected in given order.
+      Reordered,            //!< Input is valid after internal canonical reordering.
+      AlreadyCurrent,       //!< Input equals current stored order; mutation can be skipped.
+      AlreadyContained,     //!< Append precheck found the coedge already in the wire.
+      Empty,                //!< Input contains no coedges.
+      InvalidWire,          //!< Wire id is invalid or removed.
+      SizeMismatch,         //!< Input size differs from current wire coedge count.
+      DuplicateCoEdge,      //!< Input repeats a coedge id.
+      InvalidCoEdge,        //!< Input references an invalid, removed, or incomplete coedge.
+      CoEdgeAlreadyBound,   //!< Add precheck found a coedge already owned by a wire.
+      CoEdgeNotOwnedByWire, //!< Set-order precheck found a coedge not owned by the wire.
+      NotPermutation,       //!< Set-order input is not a permutation of current coedges.
+      Disconnected          //!< Coedges cannot form a connected chain.
+    };
+
+    //! Status returned by wire edge-replacement prechecks.
+    enum class ReplaceEdgeStatus
+    {
+      Ready,          //!< Replacement is valid and preserves wire connectivity.
+      AlreadyCurrent, //!< Old and new edge are the same and no mutation is needed.
+      InvalidWire,    //!< Wire id is invalid or removed.
+      InvalidOldEdge, //!< Old edge id is invalid, removed, or not used by the wire.
+      InvalidNewEdge, //!< New edge id is invalid or removed.
+      Disconnected    //!< Replacement would break the ordered coedge chain.
+    };
+
+    //! Precheck free-floating CoEdges for WireOps::Add().
+    //! @param[in] theCoEdgeIds candidate coedge identifiers
+    //! @return status describing whether the input can form a wire
+    [[nodiscard]] Standard_EXPORT CoEdgeOrderStatus
+      CheckCoEdgeOrder(const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds) const;
+
+    //! Precheck owned CoEdges for WireOps::SetCoEdgeOrder().
+    //! @param[in] theWire      wire definition identifier
+    //! @param[in] theCoEdgeIds candidate coedge identifiers
+    //! @return status describing whether the input can replace the stored order
+    [[nodiscard]] Standard_EXPORT CoEdgeOrderStatus
+      CheckCoEdgeOrder(const BRepGraph_WireId                        theWire,
+                       const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds) const;
+
+    //! Precheck appending a free CoEdge to an existing wire.
+    //! @param[in] theWire     wire definition identifier
+    //! @param[in] theCoEdgeId free coedge candidate
+    //! @return status describing whether the append can preserve connected order
+    [[nodiscard]] Standard_EXPORT CoEdgeOrderStatus
+      CheckAppendCoEdge(const BRepGraph_WireId theWire, const BRepGraph_CoEdgeId theCoEdgeId) const;
+
+    //! Precheck replacing one edge by another in an existing wire.
+    //! @param[in] theWire    wire definition identifier
+    //! @param[in] theOldEdge edge currently used by one or more wire coedges
+    //! @param[in] theNewEdge replacement edge
+    //! @param[in] theReversed if true, replacement coedge orientation is reversed
+    //! @return status describing whether replacement preserves connected order
+    [[nodiscard]] Standard_EXPORT ReplaceEdgeStatus
+      CheckReplaceEdge(const BRepGraph_WireId theWire,
+                       const BRepGraph_EdgeId theOldEdge,
+                       const BRepGraph_EdgeId theNewEdge,
+                       const bool             theReversed) const;
+
+    //! Add a wire definition from pre-created CoEdges.
+    //! Each CoEdge must be free-floating (no parent wire yet).
+    //! The method binds all CoEdges to the new wire and updates relation tables.
+    //! @param[in] theCoEdgeIds ordered coedge identifiers
     //! @return typed wire definition identifier, or invalid if any referenced
-    //!         edge entry is invalid
-    [[nodiscard]] Standard_EXPORT BRepGraph_WireId Add(
-      const NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>>& theEdges);
+    //!         coedge is invalid or already bound to a wire
+    [[nodiscard]] Standard_EXPORT BRepGraph_WireId
+      Add(const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds);
 
     //! Replace one edge with another in a wire definition.
     //! Updates the CoEdge's EdgeIdx to point to the new edge, adjusts orientation
-    //! if theReversed, and incrementally updates reverse indices.
-    //! @param[in] theWireDefId     wire definition identifier
+    //! if theReversed, and incrementally updates relation tables.
+    //! @param[in] theChildWireId     wire definition identifier
     //! @param[in] theOldEdgeEntity edge to replace
     //! @param[in] theNewEdgeEntity replacement edge
     //! @param[in] theReversed      if true, reverse the orientation of the replacement
-    Standard_EXPORT void ReplaceEdge(const BRepGraph_WireId theWireDefId,
+    Standard_EXPORT void ReplaceEdge(const BRepGraph_WireId theChildWireId,
                                      const BRepGraph_EdgeId theOldEdgeEntity,
                                      const BRepGraph_EdgeId theNewEdgeEntity,
                                      const bool             theReversed);
 
-    //! Detach one exact coedge ref from a wire definition.
-    //! Use BRepGraph_RefsCoEdgeOfWire::CurrentId() when removing from a wire
-    //! iterator. The method removes the exact CoEdgeRef entry, erases it from
-    //! the wire's ordered ref sequence, updates reverse indices, and prunes the
-    //! CoEdge node when it has no other active usages.
-    //! @param[in] theWireDefId   wire definition identifier
-    //! @param[in] theCoEdgeRefId exact wire-owned coedge reference identifier
+    //! Detach one exact coedge entry from a wire definition.
+    //! Use BRepGraph_CoEdgesOfWire::CurrentId() when removing from a wire
+    //! iterator. The method removes the exact ordered coedge entry, updates
+    //! relation tables, and prunes the CoEdge node when it has no other active
+    //! usages.
+    //! @param[in] theChildWireId wire definition identifier
+    //! @param[in] theCoEdgeId  exact wire-owned coedge identifier
     //! @return true if the active wire-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveCoEdge(const BRepGraph_WireId      theWireDefId,
-                                                    const BRepGraph_CoEdgeRefId theCoEdgeRefId);
+    [[nodiscard]] Standard_EXPORT bool RemoveCoEdge(const BRepGraph_WireId   theChildWireId,
+                                                    const BRepGraph_CoEdgeId theCoEdgeId);
+
+    //! Reverse the wire: flip the order of the wire's CoEdgeIds and flip each
+    //! owned CoEdge's orientation. Used by healing/sewing to invert a loop.
+    //! @param[in] theWire wire definition identifier
+    Standard_EXPORT void Reverse(const BRepGraph_WireId theWire);
+
+    //! Replace the ordered CoEdge relation vector with a permutation of its
+    //! current content.
+    //! @param[in] theWire       wire definition identifier
+    //! @param[in] theCoEdgeIds  new ordered CoEdge identifiers
+    //! @return true if the order was accepted and applied
+    [[nodiscard]] Standard_EXPORT bool SetCoEdgeOrder(
+      const BRepGraph_WireId                        theWire,
+      const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds);
 
     //! Return scoped mutable wire definition guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::WireDef> Mut(
@@ -609,45 +529,17 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::WireRef> MutRef(
       const BRepGraph_WireRefId theWireRef);
 
-    //! Set the IsClosed flag of a wire definition and fire immediate notification.
-    //! @param[in] theWire     typed wire definition identifier
-    //! @param[in] theIsClosed new closed state
-    Standard_EXPORT void SetIsClosed(const BRepGraph_WireId theWire, bool theIsClosed);
-
-    //! Set the IsClosed flag of a wire definition inside a batched mutation scope.
-    //! @param[in] theMut      active mutable wire guard
-    //! @param[in] theIsClosed new closed state
-    Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::WireDef>& theMut,
-                                     bool                                       theIsClosed);
-
-    //! Set the local location of a wire reference and fire immediate notification.
-    //! @param[in] theWireRef typed wire reference identifier
-    //! @param[in] theLoc     new local location
-    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_WireRefId theWireRef,
-                                             const TopLoc_Location&    theLoc);
-
-    //! Set the local location of a wire reference inside a batched mutation scope.
-    //! @param[in] theMut active mutable wire reference guard
-    //! @param[in] theLoc new local location
-    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
-                                             const TopLoc_Location&                     theLoc);
-
-    //! Set the IsOuter flag on a wire reference.
-    Standard_EXPORT void SetRefIsOuter(const BRepGraph_WireRefId theWireRef, const bool theIsOuter);
-    Standard_EXPORT void SetRefIsOuter(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
-                                       const bool                                 theIsOuter);
-
     //! Set the orientation of a wire reference.
-    Standard_EXPORT void SetRefOrientation(const BRepGraph_WireRefId theWireRef,
-                                           const TopAbs_Orientation  theOrientation);
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_WireRefId             theWireRef,
+                                           const BRepGraphInc::ParityOrientation theOrientation);
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
-                                           const TopAbs_Orientation theOrientation);
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Rewire a wire reference to a different wire def (rebinds WireToFaces if parent is Face).
-    Standard_EXPORT void SetRefWireDefId(const BRepGraph_WireRefId theWireRef,
-                                         const BRepGraph_WireId    theWire);
-    Standard_EXPORT void SetRefWireDefId(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
-                                         const BRepGraph_WireId                     theWire);
+    Standard_EXPORT void SetRefChildWireId(const BRepGraph_WireRefId theWireRef,
+                                           const BRepGraph_WireId    theWire);
+    Standard_EXPORT void SetRefChildWireId(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
+                                           const BRepGraph_WireId                     theWire);
 
   private:
     friend class EditorView;
@@ -672,39 +564,31 @@ public:
     //! @return typed face definition identifier, or invalid if any referenced
     //!         wire id is out of range or removed
     [[nodiscard]] Standard_EXPORT BRepGraph_FaceId
-      Add(const occ::handle<Geom_Surface>&                  theSurface,
-          const BRepGraph_WireId                            theOuterWire,
-          const NCollection_DynamicArray<BRepGraph_WireId>& theInnerWires,
-          const double                                      theTolerance);
+      Add(const occ::handle<Geom_Surface>&            theSurface,
+          const BRepGraph_WireId                      theOuterWire,
+          const NCollection_Array1<BRepGraph_WireId>& theInnerWires,
+          const double                                theTolerance);
 
-    //! Add a direct INTERNAL/EXTERNAL vertex usage to a face definition.
-    //! @param[in] theFaceEntity   typed face definition identifier
-    //! @param[in] theVertexEntity typed vertex definition identifier
-    //! @param[in] theOri          orientation of the direct vertex usage on the face
-    //! @return typed vertex reference identifier, or invalid if inputs are not active
-    [[nodiscard]] Standard_EXPORT BRepGraph_VertexRefId
-      AddVertex(const BRepGraph_FaceId   theFaceEntity,
-                const BRepGraph_VertexId theVertexEntity,
-                const TopAbs_Orientation theOri = TopAbs_INTERNAL);
-
-    //! Detach one exact direct vertex ref from a face definition.
-    //! Use BRepGraph_RefsVertexOfFace::CurrentId() when removing from a face
-    //! direct-vertex iterator.
-    //! @param[in] theFaceDefId   face definition identifier
-    //! @param[in] theVertexRefId exact face-owned vertex reference identifier
-    //! @return true if the active face-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveVertex(const BRepGraph_FaceId      theFaceDefId,
-                                                    const BRepGraph_VertexRefId theVertexRefId);
+    //! Append a wire usage to an existing face definition.
+    //! @param[in] theFaceEntity typed face definition identifier
+    //! @param[in] theWireEntity typed wire definition identifier
+    //! @param[in] theOri        orientation of the wire usage on the face
+    //! @return typed wire reference identifier, or invalid if inputs are not
+    //!         active
+    [[nodiscard]] Standard_EXPORT BRepGraph_WireRefId
+      Append(const BRepGraph_FaceId                theFaceEntity,
+             const BRepGraph_WireId                theWireEntity,
+             const BRepGraphInc::ParityOrientation theOri = TopAbs_FORWARD);
 
     //! Detach one exact wire ref from a face definition.
     //! Use BRepGraph_RefsWireOfFace::CurrentId() when removing from a face
     //! iterator. The method removes the exact WireRef entry, erases it from
-    //! the face's ordered ref sequence, rebuilds reverse indices, and prunes the
+    //! the face's ordered ref sequence, updates relation tables, and prunes the
     //! Wire subtree when it has no other active usages.
-    //! @param[in] theFaceDefId face definition identifier
+    //! @param[in] theFaceId face definition identifier
     //! @param[in] theWireRefId exact face-owned wire reference identifier
     //! @return true if the active face-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveWire(const BRepGraph_FaceId    theFaceDefId,
+    [[nodiscard]] Standard_EXPORT bool RemoveWire(const BRepGraph_FaceId    theFaceId,
                                                   const BRepGraph_WireRefId theWireRefId);
 
     //! Return scoped mutable face definition guard.
@@ -726,63 +610,46 @@ public:
     Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
                                       double                                     theTolerance);
 
-    //! Set the NaturalRestriction flag of a face definition and fire immediate notification.
-    //! @param[in] theFace               typed face definition identifier
-    //! @param[in] theNaturalRestriction new flag value
-    Standard_EXPORT void SetNaturalRestriction(const BRepGraph_FaceId theFace,
-                                               bool                   theNaturalRestriction);
+    //! Set the surface on a face. Creates an owned FaceSurfaceRep record
+    //! and an associated SurfaceRep for face geometry access.
+    //! @param[in] theFace    face definition identifier
+    //! @param[in] theSurface surface geometry (must not be null)
+    Standard_EXPORT void SetSurface(const BRepGraph_FaceId           theFace,
+                                    const occ::handle<Geom_Surface>& theSurface);
 
-    //! Set the NaturalRestriction flag inside a batched mutation scope.
-    //! @param[in] theMut                active mutable face guard
-    //! @param[in] theNaturalRestriction new flag value
-    Standard_EXPORT void SetNaturalRestriction(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-                                               bool theNaturalRestriction);
+    //! Clear the surface on a face. Removes the owned use record binding.
+    //! @param[in] theFace face definition identifier
+    Standard_EXPORT void ClearSurface(const BRepGraph_FaceId theFace);
 
-    //! Set the triangulation representation id and fire immediate notification.
-    //! Pass an invalid id to clear the triangulation binding.
-    //! @param[in] theFace typed face definition identifier
-    //! @param[in] theRep  new triangulation rep identifier (may be invalid to clear)
-    Standard_EXPORT void SetTriangulationRep(const BRepGraph_FaceId             theFace,
-                                             const BRepGraph_TriangulationRepId theRep);
+    //! Set the persistent triangulation on a face. Creates an owned FaceTriangulationRep record.
+    //! Also creates a TriangulationRep for backward compatibility.
+    //! @param[in] theFace         face definition identifier
+    //! @param[in] theTriangulation triangulation mesh (must not be null)
+    Standard_EXPORT void SetPersistentTriangulation(
+      const BRepGraph_FaceId                 theFace,
+      const occ::handle<Poly_Triangulation>& theTriangulation);
 
-    Standard_EXPORT void SetTriangulationRep(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-                                             const BRepGraph_TriangulationRepId         theRep);
-
-    //! Set the SurfaceRep id bound to a face (invalid id clears the binding).
-    Standard_EXPORT void SetSurfaceRepId(const BRepGraph_FaceId       theFace,
-                                         const BRepGraph_SurfaceRepId theRep);
-    Standard_EXPORT void SetSurfaceRepId(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-                                         const BRepGraph_SurfaceRepId               theRep);
+    //! Clear the persistent triangulation on a face.
+    //! @param[in] theFace face definition identifier
+    Standard_EXPORT void ClearPersistentTriangulation(const BRepGraph_FaceId theFace);
 
     //! Set the orientation of a face reference and fire immediate notification.
     //! @param[in] theFaceRef     typed face reference identifier
     //! @param[in] theOrientation new orientation value
-    Standard_EXPORT void SetRefOrientation(const BRepGraph_FaceRefId theFaceRef,
-                                           TopAbs_Orientation        theOrientation);
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_FaceRefId       theFaceRef,
+                                           BRepGraphInc::ParityOrientation theOrientation);
 
     //! Set the orientation of a face reference inside a batched mutation scope.
     //! @param[in] theMut         active mutable face reference guard
     //! @param[in] theOrientation new orientation value
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
-                                           TopAbs_Orientation theOrientation);
-
-    //! Set the local location of a face reference and fire immediate notification.
-    //! @param[in] theFaceRef typed face reference identifier
-    //! @param[in] theLoc     new local location
-    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_FaceRefId theFaceRef,
-                                             const TopLoc_Location&    theLoc);
-
-    //! Set the local location of a face reference inside a batched mutation scope.
-    //! @param[in] theMut active mutable face reference guard
-    //! @param[in] theLoc new local location
-    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
-                                             const TopLoc_Location&                     theLoc);
+                                           BRepGraphInc::ParityOrientation theOrientation);
 
     //! Rewire a face reference to a different face def (rebinds FaceToShells if parent is Shell).
-    Standard_EXPORT void SetRefFaceDefId(const BRepGraph_FaceRefId theFaceRef,
-                                         const BRepGraph_FaceId    theFace);
-    Standard_EXPORT void SetRefFaceDefId(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
-                                         const BRepGraph_FaceId                     theFace);
+    Standard_EXPORT void SetRefFaceId(const BRepGraph_FaceRefId theFaceRef,
+                                      const BRepGraph_FaceId    theFace);
+    Standard_EXPORT void SetRefFaceId(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
+                                      const BRepGraph_FaceId                     theFace);
 
   private:
     friend class EditorView;
@@ -803,46 +670,48 @@ public:
     //! @return typed shell definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_ShellId Add();
 
-    //! Link a face to a shell.
+    //! Append a face to a shell.
     //! Appends FaceRef and stores its FaceRefId in shell FaceRefIds.
     //! @param[in] theShellEntity typed shell definition identifier
     //! @param[in] theFaceEntity  typed face definition identifier
     //! @param[in] theOri         orientation of the face in the shell
     //! @return typed face reference identifier, or invalid if inputs are not active
-    Standard_EXPORT BRepGraph_FaceRefId AddFace(const BRepGraph_ShellId  theShellEntity,
-                                                const BRepGraph_FaceId   theFaceEntity,
-                                                const TopAbs_Orientation theOri = TopAbs_FORWARD);
+    Standard_EXPORT BRepGraph_FaceRefId
+      Append(const BRepGraph_ShellId               theShellEntity,
+             const BRepGraph_FaceId                theFaceEntity,
+             const BRepGraphInc::ParityOrientation theOri = TopAbs_FORWARD);
 
-    //! Link an auxiliary non-face child to a shell.
-    //! Supported child kinds are Wire and Edge.
+    //! Batch-append multiple faces to a shell.
+    //! Two-pass: validates all inputs first, then links all.
     //! @param[in] theShellEntity typed shell definition identifier
-    //! @param[in] theChildEntity typed child definition identifier
-    //! @param[in] theOri         orientation of the child in the shell
-    //! @return typed child reference identifier, or invalid if inputs are not active
-    [[nodiscard]] Standard_EXPORT BRepGraph_ChildRefId
-      AddChild(const BRepGraph_ShellId  theShellEntity,
-               const BRepGraph_NodeId   theChildEntity,
-               const TopAbs_Orientation theOri = TopAbs_FORWARD);
+    //! @param[in] theFaceIds     face definition identifiers to append
+    //! @param[in] theOrientations optional parity orientations (empty = all FORWARD)
+    //! @return array of created face reference ids, empty on validation failure
+    [[nodiscard]] Standard_EXPORT NCollection_Array1<BRepGraph_FaceRefId> Append(
+      const BRepGraph_ShellId                                    theShellEntity,
+      const NCollection_Array1<BRepGraph_FaceId>&                theFaceIds,
+      const NCollection_Array1<BRepGraphInc::ParityOrientation>& theOrientations =
+        NCollection_Array1<BRepGraphInc::ParityOrientation>());
 
     //! Detach one exact face ref from a shell definition.
     //! Use BRepGraph_RefsFaceOfShell::CurrentId() when removing from a shell
     //! iterator. The method removes the exact FaceRef entry, erases it from the
-    //! shell's ordered ref sequence, rebuilds reverse indices, and prunes the
+    //! shell's ordered ref sequence, updates relation tables, and prunes the
     //! Face subtree when it has no other active usages.
-    //! @param[in] theShellDefId shell definition identifier
+    //! @param[in] theChildShellId shell definition identifier
     //! @param[in] theFaceRefId  exact shell-owned face reference identifier
     //! @return true if the active shell-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveFace(const BRepGraph_ShellId   theShellDefId,
+    [[nodiscard]] Standard_EXPORT bool RemoveFace(const BRepGraph_ShellId   theChildShellId,
                                                   const BRepGraph_FaceRefId theFaceRefId);
 
-    //! Detach one exact child ref from a shell auxiliary-child sequence.
-    //! Use BRepGraph_RefsChildOfShell::CurrentId() when removing from a shell
-    //! aux-child iterator.
-    //! @param[in] theShellDefId shell definition identifier
-    //! @param[in] theChildRefId exact shell-owned child reference identifier
-    //! @return true if the active shell-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveChild(const BRepGraph_ShellId    theShellDefId,
-                                                   const BRepGraph_ChildRefId theChildRefId);
+    //! Batch-remove multiple face refs from a shell definition.
+    //! All-or-nothing: validates all inputs first, then removes all.
+    //! @param[in] theShellId   shell definition identifier
+    //! @param[in] theFaceRefs  face reference identifiers to remove
+    //! @return true if all refs were successfully removed
+    [[nodiscard]] Standard_EXPORT bool RemoveFaces(
+      const BRepGraph_ShellId                        theShellId,
+      const NCollection_Array1<BRepGraph_FaceRefId>& theFaceRefs);
 
     //! Return scoped mutable shell definition guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ShellDef> Mut(
@@ -852,39 +721,19 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ShellRef> MutRef(
       const BRepGraph_ShellRefId theShellRef);
 
-    //! Set the local location of a shell reference and fire immediate notification.
-    //! @param[in] theShellRef typed shell reference identifier
-    //! @param[in] theLoc      new local location
-    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_ShellRefId theShellRef,
-                                             const TopLoc_Location&     theLoc);
-
-    //! Set the local location of a shell reference inside a batched mutation scope.
-    //! @param[in] theMut active mutable shell reference guard
-    //! @param[in] theLoc new local location
-    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
-                                             const TopLoc_Location&                      theLoc);
-
     //! Set the orientation of a shell reference.
-    Standard_EXPORT void SetRefOrientation(const BRepGraph_ShellRefId theShellRef,
-                                           const TopAbs_Orientation   theOrientation);
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_ShellRefId            theShellRef,
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Set the orientation inside a batched mutation scope.
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
-                                           const TopAbs_Orientation theOrientation);
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
-    //! Rewire a shell reference to a different shell def (rebinds ShellToSolids if parent is
-    //! Solid).
-    Standard_EXPORT void SetRefShellDefId(const BRepGraph_ShellRefId theShellRef,
-                                          const BRepGraph_ShellId    theShell);
-    Standard_EXPORT void SetRefShellDefId(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
-                                          const BRepGraph_ShellId                     theShell);
-
-    //! Set the IsClosed flag of a shell definition.
-    Standard_EXPORT void SetIsClosed(const BRepGraph_ShellId theShell, const bool theIsClosed);
-
-    //! Set the IsClosed flag inside a batched mutation scope.
-    Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::ShellDef>& theMut,
-                                     const bool                                  theIsClosed);
+    //! Rewire a shell reference to a different shell def (rebinds ShellToSolid if parent is Solid).
+    Standard_EXPORT void SetRefChildShellId(const BRepGraph_ShellRefId theShellRef,
+                                            const BRepGraph_ShellId    theShell);
+    Standard_EXPORT void SetRefChildShellId(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
+                                            const BRepGraph_ShellId                     theShell);
 
   private:
     friend class EditorView;
@@ -905,46 +754,48 @@ public:
     //! @return typed solid definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_SolidId Add();
 
-    //! Link a shell to a solid.
+    //! Append a shell to a solid.
     //! Appends ShellRef and stores its ShellRefId in solid ShellRefIds.
     //! @param[in] theSolidEntity typed solid definition identifier
     //! @param[in] theShellEntity typed shell definition identifier
     //! @param[in] theOri         orientation of the shell in the solid
     //! @return typed shell reference identifier, or invalid if inputs are not active
-    Standard_EXPORT BRepGraph_ShellRefId AddShell(const BRepGraph_SolidId  theSolidEntity,
-                                                  const BRepGraph_ShellId  theShellEntity,
-                                                  const TopAbs_Orientation theOri = TopAbs_FORWARD);
+    Standard_EXPORT BRepGraph_ShellRefId
+      Append(const BRepGraph_SolidId               theSolidEntity,
+             const BRepGraph_ShellId               theShellEntity,
+             const BRepGraphInc::ParityOrientation theOri = TopAbs_FORWARD);
 
-    //! Link an auxiliary non-shell child to a solid.
-    //! Supported child kinds are Edge and Vertex.
+    //! Batch-append multiple shells to a solid.
+    //! Two-pass: validates all inputs first, then links all.
     //! @param[in] theSolidEntity typed solid definition identifier
-    //! @param[in] theChildEntity typed child definition identifier
-    //! @param[in] theOri         orientation of the child in the solid
-    //! @return typed child reference identifier, or invalid if inputs are not active
-    [[nodiscard]] Standard_EXPORT BRepGraph_ChildRefId
-      AddChild(const BRepGraph_SolidId  theSolidEntity,
-               const BRepGraph_NodeId   theChildEntity,
-               const TopAbs_Orientation theOri = TopAbs_FORWARD);
+    //! @param[in] theShellIds    shell definition identifiers to append
+    //! @param[in] theOrientations optional parity orientations (empty = all FORWARD)
+    //! @return array of created shell reference ids, empty on validation failure
+    [[nodiscard]] Standard_EXPORT NCollection_Array1<BRepGraph_ShellRefId> Append(
+      const BRepGraph_SolidId                                    theSolidEntity,
+      const NCollection_Array1<BRepGraph_ShellId>&               theShellIds,
+      const NCollection_Array1<BRepGraphInc::ParityOrientation>& theOrientations =
+        NCollection_Array1<BRepGraphInc::ParityOrientation>());
 
     //! Detach one exact shell ref from a solid definition.
     //! Use BRepGraph_RefsShellOfSolid::CurrentId() when removing from a solid
     //! iterator. The method removes the exact ShellRef entry, erases it from the
-    //! solid's ordered ref sequence, rebuilds reverse indices, and prunes the
+    //! solid's ordered ref sequence, updates relation tables, and prunes the
     //! Shell subtree when it has no other active usages.
-    //! @param[in] theSolidDefId solid definition identifier
+    //! @param[in] theChildSolidId solid definition identifier
     //! @param[in] theShellRefId exact solid-owned shell reference identifier
     //! @return true if the active solid-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveShell(const BRepGraph_SolidId    theSolidDefId,
+    [[nodiscard]] Standard_EXPORT bool RemoveShell(const BRepGraph_SolidId    theChildSolidId,
                                                    const BRepGraph_ShellRefId theShellRefId);
 
-    //! Detach one exact child ref from a solid auxiliary-child sequence.
-    //! Use BRepGraph_RefsChildOfSolid::CurrentId() when removing from a solid
-    //! aux-child iterator.
-    //! @param[in] theSolidDefId solid definition identifier
-    //! @param[in] theChildRefId exact solid-owned child reference identifier
-    //! @return true if the active solid-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveChild(const BRepGraph_SolidId    theSolidDefId,
-                                                   const BRepGraph_ChildRefId theChildRefId);
+    //! Batch-remove multiple shell refs from a solid definition.
+    //! All-or-nothing: validates all inputs first, then removes all.
+    //! @param[in] theSolidId    solid definition identifier
+    //! @param[in] theShellRefs  shell reference identifiers to remove
+    //! @return true if all refs were successfully removed
+    [[nodiscard]] Standard_EXPORT bool RemoveShells(
+      const BRepGraph_SolidId                         theSolidId,
+      const NCollection_Array1<BRepGraph_ShellRefId>& theShellRefs);
 
     //! Return scoped mutable solid definition guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::SolidDef> Mut(
@@ -954,32 +805,20 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::SolidRef> MutRef(
       const BRepGraph_SolidRefId theSolidRef);
 
-    //! Set the local location of a solid reference and fire immediate notification.
-    //! @param[in] theSolidRef typed solid reference identifier
-    //! @param[in] theLoc      new local location
-    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_SolidRefId theSolidRef,
-                                             const TopLoc_Location&     theLoc);
-
-    //! Set the local location of a solid reference inside a batched mutation scope.
-    //! @param[in] theMut active mutable solid reference guard
-    //! @param[in] theLoc new local location
-    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
-                                             const TopLoc_Location&                      theLoc);
-
     //! Set the orientation of a solid reference.
-    Standard_EXPORT void SetRefOrientation(const BRepGraph_SolidRefId theSolidRef,
-                                           const TopAbs_Orientation   theOrientation);
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_SolidRefId            theSolidRef,
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Set the orientation inside a batched mutation scope.
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
-                                           const TopAbs_Orientation theOrientation);
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Rewire a solid reference to a different solid def (rebinds SolidToCompSolid if parent is
     //! CompSolid).
-    Standard_EXPORT void SetRefSolidDefId(const BRepGraph_SolidRefId theSolidRef,
-                                          const BRepGraph_SolidId    theSolid);
-    Standard_EXPORT void SetRefSolidDefId(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
-                                          const BRepGraph_SolidId                     theSolid);
+    Standard_EXPORT void SetRefChildSolidId(const BRepGraph_SolidRefId theSolidRef,
+                                            const BRepGraph_SolidId    theSolid);
+    Standard_EXPORT void SetRefChildSolidId(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
+                                            const BRepGraph_SolidId                     theSolid);
 
   private:
     friend class EditorView;
@@ -996,11 +835,11 @@ public:
   class CompoundOps
   {
   public:
-    //! Add a compound definition with child definitions.
-    //! @param[in] theChildEntities child definition NodeIds
+    //! Add a compound entity with ordered child usages.
+    //! @param[in] theChildEntities child node identifiers
     //! @return typed compound definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_CompoundId
-      Add(const NCollection_DynamicArray<BRepGraph_NodeId>& theChildEntities);
+      Add(const NCollection_Array1<BRepGraph_NodeId>& theChildEntities);
 
     //! Append a single child to an existing compound definition.
     //! @param[in] theCompoundEntity typed compound definition identifier
@@ -1008,14 +847,26 @@ public:
     //! @param[in] theOri            orientation of the child in the compound
     //! @return typed child reference identifier, or invalid if inputs are not active
     [[nodiscard]] Standard_EXPORT BRepGraph_ChildRefId
-      AddChild(const BRepGraph_CompoundId theCompoundEntity,
-               const BRepGraph_NodeId     theChildEntity,
-               const TopAbs_Orientation   theOri = TopAbs_FORWARD);
+      Append(const BRepGraph_CompoundId            theCompoundEntity,
+             const BRepGraph_NodeId                theChildEntity,
+             const BRepGraphInc::ParityOrientation theOri = TopAbs_FORWARD);
+
+    //! Batch-append multiple children to an existing compound definition.
+    //! Two-pass: validates all inputs first, then links all.
+    //! @param[in] theCompoundEntity typed compound definition identifier
+    //! @param[in] theChildIds       child node identifiers to append
+    //! @param[in] theOrientations   optional parity orientations (empty = all FORWARD)
+    //! @return array of created child reference ids, empty on validation failure
+    [[nodiscard]] Standard_EXPORT NCollection_Array1<BRepGraph_ChildRefId> Append(
+      const BRepGraph_CompoundId                                 theCompoundEntity,
+      const NCollection_Array1<BRepGraph_NodeId>&                theChildIds,
+      const NCollection_Array1<BRepGraphInc::ParityOrientation>& theOrientations =
+        NCollection_Array1<BRepGraphInc::ParityOrientation>());
 
     //! Detach one exact child ref from a compound definition.
     //! Use BRepGraph_RefsChildOfParent::CurrentId() when removing from a compound
     //! iterator. The method removes the exact ChildRef entry, erases it from the
-    //! compound's ordered ref sequence, rebuilds reverse indices, and prunes the
+    //! compound's ordered ref sequence, updates relation tables, and prunes the
     //! child subtree when it has no other active usages.
     //! @param[in] theCompoundDefId compound definition identifier
     //! @param[in] theChildRefId    exact compound-owned child reference identifier
@@ -1023,9 +874,25 @@ public:
     [[nodiscard]] Standard_EXPORT bool RemoveChild(const BRepGraph_CompoundId theCompoundDefId,
                                                    const BRepGraph_ChildRefId theChildRefId);
 
+    //! Batch-remove multiple child refs from a compound definition.
+    //! All-or-nothing: validates all inputs first, then removes all.
+    //! @param[in] theCompoundId  compound definition identifier
+    //! @param[in] theChildRefs   child reference identifiers to remove
+    //! @return true if all refs were successfully removed
+    [[nodiscard]] Standard_EXPORT bool RemoveChildren(
+      const BRepGraph_CompoundId                      theCompoundId,
+      const NCollection_Array1<BRepGraph_ChildRefId>& theChildRefs);
+
     //! Return scoped mutable compound definition guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CompoundDef> Mut(
       const BRepGraph_CompoundId theCompound);
+
+    //! Replace the child node of an existing child reference in a compound.
+    //! Delegates to Gen().SetChildRefChildNodeId().
+    //! @param[in] theChildRef typed child reference identifier
+    //! @param[in] theNewChild new child node identifier
+    Standard_EXPORT void ReplaceChild(const BRepGraph_ChildRefId theChildRef,
+                                      const BRepGraph_NodeId     theNewChild);
 
   private:
     friend class EditorView;
@@ -1042,11 +909,11 @@ public:
   class CompSolidOps
   {
   public:
-    //! Add a compsolid definition with child solid definitions.
-    //! @param[in] theSolidEntities typed child solid definition identifiers
+    //! Add a compsolid entity with ordered solid usages.
+    //! @param[in] theSolidEntities typed child solid identifiers
     //! @return typed compsolid definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_CompSolidId
-      Add(const NCollection_DynamicArray<BRepGraph_SolidId>& theSolidEntities);
+      Add(const NCollection_Array1<BRepGraph_SolidId>& theSolidEntities);
 
     //! Append a single solid to an existing compsolid definition.
     //! @param[in] theCompSolidEntity typed compsolid definition identifier
@@ -1054,24 +921,52 @@ public:
     //! @param[in] theOri             orientation of the solid in the compsolid
     //! @return typed solid reference identifier, or invalid if inputs are not active
     [[nodiscard]] Standard_EXPORT BRepGraph_SolidRefId
-      AddSolid(const BRepGraph_CompSolidId theCompSolidEntity,
-               const BRepGraph_SolidId     theSolidEntity,
-               const TopAbs_Orientation    theOri = TopAbs_FORWARD);
+      Append(const BRepGraph_CompSolidId           theCompSolidEntity,
+             const BRepGraph_SolidId               theSolidEntity,
+             const BRepGraphInc::ParityOrientation theOri = TopAbs_FORWARD);
+
+    //! Batch-append multiple solids to an existing compsolid definition.
+    //! Two-pass: validates all inputs first, then links all.
+    //! @param[in] theCompSolidEntity typed compsolid definition identifier
+    //! @param[in] theSolidIds        solid definition identifiers to append
+    //! @param[in] theOrientations    optional parity orientations (empty = all FORWARD)
+    //! @return array of created solid reference ids, empty on validation failure
+    [[nodiscard]] Standard_EXPORT NCollection_Array1<BRepGraph_SolidRefId> Append(
+      const BRepGraph_CompSolidId                                theCompSolidEntity,
+      const NCollection_Array1<BRepGraph_SolidId>&               theSolidIds,
+      const NCollection_Array1<BRepGraphInc::ParityOrientation>& theOrientations =
+        NCollection_Array1<BRepGraphInc::ParityOrientation>());
 
     //! Detach one exact solid ref from a compsolid definition.
     //! Use BRepGraph_RefsSolidOfCompSolid::CurrentId() when removing from a
     //! compsolid iterator. The method removes the exact SolidRef entry, erases it
-    //! from the compsolid's ordered ref sequence, rebuilds reverse indices, and
+    //! from the compsolid's ordered ref sequence, updates relation tables, and
     //! prunes the Solid subtree when it has no other active usages.
-    //! @param[in] theCompSolidDefId compsolid definition identifier
+    //! @param[in] theCompChildSolidId compsolid definition identifier
     //! @param[in] theSolidRefId     exact compsolid-owned solid reference identifier
     //! @return true if the active compsolid-owned usage was removed
-    [[nodiscard]] Standard_EXPORT bool RemoveSolid(const BRepGraph_CompSolidId theCompSolidDefId,
+    [[nodiscard]] Standard_EXPORT bool RemoveSolid(const BRepGraph_CompSolidId theCompChildSolidId,
                                                    const BRepGraph_SolidRefId  theSolidRefId);
+
+    //! Batch-remove multiple solid refs from a compsolid definition.
+    //! All-or-nothing: validates all inputs first, then removes all.
+    //! @param[in] theCompSolidId compsolid definition identifier
+    //! @param[in] theSolidRefs   solid reference identifiers to remove
+    //! @return true if all refs were successfully removed
+    [[nodiscard]] Standard_EXPORT bool RemoveSolids(
+      const BRepGraph_CompSolidId                     theCompSolidId,
+      const NCollection_Array1<BRepGraph_SolidRefId>& theSolidRefs);
 
     //! Return scoped mutable comp-solid definition guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CompSolidDef> Mut(
       const BRepGraph_CompSolidId theCompSolid);
+
+    //! Replace the solid of an existing solid reference in a compsolid.
+    //! Delegates to Solids().SetRefChildSolidId().
+    //! @param[in] theSolidRef typed solid reference identifier
+    //! @param[in] theNewSolid new solid definition identifier
+    Standard_EXPORT void ReplaceSolid(const BRepGraph_SolidRefId theSolidRef,
+                                      const BRepGraph_SolidId    theNewSolid);
 
   private:
     friend class EditorView;
@@ -1085,24 +980,31 @@ public:
   };
 
   //! @brief Product and assembly low-level reconstruction primitives.
-  //! Wire two existing entities together; for shape ingestion use BRepGraph_Builder::Add().
+  //! Wire two existing entities together; for shape ingestion use BRepGraph::ShapesView::Add().
   class ProductOps
   {
   public:
     //! Create a Product wrapping an existing topology root via an Occurrence.
+    //! The product is NOT added to document roots; call AppendDocumentRoot() explicitly
+    //! when this Product is a document root.
     //! @param[in] theShapeRoot root topology NodeId for the part
     //! @param[in] thePlacement local placement stored on the root OccurrenceRef
     //! @return typed product definition identifier, or invalid if the root is
     //!         not an active topology definition node
     [[nodiscard]] Standard_EXPORT BRepGraph_ProductId
-      LinkProductToTopology(const BRepGraph_NodeId theShapeRoot,
-                            const TopLoc_Location& thePlacement = TopLoc_Location());
+      Add(const BRepGraph_NodeId theShapeRoot,
+          const TopLoc_Location& thePlacement = TopLoc_Location());
 
-    //! Create a Product with no direct shape root; can later own child occurrences.
+    //! Create an empty Product with no direct shape root; can later own child occurrences.
+    //! The product is NOT added to document roots; call AppendDocumentRoot() explicitly
+    //! when this Product is a document root.
     //! @return typed product definition identifier
-    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId CreateEmptyProduct();
+    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId Add();
 
-    //! Link two existing Products via a fresh Occurrence.
+    //! Add an active Product to document roots if it is not already listed.
+    Standard_EXPORT void AppendDocumentRoot(const BRepGraph_ProductId theProductId);
+
+    //! Append two existing Products via a fresh Occurrence.
     //! @param[in] theParentProduct       typed parent product identifier
     //! @param[in] theReferencedProduct   typed child product identifier being instantiated
     //! @param[in] thePlacement           local placement relative to parent
@@ -1110,16 +1012,27 @@ public:
     //! @param[out] theOutOccurrenceRefId optional out: typed ref id of the inserted OccurrenceRef
     //! @return typed occurrence definition identifier, or invalid if the chain is not active
     [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
-      LinkProducts(const BRepGraph_ProductId    theParentProduct,
-                   const BRepGraph_ProductId    theReferencedProduct,
-                   const TopLoc_Location&       thePlacement,
-                   const BRepGraph_OccurrenceId theParentOccurrence   = BRepGraph_OccurrenceId(),
-                   BRepGraph_OccurrenceRefId*   theOutOccurrenceRefId = nullptr);
+      Append(const BRepGraph_ProductId    theParentProduct,
+             const BRepGraph_ProductId    theReferencedProduct,
+             const TopLoc_Location&       thePlacement,
+             const BRepGraph_OccurrenceId theParentOccurrence   = BRepGraph_OccurrenceId(),
+             BRepGraph_OccurrenceRefId*   theOutOccurrenceRefId = nullptr);
+
+    //! Batch-append multiple child products to a parent product via fresh Occurrences.
+    //! Two-pass: validates all inputs first, then links all.
+    //! @param[in] theParentProduct  typed parent product identifier
+    //! @param[in] theChildProducts  child product identifiers to instantiate
+    //! @param[in] thePlacements     local placements per child (must match child count)
+    //! @return array of created occurrence reference ids, empty on validation failure
+    [[nodiscard]] Standard_EXPORT NCollection_Array1<BRepGraph_OccurrenceRefId> Append(
+      const BRepGraph_ProductId                      theParentProduct,
+      const NCollection_Array1<BRepGraph_ProductId>& theChildProducts,
+      const NCollection_Array1<TopLoc_Location>&     thePlacements);
 
     //! Detach one exact occurrence ref from a product definition.
     //! Use BRepGraph_RefsOccurrenceOfProduct::CurrentId() when removing from a
     //! product iterator. The method removes the exact OccurrenceRef entry, erases
-    //! it from the product's ordered ref sequence, rebuilds reverse indices, and
+    //! it from the product's ordered ref sequence, updates relation tables, and
     //! prunes the occurrence subtree when it has no other active usages.
     //! @param[in] theProductDefId    product definition identifier
     //! @param[in] theOccurrenceRefId exact product-owned occurrence reference identifier
@@ -1127,6 +1040,15 @@ public:
     [[nodiscard]] Standard_EXPORT bool RemoveOccurrence(
       const BRepGraph_ProductId       theProductDefId,
       const BRepGraph_OccurrenceRefId theOccurrenceRefId);
+
+    //! Batch-remove multiple occurrence refs from a product definition.
+    //! All-or-nothing: validates all inputs first, then removes all.
+    //! @param[in] theProductId     product definition identifier
+    //! @param[in] theOccurrenceRefs occurrence reference identifiers to remove
+    //! @return true if all refs were successfully removed
+    [[nodiscard]] Standard_EXPORT bool RemoveOccurrences(
+      const BRepGraph_ProductId                            theProductId,
+      const NCollection_Array1<BRepGraph_OccurrenceRefId>& theOccurrenceRefs);
 
     //! Detach the scalar shape-root ownership from a product definition.
     //! If no other active product owns the same topology root afterward, the root
@@ -1178,19 +1100,21 @@ public:
       const TopLoc_Location&                           theLoc);
 
     //! Set the child node referenced by an occurrence definition.
-    //! The child kind must be a topology root or a Product - invalid kinds are
-    //! accepted but the resulting graph will fail Validate.
-    Standard_EXPORT void SetChildDefId(const BRepGraph_OccurrenceId theOccurrence,
-                                       const BRepGraph_NodeId       theChildDefId);
+    //! Invalid or removed occurrence ids are ignored. The child must be an
+    //! active topology node or an active Product; invalid, removed, and
+    //! Occurrence child ids are ignored.
+    Standard_EXPORT void SetChildNodeId(const BRepGraph_OccurrenceId theOccurrence,
+                                        const BRepGraph_NodeId       theChildNodeId);
 
-    //! Set the child node id inside a batched mutation scope.
-    Standard_EXPORT void SetChildDefId(BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef>& theMut,
-                                       const BRepGraph_NodeId theChildDefId);
+    //! Set the child node id inside a batched mutation scope. Invalid, removed,
+    //! and Occurrence child ids are ignored.
+    Standard_EXPORT void SetChildNodeId(BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef>& theMut,
+                                        const BRepGraph_NodeId theChildNodeId);
 
     //! Rewire an occurrence reference to a different occurrence def (rebinds ProductToOccurrences).
-    Standard_EXPORT void SetRefOccurrenceDefId(const BRepGraph_OccurrenceRefId theOccurrenceRef,
-                                               const BRepGraph_OccurrenceId    theOccurrence);
-    Standard_EXPORT void SetRefOccurrenceDefId(
+    Standard_EXPORT void SetRefChildOccurrenceId(const BRepGraph_OccurrenceRefId theOccurrenceRef,
+                                                 const BRepGraph_OccurrenceId    theOccurrence);
+    Standard_EXPORT void SetRefChildOccurrenceId(
       BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef>& theMut,
       const BRepGraph_OccurrenceId                     theOccurrence);
 
@@ -1213,15 +1137,19 @@ public:
     //! @param[in] theNode node to remove
     Standard_EXPORT void RemoveNode(const BRepGraph_NodeId theNode);
 
-    //! Mark a node as removed with a known replacement (sewing/deduplicate).
+    //! Replace a node by another active node and mark the old node as removed.
     //! For Edge nodes: all CoEdges referencing the removed edge are reparented to
-    //! the replacement edge (EdgeIdx updated, reverse index rebound). This prevents
+    //! the replacement edge (ChildEdgeId updated, relation entries rebound). This prevents
     //! orphaned CoEdges that would disappear from CoEdgesOfEdge() queries.
-    //! Layers are notified with both old and replacement NodeIds for data migration.
+    //! If the replacement is active, layers receive OnNodeReplaced(theNode,
+    //! theReplacement) for structural data migration. If the replacement is invalid
+    //! or inactive, the operation falls back to OnNodeRemoved(theNode), matching pure
+    //! deletion. Semantic history records are not inferred here; algorithms should
+    //! record operation-specific history.
     //! @param[in] theNode        node to remove
     //! @param[in] theReplacement node that replaces theNode
-    Standard_EXPORT void RemoveNode(const BRepGraph_NodeId theNode,
-                                    const BRepGraph_NodeId theReplacement);
+    Standard_EXPORT void ReplaceNode(const BRepGraph_NodeId theNode,
+                                     const BRepGraph_NodeId theReplacement);
 
     //! Mark a node and all its descendants as removed (cascading soft deletion).
     //! @param[in] theNode root node to remove
@@ -1250,13 +1178,6 @@ public:
                                    const BRepGraph_RefId  theRef,
                                    const bool             theToPruneOrphanedChild);
 
-    //! Mark a representation entry as removed (soft deletion).
-    //! Invalid or already-removed ids are ignored.
-    //! Owning topology entities are marked modified so generation-based caches
-    //! and read helpers observe the representation as absent.
-    //! @param[in] theRep representation to remove
-    Standard_EXPORT void RemoveRep(const BRepGraph_RepId theRep);
-
     //! Return scoped mutable child reference guard. ChildRef is generic (the
     //! child node can be of any kind), so its Mut accessor lives on the
     //! cross-kind Gen() rather than on a per-kind Ops.
@@ -1270,18 +1191,20 @@ public:
                                                   const TopLoc_Location&     theLoc);
 
     //! Set the orientation of a child reference.
-    Standard_EXPORT void SetChildRefOrientation(const BRepGraph_ChildRefId theChildRef,
-                                                const TopAbs_Orientation   theOrientation);
+    Standard_EXPORT void SetChildRefOrientation(
+      const BRepGraph_ChildRefId            theChildRef,
+      const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Set the orientation inside a batched mutation scope.
-    Standard_EXPORT void SetChildRefOrientation(BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
-                                                const TopAbs_Orientation theOrientation);
+    Standard_EXPORT void SetChildRefOrientation(
+      BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
+      const BRepGraphInc::ParityOrientation       theOrientation);
 
     //! Rewire a child reference to a different child def (rebinds CompoundsOf<Kind>).
-    Standard_EXPORT void SetChildRefChildDefId(const BRepGraph_ChildRefId theChildRef,
-                                               const BRepGraph_NodeId     theChild);
-    Standard_EXPORT void SetChildRefChildDefId(BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
-                                               const BRepGraph_NodeId theChild);
+    Standard_EXPORT void SetChildRefChildNodeId(const BRepGraph_ChildRefId theChildRef,
+                                                const BRepGraph_NodeId     theChild);
+    Standard_EXPORT void SetChildRefChildNodeId(BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
+                                                const BRepGraph_NodeId theChild);
 
     //! Set the local location of a child reference inside a batched mutation scope.
     //! @param[in] theMut active mutable child reference guard
@@ -1299,10 +1222,22 @@ public:
                            ModifierT&&                    theModifier,
                            const TCollection_AsciiString& theOpLabel)
     {
-      NCollection_DynamicArray<BRepGraph_NodeId> aReplacements =
-        std::forward<ModifierT>(theModifier)(*myGraph, theTarget);
+      auto aProducedReplacements = std::forward<ModifierT>(theModifier)(*myGraph, theTarget);
+      NCollection_LinearVector<BRepGraph_NodeId> aReplacements(aProducedReplacements.Size());
+      for (const BRepGraph_NodeId& aNode : aProducedReplacements)
+      {
+        aReplacements.Append(aNode);
+      }
       applyModificationImpl(theTarget, std::move(aReplacements), theOpLabel);
     }
+
+    //! Clean up forward references to removed nodes in relation tables and
+    //! references. After one or more RemoveNode calls, other entities may
+    //! still hold stale child references pointing to removed nodes. This method
+    //! marks those stale references as removed, detaches them from parent
+    //! arrays, and updates relation entries for consistency.
+    //! @post ValidateRelations() passes.
+    Standard_EXPORT void CleanupRemovedReferences();
 
   private:
     friend class EditorView;
@@ -1314,7 +1249,7 @@ public:
 
     Standard_EXPORT void applyModificationImpl(
       const BRepGraph_NodeId                       theTarget,
-      NCollection_DynamicArray<BRepGraph_NodeId>&& theReplacements,
+      NCollection_LinearVector<BRepGraph_NodeId>&& theReplacements,
       const TCollection_AsciiString&               theOpLabel);
 
     BRepGraph* myGraph;
@@ -1357,8 +1292,11 @@ public:
   //! Return generic node, reference, and representation removal operations.
   [[nodiscard]] GenOps& Gen() { return myGenOps; }
 
-  //! Return representation (surface, curve, triangulation, polygon) mutation operations.
-  [[nodiscard]] RepOps& Reps() { return myRepOps; }
+  //! Return runtime supplement attachment operations.
+  [[nodiscard]] BRepGraph_SupplementEditor Supplement()
+  {
+    return BRepGraph_SupplementEditor(*myGraph);
+  }
 
   //! Begin deferred invalidation mode.
   //! While active, markModified() only increments OwnGen + SubtreeGen and
@@ -1393,7 +1331,7 @@ public:
   };
 
   //! Finalize a batch of mutations.
-  //! Validates reverse-index consistency and asserts active entity counts
+  //! Validates relation consistency and asserts active entity counts
   //! match actual entity state.
   //! Call this after manual batch mutation loops, or rely on
   //! BRepGraph_DeferredScope to call it automatically at scope exit.
@@ -1403,7 +1341,7 @@ public:
   //! @param[out] theIssues optional destination for detailed issues
   //! @return true if no issues were found
   [[nodiscard]] Standard_EXPORT bool ValidateMutationBoundary(
-    NCollection_DynamicArray<BoundaryIssue>* const theIssues = nullptr) const;
+    NCollection_LinearVector<BoundaryIssue>* const theIssues = nullptr) const;
 
 private:
   friend class BRepGraph;
@@ -1422,9 +1360,49 @@ private:
         myCompSolidOps(theGraph),
         myProductOps(theGraph),
         myOccurrenceOps(theGraph),
-        myGenOps(theGraph),
-        myRepOps(theGraph)
+        myGenOps(theGraph)
   {
+  }
+
+  [[nodiscard]] Standard_EXPORT bool isOwned(const BRepGraph_ItemId theItem) const;
+
+  [[nodiscard]] bool isOwned(const BRepGraph_NodeId theNode) const
+  {
+    return isOwned(BRepGraph_ItemId(theNode));
+  }
+
+  [[nodiscard]] bool isOwned(const BRepGraph_RefId theRef) const
+  {
+    return isOwned(BRepGraph_ItemId(theRef));
+  }
+
+  Standard_EXPORT void requireUnlocked(const BRepGraph_ItemId theItem,
+                                       const char*            theOperation) const;
+
+  void requireUnlocked(const BRepGraph_NodeId theNode, const char* theOperation) const
+  {
+    requireUnlocked(BRepGraph_ItemId(theNode), theOperation);
+  }
+
+  void requireUnlocked(const BRepGraph_RefId theRef, const char* theOperation) const
+  {
+    requireUnlocked(BRepGraph_ItemId(theRef), theOperation);
+  }
+
+  //! Verify no active MutGuard holds the given item.
+  //! Used by structural operations (Remove*, Replace*, Add*) to prevent
+  //! topology changes while a guard is active on the target item.
+  Standard_EXPORT void requireNoActiveGuard(const BRepGraph_ItemId theItem,
+                                            const char*            theOperation) const;
+
+  void requireNoActiveGuard(const BRepGraph_NodeId theNode, const char* theOperation) const
+  {
+    requireNoActiveGuard(BRepGraph_ItemId(theNode), theOperation);
+  }
+
+  void requireNoActiveGuard(const BRepGraph_RefId theRef, const char* theOperation) const
+  {
+    requireNoActiveGuard(BRepGraph_ItemId(theRef), theOperation);
   }
 
   BRepGraph*    myGraph;
@@ -1440,7 +1418,6 @@ private:
   ProductOps    myProductOps;
   OccurrenceOps myOccurrenceOps;
   GenOps        myGenOps;
-  RepOps        myRepOps;
 };
 
 #endif // _BRepGraph_EditorView_HeaderFile

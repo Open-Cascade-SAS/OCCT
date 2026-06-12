@@ -3,11 +3,13 @@ set(OCCT_BRepGraph_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_BRepGraph_FILES
   BRepGraph.cxx
   BRepGraph.hxx
-  BRepGraph_CacheKindIterator.hxx
-  BRepGraph_CacheView.cxx
-  BRepGraph_CacheView.hxx
-  BRepGraph_Builder.cxx
-  BRepGraph_Builder.hxx
+  BRepGraph_Cache.cxx
+  BRepGraph_Cache.hxx
+  BRepGraph_CacheDerivedState.cxx
+  BRepGraph_CacheDerivedState.hxx
+  BRepGraph_CacheIterator.hxx
+  BRepGraph_CacheRegistry.cxx
+  BRepGraph_CacheRegistry.hxx
   BRepGraph_EditorView.cxx
   BRepGraph_EditorView.hxx
   BRepGraph_EditorView_Mut.cxx
@@ -16,48 +18,55 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_ChildExplorer.cxx
   BRepGraph_ChildExplorer.hxx
   BRepGraph_Iterator.hxx
+  BRepGraph_ItemId.hxx
+  BRepGraph_ItemUID.hxx
   BRepGraph_ParentExplorer.cxx
   BRepGraph_ParentExplorer.hxx
   BRepGraph_Data.hxx
   BRepGraph_TopoView.cxx
   BRepGraph_TopoView.hxx
-  BRepGraph_History.cxx
-  BRepGraph_History.hxx
-  BRepGraph_HistoryRecord.hxx
+  BRepGraph_LayerHistory.cxx
+  BRepGraph_LayerHistory.hxx
   BRepGraph_Layer.cxx
   BRepGraph_Layer.hxx
+  BRepGraph_LayerParametric.cxx
+  BRepGraph_LayerParametric.hxx
+  BRepGraph_LayerDeferred.cxx
+  BRepGraph_LayerDeferred.hxx
   BRepGraph_LayerIterator.hxx
+  BRepGraph_LayerLock.cxx
+  BRepGraph_LayerLock.hxx
   BRepGraph_LayerRegistry.cxx
   BRepGraph_LayerRegistry.hxx
   BRepGraph_DeferredScope.hxx
-  BRepGraph_MeshCache.cxx
-  BRepGraph_MeshCache.hxx
+  BRepGraph_CacheMesh.cxx
+  BRepGraph_CacheMesh.hxx
   BRepGraph_MeshView.cxx
   BRepGraph_MeshView.hxx
   BRepGraph_MutGuard.hxx
   BRepGraph_NodeId.hxx
-  BRepGraph_LayerParam.cxx
-  BRepGraph_LayerParam.hxx
+  BRepGraph_LayerTopoSupplement.cxx
+  BRepGraph_LayerTopoSupplement.hxx
+  BRepGraph_ParallelPolicy.cxx
   BRepGraph_ParallelPolicy.hxx
   BRepGraph_RefId.hxx
   BRepGraph_RefUID.hxx
+  BRepGraph_RelatedIterator.cxx
   BRepGraph_RelatedIterator.hxx
   BRepGraph_ReverseIterator.hxx
   BRepGraph_RefsIterator.hxx
   BRepGraph_RefsView.cxx
   BRepGraph_RefsView.hxx
-  BRepGraph_LayerRegularity.cxx
-  BRepGraph_LayerRegularity.hxx
-  BRepGraph_RepId.hxx
   BRepGraph_ShapesView.cxx
   BRepGraph_ShapesView.hxx
+  BRepGraph_SupplementIterator.cxx
+  BRepGraph_SupplementIterator.hxx
+  BRepGraph_SupplementEditor.cxx
+  BRepGraph_SupplementEditor.hxx
   BRepGraph_Tool.cxx
   BRepGraph_Tool.hxx
-  BRepGraph_RefTransientCache.cxx
-  BRepGraph_RefTransientCache.hxx
-  BRepGraph_TransientCache.cxx
-  BRepGraph_TransientCache.hxx
-  BRepGraph_WireExplorer.hxx
+  BRepGraph_UsagePath.cxx
+  BRepGraph_UsagePath.hxx
   BRepGraph_UID.hxx
   BRepGraph_UIDsView.cxx
   BRepGraph_VersionStamp.cxx
@@ -69,6 +78,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Compact.cxx
   BRepGraph_Copy.hxx
   BRepGraph_Copy.cxx
+  BRepGraph_CopyRemap.hxx
+  BRepGraph_CopyRemap.cxx
   BRepGraph_Transform.hxx
   BRepGraph_Transform.cxx
   BRepGraph_Validate.hxx

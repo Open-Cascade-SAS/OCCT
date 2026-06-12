@@ -16,10 +16,8 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopoView.hxx>
-
 #include <NCollection_ForwardRange.hxx>
 
-#include <type_traits>
 #include <utility>
 
 //! @brief Type-safe, allocation-free iterator over BRepGraph definition nodes.
@@ -39,16 +37,6 @@
 //! @endcode
 namespace BRepGraph_IteratorDetail
 {
-//! SFINAE helper: detect whether NodeType has an IsRemoved member (BaseDef types do).
-template <typename T, typename = void>
-struct HasIsRemoved : std::false_type
-{
-};
-
-template <typename T>
-struct HasIsRemoved<T, std::void_t<decltype(std::declval<T>().IsRemoved)>> : std::true_type
-{
-};
 
 //! Compile-time traits mapping from definition type to typed NodeId,
 //! count accessor, and definition accessor.
@@ -60,7 +48,7 @@ struct NodeTraits<BRepGraphInc::SolidDef>
 {
   using TypedId = BRepGraph_SolidId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Solids().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Solids().Nb(); }
 
   static const BRepGraphInc::SolidDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -73,7 +61,7 @@ struct NodeTraits<BRepGraphInc::ShellDef>
 {
   using TypedId = BRepGraph_ShellId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Shells().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Shells().Nb(); }
 
   static const BRepGraphInc::ShellDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -86,7 +74,7 @@ struct NodeTraits<BRepGraphInc::FaceDef>
 {
   using TypedId = BRepGraph_FaceId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Faces().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Faces().Nb(); }
 
   static const BRepGraphInc::FaceDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -99,7 +87,7 @@ struct NodeTraits<BRepGraphInc::WireDef>
 {
   using TypedId = BRepGraph_WireId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Wires().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Wires().Nb(); }
 
   static const BRepGraphInc::WireDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -112,7 +100,7 @@ struct NodeTraits<BRepGraphInc::EdgeDef>
 {
   using TypedId = BRepGraph_EdgeId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Edges().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Edges().Nb(); }
 
   static const BRepGraphInc::EdgeDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -125,7 +113,7 @@ struct NodeTraits<BRepGraphInc::VertexDef>
 {
   using TypedId = BRepGraph_VertexId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Vertices().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Vertices().Nb(); }
 
   static const BRepGraphInc::VertexDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -138,7 +126,7 @@ struct NodeTraits<BRepGraphInc::ProductDef>
 {
   using TypedId = BRepGraph_ProductId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Products().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Products().Nb(); }
 
   static const BRepGraphInc::ProductDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -151,7 +139,7 @@ struct NodeTraits<BRepGraphInc::OccurrenceDef>
 {
   using TypedId = BRepGraph_OccurrenceId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Occurrences().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Occurrences().Nb(); }
 
   static const BRepGraphInc::OccurrenceDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -164,7 +152,7 @@ struct NodeTraits<BRepGraphInc::CoEdgeDef>
 {
   using TypedId = BRepGraph_CoEdgeId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().CoEdges().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().CoEdges().Nb(); }
 
   static const BRepGraphInc::CoEdgeDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -177,7 +165,7 @@ struct NodeTraits<BRepGraphInc::CompoundDef>
 {
   using TypedId = BRepGraph_CompoundId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Compounds().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().Compounds().Nb(); }
 
   static const BRepGraphInc::CompoundDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -190,7 +178,7 @@ struct NodeTraits<BRepGraphInc::CompSolidDef>
 {
   using TypedId = BRepGraph_CompSolidId;
 
-  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().CompSolids().Nb(); }
+  static uint32_t Count(const BRepGraph& theGraph) { return theGraph.Topo().CompSolids().Nb(); }
 
   static const BRepGraphInc::CompSolidDef& Get(const BRepGraph& theGraph, const TypedId theId)
   {
@@ -255,10 +243,12 @@ private:
   //! Advance past any nodes marked as removed.
   void skipRemoved()
   {
-    if constexpr (!TheFullTraverse && BRepGraph_IteratorDetail::HasIsRemoved<NodeType>::value)
+    if constexpr (!TheFullTraverse)
     {
-      while (myCurrent < myLength && Current().IsRemoved)
+      while (myCurrent < myLength && myCurrent.IsRemoved(myGraph))
+      {
         ++myCurrent;
+      }
     }
   }
 
@@ -312,7 +302,7 @@ public:
   {
   }
 
-  [[nodiscard]] bool More() const { return myIndex < myRoots.Length(); }
+  [[nodiscard]] bool More() const { return myIndex < myRoots.Size(); }
 
   void Next() { ++myIndex; }
 
@@ -326,8 +316,8 @@ public:
   NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
-  const NCollection_DynamicArray<BRepGraph_ProductId>& myRoots;
-  int                                                  myIndex = 0;
+  const NCollection_LinearVector<BRepGraph_ProductId>& myRoots;
+  size_t                                               myIndex = 0;
 };
 
 #endif // _BRepGraph_Iterator_HeaderFile

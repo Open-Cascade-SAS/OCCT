@@ -15,7 +15,7 @@
 // remap without a full edge rebuild.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -33,8 +33,8 @@ BRepGraph makeBoxGraph()
 {
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
-    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   return aGraph;
 }
 
@@ -43,7 +43,7 @@ BRepGraph makeBoxGraph()
 TEST(BRepGraph_ReplaceVertexTest, StartVertex_SwappedToFreshVertex_AuditClean)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
   const BRepGraph_EdgeId      anEdgeId(0);
@@ -64,9 +64,8 @@ TEST(BRepGraph_ReplaceVertexTest, StartVertex_SwappedToFreshVertex_AuditClean)
   EXPECT_EQ(aGraph.Topo().Edges().Definition(anEdgeId).StartVertexRefId, aNewRefId);
 
   // Old ref is retired, new ref points at the replacement vertex.
-  EXPECT_TRUE(aGraph.Refs().Vertices().Entry(anOldStartRefId).IsRemoved);
-  EXPECT_EQ(aGraph.Refs().Vertices().Entry(aNewRefId).VertexDefId, aNewVertex);
-  EXPECT_EQ(aGraph.Refs().Vertices().Entry(aNewRefId).ParentId, BRepGraph_NodeId(anEdgeId));
+  EXPECT_TRUE(anOldStartRefId.IsRemoved(aGraph));
+  EXPECT_EQ(aGraph.Refs().Vertices().Entry(aNewRefId).ChildVertexId, aNewVertex);
 
   // Lightweight only; a single-edge replacement breaks wire connectivity.
   EXPECT_TRUE(
@@ -76,7 +75,7 @@ TEST(BRepGraph_ReplaceVertexTest, StartVertex_SwappedToFreshVertex_AuditClean)
 TEST(BRepGraph_ReplaceVertexTest, EndVertex_SwappedToFreshVertex_PreservesOrientation)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   const BRepGraph_EdgeId      anEdgeId(0);
   const BRepGraph_VertexRefId anOldEndRefId =
@@ -92,7 +91,7 @@ TEST(BRepGraph_ReplaceVertexTest, EndVertex_SwappedToFreshVertex_PreservesOrient
 
   EXPECT_EQ(aGraph.Refs().Vertices().Entry(aNewRefId).Orientation, aExpectedOri)
     << "ReplaceVertex must preserve orientation of the retired ref";
-  // Lightweight validate covers structural invariants (reverse index, active
+  // Lightweight validate covers structural invariants (relation tables, active
   // counts) but skips wire-connectivity. A single-edge vertex replacement
   // deliberately breaks wire connectivity at the shared corner; the full
   // Audit would reject it. Callers that want a connectivity-safe replace
@@ -104,25 +103,25 @@ TEST(BRepGraph_ReplaceVertexTest, EndVertex_SwappedToFreshVertex_PreservesOrient
 TEST(BRepGraph_ReplaceVertexTest, SameVertex_Idempotent)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   const BRepGraph_EdgeId      anEdgeId(0);
   const BRepGraph_VertexRefId anOldStartRefId =
     aGraph.Topo().Edges().Definition(anEdgeId).StartVertexRefId;
   const BRepGraph_VertexId aSameVertex =
-    aGraph.Refs().Vertices().Entry(anOldStartRefId).VertexDefId;
+    aGraph.Refs().Vertices().Entry(anOldStartRefId).ChildVertexId;
 
   const BRepGraph_VertexRefId aResult =
     aGraph.Editor().Edges().ReplaceVertex(anEdgeId, anOldStartRefId, aSameVertex);
   EXPECT_EQ(aResult, anOldStartRefId)
     << "Replacing with the same vertex must be a no-op returning the same ref";
-  EXPECT_FALSE(aGraph.Refs().Vertices().Entry(anOldStartRefId).IsRemoved);
+  EXPECT_FALSE(anOldStartRefId.IsRemoved(aGraph));
 }
 
 TEST(BRepGraph_ReplaceVertexTest, InactiveEdge_Rejected)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   const BRepGraph_EdgeId      anEdgeId(0);
   const BRepGraph_VertexRefId anOldRefId =
@@ -141,7 +140,7 @@ TEST(BRepGraph_ReplaceVertexTest, InactiveEdge_Rejected)
 TEST(BRepGraph_ReplaceVertexTest, WrongParent_Rejected)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 1);
 
   // Vertex ref from edge 1 passed to an API call targeting edge 0 must fail.
@@ -156,18 +155,18 @@ TEST(BRepGraph_ReplaceVertexTest, WrongParent_Rejected)
   const BRepGraph_VertexRefId aResult =
     aGraph.Editor().Edges().ReplaceVertex(anEdge0, aEdge1StartRefId, aNewVertex);
   EXPECT_FALSE(aResult.IsValid())
-    << "ReplaceVertex must refuse a ref whose ParentId is a different edge";
+    << "ReplaceVertex must refuse a ref that is not in the requested edge slots";
 }
 
-TEST(BRepGraph_ReplaceVertexTest, ReverseIndex_Rebuilt_VertexToEdge)
+TEST(BRepGraph_ReplaceVertexTest, Relations_Rebuilt_VertexToEdge)
 {
   BRepGraph aGraph = makeBoxGraph();
-  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_FALSE(aGraph.IsEmpty());
 
   const BRepGraph_EdgeId      anEdgeId(0);
   const BRepGraph_VertexRefId anOldRefId =
     aGraph.Topo().Edges().Definition(anEdgeId).StartVertexRefId;
-  const BRepGraph_VertexId aOldVertexId = aGraph.Refs().Vertices().Entry(anOldRefId).VertexDefId;
+  const BRepGraph_VertexId aOldVertexId = aGraph.Refs().Vertices().Entry(anOldRefId).ChildVertexId;
 
   const BRepGraph_VertexId aNewVertex =
     aGraph.Editor().Vertices().Add(gp_Pnt(1000.0, 0.0, 0.0), 1.0e-7);
@@ -175,7 +174,7 @@ TEST(BRepGraph_ReplaceVertexTest, ReverseIndex_Rebuilt_VertexToEdge)
   ASSERT_TRUE(aGraph.Editor().Edges().ReplaceVertex(anEdgeId, anOldRefId, aNewVertex).IsValid());
 
   // New vertex must now see anEdgeId in its vertex-to-edge reverse map.
-  const NCollection_DynamicArray<BRepGraph_EdgeId>& aNewEdges =
+  const NCollection_LinearVector<BRepGraph_EdgeId>& aNewEdges =
     aGraph.Topo().Vertices().Edges(aNewVertex);
   bool aFoundNew = false;
   for (const BRepGraph_EdgeId& anE : aNewEdges)
@@ -186,15 +185,24 @@ TEST(BRepGraph_ReplaceVertexTest, ReverseIndex_Rebuilt_VertexToEdge)
       break;
     }
   }
-  EXPECT_TRUE(aFoundNew) << "Vertex->Edge reverse index must include the replacement edge";
+  EXPECT_TRUE(aFoundNew) << "Vertex->Edge relation tables must include the replacement edge";
 
   // Old vertex may still be referenced by other edges of the box (shared
   // corners); but it should no longer see anEdgeId through this slot.
-  const NCollection_DynamicArray<BRepGraph_EdgeId>& aOldEdges =
+  const NCollection_LinearVector<BRepGraph_EdgeId>& aOldEdges =
     aGraph.Topo().Vertices().Edges(aOldVertexId);
-  (void)aOldEdges;
+  bool aFoundOld = false;
+  for (const BRepGraph_EdgeId& anE : aOldEdges)
+  {
+    if (anE == anEdgeId)
+    {
+      aFoundOld = true;
+      break;
+    }
+  }
+  EXPECT_FALSE(aFoundOld) << "Vertex->Edge relation tables must drop the replaced edge";
 
-  // Lightweight validate covers structural invariants (reverse index, active
+  // Lightweight validate covers structural invariants (relation tables, active
   // counts) but skips wire-connectivity. A single-edge vertex replacement
   // deliberately breaks wire connectivity at the shared corner; the full
   // Audit would reject it. Callers that want a connectivity-safe replace

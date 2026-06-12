@@ -18,11 +18,9 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Instance.hxx>
 #include <BRepGraphInc_Reference.hxx>
-
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_ForwardRange.hxx>
 #include <NCollection_LocalArray.hxx>
-
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
@@ -40,7 +38,8 @@
 //! kind is visited as a distinct entity (no hidden collapses):
 //!   Vertex -> Edge,  Edge -> CoEdge,  CoEdge -> Wire,  Wire -> Face,
 //!   Face -> Shell,  Shell -> Solid,  Solid -> CompSolid/Compound,
-//!   Product -> Occurrence,  Occurrence -> Product (parent assembly).
+//!   topology root -> Occurrence, Product child -> Occurrence,
+//!   Occurrence -> parent Product.
 //!
 //! ## Traversal modes
 //! - **Recursive**: walks the full ancestor chain to the graph roots.
@@ -72,9 +71,8 @@ public:
 
   //! Consolidated configuration for the explorer.
   //!
-  //! Prefer this struct over the historical constructor family. The overloads
-  //! remain supported but the `Config`-based constructor is the long-term
-  //! idiom: new options can be added as fields without another ctor overload.
+  //! The `Config`-based constructor is the preferred idiom: new options can be
+  //! added as fields without additional constructor overloads.
   //!
   //! @code
   //!   BRepGraph_ParentExplorer::Config aConfig;
@@ -100,15 +98,25 @@ public:
                                            const Config&          theConfig);
 
   //! Explore all parents of the starting node.
+  //! @param[in] theGraph graph to walk
+  //! @param[in] theNode  starting node whose ancestors are explored
   Standard_EXPORT BRepGraph_ParentExplorer(const BRepGraph&       theGraph,
                                            const BRepGraph_NodeId theNode);
 
   //! Explore parents of the starting node using the given traversal mode.
+  //! @param[in] theGraph graph to walk
+  //! @param[in] theNode  starting node whose ancestors are explored
+  //! @param[in] theMode  traversal strategy (recursive or direct parents)
   Standard_EXPORT BRepGraph_ParentExplorer(const BRepGraph&       theGraph,
                                            const BRepGraph_NodeId theNode,
                                            TraversalMode          theMode);
 
   //! Explore all parents while pruning branches at the avoid kind.
+  //! @param[in] theGraph        graph to walk
+  //! @param[in] theNode         starting node whose ancestors are explored
+  //! @param[in] theAvoidKind    node kind to avoid ascending through
+  //! @param[in] theEmitAvoidKind if true, emit matching avoid-kind ancestors once
+  //! @param[in] theMode         traversal strategy
   Standard_EXPORT BRepGraph_ParentExplorer(
     const BRepGraph&                             theGraph,
     const BRepGraph_NodeId                       theNode,
@@ -117,17 +125,30 @@ public:
     TraversalMode                                theMode = TraversalMode::Recursive);
 
   //! Explore only parents of the given kind.
+  //! @param[in] theGraph     graph to walk
+  //! @param[in] theNode      starting node whose ancestors are explored
+  //! @param[in] theTargetKind kind of nodes to emit
   Standard_EXPORT BRepGraph_ParentExplorer(const BRepGraph&       theGraph,
                                            const BRepGraph_NodeId theNode,
                                            BRepGraph_NodeId::Kind theTargetKind);
 
   //! Explore only parents of the given kind using the given traversal mode.
+  //! @param[in] theGraph     graph to walk
+  //! @param[in] theNode      starting node whose ancestors are explored
+  //! @param[in] theTargetKind kind of nodes to emit
+  //! @param[in] theMode      traversal strategy
   Standard_EXPORT BRepGraph_ParentExplorer(const BRepGraph&       theGraph,
                                            const BRepGraph_NodeId theNode,
                                            BRepGraph_NodeId::Kind theTargetKind,
                                            TraversalMode          theMode);
 
   //! Explore parents of the given kind while pruning branches at the avoid kind.
+  //! @param[in] theGraph        graph to walk
+  //! @param[in] theNode         starting node whose ancestors are explored
+  //! @param[in] theTargetKind   kind of nodes to emit
+  //! @param[in] theAvoidKind    node kind to avoid ascending through
+  //! @param[in] theEmitAvoidKind if true, emit matching avoid-kind ancestors once
+  //! @param[in] theMode         traversal strategy
   Standard_EXPORT BRepGraph_ParentExplorer(
     const BRepGraph&                             theGraph,
     const BRepGraph_NodeId                       theNode,
@@ -169,7 +190,7 @@ public:
   //! Some upward steps are structural and therefore have no parent-owned ref
   //! entry even though the parent itself is still emitted by the explorer.
   //! In those cases this method returns an invalid RefId, for example for
-  //! CoEdge->Edge, Product(part)->ShapeRoot and Occurrence->Product.
+  //! CoEdge->Edge and Occurrence->Product/topology-root.
   [[nodiscard]] Standard_EXPORT BRepGraph_RefId CurrentRef() const;
 
   //! Accumulated location at the starting node of the current branch.
@@ -196,6 +217,7 @@ private:
     BRepGraph_NodeId   Node;
     uint32_t           NextParentIdx = 0;
     int                StepToChild   = -1;
+    BRepGraph_RefId    RefToChild;
     TopLoc_Location    AccLocation;
     TopAbs_Orientation AccOrientation = TopAbs_FORWARD;
   };
@@ -209,19 +231,21 @@ private:
   Standard_EXPORT void applyTransition(const BRepGraph_NodeId theParent,
                                        const BRepGraph_NodeId theChild,
                                        const int              theStepToChild,
+                                       const BRepGraph_RefId  theRefToChild,
                                        TopLoc_Location&       theLocation,
                                        TopAbs_Orientation&    theOrientation) const;
 
   [[nodiscard]] Standard_EXPORT int branchRootFrame() const;
 
-  Standard_EXPORT bool findNthProductWrapper(const BRepGraph_NodeId theNode,
-                                             const uint32_t         theOrdinal,
-                                             BRepGraph_ProductId&   theProduct) const;
+  Standard_EXPORT bool findNthOccurrenceWrapper(
+    const BRepGraph_NodeId       theNode,
+    const uint32_t               theOrdinal,
+    BRepGraph_OccurrenceId&      theOccurrence,
+    BRepGraph_OccurrenceRefId&   theOccurrenceRef) const;
 
-  Standard_EXPORT bool findParentProduct(const BRepGraph_OccurrenceId theOccurrence,
-                                         BRepGraph_ProductId&         theProduct) const;
   Standard_EXPORT int  findOccurrenceStep(const BRepGraph_ProductId    theParentProduct,
-                                          const BRepGraph_OccurrenceId theOccurrence) const;
+                                          const BRepGraph_OccurrenceId theOccurrence,
+                                          BRepGraph_OccurrenceRefId*   theOccurrenceRef = nullptr) const;
   Standard_EXPORT int  findCompoundChildStep(const BRepGraph_CompoundId theParent,
                                              const BRepGraph_NodeId     theChild) const;
   Standard_EXPORT int  findCompSolidSolidStep(const BRepGraph_CompSolidId theParent,
@@ -235,7 +259,14 @@ private:
   Standard_EXPORT int  findWireCoEdgeStep(const BRepGraph_WireId   theParent,
                                           const BRepGraph_CoEdgeId theChild) const;
   Standard_EXPORT int  findEdgeVertexStep(const BRepGraph_EdgeId   theParent,
-                                          const BRepGraph_VertexId theChild) const;
+                                           const BRepGraph_VertexId theChild) const;
+
+  //! Try compound parents, then occurrence parents for the given node.
+  //! Returns true and fills theParent if a match is found at theRemainingIdx.
+  //! Returns false if no compound/occurrence parent exists at that index.
+  Standard_EXPORT bool nextCompoundOrOccurrenceParent(BRepGraph_NodeId theNode,
+                                                      uint32_t         theRemainingIdx,
+                                                      StackFrame&      theParent) const;
 
   static std::optional<BRepGraph_NodeId::Kind> normalizeAvoidKind(
     const BRepGraph_NodeId                       theNode,

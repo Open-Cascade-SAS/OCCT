@@ -14,17 +14,18 @@
 #ifndef _BRepGraph_VersionStamp_HeaderFile
 #define _BRepGraph_VersionStamp_HeaderFile
 
+#include <BRepGraph_ItemUID.hxx>
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_UID.hxx>
 #include <Standard_GUID.hxx>
 
 #include <cstdint>
 
-//! @brief Snapshot of an entity/ref identity and version at a point in time.
+//! @brief Snapshot of a graph item identity and its freshness generation.
 //!
-//! Combines a persistent UID (entity or reference entry) with
-//! OwnGen (own-data version counter) and graph Generation (BRepGraph::Clear() cycle).
-//! Computed on demand via BRepGraph::UIDs().StampOf().
+//! Combines a persistent node or reference UID with OwnGen (own-data mutation counter)
+//! and graph Generation (BRepGraph::Clear() cycle). It is intended for custom cache and
+//! layer freshness checks, not as a separate topology identity model.
 //!
 //! Usage pattern:
 //! @code
@@ -39,17 +40,16 @@ struct BRepGraph_VersionStamp
   //! Identity domain encoded in this stamp.
   enum class Domain : uint8_t
   {
-    None   = 0,
-    Entity = 1,
-    Ref    = 2
+    None      = 0,
+    Node      = 1,
+    Reference = 2
   };
 
-  BRepGraph_UID    myUID;    //!< Entity identity for entity-domain stamps.
-  BRepGraph_RefUID myRefUID; //!< Reference identity for ref-domain stamps.
-  uint32_t
-    myMutationGen; //!< OwnGen counter at snapshot time (maps to BaseDef::OwnGen / BaseRef::OwnGen).
-  uint32_t myGeneration; //!< Graph BRepGraph::Clear() generation at snapshot time.
-  Domain   myDomain;     //!< Active identity domain.
+  BRepGraph_UID    myNodeUID; //!< Definition-node identity for node-domain stamps.
+  BRepGraph_RefUID myRefUID;  //!< Reference-entry identity for reference-domain stamps.
+  uint32_t myMutationGen;     //!< OwnGen counter at snapshot time.
+  uint32_t myGeneration;      //!< Graph BRepGraph::Clear() generation at snapshot time.
+  Domain   myDomain;          //!< Active identity domain.
 
   //! Default constructor. Creates an invalid stamp (invalid UID, zero counters).
   BRepGraph_VersionStamp()
@@ -59,17 +59,17 @@ struct BRepGraph_VersionStamp
   {
   }
 
-  //! Construct an entity-domain stamp from components.
-  //! @param[in] theUID        persistent entity identity
+  //! Construct a node-domain stamp from components.
+  //! @param[in] theUID         persistent definition-node identity
   //! @param[in] theMutationGen OwnGen counter (own-data mutation counter)
   //! @param[in] theGeneration  graph BRepGraph::Clear() generation
   BRepGraph_VersionStamp(const BRepGraph_UID& theUID,
                          const uint32_t       theMutationGen,
                          const uint32_t       theGeneration)
-      : myUID(theUID),
+      : myNodeUID(theUID),
         myMutationGen(theMutationGen),
         myGeneration(theGeneration),
-        myDomain(Domain::Entity)
+        myDomain(Domain::Node)
   {
   }
 
@@ -83,69 +83,69 @@ struct BRepGraph_VersionStamp
       : myRefUID(theRefUID),
         myMutationGen(theMutationGen),
         myGeneration(theGeneration),
-        myDomain(Domain::Ref)
+        myDomain(Domain::Reference)
   {
   }
 
   //! Check if the stamp has a valid identity in its domain.
   [[nodiscard]] bool IsValid() const
   {
-    if (myDomain == Domain::Entity)
-      return myUID.IsValid();
-    if (myDomain == Domain::Ref)
+    if (myDomain == Domain::Node)
+    {
+      return myNodeUID.IsValid();
+    }
+    if (myDomain == Domain::Reference)
+    {
       return myRefUID.IsValid();
-    return myUID.IsValid() || myRefUID.IsValid();
+    }
+    return myNodeUID.IsValid() || myRefUID.IsValid();
   }
 
-  //! True when this is an entity-domain stamp.
-  [[nodiscard]] bool IsEntityStamp() const
+  //! True when this is a definition-node-domain stamp.
+  [[nodiscard]] bool IsNodeStamp() const
   {
-    if (myDomain == Domain::Entity)
-      return myUID.IsValid();
-    return myDomain == Domain::None && myUID.IsValid() && !myRefUID.IsValid();
+    if (myDomain == Domain::Node)
+    {
+      return myNodeUID.IsValid();
+    }
+    return myDomain == Domain::None && myNodeUID.IsValid() && !myRefUID.IsValid();
   }
 
   //! True when this is a reference-domain stamp.
   [[nodiscard]] bool IsRefStamp() const
   {
-    if (myDomain == Domain::Ref)
+    if (myDomain == Domain::Reference)
+    {
       return myRefUID.IsValid();
-    return myDomain == Domain::None && myRefUID.IsValid() && !myUID.IsValid();
+    }
+    return myDomain == Domain::None && myRefUID.IsValid() && !myNodeUID.IsValid();
+  }
+
+  //! Return the active generic item identity.
+  [[nodiscard]] BRepGraph_ItemUID ItemUID() const
+  {
+    if (myDomain == Domain::Node)
+    {
+      return BRepGraph_ItemUID::Node(myNodeUID.Kind, myNodeUID.Counter);
+    }
+    if (myDomain == Domain::Reference)
+    {
+      return BRepGraph_ItemUID::Reference(myRefUID.Kind, myRefUID.Counter);
+    }
+    return BRepGraph_ItemUID();
   }
 
   //! Full equality: same domain, UID, OwnGen, and Generation.
   //! Two invalid stamps are equal.
-  bool operator==(const BRepGraph_VersionStamp& theOther) const
-  {
-    if (!IsValid() && !theOther.IsValid())
-      return true;
-    if (myDomain != theOther.myDomain)
-      return false;
-    if (myMutationGen != theOther.myMutationGen || myGeneration != theOther.myGeneration)
-      return false;
-    if (myDomain == Domain::Entity)
-      return myUID == theOther.myUID;
-    if (myDomain == Domain::Ref)
-      return myRefUID == theOther.myRefUID;
-    return myUID == theOther.myUID && myRefUID == theOther.myRefUID;
-  }
+  Standard_EXPORT bool operator==(const BRepGraph_VersionStamp& theOther) const;
 
   bool operator!=(const BRepGraph_VersionStamp& theOther) const { return !(*this == theOther); }
 
-  //! Check if two stamps refer to the same entity/reference regardless of version.
+  //! Check if two stamps refer to the same graph item regardless of version.
   //! Compares active UID only, ignoring OwnGen and Generation.
   //! @param[in] theOther stamp to compare with
   //! @return true if both stamps have the same domain and UID
-  [[nodiscard]] bool IsSameNode(const BRepGraph_VersionStamp& theOther) const
-  {
-    if (myDomain != theOther.myDomain)
-      return false;
-    if (myDomain == Domain::Entity)
-      return myUID == theOther.myUID;
-    if (myDomain == Domain::Ref)
-      return myRefUID == theOther.myRefUID;
-    return myUID == theOther.myUID && myRefUID == theOther.myRefUID;
-  }
+  [[nodiscard]] Standard_EXPORT bool IsSameItem(const BRepGraph_VersionStamp& theOther) const;
 
   //! Derive a deterministic Standard_GUID from this stamp.
   //! The graph GUID is incorporated into the hash, making per-node GUIDs
@@ -157,20 +157,7 @@ struct BRepGraph_VersionStamp
 
   //! Compute hash value consistent with operator==.
   //! @return hash combining active UID, domain, OwnGen, and Generation
-  [[nodiscard]] size_t HashValue() const
-  {
-    size_t aCombination[4];
-    aCombination[0] = opencascade::hash(static_cast<int>(myDomain));
-    if (myDomain == Domain::Entity)
-      aCombination[1] = myUID.HashValue();
-    else if (myDomain == Domain::Ref)
-      aCombination[1] = myRefUID.HashValue();
-    else
-      aCombination[1] = opencascade::hash(0);
-    aCombination[2] = opencascade::hash(myMutationGen);
-    aCombination[3] = opencascade::hash(myGeneration);
-    return opencascade::hashBytes(aCombination, sizeof(aCombination));
-  }
+  [[nodiscard]] Standard_EXPORT size_t HashValue() const;
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.

@@ -26,7 +26,7 @@
 // Extend SEEDS with a new constant to add coverage.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_MutGuard.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -52,7 +52,7 @@ enum class MutationKind
 };
 
 // Split and RemoveSomeEdge are exercised in isolation below; mixing them into
-// the general fuzz stream uncovers real reverse-index inconsistencies that
+// the general fuzz stream uncovers real relation-table inconsistencies that
 // belong to a separate follow-up (tracked as Phase 5.10/5.11).
 
 struct FuzzOutcome
@@ -69,9 +69,9 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
   std::uniform_int_distribution<int> aKindDist(0, static_cast<int>(MutationKind::Count) - 1);
   const MutationKind                 aKind = static_cast<MutationKind>(aKindDist(theRng));
 
-  const int aNbEdges    = theGraph.Topo().Edges().Nb();
-  const int aNbVertices = theGraph.Topo().Vertices().Nb();
-  const int aNbFaces    = theGraph.Topo().Faces().Nb();
+  const uint32_t aNbEdges    = theGraph.Topo().Edges().Nb();
+  const uint32_t aNbVertices = theGraph.Topo().Vertices().Nb();
+  const uint32_t aNbFaces    = theGraph.Topo().Faces().Nb();
 
   auto pickActiveEdge = [&](BRepGraph_EdgeId& theOut) -> bool {
     if (aNbEdges <= 0)
@@ -82,7 +82,7 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
     for (int aTry = 0; aTry < 8; ++aTry)
     {
       const BRepGraph_EdgeId anId(aDist(theRng));
-      if (!theGraph.Topo().Edges().Definition(anId).IsRemoved)
+      if (!anId.IsRemoved(theGraph))
       {
         theOut = anId;
         return true;
@@ -100,7 +100,7 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
     for (int aTry = 0; aTry < 8; ++aTry)
     {
       const BRepGraph_VertexId anId(aDist(theRng));
-      if (!theGraph.Topo().Vertices().Definition(anId).IsRemoved)
+      if (!anId.IsRemoved(theGraph))
       {
         theOut = anId;
         return true;
@@ -142,7 +142,7 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
       }
       std::uniform_int_distribution<int> aDist(0, aNbFaces - 1);
       BRepGraph_FaceId                   aFaceId(aDist(theRng));
-      if (theGraph.Topo().Faces().Definition(aFaceId).IsRemoved)
+      if (aFaceId.IsRemoved(theGraph))
       {
         return false;
       }
@@ -170,7 +170,7 @@ FuzzOutcome runFuzz(BRepGraph& theGraph, const uint32_t theSeed, const int theNb
       EXPECT_TRUE(aResult.IsValid())
         << "Fuzz iteration " << aIt << " (seed=" << theSeed << ") left the graph invalid. "
         << "First issue: "
-        << (aResult.Issues.Length() > 0 ? aResult.Issues.First().Description.ToCString()
+        << (aResult.Issues.Size() > 0 ? aResult.Issues.First().Description.ToCString()
                                         : "(none)");
     }
     else
@@ -193,9 +193,9 @@ TEST_P(BRepGraph_FuzzSeedTest, BoxSeed_RandomMutations_RemainValid)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
-    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
-  ASSERT_TRUE(aGraph.IsDone());
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid())
     << "Seed graph must be clean before fuzzing";
 
@@ -210,9 +210,9 @@ TEST_P(BRepGraph_FuzzSeedTest, CylinderSeed_RandomMutations_RemainValid)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
-    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
-  ASSERT_TRUE(aGraph.IsDone());
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
 
   const FuzzOutcome aOut = runFuzz(aGraph, aSeed, 40);

@@ -14,19 +14,19 @@
 #ifndef _BRepGraphInc_Reference_HeaderFile
 #define _BRepGraphInc_Reference_HeaderFile
 
+#include <BRepGraphInc_ParityOrientation.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
-#include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
 //! @brief Managed reference entry structs for the incidence-table storage.
 //!
-//! Each reference entry extends BaseRef with payload fields describing
-//! how a child definition is used by its parent (orientation, location).
+//! Each reference entry extends BaseRef with representation fields describing
+//! how a child definition is used by its parent.
 //! Reference entries are stored in flat per-kind vectors in BRepGraphInc_Storage
 //! and support mutation tracking and soft-removal.
 //! Not every definition kind has a dedicated Ref kind by design:
-//! - Edge usage is represented by CoEdgeRef -> CoEdgeDef (which then targets EdgeDef)
+//! - CoEdge usage is stored directly on CoEdgeDef and ordered through WireRelations
 //! - Compound children use ChildRef (heterogeneous NodeId target)
 //! - Product children use OccurrenceRef (placement owned by OccurrenceDef)
 //! - CompSolid children use SolidRef
@@ -41,9 +41,10 @@ struct BaseRef
 {
   using TypeId = BRepGraph_RefId;
 
-  BRepGraph_NodeId ParentId;          //!< Parent topology node owning this reference usage
-  uint32_t         OwnGen    = 0;     //!< Per-reference mutation counter
-  bool             IsRemoved = false; //!< Soft-removal flag
+  //! Persistent per-kind UID counter value.
+  //! 0 = invalid sentinel (not yet allocated). Valid UIDs start at 1.
+  //! Kind is implicit from the concrete struct type (ShellRef, FaceRef, etc.).
+  uint32_t UID = 0;
 };
 
 //! Shell reference storage entry.
@@ -51,9 +52,9 @@ struct ShellRef : public BaseRef
 {
   using TypeId = BRepGraph_ShellRefId;
 
-  BRepGraph_ShellId  ShellDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
+  BRepGraph_SolidId ParentSolidId;                //!< Parent solid identifier
+  BRepGraph_ShellId ChildShellId;                 //!< Child shell identifier
+  ParityOrientation Orientation = TopAbs_FORWARD; //!< Orientation within parent
 };
 
 //! Face reference storage entry.
@@ -61,9 +62,9 @@ struct FaceRef : public BaseRef
 {
   using TypeId = BRepGraph_FaceRefId;
 
-  BRepGraph_FaceId   FaceDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
+  BRepGraph_ShellId ParentShellId;                //!< Parent shell identifier
+  BRepGraph_FaceId  ChildFaceId;                  //!< Child face identifier
+  ParityOrientation Orientation = TopAbs_FORWARD; //!< Orientation within parent
 };
 
 //! Wire reference storage entry.
@@ -71,22 +72,9 @@ struct WireRef : public BaseRef
 {
   using TypeId = BRepGraph_WireRefId;
 
-  BRepGraph_WireId   WireDefId;
-  bool               IsOuter     = false;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
-
-//! CoEdge reference storage entry.
-//! No Orientation field: CoEdgeDef::Orientation already owns the edge-on-face sense,
-//! coupled with PCurve parametrization, so duplicating orientation here would
-//! create a second competing source of truth.
-struct CoEdgeRef : public BaseRef
-{
-  using TypeId = BRepGraph_CoEdgeRefId;
-
-  BRepGraph_CoEdgeId CoEdgeDefId;
-  TopLoc_Location    LocalLocation;
+  BRepGraph_FaceId  ParentFaceId;                 //!< Parent face identifier
+  BRepGraph_WireId  ChildWireId;                  //!< Child wire identifier
+  ParityOrientation Orientation = TopAbs_FORWARD; //!< Orientation within parent
 };
 
 //! Vertex reference storage entry.
@@ -94,10 +82,9 @@ struct VertexRef : public BaseRef
 {
   using TypeId = BRepGraph_VertexRefId;
 
-  BRepGraph_VertexId VertexDefId;
-  TopAbs_Orientation Orientation =
-    TopAbs_INTERNAL; //!< INTERNAL: B-Rep vertex classification convention
-  TopLoc_Location LocalLocation;
+  BRepGraph_VertexId ChildVertexId;                //!< Child vertex identifier
+  BRepGraph_EdgeId   ParentEdgeId;                 //!< Edge that owns this vertex reference
+  ParityOrientation  Orientation = TopAbs_FORWARD; //!< Orientation within parent
 };
 
 //! Solid reference storage entry.
@@ -105,9 +92,9 @@ struct SolidRef : public BaseRef
 {
   using TypeId = BRepGraph_SolidRefId;
 
-  BRepGraph_SolidId  SolidDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
+  BRepGraph_CompSolidId ParentCompSolidId;            //!< Parent compsolid identifier
+  BRepGraph_SolidId     ChildSolidId;                 //!< Child solid identifier
+  ParityOrientation     Orientation = TopAbs_FORWARD; //!< Orientation within parent
 };
 
 //! Child reference storage entry.
@@ -115,9 +102,10 @@ struct ChildRef : public BaseRef
 {
   using TypeId = BRepGraph_ChildRefId;
 
-  BRepGraph_NodeId   ChildDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
+  BRepGraph_CompoundId ParentCompoundId;             //!< Parent compound identifier
+  BRepGraph_NodeId     ChildNodeId;                  //!< Child node identifier (heterogeneous)
+  ParityOrientation    Orientation = TopAbs_FORWARD; //!< Orientation within parent
+  TopLoc_Location      LocalLocation;                //!< Location relative to parent
 };
 
 //! Occurrence reference storage entry.
@@ -127,7 +115,8 @@ struct OccurrenceRef : public BaseRef
 {
   using TypeId = BRepGraph_OccurrenceRefId;
 
-  BRepGraph_OccurrenceId OccurrenceDefId;
+  BRepGraph_ProductId    ParentProductId;
+  BRepGraph_OccurrenceId ChildOccurrenceId;
   TopLoc_Location        LocalLocation; //!< Placement relative to parent product
 };
 

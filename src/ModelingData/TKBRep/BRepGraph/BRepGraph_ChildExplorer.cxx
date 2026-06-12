@@ -12,33 +12,58 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph_ChildExplorer.hxx>
+
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_RefsView.hxx>
-
+#include <BRepGraphInc_Storage.hxx>
 #include <TopAbs.hxx>
 
 #include <algorithm>
 
 namespace
 {
-static int childExplorerKindDepth(const BRepGraph_NodeId::Kind theKind)
+static bool childExplorerKindCanContainDescendant(const BRepGraph_NodeId::Kind theParentKind,
+                                                  const BRepGraph_NodeId::Kind theTargetKind)
 {
-  static constexpr int THE_DEPTH[] = {
-    2,  // Kind::Solid=0
-    3,  // Kind::Shell=1
-    4,  // Kind::Face=2
-    5,  // Kind::Wire=3
-    7,  // Kind::Edge=4
-    8,  // Kind::Vertex=5
-    0,  // Kind::Compound=6
-    1,  // Kind::CompSolid=7
-    6,  // Kind::CoEdge=8
-    99, // gap=9
-    0,  // Kind::Product=10
-    1,  // Kind::Occurrence=11
-  };
-  return THE_DEPTH[static_cast<int>(theKind)];
+  using Kind = BRepGraph_NodeId::Kind;
+  switch (theParentKind)
+  {
+    case Kind::Product:
+      return theTargetKind == Kind::Occurrence || theTargetKind == Kind::Product
+             || BRepGraph_NodeId::IsTopologyKind(theTargetKind);
+    case Kind::Occurrence:
+      return theTargetKind == Kind::Occurrence || theTargetKind == Kind::Product
+             || BRepGraph_NodeId::IsTopologyKind(theTargetKind);
+    case Kind::Compound:
+      return BRepGraph_NodeId::IsTopologyKind(theTargetKind);
+    case Kind::CompSolid:
+      return theTargetKind == Kind::Solid || theTargetKind == Kind::Shell
+             || theTargetKind == Kind::Face || theTargetKind == Kind::Wire
+             || theTargetKind == Kind::CoEdge || theTargetKind == Kind::Edge
+             || theTargetKind == Kind::Vertex;
+    case Kind::Solid:
+      return theTargetKind == Kind::Shell || theTargetKind == Kind::Face
+             || theTargetKind == Kind::Wire || theTargetKind == Kind::CoEdge
+             || theTargetKind == Kind::Edge || theTargetKind == Kind::Vertex;
+    case Kind::Shell:
+      return theTargetKind == Kind::Face || theTargetKind == Kind::Wire
+             || theTargetKind == Kind::CoEdge || theTargetKind == Kind::Edge
+             || theTargetKind == Kind::Vertex;
+    case Kind::Face:
+      return theTargetKind == Kind::Wire || theTargetKind == Kind::CoEdge
+             || theTargetKind == Kind::Edge || theTargetKind == Kind::Vertex;
+    case Kind::Wire:
+      return theTargetKind == Kind::CoEdge || theTargetKind == Kind::Edge
+             || theTargetKind == Kind::Vertex;
+    case Kind::CoEdge:
+      return theTargetKind == Kind::Edge || theTargetKind == Kind::Vertex;
+    case Kind::Edge:
+      return theTargetKind == Kind::Vertex;
+    case Kind::Vertex:
+      return false;
+  }
+  return false;
 }
 
 static BRepGraph_ChildExplorer::Config childExplorerConfig(
@@ -78,23 +103,20 @@ static BRepGraph_RefId childRefIdForStep(const BRepGraph&       theGraph,
     return aRefs.RefAtStep(theParent, theStep);
   }
 
-  const BRepGraph::TopoView&      aTopo      = theGraph.Topo();
-  const BRepGraph_ProductId       aProductId = BRepGraph_ProductId::FromNodeId(theParent);
-  const BRepGraphInc::ProductDef& aProduct   = aTopo.Products().Definition(aProductId);
+  const BRepGraph_ProductId aProductId = BRepGraph_ProductId::FromNodeId(theParent);
 
   uint32_t anActiveIndex = 0;
-  for (const BRepGraph_OccurrenceRefId& anOccurrenceRefId : aProduct.OccurrenceRefIds)
+  for (const BRepGraph_OccurrenceRefId& anOccurrenceRefId :
+       theGraph.Topo().Products().Relations(aProductId).OccurrenceRefIds)
   {
     const BRepGraphInc::OccurrenceRef& anOccurrenceRef =
       aRefs.Occurrences().Entry(anOccurrenceRefId);
-    if (anOccurrenceRef.IsRemoved)
+    if (anOccurrenceRefId.IsRemoved(theGraph))
     {
       continue;
     }
 
-    const BRepGraphInc::OccurrenceDef& anOccurrence =
-      aTopo.Occurrences().Definition(anOccurrenceRef.OccurrenceDefId);
-    if (anOccurrence.IsRemoved)
+    if (anOccurrenceRef.ChildOccurrenceId.IsRemoved(theGraph))
     {
       continue;
     }
@@ -285,7 +307,7 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   {
     const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().Gen().TopoEntity(myRoot);
     if (myConfig.TargetKind.has_value() && myConfig.EmitAvoidKind && aRootDef != nullptr
-        && !aRootDef->IsRemoved)
+        && !myRoot.IsRemoved(*myGraph))
     {
       StackFrame aRootFrame;
       aRootFrame.Node           = myRoot;
@@ -301,7 +323,7 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
 
   // Check if root is valid and not removed.
   const BRepGraphInc::BaseDef* aBaseDef = myGraph->Topo().Gen().TopoEntity(myRoot);
-  if (aBaseDef == nullptr || aBaseDef->IsRemoved)
+  if (aBaseDef == nullptr || myRoot.IsRemoved(*myGraph))
   {
     return;
   }
@@ -369,22 +391,24 @@ void BRepGraph_ChildExplorer::advance()
     TopLoc_Location    aChildLoc = aFrame.AccLocation;
     TopAbs_Orientation aChildOri = aFrame.AccOrientation;
     int                aStepIdx  = static_cast<int>(aIdx);
+    BRepGraph_RefId    aCachedRef;  // resolved at iteration time to avoid re-scan in CurrentRef()
 
     switch (aFrame.Node.NodeKind)
     {
       case Kind::Compound: {
-        const BRepGraphInc::CompoundDef& aComp =
-          aDefs.Compounds().Definition(BRepGraph_CompoundId(aFrame.Node));
         // Skip removed refs.
-        const uint32_t aNbChildren = static_cast<uint32_t>(aComp.ChildRefIds.Size());
+        const BRepGraphInc::CompoundRelations& aRel =
+          aDefs.Compounds().Relations(BRepGraph_CompoundId(aFrame.Node));
+        const uint32_t aNbChildren = static_cast<uint32_t>(aRel.ChildRefIds.Size());
         uint32_t       i           = aIdx;
         for (; i < aNbChildren; ++i)
         {
-          const BRepGraph_ChildRefId aRefId = aComp.ChildRefIds.Value(static_cast<size_t>(i));
+          const BRepGraph_ChildRefId aRefId = aRel.ChildRefIds.Value(static_cast<size_t>(i));
           if (!aRefs.IsRemoved(aRefId))
           {
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
+            aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
@@ -401,17 +425,18 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       case Kind::CompSolid: {
-        const BRepGraphInc::CompSolidDef& aCS =
-          aDefs.CompSolids().Definition(BRepGraph_CompSolidId(aFrame.Node));
-        const uint32_t aNbSolids = static_cast<uint32_t>(aCS.SolidRefIds.Size());
+        const BRepGraphInc::CompSolidRelations& aRel =
+          aDefs.CompSolids().Relations(BRepGraph_CompSolidId(aFrame.Node));
+        const uint32_t aNbSolids = static_cast<uint32_t>(aRel.SolidRefIds.Size());
         uint32_t       i         = aIdx;
         for (; i < aNbSolids; ++i)
         {
-          const BRepGraph_SolidRefId aRefId = aCS.SolidRefIds.Value(static_cast<size_t>(i));
+          const BRepGraph_SolidRefId aRefId = aRel.SolidRefIds.Value(static_cast<size_t>(i));
           if (!aRefs.IsRemoved(aRefId))
           {
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
+            aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
@@ -428,28 +453,18 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       case Kind::Solid: {
-        const BRepGraphInc::SolidDef& aSolid =
-          aDefs.Solids().Definition(BRepGraph_SolidId(aFrame.Node));
-        const uint32_t aNbShells = static_cast<uint32_t>(aSolid.ShellRefIds.Size());
-        const uint32_t aNbFree   = static_cast<uint32_t>(aSolid.AuxChildRefIds.Size());
+        const BRepGraphInc::SolidRelations& aRel =
+          aDefs.Solids().Relations(BRepGraph_SolidId(aFrame.Node));
+        const uint32_t aNbShells = static_cast<uint32_t>(aRel.ShellRefIds.Size());
         uint32_t       i         = aIdx;
-        for (; i < aNbShells + aNbFree; ++i)
+        for (; i < aNbShells; ++i)
         {
-          BRepGraph_RefId aRefId;
-          if (i < aNbShells)
-          {
-            aRefId = aSolid.ShellRefIds.Value(static_cast<size_t>(i));
-          }
-          else
-          {
-            const uint32_t aFreeIdx = i - aNbShells;
-            aRefId                  = aSolid.AuxChildRefIds.Value(static_cast<size_t>(aFreeIdx));
-          }
-
+          const BRepGraph_RefId aRefId = aRel.ShellRefIds.Value(static_cast<size_t>(i));
           if (!aRefs.IsRemoved(aRefId))
           {
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
+            aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
@@ -466,28 +481,18 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       case Kind::Shell: {
-        const BRepGraphInc::ShellDef& aShell =
-          aDefs.Shells().Definition(BRepGraph_ShellId(aFrame.Node));
-        const uint32_t aNbFaces = static_cast<uint32_t>(aShell.FaceRefIds.Size());
-        const uint32_t aNbFree  = static_cast<uint32_t>(aShell.AuxChildRefIds.Size());
+        const BRepGraphInc::ShellRelations& aRel =
+          aDefs.Shells().Relations(BRepGraph_ShellId(aFrame.Node));
+        const uint32_t aNbFaces = static_cast<uint32_t>(aRel.FaceRefIds.Size());
         uint32_t       i        = aIdx;
-        for (; i < aNbFaces + aNbFree; ++i)
+        for (; i < aNbFaces; ++i)
         {
-          BRepGraph_RefId aRefId;
-          if (i < aNbFaces)
-          {
-            aRefId = aShell.FaceRefIds.Value(static_cast<size_t>(i));
-          }
-          else
-          {
-            const uint32_t aFreeIdx = i - aNbFaces;
-            aRefId                  = aShell.AuxChildRefIds.Value(static_cast<size_t>(aFreeIdx));
-          }
-
+          const BRepGraph_RefId aRefId = aRel.FaceRefIds.Value(static_cast<size_t>(i));
           if (!aRefs.IsRemoved(aRefId))
           {
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
+            aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
@@ -504,28 +509,18 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       case Kind::Face: {
-        const BRepGraphInc::FaceDef& aFace =
-          aDefs.Faces().Definition(BRepGraph_FaceId(aFrame.Node));
-        const uint32_t aNbWires = static_cast<uint32_t>(aFace.WireRefIds.Size());
-        const uint32_t aNbVerts = static_cast<uint32_t>(aFace.VertexRefIds.Size());
+        const BRepGraphInc::FaceRelations& aRel =
+          aDefs.Faces().Relations(BRepGraph_FaceId(aFrame.Node));
+        const uint32_t aNbWires = static_cast<uint32_t>(aRel.WireRefIds.Size());
         uint32_t       i        = aIdx;
-        for (; i < aNbWires + aNbVerts; ++i)
+        for (; i < aNbWires; ++i)
         {
-          BRepGraph_RefId aRefId;
-          if (i < aNbWires)
-          {
-            aRefId = aFace.WireRefIds.Value(static_cast<size_t>(i));
-          }
-          else
-          {
-            const uint32_t aVIdx = i - aNbWires;
-            aRefId               = aFace.VertexRefIds.Value(static_cast<size_t>(aVIdx));
-          }
-
+          const BRepGraph_RefId aRefId = aRel.WireRefIds.Value(static_cast<size_t>(i));
           if (!aRefs.IsRemoved(aRefId))
           {
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
+            aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
@@ -542,27 +537,26 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       case Kind::Wire: {
-        const BRepGraphInc::WireDef& aWire =
-          aDefs.Wires().Definition(BRepGraph_WireId(aFrame.Node));
-        const uint32_t aNbCoEdges = static_cast<uint32_t>(aWire.CoEdgeRefIds.Size());
+        const BRepGraphInc::WireRelations& aRel =
+          aDefs.Wires().Relations(BRepGraph_WireId(aFrame.Node));
+        const uint32_t aNbCoEdges = static_cast<uint32_t>(aRel.CoEdgeIds.Size());
         uint32_t       i          = aIdx;
         for (; i < aNbCoEdges; ++i)
         {
-          const BRepGraph_CoEdgeRefId aRefId = aWire.CoEdgeRefIds.Value(static_cast<size_t>(i));
-          if (!aRefs.IsRemoved(aRefId))
+          const BRepGraph_CoEdgeId aCoEdgeId = aRel.CoEdgeIds.Value(static_cast<size_t>(i));
+          if (!aCoEdgeId.IsValid(aDefs.CoEdges().Nb()))
           {
-            aChildNode = aRefs.ChildNode(aRefId);
-            aStepIdx   = static_cast<int>(i);
-            if (myConfig.AccumulateLocation)
-            {
-              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
-            }
-            if (myConfig.AccumulateOrientation)
-            {
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
-            }
-            break;
+            continue;
           }
+
+          if (BRepGraph_NodeId(aCoEdgeId).IsRemoved(*myGraph))
+          {
+            continue;
+          }
+
+          aChildNode = aCoEdgeId;
+          aStepIdx   = -1;
+          break;
         }
         aFrame.NextChildIdx = i + 1;
         break;
@@ -571,9 +565,7 @@ void BRepGraph_ChildExplorer::advance()
       case Kind::Edge: {
         const BRepGraphInc::EdgeDef& anEdge =
           aDefs.Edges().Definition(BRepGraph_EdgeId(aFrame.Node));
-        // Virtual concatenation: 0=Start, 1=End, 2+=Internal.
-        const uint32_t aNbIntern = static_cast<uint32_t>(anEdge.InternalVertexRefIds.Size());
-        const uint32_t aNbTotal  = 2 + aNbIntern;
+        const uint32_t aNbTotal = 2;
         uint32_t       i         = aIdx;
         for (; i < aNbTotal; ++i)
         {
@@ -586,10 +578,6 @@ void BRepGraph_ChildExplorer::advance()
           {
             aVRefId = anEdge.EndVertexRefId;
           }
-          else
-          {
-            aVRefId = anEdge.InternalVertexRefIds.Value(static_cast<size_t>(i - 2));
-          }
 
           if (!aVRefId.IsValid())
           {
@@ -599,6 +587,7 @@ void BRepGraph_ChildExplorer::advance()
           {
             aChildNode = aRefs.ChildNode(aVRefId);
             aStepIdx   = static_cast<int>(i);
+            aCachedRef = aVRefId;
             if (myConfig.AccumulateLocation)
             {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aVRefId);
@@ -620,9 +609,9 @@ void BRepGraph_ChildExplorer::advance()
         {
           const BRepGraphInc::CoEdgeDef& aCoEdge =
             aDefs.CoEdges().Definition(BRepGraph_CoEdgeId(aFrame.Node));
-          if (!aCoEdge.IsRemoved && aCoEdge.EdgeDefId.IsValid())
+          if (!BRepGraph_NodeId(BRepGraph_CoEdgeId(aFrame.Node)).IsRemoved(*myGraph) && aCoEdge.ChildEdgeId.IsValid())
           {
-            aChildNode = aCoEdge.EdgeDefId;
+            aChildNode = aCoEdge.ChildEdgeId;
             aStepIdx   = -1;
             if (myConfig.AccumulateOrientation)
             {
@@ -636,23 +625,29 @@ void BRepGraph_ChildExplorer::advance()
 
       case Kind::Occurrence: {
         // Occurrence references exactly one child node (topology root or product).
-        // Location is on the OccurrenceRef, not on the OccurrenceDef.
+        // Location is on the OccurrenceRef, not on the OccurrenceDef. Product
+        // parents compose that location when pushing the Occurrence frame; root
+        // Occurrence traversals have no parent ref context and use the first
+        // live ref.
         if (aIdx == 0)
         {
           const BRepGraphInc::OccurrenceDef& anOcc =
             aDefs.Occurrences().Definition(BRepGraph_OccurrenceId(aFrame.Node));
-          if (!anOcc.IsRemoved && anOcc.ChildDefId.IsValid())
+          if (!aFrame.Node.IsRemoved(*myGraph) && anOcc.ChildNodeId.IsValid())
           {
-            aChildNode = anOcc.ChildDefId;
+            aChildNode = anOcc.ChildNodeId;
             aStepIdx   = -1;
-            // Location is on the OccurrenceRef - find it by scanning.
-            if (myConfig.AccumulateLocation)
+            // Location is on the OccurrenceRef. If the current frame already
+            // came through a Product->Occurrence ref, AccLocation is already
+            // instance-specific; do not scan by OccurrenceDef and accidentally
+            // reuse another duplicate's transform.
+            if (myConfig.AccumulateLocation && !aFrame.Ref.IsValid())
             {
               for (BRepGraph_FullOccurrenceRefIterator aRefIt(*myGraph); aRefIt.More();
                    aRefIt.Next())
               {
                 const BRepGraphInc::OccurrenceRef& aRef = aRefIt.Current();
-                if (!aRef.IsRemoved && aRef.OccurrenceDefId == BRepGraph_OccurrenceId(aFrame.Node))
+                if (!aRefIt.CurrentId().IsRemoved(*myGraph) && aRef.ChildOccurrenceId == BRepGraph_OccurrenceId(aFrame.Node))
                 {
                   aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
                   break;
@@ -666,16 +661,34 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       case Kind::Product: {
-        // All product children (shape roots and sub-products) go through occurrences.
+        // Scan occurrence refs directly to get both OccurrenceId and RefId in one pass,
+        // avoiding the double O(N) scan that Component() + childRefIdForStep() would do.
         const BRepGraph_ProductId aProdId(aFrame.Node);
-        const uint32_t            aNbComps =
-          static_cast<uint32_t>(myGraph->Topo().Products().NbComponents(aProdId));
-        if (aIdx < aNbComps)
+        uint32_t anActiveIdx = 0;
+        for (const BRepGraph_OccurrenceRefId& anOccRefId :
+             aDefs.Products().Relations(aProdId).OccurrenceRefIds)
         {
-          const BRepGraph_OccurrenceId anOccId =
-            myGraph->Topo().Products().Component(aProdId, static_cast<int>(aIdx));
-          aChildNode = anOccId;
-          aStepIdx   = static_cast<int>(aIdx);
+          const BRepGraphInc::OccurrenceRef& anOccRef = aRefs.Occurrences().Entry(anOccRefId);
+          if (anOccRefId.IsRemoved(*myGraph))
+          {
+            continue;
+          }
+          if (anOccRef.ChildOccurrenceId.IsRemoved(*myGraph))
+          {
+            continue;
+          }
+          if (anActiveIdx == aIdx)
+          {
+            aChildNode  = anOccRef.ChildOccurrenceId;
+            aStepIdx    = static_cast<int>(aIdx);
+            aCachedRef  = anOccRefId;
+            if (myConfig.AccumulateLocation)
+            {
+              aChildLoc = aFrame.AccLocation * anOccRef.LocalLocation;
+            }
+            break;
+          }
+          ++anActiveIdx;
         }
         aFrame.NextChildIdx = aIdx + 1;
         break;
@@ -697,12 +710,13 @@ void BRepGraph_ChildExplorer::advance()
     if (matchesAvoid(aChildNode))
     {
       const BRepGraphInc::BaseDef* anAvoidDef = aDefs.Gen().TopoEntity(aChildNode);
-      if (myConfig.EmitAvoidKind && anAvoidDef != nullptr && !anAvoidDef->IsRemoved)
+      if (myConfig.EmitAvoidKind && anAvoidDef != nullptr && !aChildNode.IsRemoved(*myGraph))
       {
         StackFrame aChildFrame;
         aChildFrame.Node           = aChildNode;
         aChildFrame.NextChildIdx   = 0;
         aChildFrame.StepFromParent = aStepIdx;
+        aChildFrame.Ref            = aCachedRef;
         aChildFrame.AccLocation    = aChildLoc;
         aChildFrame.AccOrientation = aChildOri;
         pushFrame(aChildFrame);
@@ -716,7 +730,7 @@ void BRepGraph_ChildExplorer::advance()
     if (shouldEmit(aChildNode))
     {
       const BRepGraphInc::BaseDef* aPostDef = aDefs.Gen().TopoEntity(aChildNode);
-      if (aPostDef == nullptr || aPostDef->IsRemoved)
+      if (aPostDef == nullptr || aChildNode.IsRemoved(*myGraph))
       {
         continue;
       }
@@ -725,6 +739,7 @@ void BRepGraph_ChildExplorer::advance()
       aChildFrame.Node           = aChildNode;
       aChildFrame.NextChildIdx   = 0;
       aChildFrame.StepFromParent = aStepIdx;
+      aChildFrame.Ref            = aCachedRef;
       aChildFrame.AccLocation    = aChildLoc;
       aChildFrame.AccOrientation = aChildOri;
       pushFrame(aChildFrame);
@@ -734,7 +749,7 @@ void BRepGraph_ChildExplorer::advance()
 
     // Check if resolved child is valid and not removed before descending.
     const BRepGraphInc::BaseDef* aBaseDef = aDefs.Gen().TopoEntity(aChildNode);
-    if (aBaseDef == nullptr || aBaseDef->IsRemoved)
+    if (aBaseDef == nullptr || aChildNode.IsRemoved(*myGraph))
     {
       continue;
     }
@@ -749,6 +764,7 @@ void BRepGraph_ChildExplorer::advance()
       aChildFrame.Node           = aChildNode;
       aChildFrame.NextChildIdx   = 0;
       aChildFrame.StepFromParent = aStepIdx;
+      aChildFrame.Ref            = aCachedRef;
       aChildFrame.AccLocation    = aChildLoc;
       aChildFrame.AccOrientation = aChildOri;
       pushFrame(aChildFrame);
@@ -801,10 +817,35 @@ BRepGraph_RefId BRepGraph_ChildExplorer::CurrentRef() const
     return BRepGraph_RefId();
   }
 
+  // Ref is pre-resolved when the frame was pushed (O(1)).
+  const BRepGraph_RefId& aCached = myStack[myCurrentFrame].Ref;
+  if (aCached.IsValid())
+  {
+    return aCached;
+  }
+
+  // Fallback for non-Product parents (aCachedRef is left default-invalid there).
   const StackFrame& aCurrentFrame = myStack[myCurrentFrame];
   return childRefIdForStep(*myGraph,
                            myStack[myCurrentFrame - 1].Node,
                            aCurrentFrame.StepFromParent);
+}
+
+//=================================================================================================
+
+BRepGraph_UsagePath BRepGraph_ChildExplorer::CurrentUsagePath() const
+{
+  if (!myHasMore || myCurrentFrame < 0)
+  {
+    return BRepGraph_UsagePath();
+  }
+  BRepGraph_UsagePath aPath(static_cast<size_t>(myCurrentFrame + 1));
+  for (int aFrameIdx = 0; aFrameIdx <= myCurrentFrame; ++aFrameIdx)
+  {
+    const StackFrame& aFrame = myStack[aFrameIdx];
+    aPath.Append(BRepGraph_UsagePath::Step{aFrame.Node, aFrame.Ref, aFrame.StepFromParent});
+  }
+  return aPath;
 }
 
 //=================================================================================================
@@ -817,8 +858,17 @@ bool BRepGraph_ChildExplorer::shouldDescendFromCurrent() const
   }
 
   const BRepGraph_NodeId aNode = myStack[myCurrentFrame].Node;
-  return !myConfig.TargetKind.has_value() && !matchesAvoid(aNode)
-         && canHaveChildren(aNode.NodeKind);
+  if (matchesAvoid(aNode))
+  {
+    return false;
+  }
+
+  if (myConfig.TargetKind.has_value())
+  {
+    return canContainTarget(aNode.NodeKind, *myConfig.TargetKind);
+  }
+
+  return canHaveChildren(aNode.NodeKind);
 }
 
 //=================================================================================================
@@ -832,6 +882,11 @@ std::optional<BRepGraph_NodeId::Kind> BRepGraph_ChildExplorer::normalizeAvoidKin
     return theAvoidKind;
   }
 
+  if (*theAvoidKind == *theTargetKind)
+  {
+    return std::nullopt;
+  }
+
   return canContainTarget(*theAvoidKind, *theTargetKind) ? theAvoidKind : std::nullopt;
 }
 
@@ -840,9 +895,7 @@ std::optional<BRepGraph_NodeId::Kind> BRepGraph_ChildExplorer::normalizeAvoidKin
 bool BRepGraph_ChildExplorer::canContainTarget(const BRepGraph_NodeId::Kind theParentKind,
                                                const BRepGraph_NodeId::Kind theTargetKind)
 {
-  const int aParentDepth = childExplorerKindDepth(theParentKind);
-  const int aTargetDepth = childExplorerKindDepth(theTargetKind);
-  return aParentDepth < aTargetDepth;
+  return childExplorerKindCanContainDescendant(theParentKind, theTargetKind);
 }
 
 //=================================================================================================
@@ -858,7 +911,8 @@ void BRepGraph_ChildExplorer::pushFrame(const StackFrame& theFrame)
 {
   // Guard against pathological cycles (e.g., self-referencing compounds).
   // A valid DFS path cannot exceed the total node count in the graph.
-  if (myStackTop >= myGraph->Topo().Gen().NbNodes())
+  if (myStackTop >= 0
+      && static_cast<uint32_t>(myStackTop) >= myGraph->Topo().Gen().NbNodes())
   {
     return;
   }

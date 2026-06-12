@@ -18,13 +18,13 @@
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
-
 #include <NCollection_ForwardRange.hxx>
+#include <NCollection_LinearVector.hxx>
 
-//! @brief Single-level typed iterators over parent definitions via reverse index.
+//! @brief Single-level typed iterators over parent definitions via relation lists.
 //!
-//! These iterators wrap the NCollection_DynamicArray<TypedIdT> returned by TopoView
-//! reverse-index accessors (e.g. Edges().Faces(), Wires().Faces(), Vertices().Edges()).
+//! These iterators wrap parent relation containers returned by TopoView accessors
+//! (e.g. Edges().Faces(), Wires().Faces(), Vertices().Edges()).
 //! They provide a typed, skip-removed iteration pattern consistent with the
 //! forward iterators in BRepGraph_DefsIterator and BRepGraph_RefsIterator.
 //!
@@ -172,16 +172,17 @@ struct DefTraits<BRepGraph_OccurrenceId>
   }
 };
 
-//! Typed iterator over a reverse-index vector of parent IDs.
+//! Typed iterator over a relation vector of parent IDs.
 //! Skips removed parent definitions automatically in sequential iteration.
 //! Also provides indexed access (Length/Value) for callers that need
 //! random access into the underlying vector (e.g. BRepGraph_ParentExplorer).
 //! @tparam TypedIdT Typed ID such as BRepGraph_FaceId, BRepGraph_EdgeId, etc.
-template <typename TypedIdT>
+template <typename TypedIdT,
+          typename ContainerT = NCollection_LinearVector<TypedIdT>>
 class ParentsOf
 {
 public:
-  ParentsOf(const BRepGraph& theGraph, const NCollection_DynamicArray<TypedIdT>& theParents)
+  ParentsOf(const BRepGraph& theGraph, const ContainerT& theParents)
       : myGraph(&theGraph),
         myParents(&theParents)
   {
@@ -190,9 +191,9 @@ public:
 
   //! Construct starting at a given vector index (for resumable iteration).
   //! Skips to the first non-removed entry at or after theStartIndex.
-  ParentsOf(const BRepGraph&                          theGraph,
-            const NCollection_DynamicArray<TypedIdT>& theParents,
-            const uint32_t                            theStartIndex)
+  ParentsOf(const BRepGraph& theGraph,
+            const ContainerT& theParents,
+            const uint32_t   theStartIndex)
       : myGraph(&theGraph),
         myParents(&theParents),
         myIndex(theStartIndex)
@@ -224,12 +225,9 @@ public:
 
   [[nodiscard]] uint32_t Index() const { return myIndex; }
 
-  //! Returns the total number of parent entries (including removed).
-  [[nodiscard]] int Length() const { return myParents->Length(); }
-
   [[nodiscard]] size_t Size() const { return myParents->Size(); }
 
-  //! Returns the parent ID at the given index (does NOT check IsRemoved).
+  //! Returns the parent ID at the given bucket index (does NOT check removal status).
   [[nodiscard]] TypedIdT Value(const size_t theIndex) const { return myParents->Value(theIndex); }
 
   //! Returns an STL-compatible iterator for range-based for loops.
@@ -244,11 +242,10 @@ public:
 private:
   void skipRemoved()
   {
-    while (myIndex < static_cast<uint32_t>(myParents->Length()))
+    while (myIndex < static_cast<uint32_t>(myParents->Size()))
     {
-      const BRepGraphInc::BaseDef* aDef =
-        myGraph->Topo().Gen().TopoEntity(myParents->Value(static_cast<size_t>(myIndex)));
-      if (aDef != nullptr && !aDef->IsRemoved)
+      const TypedIdT aParentId = myParents->Value(static_cast<size_t>(myIndex));
+      if (!aParentId.IsRemoved(*myGraph))
       {
         return;
       }
@@ -256,12 +253,12 @@ private:
     }
   }
 
-  const BRepGraph*                          myGraph   = nullptr;
-  const NCollection_DynamicArray<TypedIdT>* myParents = nullptr;
-  uint32_t                                  myIndex   = 0;
+  const BRepGraph* myGraph   = nullptr;
+  const ContainerT* myParents = nullptr;
+  uint32_t         myIndex   = 0;
 };
 
-//! Result pair returned by RefsParentsOf: parent definition ID + the RefId
+//! Result pair returned by parent-ref iterators: parent definition ID + the RefId
 //! in that parent which references the child.
 template <typename ParentIdT, typename RefIdT>
 struct ParentRef
@@ -270,23 +267,24 @@ struct ParentRef
   RefIdT    Ref;
 };
 
-//! Typed iterator over parent definitions via reverse index that also resolves
-//! the specific RefId linking each parent to the child.
-//! Requires a traits class to find the matching ref within each parent.
+//! Typed iterator over parent ID relation lists that also resolves the specific
+//! RefId linking each parent to the child by lookup in the parent definition.
+//! Used only where the reverse relation stores parent IDs but no ref IDs.
 //! @tparam TraitsT Traits with: ParentId, ChildId, RefId types,
 //!   FindRef(graph, parentId, childId) -> RefId (invalid if not found)
 template <typename TraitsT>
-class RefsParentsOf
+class LookupParentRefsOf
 {
 public:
   using ParentIdType = typename TraitsT::ParentId;
   using ChildIdType  = typename TraitsT::ChildId;
   using RefIdType    = typename TraitsT::RefId;
   using ResultType   = ParentRef<ParentIdType, RefIdType>;
+  using ContainerType = typename TraitsT::ContainerType;
 
-  RefsParentsOf(const BRepGraph&                              theGraph,
-                const NCollection_DynamicArray<ParentIdType>& theParents,
-                const ChildIdType                             theChild)
+  LookupParentRefsOf(const BRepGraph&     theGraph,
+                     const ContainerType& theParents,
+                     const ChildIdType    theChild)
       : myGraph(&theGraph),
         myParents(&theParents),
         myChild(theChild)
@@ -311,9 +309,9 @@ public:
   [[nodiscard]] uint32_t Index() const { return myIndex; }
 
   //! Returns an STL-compatible iterator for range-based for loops.
-  NCollection_ForwardRangeIterator<RefsParentsOf> begin()
+  NCollection_ForwardRangeIterator<LookupParentRefsOf> begin()
   {
-    return NCollection_ForwardRangeIterator<RefsParentsOf>(this);
+    return NCollection_ForwardRangeIterator<LookupParentRefsOf>(this);
   }
 
   //! Returns a sentinel marking the end of iteration.
@@ -325,10 +323,8 @@ private:
     myHasCurrent = false;
     while (myIndex < static_cast<uint32_t>(myParents->Size()))
     {
-      const ParentIdType           aParentId = myParents->Value(static_cast<size_t>(myIndex));
-      const BRepGraphInc::BaseDef* aDef =
-        myGraph->Topo().Gen().TopoEntity(BRepGraph_NodeId(aParentId));
-      if (aDef != nullptr && !aDef->IsRemoved)
+      const ParentIdType aParentId = myParents->Value(static_cast<size_t>(myIndex));
+      if (!aParentId.IsRemoved(*myGraph))
       {
         const RefIdType aRefId = TraitsT::FindRef(*myGraph, aParentId, myChild);
         if (aRefId.IsValid())
@@ -342,93 +338,111 @@ private:
     }
   }
 
-  const BRepGraph*                              myGraph   = nullptr;
-  const NCollection_DynamicArray<ParentIdType>* myParents = nullptr;
-  ChildIdType                                   myChild;
-  ResultType                                    myCurrent;
-  uint32_t                                      myIndex      = 0;
-  bool                                          myHasCurrent = false;
+  const BRepGraph* myGraph   = nullptr;
+  const ContainerType* myParents = nullptr;
+  ChildIdType      myChild;
+  ResultType       myCurrent;
+  uint32_t         myIndex      = 0;
+  bool             myHasCurrent = false;
 };
 
-// Traits for RefsParentsOf - each knows how to find the RefId
-// linking a parent to a specific child definition.
-
-struct FaceOfWireRefTraits
+template <typename TraitsT>
+class IdsOfRefs
 {
-  using ParentId = BRepGraph_FaceId;
-  using ChildId  = BRepGraph_WireId;
-  using RefId    = BRepGraph_WireRefId;
+public:
+  using IdType        = typename TraitsT::IdType;
+  using RefIdType     = typename TraitsT::RefIdType;
+  using ContainerType = typename TraitsT::ContainerType;
 
-  static RefId FindRef(const BRepGraph&       theGraph,
-                       const BRepGraph_FaceId theParent,
-                       const BRepGraph_WireId theChild)
+  IdsOfRefs(const BRepGraph& theGraph, const ContainerType& theRefs)
+      : myGraph(&theGraph),
+        myRefs(&theRefs)
   {
-    for (BRepGraph_RefsWireOfFace aIt(theGraph, theParent); aIt.More(); aIt.Next())
-    {
-      if (theGraph.Refs().ChildNode(aIt.CurrentId()) == BRepGraph_NodeId(theChild))
-      {
-        return aIt.CurrentId();
-      }
-    }
-    return RefId();
+    advance();
   }
+
+  IdsOfRefs(const BRepGraph& theGraph, const ContainerType& theRefs, const uint32_t theStartIndex)
+      : myGraph(&theGraph),
+        myRefs(&theRefs),
+        myIndex(theStartIndex)
+  {
+    advance();
+  }
+
+  [[nodiscard]] bool More() const { return myHasCurrent; }
+
+  void Next()
+  {
+    ++myIndex;
+    advance();
+  }
+
+  [[nodiscard]] IdType CurrentId() const { return myCurrent; }
+
+  [[nodiscard]] IdType CurrentParentId() const { return CurrentId(); }
+
+  [[nodiscard]] RefIdType CurrentRefId() const { return myCurrentRef; }
+
+  [[nodiscard]] IdType Current() const { return CurrentId(); }
+
+  [[nodiscard]] const typename DefTraits<IdType>::DefType& Definition() const
+  {
+    return DefTraits<IdType>::Get(*myGraph, CurrentId());
+  }
+
+  [[nodiscard]] uint32_t Index() const { return myIndex; }
+
+  NCollection_ForwardRangeIterator<IdsOfRefs> begin()
+  {
+    return NCollection_ForwardRangeIterator<IdsOfRefs>(this);
+  }
+
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
+
+private:
+  void advance()
+  {
+    myHasCurrent = false;
+    while (myIndex < static_cast<uint32_t>(myRefs->Size()))
+    {
+      const RefIdType aRefId = myRefs->Value(static_cast<size_t>(myIndex));
+      if (!aRefId.IsRemoved(*myGraph))
+      {
+        const IdType anId = TraitsT::Id(*myGraph, aRefId);
+	        if (anId.IsValid() && !anId.IsRemoved(*myGraph))
+	        {
+	          myCurrent    = anId;
+	          myCurrentRef = aRefId;
+	          myHasCurrent = true;
+	          return;
+	        }
+      }
+      ++myIndex;
+    }
+  }
+
+  const BRepGraph* myGraph = nullptr;
+  const ContainerType* myRefs = nullptr;
+  IdType           myCurrent;
+  RefIdType        myCurrentRef;
+  uint32_t         myIndex      = 0;
+  bool             myHasCurrent = false;
 };
 
-struct ShellOfFaceRefTraits
-{
-  using ParentId = BRepGraph_ShellId;
-  using ChildId  = BRepGraph_FaceId;
-  using RefId    = BRepGraph_FaceRefId;
-
-  static RefId FindRef(const BRepGraph&        theGraph,
-                       const BRepGraph_ShellId theParent,
-                       const BRepGraph_FaceId  theChild)
-  {
-    for (BRepGraph_RefsFaceOfShell aIt(theGraph, theParent); aIt.More(); aIt.Next())
-    {
-      if (theGraph.Refs().ChildNode(aIt.CurrentId()) == BRepGraph_NodeId(theChild))
-      {
-        return aIt.CurrentId();
-      }
-    }
-    return RefId();
-  }
-};
-
-struct SolidOfShellRefTraits
-{
-  using ParentId = BRepGraph_SolidId;
-  using ChildId  = BRepGraph_ShellId;
-  using RefId    = BRepGraph_ShellRefId;
-
-  static RefId FindRef(const BRepGraph&        theGraph,
-                       const BRepGraph_SolidId theParent,
-                       const BRepGraph_ShellId theChild)
-  {
-    for (BRepGraph_RefsShellOfSolid aIt(theGraph, theParent); aIt.More(); aIt.Next())
-    {
-      if (theGraph.Refs().ChildNode(aIt.CurrentId()) == BRepGraph_NodeId(theChild))
-      {
-        return aIt.CurrentId();
-      }
-    }
-    return RefId();
-  }
-};
-
-struct WireOfCoEdgeRefTraits
+struct WireOfCoEdgeUsageTraits
 {
   using ParentId = BRepGraph_WireId;
   using ChildId  = BRepGraph_CoEdgeId;
-  using RefId    = BRepGraph_CoEdgeRefId;
+  using RefId    = BRepGraph_CoEdgeId;
+  using ContainerType = NCollection_LinearVector<ParentId>;
 
   static RefId FindRef(const BRepGraph&         theGraph,
                        const BRepGraph_WireId   theParent,
                        const BRepGraph_CoEdgeId theChild)
   {
-    for (BRepGraph_RefsCoEdgeOfWire aIt(theGraph, theParent); aIt.More(); aIt.Next())
+    for (BRepGraph_CoEdgesOfWire aIt(theGraph, theParent); aIt.More(); aIt.Next())
     {
-      if (theGraph.Refs().ChildNode(aIt.CurrentId()) == BRepGraph_NodeId(theChild))
+      if (aIt.CurrentId() == theChild)
       {
         return aIt.CurrentId();
       }
@@ -442,6 +456,7 @@ struct EdgeOfVertexRefTraits
   using ParentId = BRepGraph_EdgeId;
   using ChildId  = BRepGraph_VertexId;
   using RefId    = BRepGraph_VertexRefId;
+  using ContainerType = NCollection_LinearVector<ParentId>;
 
   static RefId FindRef(const BRepGraph&         theGraph,
                        const BRepGraph_EdgeId   theParent,
@@ -458,128 +473,186 @@ struct EdgeOfVertexRefTraits
   }
 };
 
-struct CompSolidOfSolidRefTraits
+struct FaceFromWireRefTraits
 {
-  using ParentId = BRepGraph_CompSolidId;
-  using ChildId  = BRepGraph_SolidId;
-  using RefId    = BRepGraph_SolidRefId;
+  using IdType        = BRepGraph_FaceId;
+  using RefIdType     = BRepGraph_WireRefId;
+  using ContainerType = NCollection_LinearVector<RefIdType>;
 
-  static RefId FindRef(const BRepGraph&            theGraph,
-                       const BRepGraph_CompSolidId theParent,
-                       const BRepGraph_SolidId     theChild)
+  static IdType Id(const BRepGraph& theGraph, const RefIdType theRefId)
   {
-    for (BRepGraph_RefsSolidOfCompSolid aIt(theGraph, theParent); aIt.More(); aIt.Next())
-    {
-      if (theGraph.Refs().ChildNode(aIt.CurrentId()) == BRepGraph_NodeId(theChild))
-      {
-        return aIt.CurrentId();
-      }
-    }
-    return RefId();
+    return theGraph.Refs().Wires().Entry(theRefId).ParentFaceId;
   }
 };
 
-struct CompoundOfChildRefTraits
+struct ShellFromFaceRefTraits
 {
-  using ParentId = BRepGraph_CompoundId;
-  using ChildId  = BRepGraph_NodeId;
-  using RefId    = BRepGraph_ChildRefId;
+  using IdType        = BRepGraph_ShellId;
+  using RefIdType     = BRepGraph_FaceRefId;
+  using ContainerType = NCollection_LinearVector<RefIdType>;
 
-  static RefId FindRef(const BRepGraph&           theGraph,
-                       const BRepGraph_CompoundId theParent,
-                       const BRepGraph_NodeId     theChild)
+  static IdType Id(const BRepGraph& theGraph, const RefIdType theRefId)
   {
-    for (BRepGraph_RefsChildOfCompound aIt(theGraph, theParent); aIt.More(); aIt.Next())
-    {
-      if (theGraph.Refs().ChildNode(aIt.CurrentId()) == theChild)
-      {
-        return aIt.CurrentId();
-      }
-    }
-    return RefId();
+    return theGraph.Refs().Faces().Entry(theRefId).ParentShellId;
   }
 };
 
-struct ProductOfOccurrenceRefTraits
+struct SolidFromShellRefTraits
 {
-  using ParentId = BRepGraph_ProductId;
-  using ChildId  = BRepGraph_OccurrenceId;
-  using RefId    = BRepGraph_OccurrenceRefId;
+  using IdType        = BRepGraph_SolidId;
+  using RefIdType     = BRepGraph_ShellRefId;
+  using ContainerType = NCollection_LinearVector<RefIdType>;
 
-  static RefId FindRef(const BRepGraph&             theGraph,
-                       const BRepGraph_ProductId    theParent,
-                       const BRepGraph_OccurrenceId theChild)
+  static IdType Id(const BRepGraph& theGraph, const RefIdType theRefId)
   {
-    for (BRepGraph_RefsOccurrenceOfProduct aIt(theGraph, theParent); aIt.More(); aIt.Next())
-    {
-      if (theGraph.Refs().ChildNode(aIt.CurrentId()) == BRepGraph_NodeId(theChild))
-      {
-        return aIt.CurrentId();
-      }
-    }
-    return RefId();
+    return theGraph.Refs().Shells().Entry(theRefId).ParentSolidId;
+  }
+};
+
+struct CompSolidFromSolidRefTraits
+{
+  using IdType        = BRepGraph_CompSolidId;
+  using RefIdType     = BRepGraph_SolidRefId;
+  using ContainerType = NCollection_LinearVector<RefIdType>;
+
+  static IdType Id(const BRepGraph& theGraph, const RefIdType theRefId)
+  {
+    return theGraph.Refs().Solids().Entry(theRefId).ParentCompSolidId;
+  }
+};
+
+struct CompoundFromChildRefTraits
+{
+  using IdType        = BRepGraph_CompoundId;
+  using RefIdType     = BRepGraph_ChildRefId;
+  using ContainerType = NCollection_LinearVector<RefIdType>;
+
+  static IdType Id(const BRepGraph& theGraph, const RefIdType theRefId)
+  {
+    return theGraph.Refs().Children().Entry(theRefId).ParentCompoundId;
+  }
+};
+
+struct OccurrenceFromOccurrenceRefTraits
+{
+  using IdType        = BRepGraph_OccurrenceId;
+  using RefIdType     = BRepGraph_OccurrenceRefId;
+  using ContainerType = NCollection_LinearVector<RefIdType>;
+
+  static IdType Id(const BRepGraph& theGraph, const RefIdType theRefId)
+  {
+    return theGraph.Refs().Occurrences().Entry(theRefId).ChildOccurrenceId;
+  }
+};
+
+struct ProductFromOccurrenceRefTraits
+{
+  using IdType        = BRepGraph_ProductId;
+  using RefIdType     = BRepGraph_OccurrenceRefId;
+  using ContainerType = NCollection_LinearVector<RefIdType>;
+
+  static IdType Id(const BRepGraph& theGraph, const RefIdType theRefId)
+  {
+    return theGraph.Refs().Occurrences().Entry(theRefId).ParentProductId;
   }
 };
 
 } // namespace BRepGraph_ReverseIterator
 
 // Vertex -> parent Edges
-using BRepGraph_EdgesOfVertex = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_EdgeId>;
+using BRepGraph_EdgesOfVertex =
+  BRepGraph_ReverseIterator::ParentsOf<BRepGraph_EdgeId,
+                                       NCollection_LinearVector<BRepGraph_EdgeId>>;
+// Vertex -> parent Compounds
+using BRepGraph_CompoundsOfVertex =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Edge -> parent Wires
-using BRepGraph_WiresOfEdge = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_WireId>;
+using BRepGraph_WiresOfEdge =
+  BRepGraph_ReverseIterator::ParentsOf<BRepGraph_WireId,
+                                       NCollection_LinearVector<BRepGraph_WireId>>;
 // Edge -> parent CoEdges
-using BRepGraph_CoEdgesOfEdge = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CoEdgeId>;
-// Edge -> parent Faces (derived from CoEdge.FaceDefId)
-using BRepGraph_FacesOfEdge = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_FaceId>;
+using BRepGraph_CoEdgesOfEdge =
+  BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CoEdgeId,
+                                       NCollection_LinearVector<BRepGraph_CoEdgeId>>;
+// Edge -> parent Faces (derived from CoEdge.FaceId)
+using BRepGraph_FacesOfEdge =
+  BRepGraph_ReverseIterator::ParentsOf<BRepGraph_FaceId,
+                                       NCollection_LinearVector<BRepGraph_FaceId>>;
+// Edge -> parent Compounds
+using BRepGraph_CompoundsOfEdge =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
+// CoEdge -> parent Compounds
+using BRepGraph_CompoundsOfCoEdge =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Wire -> parent Faces
-using BRepGraph_FacesOfWire = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_FaceId>;
-// CoEdge -> parent Wires
-using BRepGraph_WiresOfCoEdge = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_WireId>;
+using BRepGraph_FacesOfWire =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::FaceFromWireRefTraits>;
+// Wire -> parent Compounds
+using BRepGraph_CompoundsOfWire =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Face -> parent Shells
-using BRepGraph_ShellsOfFace = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_ShellId>;
+using BRepGraph_ShellsOfFace =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::ShellFromFaceRefTraits>;
 // Face -> parent Compounds
-using BRepGraph_CompoundsOfFace = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CompoundId>;
+using BRepGraph_CompoundsOfFace =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Shell -> parent Solids
-using BRepGraph_SolidsOfShell = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_SolidId>;
+using BRepGraph_SolidsOfShell =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::SolidFromShellRefTraits>;
 // Shell -> parent Compounds
-using BRepGraph_CompoundsOfShell = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CompoundId>;
+using BRepGraph_CompoundsOfShell =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Solid -> parent CompSolids
-using BRepGraph_CompSolidsOfSolid = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CompSolidId>;
+using BRepGraph_CompSolidsOfSolid =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompSolidFromSolidRefTraits>;
 // Solid -> parent Compounds
-using BRepGraph_CompoundsOfSolid = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CompoundId>;
+using BRepGraph_CompoundsOfSolid =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // CompSolid -> parent Compounds
-using BRepGraph_CompoundsOfCompSolid = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CompoundId>;
+using BRepGraph_CompoundsOfCompSolid =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Compound -> parent Compounds
-using BRepGraph_CompoundsOfCompound = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CompoundId>;
+using BRepGraph_CompoundsOfCompound =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
+// Any child -> parent Compounds
+using BRepGraph_CompoundsOfChild =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Product -> Occurrences
-using BRepGraph_OccurrencesOfProduct = BRepGraph_ReverseIterator::ParentsOf<BRepGraph_OccurrenceId>;
+using BRepGraph_OccurrencesOfProduct =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::OccurrenceFromOccurrenceRefTraits>;
+// Any occurrence child -> Occurrences
+using BRepGraph_OccurrencesOfChild =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::OccurrenceFromOccurrenceRefTraits>;
+// Occurrence -> parent Products
+using BRepGraph_ProductsOfOccurrence =
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::ProductFromOccurrenceRefTraits>;
 
 // Ref-based reverse iterators: yield (ParentId, RefId) pairs.
 // These find the specific reference entry in each parent that links to the child.
 
 // Wire -> parent Faces (with WireRefId)
 using BRepGraph_RefsFacesOfWire =
-  BRepGraph_ReverseIterator::RefsParentsOf<BRepGraph_ReverseIterator::FaceOfWireRefTraits>;
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::FaceFromWireRefTraits>;
 // Face -> parent Shells (with FaceRefId)
 using BRepGraph_RefsShellsOfFace =
-  BRepGraph_ReverseIterator::RefsParentsOf<BRepGraph_ReverseIterator::ShellOfFaceRefTraits>;
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::ShellFromFaceRefTraits>;
 // Shell -> parent Solids (with ShellRefId)
 using BRepGraph_RefsSolidsOfShell =
-  BRepGraph_ReverseIterator::RefsParentsOf<BRepGraph_ReverseIterator::SolidOfShellRefTraits>;
-// CoEdge -> parent Wires (with CoEdgeRefId)
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::SolidFromShellRefTraits>;
+// CoEdge -> parent Wires (with direct CoEdgeId usage in each wire)
 using BRepGraph_RefsWiresOfCoEdge =
-  BRepGraph_ReverseIterator::RefsParentsOf<BRepGraph_ReverseIterator::WireOfCoEdgeRefTraits>;
+  BRepGraph_ReverseIterator::LookupParentRefsOf<BRepGraph_ReverseIterator::WireOfCoEdgeUsageTraits>;
 // Vertex -> parent Edges (with VertexRefId)
 using BRepGraph_RefsEdgesOfVertex =
-  BRepGraph_ReverseIterator::RefsParentsOf<BRepGraph_ReverseIterator::EdgeOfVertexRefTraits>;
+  BRepGraph_ReverseIterator::LookupParentRefsOf<BRepGraph_ReverseIterator::EdgeOfVertexRefTraits>;
 // Solid -> parent CompSolids (with SolidRefId)
 using BRepGraph_RefsCompSolidsOfSolid =
-  BRepGraph_ReverseIterator::RefsParentsOf<BRepGraph_ReverseIterator::CompSolidOfSolidRefTraits>;
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompSolidFromSolidRefTraits>;
 // Any child -> parent Compounds (with ChildRefId)
 using BRepGraph_RefsCompoundsOfChild =
-  BRepGraph_ReverseIterator::RefsParentsOf<BRepGraph_ReverseIterator::CompoundOfChildRefTraits>;
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Occurrence -> parent Products (with OccurrenceRefId)
 using BRepGraph_RefsProductsOfOccurrence =
-  BRepGraph_ReverseIterator::RefsParentsOf<BRepGraph_ReverseIterator::ProductOfOccurrenceRefTraits>;
+  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::ProductFromOccurrenceRefTraits>;
 
 #endif // _BRepGraph_ReverseIterator_HeaderFile

@@ -15,112 +15,83 @@
 #define _BRepGraphInc_Populate_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
-
-#include <NCollection_BaseAllocator.hxx>
-#include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
 
 class TopoDS_Shape;
-class BRepGraphInc_Storage;
-class BRepGraph_LayerParam;
-class BRepGraph_LayerRegularity;
+class BRepGraph;
 
-//! @brief Backend population pipeline for BRepGraphInc_Storage.
+//! @brief Backend topology/geometry population for BRepGraph.
 //!
 //! This class is part of the BRepGraphInc backend and is intended for
 //! backend maintenance, tests, and low-level infrastructure only.
-//! External code should enter through BRepGraph_Builder::Add(), which owns the
+//! External code should enter through BRepGraph::ShapesView::Add(), which owns the
 //! public lifecycle, cache invalidation, and layer coordination.
 //!
-//! Adapted from BRepGraph_Builder, but writes to incidence-table storage
-//! instead of Def/Usage two-layer storage. Entity structs carry forward
-//! child references directly (no separate Usage objects).
-//!
-//! The population pipeline:
-//! 1. Sequential hierarchy traversal (Compound/CompSolid/Solid/Shell)
-//! 2. Parallel per-face geometry extraction
-//! 3. Sequential registration with TShape deduplication
-//! 4. Reverse index construction
+//! The builder stores forward child relations only. Reverse relations are rebuilt
+//! by BRepGraphInc_Storage after population.
 class BRepGraphInc_Populate
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Options controlling which post-passes are executed during population.
+  //! Result of a build operation.
+  enum class BuildStatus
+  {
+    Success,             //!< All faces built successfully.
+    SuccessWithWarnings, //!< Build completed with diagnostics, e.g. unbounded natural faces.
+    Failed               //!< Build failed (e.g., null shape, internal error).
+  };
+
+  //! Options controlling population.
   struct Options
   {
-    bool ExtractRegularities;    //!< Phase 3b: edge regularities
-    bool ExtractVertexPointReps; //!< Phase 3c: vertex point representations
-
-    Options()
-        : ExtractRegularities(true),
-          ExtractVertexPointReps(true)
-    {
-    }
+    Options() = default;
   };
 
   //! Build backend incidence storage from a TopoDS_Shape.
-  //! @param[out] theStorage  storage to populate (cleared first)
+  //! @param[out] theGraph    graph whose storage to populate (cleared first)
   //! @param[in]  theShape    root shape
   //! @param[in]  theParallel if true, face-level extraction runs in parallel
   //! @param[in]  theOptions  optional post-pass controls
-  //! @param[in]  theParamLayer        optional point-rep layer to populate
-  //! @param[in]  theRegularityLayer   optional edge-regularity layer to populate
-  //! @param[in]  theTmpAlloc          optional allocator for temporary scratch data
-  static Standard_EXPORT void Perform(
-    BRepGraphInc_Storage&                    theStorage,
-    const TopoDS_Shape&                      theShape,
-    const bool                               theParallel,
-    const Options&                           theOptions    = Options(),
-    const occ::handle<BRepGraph_LayerParam>& theParamLayer = occ::handle<BRepGraph_LayerParam>(),
-    const occ::handle<BRepGraph_LayerRegularity>& theRegularityLayer =
-      occ::handle<BRepGraph_LayerRegularity>(),
-    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
-      occ::handle<NCollection_BaseAllocator>());
+  //! @return build status indicating success, warnings, or failure
+  [[nodiscard]] static Standard_EXPORT BuildStatus Perform(BRepGraph&       theGraph,
+                                                            const TopoDS_Shape& theShape,
+                                                            bool theParallel,
+                                                            const Options& theOptions = Options());
 
   //! Extend existing backend storage with additional shapes (no clear).
   //! Flattens hierarchy containers away; Solid/Shell/Compound/CompSolid inputs
   //! contribute appended face roots instead of container entities.
   //! Recomputes the built-in metadata layers from the populated storage.
-  //! @param[in,out] theStorage       storage to extend
+  //! @param[in,out] theGraph         graph whose storage to extend
   //! @param[in]     theShape         shape to append
   //! @param[in]     theParallel      if true, face-level extraction runs in parallel
   //! @param[out]    theAppendedRoots collected root NodeIds for non-container shapes
   //! @param[in]     theOptions       optional post-pass controls
-  //! @param[in]     theTmpAlloc      optional allocator for temporary scratch data
-  static Standard_EXPORT void AppendFlattened(
-    BRepGraphInc_Storage&                       theStorage,
+  //! @return build status indicating success, warnings, or failure
+  [[nodiscard]] static Standard_EXPORT BuildStatus AppendFlattened(
+    BRepGraph&                                  theGraph,
     const TopoDS_Shape&                         theShape,
-    const bool                                  theParallel,
-    NCollection_DynamicArray<BRepGraph_NodeId>& theAppendedRoots,
-    const Options&                              theOptions    = Options(),
-    const occ::handle<BRepGraph_LayerParam>&    theParamLayer = occ::handle<BRepGraph_LayerParam>(),
-    const occ::handle<BRepGraph_LayerRegularity>& theRegularityLayer =
-      occ::handle<BRepGraph_LayerRegularity>(),
-    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
-      occ::handle<NCollection_BaseAllocator>());
+    bool                                        theParallel,
+    NCollection_LinearVector<BRepGraph_NodeId>& theAppendedRoots,
+    const Options&                              theOptions = Options());
 
   //! Extend existing backend storage with additional shapes (no clear).
   //! Preserves the full shape hierarchy: Solid/Shell/Compound/CompSolid nodes
   //! are created alongside Face/Edge/Vertex nodes. Shapes already present in
   //! the storage (same TShape pointer) are deduplicated and not re-added.
-  //! @param[in,out] theStorage       storage to extend
-  //! @param[in]     theShape         shape to append
-  //! @param[in]     theParallel      if true, face-level extraction runs in parallel
-  //! @param[in]     theOptions       optional post-pass controls
-  //! @param[in]     theTmpAlloc      optional allocator for temporary scratch data
-  static Standard_EXPORT void Append(
-    BRepGraphInc_Storage&                    theStorage,
-    const TopoDS_Shape&                      theShape,
-    const bool                               theParallel,
-    const Options&                           theOptions    = Options(),
-    const occ::handle<BRepGraph_LayerParam>& theParamLayer = occ::handle<BRepGraph_LayerParam>(),
-    const occ::handle<BRepGraph_LayerRegularity>& theRegularityLayer =
-      occ::handle<BRepGraph_LayerRegularity>(),
-    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
-      occ::handle<NCollection_BaseAllocator>());
+  //! @param[in,out] theGraph    graph whose storage to extend
+  //! @param[in]     theShape    shape to append
+  //! @param[in]     theParallel if true, face-level extraction runs in parallel
+  //! @param[in]     theOptions  optional post-pass controls
+  //! @return build status indicating success, warnings, or failure
+  [[nodiscard]] static Standard_EXPORT BuildStatus Append(BRepGraph&       theGraph,
+                                                           const TopoDS_Shape& theShape,
+                                                           bool theParallel,
+                                                           const Options& theOptions = Options());
 
-private:
   BRepGraphInc_Populate() = delete;
 };
 

@@ -31,9 +31,9 @@ public:
   //! Simple workload estimate for an execution phase.
   struct Workload
   {
-    int PrimaryItems     = 0; //!< Main loop range.
-    int AuxiliaryItems   = 0; //!< Additional independent items participating in the phase.
-    int InteractionCount = 0; //!< Pairwise or adjacency work discovered for the phase.
+    uint32_t PrimaryItems     = 0; //!< Main loop range.
+    uint32_t AuxiliaryItems   = 0; //!< Additional independent items participating in the phase.
+    uint32_t InteractionCount = 0; //!< Pairwise or adjacency work discovered for the phase.
   };
 
   //! Return the effective logical worker count reported by OSD_Parallel.
@@ -51,36 +51,18 @@ public:
 
   //! Decide whether the estimated workload is large enough to amortize
   //! thread-pool launch and synchronization overhead.
-  [[nodiscard]] static bool ShouldRun(const bool      theAllowParallel,
-                                      const int       theWorkers,
-                                      const Workload& theWorkload)
-  {
-    if (!theAllowParallel || theWorkers <= 1)
-    {
-      return false;
-    }
-
-    const int aPrimaryItems = std::max(theWorkload.PrimaryItems, 0);
-    if (aPrimaryItems <= 1)
-    {
-      return false;
-    }
-
-    if (aPrimaryItems <= theWorkers)
-    {
-      return false;
-    }
-
-    const int64_t aTotalWorkUnits =
-      static_cast<int64_t>(aPrimaryItems)
-      + static_cast<int64_t>(std::max(theWorkload.AuxiliaryItems, 0))
-      + static_cast<int64_t>(std::max(theWorkload.InteractionCount, 0));
-    const int64_t aRequiredWorkUnits =
-      static_cast<int64_t>(theWorkers) * static_cast<int64_t>(theWorkers);
-    return aTotalWorkUnits > aRequiredWorkUnits;
-  }
+  //! @param[in] theAllowParallel  whether parallel mode is allowed by the caller
+  //! @param[in] theWorkers        effective logical worker count
+  //! @param[in] theWorkload       estimated workload for the phase
+  //! @return true if parallel execution should be used
+  [[nodiscard]] Standard_EXPORT static bool ShouldRun(const bool      theAllowParallel,
+                                                      const int       theWorkers,
+                                                      const Workload& theWorkload);
 
   //! Overload that queries the active worker count lazily.
+  //! @param[in] theAllowParallel  whether parallel mode is allowed by the caller
+  //! @param[in] theWorkload       estimated workload for the phase
+  //! @return true if parallel execution should be used
   [[nodiscard]] static bool ShouldRun(const bool theAllowParallel, const Workload& theWorkload)
   {
     return ShouldRun(theAllowParallel, WorkerCount(), theWorkload);

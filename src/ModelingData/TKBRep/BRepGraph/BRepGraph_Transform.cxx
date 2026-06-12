@@ -23,11 +23,13 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_FlatDataMap.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_Map.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_MeshCache.hxx>
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_RefsIterator.hxx>
+#include <Poly_Polygon2D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -35,6 +37,50 @@
 
 namespace
 {
+struct GraphCounts
+{
+  uint32_t NbVertices = 0;
+  uint32_t NbEdges    = 0;
+  uint32_t NbCoEdges  = 0;
+  uint32_t NbFaces    = 0;
+  uint32_t NbProducts = 0;
+};
+
+GraphCounts graphCounts(const BRepGraph& theGraph)
+{
+  GraphCounts aCounts;
+  aCounts.NbVertices = theGraph.Topo().Vertices().Nb();
+  aCounts.NbEdges    = theGraph.Topo().Edges().Nb();
+  aCounts.NbCoEdges  = theGraph.Topo().CoEdges().Nb();
+  aCounts.NbFaces    = theGraph.Topo().Faces().Nb();
+  aCounts.NbProducts = theGraph.Topo().Products().Nb();
+  return aCounts;
+}
+
+bool isInCopiedRange(const BRepGraph_VertexId theId, const GraphCounts& theCounts)
+{
+  return theId.Index >= theCounts.NbVertices;
+}
+
+bool isInCopiedRange(const BRepGraph_EdgeId theId, const GraphCounts& theCounts)
+{
+  return theId.Index >= theCounts.NbEdges;
+}
+
+bool isInCopiedRange(const BRepGraph_CoEdgeId theId, const GraphCounts& theCounts)
+{
+  return theId.Index >= theCounts.NbCoEdges;
+}
+
+bool isInCopiedRange(const BRepGraph_FaceId theId, const GraphCounts& theCounts)
+{
+  return theId.Index >= theCounts.NbFaces;
+}
+
+bool isInCopiedRange(const BRepGraph_ProductId theId, const GraphCounts& theCounts)
+{
+  return theId.Index >= theCounts.NbProducts;
+}
 
 template <typename ApplyProductFn>
 void forEachRootProduct(BRepGraph& theGraph, ApplyProductFn&& theApplyProduct)
@@ -43,7 +89,24 @@ void forEachRootProduct(BRepGraph& theGraph, ApplyProductFn&& theApplyProduct)
   for (BRepGraph_RootProductIterator aRootIt(theGraph); aRootIt.More(); aRootIt.Next())
   {
     const BRepGraph_ProductId aProductId = aRootIt.Current();
-    if (aProductId.IsValid(aProducts.Nb()) && !aProducts.Definition(aProductId).IsRemoved)
+    if (aProductId.IsValid(aProducts.Nb()) && !aProductId.IsRemoved(theGraph))
+    {
+      theApplyProduct(aProductId);
+    }
+  }
+}
+
+template <typename ApplyProductFn>
+void forEachRootProductInCopiedRange(BRepGraph&         theGraph,
+                                     const GraphCounts& theCounts,
+                                     ApplyProductFn&&   theApplyProduct)
+{
+  const BRepGraph::TopoView::ProductOps& aProducts = theGraph.Topo().Products();
+  for (BRepGraph_RootProductIterator aRootIt(theGraph); aRootIt.More(); aRootIt.Next())
+  {
+    const BRepGraph_ProductId aProductId = aRootIt.Current();
+    if (aProductId.IsValid(aProducts.Nb()) && isInCopiedRange(aProductId, theCounts)
+        && !aProductId.IsRemoved(theGraph))
     {
       theApplyProduct(aProductId);
     }
@@ -118,88 +181,105 @@ void transformPolygon3D(const occ::handle<Poly_Polygon3D>& thePoly, const gp_Trs
   }
 }
 
-//! Copy mesh representations from theSource into theDest, optionally transforming them.
+void transformExistingMesh(BRepGraph&         theGraph,
+                           const GraphCounts& theCounts,
+                           const gp_Trsf&     theTrsf,
+                           const bool         theDoTransform)
+{
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    if (!isInCopiedRange(aFaceId, theCounts))
+    {
+      continue;
+    }
+    const occ::handle<Poly_Triangulation>& aTri =
+      theGraph.Mesh().Persistent().Faces().Triangulation(aFaceId);
+    if (!aTri.IsNull() && theDoTransform)
+    {
+      transformTriangulation(aTri, theTrsf, BRepGraph_Tool::Face::Surface(theGraph, aFaceId));
+    }
+    theGraph.Mesh().Editor().Faces().Clear(aFaceId);
+  }
+
+  for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
+  {
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    if (!isInCopiedRange(anEdgeId, theCounts))
+    {
+      continue;
+    }
+    const occ::handle<Poly_Polygon3D>& aPoly3D =
+      theGraph.Mesh().Persistent().Edges().Polygon3D(anEdgeId);
+    if (!aPoly3D.IsNull() && theDoTransform)
+    {
+      transformPolygon3D(aPoly3D, theTrsf);
+    }
+    theGraph.Mesh().Editor().Edges().Clear(anEdgeId);
+  }
+
+  for (BRepGraph_CoEdgeIterator aCoEdgeIt(theGraph); aCoEdgeIt.More(); aCoEdgeIt.Next())
+  {
+    const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIt.CurrentId();
+    if (!isInCopiedRange(aCoEdgeId, theCounts))
+    {
+      continue;
+    }
+    const occ::handle<Poly_PolygonOnTriangulation>& aPolyOnTri =
+      theGraph.Mesh().Persistent().CoEdges().PolygonOnTriangulation(aCoEdgeId);
+    if (!aPolyOnTri.IsNull() && theDoTransform)
+    {
+      aPolyOnTri->Deflection(aPolyOnTri->Deflection() * std::abs(theTrsf.ScaleFactor()));
+    }
+    theGraph.Mesh().Editor().CoEdges().Clear(aCoEdgeId);
+  }
+}
+
+//! Copy persistent mesh representations from theSource into theDest, optionally transforming them.
 //!
-//! Handles all three mesh layers:
-//!  - Triangulations (persistent FaceDef entry + all cached LOD entries).
-//!  - Polygon3D reps (edge mesh cache).
-//!  - PolygonOnTriangulation reps (coedge mesh cache); TriangulationRepId references
-//!    are remapped to point to the newly created triangulation reps.
+//! Runtime mesh cache is intentionally not copied or transformed.
 //!
 //! @param[in] theSource      source graph whose face IDs and mesh cache are iterated
 //! @param[in] theDest        destination graph (mesh storage is populated by this call)
 //! @param[in] theTrsf        transformation to apply (ignored when !theDoTransform)
 //! @param[in] theDoTransform true: copy + transform; false: copy only (location-only mode)
-//! @param[in] thePolySource  graph whose poly storage is used for TriangulationRep lookups;
-//!                           when nullptr, theSource is used.  Pass the original source graph
-//!                           when theSource is a CopyNode result whose poly storage is empty
-//!                           yet its FaceMeshEntry TriangulationRepIds still reference the
-//!                           original graph's poly storage.
-//! @param[in] theSourceCache raw mesh cache storage to read LOD entries from, bypassing the
-//!                           OwnGen freshness check.  Use when theSource's face OwnGens may
-//!                           have been bumped since the LOD entries were stored (e.g. by
-//!                           Mut guards in the geometry-transform pass that runs before this
-//!                           call).  When nullptr, theSource.Mesh().Faces().CachedMesh() is
-//!                           used (includes the freshness check).
-void applyMeshCopy(const BRepGraph&                  theSource,
-                   BRepGraph&                        theDest,
-                   const gp_Trsf&                    theTrsf,
-                   const bool                        theDoTransform,
-                   const BRepGraph*                  thePolySource  = nullptr,
-                   const BRepGraph_MeshCacheStorage* theSourceCache = nullptr)
+//! @param[in] thePolySource  graph whose persistent poly storage is used for mesh rep lookups;
+//!                           when nullptr, theSource is used.
+void applyMeshCopy(const BRepGraph& theSource,
+                   BRepGraph&       theDest,
+                   const gp_Trsf&   theTrsf,
+                   const bool       theDoTransform,
+                   const BRepGraph* thePolySource = nullptr)
 {
-  const BRepGraph::MeshView::PolyOps& aSrcPoly =
-    thePolySource != nullptr ? thePolySource->Mesh().Poly() : theSource.Mesh().Poly();
+  const BRepGraph* aPolySrc = thePolySource != nullptr ? thePolySource : &theSource;
 
-  // Old TriangulationRepId.Index -> new TriangulationRepId in theDest storage.
-  NCollection_DataMap<uint32_t, BRepGraph_TriangulationRepId> aTriRepMap;
+  // Dedup maps: source handle -> transformed handle.
+  NCollection_FlatDataMap<occ::handle<Poly_Triangulation>, occ::handle<Poly_Triangulation>>
+    aTriRepMap;
+  NCollection_FlatDataMap<occ::handle<Poly_Polygon3D>, occ::handle<Poly_Polygon3D>>
+    aPolygon3DRepMap;
+  NCollection_FlatDataMap<occ::handle<Poly_Polygon2D>, occ::handle<Poly_Polygon2D>>
+    aPolygon2DRepMap;
+  NCollection_FlatDataMap<occ::handle<Poly_PolygonOnTriangulation>,
+                          occ::handle<Poly_PolygonOnTriangulation>>
+    aPolygonOnTriRepMap;
 
-  // -- Triangulations (faces) --
+  // -- Persistent triangulations (faces) --
   for (BRepGraph_FaceIterator aFaceIt(theSource); aFaceIt.More(); aFaceIt.Next())
   {
     const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
 
-    // Snapshot LOD cache entries.  When theSourceCache is provided it is used directly
-    // (bypassing the OwnGen freshness check) because the geometry-transform Mut guards
-    // may have bumped the face OwnGen since the entries were stored, making them appear
-    // stale to CachedMesh() even though the triangulation data is still intact.
-    // The snapshot is also required for the self-aliasing case (theSource == theDest):
-    // ClearFaceCache below would invalidate a raw pointer into the same storage.
-    NCollection_DynamicArray<BRepGraph_TriangulationRepId> aSrcLODs;
-    int                                                    aSrcActiveIdx = -1;
-    {
-      const BRepGraph_MeshCache::FaceMeshEntry* aSrcEntry =
-        theSourceCache != nullptr ? theSourceCache->FindFaceMesh(aFaceId)
-                                  : theSource.Mesh().Faces().CachedMesh(aFaceId);
-      if (aSrcEntry != nullptr && aSrcEntry->IsPresent())
-      {
-        for (int i = 0; i < aSrcEntry->TriangulationRepIds.Length(); ++i)
-        {
-          aSrcLODs.Append(aSrcEntry->TriangulationRepIds.Value(i));
-        }
-        aSrcActiveIdx = aSrcEntry->ActiveTriangulationIndex;
-      }
-    }
+    theDest.Mesh().Editor().Faces().Clear(aFaceId);
 
-    BRepGraph_Tool::Mesh::ClearFaceCache(theDest, aFaceId);
-
-    // Helper lambda: copy one triangulation from source, optionally transform, register in dest.
     auto copyOneTri =
-      [&](const BRepGraph_TriangulationRepId aSrcRepId) -> BRepGraph_TriangulationRepId {
-      if (!aSrcRepId.IsValid(aSrcPoly.NbTriangulations()))
-      {
-        return BRepGraph_TriangulationRepId();
-      }
-      if (const BRepGraph_TriangulationRepId* aExisting = aTriRepMap.Seek(aSrcRepId.Index))
-      {
-        return *aExisting;
-      }
-
-      const occ::handle<Poly_Triangulation>& aSrcTri =
-        aSrcPoly.TriangulationRep(aSrcRepId).Triangulation;
+      [&](const occ::handle<Poly_Triangulation>& aSrcTri) -> occ::handle<Poly_Triangulation> {
       if (aSrcTri.IsNull())
       {
-        return BRepGraph_TriangulationRepId();
+        return {};
+      }
+      if (const occ::handle<Poly_Triangulation>* aExisting = aTriRepMap.Seek(aSrcTri))
+      {
+        return *aExisting;
       }
 
       occ::handle<Poly_Triangulation> aNewTri = aSrcTri->Copy();
@@ -208,56 +288,28 @@ void applyMeshCopy(const BRepGraph&                  theSource,
         const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theDest, aFaceId);
         transformTriangulation(aNewTri, theTrsf, aSurf);
       }
-      const BRepGraph_TriangulationRepId aNewRepId =
-        BRepGraph_Tool::Mesh::CreateTriangulationRep(theDest, aNewTri);
-      aTriRepMap.Bind(aSrcRepId.Index, aNewRepId);
-      return aNewRepId;
+      aTriRepMap.Bind(aSrcTri, aNewTri);
+      return aNewTri;
     };
 
-    // Persistent triangulation stored on FaceDef (not in the cache; safe to read after clear).
-    const BRepGraph_TriangulationRepId aSrcPersistId =
-      theSource.Topo().Faces().Definition(aFaceId).TriangulationRepId;
-    const BRepGraph_TriangulationRepId aNewPersistId = copyOneTri(aSrcPersistId);
-    theDest.Editor().Faces().SetTriangulationRep(aFaceId, aNewPersistId);
-
-    // Cached LOD entries (MeshLayer) - use the pre-clear snapshot.
-    for (int i = 0; i < aSrcLODs.Length(); ++i)
+    const occ::handle<Poly_Triangulation>& aSrcPersistTri =
+      aPolySrc->Mesh().Persistent().Faces().Triangulation(aFaceId);
+    const occ::handle<Poly_Triangulation> aNewPersistTri = copyOneTri(aSrcPersistTri);
+    if (!aNewPersistTri.IsNull())
     {
-      const BRepGraph_TriangulationRepId aNewRepId = copyOneTri(aSrcLODs.Value(i));
-      if (aNewRepId.IsValid())
-      {
-        BRepGraph_Tool::Mesh::AppendCachedTriangulation(theDest, aFaceId, aNewRepId);
-      }
-    }
-    if (aSrcActiveIdx >= 0)
-    {
-      BRepGraph_Tool::Mesh::SetCachedActiveIndex(theDest, aFaceId, aSrcActiveIdx);
+      theDest.Editor().Faces().SetPersistentTriangulation(aFaceId, aNewPersistTri);
     }
   }
 
-  // -- Polygon3D (edges) --
-  for (BRepGraph_EdgeIterator anEdgeIt(theSource); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
-    BRepGraph_Tool::Mesh::ClearEdgeCache(theDest, anEdgeId);
-
-    const BRepGraph_MeshCache::EdgeMeshEntry* aSrcEdge =
-      theSource.Mesh().Edges().CachedMesh(anEdgeId);
-    if (aSrcEdge == nullptr || !aSrcEdge->IsPresent())
-    {
-      continue;
-    }
-
-    const BRepGraph_Polygon3DRepId aSrcPolyRepId = aSrcEdge->Polygon3DRepId;
-    if (!aSrcPolyRepId.IsValid(aSrcPoly.NbPolygons3D()))
-    {
-      continue;
-    }
-
-    const occ::handle<Poly_Polygon3D>& aSrcPoly3D = aSrcPoly.Polygon3DRep(aSrcPolyRepId).Polygon;
+  auto copyOnePolygon3D =
+    [&](const occ::handle<Poly_Polygon3D>& aSrcPoly3D) -> occ::handle<Poly_Polygon3D> {
     if (aSrcPoly3D.IsNull())
     {
-      continue;
+      return {};
+    }
+    if (const occ::handle<Poly_Polygon3D>* aExisting = aPolygon3DRepMap.Seek(aSrcPoly3D))
+    {
+      return *aExisting;
     }
 
     occ::handle<Poly_Polygon3D> aNewPoly3D = aSrcPoly3D->Copy();
@@ -266,71 +318,106 @@ void applyMeshCopy(const BRepGraph&                  theSource,
       transformPolygon3D(aNewPoly3D, theTrsf);
     }
 
-    const BRepGraph_Polygon3DRepId aNewRepId =
-      BRepGraph_Tool::Mesh::CreatePolygon3DRep(theDest, aNewPoly3D);
-    BRepGraph_Tool::Mesh::SetCachedPolygon3D(theDest, anEdgeId, aNewRepId);
+    aPolygon3DRepMap.Bind(aSrcPoly3D, aNewPoly3D);
+    return aNewPoly3D;
+  };
+
+  // -- Persistent Polygon3D (edges) --
+  for (BRepGraph_EdgeIterator anEdgeIt(theSource); anEdgeIt.More(); anEdgeIt.Next())
+  {
+    const BRepGraph_EdgeId             anEdgeId = anEdgeIt.CurrentId();
+    const occ::handle<Poly_Polygon3D>& aSrcPersistentPoly3D =
+      aPolySrc->Mesh().Persistent().Edges().Polygon3D(anEdgeId);
+    if (!aSrcPersistentPoly3D.IsNull())
+    {
+      const occ::handle<Poly_Polygon3D> aNewPersistentPoly3D =
+        copyOnePolygon3D(aSrcPersistentPoly3D);
+      if (!aNewPersistentPoly3D.IsNull())
+      {
+        theDest.Editor().Edges().SetPersistentPolygon3D(anEdgeId, aNewPersistentPoly3D);
+      }
+    }
+    theDest.Mesh().Editor().Edges().Clear(anEdgeId);
   }
 
-  // -- PolygonOnTriangulation (coedges) --
+  auto copyOnePolygon2D =
+    [&](const occ::handle<Poly_Polygon2D>& aSrcPoly2D) -> occ::handle<Poly_Polygon2D> {
+    if (aSrcPoly2D.IsNull())
+    {
+      return {};
+    }
+    if (const occ::handle<Poly_Polygon2D>* aExisting = aPolygon2DRepMap.Seek(aSrcPoly2D))
+    {
+      return *aExisting;
+    }
+
+    occ::handle<Poly_Polygon2D> aNewPoly2D = aSrcPoly2D->Copy();
+    aPolygon2DRepMap.Bind(aSrcPoly2D, aNewPoly2D);
+    return aNewPoly2D;
+  };
+
+  auto copyOnePolygonOnTri =
+    [&](const occ::handle<Poly_PolygonOnTriangulation>& aSrcPoly,
+        const BRepGraph_CoEdgeId) -> occ::handle<Poly_PolygonOnTriangulation> {
+    if (aSrcPoly.IsNull())
+    {
+      return {};
+    }
+    if (const occ::handle<Poly_PolygonOnTriangulation>* aExisting =
+          aPolygonOnTriRepMap.Seek(aSrcPoly))
+    {
+      return *aExisting;
+    }
+
+    occ::handle<Poly_PolygonOnTriangulation> aNewPoly = aSrcPoly->Copy();
+    if (theDoTransform)
+    {
+      aNewPoly->Deflection(aNewPoly->Deflection() * std::abs(theTrsf.ScaleFactor()));
+    }
+
+    aPolygonOnTriRepMap.Bind(aSrcPoly, aNewPoly);
+    return aNewPoly;
+  };
+
+  // -- Persistent coedge mesh (Polygon2D + PolygonOnTriangulation) --
   for (BRepGraph_CoEdgeIterator aCoEdgeIt(theSource); aCoEdgeIt.More(); aCoEdgeIt.Next())
   {
     const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIt.CurrentId();
 
-    const BRepGraph_MeshCache::CoEdgeMeshEntry* aSrcCoEdge =
-      theSource.Mesh().CoEdges().CachedMesh(aCoEdgeId);
-    if (aSrcCoEdge == nullptr || !aSrcCoEdge->IsPresent())
+    // Persistent coedge mesh (Polygon2D + PolygonOnTri).
+    const occ::handle<Poly_Polygon2D>& aSrcPersistPoly2D =
+      aPolySrc->Mesh().Persistent().CoEdges().PolygonOnSurface(aCoEdgeId);
+    const occ::handle<Poly_PolygonOnTriangulation>& aSrcPersistPolyOnTri =
+      aPolySrc->Mesh().Persistent().CoEdges().PolygonOnTriangulation(aCoEdgeId);
+    if (!aSrcPersistPoly2D.IsNull() || !aSrcPersistPolyOnTri.IsNull())
     {
-      continue;
+      if (!aSrcPersistPoly2D.IsNull())
+      {
+        theDest.Editor().CoEdges().SetPersistentPolygon2D(aCoEdgeId,
+                                                          copyOnePolygon2D(aSrcPersistPoly2D));
+      }
+      if (!aSrcPersistPolyOnTri.IsNull())
+      {
+        theDest.Editor().CoEdges().SetPersistentPolygonOnTri(
+          aCoEdgeId,
+          copyOnePolygonOnTri(aSrcPersistPolyOnTri, aCoEdgeId));
+      }
     }
-
-    for (int i = 0; i < aSrcCoEdge->PolygonOnTriRepIds.Length(); ++i)
-    {
-      const BRepGraph_PolygonOnTriRepId aSrcRepId = aSrcCoEdge->PolygonOnTriRepIds.Value(i);
-      if (!aSrcRepId.IsValid(aSrcPoly.NbPolygonsOnTri()))
-      {
-        continue;
-      }
-
-      const BRepGraphInc::PolygonOnTriRep& aSrcRep = aSrcPoly.PolygonOnTriRep(aSrcRepId);
-      if (aSrcRep.Polygon.IsNull())
-      {
-        continue;
-      }
-
-      occ::handle<Poly_PolygonOnTriangulation> aNewPoly = aSrcRep.Polygon->Copy();
-      if (theDoTransform)
-      {
-        aNewPoly->Deflection(aNewPoly->Deflection() * std::abs(theTrsf.ScaleFactor()));
-      }
-
-      // Remap triangulation reference to the newly created dest rep.
-      BRepGraph_TriangulationRepId aNewTriRepId;
-      if (const BRepGraph_TriangulationRepId* aFound =
-            aTriRepMap.Seek(aSrcRep.TriangulationRepId.Index))
-      {
-        aNewTriRepId = *aFound;
-      }
-
-      const BRepGraph_PolygonOnTriRepId aNewRepId =
-        BRepGraph_Tool::Mesh::CreatePolygonOnTriRep(theDest, aNewPoly, aNewTriRepId);
-      BRepGraph_Tool::Mesh::AppendCachedPolygonOnTri(theDest, aCoEdgeId, aNewRepId);
-    }
+    theDest.Mesh().Editor().CoEdges().Clear(aCoEdgeId);
   }
 }
 
-//! Geometry-level transform: deep-copy geometry is already done by Copy,
-//! so transform geometry handles in-place.
+//! Geometry-level transform: create new transformed geometry handles and set them
+//! via the editor. Never mutates shared handles in-place.
 //! Matches BRepBuilderAPI_Transform with theCopyGeom=true.
 //! When theCopyMesh=true triangulations are copied and transformed;
 //! otherwise they are invalidated.
 //! @param[in] thePolySource   forwarded to applyMeshCopy; see that function's documentation.
-//! @param[in] theSourceCache  forwarded to applyMeshCopy; see that function's documentation.
-void applyGeometryTransform(const BRepGraph&                  theSource,
-                            BRepGraph&                        theGraph,
-                            const gp_Trsf&                    theTrsf,
-                            const bool                        theCopyMesh,
-                            const BRepGraph*                  thePolySource  = nullptr,
-                            const BRepGraph_MeshCacheStorage* theSourceCache = nullptr)
+void applyGeometryTransform(const BRepGraph& theSource,
+                            BRepGraph&       theGraph,
+                            const gp_Trsf&   theTrsf,
+                            const bool       theCopyMesh,
+                            const BRepGraph* thePolySource = nullptr)
 {
   // Transform absolute vertex points.
   for (BRepGraph_VertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
@@ -341,59 +428,128 @@ void applyGeometryTransform(const BRepGraph&                  theSource,
     theGraph.Editor().Vertices().SetPoint(aVertId, aPnt);
   }
 
-  // Transform surface geometry handles directly on surface reps.
-  // Use visited set to avoid transforming shared handles twice.
-  NCollection_Map<BRepGraph_SurfaceRepId> aVisitedSurfReps;
+  // Transform surface geometry: create new handles via Transformed() and set via editor.
   for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_FaceId                    aFaceId = aFaceIt.CurrentId();
-    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace   = theGraph.Editor().Faces().Mut(aFaceId);
-    if (BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId)
-        && aVisitedSurfReps.Add(aFace->SurfaceRepId))
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    if (BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId))
     {
       const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, aFaceId);
       if (!aSurf.IsNull())
       {
-        aSurf->Transform(theTrsf);
-        aFace.MarkDirty();
+        theGraph.Editor().Faces().SetSurface(
+          aFaceId,
+          occ::down_cast<Geom_Surface>(aSurf->Transformed(theTrsf)));
       }
     }
     if (!theCopyMesh)
     {
       // Invalidate triangulations - meshes are no longer valid after geometry transform.
-      // Use the MutGuard overload so the clear is folded into the open guard scope and
-      // the destructor fires a single markModified for the face.
-      theGraph.Editor().Faces().SetTriangulationRep(aFace, BRepGraph_TriangulationRepId());
-      BRepGraph_Tool::Mesh::ClearFaceCache(theGraph, aFaceId);
+      theGraph.Editor().Faces().ClearPersistentTriangulation(aFaceId);
+      theGraph.Mesh().Editor().Faces().Clear(aFaceId);
     }
   }
 
-  // Transform curve geometry handles directly on curve reps.
-  NCollection_Map<BRepGraph_Curve3DRepId> aVisitedCurveReps;
+  // Transform curve geometry: create new handles via Transformed() and set via editor.
   for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                    anEdgeId = anEdgeIt.CurrentId();
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge   = theGraph.Editor().Edges().Mut(anEdgeId);
-    if (BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId)
-        && aVisitedCurveReps.Add(anEdge->Curve3DRepId))
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    if (BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
     {
       const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
       if (!aCurve3d.IsNull())
       {
-        aCurve3d->Transform(theTrsf);
-        anEdge.MarkDirty();
+        const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(theGraph, anEdgeId);
+        theGraph.Editor().Edges().SetCurve(
+          anEdgeId,
+          occ::down_cast<Geom_Curve>(aCurve3d->Transformed(theTrsf)),
+          aFirst,
+          aLast);
       }
     }
     if (!theCopyMesh)
     {
-      BRepGraph_Tool::Mesh::ClearEdgeCache(theGraph, anEdgeId);
+      theGraph.Mesh().Editor().Edges().Clear(anEdgeId);
     }
   }
   // PCurves are in UV space - they are not affected by 3D transforms.
 
   if (theCopyMesh)
   {
-    applyMeshCopy(theSource, theGraph, theTrsf, true, thePolySource, theSourceCache);
+    applyMeshCopy(theSource, theGraph, theTrsf, true, thePolySource);
+  }
+}
+
+void applyGeometryTransformInCopiedRange(BRepGraph&         theGraph,
+                                         const GraphCounts& theCounts,
+                                         const gp_Trsf&     theTrsf,
+                                         const bool         theCopyMesh)
+{
+  for (BRepGraph_VertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
+  {
+    const BRepGraph_VertexId aVertId = aVertexIt.CurrentId();
+    if (!isInCopiedRange(aVertId, theCounts))
+    {
+      continue;
+    }
+    gp_Pnt aPnt = theGraph.Topo().Vertices().Definition(aVertId).Point;
+    aPnt.Transform(theTrsf);
+    theGraph.Editor().Vertices().SetPoint(aVertId, aPnt);
+  }
+
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    if (!isInCopiedRange(aFaceId, theCounts))
+    {
+      continue;
+    }
+    if (BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId))
+    {
+      const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, aFaceId);
+      if (!aSurf.IsNull())
+      {
+        theGraph.Editor().Faces().SetSurface(
+          aFaceId,
+          occ::down_cast<Geom_Surface>(aSurf->Transformed(theTrsf)));
+      }
+    }
+    if (!theCopyMesh)
+    {
+      theGraph.Editor().Faces().ClearPersistentTriangulation(aFaceId);
+      theGraph.Mesh().Editor().Faces().Clear(aFaceId);
+    }
+  }
+
+  for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
+  {
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    if (!isInCopiedRange(anEdgeId, theCounts))
+    {
+      continue;
+    }
+    if (BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
+    {
+      const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
+      if (!aCurve3d.IsNull())
+      {
+        const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(theGraph, anEdgeId);
+        theGraph.Editor().Edges().SetCurve(
+          anEdgeId,
+          occ::down_cast<Geom_Curve>(aCurve3d->Transformed(theTrsf)),
+          aFirst,
+          aLast);
+      }
+    }
+    if (!theCopyMesh)
+    {
+      theGraph.Mesh().Editor().Edges().Clear(anEdgeId);
+    }
+  }
+
+  if (theCopyMesh)
+  {
+    transformExistingMesh(theGraph, theCounts, theTrsf, true);
   }
 }
 
@@ -408,11 +564,10 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
   // Compose the transform into all top-level OccurrenceRefs of each root product.
   // This handles both parts (shape-root occurrence) and assemblies (sub-product occurrences).
   forEachRootProduct(theGraph, [&](const BRepGraph_ProductId theProductId) {
-    const BRepGraphInc::ProductDef& aProduct = theGraph.Topo().Products().Definition(theProductId);
-    for (const BRepGraph_OccurrenceRefId& aRefId : aProduct.OccurrenceRefIds)
+    for (const BRepGraph_OccurrenceRefId& aRefId :
+         theGraph.Topo().Products().Relations(theProductId).OccurrenceRefIds)
     {
-      const BRepGraphInc::OccurrenceRef& aOccRef = theGraph.Refs().Occurrences().Entry(aRefId);
-      if (aOccRef.IsRemoved)
+      if (theGraph.Refs().IsRemoved(aRefId))
       {
         continue;
       }
@@ -425,173 +580,220 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
 
 //=================================================================================================
 
-BRepGraph BRepGraph_Transform::Perform(const BRepGraph& theGraph,
-                                       const gp_Trsf&   theTrsf,
-                                       const bool       theCopyGeom,
-                                       const bool       theCopyMesh)
+void applyLocationTransformInCopiedRange(BRepGraph&         theGraph,
+                                         const GraphCounts& theCounts,
+                                         const gp_Trsf&     theTrsf)
 {
-  if (!theGraph.IsDone())
-  {
-    return BRepGraph();
-  }
-
-  // Determine if we need geometry-level modification (like BRepBuilderAPI_Transform).
-  const bool useGeomModif =
-    theCopyGeom || theTrsf.IsNegative()
-    || (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
-
-  if (useGeomModif)
-  {
-    // Geometry-level: deep-copy then transform geometry handles in-place.
-    BRepGraph aResult = BRepGraph_Copy::Perform(theGraph, true);
-    if (!aResult.IsDone())
+  const TopLoc_Location aLoc(theTrsf);
+  forEachRootProductInCopiedRange(theGraph, theCounts, [&](const BRepGraph_ProductId theProductId) {
+    for (const BRepGraph_OccurrenceRefId& aRefId :
+         theGraph.Topo().Products().Relations(theProductId).OccurrenceRefIds)
     {
-      return aResult;
+      if (theGraph.Refs().IsRemoved(aRefId))
+      {
+        continue;
+      }
+      BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> aMutRef =
+        theGraph.Editor().Occurrences().MutRef(aRefId);
+      theGraph.Editor().Occurrences().SetRefLocalLocation(aMutRef, aLoc * aMutRef->LocalLocation);
     }
-
-    applyGeometryTransform(theGraph, aResult, theTrsf, theCopyMesh);
-    return aResult;
-  }
-
-  // Root-level (location-only): light-copy, multiply transform into node locations.
-  // Matches BRepBuilderAPI_Transform with theCopyGeom=false (shape.Moved(trsf)).
-  BRepGraph aResult = BRepGraph_Copy::Perform(theGraph, false);
-  if (!aResult.IsDone())
-  {
-    return aResult;
-  }
-
-  applyLocationTransform(aResult, theTrsf);
-  if (theCopyMesh)
-  {
-    applyMeshCopy(theGraph, aResult, theTrsf, false);
-  }
-  return aResult;
+  });
 }
 
 //=================================================================================================
 
-BRepGraph BRepGraph_Transform::TransformNode(const BRepGraph&       theGraph,
-                                             const BRepGraph_NodeId theNodeId,
-                                             const gp_Trsf&         theTrsf,
-                                             const bool             theCopyGeom,
-                                             const bool             theCopyMesh)
+bool BRepGraph_Transform::Perform(const BRepGraph&                 theSourceGraph,
+                                  BRepGraph&                       theTargetGraph,
+                                  const gp_Trsf&                   theTrsf,
+                                  const BRepGraph_Copy::GeomPolicy theGeomPolicy,
+                                  const BRepGraph_Copy::MeshPolicy theMeshPolicy)
 {
-  if (!theGraph.IsDone())
+  if (theSourceGraph.IsEmpty())
   {
-    return BRepGraph();
+    return false;
   }
 
+  // Determine if the transform requires geometry-level modification
+  // (matching BRepBuilderAPI_Transform semantics).
+  const bool isNegative = theTrsf.IsNegative();
+  const bool isScaled =
+    std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec();
+
   const bool useGeomModif =
-    theCopyGeom || theTrsf.IsNegative()
-    || (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+    (theGeomPolicy == BRepGraph_Copy::GeomPolicy::Copy) || isNegative || isScaled;
+
+  // GeomPolicy::Drop is invalid when geometry-level modification is required:
+  // can't transform geometry that doesn't exist.
+  if (useGeomModif && theGeomPolicy == BRepGraph_Copy::GeomPolicy::Drop)
+  {
+    return false;
+  }
+
+  // MeshPolicy::Share is invalid when geometry-level modification is required:
+  // mesh handles become stale after geometry transforms.
+  if (useGeomModif && theMeshPolicy == BRepGraph_Copy::MeshPolicy::Share)
+  {
+    return false;
+  }
+
+  // Determine if mesh needs transformation (same trigger as geometry).
+  const bool doCopyMesh = (theMeshPolicy == BRepGraph_Copy::MeshPolicy::Copy);
+
+  // Self-transform: apply transform in-place on theTargetGraph.
+  if (&theSourceGraph == &theTargetGraph)
+  {
+    if (useGeomModif)
+    {
+      applyGeometryTransform(theTargetGraph, theTargetGraph, theTrsf, doCopyMesh);
+    }
+    else
+    {
+      applyLocationTransform(theTargetGraph, theTrsf);
+      if (doCopyMesh)
+      {
+        applyMeshCopy(theTargetGraph, theTargetGraph, theTrsf, false);
+      }
+    }
+    return true;
+  }
+
+  // Copy source into target, then transform.
+  const GraphCounts aTargetCounts = graphCounts(theTargetGraph);
+  if (!BRepGraph_Copy::Perform(theSourceGraph, theTargetGraph, theGeomPolicy, theMeshPolicy))
+  {
+    return false;
+  }
+
+  if (useGeomModif)
+  {
+    applyGeometryTransformInCopiedRange(theTargetGraph, aTargetCounts, theTrsf, doCopyMesh);
+  }
+  else
+  {
+    applyLocationTransformInCopiedRange(theTargetGraph, aTargetCounts, theTrsf);
+    if (doCopyMesh)
+    {
+      transformExistingMesh(theTargetGraph, aTargetCounts, theTrsf, false);
+    }
+  }
+  return true;
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph_Transform::TransformNode(const BRepGraph&                 theSourceGraph,
+                                                    BRepGraph&                       theTargetGraph,
+                                                    const BRepGraph_NodeId           theNodeId,
+                                                    const gp_Trsf&                   theTrsf,
+                                                    const BRepGraph_Copy::GeomPolicy theGeomPolicy,
+                                                    const BRepGraph_Copy::MeshPolicy theMeshPolicy)
+{
+  if (theSourceGraph.IsEmpty())
+  {
+    return BRepGraph_NodeId();
+  }
+
+  // Determine if the transform requires geometry-level modification.
+  const bool isNegative = theTrsf.IsNegative();
+  const bool isScaled =
+    std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec();
+
+  const bool isPlacementNode = theNodeId.NodeKind == BRepGraph_NodeId::Kind::Product
+                               || theNodeId.NodeKind == BRepGraph_NodeId::Kind::Occurrence;
+  const bool useGeomModif = !isPlacementNode || (theGeomPolicy == BRepGraph_Copy::GeomPolicy::Copy)
+                            || isNegative || isScaled;
+
+  // GeomPolicy::Drop is invalid when geometry-level modification is required.
+  if (useGeomModif && theGeomPolicy == BRepGraph_Copy::GeomPolicy::Drop)
+  {
+    return BRepGraph_NodeId();
+  }
+
+  // MeshPolicy::Share is invalid when geometry-level modification is required:
+  // mesh handles become stale after geometry transforms.
+  if (useGeomModif && theMeshPolicy == BRepGraph_Copy::MeshPolicy::Share)
+  {
+    return BRepGraph_NodeId();
+  }
 
   // Assembly nodes (Product / Occurrence) carry topology only via locations on
   // OccurrenceRef. The geometry-modification path warps shared geometry but never
   // updates locations, producing an inconsistent result regardless of traversal mode.
   // Reject the combination explicitly rather than silently mis-transforming.
-  if (useGeomModif
-      && (theNodeId.NodeKind == BRepGraph_NodeId::Kind::Product
-          || theNodeId.NodeKind == BRepGraph_NodeId::Kind::Occurrence))
+  if (useGeomModif && isPlacementNode)
   {
-    return BRepGraph();
+    return BRepGraph_NodeId();
   }
 
-  constexpr bool THE_RESERVE_CACHE = false;
-
-  // Pull mesh data through the copy only when the caller asked for it: the
-  // geometry-transform path otherwise clears triangulations face-by-face, and
-  // skipping the inbound copy keeps allocations down.
-  BRepGraph aSubgraph =
-    BRepGraph_Copy::CopyNode(theGraph, theNodeId, theCopyGeom, theCopyMesh, THE_RESERVE_CACHE);
-  if (!aSubgraph.IsDone())
+  // Copy node into target, then transform.
+  const GraphCounts      aTargetCounts = graphCounts(theTargetGraph);
+  const BRepGraph_NodeId aRootId       = BRepGraph_Copy::CopyNode(theSourceGraph,
+                                                                  theTargetGraph,
+                                                                  theNodeId,
+                                                                  theGeomPolicy,
+                                                                  theMeshPolicy);
+  if (!aRootId.IsValid())
   {
-    return aSubgraph;
+    return BRepGraph_NodeId();
   }
+
+  const bool doCopyMesh = (theMeshPolicy == BRepGraph_Copy::MeshPolicy::Copy);
 
   if (useGeomModif)
   {
-    // theGraph supplies the poly storage (CopyNode does not duplicate it); aSubgraph
-    // raw cache bypasses the OwnGen freshness check that geometry-transform Mut guards
-    // would otherwise invalidate.
-    const BRepGraph_MeshCacheStorage& aSubgraphCache = aSubgraph.meshCache();
-    applyGeometryTransform(aSubgraph, aSubgraph, theTrsf, theCopyMesh, &theGraph, &aSubgraphCache);
+    applyGeometryTransformInCopiedRange(theTargetGraph, aTargetCounts, theTrsf, doCopyMesh);
   }
   else
   {
-    applyLocationTransform(aSubgraph, theTrsf);
-    if (theCopyMesh)
+    applyLocationTransformInCopiedRange(theTargetGraph, aTargetCounts, theTrsf);
+    if (doCopyMesh)
     {
-      applyMeshCopy(theGraph, aSubgraph, theTrsf, false);
+      transformExistingMesh(theTargetGraph, aTargetCounts, theTrsf, false);
     }
   }
-  return aSubgraph;
+  return aRootId;
 }
 
 //=================================================================================================
 
-bool BRepGraph_Transform::MoveRef(BRepGraph&             theGraph,
-                                  const BRepGraph_RefId& theRefId,
-                                  const gp_Trsf&         theTrsf)
+bool BRepGraph_Transform::MoveRef(BRepGraph&                 theGraph,
+                                  const BRepGraph_ChildRefId theRefId,
+                                  const gp_Trsf&             theTrsf)
 {
   if (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec())
   {
     return false;
   }
-
-  const TopLoc_Location  aLoc     = TopLoc_Location(theTrsf);
-  BRepGraph::EditorView& anEditor = theGraph.Editor();
-
-  switch (theRefId.RefKind)
+  if (!theRefId.IsValid(theGraph.Refs().Children().Nb()) || theGraph.Refs().IsRemoved(theRefId))
   {
-    case BRepGraph_RefId::Kind::Shell: {
-      const BRepGraph_ShellRefId aShellRef = BRepGraph_ShellRefId::FromRefId(theRefId);
-      const TopLoc_Location      aOldLoc = theGraph.Refs().Shells().Entry(aShellRef).LocalLocation;
-      anEditor.Shells().SetRefLocalLocation(aShellRef, aLoc * aOldLoc);
-      return true;
-    }
-    case BRepGraph_RefId::Kind::Face: {
-      const BRepGraph_FaceRefId aFaceRef = BRepGraph_FaceRefId::FromRefId(theRefId);
-      const TopLoc_Location     aOldLoc  = theGraph.Refs().Faces().Entry(aFaceRef).LocalLocation;
-      anEditor.Faces().SetRefLocalLocation(aFaceRef, aLoc * aOldLoc);
-      return true;
-    }
-    case BRepGraph_RefId::Kind::Wire: {
-      const BRepGraph_WireRefId aWireRef = BRepGraph_WireRefId::FromRefId(theRefId);
-      const TopLoc_Location     aOldLoc  = theGraph.Refs().Wires().Entry(aWireRef).LocalLocation;
-      anEditor.Wires().SetRefLocalLocation(aWireRef, aLoc * aOldLoc);
-      return true;
-    }
-    case BRepGraph_RefId::Kind::CoEdge: {
-      const BRepGraph_CoEdgeRefId aCoEdgeRef = BRepGraph_CoEdgeRefId::FromRefId(theRefId);
-      const TopLoc_Location aOldLoc = theGraph.Refs().CoEdges().Entry(aCoEdgeRef).LocalLocation;
-      anEditor.CoEdges().SetRefLocalLocation(aCoEdgeRef, aLoc * aOldLoc);
-      return true;
-    }
-    case BRepGraph_RefId::Kind::Vertex: {
-      const BRepGraph_VertexRefId aVertexRef = BRepGraph_VertexRefId::FromRefId(theRefId);
-      const TopLoc_Location aOldLoc = theGraph.Refs().Vertices().Entry(aVertexRef).LocalLocation;
-      anEditor.Vertices().SetRefLocalLocation(aVertexRef, aLoc * aOldLoc);
-      return true;
-    }
-    case BRepGraph_RefId::Kind::Solid: {
-      const BRepGraph_SolidRefId aSolidRef = BRepGraph_SolidRefId::FromRefId(theRefId);
-      const TopLoc_Location      aOldLoc = theGraph.Refs().Solids().Entry(aSolidRef).LocalLocation;
-      anEditor.Solids().SetRefLocalLocation(aSolidRef, aLoc * aOldLoc);
-      return true;
-    }
-    case BRepGraph_RefId::Kind::Child: {
-      const BRepGraph_ChildRefId aChildRef = BRepGraph_ChildRefId::FromRefId(theRefId);
-      const TopLoc_Location aOldLoc = theGraph.Refs().Children().Entry(aChildRef).LocalLocation;
-      anEditor.Gen().SetChildRefLocalLocation(aChildRef, aLoc * aOldLoc);
-      return true;
-    }
-    case BRepGraph_RefId::Kind::Occurrence: {
-      const BRepGraph_OccurrenceRefId aOccRef = BRepGraph_OccurrenceRefId::FromRefId(theRefId);
-      const TopLoc_Location aOldLoc = theGraph.Refs().Occurrences().Entry(aOccRef).LocalLocation;
-      anEditor.Occurrences().SetRefLocalLocation(aOccRef, aLoc * aOldLoc);
-      return true;
-    }
+    return false;
   }
-  return false;
+
+  const TopLoc_Location aLoc     = TopLoc_Location(theTrsf);
+  BRepGraph::EditorView anEditor = theGraph.Editor();
+  const TopLoc_Location aOldLoc  = theGraph.Refs().Children().Entry(theRefId).LocalLocation;
+  anEditor.Gen().SetChildRefLocalLocation(theRefId, aLoc * aOldLoc);
+  return true;
+}
+
+//=================================================================================================
+
+bool BRepGraph_Transform::MoveRef(BRepGraph&                      theGraph,
+                                  const BRepGraph_OccurrenceRefId theRefId,
+                                  const gp_Trsf&                  theTrsf)
+{
+  if (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec())
+  {
+    return false;
+  }
+  if (!theRefId.IsValid(theGraph.Refs().Occurrences().Nb()) || theGraph.Refs().IsRemoved(theRefId))
+  {
+    return false;
+  }
+
+  const TopLoc_Location aLoc     = TopLoc_Location(theTrsf);
+  BRepGraph::EditorView anEditor = theGraph.Editor();
+  const TopLoc_Location aOldLoc  = theGraph.Refs().Occurrences().Entry(theRefId).LocalLocation;
+  anEditor.Occurrences().SetRefLocalLocation(theRefId, aLoc * aOldLoc);
+  return true;
 }

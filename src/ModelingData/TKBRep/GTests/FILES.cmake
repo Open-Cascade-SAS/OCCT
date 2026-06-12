@@ -4,20 +4,22 @@ set(OCCT_TKBRep_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TKBRep_GTests_FILES
   BRep_Tool_Test.cxx
   BRepAdaptor_CompCurve_Test.cxx
-  BRepGraph_CacheKindRegistry_Test.cxx
+  BRepGraph_CacheRegistry_Test.cxx
   BRepGraph_Assembly_Test.cxx
+  BRepGraph_BatchOps_Test.cxx
   BRepGraph_DefsIterator_Test.cxx
   BRepGraphInc_Test.cxx
-  BRepGraph_Builder_Test.cxx
+  BRepGraph_ShapesViewImport_Test.cxx
   BRepGraph_NodeId_Test.cxx
   BRepGraph_RefId_Test.cxx
+  BRepGraph_RepId_Test.cxx
+  BRepGraph_ItemId_Test.cxx
   BRepGraph_TypedIdDispatch_Test.cxx
   BRepGraph_RefsIterator_Test.cxx
-  BRepGraph_Benchmark_Test.cxx
   BRepGraph_Build_Test.cxx
   BRepGraph_DeferredInvalidation_Test.cxx
   BRepGraph_Fuzz_Test.cxx
-  BRepGraph_MeshCache_Test.cxx
+  BRepGraph_CacheMesh_Test.cxx
   BRepGraph_MutGuard_Test.cxx
   BRepGraph_PermissionUpdate_Test.cxx
   BRepGraph_ReplaceVertex_Test.cxx
@@ -28,12 +30,13 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_ChildExplorer_Test.cxx
   BRepGraph_Iterator_Test.cxx
   BRepGraph_LayerIterator_Test.cxx
+  BRepGraph_Lock_Test.cxx
   BRepGraph_ParentExplorer_Test.cxx
   BRepGraph_ReverseIterator_Test.cxx
-  BRepGraph_WireExplorer_Test.cxx
   BRepGraph_EventBus_Test.cxx
   BRepGraph_Geometry_Test.cxx
-  BRepGraph_History_Test.cxx
+  BRepGraph_LayerHistory_Test.cxx
+  BRepGraph_LayerTopoSupplement_Test.cxx
   BRepGraph_Polygon_Test.cxx
   BRepGraph_Reconstruct_Test.cxx
   BRepGraph_Sharing_Test.cxx
@@ -46,7 +49,9 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Transform_Test.cxx
   BRepGraph_Validate_Test.cxx
   BRepGraph_ScenarioMatrix_Test.cxx
+  BRepGraph_Reverse_Test.cxx
   BRepGraph_SeamRedesign_Test.cxx
+  BRepGraph_SparseModel_Test.cxx
   BRepGraph_Deduplicate_Test.cxx
   BRepTools_ReShape_Test.cxx
   TopExp_Test.cxx

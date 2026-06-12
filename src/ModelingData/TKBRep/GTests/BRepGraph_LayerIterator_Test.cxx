@@ -16,7 +16,6 @@
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_NodeId.hxx>
 
-#include <NCollection_DataMap.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -38,15 +37,9 @@ public:
 
   const TCollection_AsciiString& Name() const override { return myName; }
 
-  void OnNodeRemoved(const BRepGraph_NodeId /*theNode*/,
-                     const BRepGraph_NodeId /*theReplacement*/) noexcept override
-  {
-  }
+  void OnNodeRemoved(const BRepGraph_NodeId /*theNode*/) noexcept override {}
 
-  void OnCompact(const NCollection_DataMap<BRepGraph_NodeId,
-                                           BRepGraph_NodeId>& /*theRemapMap*/) noexcept override
-  {
-  }
+  void CopyTo(const BRepGraph_CopyRemap&) const override {}
 
   void InvalidateAll() noexcept override {}
 
@@ -63,7 +56,8 @@ TEST(BRepGraph_LayerIteratorTest, EmptyRegistry_IsEmpty)
   BRepGraph_LayerRegistry aRegistry;
   BRepGraph_LayerIterator anIt(aRegistry);
   EXPECT_FALSE(anIt.More());
-  EXPECT_EQ(anIt.NbLayers(), 0);
+  EXPECT_EQ(anIt.NbLayers(), 0u);
+  EXPECT_TRUE(aRegistry.Layer(0).IsNull());
 }
 
 TEST(BRepGraph_LayerIteratorTest, SingleLayer_IteratesOnce)
@@ -75,8 +69,8 @@ TEST(BRepGraph_LayerIteratorTest, SingleLayer_IteratesOnce)
 
   BRepGraph_LayerIterator anIt(aRegistry);
   ASSERT_TRUE(anIt.More());
-  EXPECT_EQ(anIt.NbLayers(), 1);
-  EXPECT_EQ(anIt.Slot(), 0);
+  EXPECT_EQ(anIt.NbLayers(), 1u);
+  EXPECT_EQ(anIt.Slot(), 0u);
   EXPECT_FALSE(anIt.Value().IsNull());
   EXPECT_EQ(anIt.Value()->Name(), TCollection_AsciiString("TestA"));
 
@@ -97,14 +91,14 @@ TEST(BRepGraph_LayerIteratorTest, MultipleLayers_IteratesAll)
   aRegistry.RegisterLayer(aLayerB);
   aRegistry.RegisterLayer(aLayerC);
 
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_LayerIterator anIt(aRegistry); anIt.More(); anIt.Next())
   {
     EXPECT_FALSE(anIt.Value().IsNull());
     EXPECT_EQ(anIt.Slot(), aCount);
     ++aCount;
   }
-  EXPECT_EQ(aCount, 3);
+  EXPECT_EQ(aCount, 3u);
 }
 
 TEST(BRepGraph_LayerIteratorTest, RangeFor_WorksCorrectly)
@@ -117,11 +111,11 @@ TEST(BRepGraph_LayerIteratorTest, RangeFor_WorksCorrectly)
   aRegistry.RegisterLayer(aLayerA);
   aRegistry.RegisterLayer(aLayerB);
 
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (const occ::handle<BRepGraph_Layer>& aLayer : BRepGraph_LayerIterator(aRegistry))
   {
     EXPECT_FALSE(aLayer.IsNull());
     ++aCount;
   }
-  EXPECT_EQ(aCount, 2);
+  EXPECT_EQ(aCount, 2u);
 }

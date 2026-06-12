@@ -15,11 +15,13 @@
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_ShapesView.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
 #include <gp_Pnt.hxx>
+
+#include <tuple>
 
 #include <gtest/gtest.h>
 
@@ -30,8 +32,8 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     myGraph.Clear();
-    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
-      BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
+    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
+      myGraph.Shapes().Add(aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -102,11 +104,11 @@ TEST_F(BRepGraph_IteratorTest, RootProductIterator_MatchesStoredRoots)
   int aCount = 0;
   for (BRepGraph_RootProductIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
-    ASSERT_LT(aCount, myGraph.RootProductIds().Length());
+    ASSERT_LT(aCount, myGraph.RootProductIds().Size());
     EXPECT_EQ(anIt.Current(), myGraph.RootProductIds().Value(aCount));
     ++aCount;
   }
-  EXPECT_EQ(aCount, myGraph.RootProductIds().Length());
+  EXPECT_EQ(aCount, myGraph.RootProductIds().Size());
 }
 
 TEST_F(BRepGraph_IteratorTest, CurrentId_ReturnsValidTypedIds)
@@ -130,7 +132,7 @@ TEST_F(BRepGraph_IteratorTest, Current_ReturnsDefinition)
 
 TEST_F(BRepGraph_IteratorTest, RemovedFace_SkippedByDefaultIterator)
 {
-  const int aNbBefore = myGraph.Topo().Faces().Nb();
+  const uint32_t aNbBefore = myGraph.Topo().Faces().Nb();
   myGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId::Start());
 
   int aCount = 0;
@@ -143,7 +145,7 @@ TEST_F(BRepGraph_IteratorTest, RemovedFace_SkippedByDefaultIterator)
 
 TEST_F(BRepGraph_IteratorTest, FullTraverse_IncludesRemovedFace)
 {
-  const int aNbBefore = myGraph.Topo().Faces().Nb();
+  const uint32_t aNbBefore = myGraph.Topo().Faces().Nb();
   myGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId::Start());
 
   int aCount = 0;
@@ -159,7 +161,7 @@ TEST_F(BRepGraph_IteratorTest, RangeFor_WorksCorrectly)
   int aCount = 0;
   for (const BRepGraphInc::FaceDef& aFace : BRepGraph_FaceIterator(myGraph))
   {
-    (void)aFace;
+    std::ignore = aFace;
     ++aCount;
   }
   EXPECT_EQ(aCount, 6);

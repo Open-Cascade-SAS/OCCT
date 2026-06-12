@@ -15,40 +15,31 @@
 #define _BRepGraphInc_Definition_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraphInc_ParityOrientation.hxx>
+#include <BRepGraphInc_RepId.hxx>
 #include <BRepGraph_RefId.hxx>
-#include <BRepGraph_RepId.hxx>
 #include <BRepGraphInc_Instance.hxx>
-
 #include <GeomAbs_Shape.hxx>
-#include <TopAbs_Orientation.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
-#include <NCollection_BaseAllocator.hxx>
-#include <NCollection_DynamicArray.hxx>
-
 //! @brief Definition structs for the incidence-table topology model.
 //!
-//! Each definition holds intrinsic geometry properties plus forward-direction
-//! children (via RefId indices). The incidence model stores topology as flat
-//! vectors of definitions (one per kind) with integer cross-references,
-//! enabling cache-friendly traversal and parallel geometry extraction.
+//! Each definition holds intrinsic geometry properties. Ordered child
+//! incidence lives in BRepGraphInc_Relations and reusable parent/child usage
+//! edges live in reference records.
 namespace BRepGraphInc
 {
-
-//! Helper: reinitialize a vector member with the given allocator and block size.
-template <typename T>
-inline void InitVec(NCollection_DynamicArray<T>&                  theVec,
-                    const occ::handle<NCollection_BaseAllocator>& theAlloc,
-                    const int                                     theBlockSize = 4)
-{
-  theVec = NCollection_DynamicArray<T>(theBlockSize, theAlloc);
-}
 
 //! Fields shared by every entity.
 struct BaseDef
 {
   using TypeId = BRepGraph_NodeId;
+
+  //! Persistent per-kind UID counter value.
+  //! 0 = invalid sentinel (not yet allocated). Valid UIDs start at 1.
+  //! Kind is implicit from the concrete struct type (VertexDef, EdgeDef, etc.).
+  uint32_t UID = 0;
 
   //! Own-data mutation counter, incremented ONLY when the entity's own
   //! definition fields change (tolerance, point, flags, etc.).
@@ -64,10 +55,8 @@ struct BaseDef
   //! Wave counter from the last propagation that visited this node.
   //! Used as a re-visit guard in markParentSubtreeGen() to prevent
   //! exponential blowup on diamond topologies. Compared against
-  //! BRepGraph_Data::myPropagationWave.
+  //! BRepGraphInc_Storage::myPropagationWave.
   uint32_t LastPropWave = 0;
-
-  bool IsRemoved = false; //!< Soft-removal flag
 };
 
 //! Vertex definition: 3D point + tolerance.
@@ -80,55 +69,24 @@ struct VertexDef : public BaseDef
 
   //! Tolerance from BRep_TVertex.
   double Tolerance = 0.0;
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>&) {}
 };
 
-//! Edge entity: parameter range, boundary vertices, flags.
-//! Geometry (curve, polygon) accessed via rep indices into Storage vectors.
+//! Edge entity: parameter range, boundary vertices.
+//! Geometry (curve, polygon) accessed via owned use records.
+//! Degeneracy, closure, SameRange, and SameParameter are derived from
+//! current topology and geometry via BRepGraph_CacheDerivedState.
 struct EdgeDef : public BaseDef
 {
   using TypeId = BRepGraph_EdgeId;
 
-  //! Typed representation id into Storage::myCurves3D (invalid for degenerate edges).
-  BRepGraph_Curve3DRepId Curve3DRepId;
+  BRepGraph_EdgeCurve3DRepId Curve3DRepId; //!< Owned 3D curve use id (invalid for degenerate edges)
 
-  //! Curve parameter range.
-  double ParamFirst = 0.0;
-  double ParamLast  = 0.0;
+  double Tolerance = 0.0; //!< Tolerance from BRep_TEdge
 
-  //! Tolerance from BRep_TEdge.
-  double Tolerance = 0.0;
+  BRepGraph_VertexRefId StartVertexRefId; //!< Start vertex reference
+  BRepGraph_VertexRefId EndVertexRefId;   //!< End vertex reference
 
-  //! True if this edge collapses to a point on the surface.
-  bool IsDegenerate = false;
-
-  //! True if all PCurves are reparametrized to the same range as the 3D curve.
-  bool SameParameter = false;
-
-  //! True if the PCurve parameter range equals the 3D curve parameter range.
-  bool SameRange = false;
-
-  //! True if StartVertex == EndVertex (topological loop, e.g. circle edge).
-  bool IsClosed = false;
-
-  //! Boundary vertex reference ids (indices into VertexRef table).
-  //! For closed edges, the start and end ref entries point to the same VertexDefId.
-  BRepGraph_VertexRefId StartVertexRefId;
-  BRepGraph_VertexRefId EndVertexRefId;
-
-  //! Additional vertex reference ids with INTERNAL or EXTERNAL orientation.
-  //! Edges with only FORWARD/REVERSED boundary vertices leave this empty.
-  NCollection_DynamicArray<BRepGraph_VertexRefId> InternalVertexRefIds;
-
-  //! Typed representation id into Storage::myPolygons3D (invalid if no polygon).
-  BRepGraph_Polygon3DRepId Polygon3DRepId;
-
-  //! Reinitialize inner vectors with the given allocator.
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(InternalVertexRefIds, theAlloc, 2); // typically 0
-  }
+  BRepGraph_EdgePolygon3DRepId Polygon3DRepId; //!< Owned 3D polygon use id
 };
 
 //! CoEdge entity: use of an edge on a specific face, owns PCurve data.
@@ -141,38 +99,21 @@ struct CoEdgeDef : public BaseDef
 {
   using TypeId = BRepGraph_CoEdgeId;
 
-  BRepGraph_EdgeId   EdgeDefId; //!< Parent edge definition id
-  BRepGraph_FaceId   FaceDefId; //!< Face this coedge belongs to (invalid for free wires)
-  TopAbs_Orientation Orientation = TopAbs_FORWARD; //!< Orientation relative to parent edge
+  BRepGraph_WireId  ParentWireId; //!< Ordered owner wire
+  BRepGraph_EdgeId  ChildEdgeId;  //!< Connected reusable edge definition
+  BRepGraph_FaceId  FaceId;       //!< Face this coedge belongs to (invalid for free wires)
+  ParityOrientation Orientation = TopAbs_FORWARD; //!< Orientation relative to parent edge
 
-  //! Typed representation id into Storage::myCurves2D (invalid for free-wire coedges).
-  BRepGraph_Curve2DRepId Curve2DRepId;
-  double                 ParamFirst = 0.0;
-  double                 ParamLast  = 0.0;
-  gp_Pnt2d               UV1; //!< UV at ParamFirst
-  gp_Pnt2d               UV2; //!< UV at ParamLast
-
-  //! Typed representation id into Storage::myPolygons2D (invalid if no polygon-on-surface).
-  BRepGraph_Polygon2DRepId Polygon2DRepId;
-
-  //! Typed representation id into Storage::myPolygonsOnTri (persistent/imported).
-  BRepGraph_PolygonOnTriRepId PolygonOnTriRepId;
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>&) {}
+  BRepGraph_CoEdgeCurve2DRepId Curve2DRepId;         //!< Owned 2D curve use id
+  BRepGraph_CoEdgePolygon2DRepId Polygon2DRepId;     //!< Owned 2D polygon use id
+  BRepGraph_CoEdgePolygonOnTriRepId PolygonOnTriRepId; //!< Owned polygon-on-triangulation use id
 };
 
-//! Wire entity: ordered coedge references with closure flag.
+//! Wire entity: ordered coedge sequence.
+//! Wire closure is derived from the ordered coedge chain via BRepGraph_CacheDerivedState.
 struct WireDef : public BaseDef
 {
   using TypeId = BRepGraph_WireId;
-
-  bool                                            IsClosed = false;
-  NCollection_DynamicArray<BRepGraph_CoEdgeRefId> CoEdgeRefIds; //!< Ordered coedge ref indices
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(CoEdgeRefIds, theAlloc, 8); // typically 3-8 coedges per wire
-  }
 };
 
 //! Face entity: surface, triangulations, wires.
@@ -180,119 +121,57 @@ struct FaceDef : public BaseDef
 {
   using TypeId = BRepGraph_FaceId;
 
-  BRepGraph_SurfaceRepId SurfaceRepId; //!< Typed id into mySurfaces
-  BRepGraph_TriangulationRepId
-    TriangulationRepId; //!< Typed id into myTriangulations (persistent/imported)
+  BRepGraph_FaceSurfaceRepId SurfaceRepId;             //!< Owned surface use id
+  BRepGraph_FaceTriangulationRepId TriangulationRepId; //!< Owned triangulation use id (persistent/imported)
 
-  double Tolerance          = 0.0;
-  bool   NaturalRestriction = false;
-
-  NCollection_DynamicArray<BRepGraph_WireRefId> WireRefIds; //!< Wire ref indices (outer first)
-
-  //! Direct INTERNAL/EXTERNAL vertex children (not inside wires).
-  //! Boundary vertices are normally reached through WireRefIds -> CoEdgeRefIds
-  //! -> CoEdgeDef.EdgeDefId -> EdgeDef.{StartVertexRefId, EndVertexRefId}.
-  //! This vector is for additional direct face-owned vertex usage.
-  NCollection_DynamicArray<BRepGraph_VertexRefId> VertexRefIds;
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(WireRefIds, theAlloc, 2);   // typically 1-2 (outer + holes)
-    InitVec(VertexRefIds, theAlloc, 2); // typically 0
-  }
+  double Tolerance = 0.0; //!< Face tolerance
 };
 
-//! Shell entity: ordered face references with local locations.
+//! Shell entity.
+//! Shell closure is derived from face-boundary edge incidence via BRepGraph_CacheDerivedState.
 struct ShellDef : public BaseDef
 {
   using TypeId = BRepGraph_ShellId;
-
-  bool IsClosed = false; //!< True if shell forms a watertight (closed) boundary.
-  NCollection_DynamicArray<BRepGraph_FaceRefId> FaceRefIds; //!< Face ref indices
-  NCollection_DynamicArray<BRepGraph_ChildRefId>
-    AuxChildRefIds; //!< Non-face children (wires, edges)
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(FaceRefIds, theAlloc, 8);     // typically 4-8 faces per shell
-    InitVec(AuxChildRefIds, theAlloc, 2); // typically 0
-  }
 };
 
-//! Solid entity: ordered shell references with local locations.
+//! Solid entity.
 struct SolidDef : public BaseDef
 {
   using TypeId = BRepGraph_SolidId;
-
-  NCollection_DynamicArray<BRepGraph_ShellRefId> ShellRefIds; //!< Shell ref indices
-  NCollection_DynamicArray<BRepGraph_ChildRefId>
-    AuxChildRefIds; //!< Non-shell children (edges, vertices)
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(ShellRefIds, theAlloc, 2);    // typically 1
-    InitVec(AuxChildRefIds, theAlloc, 2); // typically 0
-  }
 };
 
-//! Compound entity: heterogeneous child references.
+//! Compound entity.
 struct CompoundDef : public BaseDef
 {
   using TypeId = BRepGraph_CompoundId;
-
-  NCollection_DynamicArray<BRepGraph_ChildRefId> ChildRefIds; //!< Child ref indices
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(ChildRefIds, theAlloc, 4);
-  }
 };
 
-//! Comp-solid entity: ordered solid references.
+//! Comp-solid entity.
 struct CompSolidDef : public BaseDef
 {
   using TypeId = BRepGraph_CompSolidId;
-
-  NCollection_DynamicArray<BRepGraph_SolidRefId> SolidRefIds; //!< Solid ref indices
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(SolidRefIds, theAlloc, 2);
-  }
 };
 
 //! Product entity: reusable shape definition (part or assembly).
-//! Children are managed uniformly via OccurrenceRefIds:
-//! - A part product has one occurrence whose ChildDefId is a topology root node.
-//! - An assembly product has occurrences whose ChildDefId values are other products.
+//! Children are managed uniformly via ProductRelations::OccurrenceRefIds:
+//! - A part product has one occurrence whose ChildNodeId is a topology root node.
+//! - An assembly product has occurrences whose ChildNodeId values are other products.
 //! Products carry no location or orientation - those live on references.
 struct ProductDef : public BaseDef
 {
   using TypeId = BRepGraph_ProductId;
-
-  NCollection_DynamicArray<BRepGraph_OccurrenceRefId>
-    OccurrenceRefIds; //!< All children (shape roots and sub-products)
-
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(OccurrenceRefIds, theAlloc, 4);
-  }
 };
 
 //! Occurrence entity: reference to a child node (topology root or product).
-//! The parent product is determined from OccurrenceRef::ParentId (BaseRef).
+//! Parent products are determined from ProductRelations owner arrays.
 //! Placement lives on OccurrenceRef::LocalLocation (definitions never carry location).
-//! Path-based traversal (PathView::ForEachPathTo) resolves DAG paths without
-//! stored parent-occurrence pointers.
+//! Path-based traversal (BRepGraph_UsagePath) resolves DAG paths without stored
+//! parent-occurrence pointers.
 struct OccurrenceDef : public BaseDef
 {
   using TypeId = BRepGraph_OccurrenceId;
 
-  BRepGraph_NodeId ChildDefId; //!< Referenced child node (topology root or product)
-
-  //! No-op: OccurrenceDef has no inner vectors to reinitialize.
-  //! Present for uniform DefStore<T>::Append() logic.
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>&) {}
+  BRepGraph_NodeId ChildNodeId; //!< Referenced child node (topology root or product)
 };
 
 } // namespace BRepGraphInc

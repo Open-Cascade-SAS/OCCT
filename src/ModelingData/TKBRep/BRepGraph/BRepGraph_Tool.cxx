@@ -14,16 +14,15 @@
 #include <BRepGraph_Tool.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <BRepGraph_Data.hxx>
+#include <Bnd_Box2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
+#include "BRepGraph_CacheDerivedState.hxx"
+#include "BRepGraph_CacheRegistry.hxx"
 #include <BRepGraph_DefsIterator.hxx>
-#include <BRepGraph_MeshCache.hxx>
-#include <BRepGraph_MeshView.hxx>
-#include <BRepGraph_LayerParam.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ReverseIterator.hxx>
 #include <NCollection_Map.hxx>
-#include <BRepGraph_LayerRegularity.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
@@ -32,8 +31,116 @@
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <GeomProjLib.hxx>
-#include <Standard_NoSuchObject.hxx>
+#include <Precision.hxx>
+
+namespace
+{
+template <typename T>
+occ::handle<T> findOrCreateCache(BRepGraph& theGraph)
+{
+  return theGraph.CacheRegistry().Ensure<T>();
+}
+
+template <typename T>
+occ::handle<T> findOrCreateCache(const BRepGraph& theGraph)
+{
+  return const_cast<BRepGraph&>(theGraph).CacheRegistry().Ensure<T>();
+}
+
+bool addWireUVBounds(const BRepGraph& theGraph, const BRepGraph_WireId theWire, Bnd_Box2d& theBox)
+{
+  for (BRepGraph_CoEdgesOfWire aCoEdgeIt(theGraph, theWire); aCoEdgeIt.More();
+       aCoEdgeIt.Next())
+  {
+    const Geom2dAdaptor_Curve aPCurve =
+      BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCoEdgeIt.CurrentId());
+    if (aPCurve.IsInitialized())
+    {
+      BndLib_Add2dCurve::Add(aPCurve, Precision::Confusion(), theBox);
+    }
+  }
+  return !theBox.IsVoid();
+}
+
+bool wireUVBounds(const BRepGraph&       theGraph,
+                  const BRepGraph_WireId theWire,
+                  double&                theUMin,
+                  double&                theUMax,
+                  double&                theVMin,
+                  double&                theVMax)
+{
+  Bnd_Box2d aBox;
+  if (!addWireUVBounds(theGraph, theWire, aBox))
+  {
+    theUMin = theUMax = theVMin = theVMax = 0.0;
+    return false;
+  }
+
+  aBox.Get(theUMin, theVMin, theUMax, theVMax);
+  return true;
+}
+
+BRepGraph_EdgeId edgeOf(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
+{
+  return theCoEdge.IsValid() && !theCoEdge.IsRemoved(theGraph)
+           ? theGraph.Topo().CoEdges().Definition(theCoEdge).ChildEdgeId
+           : BRepGraph_EdgeId();
+}
+
+BRepGraph_FaceId faceOf(const BRepGraph& theGraph, const BRepGraph_FaceRefId theFaceRef)
+{
+  if (!theFaceRef.IsValid() || theGraph.Refs().IsRemoved(theFaceRef))
+  {
+    return BRepGraph_FaceId();
+  }
+  const BRepGraph_FaceId aFace = theGraph.Refs().Faces().Entry(theFaceRef).ChildFaceId;
+  return aFace.IsValid() && !aFace.IsRemoved(theGraph) ? aFace : BRepGraph_FaceId();
+}
+
+BRepGraph_WireId wireOf(const BRepGraph& theGraph, const BRepGraph_WireRefId theWireRef)
+{
+  if (!theWireRef.IsValid() || theGraph.Refs().IsRemoved(theWireRef))
+  {
+    return BRepGraph_WireId();
+  }
+  const BRepGraph_WireId aWire = theGraph.Refs().Wires().Entry(theWireRef).ChildWireId;
+  return aWire.IsValid() && !aWire.IsRemoved(theGraph) ? aWire : BRepGraph_WireId();
+}
+
+BRepGraph_ShellId shellOf(const BRepGraph& theGraph, const BRepGraph_ShellRefId theShellRef)
+{
+  if (!theShellRef.IsValid() || theGraph.Refs().IsRemoved(theShellRef))
+  {
+    return BRepGraph_ShellId();
+  }
+  const BRepGraph_ShellId aShell = theGraph.Refs().Shells().Entry(theShellRef).ChildShellId;
+  return aShell.IsValid() && !aShell.IsRemoved(theGraph) ? aShell : BRepGraph_ShellId();
+}
+
+occ::handle<BRepGraph_CacheDerivedState> derivedStateCache(const BRepGraph& theGraph)
+{
+  return const_cast<BRepGraph&>(theGraph).CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
+}
+} // namespace
+
+BRepGraph_Tool::VertexUsage BRepGraph_Tool::Vertex::Usage(const BRepGraph&            theGraph,
+                                                          const BRepGraph_VertexRefId theVertexRef)
+{
+  if (!theVertexRef.IsValid() || theGraph.Refs().IsRemoved(theVertexRef))
+  {
+    return VertexUsage();
+  }
+  const BRepGraphInc::VertexRef& aRef = theGraph.Refs().Vertices().Entry(theVertexRef);
+  if (!aRef.ChildVertexId.IsValid() || aRef.ChildVertexId.IsRemoved(theGraph))
+  {
+    return VertexUsage();
+  }
+  return VertexUsage{aRef.ChildVertexId, TopLoc_Location(), aRef.Orientation};
+}
+
+//=================================================================================================
 
 gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph&                    theGraph,
                                    const BRepGraphInc::VertexInstance& theRef)
@@ -55,6 +162,15 @@ gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph& theGraph, const BRepGraph_Ve
 
 //=================================================================================================
 
+gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph&            theGraph,
+                                   const BRepGraph_VertexRefId theVertexRef)
+{
+  const VertexUsage aUsage = Usage(theGraph, theVertexRef);
+  return aUsage.IsValid() ? Pnt(theGraph, aUsage) : gp_Pnt();
+}
+
+//=================================================================================================
+
 double BRepGraph_Tool::Vertex::Tolerance(const BRepGraph&         theGraph,
                                          const BRepGraph_VertexId theVertex)
 {
@@ -63,34 +179,15 @@ double BRepGraph_Tool::Vertex::Tolerance(const BRepGraph&         theGraph,
 
 //=================================================================================================
 
-double BRepGraph_Tool::Vertex::Parameter(const BRepGraph&         theGraph,
-                                         const BRepGraph_VertexId theVertex,
-                                         const BRepGraph_EdgeId   theEdge)
+double BRepGraph_Tool::Vertex::Tolerance(const BRepGraph&            theGraph,
+                                         const BRepGraph_VertexRefId theVertexRef)
 {
-  double                                  aParameter = 0.0;
-  const occ::handle<BRepGraph_LayerParam> aParamLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
-  if (!aParamLayer.IsNull() && aParamLayer->FindPointOnCurve(theVertex, theEdge, &aParameter))
+  if (!theVertexRef.IsValid() || theGraph.Refs().IsRemoved(theVertexRef))
   {
-    return aParameter;
+    return 0.0;
   }
-  throw Standard_NoSuchObject("BRepGraph_Tool::Parameter - no PointOnCurve for this edge");
-}
-
-//=================================================================================================
-
-gp_Pnt2d BRepGraph_Tool::Vertex::Parameters(const BRepGraph&         theGraph,
-                                            const BRepGraph_VertexId theVertex,
-                                            const BRepGraph_FaceId   theFace)
-{
-  gp_Pnt2d                                aUV;
-  const occ::handle<BRepGraph_LayerParam> aParamLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
-  if (!aParamLayer.IsNull() && aParamLayer->FindPointOnSurface(theVertex, theFace, &aUV))
-  {
-    return aUV;
-  }
-  throw Standard_NoSuchObject("BRepGraph_Tool::Parameters - no PointOnSurface for this face");
+  const BRepGraph_VertexId aVertex = theGraph.Refs().Vertices().Entry(theVertexRef).ChildVertexId;
+  return aVertex.IsValid() && !aVertex.IsRemoved(theGraph) ? Tolerance(theGraph, aVertex) : 0.0;
 }
 
 //=================================================================================================
@@ -104,21 +201,78 @@ double BRepGraph_Tool::Edge::Tolerance(const BRepGraph& theGraph, const BRepGrap
 
 bool BRepGraph_Tool::Edge::Degenerated(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Topo().Edges().Definition(theEdge).IsDegenerate;
+  BRepGraph_CacheDerivedState::EdgeEntry anEntry;
+  return derivedStateCache(theGraph)->GetEdgeStatus(theEdge, anEntry)
+         && anEntry.Status == BRepGraph_CacheDerivedState::EdgeGeometryStatus::DegenerateOnSurface;
+}
+
+//=================================================================================================
+
+double BRepGraph_Tool::Edge::Tolerance(const BRepGraph&         theGraph,
+                                       const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() ? Tolerance(theGraph, anEdge) : 0.0;
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::Edge::Degenerated(const BRepGraph&         theGraph,
+                                       const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() && Degenerated(theGraph, anEdge);
 }
 
 //=================================================================================================
 
 bool BRepGraph_Tool::Edge::SameParameter(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Topo().Edges().Definition(theEdge).SameParameter;
+  BRepGraph_CacheDerivedState::EdgeEntry anEntry;
+  return derivedStateCache(theGraph)->GetEdgeStatus(theEdge, anEntry) && anEntry.SameParameter;
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::Edge::SameParameter(const BRepGraph&         theGraph,
+                                         const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() && SameParameter(theGraph, anEdge);
 }
 
 //=================================================================================================
 
 bool BRepGraph_Tool::Edge::SameRange(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Topo().Edges().Definition(theEdge).SameRange;
+  BRepGraph_CacheDerivedState::EdgeEntry anEntry;
+  return derivedStateCache(theGraph)->GetEdgeStatus(theEdge, anEntry) && anEntry.SameRange;
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::Edge::SameRange(const BRepGraph&         theGraph,
+                                     const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() && SameRange(theGraph, anEdge);
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::Edge::IsClosed(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
+{
+  BRepGraph_CacheDerivedState::EdgeEntry anEntry;
+  return derivedStateCache(theGraph)->GetEdgeStatus(theEdge, anEntry) && anEntry.IsClosed;
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::Edge::IsClosed(const BRepGraph&         theGraph,
+                                    const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() && IsClosed(theGraph, anEdge);
 }
 
 //=================================================================================================
@@ -127,84 +281,87 @@ std::pair<double, double> BRepGraph_Tool::Edge::Range(const BRepGraph&       the
                                                       const BRepGraph_EdgeId theEdge)
 {
   const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(theEdge);
-  return {anEdge.ParamFirst, anEdge.ParamLast};
+  const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+  double aFirst = 0.0, aLast = 0.0;
+  if (anEdge.Curve3DRepId.IsValid()
+      && anEdge.Curve3DRepId.IsValid(aStorage.NbEdgeCurves3D())
+      && !aStorage.IsRemoved(anEdge.Curve3DRepId))
+  {
+    const BRepGraphInc::EdgeCurve3DRep& aUse = aStorage.EdgeCurve3DRep(anEdge.Curve3DRepId);
+    aFirst = aUse.ParamFirst;
+    aLast  = aUse.ParamLast;
+  }
+  return {aFirst, aLast};
+}
+
+//=================================================================================================
+
+std::pair<double, double> BRepGraph_Tool::Edge::Range(const BRepGraph&         theGraph,
+                                                      const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() ? Range(theGraph, anEdge) : std::pair<double, double>{0.0, 0.0};
 }
 
 //=================================================================================================
 
 bool BRepGraph_Tool::Edge::HasCurve(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
-  const BRepGraph_Curve3DRepId aRepId = theGraph.Topo().Edges().Curve3DRepId(theEdge);
-  if (!aRepId.IsValid())
+  const occ::handle<Geom_Curve> aCurve = theGraph.Topo().Edges().Curve3D(theEdge);
+  return !aCurve.IsNull();
+}
+
+//=================================================================================================
+
+BRepGraph_VertexRefId BRepGraph_Tool::Edge::StartVertexId(const BRepGraph&       theGraph,
+                                                          const BRepGraph_EdgeId theEdge)
+{
+  return theGraph.Topo().Edges().Definition(theEdge).StartVertexRefId;
+}
+
+//=================================================================================================
+
+BRepGraph_VertexRefId BRepGraph_Tool::Edge::EndVertexId(const BRepGraph&       theGraph,
+                                                        const BRepGraph_EdgeId theEdge)
+{
+  return theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId;
+}
+
+//=================================================================================================
+
+BRepGraph_VertexRefId BRepGraph_Tool::Edge::StartVertexId(const BRepGraph&         theGraph,
+                                                          const BRepGraph_CoEdgeId theCoEdge)
+{
+  if (!theCoEdge.IsValid() || theCoEdge.IsRemoved(theGraph))
   {
-    return false;
+    return BRepGraph_VertexRefId();
   }
-
-  const BRepGraphInc::Curve3DRep& aCurveRep = theGraph.Topo().Geometry().Curve3DRep(aRepId);
-  return !aCurveRep.IsRemoved && !aCurveRep.Curve.IsNull();
+  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
+  return aCoEdge.Orientation == TopAbs_REVERSED ? EndVertexId(theGraph, aCoEdge.ChildEdgeId)
+                                                : StartVertexId(theGraph, aCoEdge.ChildEdgeId);
 }
 
 //=================================================================================================
 
-bool BRepGraph_Tool::Edge::HasPolygon3D(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
+BRepGraph_VertexRefId BRepGraph_Tool::Edge::EndVertexId(const BRepGraph&         theGraph,
+                                                        const BRepGraph_CoEdgeId theCoEdge)
 {
-  // Cache-first, persistent fallback via MeshCacheOps.
-  return theGraph.Mesh().Edges().HasPolygon3D(theEdge);
-}
-
-//=================================================================================================
-
-namespace
-{
-const BRepGraphInc::VertexRef& invalidVertexRef()
-{
-  static const BRepGraphInc::VertexRef THE_INVALID_VERTEX_REF;
-  return THE_INVALID_VERTEX_REF;
-}
-} // namespace
-
-//=================================================================================================
-
-const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertexRef(const BRepGraph&       theGraph,
-                                                                    const BRepGraph_EdgeId theEdge)
-{
-  const BRepGraph_VertexRefId aRefId = theGraph.Topo().Edges().Definition(theEdge).StartVertexRefId;
-  return aRefId.IsValid() ? theGraph.Refs().Vertices().Entry(aRefId) : invalidVertexRef();
-}
-
-//=================================================================================================
-
-const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::EndVertexRef(const BRepGraph&       theGraph,
-                                                                  const BRepGraph_EdgeId theEdge)
-{
-  const BRepGraph_VertexRefId aRefId = theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId;
-  return aRefId.IsValid() ? theGraph.Refs().Vertices().Entry(aRefId) : invalidVertexRef();
-}
-
-//=================================================================================================
-
-BRepGraph_VertexId BRepGraph_Tool::Edge::StartVertexId(const BRepGraph&       theGraph,
-                                                       const BRepGraph_EdgeId theEdge)
-{
-  const BRepGraph_VertexRefId aRefId = theGraph.Topo().Edges().Definition(theEdge).StartVertexRefId;
-  if (!aRefId.IsValid())
+  if (!theCoEdge.IsValid() || theCoEdge.IsRemoved(theGraph))
   {
-    return BRepGraph_VertexId();
+    return BRepGraph_VertexRefId();
   }
-  return theGraph.Refs().Vertices().Entry(aRefId).VertexDefId;
+  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
+  return aCoEdge.Orientation == TopAbs_REVERSED ? StartVertexId(theGraph, aCoEdge.ChildEdgeId)
+                                                : EndVertexId(theGraph, aCoEdge.ChildEdgeId);
 }
 
 //=================================================================================================
 
-BRepGraph_VertexId BRepGraph_Tool::Edge::EndVertexId(const BRepGraph&       theGraph,
-                                                     const BRepGraph_EdgeId theEdge)
+bool BRepGraph_Tool::Edge::HasCurve(const BRepGraph&         theGraph,
+                                    const BRepGraph_CoEdgeId theCoEdge)
 {
-  const BRepGraph_VertexRefId aRefId = theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId;
-  if (!aRefId.IsValid())
-  {
-    return BRepGraph_VertexId();
-  }
-  return theGraph.Refs().Vertices().Entry(aRefId).VertexDefId;
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() && HasCurve(theGraph, anEdge);
 }
 
 //=================================================================================================
@@ -214,48 +371,47 @@ GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(
   const BRepGraphInc::CoEdgeInstance& theRef)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theRef.DefId);
-  const BRepGraphInc::EdgeDef&   anEdge  = theGraph.Topo().Edges().Definition(aCoEdge.EdgeDefId);
+  const BRepGraphInc::EdgeDef&   anEdge  = theGraph.Topo().Edges().Definition(aCoEdge.ChildEdgeId);
   const gp_Trsf aTrsf = theRef.Location.IsIdentity() ? gp_Trsf() : theRef.Location.Transformation();
 
   // Prefer 3D curve when available.
-  if (anEdge.Curve3DRepId.IsValid())
+  if (anEdge.Curve3DRepId.IsValid()
+      && anEdge.Curve3DRepId.IsValid(theGraph.incStorage().NbEdgeCurves3D())
+      && !theGraph.incStorage().IsRemoved(anEdge.Curve3DRepId))
   {
-    const BRepGraphInc::Curve3DRep& aCurveRep =
-      theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
-    if (aCurveRep.IsRemoved)
-    {
-      return GeomAdaptor_TransformedCurve();
-    }
+    const BRepGraphInc::EdgeCurve3DRep& aCurveRep =
+      theGraph.incStorage().EdgeCurve3DRep(anEdge.Curve3DRepId);
     const occ::handle<Geom_Curve>& aCurve = aCurveRep.Curve;
     if (!aCurve.IsNull())
     {
-      return GeomAdaptor_TransformedCurve(aCurve, anEdge.ParamFirst, anEdge.ParamLast, aTrsf);
+      return GeomAdaptor_TransformedCurve(aCurve, aCurveRep.ParamFirst, aCurveRep.ParamLast, aTrsf);
     }
   }
 
   // Fallback: CurveOnSurface from PCurve + surface.
-  if (aCoEdge.Curve2DRepId.IsValid() && aCoEdge.FaceDefId.IsValid())
+  if (aCoEdge.Curve2DRepId.IsValid()
+      && aCoEdge.Curve2DRepId.IsValid(theGraph.incStorage().NbCoEdgeCurves2D())
+      && !theGraph.incStorage().IsRemoved(aCoEdge.Curve2DRepId)
+      && aCoEdge.FaceId.IsValid())
   {
     const BRepGraphInc::FaceDef& aFace =
-      theGraph.Topo().Faces().Definition(BRepGraph_FaceId(aCoEdge.FaceDefId));
-    if (aFace.SurfaceRepId.IsValid())
+      theGraph.Topo().Faces().Definition(BRepGraph_FaceId(aCoEdge.FaceId));
+    if (aFace.SurfaceRepId.IsValid()
+        && aFace.SurfaceRepId.IsValid(theGraph.incStorage().NbFaceSurfaces())
+        && !theGraph.incStorage().IsRemoved(aFace.SurfaceRepId))
     {
-      const BRepGraphInc::Curve2DRep& aPCurveRep =
-        theGraph.Topo().Geometry().Curve2DRep(aCoEdge.Curve2DRepId);
-      const BRepGraphInc::SurfaceRep& aSurfaceRep =
-        theGraph.Topo().Geometry().SurfaceRep(aFace.SurfaceRepId);
-      if (aPCurveRep.IsRemoved || aSurfaceRep.IsRemoved)
-      {
-        return GeomAdaptor_TransformedCurve();
-      }
-      const occ::handle<Geom2d_Curve>& aPCurve = aPCurveRep.Curve;
+      const BRepGraphInc::CoEdgeCurve2DRep& aPCurveUse =
+        theGraph.incStorage().CoEdgeCurve2DRep(aCoEdge.Curve2DRepId);
+      const BRepGraphInc::FaceSurfaceRep& aSurfaceRep =
+        theGraph.incStorage().FaceSurfaceRep(aFace.SurfaceRepId);
+      const occ::handle<Geom2d_Curve>& aPCurve = aPCurveUse.Curve;
       const occ::handle<Geom_Surface>& aSurf   = aSurfaceRep.Surface;
       if (!aPCurve.IsNull() && !aSurf.IsNull())
       {
         GeomAdaptor_TransformedCurve aResult;
         aResult.SetTrsf(aTrsf);
         occ::handle<Geom2dAdaptor_Curve> aHC2d =
-          new Geom2dAdaptor_Curve(aPCurve, aCoEdge.ParamFirst, aCoEdge.ParamLast);
+          new Geom2dAdaptor_Curve(aPCurve, aPCurveUse.ParamFirst, aPCurveUse.ParamLast);
         occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aSurf);
         aResult.LoadCurveOnSurface(new Adaptor3d_CurveOnSurface(aHC2d, aHS));
         return aResult;
@@ -272,22 +428,20 @@ GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(const BRepGraph&
                                                                 const BRepGraph_EdgeId theEdge)
 {
   const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(theEdge);
-  if (!anEdge.Curve3DRepId.IsValid())
+  if (!anEdge.Curve3DRepId.IsValid()
+      || !anEdge.Curve3DRepId.IsValid(theGraph.incStorage().NbEdgeCurves3D())
+      || theGraph.incStorage().IsRemoved(anEdge.Curve3DRepId))
   {
     return GeomAdaptor_TransformedCurve();
   }
-  const BRepGraphInc::Curve3DRep& aCurveRep =
-    theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
-  if (aCurveRep.IsRemoved)
-  {
-    return GeomAdaptor_TransformedCurve();
-  }
+  const BRepGraphInc::EdgeCurve3DRep& aCurveRep =
+    theGraph.incStorage().EdgeCurve3DRep(anEdge.Curve3DRepId);
   const occ::handle<Geom_Curve>& aCurve = aCurveRep.Curve;
   if (aCurve.IsNull())
   {
     return GeomAdaptor_TransformedCurve();
   }
-  return GeomAdaptor_TransformedCurve(aCurve, anEdge.ParamFirst, anEdge.ParamLast, gp_Trsf());
+  return GeomAdaptor_TransformedCurve(aCurve, aCurveRep.ParamFirst, aCurveRep.ParamLast, gp_Trsf());
 }
 
 //=================================================================================================
@@ -295,14 +449,35 @@ GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(const BRepGraph&
 static const occ::handle<Geom_Curve> THE_NULL_CURVE;
 
 const occ::handle<Geom_Curve>& BRepGraph_Tool::Edge::Curve(const BRepGraph&       theGraph,
-                                                           const BRepGraph_EdgeId theEdge)
+                                                            const BRepGraph_EdgeId theEdge)
 {
-  const BRepGraph_Curve3DRepId aRepId = theGraph.Topo().Edges().Curve3DRepId(theEdge);
-  if (!aRepId.IsValid())
+  const BRepGraph_EdgeCurve3DRepId aRepId = theGraph.Topo().Edges().Definition(theEdge).Curve3DRepId;
+  if (!aRepId.IsValid(theGraph.incStorage().NbEdgeCurves3D())
+      || theGraph.incStorage().IsRemoved(aRepId))
   {
     return THE_NULL_CURVE;
   }
-  return theGraph.Topo().Geometry().Curve3DRep(aRepId).Curve;
+  return theGraph.incStorage().EdgeCurve3DRep(aRepId).Curve;
+}
+
+//=================================================================================================
+
+const occ::handle<Geom_Curve>& BRepGraph_Tool::Edge::Curve(
+  const BRepGraph&         theGraph,
+  const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() ? Curve(theGraph, anEdge) : THE_NULL_CURVE;
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(
+  const BRepGraph&         theGraph,
+  const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() ? CurveAdaptor(theGraph, anEdge) : GeomAdaptor_TransformedCurve();
 }
 
 //=================================================================================================
@@ -311,55 +486,21 @@ occ::handle<Geom_Curve> BRepGraph_Tool::Edge::Curve(const BRepGraph&            
                                                     const BRepGraphInc::CoEdgeInstance& theRef)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theRef.DefId);
-  const BRepGraphInc::EdgeDef&   anEdge  = theGraph.Topo().Edges().Definition(aCoEdge.EdgeDefId);
-  if (!anEdge.Curve3DRepId.IsValid())
+  const BRepGraphInc::EdgeDef&   anEdge  = theGraph.Topo().Edges().Definition(aCoEdge.ChildEdgeId);
+  if (!anEdge.Curve3DRepId.IsValid()
+      || !anEdge.Curve3DRepId.IsValid(theGraph.incStorage().NbEdgeCurves3D())
+      || theGraph.incStorage().IsRemoved(anEdge.Curve3DRepId))
   {
     return occ::handle<Geom_Curve>();
   }
-  const BRepGraphInc::Curve3DRep& aCurveRep =
-    theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
-  if (aCurveRep.IsRemoved)
-  {
-    return occ::handle<Geom_Curve>();
-  }
+  const BRepGraphInc::EdgeCurve3DRep& aCurveRep =
+    theGraph.incStorage().EdgeCurve3DRep(anEdge.Curve3DRepId);
   const occ::handle<Geom_Curve>& aCurve = aCurveRep.Curve;
   if (aCurve.IsNull() || theRef.Location.IsIdentity())
   {
     return aCurve;
   }
   return occ::down_cast<Geom_Curve>(aCurve->Transformed(theRef.Location.Transformation()));
-}
-
-//=================================================================================================
-
-static const occ::handle<Poly_Polygon3D> THE_NULL_POLYGON3D;
-
-const occ::handle<Poly_Polygon3D>& BRepGraph_Tool::Edge::Polygon3D(const BRepGraph&       theGraph,
-                                                                   const BRepGraph_EdgeId theEdge)
-{
-  // Cache-first, persistent fallback via MeshCacheOps.
-  const BRepGraph_Polygon3DRepId aRepId = theGraph.Mesh().Edges().Polygon3DRepId(theEdge);
-  if (!aRepId.IsValid())
-  {
-    return THE_NULL_POLYGON3D;
-  }
-  return theGraph.Mesh().Poly().Polygon3DRep(aRepId).Polygon;
-}
-
-//=================================================================================================
-
-double BRepGraph_Tool::Vertex::PCurveParameter(const BRepGraph&         theGraph,
-                                               const BRepGraph_VertexId theVertex,
-                                               const BRepGraph_CoEdgeId theCoEdge)
-{
-  double                                  aParameter = 0.0;
-  const occ::handle<BRepGraph_LayerParam> aParamLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
-  if (!aParamLayer.IsNull() && aParamLayer->FindPointOnPCurve(theVertex, theCoEdge, &aParameter))
-  {
-    return aParameter;
-  }
-  throw Standard_NoSuchObject("BRepGraph_Tool::PCurveParameter - no PointOnPCurve for this coedge");
 }
 
 //=================================================================================================
@@ -372,50 +513,18 @@ uint32_t BRepGraph_Tool::Vertex::NbEdges(const BRepGraph&         theGraph,
 
 //=================================================================================================
 
-bool BRepGraph_Tool::Edge::HasContinuity(const BRepGraph&       theGraph,
-                                         const BRepGraph_EdgeId theEdge,
-                                         const BRepGraph_FaceId theFace1,
-                                         const BRepGraph_FaceId theFace2)
-{
-  const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
-  return !aRegularityLayer.IsNull()
-         && aRegularityLayer->FindContinuity(theEdge, theFace1, theFace2, nullptr);
-}
-
-//=================================================================================================
-
-GeomAbs_Shape BRepGraph_Tool::Edge::Continuity(const BRepGraph&       theGraph,
-                                               const BRepGraph_EdgeId theEdge,
-                                               const BRepGraph_FaceId theFace1,
-                                               const BRepGraph_FaceId theFace2)
-{
-  GeomAbs_Shape                                aContinuity = GeomAbs_C0;
-  const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
-  if (!aRegularityLayer.IsNull()
-      && aRegularityLayer->FindContinuity(theEdge, theFace1, theFace2, &aContinuity))
-  {
-    return aContinuity;
-  }
-  return GeomAbs_C0;
-}
-
-//=================================================================================================
-
-GeomAbs_Shape BRepGraph_Tool::Edge::MaxContinuity(const BRepGraph&       theGraph,
-                                                  const BRepGraph_EdgeId theEdge)
-{
-  const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
-  return !aRegularityLayer.IsNull() ? aRegularityLayer->MaxContinuity(theEdge) : GeomAbs_C0;
-}
-
-//=================================================================================================
-
 uint32_t BRepGraph_Tool::Edge::NbFaces(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   return theGraph.Topo().Edges().NbFaces(theEdge);
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph_Tool::Edge::NbFaces(const BRepGraph&         theGraph,
+                                       const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() ? NbFaces(theGraph, anEdge) : 0;
 }
 
 //=================================================================================================
@@ -427,9 +536,27 @@ bool BRepGraph_Tool::Edge::IsManifold(const BRepGraph& theGraph, const BRepGraph
 
 //=================================================================================================
 
+bool BRepGraph_Tool::Edge::IsManifold(const BRepGraph&         theGraph,
+                                      const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() && IsManifold(theGraph, anEdge);
+}
+
+//=================================================================================================
+
 bool BRepGraph_Tool::Edge::IsBoundary(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   return theGraph.Topo().Edges().IsBoundary(theEdge);
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::Edge::IsBoundary(const BRepGraph&         theGraph,
+                                      const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
+  return anEdge.IsValid() && IsBoundary(theGraph, anEdge);
 }
 
 //=================================================================================================
@@ -453,7 +580,7 @@ bool BRepGraph_Tool::CoEdge::IsReversed(const BRepGraph&         theGraph,
 BRepGraph_EdgeId BRepGraph_Tool::CoEdge::EdgeOf(const BRepGraph&         theGraph,
                                                 const BRepGraph_CoEdgeId theCoEdge)
 {
-  return theGraph.Topo().CoEdges().Definition(theCoEdge).EdgeDefId;
+  return theGraph.Topo().CoEdges().Definition(theCoEdge).ChildEdgeId;
 }
 
 //=================================================================================================
@@ -461,7 +588,7 @@ BRepGraph_EdgeId BRepGraph_Tool::CoEdge::EdgeOf(const BRepGraph&         theGrap
 BRepGraph_FaceId BRepGraph_Tool::CoEdge::FaceOf(const BRepGraph&         theGraph,
                                                 const BRepGraph_CoEdgeId theCoEdge)
 {
-  return theGraph.Topo().CoEdges().Definition(theCoEdge).FaceDefId;
+  return theGraph.Topo().CoEdges().Definition(theCoEdge).FaceId;
 }
 
 //=================================================================================================
@@ -471,19 +598,21 @@ BRepGraph_CoEdgeId BRepGraph_Tool::CoEdge::SeamPair(const BRepGraph&         the
 {
   // The seam mate is the sibling CoEdge on the same face with opposite orientation.
   const BRepGraphInc::CoEdgeDef& aDef = theGraph.Topo().CoEdges().Definition(theCoEdge);
-  if (!aDef.EdgeDefId.IsValid() || !aDef.FaceDefId.IsValid())
+  if (!aDef.ChildEdgeId.IsValid() || !aDef.FaceId.IsValid())
   {
     return {};
   }
-  for (BRepGraph_CoEdgesOfEdge anIt(theGraph, theGraph.Topo().Edges().CoEdges(aDef.EdgeDefId));
+  for (BRepGraph_CoEdgesOfEdge anIt(theGraph, theGraph.Topo().Edges().CoEdges(aDef.ChildEdgeId));
        anIt.More();
        anIt.Next())
   {
     const BRepGraph_CoEdgeId aOther = anIt.CurrentId();
     if (aOther == theCoEdge)
+    {
       continue;
+    }
     const BRepGraphInc::CoEdgeDef& aOtherDef = anIt.Definition();
-    if (aOtherDef.FaceDefId == aDef.FaceDefId && aOtherDef.Orientation != aDef.Orientation)
+    if (aOtherDef.FaceId == aDef.FaceId && aOtherDef.Orientation != aDef.Orientation)
     {
       return aOther;
     }
@@ -520,32 +649,57 @@ Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph&      
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
 
   // Try stored PCurve first.
-  const occ::handle<Geom2d_Curve>& aStored = PCurve(theGraph, aCoEdge);
+  const occ::handle<Geom2d_Curve>& aStored = PCurve(theGraph, theCoEdge);
   if (!aStored.IsNull())
   {
-    return Geom2dAdaptor_Curve(aStored, aCoEdge.ParamFirst, aCoEdge.ParamLast);
+    const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+    double aPCFirst = 0.0, aPCLast = 0.0;
+    if (aCoEdge.Curve2DRepId.IsValid()
+        && aCoEdge.Curve2DRepId.IsValid(aStorage.NbCoEdgeCurves2D())
+        && !aStorage.IsRemoved(aCoEdge.Curve2DRepId))
+    {
+      const BRepGraphInc::CoEdgeCurve2DRep& aPCUse = aStorage.CoEdgeCurve2DRep(aCoEdge.Curve2DRepId);
+      aPCFirst = aPCUse.ParamFirst;
+      aPCLast  = aPCUse.ParamLast;
+    }
+    return Geom2dAdaptor_Curve(aStored, aPCFirst, aPCLast);
   }
 
   // For planar faces, compute PCurve on-the-fly by projecting 3D curve onto the plane.
-  if (!aCoEdge.FaceDefId.IsValid() || !aCoEdge.EdgeDefId.IsValid())
+  if (!aCoEdge.FaceId.IsValid() || !aCoEdge.ChildEdgeId.IsValid())
   {
     return Geom2dAdaptor_Curve();
   }
 
-  const occ::handle<Geom_Surface>& aSurface = Face::Surface(theGraph, aCoEdge.FaceDefId);
-  const occ::handle<Geom_Plane>    aPlane   = occ::down_cast<Geom_Plane>(aSurface);
-  if (aPlane.IsNull() || !Edge::HasCurve(theGraph, aCoEdge.EdgeDefId))
+  const occ::handle<Geom_Surface>& aSurface = Face::Surface(theGraph, aCoEdge.FaceId);
+  if (aSurface.IsNull() || !Edge::HasCurve(theGraph, aCoEdge.ChildEdgeId))
   {
     return Geom2dAdaptor_Curve();
   }
 
-  const occ::handle<Geom_Curve>& aCurve3d = Edge::Curve(theGraph, aCoEdge.EdgeDefId);
+  // Unwrap trimmed surface to check for plane basis.
+  occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(aSurface);
+  if (aPlane.IsNull())
+  {
+    const occ::handle<Geom_RectangularTrimmedSurface> aTrimmed =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(aSurface);
+    if (!aTrimmed.IsNull())
+    {
+      aPlane = occ::down_cast<Geom_Plane>(aTrimmed->BasisSurface());
+    }
+  }
+  if (aPlane.IsNull())
+  {
+    return Geom2dAdaptor_Curve();
+  }
+
+  const occ::handle<Geom_Curve>& aCurve3d = Edge::Curve(theGraph, aCoEdge.ChildEdgeId);
   if (aCurve3d.IsNull())
   {
     return Geom2dAdaptor_Curve();
   }
 
-  const std::pair<double, double> aRange = Edge::Range(theGraph, aCoEdge.EdgeDefId);
+  const std::pair<double, double> aRange = Edge::Range(theGraph, aCoEdge.ChildEdgeId);
   const occ::handle<Geom2d_Curve> aProjected =
     GeomProjLib::Curve2d(aCurve3d, aRange.first, aRange.second, aPlane);
   if (aProjected.IsNull())
@@ -563,31 +717,15 @@ static const occ::handle<Geom2d_Curve> THE_NULL_PCURVE;
 const occ::handle<Geom2d_Curve>& BRepGraph_Tool::CoEdge::PCurve(const BRepGraph&         theGraph,
                                                                 const BRepGraph_CoEdgeId theCoEdge)
 {
-  const BRepGraph_Curve2DRepId aRepId = theGraph.Topo().CoEdges().Curve2DRepId(theCoEdge);
-  if (!aRepId.IsValid())
+  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
+  const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+  if (!aCoEdge.Curve2DRepId.IsValid()
+      || !aCoEdge.Curve2DRepId.IsValid(aStorage.NbCoEdgeCurves2D())
+      || aStorage.IsRemoved(aCoEdge.Curve2DRepId))
   {
     return THE_NULL_PCURVE;
   }
-  return theGraph.Topo().Geometry().Curve2DRep(aRepId).Curve;
-}
-
-//=================================================================================================
-
-const occ::handle<Geom2d_Curve>& BRepGraph_Tool::CoEdge::PCurve(
-  const BRepGraph&               theGraph,
-  const BRepGraphInc::CoEdgeDef& theCoEdge)
-{
-  if (!theCoEdge.Curve2DRepId.IsValid())
-  {
-    return THE_NULL_PCURVE;
-  }
-  const BRepGraphInc::Curve2DRep& aCurveRep =
-    theGraph.Topo().Geometry().Curve2DRep(theCoEdge.Curve2DRepId);
-  if (aCurveRep.IsRemoved)
-  {
-    return THE_NULL_PCURVE;
-  }
-  return aCurveRep.Curve;
+  return aStorage.CoEdgeCurve2DRep(aCoEdge.Curve2DRepId).Curve;
 }
 
 //=================================================================================================
@@ -595,7 +733,11 @@ const occ::handle<Geom2d_Curve>& BRepGraph_Tool::CoEdge::PCurve(
 bool BRepGraph_Tool::CoEdge::HasPCurve(const BRepGraph&         theGraph,
                                        const BRepGraph_CoEdgeId theCoEdge)
 {
-  return theGraph.Topo().CoEdges().Curve2DRepId(theCoEdge).IsValid();
+  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
+  const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+  return aCoEdge.Curve2DRepId.IsValid()
+         && aCoEdge.Curve2DRepId.IsValid(aStorage.NbCoEdgeCurves2D())
+         && !aStorage.IsRemoved(aCoEdge.Curve2DRepId);
 }
 
 //=================================================================================================
@@ -604,7 +746,20 @@ std::pair<gp_Pnt2d, gp_Pnt2d> BRepGraph_Tool::CoEdge::UVPoints(const BRepGraph& 
                                                                const BRepGraph_CoEdgeId theCoEdge)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
-  return {aCoEdge.UV1, aCoEdge.UV2};
+  const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+  if (!aCoEdge.Curve2DRepId.IsValid()
+      || !aCoEdge.Curve2DRepId.IsValid(aStorage.NbCoEdgeCurves2D())
+      || aStorage.IsRemoved(aCoEdge.Curve2DRepId))
+  {
+    return {gp_Pnt2d(), gp_Pnt2d()};
+  }
+  const BRepGraphInc::CoEdgeCurve2DRep& aPCUse = aStorage.CoEdgeCurve2DRep(aCoEdge.Curve2DRepId);
+  const occ::handle<Geom2d_Curve>& aCurve = aPCUse.Curve;
+  if (aCurve.IsNull())
+  {
+    return {gp_Pnt2d(), gp_Pnt2d()};
+  }
+  return {aCurve->Value(aPCUse.ParamFirst), aCurve->Value(aPCUse.ParamLast)};
 }
 
 //=================================================================================================
@@ -613,14 +768,24 @@ std::pair<double, double> BRepGraph_Tool::CoEdge::Range(const BRepGraph&        
                                                         const BRepGraph_CoEdgeId theCoEdge)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
-  return {aCoEdge.ParamFirst, aCoEdge.ParamLast};
+  const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+  double aFirst = 0.0, aLast = 0.0;
+  if (aCoEdge.Curve2DRepId.IsValid()
+      && aCoEdge.Curve2DRepId.IsValid(aStorage.NbCoEdgeCurves2D())
+      && !aStorage.IsRemoved(aCoEdge.Curve2DRepId))
+  {
+    const BRepGraphInc::CoEdgeCurve2DRep& aPCUse = aStorage.CoEdgeCurve2DRep(aCoEdge.Curve2DRepId);
+    aFirst = aPCUse.ParamFirst;
+    aLast  = aPCUse.ParamLast;
+  }
+  return {aFirst, aLast};
 }
 
 //=================================================================================================
 
-bool BRepGraph_Tool::Edge::IsClosedOnFace(const BRepGraph&       theGraph,
-                                          const BRepGraph_EdgeId theEdge,
-                                          const BRepGraph_FaceId theFace)
+bool BRepGraph_Tool::Edge::IsSeamOnFace(const BRepGraph&       theGraph,
+                                        const BRepGraph_EdgeId theEdge,
+                                        const BRepGraph_FaceId theFace)
 {
   if (!theEdge.IsValid() || !theFace.IsValid())
   {
@@ -633,7 +798,7 @@ bool BRepGraph_Tool::Edge::IsClosedOnFace(const BRepGraph&       theGraph,
        anIt.Next())
   {
     const BRepGraphInc::CoEdgeDef& aCoEdge = anIt.Definition();
-    if (aCoEdge.FaceDefId != theFace)
+    if (aCoEdge.FaceId != theFace)
     {
       continue;
     }
@@ -653,53 +818,19 @@ bool BRepGraph_Tool::Edge::IsClosedOnFace(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-const BRepGraphInc::CoEdgeDef* BRepGraph_Tool::Edge::FindPCurve(const BRepGraph&       theGraph,
-                                                                const BRepGraph_EdgeId theEdge,
-                                                                const BRepGraph_FaceId theFace)
+BRepGraph_Tool::FaceUsage BRepGraph_Tool::Face::Usage(const BRepGraph&          theGraph,
+                                                      const BRepGraph_FaceRefId theFaceRef)
 {
-  return theGraph.Topo().Edges().FindPCurve(theEdge, theFace);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::CoEdgeDef* BRepGraph_Tool::Edge::FindPCurve(const BRepGraph&         theGraph,
-                                                                const BRepGraph_EdgeId   theEdge,
-                                                                const BRepGraph_FaceId   theFace,
-                                                                const TopAbs_Orientation theOri)
-{
-  return theGraph.Topo().Edges().FindPCurve(theEdge, theFace, theOri);
-}
-
-//=================================================================================================
-
-static const occ::handle<Poly_Polygon2D> THE_NULL_POLYGON2D;
-
-const occ::handle<Poly_Polygon2D>& BRepGraph_Tool::CoEdge::PolygonOnSurface(
-  const BRepGraph&         theGraph,
-  const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
-  if (!aCoEdge.Polygon2DRepId.IsValid())
+  if (!theFaceRef.IsValid() || theGraph.Refs().IsRemoved(theFaceRef))
   {
-    return THE_NULL_POLYGON2D;
+    return FaceUsage();
   }
-  const BRepGraphInc::Polygon2DRep& aPolygonRep =
-    theGraph.Mesh().Poly().Polygon2DRep(aCoEdge.Polygon2DRepId);
-  if (aPolygonRep.IsRemoved)
+  const BRepGraphInc::FaceRef& aRef = theGraph.Refs().Faces().Entry(theFaceRef);
+  if (!aRef.ChildFaceId.IsValid() || aRef.ChildFaceId.IsRemoved(theGraph))
   {
-    return THE_NULL_POLYGON2D;
+    return FaceUsage();
   }
-  return aPolygonRep.Polygon;
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::CoEdge::HasPolygonOnSurface(const BRepGraph&         theGraph,
-                                                 const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
-  return aCoEdge.Polygon2DRepId.IsValid()
-         && !theGraph.Mesh().Poly().Polygon2DRep(aCoEdge.Polygon2DRepId).IsRemoved;
+  return FaceUsage{aRef.ChildFaceId, TopLoc_Location(), aRef.Orientation};
 }
 
 //=================================================================================================
@@ -711,56 +842,86 @@ double BRepGraph_Tool::Face::Tolerance(const BRepGraph& theGraph, const BRepGrap
 
 //=================================================================================================
 
-bool BRepGraph_Tool::Face::NaturalRestriction(const BRepGraph&       theGraph,
-                                              const BRepGraph_FaceId theFace)
+double BRepGraph_Tool::Face::Tolerance(const BRepGraph&          theGraph,
+                                       const BRepGraph_FaceRefId theFaceRef)
 {
-  return theGraph.Topo().Faces().Definition(theFace).NaturalRestriction;
+  const BRepGraph_FaceId aFace = faceOf(theGraph, theFaceRef);
+  return aFace.IsValid() ? Tolerance(theGraph, aFace) : 0.0;
 }
 
 //=================================================================================================
 
 bool BRepGraph_Tool::Face::HasSurface(const BRepGraph& theGraph, const BRepGraph_FaceId theFace)
 {
-  return theGraph.Topo().Faces().SurfaceRepId(theFace).IsValid();
+  return !theGraph.Topo().Faces().Surface(theFace).IsNull();
 }
 
 //=================================================================================================
 
-bool BRepGraph_Tool::Face::HasTriangulation(const BRepGraph&       theGraph,
-                                            const BRepGraph_FaceId theFace)
+bool BRepGraph_Tool::Face::HasSurface(const BRepGraph&          theGraph,
+                                      const BRepGraph_FaceRefId theFaceRef)
 {
-  // Cache-first, persistent fallback via MeshCacheOps.
-  return theGraph.Mesh().Faces().HasTriangulation(theFace);
+  const BRepGraph_FaceId aFace = faceOf(theGraph, theFaceRef);
+  return aFace.IsValid() && HasSurface(theGraph, aFace);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::WireRef* BRepGraph_Tool::Face::OuterWire(const BRepGraph&       theGraph,
-                                                             const BRepGraph_FaceId theFace)
+BRepGraph_WireId BRepGraph_Tool::Face::OuterWire(const BRepGraph&       theGraph,
+                                                 const BRepGraph_FaceId theFace)
 {
+  BRepGraph_WireId aResult;
+  double           aUMin = 0.0;
+  double           aUMax = 0.0;
+  double           aVMin = 0.0;
+  double           aVMax = 0.0;
+
   const BRepGraph::RefsView& aRefs = theGraph.Refs();
   for (BRepGraph_RefsWireOfFace aWireIt(theGraph, theFace); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aWireIt.CurrentId());
-    if (!aRef.IsRemoved && aRef.IsOuter)
+    const BRepGraphInc::WireRef& aRef    = aRefs.Wires().Entry(aWireIt.CurrentId());
+    const BRepGraph_WireId       aWireId = aRef.ChildWireId;
+    double aCurUMin = 0.0;
+    double aCurUMax = 0.0;
+    double aCurVMin = 0.0;
+    double aCurVMax = 0.0;
+    if (!wireUVBounds(theGraph, aWireId, aCurUMin, aCurUMax, aCurVMin, aCurVMax))
     {
-      return &aRef;
+      continue;
+    }
+
+    if (!aResult.IsValid())
+    {
+      aResult = aWireId;
+      aUMin   = aCurUMin;
+      aUMax   = aCurUMax;
+      aVMin   = aCurVMin;
+      aVMax   = aCurVMax;
+      continue;
+    }
+
+    if (((aCurUMin - aUMin) <= Precision::PConfusion())
+        && ((aCurUMax - aUMax) >= -Precision::PConfusion())
+        && ((aCurVMin - aVMin) <= Precision::PConfusion())
+        && ((aCurVMax - aVMax) >= -Precision::PConfusion()))
+    {
+      aResult = aWireId;
+      aUMin   = aCurUMin;
+      aUMax   = aCurUMax;
+      aVMin   = aCurVMin;
+      aVMax   = aCurVMax;
     }
   }
-  return nullptr;
+  return aResult;
 }
 
 //=================================================================================================
 
-BRepGraph_WireId BRepGraph_Tool::Face::OuterWireId(const BRepGraph&       theGraph,
-                                                   const BRepGraph_FaceId theFace)
+BRepGraph_WireId BRepGraph_Tool::Face::OuterWire(const BRepGraph&          theGraph,
+                                                 const BRepGraph_FaceRefId theFaceRef)
 {
-  const BRepGraphInc::WireRef* aOuter = OuterWire(theGraph, theFace);
-  if (aOuter == nullptr)
-  {
-    return BRepGraph_WireId();
-  }
-  return aOuter->WireDefId;
+  const BRepGraph_FaceId aFace = faceOf(theGraph, theFaceRef);
+  return aFace.IsValid() ? OuterWire(theGraph, aFace) : BRepGraph_WireId();
 }
 
 //=================================================================================================
@@ -768,14 +929,25 @@ BRepGraph_WireId BRepGraph_Tool::Face::OuterWireId(const BRepGraph&       theGra
 static const occ::handle<Geom_Surface> THE_NULL_SURFACE;
 
 const occ::handle<Geom_Surface>& BRepGraph_Tool::Face::Surface(const BRepGraph&       theGraph,
-                                                               const BRepGraph_FaceId theFace)
+                                                                const BRepGraph_FaceId theFace)
 {
-  const BRepGraph_SurfaceRepId aRepId = theGraph.Topo().Faces().SurfaceRepId(theFace);
-  if (!aRepId.IsValid())
+  const BRepGraph_FaceSurfaceRepId aRepId = theGraph.Topo().Faces().Definition(theFace).SurfaceRepId;
+  if (!aRepId.IsValid(theGraph.incStorage().NbFaceSurfaces())
+      || theGraph.incStorage().IsRemoved(aRepId))
   {
     return THE_NULL_SURFACE;
   }
-  return theGraph.Topo().Geometry().SurfaceRep(aRepId).Surface;
+  return theGraph.incStorage().FaceSurfaceRep(aRepId).Surface;
+}
+
+//=================================================================================================
+
+const occ::handle<Geom_Surface>& BRepGraph_Tool::Face::Surface(
+  const BRepGraph&          theGraph,
+  const BRepGraph_FaceRefId theFaceRef)
+{
+  const BRepGraph_FaceId aFace = faceOf(theGraph, theFaceRef);
+  return aFace.IsValid() ? Surface(theGraph, aFace) : THE_NULL_SURFACE;
 }
 
 //=================================================================================================
@@ -783,17 +955,37 @@ const occ::handle<Geom_Surface>& BRepGraph_Tool::Face::Surface(const BRepGraph& 
 GeomAdaptor_TransformedSurface BRepGraph_Tool::Face::SurfaceAdaptor(const BRepGraph&       theGraph,
                                                                     const BRepGraph_FaceId theFace)
 {
-  const BRepGraph_SurfaceRepId aRepId = theGraph.Topo().Faces().SurfaceRepId(theFace);
-  if (!aRepId.IsValid())
-  {
-    return GeomAdaptor_TransformedSurface();
-  }
-  const occ::handle<Geom_Surface>& aSurf = theGraph.Topo().Geometry().SurfaceRep(aRepId).Surface;
+  const occ::handle<Geom_Surface> aSurf = Surface(theGraph, theFace);
   if (aSurf.IsNull())
   {
     return GeomAdaptor_TransformedSurface();
   }
   return GeomAdaptor_TransformedSurface(aSurf, gp_Trsf());
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedSurface BRepGraph_Tool::Face::SurfaceAdaptor(const BRepGraph& theGraph,
+                                                                    const FaceUsage& theRef)
+{
+  const occ::handle<Geom_Surface> aSurf = Surface(theGraph, theRef.DefId);
+  if (aSurf.IsNull())
+  {
+    return GeomAdaptor_TransformedSurface();
+  }
+  return GeomAdaptor_TransformedSurface(
+    aSurf,
+    theRef.Location.IsIdentity() ? gp_Trsf() : theRef.Location.Transformation());
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedSurface BRepGraph_Tool::Face::SurfaceAdaptor(
+  const BRepGraph&          theGraph,
+  const BRepGraph_FaceRefId theFaceRef)
+{
+  const FaceUsage aUsage = Usage(theGraph, theFaceRef);
+  return aUsage.IsValid() ? SurfaceAdaptor(theGraph, aUsage) : GeomAdaptor_TransformedSurface();
 }
 
 //=================================================================================================
@@ -805,12 +997,7 @@ GeomAdaptor_TransformedSurface BRepGraph_Tool::Face::SurfaceAdaptor(const BRepGr
                                                                     const double theVFirst,
                                                                     const double theVLast)
 {
-  const BRepGraph_SurfaceRepId aRepId = theGraph.Topo().Faces().SurfaceRepId(theFace);
-  if (!aRepId.IsValid())
-  {
-    return GeomAdaptor_TransformedSurface();
-  }
-  const occ::handle<Geom_Surface>& aSurf = theGraph.Topo().Geometry().SurfaceRep(aRepId).Surface;
+  const occ::handle<Geom_Surface> aSurf = Surface(theGraph, theFace);
   if (aSurf.IsNull())
   {
     return GeomAdaptor_TransformedSurface();
@@ -820,27 +1007,57 @@ GeomAdaptor_TransformedSurface BRepGraph_Tool::Face::SurfaceAdaptor(const BRepGr
 
 //=================================================================================================
 
-static const occ::handle<Poly_Triangulation> THE_NULL_TRIANGULATION;
-
-const occ::handle<Poly_Triangulation>& BRepGraph_Tool::Face::Triangulation(
-  const BRepGraph&       theGraph,
-  const BRepGraph_FaceId theFace)
+GeomAdaptor_TransformedSurface BRepGraph_Tool::Face::SurfaceAdaptor(const BRepGraph& theGraph,
+                                                                    const FaceUsage& theRef,
+                                                                    const double     theUFirst,
+                                                                    const double     theULast,
+                                                                    const double     theVFirst,
+                                                                    const double     theVLast)
 {
-  // Cache-first, persistent fallback via MeshCacheOps.
-  const BRepGraph_TriangulationRepId aTriRepId =
-    theGraph.Mesh().Faces().ActiveTriangulationRepId(theFace);
-  if (!aTriRepId.IsValid())
+  const occ::handle<Geom_Surface> aSurf = Surface(theGraph, theRef.DefId);
+  if (aSurf.IsNull())
   {
-    return THE_NULL_TRIANGULATION;
+    return GeomAdaptor_TransformedSurface();
   }
-  return theGraph.Mesh().Poly().TriangulationRep(aTriRepId).Triangulation;
+  return GeomAdaptor_TransformedSurface(
+    aSurf,
+    theUFirst,
+    theULast,
+    theVFirst,
+    theVLast,
+    theRef.Location.IsIdentity() ? gp_Trsf() : theRef.Location.Transformation());
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedSurface BRepGraph_Tool::Face::SurfaceAdaptor(
+  const BRepGraph&          theGraph,
+  const BRepGraph_FaceRefId theFaceRef,
+  const double              theUFirst,
+  const double              theULast,
+  const double              theVFirst,
+  const double              theVLast)
+{
+  const FaceUsage aUsage = Usage(theGraph, theFaceRef);
+  return aUsage.IsValid()
+           ? SurfaceAdaptor(theGraph, aUsage, theUFirst, theULast, theVFirst, theVLast)
+           : GeomAdaptor_TransformedSurface();
 }
 
 //=================================================================================================
 
 uint32_t BRepGraph_Tool::Face::NbWires(const BRepGraph& theGraph, const BRepGraph_FaceId theFace)
 {
-  return static_cast<uint32_t>(theGraph.Topo().Faces().Definition(theFace).WireRefIds.Size());
+  return static_cast<uint32_t>(theGraph.Topo().Faces().Relations(theFace).WireRefIds.Size());
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph_Tool::Face::NbWires(const BRepGraph&          theGraph,
+                                       const BRepGraph_FaceRefId theFaceRef)
+{
+  const BRepGraph_FaceId aFace = faceOf(theGraph, theFaceRef);
+  return aFace.IsValid() ? NbWires(theGraph, aFace) : 0;
 }
 
 //=================================================================================================
@@ -862,6 +1079,24 @@ void BRepGraph_Tool::Face::Bounds(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
+void BRepGraph_Tool::Face::Bounds(const BRepGraph&          theGraph,
+                                  const BRepGraph_FaceRefId theFaceRef,
+                                  double&                   theUMin,
+                                  double&                   theUMax,
+                                  double&                   theVMin,
+                                  double&                   theVMax)
+{
+  const BRepGraph_FaceId aFace = faceOf(theGraph, theFaceRef);
+  if (aFace.IsValid())
+  {
+    Bounds(theGraph, aFace, theUMin, theUMax, theVMin, theVMax);
+    return;
+  }
+  theUMin = theUMax = theVMin = theVMax = 0.0;
+}
+
+//=================================================================================================
+
 occ::handle<Adaptor3d_CurveOnSurface> BRepGraph_Tool::Edge::CurveOnSurface(
   const BRepGraph&                    theGraph,
   const BRepGraphInc::CoEdgeInstance& theRef,
@@ -869,21 +1104,23 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph_Tool::Edge::CurveOnSurface(
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theRef.DefId);
   const BRepGraphInc::FaceDef&   aFace   = theGraph.Topo().Faces().Definition(theFace);
+  const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
 
-  if (!aCoEdge.Curve2DRepId.IsValid() || !aFace.SurfaceRepId.IsValid())
+  if (!aCoEdge.Curve2DRepId.IsValid()
+      || !aCoEdge.Curve2DRepId.IsValid(aStorage.NbCoEdgeCurves2D())
+      || aStorage.IsRemoved(aCoEdge.Curve2DRepId)
+      || !aFace.SurfaceRepId.IsValid()
+      || !aFace.SurfaceRepId.IsValid(aStorage.NbFaceSurfaces())
+      || aStorage.IsRemoved(aFace.SurfaceRepId))
   {
     return occ::handle<Adaptor3d_CurveOnSurface>();
   }
 
-  const BRepGraphInc::Curve2DRep& aPCurveRep =
-    theGraph.Topo().Geometry().Curve2DRep(aCoEdge.Curve2DRepId);
-  const BRepGraphInc::SurfaceRep& aSurfaceRep =
-    theGraph.Topo().Geometry().SurfaceRep(aFace.SurfaceRepId);
-  if (aPCurveRep.IsRemoved || aSurfaceRep.IsRemoved)
-  {
-    return occ::handle<Adaptor3d_CurveOnSurface>();
-  }
-  const occ::handle<Geom2d_Curve>& aPCurve = aPCurveRep.Curve;
+  const BRepGraphInc::CoEdgeCurve2DRep& aPCurveUse =
+    aStorage.CoEdgeCurve2DRep(aCoEdge.Curve2DRepId);
+  const BRepGraphInc::FaceSurfaceRep& aSurfaceRep =
+    aStorage.FaceSurfaceRep(aFace.SurfaceRepId);
+  const occ::handle<Geom2d_Curve>& aPCurve = aPCurveUse.Curve;
   const occ::handle<Geom_Surface>& aSurf   = aSurfaceRep.Surface;
 
   if (aPCurve.IsNull() || aSurf.IsNull())
@@ -892,23 +1129,59 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph_Tool::Edge::CurveOnSurface(
   }
 
   occ::handle<Geom2dAdaptor_Curve> aHC2d =
-    new Geom2dAdaptor_Curve(aPCurve, aCoEdge.ParamFirst, aCoEdge.ParamLast);
+    new Geom2dAdaptor_Curve(aPCurve, aPCurveUse.ParamFirst, aPCurveUse.ParamLast);
   occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aSurf);
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
 }
 
 //=================================================================================================
 
+BRepGraph_Tool::WireUsage BRepGraph_Tool::Wire::Usage(const BRepGraph&          theGraph,
+                                                      const BRepGraph_WireRefId theWireRef)
+{
+  if (!theWireRef.IsValid() || theGraph.Refs().IsRemoved(theWireRef))
+  {
+    return WireUsage();
+  }
+  const BRepGraphInc::WireRef& aRef = theGraph.Refs().Wires().Entry(theWireRef);
+  if (!aRef.ChildWireId.IsValid() || aRef.ChildWireId.IsRemoved(theGraph))
+  {
+    return WireUsage();
+  }
+  return WireUsage{aRef.ChildWireId, TopLoc_Location(), aRef.Orientation};
+}
+
+//=================================================================================================
+
 bool BRepGraph_Tool::Wire::IsClosed(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
 {
-  return theGraph.Topo().Wires().Definition(theWire).IsClosed;
+  bool aClosed = false;
+  return derivedStateCache(theGraph)->GetWireIsClosed(theWire, aClosed) && aClosed;
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::Wire::IsClosed(const BRepGraph&          theGraph,
+                                    const BRepGraph_WireRefId theWireRef)
+{
+  const BRepGraph_WireId aWire = wireOf(theGraph, theWireRef);
+  return aWire.IsValid() && IsClosed(theGraph, aWire);
 }
 
 //=================================================================================================
 
 uint32_t BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
 {
-  return static_cast<uint32_t>(theGraph.Topo().Wires().Definition(theWire).CoEdgeRefIds.Size());
+  return static_cast<uint32_t>(theGraph.Topo().Wires().Relations(theWire).CoEdgeIds.Size());
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph&          theGraph,
+                                         const BRepGraph_WireRefId theWireRef)
+{
+  const BRepGraph_WireId aWire = wireOf(theGraph, theWireRef);
+  return aWire.IsValid() ? NbCoEdges(theGraph, aWire) : 0;
 }
 
 //=================================================================================================
@@ -916,16 +1189,22 @@ uint32_t BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph& theGraph, const BRepGr
 uint32_t BRepGraph_Tool::Wire::NbDistinctEdges(const BRepGraph&       theGraph,
                                                const BRepGraph_WireId theWire)
 {
-  // Wires are small (typically 3-8 entries); a typed Map dedup on EdgeDefId is fine.
+  // Wires are small (typically 3-8 entries); a typed Map dedup on ChildEdgeId is fine.
   NCollection_Map<BRepGraph_EdgeId> aSeenEdges;
-  for (BRepGraph_RefsCoEdgeOfWire anIt(theGraph, theWire); anIt.More(); anIt.Next())
+  for (BRepGraph_CoEdgesOfWire anIt(theGraph, theWire); anIt.More(); anIt.Next())
   {
-    const BRepGraphInc::CoEdgeRef& aRef = theGraph.Refs().CoEdges().Entry(anIt.CurrentId());
-    if (!aRef.CoEdgeDefId.IsValid())
-      continue;
-    aSeenEdges.Add(theGraph.Topo().CoEdges().Definition(aRef.CoEdgeDefId).EdgeDefId);
+    aSeenEdges.Add(theGraph.Topo().CoEdges().Definition(anIt.CurrentId()).ChildEdgeId);
   }
   return static_cast<uint32_t>(aSeenEdges.Extent());
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph_Tool::Wire::NbDistinctEdges(const BRepGraph&          theGraph,
+                                               const BRepGraph_WireRefId theWireRef)
+{
+  const BRepGraph_WireId aWire = wireOf(theGraph, theWireRef);
+  return aWire.IsValid() ? NbDistinctEdges(theGraph, aWire) : 0;
 }
 
 //=================================================================================================
@@ -933,21 +1212,40 @@ uint32_t BRepGraph_Tool::Wire::NbDistinctEdges(const BRepGraph&       theGraph,
 BRepGraph_FaceId BRepGraph_Tool::Wire::FaceOf(const BRepGraph&       theGraph,
                                               const BRepGraph_WireId theWire)
 {
-  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = theGraph.Topo().Wires().Faces(theWire);
-  if (aFaces.IsEmpty())
+  const NCollection_LinearVector<BRepGraph_WireRefId>& aRefs =
+    theGraph.Topo().Wires().Relations(theWire).ParentWireRefIds;
+  for (const BRepGraph_WireRefId& aRefId : aRefs)
   {
-    return BRepGraph_FaceId();
+    if (!aRefId.IsRemoved(theGraph))
+    {
+      return theGraph.Refs().Wires().Entry(aRefId).ParentFaceId;
+    }
   }
-  return aFaces.First();
+  return BRepGraph_FaceId();
+}
+
+//=================================================================================================
+
+BRepGraph_FaceId BRepGraph_Tool::Wire::FaceOf(const BRepGraph&          theGraph,
+                                              const BRepGraph_WireRefId theWireRef)
+{
+  const BRepGraph_WireId aWire = wireOf(theGraph, theWireRef);
+  return aWire.IsValid() ? FaceOf(theGraph, aWire) : BRepGraph_FaceId();
 }
 
 //=================================================================================================
 
 bool BRepGraph_Tool::Wire::IsOuter(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
 {
-  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = theGraph.Topo().Wires().Faces(theWire);
-  for (const BRepGraph_FaceId& aFaceId : aFaces)
+  const NCollection_LinearVector<BRepGraph_WireRefId>& aRefs =
+    theGraph.Topo().Wires().Relations(theWire).ParentWireRefIds;
+  for (const BRepGraph_WireRefId& aRefId : aRefs)
   {
+    if (aRefId.IsRemoved(theGraph))
+    {
+      continue;
+    }
+    const BRepGraph_FaceId aFaceId = theGraph.Refs().Wires().Entry(aRefId).ParentFaceId;
     if (!aFaceId.IsValid())
     {
       continue;
@@ -956,9 +1254,9 @@ bool BRepGraph_Tool::Wire::IsOuter(const BRepGraph& theGraph, const BRepGraph_Wi
     for (BRepGraph_RefsWireOfFace aWireIt(theGraph, aFaceId); aWireIt.More(); aWireIt.Next())
     {
       const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aWireIt.CurrentId());
-      if (!aRef.IsRemoved && aRef.WireDefId == theWire)
+      if (!theGraph.Refs().IsRemoved(aWireIt.CurrentId()) && aRef.ChildWireId == theWire)
       {
-        return aRef.IsOuter;
+          return BRepGraph_Tool::Face::OuterWire(theGraph, aFaceId) == theWire;
       }
     }
   }
@@ -967,197 +1265,61 @@ bool BRepGraph_Tool::Wire::IsOuter(const BRepGraph& theGraph, const BRepGraph_Wi
 
 //=================================================================================================
 
+bool BRepGraph_Tool::Wire::IsOuter(const BRepGraph&          theGraph,
+                                   const BRepGraph_WireRefId theWireRef)
+{
+  const BRepGraph_WireId aWire = wireOf(theGraph, theWireRef);
+  return aWire.IsValid() && IsOuter(theGraph, aWire);
+}
+
+//=================================================================================================
+
+BRepGraph_Tool::ShellUsage BRepGraph_Tool::Shell::Usage(
+  const BRepGraph&           theGraph,
+  const BRepGraph_ShellRefId theShellRef)
+{
+  if (!theShellRef.IsValid() || theGraph.Refs().IsRemoved(theShellRef))
+  {
+    return ShellUsage();
+  }
+  const BRepGraphInc::ShellRef& aRef = theGraph.Refs().Shells().Entry(theShellRef);
+  if (!aRef.ChildShellId.IsValid() || aRef.ChildShellId.IsRemoved(theGraph))
+  {
+    return ShellUsage();
+  }
+  return ShellUsage{aRef.ChildShellId, TopLoc_Location(), aRef.Orientation};
+}
+
+//=================================================================================================
+
 bool BRepGraph_Tool::Shell::IsClosed(const BRepGraph& theGraph, const BRepGraph_ShellId theShell)
 {
-  return theGraph.Topo().Shells().Definition(theShell).IsClosed;
+  BRepGraph_CacheDerivedState::ShellEntry anEntry;
+  return derivedStateCache(theGraph)->GetShellStatus(theShell, anEntry)
+         && anEntry.Status == BRepGraph_CacheDerivedState::ShellClosureStatus::Closed;
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::Shell::IsClosed(const BRepGraph&           theGraph,
+                                     const BRepGraph_ShellRefId theShellRef)
+{
+  const BRepGraph_ShellId aShell = shellOf(theGraph, theShellRef);
+  return aShell.IsValid() && IsClosed(theGraph, aShell);
 }
 
 //=================================================================================================
 
 uint32_t BRepGraph_Tool::Shell::NbFaces(const BRepGraph& theGraph, const BRepGraph_ShellId theShell)
 {
-  return static_cast<uint32_t>(theGraph.Topo().Shells().Definition(theShell).FaceRefIds.Size());
-}
-
-//=================================================================================================
-// BRepGraph_Tool::Mesh
-//=================================================================================================
-
-BRepGraph_TriangulationRepId BRepGraph_Tool::Mesh::CreateTriangulationRep(
-  BRepGraph&                             theGraph,
-  const occ::handle<Poly_Triangulation>& theTriangulation)
-{
-  if (theTriangulation.IsNull())
-  {
-    return BRepGraph_TriangulationRepId();
-  }
-
-  const BRepGraph_TriangulationRepId aRepId =
-    theGraph.data()->myIncStorage.AppendTriangulationRep();
-  theGraph.data()->myIncStorage.ChangeTriangulationRep(aRepId).Triangulation = theTriangulation;
-  return aRepId;
+  return static_cast<uint32_t>(theGraph.Topo().Shells().Relations(theShell).FaceRefIds.Size());
 }
 
 //=================================================================================================
 
-BRepGraph_Polygon3DRepId BRepGraph_Tool::Mesh::CreatePolygon3DRep(
-  BRepGraph&                         theGraph,
-  const occ::handle<Poly_Polygon3D>& thePolygon)
+uint32_t BRepGraph_Tool::Shell::NbFaces(const BRepGraph&           theGraph,
+                                        const BRepGraph_ShellRefId theShellRef)
 {
-  if (thePolygon.IsNull())
-  {
-    return BRepGraph_Polygon3DRepId();
-  }
-
-  const BRepGraph_Polygon3DRepId aRepId = theGraph.data()->myIncStorage.AppendPolygon3DRep();
-  theGraph.data()->myIncStorage.ChangePolygon3DRep(aRepId).Polygon = thePolygon;
-  return aRepId;
-}
-
-//=================================================================================================
-
-BRepGraph_PolygonOnTriRepId BRepGraph_Tool::Mesh::CreatePolygonOnTriRep(
-  BRepGraph&                                      theGraph,
-  const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
-  const BRepGraph_TriangulationRepId              theTriRepId)
-{
-  if (thePolygon.IsNull() || !theTriRepId.IsValid())
-  {
-    return BRepGraph_PolygonOnTriRepId();
-  }
-
-  const BRepGraph_PolygonOnTriRepId aRepId = theGraph.data()->myIncStorage.AppendPolygonOnTriRep();
-  BRepGraphInc::PolygonOnTriRep& aRep = theGraph.data()->myIncStorage.ChangePolygonOnTriRep(aRepId);
-  aRep.Polygon                        = thePolygon;
-  aRep.TriangulationRepId             = theTriRepId;
-  return aRepId;
-}
-
-//=================================================================================================
-
-void BRepGraph_Tool::Mesh::AppendCachedTriangulation(BRepGraph&                         theGraph,
-                                                     const BRepGraph_FaceId             theFace,
-                                                     const BRepGraph_TriangulationRepId theTriRepId)
-{
-  const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
-  if (!theFace.IsValid(aStorage.NbFaces()) || !theTriRepId.IsValid())
-  {
-    return;
-  }
-  BRepGraph_MeshCache::FaceMeshEntry& anEntry =
-    theGraph.data()->myMeshCache.ChangeFaceMesh(theFace);
-  anEntry.TriangulationRepIds.Append(theTriRepId);
-  anEntry.StoredOwnGen = aStorage.Face(theFace).OwnGen;
-}
-
-//=================================================================================================
-
-void BRepGraph_Tool::Mesh::SetCachedActiveIndex(BRepGraph&             theGraph,
-                                                const BRepGraph_FaceId theFace,
-                                                const int              theActiveIndex)
-{
-  const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
-  if (!theFace.IsValid(aStorage.NbFaces()))
-  {
-    return;
-  }
-  BRepGraph_MeshCache::FaceMeshEntry& anEntry =
-    theGraph.data()->myMeshCache.ChangeFaceMesh(theFace);
-  anEntry.ActiveTriangulationIndex = theActiveIndex;
-  anEntry.StoredOwnGen             = aStorage.Face(theFace).OwnGen;
-}
-
-//=================================================================================================
-
-void BRepGraph_Tool::Mesh::ClearFaceCache(BRepGraph& theGraph, const BRepGraph_FaceId theFace)
-{
-  BRepGraph_MeshCacheStorage& aMeshCache = theGraph.data()->myMeshCache;
-  aMeshCache.ClearFaceMesh(theFace);
-
-  const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
-  if (!theFace.IsValid(aStorage.NbFaces()))
-  {
-    return;
-  }
-  const BRepGraphInc::FaceDef& aFace = aStorage.Face(theFace);
-  for (const BRepGraph_WireRefId& aWireRefId : aFace.WireRefIds)
-  {
-    if (!aWireRefId.IsValid(aStorage.NbWireRefs()))
-    {
-      continue;
-    }
-    const BRepGraph_WireId aWireId = aStorage.WireRef(aWireRefId).WireDefId;
-    if (!aWireId.IsValid(aStorage.NbWires()))
-    {
-      continue;
-    }
-    const BRepGraphInc::WireDef& aWire = aStorage.Wire(aWireId);
-    for (const BRepGraph_CoEdgeRefId& aCERefId : aWire.CoEdgeRefIds)
-    {
-      if (!aCERefId.IsValid(aStorage.NbCoEdgeRefs()))
-      {
-        continue;
-      }
-      const BRepGraph_CoEdgeId aCoEdgeId = aStorage.CoEdgeRef(aCERefId).CoEdgeDefId;
-      aMeshCache.ClearCoEdgeMesh(aCoEdgeId);
-    }
-  }
-}
-
-//=================================================================================================
-
-void BRepGraph_Tool::Mesh::SetCachedPolygon3D(BRepGraph&                     theGraph,
-                                              const BRepGraph_EdgeId         theEdge,
-                                              const BRepGraph_Polygon3DRepId thePolyRepId)
-{
-  const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
-  if (!theEdge.IsValid(aStorage.NbEdges()))
-  {
-    return;
-  }
-  BRepGraph_MeshCache::EdgeMeshEntry& anEntry =
-    theGraph.data()->myMeshCache.ChangeEdgeMesh(theEdge);
-  anEntry.Polygon3DRepId = thePolyRepId;
-  anEntry.StoredOwnGen   = aStorage.Edge(theEdge).OwnGen;
-}
-
-//=================================================================================================
-
-void BRepGraph_Tool::Mesh::ClearEdgeCache(BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
-{
-  theGraph.data()->myMeshCache.ClearEdgeMesh(theEdge);
-}
-
-//=================================================================================================
-
-void BRepGraph_Tool::Mesh::AppendCachedPolygonOnTri(BRepGraph&                        theGraph,
-                                                    const BRepGraph_CoEdgeId          theCoEdge,
-                                                    const BRepGraph_PolygonOnTriRepId thePolyRepId)
-{
-  const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
-  if (!theCoEdge.IsValid(aStorage.NbCoEdges()) || !thePolyRepId.IsValid())
-  {
-    return;
-  }
-  BRepGraph_MeshCache::CoEdgeMeshEntry& anEntry =
-    theGraph.data()->myMeshCache.ChangeCoEdgeMesh(theCoEdge);
-  anEntry.PolygonOnTriRepIds.Append(thePolyRepId);
-  anEntry.StoredOwnGen = aStorage.CoEdge(theCoEdge).OwnGen;
-}
-
-//=================================================================================================
-
-void BRepGraph_Tool::Mesh::SetCachedPolygon2D(BRepGraph&                     theGraph,
-                                              const BRepGraph_CoEdgeId       theCoEdge,
-                                              const BRepGraph_Polygon2DRepId thePolyRepId)
-{
-  const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
-  if (!theCoEdge.IsValid(aStorage.NbCoEdges()))
-  {
-    return;
-  }
-  BRepGraph_MeshCache::CoEdgeMeshEntry& anEntry =
-    theGraph.data()->myMeshCache.ChangeCoEdgeMesh(theCoEdge);
-  anEntry.Polygon2DRepId = thePolyRepId;
-  anEntry.StoredOwnGen   = aStorage.CoEdge(theCoEdge).OwnGen;
+  const BRepGraph_ShellId aShell = shellOf(theGraph, theShellRef);
+  return aShell.IsValid() ? NbFaces(theGraph, aShell) : 0;
 }

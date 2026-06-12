@@ -17,8 +17,8 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
-
 #include <NCollection_ForwardRange.hxx>
+#include <NCollection_LinearVector.hxx>
 
 //! @brief Single-level typed iterators over active child definitions.
 //!
@@ -44,6 +44,8 @@ struct BaseTraits
   using RefEntry = RefEntryT;
   using ChildId  = ChildIdT;
   using ChildDef = ChildDefT;
+
+  static constexpr bool THE_IS_DIRECT = std::is_same_v<RefId, ChildId>;
 };
 
 template <typename ChildIdT>
@@ -59,6 +61,7 @@ inline const BRepGraphInc::BaseDef* childBaseDef(const BRepGraph&       theGraph
   return theGraph.Topo().Gen().TopoEntity(theChildId);
 }
 
+//! Traits for iterating over shell children of a solid.
 struct ShellOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
                                               BRepGraph_ShellRefId,
                                               BRepGraphInc::ShellRef,
@@ -68,13 +71,13 @@ struct ShellOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Solids().Nb())
-           && !theGraph.Topo().Solids().Definition(theParent).IsRemoved;
+           && !theParent.IsRemoved(theGraph);
   }
 
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
                                                        const ParentId   theParent)
   {
-    return theGraph.Topo().Solids().Definition(theParent).ShellRefIds;
+    return theGraph.Topo().Solids().Relations(theParent).ShellRefIds;
   }
 
   static const BRepGraphInc::ShellRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
@@ -84,7 +87,7 @@ struct ShellOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
 
   static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::ShellRef& theRef)
   {
-    return theRef.ShellDefId;
+    return theRef.ChildShellId;
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
@@ -93,6 +96,7 @@ struct ShellOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
   }
 };
 
+//! Traits for iterating over face children of a shell.
 struct FaceOfShellTraits : public BaseTraits<BRepGraph_ShellId,
                                              BRepGraph_FaceRefId,
                                              BRepGraphInc::FaceRef,
@@ -102,13 +106,13 @@ struct FaceOfShellTraits : public BaseTraits<BRepGraph_ShellId,
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Shells().Nb())
-           && !theGraph.Topo().Shells().Definition(theParent).IsRemoved;
+           && !theParent.IsRemoved(theGraph);
   }
 
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
                                                        const ParentId   theParent)
   {
-    return theGraph.Topo().Shells().Definition(theParent).FaceRefIds;
+    return theGraph.Topo().Shells().Relations(theParent).FaceRefIds;
   }
 
   static const BRepGraphInc::FaceRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
@@ -118,7 +122,7 @@ struct FaceOfShellTraits : public BaseTraits<BRepGraph_ShellId,
 
   static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::FaceRef& theRef)
   {
-    return theRef.FaceDefId;
+    return theRef.ChildFaceId;
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
@@ -127,40 +131,7 @@ struct FaceOfShellTraits : public BaseTraits<BRepGraph_ShellId,
   }
 };
 
-struct ChildOfShellTraits : public BaseTraits<BRepGraph_ShellId,
-                                              BRepGraph_ChildRefId,
-                                              BRepGraphInc::ChildRef,
-                                              BRepGraph_NodeId,
-                                              BRepGraphInc::BaseDef>
-{
-  static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
-  {
-    return theParent.IsValid(theGraph.Topo().Shells().Nb())
-           && !theGraph.Topo().Shells().Definition(theParent).IsRemoved;
-  }
-
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                       const ParentId   theParent)
-  {
-    return theGraph.Topo().Shells().Definition(theParent).AuxChildRefIds;
-  }
-
-  static const BRepGraphInc::ChildRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
-  {
-    return theGraph.Refs().Children().Entry(theRefId);
-  }
-
-  static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::ChildRef& theRef)
-  {
-    return theRef.ChildDefId;
-  }
-
-  static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
-  {
-    return *theGraph.Topo().Gen().TopoEntity(theChildId);
-  }
-};
-
+//! Traits for iterating over wire children of a face.
 struct WireOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
                                             BRepGraph_WireRefId,
                                             BRepGraphInc::WireRef,
@@ -170,13 +141,13 @@ struct WireOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Faces().Nb())
-           && !theGraph.Topo().Faces().Definition(theParent).IsRemoved;
+           && !theParent.IsRemoved(theGraph);
   }
 
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
                                                        const ParentId   theParent)
   {
-    return theGraph.Topo().Faces().Definition(theParent).WireRefIds;
+    return theGraph.Topo().Faces().Relations(theParent).WireRefIds;
   }
 
   static const BRepGraphInc::WireRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
@@ -186,7 +157,7 @@ struct WireOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
 
   static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::WireRef& theRef)
   {
-    return theRef.WireDefId;
+    return theRef.ChildWireId;
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
@@ -195,66 +166,28 @@ struct WireOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
   }
 };
 
-struct VertexOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
-                                              BRepGraph_VertexRefId,
-                                              BRepGraphInc::VertexRef,
-                                              BRepGraph_VertexId,
-                                              BRepGraphInc::VertexDef>
-{
-  static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
-  {
-    return theParent.IsValid(theGraph.Topo().Faces().Nb())
-           && !theGraph.Topo().Faces().Definition(theParent).IsRemoved;
-  }
-
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                       const ParentId   theParent)
-  {
-    return theGraph.Topo().Faces().Definition(theParent).VertexRefIds;
-  }
-
-  static const BRepGraphInc::VertexRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
-  {
-    return theGraph.Refs().Vertices().Entry(theRefId);
-  }
-
-  static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::VertexRef& theRef)
-  {
-    return theRef.VertexDefId;
-  }
-
-  static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
-  {
-    return theGraph.Topo().Vertices().Definition(theChildId);
-  }
-};
-
+//! Traits for iterating over coedge children of a wire (direct, no ref indirection).
 struct CoEdgeOfWireTraits : public BaseTraits<BRepGraph_WireId,
-                                              BRepGraph_CoEdgeRefId,
-                                              BRepGraphInc::CoEdgeRef,
-                                              BRepGraph_CoEdgeId,
-                                              BRepGraphInc::CoEdgeDef>
+                                               BRepGraph_CoEdgeId,
+                                               BRepGraphInc::CoEdgeDef,
+                                               BRepGraph_CoEdgeId,
+                                               BRepGraphInc::CoEdgeDef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Wires().Nb())
-           && !theGraph.Topo().Wires().Definition(theParent).IsRemoved;
+           && !theParent.IsRemoved(theGraph);
   }
 
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
                                                        const ParentId   theParent)
   {
-    return theGraph.Topo().Wires().Definition(theParent).CoEdgeRefIds;
+    return theGraph.Topo().Wires().Relations(theParent).CoEdgeIds;
   }
 
-  static const BRepGraphInc::CoEdgeRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
+  static const BRepGraphInc::CoEdgeDef& Ref(const BRepGraph& theGraph, const RefId theRefId)
   {
-    return theGraph.Refs().CoEdges().Entry(theRefId);
-  }
-
-  static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::CoEdgeRef& theRef)
-  {
-    return theRef.CoEdgeDefId;
+    return theGraph.Topo().CoEdges().Definition(theRefId);
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
@@ -263,43 +196,39 @@ struct CoEdgeOfWireTraits : public BaseTraits<BRepGraph_WireId,
   }
 };
 
+//! Traits for iterating over edge children of a wire (via coedge indirection).
 struct EdgeOfWireTraits : public BaseTraits<BRepGraph_WireId,
-                                            BRepGraph_CoEdgeRefId,
-                                            BRepGraphInc::CoEdgeRef,
-                                            BRepGraph_EdgeId,
-                                            BRepGraphInc::EdgeDef>
+                                             BRepGraph_CoEdgeId,
+                                             BRepGraphInc::CoEdgeDef,
+                                             BRepGraph_EdgeId,
+                                             BRepGraphInc::EdgeDef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Wires().Nb())
-           && !theGraph.Topo().Wires().Definition(theParent).IsRemoved;
+           && !theParent.IsRemoved(theGraph);
   }
 
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
                                                        const ParentId   theParent)
   {
-    return theGraph.Topo().Wires().Definition(theParent).CoEdgeRefIds;
+    return theGraph.Topo().Wires().Relations(theParent).CoEdgeIds;
   }
 
-  static const BRepGraphInc::CoEdgeRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
+  static const BRepGraphInc::CoEdgeDef& Ref(const BRepGraph& theGraph, const RefId theRefId)
   {
-    return theGraph.Refs().CoEdges().Entry(theRefId);
+    return theGraph.Topo().CoEdges().Definition(theRefId);
   }
 
-  static ChildId ChildIdOf(const BRepGraph& theGraph, const BRepGraphInc::CoEdgeRef& theRef)
+  static ChildId ChildIdOf(const BRepGraph& theGraph, const BRepGraphInc::CoEdgeDef& theRef)
   {
-    const BRepGraph_CoEdgeId aCoEdgeId = theRef.CoEdgeDefId;
-    if (!aCoEdgeId.IsValid(theGraph.Topo().CoEdges().Nb()))
+    const BRepGraph_EdgeId aEdgeId = theRef.ChildEdgeId;
+    if (!aEdgeId.IsValid(theGraph.Topo().Edges().Nb())
+        || aEdgeId.IsRemoved(theGraph))
     {
       return ChildId();
     }
-
-    const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCoEdgeId);
-    if (aCoEdge.IsRemoved)
-    {
-      return ChildId();
-    }
-    return aCoEdge.EdgeDefId;
+    return aEdgeId;
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
@@ -308,6 +237,7 @@ struct EdgeOfWireTraits : public BaseTraits<BRepGraph_WireId,
   }
 };
 
+//! Traits for iterating over solid children of a compsolid.
 struct SolidOfCompSolidTraits : public BaseTraits<BRepGraph_CompSolidId,
                                                   BRepGraph_SolidRefId,
                                                   BRepGraphInc::SolidRef,
@@ -317,13 +247,13 @@ struct SolidOfCompSolidTraits : public BaseTraits<BRepGraph_CompSolidId,
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().CompSolids().Nb())
-           && !theGraph.Topo().CompSolids().Definition(theParent).IsRemoved;
+           && !theParent.IsRemoved(theGraph);
   }
 
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
                                                        const ParentId   theParent)
   {
-    return theGraph.Topo().CompSolids().Definition(theParent).SolidRefIds;
+    return theGraph.Topo().CompSolids().Relations(theParent).SolidRefIds;
   }
 
   static const BRepGraphInc::SolidRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
@@ -333,7 +263,7 @@ struct SolidOfCompSolidTraits : public BaseTraits<BRepGraph_CompSolidId,
 
   static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::SolidRef& theRef)
   {
-    return theRef.SolidDefId;
+    return theRef.ChildSolidId;
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
@@ -342,40 +272,7 @@ struct SolidOfCompSolidTraits : public BaseTraits<BRepGraph_CompSolidId,
   }
 };
 
-struct ChildOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
-                                              BRepGraph_ChildRefId,
-                                              BRepGraphInc::ChildRef,
-                                              BRepGraph_NodeId,
-                                              BRepGraphInc::BaseDef>
-{
-  static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
-  {
-    return theParent.IsValid(theGraph.Topo().Solids().Nb())
-           && !theGraph.Topo().Solids().Definition(theParent).IsRemoved;
-  }
-
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                       const ParentId   theParent)
-  {
-    return theGraph.Topo().Solids().Definition(theParent).AuxChildRefIds;
-  }
-
-  static const BRepGraphInc::ChildRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
-  {
-    return theGraph.Refs().Children().Entry(theRefId);
-  }
-
-  static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::ChildRef& theRef)
-  {
-    return theRef.ChildDefId;
-  }
-
-  static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
-  {
-    return *theGraph.Topo().Gen().TopoEntity(theChildId);
-  }
-};
-
+//! Traits for iterating over child nodes of a compound.
 struct ChildOfCompoundTraits : public BaseTraits<BRepGraph_CompoundId,
                                                  BRepGraph_ChildRefId,
                                                  BRepGraphInc::ChildRef,
@@ -385,13 +282,13 @@ struct ChildOfCompoundTraits : public BaseTraits<BRepGraph_CompoundId,
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Compounds().Nb())
-           && !theGraph.Topo().Compounds().Definition(theParent).IsRemoved;
+           && !theParent.IsRemoved(theGraph);
   }
 
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
                                                        const ParentId   theParent)
   {
-    return theGraph.Topo().Compounds().Definition(theParent).ChildRefIds;
+    return theGraph.Topo().Compounds().Relations(theParent).ChildRefIds;
   }
 
   static const BRepGraphInc::ChildRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
@@ -401,7 +298,7 @@ struct ChildOfCompoundTraits : public BaseTraits<BRepGraph_CompoundId,
 
   static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::ChildRef& theRef)
   {
-    return theRef.ChildDefId;
+    return theRef.ChildNodeId;
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
@@ -410,6 +307,7 @@ struct ChildOfCompoundTraits : public BaseTraits<BRepGraph_CompoundId,
   }
 };
 
+//! Traits for iterating over occurrence children of a product.
 struct OccurrenceOfProductTraits : public BaseTraits<BRepGraph_ProductId,
                                                      BRepGraph_OccurrenceRefId,
                                                      BRepGraphInc::OccurrenceRef,
@@ -419,13 +317,13 @@ struct OccurrenceOfProductTraits : public BaseTraits<BRepGraph_ProductId,
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Products().Nb())
-           && !theGraph.Topo().Products().Definition(theParent).IsRemoved;
+           && !theParent.IsRemoved(theGraph);
   }
 
-  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
                                                        const ParentId   theParent)
   {
-    return theGraph.Topo().Products().Definition(theParent).OccurrenceRefIds;
+    return theGraph.Topo().Products().Relations(theParent).OccurrenceRefIds;
   }
 
   static const BRepGraphInc::OccurrenceRef& Ref(const BRepGraph& theGraph, const RefId theRefId)
@@ -435,7 +333,7 @@ struct OccurrenceOfProductTraits : public BaseTraits<BRepGraph_ProductId,
 
   static ChildId ChildIdOf(const BRepGraph&, const BRepGraphInc::OccurrenceRef& theRef)
   {
-    return theRef.OccurrenceDefId;
+    return theRef.ChildOccurrenceId;
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)
@@ -476,11 +374,26 @@ public:
 
   [[nodiscard]] ChildId CurrentId() const
   {
-    return TraitsT::ChildIdOf(myGraph,
-                              TraitsT::Ref(myGraph, myRefIds->Value(static_cast<size_t>(myIndex))));
+    const RefId                       aRefId = myRefIds->Value(static_cast<size_t>(myIndex));
+    const typename TraitsT::RefEntry& aRef   = TraitsT::Ref(myGraph, aRefId);
+    if constexpr (TraitsT::THE_IS_DIRECT)
+    {
+      return aRefId;
+    }
+    else
+    {
+      return TraitsT::ChildIdOf(myGraph, aRef);
+    }
   }
 
   [[nodiscard]] const ChildDef& Current() const { return TraitsT::Child(myGraph, CurrentId()); }
+
+  //! Returns the reference/coedge entry that carries the current child relation.
+  [[nodiscard]] RefId CurrentRefId() const
+  {
+    return myRefIds != nullptr && myIndex < myLength ? myRefIds->Value(static_cast<size_t>(myIndex))
+                                                     : RefId();
+  }
 
   [[nodiscard]] uint32_t Index() const { return myIndex; }
 
@@ -498,30 +411,34 @@ private:
   {
     while (myRefIds != nullptr && myIndex < myLength)
     {
-      const typename TraitsT::RefEntry& aRef =
-        TraitsT::Ref(myGraph, myRefIds->Value(static_cast<size_t>(myIndex)));
-      if (!aRef.IsRemoved)
+      const RefId aRefId = myRefIds->Value(static_cast<size_t>(myIndex));
+      if (!aRefId.IsRemoved(myGraph))
       {
-        const BRepGraphInc::BaseDef* aChildDef =
-          childBaseDef(myGraph, TraitsT::ChildIdOf(myGraph, aRef));
-        if (aChildDef != nullptr && !aChildDef->IsRemoved)
+        if constexpr (!TraitsT::THE_IS_DIRECT)
         {
-          return;
+          const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
+          const ChildId aChildId = TraitsT::ChildIdOf(myGraph, aRef);
+          if (!aChildId.IsValid() || aChildId.IsRemoved(myGraph))
+          {
+            ++myIndex;
+            continue;
+          }
         }
+        return;
       }
       ++myIndex;
     }
   }
 
-  const BRepGraph&                       myGraph;
-  const NCollection_DynamicArray<RefId>* myRefIds = nullptr;
-  uint32_t                               myIndex  = 0;
-  uint32_t                               myLength = 0;
+  const BRepGraph&                      myGraph;
+  const NCollection_LinearVector<RefId>* myRefIds = nullptr;
+  uint32_t                              myIndex  = 0;
+  uint32_t                              myLength = 0;
 };
 
-//! @brief Direct active vertex children of an edge.
+//! @brief Direct active boundary vertex children of an edge.
 //!
-//! Iteration order is start vertex, end vertex, then internal/external vertices.
+//! Iteration order is start vertex, then end vertex.
 class DefsVertexOfEdge
 {
 public:
@@ -532,13 +449,13 @@ public:
       : myGraph(theGraph)
   {
     if (!theEdgeId.IsValid(theGraph.Topo().Edges().Nb())
-        || theGraph.Topo().Edges().Definition(theEdgeId).IsRemoved)
+        || theEdgeId.IsRemoved(theGraph))
     {
       return;
     }
 
     myEdge   = &theGraph.Topo().Edges().Definition(theEdgeId);
-    myLength = 2u + static_cast<uint32_t>(myEdge->InternalVertexRefIds.Size());
+    myLength = 2u;
     skipRemoved();
   }
 
@@ -552,12 +469,18 @@ public:
 
   [[nodiscard]] ChildId CurrentId() const
   {
-    return myGraph.Refs().Vertices().Entry(currentRefId()).VertexDefId;
+    return myGraph.Refs().Vertices().Entry(currentRefId()).ChildVertexId;
   }
 
   [[nodiscard]] const ChildDef& Current() const
   {
     return myGraph.Topo().Vertices().Definition(CurrentId());
+  }
+
+  //! Returns the start/end vertex reference entry that carries the current child relation.
+  [[nodiscard]] BRepGraph_VertexRefId CurrentRefId() const
+  {
+    return More() ? currentRefId() : BRepGraph_VertexRefId();
   }
 
   [[nodiscard]] uint32_t Index() const { return myIndex; }
@@ -578,11 +501,7 @@ private:
     {
       return myEdge->StartVertexRefId;
     }
-    if (theIndex == 1)
-    {
-      return myEdge->EndVertexRefId;
-    }
-    return myEdge->InternalVertexRefIds.Value(static_cast<size_t>(theIndex - 2));
+    return myEdge->EndVertexRefId;
   }
 
   [[nodiscard]] BRepGraph_VertexRefId currentRefId() const { return refIdAt(myIndex); }
@@ -592,18 +511,16 @@ private:
     while (myEdge != nullptr && myIndex < myLength)
     {
       const BRepGraph_VertexRefId aRefId = refIdAt(myIndex);
-      if (aRefId.IsValid())
+      if (aRefId.IsValid()
+          && !myGraph.Refs().IsRemoved(aRefId))
       {
         const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertices().Entry(aRefId);
-        if (!aRef.IsRemoved)
+        if (aRef.ChildVertexId.IsRemoved(myGraph))
         {
-          const BRepGraphInc::BaseDef* aChildDef =
-            myGraph.Topo().Gen().TopoEntity(BRepGraph_NodeId(aRef.VertexDefId));
-          if (aChildDef != nullptr && !aChildDef->IsRemoved)
-          {
-            return;
-          }
+          ++myIndex;
+          continue;
         }
+        return;
       }
       ++myIndex;
     }
@@ -621,18 +538,12 @@ using BRepGraph_DefsShellOfSolid =
   BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::ShellOfSolidTraits>;
 using BRepGraph_DefsFaceOfShell =
   BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::FaceOfShellTraits>;
-using BRepGraph_DefsChildOfShell =
-  BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::ChildOfShellTraits>;
 using BRepGraph_DefsEdgeOfWire =
   BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::EdgeOfWireTraits>;
 using BRepGraph_DefsWireOfFace =
   BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::WireOfFaceTraits>;
-using BRepGraph_DefsVertexOfFace =
-  BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::VertexOfFaceTraits>;
 using BRepGraph_DefsCoEdgeOfWire =
   BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::CoEdgeOfWireTraits>;
-using BRepGraph_DefsChildOfSolid =
-  BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::ChildOfSolidTraits>;
 using BRepGraph_DefsSolidOfCompSolid =
   BRepGraph_DefsIterator::DefsOfParent<BRepGraph_DefsIterator::SolidOfCompSolidTraits>;
 using BRepGraph_DefsChildOfCompound =

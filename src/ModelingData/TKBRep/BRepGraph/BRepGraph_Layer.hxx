@@ -14,17 +14,21 @@
 #ifndef _BRepGraph_Layer_HeaderFile
 #define _BRepGraph_Layer_HeaderFile
 
+#include <BRepGraph.hxx>
+#include <BRepGraph_CopyRemap.hxx>
+#include <BRepGraph_ItemId.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_DynamicArray.hxx>
+#include <NCollection_FlatDataMap.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <cstdint>
+#include <memory>
 
-class BRepGraph;
 class BRepGraph_LayerRegistry;
 
 //! @brief Abstract base class for named attribute layers.
@@ -67,35 +71,46 @@ public:
   //! Layer identity (unique within a graph).
   [[nodiscard]] virtual const TCollection_AsciiString& Name() const = 0;
 
-  //! Called when a node is soft-removed.
-  //! @param[in] theNode        the removed node
-  //! @param[in] theReplacement if valid, the node that replaces theNode
-  //!            (e.g., sewing edge merge, deduplicate). If invalid, pure deletion.
-  //!            Layers should migrate data from theNode to theReplacement when valid,
-  //!            otherwise discard or archive removed-node data.
-  //!            Implementations must validate theReplacement before dereferencing
-  //!            graph data through it.
+  //! Called when a node is soft-removed without a replacement.
+  //! @param[in] theNode the removed node
+  //!            Layers should discard or archive data associated with it.
   //! @warning Layer callbacks must not throw. They are called from noexcept
   //! notification paths (MutGuard destructors, deferred invalidation flush).
-  virtual void OnNodeRemoved(const BRepGraph_NodeId theNode,
-                             const BRepGraph_NodeId theReplacement) noexcept = 0;
+  Standard_EXPORT virtual void OnNodeRemoved(const BRepGraph_NodeId theNode) noexcept;
 
-  //! Called after Compact with a unified old->new remap map.
-  //! Layer must remap all internal NodeId references using this map.
-  //! The map covers all node kinds (Vertex through CompSolid and future extensions).
-  //! Nodes absent from the map were removed during compaction - layers should
-  //! drop data associated with those nodes.
-  //! @param[in] theRemapMap maps old NodeId to new NodeId for all surviving nodes
-  virtual void OnCompact(
-    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept = 0;
+  //! Dispatch a generic item removal to the matching typed removal callback.
+  //! This is a non-virtual convenience entry point; typed callbacks remain the
+  //! extension points for derived layers.
+  //! @param[in] theItem the removed definition or reference
+  Standard_EXPORT void OnItemRemoved(const BRepGraph_ItemId theItem) noexcept;
+
+  //! Called when a node is soft-removed and replaced by another node.
+  //! @param[in] theOldNode the removed node
+  //! @param[in] theNewNode the node that replaces theOldNode
+  //!            Layers that store node-keyed data should migrate from
+  //!            theOldNode to theNewNode when the replacement kind is
+  //!            compatible. This is a structural lifecycle event, not an
+  //!            algorithmic history record.
+  //! @warning Layer callbacks must not throw. They are called from noexcept
+  //! notification paths (MutGuard destructors, deferred invalidation flush).
+  Standard_EXPORT virtual void OnNodeReplaced(const BRepGraph_NodeId theOldNode,
+                                              const BRepGraph_NodeId theNewNode) noexcept;
+
+  //! Copy this source layer data into another graph.
+  //! The source graph is the graph this layer is attached to (Graph()).
+  //! @param[in] theCopy source graph, target graph, and source item id -> target item id remap
+  //! @note Missing source items were not copied; persistent layers should skip dependent records.
+  //! @note For BRepGraph_CopyRemap::Mode::Compact, the layer is being migrated in-place after
+  //! structural compaction. UID/ItemUID records and ref/rep entries should be remapped through
+  //! the item map. Stale entries (absent from the remap) should be dropped.
+  //! @warning This callback may allocate and is intentionally not noexcept.
+  Standard_EXPORT virtual void CopyTo(const BRepGraph_CopyRemap& theCopy) const = 0;
 
   //! Mark all cached values dirty (bulk invalidation).
   virtual void InvalidateAll() noexcept = 0;
 
   //! Clear all stored data.
   virtual void Clear() noexcept = 0;
-
-  // --- Modification event subscription ---
 
   //! Return a bitmask of BRepGraph_NodeId::Kind values this layer subscribes to.
   //! Only modification events matching subscribed kinds are dispatched.
@@ -110,22 +125,26 @@ public:
   //! @param[in] theNode the modified node
   Standard_EXPORT virtual void OnNodeModified(const BRepGraph_NodeId theNode) noexcept;
 
+  //! Dispatch a generic item modification to the matching typed modification callback.
+  //! This is a non-virtual convenience entry point; typed callbacks remain the
+  //! extension points for derived layers.
+  //! @param[in] theItem the modified definition or reference
+  Standard_EXPORT void OnItemModified(const BRepGraph_ItemId theItem) noexcept;
+
   //! Called after EndDeferredInvalidation() with all nodes modified during
   //! the deferred scope. Only dispatched if at least one modified node's kind
-  //! matches SubscribedKinds(). The vector may contain nodes of kinds not
+  //! matches SubscribedKinds(). The array may contain nodes of kinds not
   //! subscribed to - layers should filter internally if needed.
   //! Default: no-op.
   //! @param[in] theModifiedNodes all modified, non-removed nodes
   Standard_EXPORT virtual void OnNodesModified(
-    const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes) noexcept;
+    const NCollection_Array1<BRepGraph_NodeId>& theModifiedNodes) noexcept;
 
   //! Convenience: return bitmask bit for a given Kind.
   static int KindBit(const BRepGraph_NodeId::Kind theKind)
   {
     return 1 << static_cast<int>(theKind);
   }
-
-  // --- Reference modification event subscription ---
 
   //! Return a bitmask of BRepGraph_RefId::Kind values this layer subscribes to.
   //! Only modification events matching subscribed ref kinds are dispatched.
@@ -148,14 +167,12 @@ public:
 
   //! Called after EndDeferredInvalidation() with all refs modified during
   //! the deferred scope. Only dispatched if at least one modified ref's kind
-  //! matches SubscribedRefKinds(). The vector may contain refs of kinds not
+  //! matches SubscribedRefKinds(). The array may contain refs of kinds not
   //! subscribed to - layers should filter internally if needed.
   //! Default: no-op.
-  //! @param[in] theModifiedRefs     all modified, non-removed refs
-  //! @param[in] theModifiedRefKindsMask bitwise OR of all modified ref kinds
+  //! @param[in] theModifiedRefs all modified, non-removed refs
   Standard_EXPORT virtual void OnRefsModified(
-    const NCollection_DynamicArray<BRepGraph_RefId>& theModifiedRefs,
-    const int                                        theModifiedRefKindsMask) noexcept;
+    const NCollection_Array1<BRepGraph_RefId>& theModifiedRefs) noexcept;
 
   //! Convenience: return bitmask bit for a given RefId::Kind.
   static int RefKindBit(const BRepGraph_RefId::Kind theKind)
@@ -163,34 +180,74 @@ public:
     return 1 << static_cast<int>(theKind);
   }
 
-  // --- Revision + owning-graph access ---
-
   //! Monotonic revision counter incremented by touch() on every observable
   //! state change. Consumers compare stored revisions to detect staleness in O(1).
   //! Derived layers MUST call touch() from their mutators.
   [[nodiscard]] uint64_t Revision() const noexcept { return myRevision; }
 
-  //! Owning graph, set by the registry on RegisterLayer() and cleared on Unregister().
-  //! Nullptr before registration or after unregistration.
-  [[nodiscard]] const BRepGraph* OwningGraph() const noexcept { return myOwningGraph; }
-
-  //! Mutable accessor for layers that drive graph mutations (e.g. meshing).
-  [[nodiscard]] BRepGraph* OwningMutableGraph() const noexcept
-  {
-    return const_cast<BRepGraph*>(myOwningGraph);
-  }
-
 protected:
+  Standard_EXPORT BRepGraph_Layer();
+
   //! Bump the revision counter.
   void touch() noexcept { ++myRevision; }
+
+  //! True while this layer is registered in a live graph registry.
+  [[nodiscard]] bool IsAttached() const noexcept { return myGraph != nullptr; }
+
+  //! Attached graph for read-only layer services. Raises Standard_ProgramError if detached.
+  [[nodiscard]] Standard_EXPORT const BRepGraph& Graph() const;
+
+  //! Attached mutable graph for graph-owned service layers. Returns null if detached.
+  [[nodiscard]] BRepGraph* AttachedGraph() const noexcept { return myGraph; }
+
+  template <BRepGraph_NodeId::Kind TheKind>
+  [[nodiscard]] static BRepGraph_NodeId::Typed<TheKind> RemappedItem(
+    const BRepGraph_CopyRemap&             theCopy,
+    const BRepGraph_NodeId::Typed<TheKind> theId)
+  {
+    if (!theId.IsValid())
+    {
+      return BRepGraph_NodeId::Typed<TheKind>();
+    }
+    const BRepGraph_ItemId* aMapped = theCopy.TargetItem(BRepGraph_ItemId(theId));
+    if (aMapped == nullptr || !aMapped->IsNode())
+    {
+      return BRepGraph_NodeId::Typed<TheKind>();
+    }
+    return BRepGraph_NodeId::Typed<TheKind>::FromNodeId(aMapped->NodeId());
+  }
+
+  template <BRepGraph_RefId::Kind TheKind>
+  [[nodiscard]] static BRepGraph_RefId::Typed<TheKind> RemappedItem(
+    const BRepGraph_CopyRemap&            theCopy,
+    const BRepGraph_RefId::Typed<TheKind> theId)
+  {
+    if (!theId.IsValid())
+    {
+      return BRepGraph_RefId::Typed<TheKind>();
+    }
+    const BRepGraph_ItemId* aMapped = theCopy.TargetItem(BRepGraph_ItemId(theId));
+    if (aMapped == nullptr || !aMapped->IsReference())
+    {
+      return BRepGraph_RefId::Typed<TheKind>();
+    }
+    return BRepGraph_RefId::Typed<TheKind>::FromRefId(aMapped->RefId());
+  }
+
+  //! Called after the layer is attached to a graph registry.
+  Standard_EXPORT virtual void OnAttached() noexcept;
+
+  //! Called before the layer is detached from a graph registry.
+  Standard_EXPORT virtual void OnDetached() noexcept;
 
 private:
   friend class ::BRepGraph_LayerRegistry;
 
-  void setOwningGraph(const BRepGraph* theGraph) noexcept { myOwningGraph = theGraph; }
+  Standard_EXPORT void attachGraph(BRepGraph* theGraph) noexcept;
+  Standard_EXPORT void detachContext() noexcept;
 
-  const BRepGraph* myOwningGraph = nullptr;
-  uint64_t         myRevision    = 0;
+  BRepGraph* myGraph    = nullptr;
+  uint64_t   myRevision = 0;
 
 public:
   DEFINE_STANDARD_RTTIEXT(BRepGraph_Layer, Standard_Transient)
