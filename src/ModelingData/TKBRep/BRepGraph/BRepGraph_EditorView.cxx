@@ -773,7 +773,7 @@ static bool coEdgeOrientedVerticesAfterReplacement(const BRepGraphInc_Storage& t
 static BRepGraph::EditorView::WireOps::CoEdgeOrderStatus toEditorCoEdgeOrderStatus(
   const BRepGraphInc_Storage::WireCoEdgeOrderStatus theStatus)
 {
-  using EditorStatus = BRepGraph::EditorView::WireOps::CoEdgeOrderStatus;
+  using EditorStatus  = BRepGraph::EditorView::WireOps::CoEdgeOrderStatus;
   using StorageStatus = BRepGraphInc_Storage::WireCoEdgeOrderStatus;
   switch (theStatus)
   {

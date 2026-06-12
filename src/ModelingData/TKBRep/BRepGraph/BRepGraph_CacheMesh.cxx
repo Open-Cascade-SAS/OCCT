@@ -169,7 +169,7 @@ void BRepGraph_CacheMesh::CopyFreshTo(const BRepGraph_CopyRemap& theCopy) const
     const Slot& aSrcSlot = mySlots.Value(aSlotIdx);
     Slot&       aDstSlot = aTargetCache->changeSlot(aSrcSlot.Id);
 
-    aDstSlot.MeshDriver     = aSrcSlot.MeshDriver;
+    aDstSlot.MeshDriver = aSrcSlot.MeshDriver;
     aDstSlot.RecipeHash = aSrcSlot.RecipeHash;
     aDstSlot.Clear();
 
@@ -300,7 +300,7 @@ void BRepGraph_CacheMesh::RegisterDriver(const SlotId theSlot, const occ::handle
     return;
   }
 
-  aSlot.MeshDriver     = theDriver;
+  aSlot.MeshDriver = theDriver;
   aSlot.RecipeHash = theDriver.IsNull() ? 0 : theDriver->RecipeHash();
   aSlot.Clear();
 }

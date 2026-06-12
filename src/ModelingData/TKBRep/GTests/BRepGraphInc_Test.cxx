@@ -133,10 +133,10 @@ static BRepGraph_VertexId addStorageVertex(BRepGraphInc_Storage& theStorage,
   return aVertexId;
 }
 
-static BRepGraph_EdgeId addStorageEdge(BRepGraphInc_Storage&      theStorage,
-                                       const BRepGraph_VertexId   theStartVertex,
-                                       const BRepGraph_VertexId   theEndVertex,
-                                       const double               theTolerance = 0.0)
+static BRepGraph_EdgeId addStorageEdge(BRepGraphInc_Storage&    theStorage,
+                                       const BRepGraph_VertexId theStartVertex,
+                                       const BRepGraph_VertexId theEndVertex,
+                                       const double             theTolerance = 0.0)
 {
   const BRepGraph_EdgeId      anEdgeId  = theStorage.AppendEdge();
   const BRepGraph_VertexRefId aStartRef = theStorage.AppendVertexRef();
@@ -2244,15 +2244,15 @@ TEST(BRepGraphIncTest, Relations_RebindVertexSkipsRemovedParentEdge)
 
 TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_ReordersExactConnectedWire)
 {
-  BRepGraphInc_Storage aStorage;
+  BRepGraphInc_Storage   aStorage;
   const BRepGraph_WireId aWireId = aStorage.AppendWire();
 
   const BRepGraph_VertexId aVertexA = addStorageVertex(aStorage, gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aVertexB = addStorageVertex(aStorage, gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aVertexC = addStorageVertex(aStorage, gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
 
-  const BRepGraph_EdgeId anEdgeBC = addStorageEdge(aStorage, aVertexB, aVertexC);
-  const BRepGraph_EdgeId anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
+  const BRepGraph_EdgeId   anEdgeBC = addStorageEdge(aStorage, aVertexB, aVertexC);
+  const BRepGraph_EdgeId   anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
   const BRepGraph_CoEdgeId aCoEdgeBC =
     aStorage.CreateCoEdgeUse(aWireId, anEdgeBC, BRepGraph_FaceId(), TopAbs_FORWARD);
   const BRepGraph_CoEdgeId aCoEdgeAB =
@@ -2272,7 +2272,7 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_ReordersExactConnectedW
 
 TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_UsesVertexTolerance)
 {
-  BRepGraphInc_Storage aStorage;
+  BRepGraphInc_Storage   aStorage;
   const BRepGraph_WireId aWireId = aStorage.AppendWire();
 
   const BRepGraph_VertexId aVertexA = addStorageVertex(aStorage, gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
@@ -2280,8 +2280,8 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_UsesVertexTolerance)
   const BRepGraph_VertexId aVertexC = addStorageVertex(aStorage, gp_Pnt(1.005, 0.0, 0.0), 1.0e-2);
   const BRepGraph_VertexId aVertexD = addStorageVertex(aStorage, gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
 
-  const BRepGraph_EdgeId anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
-  const BRepGraph_EdgeId anEdgeCD = addStorageEdge(aStorage, aVertexC, aVertexD);
+  const BRepGraph_EdgeId   anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
+  const BRepGraph_EdgeId   anEdgeCD = addStorageEdge(aStorage, aVertexC, aVertexD);
   const BRepGraph_CoEdgeId aCoEdgeAB =
     aStorage.CreateCoEdgeUse(aWireId, anEdgeAB, BRepGraph_FaceId(), TopAbs_FORWARD);
   const BRepGraph_CoEdgeId aCoEdgeCD =
@@ -2300,7 +2300,7 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_UsesVertexTolerance)
 
 TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_PartialPreservesDisconnectedRuns)
 {
-  BRepGraphInc_Storage aStorage;
+  BRepGraphInc_Storage   aStorage;
   const BRepGraph_WireId aWireId = aStorage.AppendWire();
 
   const BRepGraph_VertexId aVertexA = addStorageVertex(aStorage, gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
@@ -2309,9 +2309,9 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_PartialPreservesDisconn
   const BRepGraph_VertexId aVertexX = addStorageVertex(aStorage, gp_Pnt(10.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aVertexY = addStorageVertex(aStorage, gp_Pnt(11.0, 0.0, 0.0), 1.0e-7);
 
-  const BRepGraph_EdgeId anEdgeBC = addStorageEdge(aStorage, aVertexB, aVertexC);
-  const BRepGraph_EdgeId anEdgeXY = addStorageEdge(aStorage, aVertexX, aVertexY);
-  const BRepGraph_EdgeId anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
+  const BRepGraph_EdgeId   anEdgeBC = addStorageEdge(aStorage, aVertexB, aVertexC);
+  const BRepGraph_EdgeId   anEdgeXY = addStorageEdge(aStorage, aVertexX, aVertexY);
+  const BRepGraph_EdgeId   anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
   const BRepGraph_CoEdgeId aCoEdgeBC =
     aStorage.CreateCoEdgeUse(aWireId, anEdgeBC, BRepGraph_FaceId(), TopAbs_FORWARD);
   const BRepGraph_CoEdgeId aCoEdgeXY =

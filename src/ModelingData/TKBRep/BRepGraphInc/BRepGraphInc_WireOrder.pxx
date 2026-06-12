@@ -24,9 +24,9 @@
 namespace BRepGraphInc_WireOrder
 {
 
-constexpr size_t THE_INLINE_COEDGES     = 128;
-constexpr size_t THE_INLINE_ENDPOINTS   = THE_INLINE_COEDGES * 2;
-constexpr size_t THE_KDTREE_THRESHOLD   = 128;
+constexpr size_t THE_INLINE_COEDGES   = 128;
+constexpr size_t THE_INLINE_ENDPOINTS = THE_INLINE_COEDGES * 2;
+constexpr size_t THE_KDTREE_THRESHOLD = 128;
 
 inline bool testFlag(const BRepGraphInc_BitFlags& theFlags, const size_t theIndex)
 {
@@ -75,7 +75,8 @@ inline bool coEdgeOrientedVertices(const BRepGraphInc_Storage& theStorage,
   }
 
   const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(theCoEdgeId);
-  if (!aCoEdge.ChildEdgeId.IsValid(theStorage.NbEdges()) || theStorage.IsRemoved(aCoEdge.ChildEdgeId))
+  if (!aCoEdge.ChildEdgeId.IsValid(theStorage.NbEdges())
+      || theStorage.IsRemoved(aCoEdge.ChildEdgeId))
   {
     return false;
   }
@@ -104,8 +105,8 @@ inline bool coEdgeOrientedVertices(const BRepGraphInc_Storage& theStorage,
   return true;
 }
 
-inline bool collectCoEdgeEndpointData(const BRepGraphInc_Storage&                   theStorage,
-                                      const BRepGraph_WireId                        theExpectedWireId,
+inline bool collectCoEdgeEndpointData(const BRepGraphInc_Storage& theStorage,
+                                      const BRepGraph_WireId      theExpectedWireId,
                                       const NCollection_Array1<BRepGraph_CoEdgeId>& theInput,
                                       NCollection_Array1<CoEdgeEndpointData>&       theData)
 {
@@ -131,8 +132,8 @@ inline bool collectCoEdgeEndpointData(const BRepGraphInc_Storage&               
     }
 
     const BRepGraphInc::EdgeDef& anEdge = theStorage.Edge(aCoEdge.ChildEdgeId);
-    BRepGraph_VertexId          aStartVertex;
-    BRepGraph_VertexId          anEndVertex;
+    BRepGraph_VertexId           aStartVertex;
+    BRepGraph_VertexId           anEndVertex;
     if (!coEdgeOrientedVertices(theStorage, aCoEdgeId, aStartVertex, anEndVertex))
     {
       return false;
@@ -142,12 +143,10 @@ inline bool collectCoEdgeEndpointData(const BRepGraphInc_Storage&               
     aData.CoEdgeId       = aCoEdgeId;
     aData.StartVertex    = aStartVertex;
     aData.EndVertex      = anEndVertex;
-    aData.StartTolerance = std::max({theStorage.Vertex(aStartVertex).Tolerance,
-                                     anEdge.Tolerance,
-                                     Precision::Confusion()});
-    aData.EndTolerance   = std::max({theStorage.Vertex(anEndVertex).Tolerance,
-                                     anEdge.Tolerance,
-                                     Precision::Confusion()});
+    aData.StartTolerance = std::max(
+      {theStorage.Vertex(aStartVertex).Tolerance, anEdge.Tolerance, Precision::Confusion()});
+    aData.EndTolerance = std::max(
+      {theStorage.Vertex(anEndVertex).Tolerance, anEdge.Tolerance, Precision::Confusion()});
     theData.ChangeAt(anIdx) = aData;
   }
   return true;
@@ -183,11 +182,10 @@ inline bool buildConnectedWireOrderByClasses(
     return false;
   }
 
-  const size_t aNbInput = theInput.Size();
+  const size_t                                                     aNbInput = theInput.Size();
   NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_ENDPOINTS> aClassStorage(aNbInput * 2);
-  NCollection_Array1<BRepGraph_VertexId>                           aClasses =
-    aClassStorage.ToArray1();
-  size_t aNbClasses = 0;
+  NCollection_Array1<BRepGraph_VertexId> aClasses   = aClassStorage.ToArray1();
+  size_t                                 aNbClasses = 0;
   for (size_t anIdx = 0; anIdx < aNbInput; ++anIdx)
   {
     if (!containsClass(aClasses, aNbClasses, theStarts.At(anIdx)))
@@ -247,10 +245,10 @@ inline bool buildConnectedWireOrderByClasses(
   NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_COEDGES + 1> aClassStack(aNbInput + 1);
   NCollection_LocalArray<size_t, THE_INLINE_COEDGES>                 anEdgeStack(aNbInput);
   NCollection_LocalArray<size_t, THE_INLINE_COEDGES>                 aCircuitEdges(aNbInput);
-  size_t aNbClassStack  = 0;
-  size_t aNbEdgeStack   = 0;
-  size_t aNbCircuitEdge = 0;
-  aClassStack[aNbClassStack] = aStartClass;
+  size_t                                                             aNbClassStack  = 0;
+  size_t                                                             aNbEdgeStack   = 0;
+  size_t                                                             aNbCircuitEdge = 0;
+  aClassStack[aNbClassStack]                                                        = aStartClass;
   ++aNbClassStack;
 
   while (aNbClassStack != 0)
@@ -341,8 +339,8 @@ inline bool buildExactVertexClasses(const NCollection_Array1<CoEdgeEndpointData>
   for (size_t anIdx = 0; anIdx < theData.Size(); ++anIdx)
   {
     const CoEdgeEndpointData& aData = theData.At(anIdx);
-    theStarts.ChangeAt(anIdx)      = aData.StartVertex;
-    theEnds.ChangeAt(anIdx)        = aData.EndVertex;
+    theStarts.ChangeAt(anIdx)       = aData.StartVertex;
+    theEnds.ChangeAt(anIdx)         = aData.EndVertex;
   }
   return true;
 }
@@ -369,8 +367,7 @@ inline BRepGraph_VertexId rootClass(const NCollection_Array1<BRepGraph_VertexId>
   BRepGraph_VertexId aRoot    = theClass;
   size_t             aRootIdx = vertexClassIndex(theVertices, theNbVertices, aRoot);
   size_t             aNbHops  = 0;
-  while (aRootIdx != theNbVertices && theParents.At(aRootIdx) != aRoot
-         && aNbHops < theNbVertices)
+  while (aRootIdx != theNbVertices && theParents.At(aRootIdx) != aRoot && aNbHops < theNbVertices)
   {
     aRoot    = theParents.At(aRootIdx);
     aRootIdx = vertexClassIndex(theVertices, theNbVertices, aRoot);
@@ -387,7 +384,7 @@ inline BRepGraph_VertexId rootClass(const NCollection_Array1<BRepGraph_VertexId>
   while (aCurrentIdx != theNbVertices && theParents.At(aCurrentIdx) != aRoot
          && aNbHops < theNbVertices)
   {
-    const BRepGraph_VertexId aNext = theParents.At(aCurrentIdx);
+    const BRepGraph_VertexId aNext   = theParents.At(aCurrentIdx);
     theParents.ChangeAt(aCurrentIdx) = aRoot;
     aCurrent                         = aNext;
     aCurrentIdx                      = vertexClassIndex(theVertices, theNbVertices, aCurrent);
@@ -402,8 +399,7 @@ inline void uniteClasses(const NCollection_Array1<BRepGraph_VertexId>& theVertic
                          const BRepGraph_VertexId                      theFirst,
                          const BRepGraph_VertexId                      theSecond)
 {
-  const BRepGraph_VertexId aFirstRoot =
-    rootClass(theVertices, theParents, theNbVertices, theFirst);
+  const BRepGraph_VertexId aFirstRoot = rootClass(theVertices, theParents, theNbVertices, theFirst);
   const BRepGraph_VertexId aSecondRoot =
     rootClass(theVertices, theParents, theNbVertices, theSecond);
   if (aFirstRoot != aSecondRoot)
@@ -439,10 +435,10 @@ inline BRepGraph_VertexId addOrUpdateVertexClass(
     return BRepGraph_VertexId();
   }
 
-  theVertices.ChangeAt(theNbVertices)   = theVertex;
-  theTolerances.ChangeAt(theNbVertices) = std::max(theTolerance,
-                                                   theStorage.Vertex(theVertex).Tolerance);
-  theParents.ChangeAt(theNbVertices)    = theVertex;
+  theVertices.ChangeAt(theNbVertices) = theVertex;
+  theTolerances.ChangeAt(theNbVertices) =
+    std::max(theTolerance, theStorage.Vertex(theVertex).Tolerance);
+  theParents.ChangeAt(theNbVertices) = theVertex;
   ++theNbVertices;
   return theVertex;
 }
@@ -463,7 +459,7 @@ inline bool buildToleranceVertexClasses(const BRepGraphInc_Storage&             
 
   const size_t aNbMaxVertices = theData.Size() * 2;
   NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_ENDPOINTS> aVertexStorage(aNbMaxVertices);
-  NCollection_LocalArray<double, THE_INLINE_ENDPOINTS>             aToleranceStorage(aNbMaxVertices);
+  NCollection_LocalArray<double, THE_INLINE_ENDPOINTS> aToleranceStorage(aNbMaxVertices);
   NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_ENDPOINTS> aParentStorage(aNbMaxVertices);
   NCollection_Array1<BRepGraph_VertexId> aVertices   = aVertexStorage.ToArray1();
   NCollection_Array1<double>             aTolerances = aToleranceStorage.ToArray1();
@@ -472,24 +468,23 @@ inline bool buildToleranceVertexClasses(const BRepGraphInc_Storage&             
 
   for (size_t anIdx = 0; anIdx < theData.Size(); ++anIdx)
   {
-    const CoEdgeEndpointData& aData = theData.At(anIdx);
-    const BRepGraph_VertexId aStartClass =
-      addOrUpdateVertexClass(theStorage,
-                             aData.StartVertex,
-                             aData.StartTolerance,
-                             aVertices,
-                             aTolerances,
-                             aParents,
-                             aNbVertices);
-    const BRepGraph_VertexId anEndClass =
-      addOrUpdateVertexClass(theStorage,
-                             aData.EndVertex,
-                             aData.EndTolerance,
-                             aVertices,
-                             aTolerances,
-                             aParents,
-                             aNbVertices);
-    if (!aStartClass.IsValid(theStorage.NbVertices()) || !anEndClass.IsValid(theStorage.NbVertices()))
+    const CoEdgeEndpointData& aData       = theData.At(anIdx);
+    const BRepGraph_VertexId  aStartClass = addOrUpdateVertexClass(theStorage,
+                                                                  aData.StartVertex,
+                                                                  aData.StartTolerance,
+                                                                  aVertices,
+                                                                  aTolerances,
+                                                                  aParents,
+                                                                  aNbVertices);
+    const BRepGraph_VertexId  anEndClass  = addOrUpdateVertexClass(theStorage,
+                                                                 aData.EndVertex,
+                                                                 aData.EndTolerance,
+                                                                 aVertices,
+                                                                 aTolerances,
+                                                                 aParents,
+                                                                 aNbVertices);
+    if (!aStartClass.IsValid(theStorage.NbVertices())
+        || !anEndClass.IsValid(theStorage.NbVertices()))
     {
       return false;
     }
@@ -558,11 +553,10 @@ inline bool buildToleranceVertexClasses(const BRepGraphInc_Storage&             
   return true;
 }
 
-inline void buildBestEffortRunsByClasses(
-  const NCollection_Array1<BRepGraph_CoEdgeId>& theInput,
-  const NCollection_Array1<BRepGraph_VertexId>& theStarts,
-  const NCollection_Array1<BRepGraph_VertexId>& theEnds,
-  NCollection_LinearVector<BRepGraph_CoEdgeId>& theOrdered)
+inline void buildBestEffortRunsByClasses(const NCollection_Array1<BRepGraph_CoEdgeId>& theInput,
+                                         const NCollection_Array1<BRepGraph_VertexId>& theStarts,
+                                         const NCollection_Array1<BRepGraph_VertexId>& theEnds,
+                                         NCollection_LinearVector<BRepGraph_CoEdgeId>& theOrdered)
 {
   theOrdered.Clear(false);
   if (theStarts.Size() != theInput.Size() || theEnds.Size() != theInput.Size())
@@ -570,7 +564,7 @@ inline void buildBestEffortRunsByClasses(
     return;
   }
 
-  const size_t aNbInput = theInput.Size();
+  const size_t          aNbInput = theInput.Size();
   BRepGraphInc_BitFlags aUsed;
   aUsed.Resize(aNbInput);
 
@@ -625,8 +619,8 @@ inline void buildBestEffortRunsByClasses(
       break;
     }
 
-    size_t aCurrentIdx = aRunStart;
-    size_t aRunLength  = 0;
+    size_t aCurrentIdx        = aRunStart;
+    size_t aRunLength         = 0;
     aRunStartOffsets[aNbRuns] = aNbFlatRunEdges;
     aRunFirstEdges[aNbRuns]   = aRunStart;
     while (aCurrentIdx != aNbInput)
@@ -705,10 +699,9 @@ inline BRepGraphInc_Storage::WireCoEdgeOrderStatus BuildCoEdgeOrder(
     return Status::Connected;
   }
 
-  const size_t aNbCoEdges = theInput.Size();
+  const size_t                                                   aNbCoEdges = theInput.Size();
   NCollection_LocalArray<CoEdgeEndpointData, THE_INLINE_COEDGES> aCoEdgeDataStorage(aNbCoEdges);
-  NCollection_Array1<CoEdgeEndpointData>                         aCoEdgeData =
-    aCoEdgeDataStorage.ToArray1();
+  NCollection_Array1<CoEdgeEndpointData> aCoEdgeData = aCoEdgeDataStorage.ToArray1();
   if (!collectCoEdgeEndpointData(theStorage, theExpectedWireId, theInput, aCoEdgeData))
   {
     return Status::InvalidInput;
@@ -716,9 +709,8 @@ inline BRepGraphInc_Storage::WireCoEdgeOrderStatus BuildCoEdgeOrder(
 
   NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_COEDGES> aExactStartStorage(aNbCoEdges);
   NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_COEDGES> aExactEndStorage(aNbCoEdges);
-  NCollection_Array1<BRepGraph_VertexId>                         aExactStarts =
-    aExactStartStorage.ToArray1();
-  NCollection_Array1<BRepGraph_VertexId> aExactEnds = aExactEndStorage.ToArray1();
+  NCollection_Array1<BRepGraph_VertexId> aExactStarts = aExactStartStorage.ToArray1();
+  NCollection_Array1<BRepGraph_VertexId> aExactEnds   = aExactEndStorage.ToArray1();
   if (!buildExactVertexClasses(aCoEdgeData, aExactStarts, aExactEnds))
   {
     return Status::InvalidInput;
@@ -734,8 +726,7 @@ inline BRepGraphInc_Storage::WireCoEdgeOrderStatus BuildCoEdgeOrder(
     return Status::Reordered;
   }
 
-  NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_COEDGES> aToleranceStartStorage(
-    aNbCoEdges);
+  NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_COEDGES> aToleranceStartStorage(aNbCoEdges);
   NCollection_LocalArray<BRepGraph_VertexId, THE_INLINE_COEDGES> aToleranceEndStorage(aNbCoEdges);
   NCollection_Array1<BRepGraph_VertexId> aToleranceStarts = aToleranceStartStorage.ToArray1();
   NCollection_Array1<BRepGraph_VertexId> aToleranceEnds   = aToleranceEndStorage.ToArray1();

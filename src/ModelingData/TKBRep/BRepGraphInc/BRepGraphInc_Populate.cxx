@@ -282,7 +282,7 @@ struct ExtractedWire
   TopoDS_Wire                             Shape;
   NCollection_DynamicArray<ExtractedEdge> Edges;
   TopLoc_Location                         BakedLocation;
-  bool                                    IsGenerated = false;
+  bool                                    IsGenerated             = false;
   bool                                    HasPartialExplorerOrder = false;
 };
 
@@ -562,8 +562,8 @@ struct BuildContext
   NCollection_DynamicArray<FaceBuildData>      PendingFaces;
   NCollection_DynamicArray<LocatedNodeBinding> LocatedNodes;
   NCollection_DataMap<const TopoDS_TShape*, NCollection_LinearVector<LocatedNodeBindingIndex>>
-    LocatedNodeIndex;
-  bool                                         HasWireOrderWarnings = false;
+       LocatedNodeIndex;
+  bool HasWireOrderWarnings = false;
 };
 
 bool isWireOrderWarning(const BRepGraphInc_Storage::WireCoEdgeOrderStatus theStatus)
@@ -573,7 +573,7 @@ bool isWireOrderWarning(const BRepGraphInc_Storage::WireCoEdgeOrderStatus theSta
          || theStatus == Status::InvalidInput;
 }
 
-void recordWireOrderStatus(BuildContext&                                      theBuild,
+void recordWireOrderStatus(BuildContext&                                     theBuild,
                            const BRepGraphInc_Storage::WireCoEdgeOrderStatus theStatus)
 {
   theBuild.HasWireOrderWarnings = theBuild.HasWireOrderWarnings || isWireOrderWarning(theStatus);
@@ -619,7 +619,7 @@ void bindLocatedNode(BuildContext&          theBuild,
                      const TopLoc_Location& theBakedLocation,
                      const bool             theBindTShape)
 {
-  const TopoDS_TShape*         aTShape       = theShape.TShape().get();
+  const TopoDS_TShape*          aTShape = theShape.TShape().get();
   const LocatedNodeBindingIndex aBindingIndex =
     static_cast<LocatedNodeBindingIndex>(theBuild.LocatedNodes.Size());
   LocatedNodeBinding& aBinding = theBuild.LocatedNodes.Appended();
@@ -892,9 +892,9 @@ void appendFaceCoEdge(BRepGraphInc_Storage&  theStorage,
   }
 }
 
-void appendWireCoEdge(BRepGraphInc_Storage&  theStorage,
-                      const BRepGraph_WireId theWireId,
-                      const BRepGraph_EdgeId theEdgeId,
+void appendWireCoEdge(BRepGraphInc_Storage&    theStorage,
+                      const BRepGraph_WireId   theWireId,
+                      const BRepGraph_EdgeId   theEdgeId,
                       const TopAbs_Orientation theOrientation)
 {
   theStorage.CreateCoEdgeUse(theWireId, theEdgeId, BRepGraph_FaceId(), theOrientation);
@@ -1096,7 +1096,7 @@ bool orderExtractedWire(ExtractedWire& theWireData, const TopoDS_Face* theFace)
   for (const OrderedExtractedEdge& anOrdered : anOrder)
   {
     ExtractedEdge& anEdgeData = aReordered.Appended();
-    anEdgeData = theWireData.Edges.Value(static_cast<size_t>(anOrdered.EdgeIndex));
+    anEdgeData                = theWireData.Edges.Value(static_cast<size_t>(anOrdered.EdgeIndex));
   }
   theWireData.Edges = std::move(aReordered);
   return isCompleteExplorerOrder;
@@ -1720,9 +1720,7 @@ BRepGraphInc_Populate::BuildStatus runTopologyBuild(BuildContext&       theBuild
   OSD_Parallel::For(
     0,
     static_cast<int>(aNbPendingFaces),
-    [&](const int theIndex) {
-      extractFaceData(theBuild.PendingFaces.ChangeValue(theIndex));
-    },
+    [&](const int theIndex) { extractFaceData(theBuild.PendingFaces.ChangeValue(theIndex)); },
     !isParallelExtraction);
 
   BRepGraphInc_Populate::BuildStatus aStatus = BRepGraphInc_Populate::BuildStatus::Success;

@@ -1735,8 +1735,8 @@ bool BRepGraphInc_Storage::ValidateWireCoEdgeOrders() const
 
 //=================================================================================================
 
-BRepGraphInc_Storage::WireCoEdgeOrderStatus
-BRepGraphInc_Storage::CanonicalizeWireCoEdgeOrderStatus(const BRepGraph_WireId theWireId)
+BRepGraphInc_Storage::WireCoEdgeOrderStatus BRepGraphInc_Storage::CanonicalizeWireCoEdgeOrderStatus(
+  const BRepGraph_WireId theWireId)
 {
   using Status = BRepGraphInc_Storage::WireCoEdgeOrderStatus;
   if (!theWireId.IsValid(NbWires()) || IsRemoved(theWireId))
@@ -1744,9 +1744,9 @@ BRepGraphInc_Storage::CanonicalizeWireCoEdgeOrderStatus(const BRepGraph_WireId t
     return Status::InvalidInput;
   }
   const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCurrent = WireRelations(theWireId).CoEdgeIds;
-  const NCollection_Array1<BRepGraph_CoEdgeId> aCurrentView = aCurrent.ToArray1();
-  NCollection_LinearVector<BRepGraph_CoEdgeId> anOrdered;
-  const Status aStatus =
+  const NCollection_Array1<BRepGraph_CoEdgeId>        aCurrentView = aCurrent.ToArray1();
+  NCollection_LinearVector<BRepGraph_CoEdgeId>        anOrdered;
+  const Status                                        aStatus =
     BRepGraphInc_WireOrder::BuildCoEdgeOrder(*this, theWireId, aCurrentView, anOrdered);
   if (aStatus == Status::Reordered || aStatus == Status::ToleranceOrdered
       || aStatus == Status::Partial)

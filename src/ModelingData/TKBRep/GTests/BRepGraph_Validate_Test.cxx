@@ -253,8 +253,8 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
   EXPECT_FALSE(hasErrorContaining(aResult, "Wire edges not connected"));
 
   // Check that at least one connectivity warning was found.
-  bool aFoundConnectivity = false;
-  const uint32_t aNbIssues = static_cast<uint32_t>(aResult.Issues.Size());
+  bool           aFoundConnectivity = false;
+  const uint32_t aNbIssues          = static_cast<uint32_t>(aResult.Issues.Size());
   for (uint32_t anIdx = 0; anIdx < aNbIssues; ++anIdx)
   {
     const BRepGraph_Validate::Issue& anIssue = aResult.Issues.Value(anIdx);
