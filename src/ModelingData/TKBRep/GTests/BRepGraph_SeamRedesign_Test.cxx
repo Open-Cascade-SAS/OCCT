@@ -14,14 +14,12 @@
 // Edge cases that the seam-redesign reachable only after:
 //   - Both seam halves placed in WireDef::CoEdgeIds at TopoDS_Iterator order
 //   - SeamPair derived from connectivity (CoEdgesOfEdge filtered by face+orientation)
-//   - Continuity derived/stored temporarily in BRepGraphAlgo_Regularity
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraphAlgo_Regularity.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_EditorView.hxx>
@@ -322,105 +320,6 @@ TEST(BRepGraph_SeamRedesignTest, NbDistinctEdges_AccountsForSeamHalves)
     << "Cylinder must have at least one wire whose seam contributes a doubled edge";
 }
 
-TEST(BRepGraph_SeamRedesignTest, Edge_Continuity_DerivedFromGraph)
-{
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
-  BRepGraph          aGraph;
-  registerLayers(aGraph);
-  aGraph.Clear();
-  ASSERT_TRUE(aGraph.Shapes().Add(aBox).IsOk());
-
-  // Pick any edge with two faces.
-  BRepGraph_EdgeId aEdgeId;
-  BRepGraph_FaceId aFace1, aFace2;
-  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    NCollection_LinearVector<BRepGraph_FaceId>       aFaces;
-    const NCollection_LinearVector<BRepGraph_FaceId> anEdgeFaces =
-      aGraph.Topo().Edges().Faces(anEdgeIt.CurrentId());
-    for (BRepGraph_FacesOfEdge aFIt(aGraph, anEdgeFaces); aFIt.More(); aFIt.Next())
-    {
-      aFaces.Append(aFIt.CurrentId());
-    }
-    if (aFaces.Size() >= 2)
-    {
-      aEdgeId = anEdgeIt.CurrentId();
-      aFace1  = aFaces[0];
-      aFace2  = aFaces[1];
-      break;
-    }
-  }
-  ASSERT_TRUE(aEdgeId.IsValid());
-
-  EXPECT_TRUE(BRepGraphAlgo_Regularity::HasContinuity(aGraph, aEdgeId, aFace1, aFace2));
-  const std::optional<GeomAbs_Shape> aContinuity =
-    BRepGraphAlgo_Regularity::Continuity(aGraph, aEdgeId, aFace1, aFace2);
-  ASSERT_TRUE(aContinuity.has_value());
-  EXPECT_EQ(*aContinuity, GeomAbs_C0);
-  EXPECT_EQ(BRepGraphAlgo_Regularity::MaxContinuity(aGraph, aEdgeId), GeomAbs_C0);
-
-  // Symmetry: (F1, F2) == (F2, F1).
-  const std::optional<GeomAbs_Shape> aReverseContinuity =
-    BRepGraphAlgo_Regularity::Continuity(aGraph, aEdgeId, aFace2, aFace1);
-  ASSERT_TRUE(aReverseContinuity.has_value());
-  EXPECT_EQ(*aReverseContinuity, GeomAbs_C0);
-}
-
-TEST(BRepGraph_SeamRedesignTest, EdgeOps_Split_DerivesSeamRegularity)
-{
-  const TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
-  BRepGraph          aGraph;
-  registerLayers(aGraph);
-  aGraph.Clear();
-  ASSERT_TRUE(aGraph.Shapes().Add(aCyl).IsOk());
-
-  const BRepGraph_CoEdgeId aSeamCoEdge = findSeamCoEdge(aGraph);
-  ASSERT_TRUE(aSeamCoEdge.IsValid());
-  const BRepGraphInc::CoEdgeDef& aSeamDef    = aGraph.Topo().CoEdges().Definition(aSeamCoEdge);
-  const BRepGraph_EdgeId         aSeamEdgeId = aSeamDef.ChildEdgeId;
-  const BRepGraph_FaceId         aSeamFaceId = aSeamDef.FaceId;
-  ASSERT_TRUE(aSeamEdgeId.IsValid());
-  ASSERT_TRUE(aSeamFaceId.IsValid());
-
-  ASSERT_TRUE(
-    BRepGraphAlgo_Regularity::HasContinuity(aGraph, aSeamEdgeId, aSeamFaceId, aSeamFaceId));
-  const std::optional<GeomAbs_Shape> aContinuity =
-    BRepGraphAlgo_Regularity::Continuity(aGraph, aSeamEdgeId, aSeamFaceId, aSeamFaceId);
-  ASSERT_TRUE(aContinuity.has_value());
-  ASSERT_GT(*aContinuity, GeomAbs_C0);
-
-  const BRepGraphInc::EdgeDef&    aEdgeDef   = aGraph.Topo().Edges().Definition(aSeamEdgeId);
-  const std::pair<double, double> aEdgeRange = BRepGraph_Tool::Edge::Range(aGraph, aSeamEdgeId);
-  const double                    aMidParam  = 0.5 * (aEdgeRange.first + aEdgeRange.second);
-  const BRepGraph_VertexId        aSplitVertex =
-    aGraph.Editor().Vertices().Add(gp_Pnt(5.0, 0.0, 5.0), aEdgeDef.Tolerance);
-  ASSERT_TRUE(aSplitVertex.IsValid());
-
-  BRepGraph_EdgeId aSubA;
-  BRepGraph_EdgeId aSubB;
-  aGraph.Editor().Edges().Split(aSeamEdgeId, aSplitVertex, aMidParam, aSubA, aSubB);
-  ASSERT_TRUE(aSubA.IsValid());
-  ASSERT_TRUE(aSubB.IsValid());
-
-  EXPECT_FALSE(
-    BRepGraphAlgo_Regularity::HasContinuity(aGraph, aSeamEdgeId, aSeamFaceId, aSeamFaceId))
-    << "Removed source edge must not keep stale regularity bindings";
-  EXPECT_TRUE(BRepGraphAlgo_Regularity::HasContinuity(aGraph, aSubA, aSeamFaceId, aSeamFaceId));
-  const std::optional<GeomAbs_Shape> aSubAContinuity =
-    BRepGraphAlgo_Regularity::Continuity(aGraph, aSubA, aSeamFaceId, aSeamFaceId);
-  ASSERT_TRUE(aSubAContinuity.has_value());
-  EXPECT_EQ(*aSubAContinuity, *aContinuity);
-  EXPECT_TRUE(BRepGraphAlgo_Regularity::HasContinuity(aGraph, aSubB, aSeamFaceId, aSeamFaceId));
-  const std::optional<GeomAbs_Shape> aSubBContinuity =
-    BRepGraphAlgo_Regularity::Continuity(aGraph, aSubB, aSeamFaceId, aSeamFaceId);
-  ASSERT_TRUE(aSubBContinuity.has_value());
-  EXPECT_EQ(*aSubBContinuity, *aContinuity);
-
-  const BRepGraph_Validate::Result aAudit =
-    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_TRUE(aAudit.IsValid()) << "Audit must remain clean after seam split";
-}
-
 // ============================================================
 // Reconstruct: TopoDS_Iterator order preservation
 // ============================================================
@@ -479,43 +378,6 @@ TEST(BRepGraph_SeamRedesignTest, Reconstruct_CylinderWire_TopoDSIteratorOrder)
     EXPECT_EQ(aReconCounts[i], aOrigCounts[i])
       << "Wire " << i << " edge count must match after reconstruct";
   }
-}
-
-// ============================================================
-// RegularityAlgorithm captures both inter-face and seam continuity
-// ============================================================
-
-TEST(BRepGraph_SeamRedesignTest, RegularityAlgorithm_CapturesInterFaceAndSeam)
-{
-  const TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
-  BRepGraph          aGraph;
-  registerLayers(aGraph);
-  aGraph.Clear();
-  ASSERT_TRUE(aGraph.Shapes().Add(aCyl).IsOk());
-
-  // Cylinder produces exactly one seam-style entry (F1 == F2, on the lateral face).
-  uint32_t aSeamEntries = 0;
-  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
-      aGraph.Topo().Edges().CoEdges(anEdgeId);
-    for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
-    {
-      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceId;
-      if (aFace.IsValid()
-          && BRepGraphAlgo_Regularity::HasContinuity(aGraph, anEdgeId, aFace, aFace))
-      {
-        ++aSeamEntries;
-        const std::optional<GeomAbs_Shape> aContinuity =
-          BRepGraphAlgo_Regularity::Continuity(aGraph, anEdgeId, aFace, aFace);
-        ASSERT_TRUE(aContinuity.has_value());
-        EXPECT_GT(*aContinuity, GeomAbs_C0) << "Cylinder seam BRep_CurveOnClosedSurface stores G^2";
-        break;
-      }
-    }
-  }
-  EXPECT_EQ(aSeamEntries, 1u) << "Cylinder must produce exactly one seam regularity entry";
 }
 
 // ============================================================

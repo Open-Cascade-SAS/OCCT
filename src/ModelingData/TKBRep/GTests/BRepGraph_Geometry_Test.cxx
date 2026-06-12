@@ -14,7 +14,6 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraphAlgo_Regularity.hxx>
 #include <BRepGraph_CacheDerivedState.hxx>
 #include <BRepGraph_CacheRegistry.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
@@ -294,28 +293,6 @@ TEST(BRepGraph_GeometryTest, SetPCurveTwoArgPreservesExistingRange)
   EXPECT_NEAR(aRangeAfter.first, aRangeBefore.first, Precision::PConfusion());
   EXPECT_NEAR(aRangeAfter.second, aRangeBefore.second, Precision::PConfusion());
   EXPECT_EQ(BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId).get(), aReplacement.get());
-}
-
-TEST(BRepGraph_GeometryTest, Edge_Continuity_Valid)
-{
-  const TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder(10.0, 20.0).Shape();
-
-  BRepGraph aGraph;
-  aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes8 = aGraph.Shapes().Add(aShape);
-  ASSERT_FALSE(aGraph.IsEmpty());
-
-  // Cylinder has at least the seam edge with C^k > C0 in BRepGraphAlgo_Regularity.
-  bool hasNonC0Continuity = false;
-  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    if (BRepGraphAlgo_Regularity::MaxContinuity(aGraph, anEdgeIt.CurrentId()) > GeomAbs_C0)
-    {
-      hasNonC0Continuity = true;
-      break;
-    }
-  }
-  EXPECT_TRUE(hasNonC0Continuity);
 }
 
 TEST(BRepGraph_GeometryTest, FaceDef_Surface_IsNotNull)

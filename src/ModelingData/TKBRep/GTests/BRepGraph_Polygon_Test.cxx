@@ -17,8 +17,6 @@
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraphAlgo_Parameters.hxx>
-#include <BRepGraphAlgo_Regularity.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -351,104 +349,6 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   ASSERT_TRUE(hasPointOnCurve);
   ASSERT_TRUE(hasPointOnSurface);
   ASSERT_TRUE(hasPointOnPCurve);
-
-  BRepGraph aGraph;
-  registerStandardLayers(aGraph);
-  aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes6 = aGraph.Shapes().Add(aShape);
-  ASSERT_FALSE(aGraph.IsEmpty());
-  // Count all extracted vertex point representations.
-  int aNbPointsOnCurve   = 0;
-  int aNbPointsOnSurface = 0;
-  int aNbPointsOnPCurve  = 0;
-  for (BRepGraph_VertexIterator aVertexIt(aGraph); aVertexIt.More(); aVertexIt.Next())
-  {
-    const BRepGraph_VertexId aVertexId = aVertexIt.CurrentId();
-    aNbPointsOnCurve += BRepGraphAlgo_Parameters::NbPointsOnCurve(aGraph, aVertexId);
-    aNbPointsOnSurface += BRepGraphAlgo_Parameters::NbPointsOnSurface(aGraph, aVertexId);
-    aNbPointsOnPCurve += BRepGraphAlgo_Parameters::NbPointsOnPCurve(aGraph, aVertexId);
-  }
-
-  EXPECT_GT(aNbPointsOnSurface, 0);
-  EXPECT_GT(aNbPointsOnCurve + aNbPointsOnSurface + aNbPointsOnPCurve, 0);
-}
-
-// ============================================================
-// Edge Regularity
-// ============================================================
-
-TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
-{
-  // Verify the regularity layer captures continuity for every (edge, F1, F2)
-  // tuple that classical BRep_Tool::Continuity reports as non-default.
-  TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
-
-  BRepGraph aGraph;
-  registerStandardLayers(aGraph);
-  aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes7 = aGraph.Shapes().Add(aCyl);
-  ASSERT_FALSE(aGraph.IsEmpty());
-  // Find the seam edge (cylinder lateral face has one).
-  bool aSeamRegularityFound = false;
-  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
-    if (BRepGraphAlgo_Regularity::NbRegularities(aGraph, anEdgeId) == 0)
-    {
-      continue;
-    }
-    const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
-      aGraph.Topo().Edges().CoEdges(anEdgeId);
-    for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
-    {
-      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceId;
-      if (aFace.IsValid()
-          && BRepGraphAlgo_Regularity::HasContinuity(aGraph, anEdgeId, aFace, aFace))
-      {
-        aSeamRegularityFound = true;
-      }
-    }
-  }
-  EXPECT_TRUE(aSeamRegularityFound)
-    << "Cylinder seam edge must produce a regularity entry with F1 == F2";
-}
-
-// Round-trip continuity is no longer replayed into the reconstructed TopoDS edge.
-// It is derived by the graph algorithm from topology and geometry when queried.
-TEST(BRepGraph_PolygonTest, EdgeRegularity_ShapeGraphShapeGraph_RoundTrip)
-{
-  TopoDS_Shape aOriginal = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
-
-  BRepGraph aGraph;
-  registerStandardLayers(aGraph);
-  aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes = aGraph.Shapes().Add(aOriginal);
-  ASSERT_FALSE(aGraph.IsEmpty());
-
-  TopoDS_Shape aReconstructed =
-    aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
-  ASSERT_FALSE(aReconstructed.IsNull());
-
-  BRepGraph aRoundTripGraph;
-  registerStandardLayers(aRoundTripGraph);
-  aRoundTripGraph.Clear();
-  ASSERT_TRUE(aRoundTripGraph.Shapes().Add(aReconstructed).IsOk());
-
-  BRepGraph_EdgeIterator anOrigEdgeIt(aGraph);
-  BRepGraph_EdgeIterator aRoundTripEdgeIt(aRoundTripGraph);
-  uint32_t               aNbCheckedEdges = 0;
-  for (; anOrigEdgeIt.More() && aRoundTripEdgeIt.More();
-       anOrigEdgeIt.Next(), aRoundTripEdgeIt.Next())
-  {
-    EXPECT_EQ(
-      BRepGraphAlgo_Regularity::MaxContinuity(aRoundTripGraph, aRoundTripEdgeIt.CurrentId()),
-      BRepGraphAlgo_Regularity::MaxContinuity(aGraph, anOrigEdgeIt.CurrentId()))
-      << "Derived max continuity mismatch on edge " << aNbCheckedEdges;
-    ++aNbCheckedEdges;
-  }
-  EXPECT_FALSE(anOrigEdgeIt.More());
-  EXPECT_FALSE(aRoundTripEdgeIt.More());
-  EXPECT_GT(aNbCheckedEdges, 0u) << "Test must check at least one edge";
 }
 
 // ============================================================

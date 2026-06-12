@@ -19,8 +19,6 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraphAlgo_Parameters.hxx>
-#include <BRepGraphAlgo_Regularity.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
@@ -1015,79 +1013,6 @@ TEST(BRepGraph_BuildTest, Build_BasicQueriesAndAlgorithmsWork)
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 6);
   EXPECT_EQ(aGraph.Topo().Edges().Nb(), 12);
   EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 8);
-
-  // Algorithm services derive values on demand.
-  bool hasVertexParameter = false;
-  for (BRepGraph_VertexIterator aVertexIt(aGraph); aVertexIt.More(); aVertexIt.Next())
-  {
-    hasVertexParameter =
-      BRepGraphAlgo_Parameters::NbPointsOnCurve(aGraph, aVertexIt.CurrentId()) > 0;
-    if (hasVertexParameter)
-    {
-      break;
-    }
-  }
-  EXPECT_TRUE(hasVertexParameter);
-
-  bool hasRegularity = false;
-  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    hasRegularity = BRepGraphAlgo_Regularity::NbRegularities(aGraph, anEdgeIt.CurrentId()) > 0;
-    if (hasRegularity)
-    {
-      break;
-    }
-  }
-  EXPECT_TRUE(hasRegularity);
-}
-
-TEST(BRepGraph_BuildTest, RegularityAlgorithm_DerivesContinuity)
-{
-  BRepGraph aGraph;
-  aGraph.Clear();
-  const BRepGraph::ShapesView::Result aBuildRes =
-    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
-  ASSERT_TRUE(aBuildRes.IsOk());
-
-  BRepGraph_EdgeId anEdgeId;
-  BRepGraph_FaceId aFace1;
-  BRepGraph_FaceId aFace2;
-  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
-      aGraph.Topo().Edges().CoEdges(anEdgeId);
-    for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
-    {
-      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceId;
-      if (!aFace.IsValid())
-      {
-        continue;
-      }
-      if (!aFace1.IsValid())
-      {
-        aFace1 = aFace;
-      }
-      else if (aFace != aFace1)
-      {
-        aFace2 = aFace;
-        break;
-      }
-    }
-    if (!aFace1.IsValid() || !aFace2.IsValid())
-    {
-      continue;
-    }
-    break;
-  }
-  ASSERT_TRUE(anEdgeId.IsValid());
-  ASSERT_TRUE(aFace1.IsValid());
-  ASSERT_TRUE(aFace2.IsValid());
-
-  const std::optional<GeomAbs_Shape> aContinuity =
-    BRepGraphAlgo_Regularity::Continuity(aGraph, anEdgeId, aFace1, aFace2);
-  ASSERT_TRUE(aContinuity.has_value());
-  EXPECT_EQ(*aContinuity, GeomAbs_C0);
 }
 
 TEST(BRepGraph_BuildTest, RootProductIds_Box_ReturnsOneProduct)

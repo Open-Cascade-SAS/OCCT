@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraphAlgo_Parameters.hxx>
-#include <BRepGraphAlgo_Regularity.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -241,52 +239,4 @@ TEST_F(BRepGraph_QuerySurfaceTest, Shell_NbFaces_BoxShellHasSixFaces)
   ASSERT_GE(myBoxGraph.Topo().Shells().Nb(), 1);
   EXPECT_EQ(BRepGraph_Tool::Shell::NbFaces(myBoxGraph, BRepGraph_ShellId::Start()), 6)
     << "Box shell should reference 6 faces";
-}
-
-TEST_F(BRepGraph_QuerySurfaceTest, Vertex_ParametersDerivedFromGraph)
-{
-  ASSERT_GT(myBoxGraph.Topo().Vertices().Nb(), 0);
-  ASSERT_GT(myBoxGraph.Topo().Edges().Nb(), 0);
-  const BRepGraph_VertexId                          aVertexId(0);
-  const NCollection_LinearVector<BRepGraph_EdgeId>& anEdges =
-    myBoxGraph.Topo().Vertices().Edges(aVertexId);
-  ASSERT_FALSE(anEdges.IsEmpty());
-  const BRepGraph_EdgeId anEdgeId = anEdges.Value(0);
-
-  EXPECT_TRUE(BRepGraphAlgo_Parameters::HasPointOnCurve(myBoxGraph, aVertexId, anEdgeId));
-  EXPECT_GT(BRepGraphAlgo_Parameters::NbPointsOnCurve(myBoxGraph, aVertexId), 0u);
-  EXPECT_TRUE(BRepGraphAlgo_Parameters::HasPointOnCurve(myBoxGraph, aVertexId, anEdgeId));
-}
-
-TEST_F(BRepGraph_QuerySurfaceTest, Edge_RegularityDerivedFromGraph)
-{
-  bool hasRegularity = false;
-  for (BRepGraph_EdgeIterator anEdgeIt(myBoxGraph); anEdgeIt.More(); anEdgeIt.Next())
-  {
-    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
-    if (BRepGraphAlgo_Regularity::NbRegularities(myBoxGraph, anEdgeId) > 0)
-    {
-      hasRegularity = true;
-      EXPECT_GE(BRepGraphAlgo_Regularity::MaxContinuity(myBoxGraph, anEdgeId), GeomAbs_C0);
-      break;
-    }
-  }
-  EXPECT_TRUE(hasRegularity);
-}
-
-TEST_F(BRepGraph_QuerySurfaceTest, Face_RegularityEdgesDerivedFromGraph)
-{
-  ASSERT_GT(myBoxGraph.Topo().Faces().Nb(), 0);
-  bool hasFaceRegularityEdges = false;
-  for (BRepGraph_FaceId aFace = myBoxGraph.Topo().Faces().StartId();
-       aFace < myBoxGraph.Topo().Faces().EndId();
-       ++aFace)
-  {
-    if (!BRepGraphAlgo_Regularity::EdgesForFace(myBoxGraph, aFace).IsEmpty())
-    {
-      hasFaceRegularityEdges = true;
-      break;
-    }
-  }
-  EXPECT_TRUE(hasFaceRegularityEdges);
 }
