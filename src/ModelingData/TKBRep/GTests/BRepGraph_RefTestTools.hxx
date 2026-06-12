@@ -172,7 +172,7 @@ inline const NCollection_LinearVector<BRepGraph_SolidRefId>& SolidRefsOfCompSoli
 //=================================================================================================
 
 inline uint32_t CountSolidRefsOfCompSolid(const BRepGraph&            theGraph,
-                                           const BRepGraph_CompSolidId theCompSolidId)
+                                          const BRepGraph_CompSolidId theCompSolidId)
 {
   return static_cast<uint32_t>(SolidRefsOfCompSolid(theGraph, theCompSolidId).Size());
 }
@@ -192,7 +192,8 @@ inline const NCollection_LinearVector<BRepGraph_ChildRefId>& ChildRefsOfParent(
 
 //=================================================================================================
 
-inline uint32_t CountChildRefsOfParent(const BRepGraph& theGraph, const BRepGraph_NodeId theParentId)
+inline uint32_t CountChildRefsOfParent(const BRepGraph&       theGraph,
+                                       const BRepGraph_NodeId theParentId)
 {
   return static_cast<uint32_t>(ChildRefsOfParent(theGraph, theParentId).Size());
 }
@@ -303,7 +304,7 @@ inline const NCollection_LinearVector<BRepGraph_SolidRefId>& SolidRefsOfCompSoli
 //=================================================================================================
 
 inline uint32_t CountSolidRefsOfCompSolid(const BRepGraphInc_Storage& theStorage,
-                                           const BRepGraph_CompSolidId theCompSolidId)
+                                          const BRepGraph_CompSolidId theCompSolidId)
 {
   return static_cast<uint32_t>(SolidRefsOfCompSolid(theStorage, theCompSolidId).Size());
 }
