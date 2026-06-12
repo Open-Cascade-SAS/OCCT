@@ -300,8 +300,9 @@ TEST_F(BRepGraphTest, FindPCurveCoEdgeId_ValidPair)
         continue;
       }
       const BRepGraph_CoEdgeId aPCurveId =
-        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(myGraph, BRepGraph_EdgeId(aCoEdge.ChildEdgeId),
-                                                  aFaceIt.CurrentId());
+        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(myGraph,
+                                                 BRepGraph_EdgeId(aCoEdge.ChildEdgeId),
+                                                 aFaceIt.CurrentId());
       EXPECT_TRUE(aPCurveId.IsValid()) << "Missing PCurve for edge " << aCoEdge.ChildEdgeId.Index
                                        << " on face " << aFaceIt.CurrentId().Index;
     }
@@ -805,8 +806,7 @@ TEST_F(BRepGraphTest, OwnGen_MutableEdge_PropagatesSubtreeGenUp)
   if (BRepGraph_EdgeId::Start().IsValid(myGraph.Topo().Edges().Nb()))
   {
     // Find a wire containing this edge.
-    BRepGraph_WiresOfEdge aWireIt =
-      myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
+    BRepGraph_WiresOfEdge aWireIt = myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
     if (aWireIt.More())
     {
       const BRepGraph_WireId aWireId = aWireIt.CurrentId();

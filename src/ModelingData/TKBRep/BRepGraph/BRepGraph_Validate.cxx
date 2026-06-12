@@ -392,8 +392,7 @@ void checkRelationConsistency(const BRepGraph&                                  
 
     // Build a set from actual wires for comparison.
     NCollection_FlatMap<BRepGraph_WireId> anActualSet;
-    for (BRepGraph_WiresOfEdge aWireIt = theGraph.Topo().Edges().WiresOf(anEdgeId);
-         aWireIt.More();
+    for (BRepGraph_WiresOfEdge aWireIt = theGraph.Topo().Edges().WiresOf(anEdgeId); aWireIt.More();
          aWireIt.Next())
     {
       anActualSet.Add(aWireIt.CurrentId());
@@ -417,7 +416,7 @@ void checkRelationConsistency(const BRepGraph&                                  
         {
           aDesc += ",";
         }
-        isFirstActual = false;
+        isFirstActual                  = false;
         const BRepGraph_WireId aWireId = aWireIt.CurrentId();
         aDesc += TCollection_AsciiString(static_cast<int>(aWireId.Index));
         if (!aWireId.IsValid(theGraph.Topo().Wires().Nb()) || aWireId.IsRemoved(theGraph))
@@ -496,7 +495,7 @@ void checkRelationFaceCountCache(const BRepGraph&                               
         {
           aDesc += ",";
         }
-        isFirstFace = false;
+        isFirstFace                    = false;
         const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
         aDesc += TCollection_AsciiString(static_cast<int>(aFaceId.Index));
       }
@@ -598,8 +597,8 @@ void checkGeometryReferences(const BRepGraph&                                   
     const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
     const BRepGraphInc::EdgeDef& anEdge   = anEdgeIt.Current();
 
-    bool needsCurve3D = true;
-    BRepGraph_FacesOfEdge aFaceIt = theGraph.Topo().Edges().FacesOf(anEdgeId);
+    bool                  needsCurve3D = true;
+    BRepGraph_FacesOfEdge aFaceIt      = theGraph.Topo().Edges().FacesOf(anEdgeId);
     if (aFaceIt.More())
     {
       needsCurve3D = false;

@@ -274,21 +274,21 @@ public:
     //! @param[in] theEndVertex end vertex to match
     //! @param[in] theToIgnoreOrientation when true, also matches the reverse vertex order
     //! @return edge id, or invalid if no active edge matches
-    [[nodiscard]] Standard_EXPORT static BRepGraph_EdgeId
-      FindByVertices(const BRepGraph&         theGraph,
-                     const BRepGraph_VertexId theStartVertex,
-                     const BRepGraph_VertexId theEndVertex,
-                     const bool               theToIgnoreOrientation = false);
+    [[nodiscard]] Standard_EXPORT static BRepGraph_EdgeId FindByVertices(
+      const BRepGraph&         theGraph,
+      const BRepGraph_VertexId theStartVertex,
+      const BRepGraph_VertexId theEndVertex,
+      const bool               theToIgnoreOrientation = false);
 
     //! Find an active coedge carrying PCurve data for the given edge-face use.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  edge definition to match
     //! @param[in] theFace  face definition to match
     //! @return matching coedge id, or invalid if the edge/face pair has no active PCurve coedge
-    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId
-      FindPCurveCoEdgeId(const BRepGraph&       theGraph,
-                         const BRepGraph_EdgeId theEdge,
-                         const BRepGraph_FaceId theFace);
+    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId FindPCurveCoEdgeId(
+      const BRepGraph&       theGraph,
+      const BRepGraph_EdgeId theEdge,
+      const BRepGraph_FaceId theFace);
 
     //! Find an active PCurve coedge for the given edge-face use and preferred orientation.
     //! @param[in] theGraph      source graph
@@ -297,21 +297,21 @@ public:
     //! @param[in] theOrientation preferred coedge orientation
     //! @return exact orientation match when present; otherwise the first active PCurve
     //!         coedge on the edge-face pair; invalid if there is no active PCurve coedge
-    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId
-      FindPCurveCoEdgeId(const BRepGraph&         theGraph,
-                         const BRepGraph_EdgeId   theEdge,
-                         const BRepGraph_FaceId   theFace,
-                         const TopAbs_Orientation theOrientation);
+    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId FindPCurveCoEdgeId(
+      const BRepGraph&         theGraph,
+      const BRepGraph_EdgeId   theEdge,
+      const BRepGraph_FaceId   theFace,
+      const TopAbs_Orientation theOrientation);
 
     //! Find an active coedge for the given edge-face use.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  edge definition to match
     //! @param[in] theFace  face definition to match
     //! @return matching coedge id, or invalid if the edge/face pair has no active coedge
-    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId
-      FindCoEdgeId(const BRepGraph&       theGraph,
-                   const BRepGraph_EdgeId theEdge,
-                   const BRepGraph_FaceId theFace);
+    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId FindCoEdgeId(
+      const BRepGraph&       theGraph,
+      const BRepGraph_EdgeId theEdge,
+      const BRepGraph_FaceId theFace);
 
     //! Find an active coedge for the given edge-face use and preferred orientation.
     //! @param[in] theGraph      source graph
@@ -320,11 +320,11 @@ public:
     //! @param[in] theOrientation preferred coedge orientation
     //! @return exact orientation match when present; otherwise the first active coedge on the
     //!         edge-face pair; invalid if there is no active coedge for the edge-face pair
-    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId
-      FindCoEdgeId(const BRepGraph&         theGraph,
-                   const BRepGraph_EdgeId   theEdge,
-                   const BRepGraph_FaceId   theFace,
-                   const TopAbs_Orientation theOrientation);
+    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId FindCoEdgeId(
+      const BRepGraph&         theGraph,
+      const BRepGraph_EdgeId   theEdge,
+      const BRepGraph_FaceId   theFace,
+      const TopAbs_Orientation theOrientation);
 
     //! Returns the number of faces that reference this edge via coedges.
     //! @param[in] theGraph source graph

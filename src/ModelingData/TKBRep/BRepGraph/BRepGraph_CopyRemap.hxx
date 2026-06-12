@@ -66,10 +66,12 @@ public:
   [[nodiscard]] const ItemMap& Items() const noexcept { return *myItemRemap; }
 
   //! Return the target item for a source item, or null if the source item was not copied.
-  [[nodiscard]] Standard_EXPORT const BRepGraph_ItemId* TargetItem(const BRepGraph_ItemId theSourceItem) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_ItemId* TargetItem(
+    const BRepGraph_ItemId theSourceItem) const;
 
   //! Return the target item for a source item, or an invalid item id.
-  [[nodiscard]] Standard_EXPORT BRepGraph_ItemId TargetItemOrInvalid(const BRepGraph_ItemId theSourceItem) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_ItemId
+    TargetItemOrInvalid(const BRepGraph_ItemId theSourceItem) const;
 
   //! Return true if the source item has a valid copied target item.
   [[nodiscard]] Standard_EXPORT bool HasTargetItem(const BRepGraph_ItemId theSourceItem) const;

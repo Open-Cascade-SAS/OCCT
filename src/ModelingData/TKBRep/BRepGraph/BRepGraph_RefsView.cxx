@@ -391,13 +391,18 @@ BRepGraph_NodeId BRepGraph::RefsView::GenOps::ChildNode(const BRepGraph_RefId th
     case BRepGraph_RefId::Kind::Wire:
       return myGraph->Refs().Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).ChildWireId;
     case BRepGraph_RefId::Kind::Vertex:
-      return myGraph->Refs().Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).ChildVertexId;
+      return myGraph->Refs()
+        .Vertices()
+        .Entry(BRepGraph_VertexRefId::FromRefId(theRef))
+        .ChildVertexId;
     case BRepGraph_RefId::Kind::Solid:
       return myGraph->Refs().Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).ChildSolidId;
     case BRepGraph_RefId::Kind::Child:
       return myGraph->Refs().Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).ChildNodeId;
     case BRepGraph_RefId::Kind::Occurrence:
-      return myGraph->Refs().Occurrences().Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef))
+      return myGraph->Refs()
+        .Occurrences()
+        .Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef))
         .ChildOccurrenceId;
   }
 
@@ -452,10 +457,14 @@ TopLoc_Location BRepGraph::RefsView::GenOps::LocalLocation(const BRepGraph_RefId
     case BRepGraph_RefId::Kind::Solid:
       return TopLoc_Location();
     case BRepGraph_RefId::Kind::Child:
-      return myGraph->Refs().Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef))
+      return myGraph->Refs()
+        .Children()
+        .Entry(BRepGraph_ChildRefId::FromRefId(theRef))
         .LocalLocation;
     case BRepGraph_RefId::Kind::Occurrence:
-      return myGraph->Refs().Occurrences().Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef))
+      return myGraph->Refs()
+        .Occurrences()
+        .Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef))
         .LocalLocation;
   }
 
@@ -480,13 +489,11 @@ TopAbs_Orientation BRepGraph::RefsView::GenOps::Orientation(const BRepGraph_RefI
     case BRepGraph_RefId::Kind::Wire:
       return myGraph->Refs().Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).Orientation;
     case BRepGraph_RefId::Kind::Vertex:
-      return myGraph->Refs().Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef))
-        .Orientation;
+      return myGraph->Refs().Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).Orientation;
     case BRepGraph_RefId::Kind::Solid:
       return myGraph->Refs().Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).Orientation;
     case BRepGraph_RefId::Kind::Child:
-      return myGraph->Refs().Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef))
-        .Orientation;
+      return myGraph->Refs().Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).Orientation;
     case BRepGraph_RefId::Kind::Occurrence:
       return TopAbs_FORWARD;
   }

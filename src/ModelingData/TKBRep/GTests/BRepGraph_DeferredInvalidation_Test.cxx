@@ -62,8 +62,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
 
   // During deferred mode: edge is mutated, but parent wire/face are NOT yet.
-  BRepGraph_WiresOfEdge aWireIt =
-    myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
+  BRepGraph_WiresOfEdge aWireIt = myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
   ASSERT_TRUE(aWireIt.More());
   const BRepGraph_WireId aWireId = aWireIt.CurrentId();
   EXPECT_EQ(myGraph.Topo().Wires().Definition(aWireId).SubtreeGen, 0u);
@@ -229,8 +228,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyOnOuterDestruction)
 {
-  BRepGraph_WiresOfEdge aWireIt =
-    myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
+  BRepGraph_WiresOfEdge aWireIt = myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
   ASSERT_TRUE(aWireIt.More());
   const BRepGraph_WireId aWireId = aWireIt.CurrentId();
 

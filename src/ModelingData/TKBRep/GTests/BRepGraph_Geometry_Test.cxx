@@ -103,7 +103,7 @@ static NCollection_LinearVector<BRepGraph_FaceId> collectSameDomainFaces(
   const BRepGraph_FaceId theFace)
 {
   NCollection_LinearVector<BRepGraph_FaceId> aFaces;
-  const occ::handle<Geom_Surface>&           aSurface = BRepGraph_Tool::Face::Surface(theGraph, theFace);
+  const occ::handle<Geom_Surface>& aSurface = BRepGraph_Tool::Face::Surface(theGraph, theFace);
   if (aSurface.IsNull())
   {
     return aFaces;

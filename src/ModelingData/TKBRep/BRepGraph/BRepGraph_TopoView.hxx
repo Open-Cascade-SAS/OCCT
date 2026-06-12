@@ -142,30 +142,28 @@ public:
     //! Return an iterator over active wires that reference the given edge through active coedges.
     //! @param[in] theEdge typed edge definition identifier
     //! @return iterator positioned at the first active wire, or at end if none exists
-    [[nodiscard]] Standard_EXPORT BRepGraph_WiresOfEdge WiresOf(
-      const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_WiresOfEdge
+      WiresOf(const BRepGraph_EdgeId theEdge) const;
 
     //! Return an iterator over active wires from a stored edge-coedge relation index.
     //! @param[in] theEdge       typed edge definition identifier
     //! @param[in] theStartIndex zero-based index in EdgeRelations::CoEdgeIds to resume from
     //! @return iterator positioned at the first active wire at or after theStartIndex
-    [[nodiscard]] Standard_EXPORT BRepGraph_WiresOfEdge WiresOf(
-      const BRepGraph_EdgeId theEdge,
-      const uint32_t         theStartIndex) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_WiresOfEdge WiresOf(const BRepGraph_EdgeId theEdge,
+                                                                const uint32_t theStartIndex) const;
 
     //! Return an iterator over active faces adjacent to the given edge through active coedges.
     //! @param[in] theEdge typed edge definition identifier
     //! @return iterator positioned at the first active face, or at end if none exists
-    [[nodiscard]] Standard_EXPORT BRepGraph_FacesOfEdge FacesOf(
-      const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_FacesOfEdge
+      FacesOf(const BRepGraph_EdgeId theEdge) const;
 
     //! Return an iterator over active faces from a stored edge-coedge relation index.
     //! @param[in] theEdge       typed edge definition identifier
     //! @param[in] theStartIndex zero-based index in EdgeRelations::CoEdgeIds to resume from
     //! @return iterator positioned at the first active face at or after theStartIndex
-    [[nodiscard]] Standard_EXPORT BRepGraph_FacesOfEdge FacesOf(
-      const BRepGraph_EdgeId theEdge,
-      const uint32_t         theStartIndex) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_FacesOfEdge FacesOf(const BRepGraph_EdgeId theEdge,
+                                                                const uint32_t theStartIndex) const;
 
     //! Return the coedges that reference the given edge.
     //! @param[in] theEdge typed edge identifier

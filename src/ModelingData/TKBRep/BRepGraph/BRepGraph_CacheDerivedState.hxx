@@ -114,7 +114,8 @@ public:
   //! @param[in]  theShell shell definition identifier
   //! @param[out] theEntry filled with a fresh derived entry
   //! @return true if computation succeeded
-  [[nodiscard]] Standard_EXPORT bool GetShellStatus(BRepGraph_ShellId theShell, ShellEntry& theEntry);
+  [[nodiscard]] Standard_EXPORT bool GetShellStatus(BRepGraph_ShellId theShell,
+                                                    ShellEntry&       theEntry);
 
   //! @brief Store a pre-computed edge entry (warm-start from import or after computation).
   //! @param[in] theEdge  edge definition identifier

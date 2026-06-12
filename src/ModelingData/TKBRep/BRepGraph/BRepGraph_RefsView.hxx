@@ -286,22 +286,20 @@ public:
     //! Return the direct parent-owned RefId stored at the specified child step.
     //! This is a structural lookup over the parent's raw ref arrays and does not
     //! skip removed refs or refs targeting removed child defs.
-    [[nodiscard]] Standard_EXPORT BRepGraph_RefId RefAtStep(
-      const BRepGraph_NodeId theParent,
-      const int              theStep) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_RefId RefAtStep(const BRepGraph_NodeId theParent,
+                                                            const int              theStep) const;
 
     //! Resolve the child definition node referenced by any typed RefId.
     [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ChildNode(const BRepGraph_RefId theRef) const;
 
     //! Return the local location carried by the specified typed RefId.
     //! OccurrenceRef and invalid refs return identity.
-    [[nodiscard]] Standard_EXPORT TopLoc_Location LocalLocation(
-      const BRepGraph_RefId theRef) const;
+    [[nodiscard]] Standard_EXPORT TopLoc_Location LocalLocation(const BRepGraph_RefId theRef) const;
 
     //! Return the orientation carried by the specified typed RefId.
     //! OccurrenceRef and invalid refs return TopAbs_FORWARD.
-    [[nodiscard]] Standard_EXPORT TopAbs_Orientation Orientation(
-      const BRepGraph_RefId theRef) const;
+    [[nodiscard]] Standard_EXPORT TopAbs_Orientation
+      Orientation(const BRepGraph_RefId theRef) const;
 
   private:
     friend class RefsView;

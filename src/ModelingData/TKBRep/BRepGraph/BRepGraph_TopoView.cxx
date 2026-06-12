@@ -158,34 +158,30 @@ uint32_t BRepGraph::TopoView::EdgeOps::NbFaces(const BRepGraph_EdgeId theEdge) c
 
 //=================================================================================================
 
-BRepGraph_WiresOfEdge BRepGraph::TopoView::EdgeOps::WiresOf(
-  const BRepGraph_EdgeId theEdge) const
+BRepGraph_WiresOfEdge BRepGraph::TopoView::EdgeOps::WiresOf(const BRepGraph_EdgeId theEdge) const
 {
   return BRepGraph_WiresOfEdge(*myGraph, theEdge);
 }
 
 //=================================================================================================
 
-BRepGraph_WiresOfEdge BRepGraph::TopoView::EdgeOps::WiresOf(
-  const BRepGraph_EdgeId theEdge,
-  const uint32_t         theStartIndex) const
+BRepGraph_WiresOfEdge BRepGraph::TopoView::EdgeOps::WiresOf(const BRepGraph_EdgeId theEdge,
+                                                            const uint32_t theStartIndex) const
 {
   return BRepGraph_WiresOfEdge(*myGraph, theEdge, theStartIndex);
 }
 
 //=================================================================================================
 
-BRepGraph_FacesOfEdge BRepGraph::TopoView::EdgeOps::FacesOf(
-  const BRepGraph_EdgeId theEdge) const
+BRepGraph_FacesOfEdge BRepGraph::TopoView::EdgeOps::FacesOf(const BRepGraph_EdgeId theEdge) const
 {
   return BRepGraph_FacesOfEdge(*myGraph, theEdge);
 }
 
 //=================================================================================================
 
-BRepGraph_FacesOfEdge BRepGraph::TopoView::EdgeOps::FacesOf(
-  const BRepGraph_EdgeId theEdge,
-  const uint32_t         theStartIndex) const
+BRepGraph_FacesOfEdge BRepGraph::TopoView::EdgeOps::FacesOf(const BRepGraph_EdgeId theEdge,
+                                                            const uint32_t theStartIndex) const
 {
   return BRepGraph_FacesOfEdge(*myGraph, theEdge, theStartIndex);
 }

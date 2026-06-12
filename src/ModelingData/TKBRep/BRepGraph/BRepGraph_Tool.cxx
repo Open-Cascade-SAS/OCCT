@@ -128,7 +128,7 @@ enum class CoEdgeLookupContent
   WithPCurve
 };
 
-bool matchesLookupContent(const BRepGraph&              theGraph,
+bool matchesLookupContent(const BRepGraph&               theGraph,
                           const BRepGraphInc::CoEdgeDef& theCoEdge,
                           const CoEdgeLookupContent      theContent)
 {
@@ -138,8 +138,8 @@ bool matchesLookupContent(const BRepGraph&              theGraph,
 }
 
 BRepGraph_CoEdgeId findCoEdgeId(const BRepGraph&          theGraph,
-                                const BRepGraph_EdgeId   theEdge,
-                                const BRepGraph_FaceId   theFace,
+                                const BRepGraph_EdgeId    theEdge,
+                                const BRepGraph_FaceId    theFace,
                                 const CoEdgeLookupContent theContent)
 {
   if (!theEdge.IsValid(theGraph.Topo().Edges().Nb())
@@ -163,9 +163,9 @@ BRepGraph_CoEdgeId findCoEdgeId(const BRepGraph&          theGraph,
 }
 
 BRepGraph_CoEdgeId findCoEdgeId(const BRepGraph&          theGraph,
-                                const BRepGraph_EdgeId   theEdge,
-                                const BRepGraph_FaceId   theFace,
-                                const TopAbs_Orientation theOrientation,
+                                const BRepGraph_EdgeId    theEdge,
+                                const BRepGraph_FaceId    theFace,
+                                const TopAbs_Orientation  theOrientation,
                                 const CoEdgeLookupContent theContent)
 {
   if (!theEdge.IsValid(theGraph.Topo().Edges().Nb())
@@ -580,11 +580,10 @@ uint32_t BRepGraph_Tool::Vertex::NbEdges(const BRepGraph&         theGraph,
 
 //=================================================================================================
 
-BRepGraph_EdgeId BRepGraph_Tool::Edge::FindByVertices(
-  const BRepGraph&         theGraph,
-  const BRepGraph_VertexId theStartVertex,
-  const BRepGraph_VertexId theEndVertex,
-  const bool               theToIgnoreOrientation)
+BRepGraph_EdgeId BRepGraph_Tool::Edge::FindByVertices(const BRepGraph&         theGraph,
+                                                      const BRepGraph_VertexId theStartVertex,
+                                                      const BRepGraph_VertexId theEndVertex,
+                                                      const bool theToIgnoreOrientation)
 {
   if (!theStartVertex.IsValid(theGraph.Topo().Vertices().Nb())
       || !theEndVertex.IsValid(theGraph.Topo().Vertices().Nb())
@@ -627,21 +626,19 @@ BRepGraph_EdgeId BRepGraph_Tool::Edge::FindByVertices(
 
 //=================================================================================================
 
-BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindPCurveCoEdgeId(
-  const BRepGraph&       theGraph,
-  const BRepGraph_EdgeId theEdge,
-  const BRepGraph_FaceId theFace)
+BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindPCurveCoEdgeId(const BRepGraph&       theGraph,
+                                                            const BRepGraph_EdgeId theEdge,
+                                                            const BRepGraph_FaceId theFace)
 {
   return findCoEdgeId(theGraph, theEdge, theFace, CoEdgeLookupContent::WithPCurve);
 }
 
 //=================================================================================================
 
-BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindPCurveCoEdgeId(
-  const BRepGraph&         theGraph,
-  const BRepGraph_EdgeId   theEdge,
-  const BRepGraph_FaceId   theFace,
-  const TopAbs_Orientation theOrientation)
+BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindPCurveCoEdgeId(const BRepGraph&         theGraph,
+                                                            const BRepGraph_EdgeId   theEdge,
+                                                            const BRepGraph_FaceId   theFace,
+                                                            const TopAbs_Orientation theOrientation)
 {
   return findCoEdgeId(theGraph, theEdge, theFace, theOrientation, CoEdgeLookupContent::WithPCurve);
 }
@@ -649,19 +646,18 @@ BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindPCurveCoEdgeId(
 //=================================================================================================
 
 BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindCoEdgeId(const BRepGraph&       theGraph,
-                                                       const BRepGraph_EdgeId theEdge,
-                                                       const BRepGraph_FaceId theFace)
+                                                      const BRepGraph_EdgeId theEdge,
+                                                      const BRepGraph_FaceId theFace)
 {
   return findCoEdgeId(theGraph, theEdge, theFace, CoEdgeLookupContent::Any);
 }
 
 //=================================================================================================
 
-BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindCoEdgeId(
-  const BRepGraph&         theGraph,
-  const BRepGraph_EdgeId   theEdge,
-  const BRepGraph_FaceId   theFace,
-  const TopAbs_Orientation theOrientation)
+BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindCoEdgeId(const BRepGraph&         theGraph,
+                                                      const BRepGraph_EdgeId   theEdge,
+                                                      const BRepGraph_FaceId   theFace,
+                                                      const TopAbs_Orientation theOrientation)
 {
   return findCoEdgeId(theGraph, theEdge, theFace, theOrientation, CoEdgeLookupContent::Any);
 }

@@ -193,30 +193,27 @@ TEST_F(BRepGraph_RelatedIteratorTest, ContainerNodes_YieldNoRelations)
 TEST_F(BRepGraph_RelatedIteratorTest, WireOfBox_ReturnsCoEdges)
 {
   const BRepGraph_WireId aWireId(0);
-  const uint32_t aCount =
-    countRelations(myGraph,
-                   BRepGraph_NodeId(aWireId),
-                   BRepGraph_RelatedIterator::RelationKind::WireCoEdge);
+  const uint32_t         aCount = countRelations(myGraph,
+                                         BRepGraph_NodeId(aWireId),
+                                         BRepGraph_RelatedIterator::RelationKind::WireCoEdge);
   EXPECT_EQ(aCount, 4);
 }
 
 TEST_F(BRepGraph_RelatedIteratorTest, WireOfBox_ReturnsOwningFace)
 {
   const BRepGraph_WireId aWireId(0);
-  const uint32_t aCount =
-    countRelations(myGraph,
-                   BRepGraph_NodeId(aWireId),
-                   BRepGraph_RelatedIterator::RelationKind::OwningFace);
+  const uint32_t         aCount = countRelations(myGraph,
+                                         BRepGraph_NodeId(aWireId),
+                                         BRepGraph_RelatedIterator::RelationKind::OwningFace);
   EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraph_RelatedIteratorTest, VertexOfBox_ReturnsIncidentEdges)
 {
   const BRepGraph_VertexId aVertexId(0);
-  const uint32_t aCount =
-    countRelations(myGraph,
-                   BRepGraph_NodeId(aVertexId),
-                   BRepGraph_RelatedIterator::RelationKind::IncidentEdge);
+  const uint32_t           aCount = countRelations(myGraph,
+                                         BRepGraph_NodeId(aVertexId),
+                                         BRepGraph_RelatedIterator::RelationKind::IncidentEdge);
   // Each vertex of a box touches exactly 3 edges.
   EXPECT_EQ(aCount, 3);
 }
@@ -224,7 +221,7 @@ TEST_F(BRepGraph_RelatedIteratorTest, VertexOfBox_ReturnsIncidentEdges)
 TEST_F(BRepGraph_RelatedIteratorTest, CoEdgeOfBox_ReturnsParentEdgeAndOwningFace)
 {
   const BRepGraph_CoEdgeId aCoEdgeId(0);
-  const uint32_t aParentEdgeCount =
+  const uint32_t           aParentEdgeCount =
     countRelations(myGraph,
                    BRepGraph_NodeId(aCoEdgeId),
                    BRepGraph_RelatedIterator::RelationKind::ParentEdge);

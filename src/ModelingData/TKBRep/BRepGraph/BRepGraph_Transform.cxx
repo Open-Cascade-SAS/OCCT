@@ -764,7 +764,8 @@ bool BRepGraph_Transform::MoveRef(BRepGraph&                 theGraph,
   {
     return false;
   }
-  if (!theRefId.IsValid(theGraph.Refs().Children().Nb()) || theGraph.Refs().Gen().IsRemoved(theRefId))
+  if (!theRefId.IsValid(theGraph.Refs().Children().Nb())
+      || theGraph.Refs().Gen().IsRemoved(theRefId))
   {
     return false;
   }
@@ -786,7 +787,8 @@ bool BRepGraph_Transform::MoveRef(BRepGraph&                      theGraph,
   {
     return false;
   }
-  if (!theRefId.IsValid(theGraph.Refs().Occurrences().Nb()) || theGraph.Refs().Gen().IsRemoved(theRefId))
+  if (!theRefId.IsValid(theGraph.Refs().Occurrences().Nb())
+      || theGraph.Refs().Gen().IsRemoved(theRefId))
   {
     return false;
   }

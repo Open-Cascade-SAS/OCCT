@@ -114,8 +114,7 @@ static bool containsEdge(const NCollection_LinearVector<BRepGraph_EdgeId>& theEd
   return false;
 }
 
-static uint32_t countAdjacentEdgesOfEdge(const BRepGraph&       theGraph,
-                                         const BRepGraph_EdgeId theEdge)
+static uint32_t countAdjacentEdgesOfEdge(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   if (!theEdge.IsValid(theGraph.Topo().Edges().Nb()) || theEdge.IsRemoved(theGraph))
   {
@@ -123,8 +122,7 @@ static uint32_t countAdjacentEdgesOfEdge(const BRepGraph&       theGraph,
   }
 
   NCollection_LinearVector<BRepGraph_EdgeId> anAdjacentEdges;
-  for (BRepGraph_DefsVertexOfEdge aVertexIt(theGraph, theEdge); aVertexIt.More();
-       aVertexIt.Next())
+  for (BRepGraph_DefsVertexOfEdge aVertexIt(theGraph, theEdge); aVertexIt.More(); aVertexIt.Next())
   {
     for (const BRepGraph_EdgeId& anAdjacentEdgeId :
          theGraph.Topo().Vertices().Edges(aVertexIt.CurrentId()))
@@ -984,8 +982,8 @@ TEST(BRepGraph_ShapesViewImportTest, AdjacentFaces_BoxFace)
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
     const uint32_t aNbAdjacentFaces = countAdjacentFaces(aGraph, aFaceId);
-    EXPECT_EQ(aNbAdjacentFaces, 4) << "Face " << aFaceId.Index << " has " << aNbAdjacentFaces
-                              << " adjacent faces";
+    EXPECT_EQ(aNbAdjacentFaces, 4)
+      << "Face " << aFaceId.Index << " has " << aNbAdjacentFaces << " adjacent faces";
   }
 }
 

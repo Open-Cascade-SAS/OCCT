@@ -1079,8 +1079,8 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
   for (NCollection_FlatMap<BRepGraph_FaceId>::Iterator aFaceIt(aFaces); aFaceIt.More();
        aFaceIt.Next())
   {
-    const BRepGraph_FaceId aFaceId = aFaceIt.Value();
-    bool aFaceAlreadyDirty = false;
+    const BRepGraph_FaceId aFaceId           = aFaceIt.Value();
+    bool                   aFaceAlreadyDirty = false;
     for (const auto& aDirtyFace : aDirtySet.Faces)
     {
       if (aDirtyFace == aFaceId)

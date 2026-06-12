@@ -631,8 +631,8 @@ TEST(BRepGraphIncTest, Cylinder_SeamEdge_Relations_NoDuplicateFace)
          aFaceIt.Next())
     {
       const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
-      EXPECT_FALSE(containsId(aSeenFaces, aFaceId)) << "Duplicate face " << aFaceId.Index
-                                                    << " in FacesOfEdge(" << anEdgeId.Index << ")";
+      EXPECT_FALSE(containsId(aSeenFaces, aFaceId))
+        << "Duplicate face " << aFaceId.Index << " in FacesOfEdge(" << anEdgeId.Index << ")";
       aSeenFaces.Append(aFaceId);
     }
   }
@@ -817,23 +817,28 @@ TEST(BRepGraphIncTest, Populate_BakesStackedNormalLocationsIntoDefinitions)
   const TopLoc_Location anIdentity;
   for (uint32_t aRefIdx = 0; aRefIdx < aGraph.Refs().Shells().Nb(); ++aRefIdx)
   {
-    EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(BRepGraph_ShellRefId(aRefIdx)).IsEqual(anIdentity));
+    EXPECT_TRUE(
+      aGraph.Refs().Gen().LocalLocation(BRepGraph_ShellRefId(aRefIdx)).IsEqual(anIdentity));
   }
   for (uint32_t aRefIdx = 0; aRefIdx < aGraph.Refs().Faces().Nb(); ++aRefIdx)
   {
-    EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(BRepGraph_FaceRefId(aRefIdx)).IsEqual(anIdentity));
+    EXPECT_TRUE(
+      aGraph.Refs().Gen().LocalLocation(BRepGraph_FaceRefId(aRefIdx)).IsEqual(anIdentity));
   }
   for (uint32_t aRefIdx = 0; aRefIdx < aGraph.Refs().Wires().Nb(); ++aRefIdx)
   {
-    EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(BRepGraph_WireRefId(aRefIdx)).IsEqual(anIdentity));
+    EXPECT_TRUE(
+      aGraph.Refs().Gen().LocalLocation(BRepGraph_WireRefId(aRefIdx)).IsEqual(anIdentity));
   }
   for (uint32_t aRefIdx = 0; aRefIdx < aGraph.Refs().Vertices().Nb(); ++aRefIdx)
   {
-    EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(BRepGraph_VertexRefId(aRefIdx)).IsEqual(anIdentity));
+    EXPECT_TRUE(
+      aGraph.Refs().Gen().LocalLocation(BRepGraph_VertexRefId(aRefIdx)).IsEqual(anIdentity));
   }
   for (uint32_t aRefIdx = 0; aRefIdx < aGraph.Refs().Solids().Nb(); ++aRefIdx)
   {
-    EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(BRepGraph_SolidRefId(aRefIdx)).IsEqual(anIdentity));
+    EXPECT_TRUE(
+      aGraph.Refs().Gen().LocalLocation(BRepGraph_SolidRefId(aRefIdx)).IsEqual(anIdentity));
   }
 
   TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aGraph, BRepGraph_SolidId::Start());
@@ -2508,8 +2513,8 @@ TEST(BRepGraphIncTest, Relations_SeamEdge_NoDuplicateEdgeToWireEntries)
          aWireIt.Next())
     {
       const BRepGraph_WireId aWireId = aWireIt.CurrentId();
-      EXPECT_FALSE(containsId(aSeenWires, aWireId)) << "Duplicate wire " << aWireId.Index
-                                                    << " in WiresOfEdge(" << anEdgeId.Index << ")";
+      EXPECT_FALSE(containsId(aSeenWires, aWireId))
+        << "Duplicate wire " << aWireId.Index << " in WiresOfEdge(" << anEdgeId.Index << ")";
       aSeenWires.Append(aWireId);
     }
   }

@@ -150,7 +150,8 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeOps_FindByVertices_ReverseRequiresExplicit
   ASSERT_NE(aStart.DefId, anEnd.DefId);
 
   EXPECT_FALSE(BRepGraph_Tool::Edge::FindByVertices(myGraph, anEnd.DefId, aStart.DefId).IsValid());
-  EXPECT_EQ(BRepGraph_Tool::Edge::FindByVertices(myGraph, anEnd.DefId, aStart.DefId, true), anEdgeId);
+  EXPECT_EQ(BRepGraph_Tool::Edge::FindByVertices(myGraph, anEnd.DefId, aStart.DefId, true),
+            anEdgeId);
 }
 
 // ---------- Part D: FaceDef::Surface ----------
@@ -273,10 +274,14 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurveCoEdgeId_WithOrientation_SeamEdge)
 
       // Found seam edge - verify FindPCurveCoEdgeId returns distinct entries for each orientation.
       const BRepGraph_FaceId   aFaceId = aCE.FaceId;
-      const BRepGraph_CoEdgeId aPCF =
-        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeIt.CurrentId(), aFaceId, TopAbs_FORWARD);
-      const BRepGraph_CoEdgeId aPCR =
-        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeIt.CurrentId(), aFaceId, TopAbs_REVERSED);
+      const BRepGraph_CoEdgeId aPCF    = BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph,
+                                                                               anEdgeIt.CurrentId(),
+                                                                               aFaceId,
+                                                                               TopAbs_FORWARD);
+      const BRepGraph_CoEdgeId aPCR    = BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph,
+                                                                               anEdgeIt.CurrentId(),
+                                                                               aFaceId,
+                                                                               TopAbs_REVERSED);
       EXPECT_TRUE(aPCF.IsValid());
       EXPECT_TRUE(aPCR.IsValid());
       if (aPCF.IsValid() && aPCR.IsValid())

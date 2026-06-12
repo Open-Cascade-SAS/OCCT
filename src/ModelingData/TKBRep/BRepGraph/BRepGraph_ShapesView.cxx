@@ -40,9 +40,9 @@ namespace
 {
 struct BRepGraph_ReconstructionContext
 {
-  const BRepGraph*                     Graph   = nullptr;
-  const BRepGraphInc_Storage*          Storage = nullptr;
-  BRepGraphInc_Reconstruct::Cache      Cache;
+  const BRepGraph*                         Graph   = nullptr;
+  const BRepGraphInc_Storage*              Storage = nullptr;
+  BRepGraphInc_Reconstruct::Cache          Cache;
   NCollection_FlatMap<BRepGraph_ProductId> ActiveProducts;
 };
 

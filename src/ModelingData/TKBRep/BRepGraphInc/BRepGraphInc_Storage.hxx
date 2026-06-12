@@ -1441,8 +1441,8 @@ private:
   Standard_EXPORT NCollection_LinearVector<BRepGraph_ChildRefId>& ChangeCompoundRefsOfNodeInternal(
     const BRepGraph_NodeId theNode);
 
-  Standard_EXPORT NCollection_LinearVector<BRepGraph_OccurrenceRefId>& ChangeOccurrenceRefsOfNodeInternal(
-    const BRepGraph_NodeId theNode);
+  Standard_EXPORT NCollection_LinearVector<BRepGraph_OccurrenceRefId>&
+                  ChangeOccurrenceRefsOfNodeInternal(const BRepGraph_NodeId theNode);
 
   Standard_EXPORT void rebuildDerivedRelationsInternal(const bool theRecountActiveCounts);
 

@@ -251,10 +251,10 @@ private:
     }
   }
 
-  const BRepGraph*  myGraph   = nullptr;
-  const ContainerT* myParents = nullptr;
+  const BRepGraph*  myGraph     = nullptr;
+  const ContainerT* myParents   = nullptr;
   uint32_t          myNbParents = 0;
-  uint32_t          myIndex   = 0;
+  uint32_t          myIndex     = 0;
 };
 
 template <typename TraitsT>
@@ -272,7 +272,7 @@ public:
   }
 
   //! Construct starting at a given coedge relation index (for resumable iteration).
-  EdgeParentsOf(const BRepGraph& theGraph,
+  EdgeParentsOf(const BRepGraph&       theGraph,
                 const BRepGraph_EdgeId theEdge,
                 const uint32_t         theStartIndex)
       : myGraph(&theGraph),
@@ -317,7 +317,7 @@ private:
       return;
     }
     myNbParents = TraitsT::NbParents(*myGraph);
-    myCoEdges = &myGraph->Topo().Edges().CoEdges(myEdge);
+    myCoEdges   = &myGraph->Topo().Edges().CoEdges(myEdge);
   }
 
   [[nodiscard]] ParentId parentAt(const uint32_t theIndex) const
@@ -333,7 +333,7 @@ private:
     }
 
     const BRepGraphInc::CoEdgeDef& aCoEdge = myGraph->Topo().CoEdges().Definition(aCoEdgeId);
-    const ParentId aParent = TraitsT::ParentIdOf(aCoEdge);
+    const ParentId                 aParent = TraitsT::ParentIdOf(aCoEdge);
     if (!aParent.IsValid(myNbParents) || aParent.IsRemoved(*myGraph))
     {
       return ParentId();
@@ -374,13 +374,13 @@ private:
     }
   }
 
-  const BRepGraph* myGraph = nullptr;
-  BRepGraph_EdgeId myEdge;
+  const BRepGraph*                                    myGraph = nullptr;
+  BRepGraph_EdgeId                                    myEdge;
   const NCollection_LinearVector<BRepGraph_CoEdgeId>* myCoEdges = nullptr;
-  ParentId myCurrent;
-  uint32_t myNbParents   = 0;
-  uint32_t myIndex      = 0;
-  bool     myHasCurrent = false;
+  ParentId                                            myCurrent;
+  uint32_t                                            myNbParents  = 0;
+  uint32_t                                            myIndex      = 0;
+  bool                                                myHasCurrent = false;
 };
 
 //! Result pair returned by parent-ref iterators: parent definition ID + the RefId
@@ -478,8 +478,8 @@ private:
   const ContainerType* myParents = nullptr;
   ChildIdType          myChild;
   ResultType           myCurrent;
-  uint32_t             myNbParents   = 0;
-  uint32_t             myNbRefs      = 0;
+  uint32_t             myNbParents  = 0;
+  uint32_t             myNbRefs     = 0;
   uint32_t             myIndex      = 0;
   bool                 myHasCurrent = false;
 };
@@ -604,25 +604,16 @@ struct WireFromEdgeCoEdgeTraits
     return theCoEdge.ParentWireId;
   }
 
-  static uint32_t NbParents(const BRepGraph& theGraph)
-  {
-    return theGraph.Topo().Wires().Nb();
-  }
+  static uint32_t NbParents(const BRepGraph& theGraph) { return theGraph.Topo().Wires().Nb(); }
 };
 
 struct FaceFromEdgeCoEdgeTraits
 {
   using ParentId = BRepGraph_FaceId;
 
-  static ParentId ParentIdOf(const BRepGraphInc::CoEdgeDef& theCoEdge)
-  {
-    return theCoEdge.FaceId;
-  }
+  static ParentId ParentIdOf(const BRepGraphInc::CoEdgeDef& theCoEdge) { return theCoEdge.FaceId; }
 
-  static uint32_t NbParents(const BRepGraph& theGraph)
-  {
-    return theGraph.Topo().Faces().Nb();
-  }
+  static uint32_t NbParents(const BRepGraph& theGraph) { return theGraph.Topo().Faces().Nb(); }
 };
 
 struct EdgeOfVertexRefTraits
@@ -740,28 +731,30 @@ using BRepGraph_EdgesOfVertex =
 // Vertex -> parent Compounds
 using BRepGraph_CompoundsOfVertex =
   BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
+
 // Edge -> parent Wires
-class BRepGraph_WiresOfEdge
-    : public BRepGraph_ReverseIterator::EdgeParentsOf<
-        BRepGraph_ReverseIterator::WireFromEdgeCoEdgeTraits>
+class BRepGraph_WiresOfEdge : public BRepGraph_ReverseIterator::EdgeParentsOf<
+                                BRepGraph_ReverseIterator::WireFromEdgeCoEdgeTraits>
 {
 public:
   using BRepGraph_ReverseIterator::EdgeParentsOf<
     BRepGraph_ReverseIterator::WireFromEdgeCoEdgeTraits>::EdgeParentsOf;
 };
+
 // Edge -> parent CoEdges
 using BRepGraph_CoEdgesOfEdge =
   BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CoEdgeId,
                                        NCollection_LinearVector<BRepGraph_CoEdgeId>>;
+
 // Edge -> parent Faces (derived from CoEdge.FaceId)
-class BRepGraph_FacesOfEdge
-    : public BRepGraph_ReverseIterator::EdgeParentsOf<
-        BRepGraph_ReverseIterator::FaceFromEdgeCoEdgeTraits>
+class BRepGraph_FacesOfEdge : public BRepGraph_ReverseIterator::EdgeParentsOf<
+                                BRepGraph_ReverseIterator::FaceFromEdgeCoEdgeTraits>
 {
 public:
   using BRepGraph_ReverseIterator::EdgeParentsOf<
     BRepGraph_ReverseIterator::FaceFromEdgeCoEdgeTraits>::EdgeParentsOf;
 };
+
 // Edge -> parent Compounds
 using BRepGraph_CompoundsOfEdge =
   BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;

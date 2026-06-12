@@ -413,18 +413,17 @@ private:
       const RefId aRefId = myRefIds->Value(static_cast<size_t>(myIndex));
       if (aRefId.IsValid(myNbRefs) && !aRefId.IsRemoved(myGraph))
       {
-        const ChildId aChildId =
-          [&]() {
-            if constexpr (TraitsT::THE_IS_DIRECT)
-            {
-              return ChildId(aRefId);
-            }
-            else
-            {
-              const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
-              return TraitsT::ChildIdOf(myGraph, aRef);
-            }
-          }();
+        const ChildId aChildId = [&]() {
+          if constexpr (TraitsT::THE_IS_DIRECT)
+          {
+            return ChildId(aRefId);
+          }
+          else
+          {
+            const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
+            return TraitsT::ChildIdOf(myGraph, aRef);
+          }
+        }();
         if constexpr (std::is_same_v<ChildId, BRepGraph_NodeId>)
         {
           if (myGraph.Topo().Gen().IsActive(aChildId))
@@ -442,10 +441,10 @@ private:
   }
 
   const BRepGraph&                       myGraph;
-  const NCollection_LinearVector<RefId>* myRefIds = nullptr;
-  uint32_t                               myIndex  = 0;
-  uint32_t                               myLength = 0;
-  uint32_t                               myNbRefs = 0;
+  const NCollection_LinearVector<RefId>* myRefIds     = nullptr;
+  uint32_t                               myIndex      = 0;
+  uint32_t                               myLength     = 0;
+  uint32_t                               myNbRefs     = 0;
   uint32_t                               myNbChildren = 0;
 };
 
@@ -466,8 +465,8 @@ public:
       return;
     }
 
-    myEdge   = &theGraph.Topo().Edges().Definition(theEdgeId);
-    myLength = 2u;
+    myEdge         = &theGraph.Topo().Edges().Definition(theEdgeId);
+    myLength       = 2u;
     myNbVertexRefs = theGraph.Refs().Vertices().Nb();
     myNbVertices   = theGraph.Topo().Vertices().Nb();
     skipRemoved();
@@ -540,9 +539,9 @@ private:
   }
 
   const BRepGraph&             myGraph;
-  const BRepGraphInc::EdgeDef* myEdge   = nullptr;
-  uint32_t                     myIndex  = 0;
-  uint32_t                     myLength = 0;
+  const BRepGraphInc::EdgeDef* myEdge         = nullptr;
+  uint32_t                     myIndex        = 0;
+  uint32_t                     myLength       = 0;
   uint32_t                     myNbVertexRefs = 0;
   uint32_t                     myNbVertices   = 0;
 };

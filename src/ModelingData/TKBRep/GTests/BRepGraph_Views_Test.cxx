@@ -134,7 +134,8 @@ static uint32_t countActiveRefs(const BRepGraph& theGraph, const theRefContainer
 }
 
 template <class theNodeIdContainerType>
-static uint32_t countActiveNodeIds(const BRepGraph& theGraph, const theNodeIdContainerType& theNodeIds)
+static uint32_t countActiveNodeIds(const BRepGraph&              theGraph,
+                                   const theNodeIdContainerType& theNodeIds)
 {
   uint32_t aCount = 0;
   for (const auto& aNodeId : theNodeIds)
@@ -222,8 +223,7 @@ static bool containsEdge(const NCollection_LinearVector<BRepGraph_EdgeId>& theEd
   return false;
 }
 
-static uint32_t countAdjacentEdgesOfEdge(const BRepGraph&       theGraph,
-                                         const BRepGraph_EdgeId theEdge)
+static uint32_t countAdjacentEdgesOfEdge(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   if (!theEdge.IsValid(theGraph.Topo().Edges().Nb()) || theEdge.IsRemoved(theGraph))
   {
@@ -231,8 +231,7 @@ static uint32_t countAdjacentEdgesOfEdge(const BRepGraph&       theGraph,
   }
 
   NCollection_LinearVector<BRepGraph_EdgeId> anAdjacentEdges;
-  for (BRepGraph_DefsVertexOfEdge aVertexIt(theGraph, theEdge); aVertexIt.More();
-       aVertexIt.Next())
+  for (BRepGraph_DefsVertexOfEdge aVertexIt(theGraph, theEdge); aVertexIt.More(); aVertexIt.Next())
   {
     const BRepGraph_VertexId aVertexId = aVertexIt.CurrentId();
     for (const BRepGraph_EdgeId& anAdjacentEdgeId : theGraph.Topo().Vertices().Edges(aVertexId))
@@ -402,8 +401,9 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FindPCurveCoEdgeId_NoCrash)
 {
   // FindPCurveCoEdgeId may or may not return a valid id for an arbitrary edge/face pair.
   // Just verify it does not crash.
-  std::ignore =
-    BRepGraph_Tool::Edge::FindPCurveCoEdgeId(myGraph, BRepGraph_EdgeId::Start(), BRepGraph_FaceId::Start());
+  std::ignore = BRepGraph_Tool::Edge::FindPCurveCoEdgeId(myGraph,
+                                                         BRepGraph_EdgeId::Start(),
+                                                         BRepGraph_FaceId::Start());
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_RepIdConvenienceAccessors_RoundTrip)
@@ -862,7 +862,8 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_RoundTripForTypedRef)
   }
 
   const BRepGraphInc::FaceRef& aFaceRefEntry = myGraph.Refs().Faces().Entry(aFaceRefId);
-  EXPECT_EQ(myGraph.Refs().Gen().ChildNode(aFaceRefId), BRepGraph_NodeId(aFaceRefEntry.ChildFaceId));
+  EXPECT_EQ(myGraph.Refs().Gen().ChildNode(aFaceRefId),
+            BRepGraph_NodeId(aFaceRefEntry.ChildFaceId));
   EXPECT_TRUE(myGraph.Refs().Gen().LocalLocation(aFaceRefId).IsIdentity());
   EXPECT_EQ(myGraph.Refs().Gen().Orientation(aFaceRefId), aFaceRefEntry.Orientation);
   EXPECT_EQ(myGraph.Refs().Gen().Nb(BRepGraph_RefId::Kind::Face), myGraph.Refs().Faces().Nb());
@@ -884,7 +885,8 @@ TEST_F(BRepGraph_ViewsTest, RefsView_RefAtStep_RoundTrip)
   const BRepGraph_SolidId    aSolidId(0);
   const BRepGraph_ShellRefId aShellRefId =
     myGraph.Topo().Solids().Relations(aSolidId).ShellRefIds.Value(0);
-  EXPECT_EQ(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(aSolidId), 0), BRepGraph_RefId(aShellRefId));
+  EXPECT_EQ(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(aSolidId), 0),
+            BRepGraph_RefId(aShellRefId));
 
   const BRepGraph_WireId aWireId(0);
   EXPECT_FALSE(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(aWireId), 0).IsValid());
@@ -913,7 +915,8 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_OccurrenceLocalLocation)
 
   const BRepGraph_OccurrenceRefId    aRefId    = anOccurrenceRefs.Value(0);
   const BRepGraphInc::OccurrenceRef& aRefEntry = myGraph.Refs().Occurrences().Entry(aRefId);
-  EXPECT_EQ(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(anAssembly), 0), BRepGraph_RefId(aRefId));
+  EXPECT_EQ(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(anAssembly), 0),
+            BRepGraph_RefId(aRefId));
   EXPECT_EQ(myGraph.Refs().Gen().ChildNode(aRefId), BRepGraph_NodeId(aRefEntry.ChildOccurrenceId));
   EXPECT_TRUE(myGraph.Refs().Gen().LocalLocation(aRefId).IsEqual(aRefEntry.LocalLocation));
   EXPECT_EQ(myGraph.Refs().Gen().Orientation(aRefId), TopAbs_FORWARD);
@@ -1108,7 +1111,8 @@ TEST_F(BRepGraph_ViewsTest, BRepGraphTool_FindPCurveCoEdgeId_SkipsRemovedCoEdges
   const BRepGraph_EdgeId         anEdgeId   = aCoEdgeDef.ChildEdgeId;
   const BRepGraph_FaceId         aFaceId2   = aCoEdgeDef.FaceId;
 
-  const BRepGraph_CoEdgeId aFoundBefore = BRepGraph_Tool::Edge::FindCoEdgeId(myGraph, anEdgeId, aFaceId2);
+  const BRepGraph_CoEdgeId aFoundBefore =
+    BRepGraph_Tool::Edge::FindCoEdgeId(myGraph, anEdgeId, aFaceId2);
   ASSERT_EQ(aFoundBefore, aCoEdgeId);
 
   myGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aCoEdgeId));
@@ -1118,7 +1122,8 @@ TEST_F(BRepGraph_ViewsTest, BRepGraphTool_FindPCurveCoEdgeId_SkipsRemovedCoEdges
     BRepGraph_Tool::Edge::FindPCurveCoEdgeId(myGraph, anEdgeId, aFaceId2);
   EXPECT_FALSE(aPCurveId.IsValid());
 
-  const BRepGraph_CoEdgeId aFoundAfter = BRepGraph_Tool::Edge::FindCoEdgeId(myGraph, anEdgeId, aFaceId2);
+  const BRepGraph_CoEdgeId aFoundAfter =
+    BRepGraph_Tool::Edge::FindCoEdgeId(myGraph, anEdgeId, aFaceId2);
   EXPECT_NE(aFoundAfter, aCoEdgeId);
 }
 

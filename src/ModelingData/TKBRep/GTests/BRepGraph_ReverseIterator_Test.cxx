@@ -58,7 +58,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, FacesOfEdge_BoxEdgeSharedByTwoFaces)
 {
   // Every edge of a box is shared by exactly 2 faces.
   const BRepGraph_EdgeId anEdgeId(0);
-  const uint32_t              aCount = countIterator(myGraph.Topo().Edges().FacesOf(anEdgeId));
+  const uint32_t         aCount = countIterator(myGraph.Topo().Edges().FacesOf(anEdgeId));
   EXPECT_EQ(aCount, 2);
 }
 
@@ -66,7 +66,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, EdgesOfVertex_BoxVertexSharedByThreeEdges)
 {
   // Every vertex of a box is shared by exactly 3 edges.
   const BRepGraph_VertexId aVertexId(0);
-  const uint32_t                aCount =
+  const uint32_t           aCount =
     countIterator(BRepGraph_EdgesOfVertex(myGraph, myGraph.Topo().Vertices().Edges(aVertexId)));
   EXPECT_EQ(aCount, 3);
 }
@@ -74,7 +74,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, EdgesOfVertex_BoxVertexSharedByThreeEdges)
 TEST_F(BRepGraph_ReverseIteratorTest, SolidsOfShell_BoxShellHasOneSolid)
 {
   const BRepGraph_ShellId aShellId(0);
-  const uint32_t               aCount = countIterator(
+  const uint32_t          aCount = countIterator(
     BRepGraph_SolidsOfShell(myGraph,
                             myGraph.Topo().Shells().Relations(aShellId).ParentShellRefIds));
   EXPECT_EQ(aCount, 1);
@@ -83,7 +83,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, SolidsOfShell_BoxShellHasOneSolid)
 TEST_F(BRepGraph_ReverseIteratorTest, ShellsOfFace_BoxFaceHasOneShell)
 {
   const BRepGraph_FaceId aFaceId(0);
-  const uint32_t              aCount = countIterator(
+  const uint32_t         aCount = countIterator(
     BRepGraph_ShellsOfFace(myGraph, myGraph.Topo().Faces().Relations(aFaceId).ParentFaceRefIds));
   EXPECT_EQ(aCount, 1);
 }
@@ -91,7 +91,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, ShellsOfFace_BoxFaceHasOneShell)
 TEST_F(BRepGraph_ReverseIteratorTest, FacesOfWire_BoxWireHasOneFace)
 {
   const BRepGraph_WireId aWireId(0);
-  const uint32_t              aCount = countIterator(
+  const uint32_t         aCount = countIterator(
     BRepGraph_FacesOfWire(myGraph, myGraph.Topo().Wires().Relations(aWireId).ParentWireRefIds));
   EXPECT_EQ(aCount, 1);
 }
@@ -99,7 +99,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, FacesOfWire_BoxWireHasOneFace)
 TEST_F(BRepGraph_ReverseIteratorTest, WiresOfEdge_BoxEdgeBelongsToTwoWires)
 {
   const BRepGraph_EdgeId anEdgeId(0);
-  const uint32_t              aCount = countIterator(myGraph.Topo().Edges().WiresOf(anEdgeId));
+  const uint32_t         aCount = countIterator(myGraph.Topo().Edges().WiresOf(anEdgeId));
   EXPECT_EQ(aCount, 2);
 }
 
@@ -139,7 +139,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, IndexedAccess_TracksActiveReverseBucket)
 TEST_F(BRepGraph_ReverseIteratorTest, RangeFor_WorksCorrectly)
 {
   const BRepGraph_EdgeId anEdgeId(0);
-  uint32_t           aCount = 0;
+  uint32_t               aCount = 0;
   for (const BRepGraph_FaceId aFaceId : myGraph.Topo().Edges().FacesOf(anEdgeId))
   {
     EXPECT_TRUE(aFaceId.IsValid(myGraph.Topo().Faces().Nb()));
@@ -162,7 +162,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, RefsShellsOfFace_ReturnsValidRefId)
 TEST_F(BRepGraph_ReverseIteratorTest, RefsEdgesOfVertex_ReturnsValidRefId)
 {
   const BRepGraph_VertexId aVertexId(0);
-  uint32_t           aCount = 0;
+  uint32_t                 aCount = 0;
   for (BRepGraph_RefsEdgesOfVertex anIt(myGraph,
                                         myGraph.Topo().Vertices().Edges(aVertexId),
                                         aVertexId);
@@ -180,7 +180,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, CoEdgesOfEdge_BoxEdgeHasCoEdges)
 {
   // Each edge of a box is used in 2 coedges (one per adjacent face).
   const BRepGraph_EdgeId anEdgeId(0);
-  const uint32_t              aCount =
+  const uint32_t         aCount =
     countIterator(BRepGraph_CoEdgesOfEdge(myGraph, myGraph.Topo().Edges().CoEdges(anEdgeId)));
   EXPECT_EQ(aCount, 2);
 }
@@ -256,7 +256,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, StartingIndex_SkipsToPosition)
 
   // Start at index 1 - should yield only edges at index >= 1.
   BRepGraph_EdgesOfVertex anIt(myGraph, anEdges, 1);
-  const uint32_t               aCount = countIterator(anIt);
+  const uint32_t          aCount = countIterator(anIt);
   EXPECT_EQ(aCount, 2);
 }
 

@@ -53,9 +53,8 @@ protected:
   BRepGraph myGraph;
 };
 
-static NCollection_LinearVector<BRepGraph_WireId> collectWiresOfEdge(
-  const BRepGraph&       theGraph,
-  const BRepGraph_EdgeId theEdge)
+static NCollection_LinearVector<BRepGraph_WireId> collectWiresOfEdge(const BRepGraph& theGraph,
+                                                                     const BRepGraph_EdgeId theEdge)
 {
   NCollection_LinearVector<BRepGraph_WireId> aWires;
   for (BRepGraph_WiresOfEdge aWireIt = theGraph.Topo().Edges().WiresOf(theEdge); aWireIt.More();

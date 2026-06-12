@@ -448,10 +448,10 @@ TEST(BRepGraph_CompactTest, Compact_PreservesTopologyUIDs)
   EXPECT_EQ(aGraph.UIDs().Generation(), aGenBefore);
 
   // Helper: verify surviving defs of a kind retain original UIDs.
-  auto verifyUIDs = [&](BRepGraph_NodeId::Kind                theKind,
-                        uint32_t                              theCount,
+  auto verifyUIDs = [&](BRepGraph_NodeId::Kind                    theKind,
+                        uint32_t                                  theCount,
                         const NCollection_FlatMap<BRepGraph_UID>& theOriginals,
-                        const char*                           theLabel) {
+                        const char*                               theLabel) {
     for (uint32_t anIdx = 0; anIdx < theCount; ++anIdx)
     {
       const BRepGraph_NodeId aNewId(theKind, anIdx);
