@@ -827,8 +827,8 @@ static_assert(std::is_same_v<decltype(std::declval<NCollection_LinearVector<int>
               "Mutable NCollection_LinearVector should expose mutable Array1 view");
 static_assert(
   std::is_same_v<decltype(std::declval<const NCollection_LinearVector<int>&>().ToArray1()),
-                 NCollection_Array1<const int>>,
-  "Const NCollection_LinearVector should expose read-only Array1 view");
+                 NCollection_Array1<int>>,
+  "Const NCollection_LinearVector should expose Array1 view");
 
 // Verify that ToArray1() returns an Array1 sharing the same memory buffer.
 TEST(NCollection_LinearVectorTest, ToArray1_SamePointer)
