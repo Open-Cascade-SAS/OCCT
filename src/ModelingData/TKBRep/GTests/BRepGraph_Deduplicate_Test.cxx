@@ -18,8 +18,6 @@
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_RepId.hxx>
-
-#include <chrono>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -51,6 +49,8 @@
 #include <TopoDS_Compound.hxx>
 
 #include <tuple>
+#include <cstdint>
+#include <chrono>
 
 #include <gtest/gtest.h>
 
@@ -259,9 +259,9 @@ TopoDS_Compound makeTwoIdenticalBoxes()
   return aCompound;
 }
 
-int nbUniquePCurveNodes(const BRepGraph& theGraph)
+uint32_t nbUniquePCurveNodes(const BRepGraph& theGraph)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
@@ -914,7 +914,7 @@ TEST(BRepGraph_DeduplicateTest, PCurveDup_AnalyzeOnly_CountsButNoRewrite)
   const int aDupCount = addDuplicatePCurvesToAllEdges(aGraph);
   ASSERT_GT(aDupCount, 0);
 
-  const int aUniqueBefore = nbUniquePCurveNodes(aGraph);
+  const uint32_t aUniqueBefore = nbUniquePCurveNodes(aGraph);
 
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.AnalyzeOnly = true;
@@ -1339,7 +1339,7 @@ TEST(BRepGraph_DeduplicateTest, DISABLED_PCurveDedup_RewritesReduceUniquePCurveN
 
   std::ignore = addDuplicatePCurvesToAllEdges(aGraph);
 
-  const int aUniqueBefore = nbUniquePCurveNodes(aGraph);
+  const uint32_t aUniqueBefore = nbUniquePCurveNodes(aGraph);
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
 

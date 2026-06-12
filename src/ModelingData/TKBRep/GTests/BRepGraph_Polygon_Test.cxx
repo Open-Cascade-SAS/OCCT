@@ -43,11 +43,6 @@
 
 #include <gtest/gtest.h>
 
-static void registerStandardLayers(BRepGraph& theGraph)
-{
-  (void)theGraph;
-}
-
 // ============================================================
 // Multi-Triangulation roundtrip
 // ============================================================

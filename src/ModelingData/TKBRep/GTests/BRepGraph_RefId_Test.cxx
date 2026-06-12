@@ -30,15 +30,16 @@
 #include <Standard_GUID.hxx>
 
 #include <tuple>
+#include <cstdint>
 
 #include <gtest/gtest.h>
 
 namespace
 {
 
-int countInlineFaceRefs(const BRepGraph& theGraph)
+uint32_t countInlineFaceRefs(const BRepGraph& theGraph)
 {
-  int aNb = 0;
+  uint32_t aNb = 0;
   for (BRepGraph_ShellIterator aShellIt(theGraph); aShellIt.More(); aShellIt.Next())
   {
     aNb += BRepGraph_TestTools::CountFaceRefsOfShell(theGraph, aShellIt.CurrentId());
@@ -46,9 +47,9 @@ int countInlineFaceRefs(const BRepGraph& theGraph)
   return aNb;
 }
 
-int countInlineWireRefs(const BRepGraph& theGraph)
+uint32_t countInlineWireRefs(const BRepGraph& theGraph)
 {
-  int aNb = 0;
+  uint32_t aNb = 0;
   for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
   {
     aNb += BRepGraph_TestTools::CountWireRefsOfFace(theGraph, aFaceIt.CurrentId());
@@ -56,9 +57,9 @@ int countInlineWireRefs(const BRepGraph& theGraph)
   return aNb;
 }
 
-int countInlineCoEdges(const BRepGraph& theGraph)
+uint32_t countInlineCoEdges(const BRepGraph& theGraph)
 {
-  int aNb = 0;
+  uint32_t aNb = 0;
   for (BRepGraph_WireIterator aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
     aNb += BRepGraph_TestTools::CountCoEdgesOfWire(theGraph, aWireIt.CurrentId());
@@ -66,9 +67,9 @@ int countInlineCoEdges(const BRepGraph& theGraph)
   return aNb;
 }
 
-int countInlineVertexRefs(const BRepGraph& theGraph)
+uint32_t countInlineVertexRefs(const BRepGraph& theGraph)
 {
-  int aNb = 0;
+  uint32_t aNb = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const BRepGraphInc::EdgeDef& anEdge = anEdgeIt.Current();
@@ -84,9 +85,9 @@ int countInlineVertexRefs(const BRepGraph& theGraph)
   return aNb;
 }
 
-int countInlineShellRefs(const BRepGraph& theGraph)
+uint32_t countInlineShellRefs(const BRepGraph& theGraph)
 {
-  int aNb = 0;
+  uint32_t aNb = 0;
   for (BRepGraph_SolidIterator aSolidIt(theGraph); aSolidIt.More(); aSolidIt.Next())
   {
     aNb += BRepGraph_TestTools::CountShellRefsOfSolid(theGraph, aSolidIt.CurrentId());
@@ -94,9 +95,9 @@ int countInlineShellRefs(const BRepGraph& theGraph)
   return aNb;
 }
 
-int countInlineSolidRefs(const BRepGraph& theGraph)
+uint32_t countInlineSolidRefs(const BRepGraph& theGraph)
 {
-  int aNb = 0;
+  uint32_t aNb = 0;
   for (BRepGraph_CompSolidIterator aCSIt(theGraph); aCSIt.More(); aCSIt.Next())
   {
     aNb += BRepGraph_TestTools::CountSolidRefsOfCompSolid(theGraph, aCSIt.CurrentId());
@@ -104,9 +105,9 @@ int countInlineSolidRefs(const BRepGraph& theGraph)
   return aNb;
 }
 
-int countInlineChildRefs(const BRepGraph& theGraph)
+uint32_t countInlineChildRefs(const BRepGraph& theGraph)
 {
-  int aNb = 0;
+  uint32_t aNb = 0;
   for (BRepGraph_CompoundIterator aCompIt(theGraph); aCompIt.More(); aCompIt.Next())
   {
     aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, aCompIt.CurrentId());

@@ -237,10 +237,10 @@ TEST(BRepGraph_LockTest, LockedParentRejectsStructuralAdd)
   ASSERT_FALSE(aGraph.IsEmpty());
 
   const BRepGraph_ShellId aShellId = BRepGraph_ShellId::Start();
-  const BRepGraph_FaceId  aFaceId  = BRepGraph_FaceId::Start();
   lockItem(aGraph, aShellId);
 
 #ifndef No_Exception
+  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
   EXPECT_THROW(
     { (void)aGraph.Editor().Shells().Append(aShellId, aFaceId, TopAbs_FORWARD); },
     Standard_ProgramError);
