@@ -37,12 +37,12 @@ persisted core incidence model.
 
 - Topology entity tables (Vertex, Edge, CoEdge, Wire, Face, Shell, Solid, Compound, CompSolid)
 - Assembly entity tables (Product, Occurrence)
-- Representation entity tables (SurfaceRep, Curve3DRep, Curve2DRep, TriangulationRep, Polygon3DRep, Polygon2DRep, PolygonOnTriRep)
+- Representation entity tables (FaceSurfaceRep, EdgeCurve3DRep, CoEdgeCurve2DRep, FaceTriangulationRep, EdgePolygon3DRep, CoEdgePolygon2DRep, CoEdgePolygonOnTriRep)
 - Reference entry tables (ShellRef, FaceRef, WireRef, VertexRef, SolidRef, ChildRef, OccurrenceRef) with BaseRef identity, orientation, and location
 - Central relation tables and sparse incoming relation maps
 - TShape to NodeId mapping
 - Original shape map
-- Per-kind UID vectors (10 entity kinds + 7 ref kinds)
+- Per-kind UID vectors (11 entity kinds + 7 ref kinds)
 
 ## Architecture
 
@@ -125,16 +125,16 @@ graph TD
 
     Wire["WireDef<br/><i>(closure is derived)</i>"]
 
-    CoEdge["CoEdgeDef<br/><i>ParentWireId, ChildEdgeId, FaceId,<br/>Orientation, Curve2DRepId,<br/>Polygon2DRepId, ParamFirst/Last</i>"]
+    CoEdge["CoEdgeDef<br/><i>ParentWireId, ChildEdgeId, FaceId,<br/>Orientation, Curve2DRepId,<br/>Polygon2DRepId, PolygonOnTriRepId</i>"]
 
-    Edge["EdgeDef<br/><i>Curve3DRepId, Polygon3DRepId,<br/>StartVertexRefId, EndVertexRefId,<br/>ParamFirst/Last, Tolerance<br/>(degeneracy, closure, SameParameter,<br/>SameRange are derived queries)</i>"]
+    Edge["EdgeDef<br/><i>Curve3DRepId, Polygon3DRepId,<br/>StartVertexRefId, EndVertexRefId,<br/>Tolerance<br/>(degeneracy, closure, SameParameter,<br/>SameRange are derived queries)</i>"]
 
-    Vertex["VertexDef<br/><i>Point (def frame), Tolerance,<br/>PointsOnCurve[],<br/>PointsOnPCurve[],<br/>PointsOnSurface[]</i>"]
+    Vertex["VertexDef<br/><i>Point (def frame), Tolerance</i>"]
 
-    SurfRep["SurfaceRep<br/><i>Geom_Surface</i>"]
-    C3DRep["Curve3DRep<br/><i>Geom_Curve</i>"]
-    C2DRep["Curve2DRep<br/><i>Geom2d_Curve</i>"]
-    TriRep["TriangulationRep<br/><i>Poly_Triangulation</i>"]
+    SurfRep["FaceSurfaceRep<br/><i>Geom_Surface</i>"]
+    C3DRep["EdgeCurve3DRep<br/><i>Geom_Curve</i>"]
+    C2DRep["CoEdgeCurve2DRep<br/><i>Geom2d_Curve</i>"]
+    TriRep["FaceTriangulationRep<br/><i>Poly_Triangulation</i>"]
 
     Product -->|"ProductRelations.OccurrenceRefIds"| OccurrenceRef
     OccurrenceRef -->|"ChildOccurrenceId"| Occurrence
@@ -151,7 +151,7 @@ graph TD
     Edge -->|"StartVertexRefId"| Vertex
 
     Face -.->|"SurfaceRepId"| SurfRep
-    Face -.->|"TriangulationRepIds"| TriRep
+    Face -.->|"TriangulationRepId"| TriRep
     Edge -.->|"Curve3DRepId"| C3DRep
     CoEdge -.->|"Curve2DRepId"| C2DRep
     CoEdge -.->|"same edge/face, opposite orientation"| CoEdge
@@ -189,17 +189,19 @@ inside definition structs:
 - **ShellRelations**: `FaceRefIds[]`
 - **FaceRelations**: `WireRefIds[]`
 - **WireRelations**: `CoEdgeIds[]`
-- **EdgeDef**: `StartVertexRefId`, `EndVertexRefId`
+- **EdgeRelations**: `CoEdgeIds[]`
+- **VertexRelations**: `EdgeIds[]`
 - **CompoundRelations**: `ChildRefIds[]`
 - **CompSolidRelations**: `SolidRefIds[]`
 - **ProductRelations**: `OccurrenceRefIds[]`
+- **OccurrenceRelations**: `ParentOccurrenceRefIds[]`
 
 Incoming parent traversal reads derived incoming lists on relation structs or
 sparse node-keyed maps (`myNodeToCompounds`, `myNodeToOccurrences`).
 
 ### RefStore
 
-`RefStore<T>` in Storage groups per-kind ref entry vector + UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()` (for soft-delete tracking via `BaseRef.IsRemoved`) -- same pattern as `DefStore<T>`.
+`RefStore<T>` in Storage groups per-kind ref entry vector + UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()` -- same pattern as `DefStore<T>`. Soft-delete state is tracked via `RefStore::RemovedFlags` bit planes in Storage, not on the `BaseRef` struct.
 
 ## Indexed Load Preparation Contract
 
@@ -259,9 +261,8 @@ flowchart LR
   I[TopoDS input] --> P1[Phase 1: Hierarchy traversal]
   P1 --> P2[Phase 2: Parallel face extraction]
   P2 --> P3[Phase 3: Sequential register and dedup]
-  P3 --> P3a[Phase 3a: Compound face fixup]
-  P3a --> P4[Phase 4: Relation validation]
-  P4 --> D[Storage IsDone]
+  P3 --> P3a[Phase 3a: Natural restriction synthesis]
+  P3a --> D[Storage IsDone]
 ```
 
 | Phase | Mode | What happens |
@@ -269,8 +270,7 @@ flowchart LR
 | **Phase 1** | Sequential | Traverse hierarchy. Create container entities (Compound, CompSolid, Solid, Shell). Collect face contexts. |
 | **Phase 2** | Parallel | Extract per-face geometry: surface, PCurves, triangulations, vertices, edges. |
 | **Phase 3** | Sequential | Register faces, wires, edges, CoEdges with TShape deduplication. Link faces to shells. |
-| **Phase 3a** | Sequential | Resolve deferred Compound->Face ChildUsage indices via TShape lookup. |
-| **Phase 4** | Sequential | Validate relation tables and finalize storage. |
+| **Phase 3a** | Sequential | Synthesize wire boundaries for faces with natural restrictions (no explicit wire). Creates vertices, edges, wires, and coedges for surface boundary curves. |
 
 Backend entry point: `BRepGraphInc_Populate::Perform()`.
 
@@ -438,4 +438,11 @@ Key difference: TopoDS expresses context through shape occurrences. GraphInc kee
 | `BRepGraphInc_Storage.hxx/.cxx` | Typed storage and ownership |
 | `BRepGraphInc_Populate.hxx/.cxx` | TopoDS -> incidence build and append |
 | `BRepGraphInc_Reconstruct.hxx/.cxx` | Incidence -> TopoDS reconstruction |
-| `BRepGraph_WireExplorer.hxx` | Wire traversal in connection order (in BRepGraph package) |
+| `BRepGraphInc_Storage.lxx` | Late-include implementation: `TypedStorePlanes` specializations and template method definitions |
+| `BRepGraphInc_BitFlags.hxx` | Bit-plane storage for per-entity boolean flags |
+| `BRepGraphInc_BoundaryBuilder.pxx` | Boundary construction helpers (`.pxx` late-include extension) |
+| `BRepGraphInc_Instance.hxx` | Instance location handling |
+| `BRepGraphInc_Load.hxx` | Indexed load preparation |
+| `BRepGraphInc_ParityOrientation.hxx` | Orientation and parity logic |
+| `BRepGraphInc_RepId.hxx` | Strongly-typed representation ID types |
+| `BRepGraphInc_Representation.hxx` | Geometry representation records |

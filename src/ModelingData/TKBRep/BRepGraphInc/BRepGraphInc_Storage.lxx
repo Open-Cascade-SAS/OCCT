@@ -25,8 +25,14 @@
   template <>                                                                                      \
   struct BRepGraphInc_Storage::TypedStorePlanes<T>                                                 \
   {                                                                                                \
-    static uint32_t  Nb(const BRepGraphInc_Storage& theStorage) { return theStorage.F.Nb(); }      \
-    static uint32_t& NbActive(BRepGraphInc_Storage& theStorage) { return theStorage.F.NbActive; }  \
+    static uint32_t Nb(const BRepGraphInc_Storage& theStorage)                                     \
+    {                                                                                              \
+      return theStorage.F.Nb();                                                                    \
+    }                                                                                              \
+    static uint32_t& NbActive(BRepGraphInc_Storage& theStorage)                                    \
+    {                                                                                              \
+      return theStorage.F.NbActive;                                                                \
+    }                                                                                              \
     static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& theStorage)                        \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
@@ -105,8 +111,14 @@ OCCT_BG_STORE_PLANES(BRepGraph_OccurrenceRefId, myOccurrenceRefs)
   template <>                                                                                      \
   struct BRepGraphInc_Storage::TypedStorePlanes<T>                                                 \
   {                                                                                                \
-    static uint32_t  Nb(const BRepGraphInc_Storage& theStorage) { return theStorage.F.Nb(); }      \
-    static uint32_t& NbActive(BRepGraphInc_Storage& theStorage) { return theStorage.F.NbActive; }  \
+    static uint32_t Nb(const BRepGraphInc_Storage& theStorage)                                     \
+    {                                                                                              \
+      return theStorage.F.Nb();                                                                    \
+    }                                                                                              \
+    static uint32_t& NbActive(BRepGraphInc_Storage& theStorage)                                    \
+    {                                                                                              \
+      return theStorage.F.NbActive;                                                                \
+    }                                                                                              \
     static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& theStorage)                        \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \

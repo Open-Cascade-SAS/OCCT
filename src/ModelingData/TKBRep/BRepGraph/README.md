@@ -58,8 +58,7 @@ flowchart TB
 
   subgraph Views
     V1[Topo / UIDs / Shapes]
-    V2[Cache / Builder / Refs]
-    V3[Paths]
+    V2[Editor / Mesh / Refs]
   end
 
   G --> Views
@@ -244,7 +243,8 @@ flowchart LR
 | View | Methods |
 |------|---------|
 | **TopoView** | `NbProducts`, `NbOccurrences`, grouped helpers `Products()` / `Occurrences()` |
-| **TopoView** | `RootProductIds`, `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)` |
+| **TopoView** | `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)`, grouped helpers `Products()` / `Occurrences()` |
+| **BRepGraph** | `RootProductIds` |
 | **EditorView** | `Add(shapeRoot, placement)`, `Add()`, `Append(parent, child, ...)`, `AppendDocumentRoot`, `RemoveOccurrence`, `RemoveShapeRoot`, `MutProduct(i)`, `MutOccurrence(i)` (RAII guards) |
 | **Traversal** | Flat definition traversal via `BRepGraph_ProductIterator` / `BRepGraph_OccurrenceIterator` (or explicit `NbProducts()` / `NbOccurrences()` scans when storage-level access is required) |
 
@@ -287,7 +287,6 @@ Can also start from a Product to descend through assembly occurrences into topol
 - `CurrentUsagePath()` records the concrete node/ref steps for a downward traversal branch.
 - `Current().Location` and `Current().Orientation` expose transforms composed along the emitted branch.
 - Recursive target-kind traversal filters emitted nodes, but it must still walk through intermediate `Product` and `Occurrence` nodes rather than inventing direct topology shortcuts.
-- `IsAncestorOf`, `AllNodesOnPath`, `DepthOfKind`
 
 ### RelatedIterator
 
@@ -302,7 +301,7 @@ for (BRepGraph_RelatedIterator anIt(aGraph, BRepGraph_NodeId(aFaceId)); anIt.Mor
 }
 ```
 
-Relation kinds include: `ChildShell`, `ChildFace`, `FreeChild`, `BoundaryEdge`, `AdjacentFace`, `OuterWire`, `ReferencedByFace`, `IncidentVertex`, `WireCoEdge`, `IncidentEdge`, `ParentEdge`, `OwningFace`, `SeamPair`, `ChildEntity`, `ChildSolid`, `ChildOccurrence`, `ReferencedProduct`, `ParentProduct`, `ParentOccurrence`.
+Relation kinds include: `BoundaryEdge`, `AdjacentFace`, `OuterWire`, `ReferencedByFace`, `IncidentVertex`, `WireCoEdge`, `OwningFace`, `IncidentEdge`, `ParentEdge`, `SeamPair`.
 
 ### Connected Components
 
@@ -314,11 +313,12 @@ Disconnected topology is grouped on demand by walking from faces to their solid 
 
 | Helper | Key Methods |
 |--------|-------------|
-| **Vertex** | `Pnt`, `Tolerance`, `Parameter` (on edge), `Parameters` (on surface) |
-| **Edge** | `Tolerance`, `Degenerated`, `SameParameter`, `SameRange`, `Range`, `StartVertex`, `EndVertex`, `Curve`, `Polygon`, `Continuity` (Degenerated, SameParameter, SameRange are derived queries, not stored fields) |
-| **CoEdge** | `PCurveGeometry`, `PCurvePolygon`, `PCurveIsHandle` |
-| **Face** | `Surface`, `Tolerance`, `Wires`, `BndLib`, `UVBounds`, `CurveOnPlane`, `EvalD0` |
-| **Wire** | `Edges` (traversal order via WireExplorer) |
+| **Vertex** | `Usage`, `Pnt` (definition frame, with ref location, by ref id), `Tolerance`, `NbEdges` |
+| **Edge** | `Tolerance`, `Degenerated`, `SameParameter`, `SameRange`, `IsClosed`, `Range`, `StartVertexId`, `EndVertexId`, `HasCurve`, `Curve`, `CurveAdaptor`, `CurveOnSurface`, `FindByVertices`, `FindPCurveCoEdgeId`, `FindCoEdgeId`, `NbFaces`, `IsManifold`, `IsBoundary`, `IsSeamOnFace` (Degenerated, SameParameter, SameRange are derived queries, not stored fields) |
+| **CoEdge** | `Orientation`, `IsReversed`, `EdgeOf`, `FaceOf`, `SeamPair`, `IsSeam`, `HasPCurve`, `PCurve`, `PCurveAdaptor`, `UVPoints`, `Range` |
+| **Face** | `Usage`, `Tolerance`, `HasSurface`, `OuterWire`, `Surface`, `SurfaceAdaptor`, `NbWires`, `Bounds` |
+| **Wire** | `Usage`, `IsClosed`, `NbCoEdges`, `NbDistinctEdges`, `FaceOf`, `IsOuter` |
+| **Shell** | `Usage`, `IsClosed`, `NbFaces` |
 
 ## Extensibility: Layers vs Cache Registry
 
@@ -517,16 +517,21 @@ if (!aResult.IsValid())
 
 | Category | Files |
 |----------|-------|
-| **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx` |
-| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_EditorView.hxx/.cxx`, `BRepGraph_MeshView.hxx/.cxx` |
+| **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_ItemId.hxx`, `BRepGraph_ItemUID.hxx` |
+| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_EditorView.hxx/.cxx` (+ `_Mut.cxx`, `_Setters.cxx`), `BRepGraph_MeshView.hxx/.cxx` |
 | **Refs** | `BRepGraph_VersionStamp.hxx/.cxx` |
-| **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_RelatedIterator.hxx`, `BRepGraph_UsagePath.hxx` |
+| **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_RelatedIterator.hxx/.cxx`, `BRepGraph_Iterator.hxx`, `BRepGraph_RefsIterator.hxx`, `BRepGraph_DefsIterator.hxx`, `BRepGraph_ReverseIterator.hxx`, `BRepGraph_UsagePath.hxx/.cxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
-| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_LayerIterator.hxx`, `BRepGraph_LayerRegistry.hxx/.cxx` |
-| **Cache** | `BRepGraph_Cache.hxx/.cxx`, `BRepGraph_CacheRegistry.hxx/.cxx`, `BRepGraph_CacheIterator.hxx` |
+| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_LayerIterator.hxx`, `BRepGraph_LayerRegistry.hxx/.cxx`, `BRepGraph_LayerLock.hxx/.cxx`, `BRepGraph_LayerDeferred.hxx/.cxx`, `BRepGraph_LayerTopoSupplement.hxx/.cxx`, `BRepGraph_LayerParametric.hxx/.cxx` |
+| **Cache** | `BRepGraph_Cache.hxx/.cxx`, `BRepGraph_CacheRegistry.hxx/.cxx`, `BRepGraph_CacheIterator.hxx`, `BRepGraph_CacheMesh.hxx/.cxx`, `BRepGraph_CacheDerivedState.hxx/.cxx` |
 | **History** | `BRepGraph_LayerHistory.hxx/.cxx` |
-| **Shapes** | `BRepGraph_ShapesView.hxx/.cxx` |
+| **Copy / Transform** | `BRepGraph_Copy.hxx/.cxx`, `BRepGraph_CopyRemap.hxx/.cxx`, `BRepGraph_Transform.hxx/.cxx` |
+| **Supplement** | `BRepGraph_SupplementEditor.hxx/.cxx`, `BRepGraph_SupplementIterator.hxx/.cxx` |
+| **Compaction** | `BRepGraph_Compact.hxx/.cxx` |
+| **Deduplication** | `BRepGraph_Deduplicate.hxx/.cxx` |
+| **Validation** | `BRepGraph_Validate.hxx/.cxx` |
+| **Parallel** | `BRepGraph_ParallelPolicy.hxx/.cxx` |
 
 ## Documentation Map
 
