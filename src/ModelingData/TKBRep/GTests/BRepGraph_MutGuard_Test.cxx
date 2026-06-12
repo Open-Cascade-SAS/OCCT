@@ -180,6 +180,7 @@ TEST(BRepGraph_MutGuardTest, DuplicateGuard_Rejected)
     aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
   EXPECT_TRUE(static_cast<bool>(aGuard1));
 
+#ifndef No_Exception
   // Attempting to acquire a second guard on the same vertex must throw.
   EXPECT_THROW(
     {
@@ -187,6 +188,7 @@ TEST(BRepGraph_MutGuardTest, DuplicateGuard_Rejected)
       (void)aDuplicate;
     },
     Standard_ProgramError);
+#endif
 }
 
 TEST(BRepGraph_MutGuardTest, GuardAllowsGuardedSetter)

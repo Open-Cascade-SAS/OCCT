@@ -121,6 +121,7 @@ TEST(BRepGraphIncTest, Box_EntityCounts_MatchDefCounts)
 
 TEST(BRepGraphIncTest, ParityOrientationRejectsInternalExternal)
 {
+#ifndef No_Exception
   EXPECT_THROW(
     {
       [[maybe_unused]] const BRepGraphInc::ParityOrientation aParity =
@@ -137,11 +138,13 @@ TEST(BRepGraphIncTest, ParityOrientationRejectsInternalExternal)
   BRepGraphInc::ParityOrientation anOrientation;
   EXPECT_THROW(anOrientation = TopAbs_INTERNAL, Standard_ProgramError);
   EXPECT_THROW(anOrientation = TopAbs_EXTERNAL, Standard_ProgramError);
+#endif
 
-  anOrientation = TopAbs_FORWARD;
-  EXPECT_EQ(TopAbs_Orientation(anOrientation), TopAbs_FORWARD);
-  anOrientation = TopAbs_REVERSED;
-  EXPECT_EQ(TopAbs_Orientation(anOrientation), TopAbs_REVERSED);
+  BRepGraphInc::ParityOrientation anOrientation2;
+  anOrientation2 = TopAbs_FORWARD;
+  EXPECT_EQ(TopAbs_Orientation(anOrientation2), TopAbs_FORWARD);
+  anOrientation2 = TopAbs_REVERSED;
+  EXPECT_EQ(TopAbs_Orientation(anOrientation2), TopAbs_REVERSED);
 }
 
 TEST(BRepGraphIncTest, Cylinder_EntityCounts_MatchDefCounts)
