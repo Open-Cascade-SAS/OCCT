@@ -511,6 +511,9 @@ TEST(BRepGraph_DeduplicateTest, NotDoneGraph_ReturnsEmptyResult)
   EXPECT_EQ(aRes.NbNullifiedCurves, 0);
   EXPECT_EQ(aRes.NbHistoryRecords, 0);
   EXPECT_FALSE(aRes.IsEntityMergeApplied);
+  EXPECT_EQ(aRes.NbReorderedWires, 0);
+  EXPECT_EQ(aRes.NbToleranceOrderedWires, 0);
+  EXPECT_EQ(aRes.NbPartialOrderedWires, 0);
 }
 
 TEST(BRepGraph_DeduplicateTest, Idempotent_SecondRunNoRewrites)
@@ -738,6 +741,9 @@ TEST(BRepGraph_DeduplicateTest, DefaultResultStruct_AllZeroed)
   EXPECT_EQ(aRes.NbNullifiedCurves, 0);
   EXPECT_EQ(aRes.NbHistoryRecords, 0);
   EXPECT_FALSE(aRes.IsEntityMergeApplied);
+  EXPECT_EQ(aRes.NbReorderedWires, 0);
+  EXPECT_EQ(aRes.NbToleranceOrderedWires, 0);
+  EXPECT_EQ(aRes.NbPartialOrderedWires, 0);
 }
 
 TEST(BRepGraph_DeduplicateTest, MergeDefsWhenSafe_MergesVertices)

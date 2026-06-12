@@ -16,6 +16,7 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
+#include <BRepGraphInc_Storage.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
@@ -77,7 +78,42 @@ void redirectOccurrenceChildren(BRepGraph&             theGraph,
     }
   }
 }
+
 } // namespace
+
+//=================================================================================================
+
+void BRepGraph_Deduplicate::CanonicalizeWireOrders(BRepGraph& theGraph, Result& theResult)
+{
+  BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+  for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aStorage.NbWires()); ++aWireId)
+  {
+    if (aStorage.IsRemoved(aWireId))
+    {
+      continue;
+    }
+
+    const BRepGraphInc_Storage::WireCoEdgeOrderStatus aStatus =
+      aStorage.CanonicalizeWireCoEdgeOrderStatus(aWireId);
+    switch (aStatus)
+    {
+      case BRepGraphInc_Storage::WireCoEdgeOrderStatus::Reordered:
+        ++theResult.NbReorderedWires;
+        theGraph.markModified(aWireId);
+        break;
+      case BRepGraphInc_Storage::WireCoEdgeOrderStatus::ToleranceOrdered:
+        ++theResult.NbToleranceOrderedWires;
+        theGraph.markModified(aWireId);
+        break;
+      case BRepGraphInc_Storage::WireCoEdgeOrderStatus::Partial:
+        ++theResult.NbPartialOrderedWires;
+        theGraph.markModified(aWireId);
+        break;
+      default:
+        break;
+    }
+  }
+}
 
 //=================================================================================================
 
@@ -438,6 +474,11 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     {
       aResult.NbMergedVertices = static_cast<uint32_t>(aCanonicalVertex.Size());
     }
+  }
+
+  if (!theOptions.AnalyzeOnly)
+  {
+    CanonicalizeWireOrders(theGraph, aResult);
   }
 
   aTmpAlloc->Reset(false);

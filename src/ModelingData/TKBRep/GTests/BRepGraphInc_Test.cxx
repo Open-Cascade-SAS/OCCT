@@ -122,6 +122,38 @@ static bool containsId(const NCollection_LinearVector<theIdType>& theIds, const 
   return false;
 }
 
+static BRepGraph_VertexId addStorageVertex(BRepGraphInc_Storage& theStorage,
+                                           const gp_Pnt&         thePoint,
+                                           const double          theTolerance)
+{
+  const BRepGraph_VertexId aVertexId = theStorage.AppendVertex();
+  BRepGraphInc::VertexDef& aVertex   = theStorage.ChangeVertex(aVertexId);
+  aVertex.Point                      = thePoint;
+  aVertex.Tolerance                  = theTolerance;
+  return aVertexId;
+}
+
+static BRepGraph_EdgeId addStorageEdge(BRepGraphInc_Storage&      theStorage,
+                                       const BRepGraph_VertexId   theStartVertex,
+                                       const BRepGraph_VertexId   theEndVertex,
+                                       const double               theTolerance = 0.0)
+{
+  const BRepGraph_EdgeId      anEdgeId  = theStorage.AppendEdge();
+  const BRepGraph_VertexRefId aStartRef = theStorage.AppendVertexRef();
+  const BRepGraph_VertexRefId anEndRef  = theStorage.AppendVertexRef();
+
+  theStorage.ChangeVertexRef(aStartRef).ParentEdgeId  = anEdgeId;
+  theStorage.ChangeVertexRef(aStartRef).ChildVertexId = theStartVertex;
+  theStorage.ChangeVertexRef(anEndRef).ParentEdgeId   = anEdgeId;
+  theStorage.ChangeVertexRef(anEndRef).ChildVertexId  = theEndVertex;
+
+  BRepGraphInc::EdgeDef& anEdge = theStorage.ChangeEdge(anEdgeId);
+  anEdge.StartVertexRefId       = aStartRef;
+  anEdge.EndVertexRefId         = anEndRef;
+  anEdge.Tolerance              = theTolerance;
+  return anEdgeId;
+}
+
 // ============================================================
 // Entity count validation
 // ============================================================
@@ -2208,6 +2240,94 @@ TEST(BRepGraphIncTest, Relations_RebindVertexSkipsRemovedParentEdge)
   EXPECT_EQ(aStorage.VertexRef(aStartRef).ChildVertexId, aOldVertex);
   EXPECT_EQ(aStorage.VertexRelations(aOldVertex).EdgeIds.Size(), 1u);
   EXPECT_EQ(aStorage.VertexRelations(aNewVertex).EdgeIds.Size(), 0u);
+}
+
+TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_ReordersExactConnectedWire)
+{
+  BRepGraphInc_Storage aStorage;
+  const BRepGraph_WireId aWireId = aStorage.AppendWire();
+
+  const BRepGraph_VertexId aVertexA = addStorageVertex(aStorage, gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aVertexB = addStorageVertex(aStorage, gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aVertexC = addStorageVertex(aStorage, gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
+
+  const BRepGraph_EdgeId anEdgeBC = addStorageEdge(aStorage, aVertexB, aVertexC);
+  const BRepGraph_EdgeId anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
+  const BRepGraph_CoEdgeId aCoEdgeBC =
+    aStorage.CreateCoEdgeUse(aWireId, anEdgeBC, BRepGraph_FaceId(), TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aCoEdgeAB =
+    aStorage.CreateCoEdgeUse(aWireId, anEdgeAB, BRepGraph_FaceId(), TopAbs_FORWARD);
+
+  EXPECT_FALSE(aStorage.ValidateWireCoEdgeOrder(aWireId));
+  EXPECT_EQ(aStorage.CanonicalizeWireCoEdgeOrderStatus(aWireId),
+            BRepGraphInc_Storage::WireCoEdgeOrderStatus::Reordered);
+
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
+    aStorage.WireRelations(aWireId).CoEdgeIds;
+  ASSERT_EQ(aCoEdges.Size(), 2u);
+  EXPECT_EQ(aCoEdges.Value(0), aCoEdgeAB);
+  EXPECT_EQ(aCoEdges.Value(1), aCoEdgeBC);
+  EXPECT_TRUE(aStorage.ValidateWireCoEdgeOrder(aWireId));
+}
+
+TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_UsesVertexTolerance)
+{
+  BRepGraphInc_Storage aStorage;
+  const BRepGraph_WireId aWireId = aStorage.AppendWire();
+
+  const BRepGraph_VertexId aVertexA = addStorageVertex(aStorage, gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aVertexB = addStorageVertex(aStorage, gp_Pnt(1.0, 0.0, 0.0), 1.0e-2);
+  const BRepGraph_VertexId aVertexC = addStorageVertex(aStorage, gp_Pnt(1.005, 0.0, 0.0), 1.0e-2);
+  const BRepGraph_VertexId aVertexD = addStorageVertex(aStorage, gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
+
+  const BRepGraph_EdgeId anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
+  const BRepGraph_EdgeId anEdgeCD = addStorageEdge(aStorage, aVertexC, aVertexD);
+  const BRepGraph_CoEdgeId aCoEdgeAB =
+    aStorage.CreateCoEdgeUse(aWireId, anEdgeAB, BRepGraph_FaceId(), TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aCoEdgeCD =
+    aStorage.CreateCoEdgeUse(aWireId, anEdgeCD, BRepGraph_FaceId(), TopAbs_FORWARD);
+
+  EXPECT_FALSE(aStorage.ValidateWireCoEdgeOrder(aWireId));
+  EXPECT_EQ(aStorage.CanonicalizeWireCoEdgeOrderStatus(aWireId),
+            BRepGraphInc_Storage::WireCoEdgeOrderStatus::ToleranceOrdered);
+
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
+    aStorage.WireRelations(aWireId).CoEdgeIds;
+  ASSERT_EQ(aCoEdges.Size(), 2u);
+  EXPECT_EQ(aCoEdges.Value(0), aCoEdgeAB);
+  EXPECT_EQ(aCoEdges.Value(1), aCoEdgeCD);
+}
+
+TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_PartialPreservesDisconnectedRuns)
+{
+  BRepGraphInc_Storage aStorage;
+  const BRepGraph_WireId aWireId = aStorage.AppendWire();
+
+  const BRepGraph_VertexId aVertexA = addStorageVertex(aStorage, gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aVertexB = addStorageVertex(aStorage, gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aVertexC = addStorageVertex(aStorage, gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aVertexX = addStorageVertex(aStorage, gp_Pnt(10.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aVertexY = addStorageVertex(aStorage, gp_Pnt(11.0, 0.0, 0.0), 1.0e-7);
+
+  const BRepGraph_EdgeId anEdgeBC = addStorageEdge(aStorage, aVertexB, aVertexC);
+  const BRepGraph_EdgeId anEdgeXY = addStorageEdge(aStorage, aVertexX, aVertexY);
+  const BRepGraph_EdgeId anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
+  const BRepGraph_CoEdgeId aCoEdgeBC =
+    aStorage.CreateCoEdgeUse(aWireId, anEdgeBC, BRepGraph_FaceId(), TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aCoEdgeXY =
+    aStorage.CreateCoEdgeUse(aWireId, anEdgeXY, BRepGraph_FaceId(), TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aCoEdgeAB =
+    aStorage.CreateCoEdgeUse(aWireId, anEdgeAB, BRepGraph_FaceId(), TopAbs_FORWARD);
+
+  EXPECT_EQ(aStorage.CanonicalizeWireCoEdgeOrderStatus(aWireId),
+            BRepGraphInc_Storage::WireCoEdgeOrderStatus::Partial);
+
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
+    aStorage.WireRelations(aWireId).CoEdgeIds;
+  ASSERT_EQ(aCoEdges.Size(), 3u);
+  EXPECT_EQ(aCoEdges.Value(0), aCoEdgeAB);
+  EXPECT_EQ(aCoEdges.Value(1), aCoEdgeBC);
+  EXPECT_EQ(aCoEdges.Value(2), aCoEdgeXY);
 }
 
 // ============================================================

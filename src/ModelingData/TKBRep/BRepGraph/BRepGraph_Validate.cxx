@@ -1160,7 +1160,7 @@ void checkWireConnectivity(const BRepGraph&                                     
         aDesc += "] end != edge[";
         aDesc += TCollection_AsciiString(static_cast<int>(anIdx));
         aDesc += "] start";
-        theIssues.Append(Issue{Severity::Error, aWireId, aDesc});
+        theIssues.Append(Issue{Severity::Warning, aWireId, aDesc});
       }
       aPrevId = aCurrId;
     }

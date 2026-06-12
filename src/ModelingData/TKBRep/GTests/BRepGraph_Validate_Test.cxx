@@ -250,14 +250,15 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_FALSE(aResult.IsValid());
+  EXPECT_FALSE(hasErrorContaining(aResult, "Wire edges not connected"));
 
-  // Check that at least one connectivity error was found.
+  // Check that at least one connectivity warning was found.
   bool aFoundConnectivity = false;
-  for (size_t anIdx = 0; anIdx < aResult.Issues.Size(); ++anIdx)
+  const uint32_t aNbIssues = static_cast<uint32_t>(aResult.Issues.Size());
+  for (uint32_t anIdx = 0; anIdx < aNbIssues; ++anIdx)
   {
     const BRepGraph_Validate::Issue& anIssue = aResult.Issues.Value(anIdx);
-    if (anIssue.Sev == BRepGraph_Validate::Severity::Error)
+    if (anIssue.Sev == BRepGraph_Validate::Severity::Warning)
     {
       TCollection_AsciiString aDesc = anIssue.Description;
       if (aDesc.Search("Wire edges not connected") > 0)

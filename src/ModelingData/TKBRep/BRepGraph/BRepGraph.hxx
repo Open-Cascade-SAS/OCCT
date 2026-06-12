@@ -44,6 +44,7 @@ class BRepGraph_LayerLock;
 class BRepGraph_LayerRegistry;
 class BRepGraph_CacheMesh;
 class BRepGraph_Validate;
+class BRepGraph_Deduplicate;
 class BRepGraphODE;
 class BRepGraphODE_Storage;
 class NCollection_BaseAllocator;
@@ -214,6 +215,7 @@ private:
   friend class BRepGraph_CacheRegistry;
   friend class BRepGraph_Compact;
   friend class BRepGraph_Copy;
+  friend class BRepGraph_Deduplicate;
   friend class BRepGraph_Layer;
   friend class BRepGraph_LayerLock;
   friend class BRepGraph_LayerRegistry;

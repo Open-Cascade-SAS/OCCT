@@ -1358,6 +1358,22 @@ public:
   //! @return true if all wire coedge orders are valid
   Standard_EXPORT bool ValidateWireCoEdgeOrders() const;
 
+  //! Result of wire coedge order canonicalization.
+  enum class WireCoEdgeOrderStatus
+  {
+    Connected,        //!< Stored order was already connected.
+    Reordered,        //!< Stored coedges were reordered into an exactly connected chain.
+    ToleranceOrdered, //!< Stored coedges were ordered using tolerance-equivalent endpoints.
+    Partial,          //!< Stored coedges were grouped into best-effort connected runs.
+    InvalidInput      //!< Wire or coedge ownership/input data is invalid.
+  };
+
+  //! Canonicalize the coedge ordering of a wire and report the achieved order quality.
+  //! @param[in] theWireId wire identifier
+  //! @return canonicalization status
+  Standard_EXPORT WireCoEdgeOrderStatus
+    CanonicalizeWireCoEdgeOrderStatus(const BRepGraph_WireId theWireId);
+
   //! Canonicalize the coedge ordering of a wire to a consistent form.
   //! @param[in] theWireId wire identifier
   //! @return true if canonicalization succeeded

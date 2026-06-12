@@ -55,10 +55,13 @@ public:
     bool     IsEntityMergeApplied = false;
 
     //! Topology definition merge counters (active when MergeEntitiesWhenSafe = true).
-    uint32_t NbMergedVertices = 0;
-    uint32_t NbMergedEdges    = 0;
-    uint32_t NbMergedWires    = 0;
-    uint32_t NbMergedFaces    = 0;
+    uint32_t NbMergedVertices        = 0;
+    uint32_t NbMergedEdges           = 0;
+    uint32_t NbMergedWires           = 0;
+    uint32_t NbMergedFaces           = 0;
+    uint32_t NbReorderedWires        = 0;
+    uint32_t NbToleranceOrderedWires = 0;
+    uint32_t NbPartialOrderedWires   = 0;
 
     NCollection_LinearVector<BRepGraph_FaceId> AffectedFaces; //!< Faces whose SurfNodeId changed.
     NCollection_LinearVector<BRepGraph_EdgeId> AffectedEdges; //!< Edges whose CurveNodeId changed.
@@ -77,6 +80,9 @@ public:
                                                       const Options& theOptions);
 
   BRepGraph_Deduplicate() = delete;
+
+private:
+  static void CanonicalizeWireOrders(BRepGraph& theGraph, Result& theResult);
 };
 
 #endif // _BRepGraph_Deduplicate_HeaderFile

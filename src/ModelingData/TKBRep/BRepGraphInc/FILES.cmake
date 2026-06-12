@@ -3,6 +3,7 @@ set(OCCT_BRepGraphInc_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_BRepGraphInc_FILES
   BRepGraphInc_BitFlags.hxx
   BRepGraphInc_BoundaryBuilder.pxx
+  BRepGraphInc_WireOrder.pxx
   BRepGraphInc_Load.hxx
   BRepGraphInc_ParityOrientation.hxx
   BRepGraphInc_Definition.hxx

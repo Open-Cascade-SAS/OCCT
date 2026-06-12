@@ -49,6 +49,8 @@
 
 #include <shared_mutex>
 
+#include "../BRepGraphInc/BRepGraphInc_WireOrder.pxx"
+
 namespace
 {
 
@@ -768,232 +770,23 @@ static bool coEdgeOrientedVerticesAfterReplacement(const BRepGraphInc_Storage& t
 
 //=================================================================================================
 
-static bool coEdgeOrderIsConnected(const BRepGraphInc_Storage&                   theStorage,
-                                   const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds,
-                                   const BRepGraph_WireId                        theExpectedWire,
-                                   const bool                                    theRequireFree)
+static BRepGraph::EditorView::WireOps::CoEdgeOrderStatus toEditorCoEdgeOrderStatus(
+  const BRepGraphInc_Storage::WireCoEdgeOrderStatus theStatus)
 {
-  BRepGraph_VertexId aPrevEnd;
-  bool               hasPrev = false;
-  for (const BRepGraph_CoEdgeId& aCoEdgeId : theCoEdgeIds)
+  using EditorStatus = BRepGraph::EditorView::WireOps::CoEdgeOrderStatus;
+  using StorageStatus = BRepGraphInc_Storage::WireCoEdgeOrderStatus;
+  switch (theStatus)
   {
-    if (!isActiveNode(theStorage, aCoEdgeId))
-    {
-      return false;
-    }
-
-    const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(aCoEdgeId);
-    if ((theExpectedWire.IsValid() && aCoEdge.ParentWireId != theExpectedWire)
-        || (theRequireFree && aCoEdge.ParentWireId.IsValid()))
-    {
-      return false;
-    }
-
-    BRepGraph_VertexId aStart;
-    BRepGraph_VertexId anEnd;
-    if (!coEdgeOrientedVertices(theStorage, aCoEdgeId, aStart, anEnd))
-    {
-      return false;
-    }
-    if (hasPrev && aStart != aPrevEnd)
-    {
-      return false;
-    }
-
-    aPrevEnd = anEnd;
-    hasPrev  = true;
+    case StorageStatus::Connected:
+      return EditorStatus::Ready;
+    case StorageStatus::Reordered:
+      return EditorStatus::Reordered;
+    case StorageStatus::ToleranceOrdered:
+    case StorageStatus::Partial:
+    case StorageStatus::InvalidInput:
+      return EditorStatus::Disconnected;
   }
-  return true;
-}
-
-//=================================================================================================
-
-static bool coEdgeIdsAreUnique(const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds)
-{
-  for (const BRepGraph_CoEdgeId& aCoEdgeId : theCoEdgeIds)
-  {
-    uint32_t aCount = 0;
-    for (const BRepGraph_CoEdgeId& anOtherId : theCoEdgeIds)
-    {
-      if (anOtherId == aCoEdgeId)
-      {
-        ++aCount;
-      }
-    }
-    if (aCount != 1)
-    {
-      return false;
-    }
-  }
-  return true;
-}
-
-//=================================================================================================
-
-static bool containsVertex(const NCollection_LinearVector<BRepGraph_VertexId>& theVertices,
-                           const BRepGraph_VertexId                            theVertex)
-{
-  for (const BRepGraph_VertexId& aVertex : theVertices)
-  {
-    if (aVertex == theVertex)
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
-//=================================================================================================
-
-static bool buildConnectedCoEdgeOrder(const BRepGraphInc_Storage&                   theStorage,
-                                      const NCollection_Array1<BRepGraph_CoEdgeId>& theInput,
-                                      const BRepGraph_WireId                        theExpectedWire,
-                                      const bool                                    theRequireFree,
-                                      NCollection_LinearVector<BRepGraph_CoEdgeId>& theOrdered)
-{
-  if (!coEdgeIdsAreUnique(theInput))
-  {
-    return false;
-  }
-
-  for (const BRepGraph_CoEdgeId& aCoEdgeId : theInput)
-  {
-    if (!isActiveNode(theStorage, aCoEdgeId))
-    {
-      return false;
-    }
-    const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(aCoEdgeId);
-    if ((theExpectedWire.IsValid() && aCoEdge.ParentWireId != theExpectedWire)
-        || (theRequireFree && aCoEdge.ParentWireId.IsValid()))
-    {
-      return false;
-    }
-    BRepGraph_VertexId aStart;
-    BRepGraph_VertexId anEnd;
-    if (!coEdgeOrientedVertices(theStorage, aCoEdgeId, aStart, anEnd))
-    {
-      return false;
-    }
-  }
-
-  NCollection_LinearVector<BRepGraph_VertexId> aStarts(theInput.Size());
-  NCollection_LinearVector<BRepGraph_VertexId> anEnds(theInput.Size());
-  NCollection_LinearVector<BRepGraph_VertexId> aVertices(theInput.Size() * 2);
-  for (size_t anIdx = 0; anIdx < theInput.Size(); ++anIdx)
-  {
-    BRepGraph_VertexId aStart;
-    BRepGraph_VertexId anEnd;
-    if (!coEdgeOrientedVertices(theStorage, theInput.Value(static_cast<int>(anIdx)), aStart, anEnd))
-    {
-      return false;
-    }
-    aStarts.Append(aStart);
-    anEnds.Append(anEnd);
-    if (!containsVertex(aVertices, aStart))
-    {
-      aVertices.Append(aStart);
-    }
-    if (!containsVertex(aVertices, anEnd))
-    {
-      aVertices.Append(anEnd);
-    }
-  }
-
-  BRepGraph_VertexId aStartVertex;
-  size_t             aNbOpenStarts = 0;
-  size_t             aNbOpenEnds   = 0;
-  for (const BRepGraph_VertexId& aVertex : aVertices)
-  {
-    size_t aNbOut = 0;
-    size_t aNbIn  = 0;
-    for (const BRepGraph_VertexId& aStart : aStarts)
-    {
-      if (aStart == aVertex)
-      {
-        ++aNbOut;
-      }
-    }
-    for (const BRepGraph_VertexId& anEnd : anEnds)
-    {
-      if (anEnd == aVertex)
-      {
-        ++aNbIn;
-      }
-    }
-    if (aNbOut == aNbIn + 1)
-    {
-      ++aNbOpenStarts;
-      aStartVertex = aVertex;
-    }
-    else if (aNbIn == aNbOut + 1)
-    {
-      ++aNbOpenEnds;
-    }
-    else if (aNbOut != aNbIn)
-    {
-      return false;
-    }
-  }
-
-  if ((aNbOpenStarts != 0 || aNbOpenEnds != 0) && (aNbOpenStarts != 1 || aNbOpenEnds != 1))
-  {
-    return false;
-  }
-  if (aNbOpenStarts == 0)
-  {
-    aStartVertex = aStarts.Value(0);
-  }
-
-  NCollection_LinearVector<bool> aUsed(theInput.Size());
-  for (size_t anIdx = 0; anIdx < theInput.Size(); ++anIdx)
-  {
-    aUsed.Append(false);
-  }
-
-  NCollection_LinearVector<BRepGraph_VertexId> aVertexStack(theInput.Size() + 1);
-  NCollection_LinearVector<size_t>             anEdgeStack(theInput.Size());
-  NCollection_LinearVector<size_t>             aCircuitEdges(theInput.Size());
-  aVertexStack.Append(aStartVertex);
-
-  while (!aVertexStack.IsEmpty())
-  {
-    const BRepGraph_VertexId aCurrentVertex = aVertexStack.Last();
-    size_t                   aNextIdx       = theInput.Size();
-    for (size_t anIdx = 0; anIdx < theInput.Size(); ++anIdx)
-    {
-      if (!aUsed.Value(anIdx) && aStarts.Value(anIdx) == aCurrentVertex)
-      {
-        aNextIdx = anIdx;
-        break;
-      }
-    }
-
-    if (aNextIdx != theInput.Size())
-    {
-      aUsed.SetValue(aNextIdx, true);
-      anEdgeStack.Append(aNextIdx);
-      aVertexStack.Append(anEnds.Value(aNextIdx));
-      continue;
-    }
-
-    aVertexStack.EraseLast();
-    if (!anEdgeStack.IsEmpty())
-    {
-      aCircuitEdges.Append(anEdgeStack.Last());
-      anEdgeStack.EraseLast();
-    }
-  }
-
-  if (aCircuitEdges.Size() == theInput.Size())
-  {
-    for (size_t anIdx = aCircuitEdges.Size(); anIdx > 0; --anIdx)
-    {
-      theOrdered.Append(theInput.Value(static_cast<int>(aCircuitEdges.Value(anIdx - 1))));
-    }
-    return true;
-  }
-  theOrdered.Clear(false);
-  return false;
+  return EditorStatus::Disconnected;
 }
 
 //=================================================================================================
@@ -1013,7 +806,7 @@ static BRepGraph::EditorView::WireOps::CoEdgeOrderStatus preCheckCoEdgeOrder(
   {
     return CoEdgeOrderStatus::Empty;
   }
-  if (!coEdgeIdsAreUnique(theInput))
+  if (!BRepGraphInc_WireOrder::CoEdgeIdsAreUnique(theInput))
   {
     return CoEdgeOrderStatus::DuplicateCoEdge;
   }
@@ -1100,20 +893,8 @@ static BRepGraph::EditorView::WireOps::CoEdgeOrderStatus preCheckCoEdgeOrder(
     }
   }
 
-  if (coEdgeOrderIsConnected(theStorage, theInput, theExpectedWire, theRequireFree))
-  {
-    for (const BRepGraph_CoEdgeId& aCoEdgeId : theInput)
-    {
-      theOrdered.Append(aCoEdgeId);
-    }
-    return CoEdgeOrderStatus::Ready;
-  }
-
-  if (buildConnectedCoEdgeOrder(theStorage, theInput, theExpectedWire, theRequireFree, theOrdered))
-  {
-    return CoEdgeOrderStatus::Reordered;
-  }
-  return CoEdgeOrderStatus::Disconnected;
+  return toEditorCoEdgeOrderStatus(
+    BRepGraphInc_WireOrder::BuildCoEdgeOrder(theStorage, BRepGraph_WireId(), theInput, theOrdered));
 }
 
 //=================================================================================================
@@ -1538,9 +1319,8 @@ BRepGraph::EditorView::WireOps::CoEdgeOrderStatus BRepGraph::EditorView::WireOps
 
   const NCollection_Array1<BRepGraph_CoEdgeId> anInput = aCandidateOrder.ToArray1();
   NCollection_LinearVector<BRepGraph_CoEdgeId> anOrdered;
-  return buildConnectedCoEdgeOrder(aStorage, anInput, BRepGraph_WireId(), false, anOrdered)
-           ? CoEdgeOrderStatus::Reordered
-           : CoEdgeOrderStatus::Disconnected;
+  return toEditorCoEdgeOrderStatus(
+    BRepGraphInc_WireOrder::BuildCoEdgeOrder(aStorage, BRepGraph_WireId(), anInput, anOrdered));
 }
 
 //=================================================================================================
