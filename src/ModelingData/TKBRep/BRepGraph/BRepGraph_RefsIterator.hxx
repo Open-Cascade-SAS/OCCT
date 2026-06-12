@@ -20,6 +20,7 @@
 #include <BRepGraphInc_Storage.hxx>
 #include <NCollection_ForwardRange.hxx>
 #include <NCollection_LinearVector.hxx>
+#include <type_traits>
 
 //! @brief Single-level typed iterators over active child reference ids.
 //!
@@ -197,22 +198,11 @@ struct BaseTraits
   static constexpr bool THE_IS_DIRECT = false;
 };
 
-template <typename ChildIdT>
-inline const BRepGraphInc::BaseDef* childBaseDef(const BRepGraph& theGraph,
-                                                 const ChildIdT   theChildId)
-{
-  return theGraph.Topo().Gen().TopoEntity(BRepGraph_NodeId(theChildId));
-}
-
-inline const BRepGraphInc::BaseDef* childBaseDef(const BRepGraph&       theGraph,
-                                                 const BRepGraph_NodeId theChildId)
-{
-  return theGraph.Topo().Gen().TopoEntity(theChildId);
-}
-
 struct ShellOfSolidTraits
     : public BaseTraits<BRepGraph_SolidId, BRepGraph_ShellRefId, BRepGraphInc::ShellRef>
 {
+  using ChildId = BRepGraph_ShellId;
+
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Solids().Nb()) && !theParent.IsRemoved(theGraph);
@@ -238,6 +228,8 @@ struct ShellOfSolidTraits
 struct FaceOfShellTraits
     : public BaseTraits<BRepGraph_ShellId, BRepGraph_FaceRefId, BRepGraphInc::FaceRef>
 {
+  using ChildId = BRepGraph_FaceId;
+
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Shells().Nb()) && !theParent.IsRemoved(theGraph);
@@ -263,6 +255,8 @@ struct FaceOfShellTraits
 struct WireOfFaceTraits
     : public BaseTraits<BRepGraph_FaceId, BRepGraph_WireRefId, BRepGraphInc::WireRef>
 {
+  using ChildId = BRepGraph_WireId;
+
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Faces().Nb()) && !theParent.IsRemoved(theGraph);
@@ -288,6 +282,8 @@ struct WireOfFaceTraits
 struct CoEdgeOfWireTraits
     : public BaseTraits<BRepGraph_WireId, BRepGraph_CoEdgeId, BRepGraphInc::CoEdgeDef>
 {
+  using ChildId = BRepGraph_CoEdgeId;
+
   static constexpr bool THE_IS_DIRECT = true;
 
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
@@ -310,6 +306,8 @@ struct CoEdgeOfWireTraits
 struct SolidOfCompSolidTraits
     : public BaseTraits<BRepGraph_CompSolidId, BRepGraph_SolidRefId, BRepGraphInc::SolidRef>
 {
+  using ChildId = BRepGraph_SolidId;
+
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().CompSolids().Nb()) && !theParent.IsRemoved(theGraph);
@@ -335,6 +333,8 @@ struct SolidOfCompSolidTraits
 struct ChildOfCompoundTraits
     : public BaseTraits<BRepGraph_CompoundId, BRepGraph_ChildRefId, BRepGraphInc::ChildRef>
 {
+  using ChildId = BRepGraph_NodeId;
+
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Compounds().Nb()) && !theParent.IsRemoved(theGraph);
@@ -360,6 +360,8 @@ struct ChildOfCompoundTraits
 struct OccurrenceOfProductTraits
     : public BaseTraits<BRepGraph_ProductId, BRepGraph_OccurrenceRefId, BRepGraphInc::OccurrenceRef>
 {
+  using ChildId = BRepGraph_OccurrenceId;
+
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
     return theParent.IsValid(theGraph.Topo().Products().Nb()) && !theParent.IsRemoved(theGraph);
@@ -389,6 +391,7 @@ class RefsOfParent
 public:
   using ParentId = typename TraitsT::ParentId;
   using RefId    = typename TraitsT::RefId;
+  using ChildId  = typename TraitsT::ChildId;
 
   RefsOfParent(const BRepGraph& theGraph, const ParentId theParent)
       : myGraph(theGraph)
@@ -400,6 +403,26 @@ public:
 
     myRefIds = &TraitsT::RefIds(theGraph, theParent);
     myLength = static_cast<uint32_t>(myRefIds->Size());
+    if constexpr (std::is_convertible_v<RefId, BRepGraph_NodeId>)
+    {
+      myNbRefs = theGraph.Topo().Gen().Nb(BRepGraph_NodeId(RefId()).NodeKind);
+    }
+    else
+    {
+      myNbRefs = theGraph.Refs().Gen().Nb(BRepGraph_RefId(RefId()).RefKind);
+    }
+
+    if constexpr (TraitsT::THE_IS_DIRECT)
+    {
+      myNbChildren = myNbRefs;
+    }
+    else
+    {
+      if constexpr (!std::is_same_v<ChildId, BRepGraph_NodeId>)
+      {
+        myNbChildren = theGraph.Topo().Gen().Nb(BRepGraph_NodeId(ChildId()).NodeKind);
+      }
+    }
     skipRemoved();
   }
 
@@ -430,19 +453,31 @@ private:
     while (myRefIds != nullptr && myIndex < myLength)
     {
       const RefId aRefId = myRefIds->Value(static_cast<size_t>(myIndex));
-      if (!aRefId.IsRemoved(myGraph))
+      if (aRefId.IsValid(myNbRefs) && !aRefId.IsRemoved(myGraph))
       {
-        if constexpr (!TraitsT::THE_IS_DIRECT)
+        const auto aChildId =
+          [&]() {
+            if constexpr (TraitsT::THE_IS_DIRECT)
+            {
+              return aRefId;
+            }
+            else
+            {
+              const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
+              return TraitsT::ChildIdOf(myGraph, aRef);
+            }
+          }();
+        if constexpr (std::is_same_v<ChildId, BRepGraph_NodeId>)
         {
-          const typename TraitsT::RefEntry& aRef     = TraitsT::Ref(myGraph, aRefId);
-          const auto                        aChildId = TraitsT::ChildIdOf(myGraph, aRef);
-          if (!aChildId.IsValid() || aChildId.IsRemoved(myGraph))
+          if (myGraph.Topo().Gen().IsActive(aChildId))
           {
-            ++myIndex;
-            continue;
+            return;
           }
         }
-        return;
+        else if (aChildId.IsValid(myNbChildren) && !aChildId.IsRemoved(myGraph))
+        {
+          return;
+        }
       }
       ++myIndex;
     }
@@ -452,6 +487,8 @@ private:
   const NCollection_LinearVector<RefId>* myRefIds = nullptr;
   uint32_t                               myIndex  = 0;
   uint32_t                               myLength = 0;
+  uint32_t                               myNbRefs = 0;
+  uint32_t                               myNbChildren = 0;
 };
 
 //! @brief Direct active boundary vertex reference ids of an edge.
@@ -472,6 +509,8 @@ public:
 
     myEdge   = &theGraph.Topo().Edges().Definition(theEdgeId);
     myLength = 2u;
+    myNbVertexRefs = theGraph.Refs().Vertices().Nb();
+    myNbVertices   = theGraph.Topo().Vertices().Nb();
     skipRemoved();
   }
 
@@ -511,10 +550,10 @@ private:
     while (myEdge != nullptr && myIndex < myLength)
     {
       const RefId aRefId = refIdAt(myIndex);
-      if (aRefId.IsValid() && !myGraph.Refs().IsRemoved(aRefId))
+      if (aRefId.IsValid(myNbVertexRefs) && !myGraph.Refs().Gen().IsRemoved(aRefId))
       {
         const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertices().Entry(aRefId);
-        if (aRef.ChildVertexId.IsRemoved(myGraph))
+        if (!aRef.ChildVertexId.IsValid(myNbVertices) || aRef.ChildVertexId.IsRemoved(myGraph))
         {
           ++myIndex;
           continue;
@@ -529,6 +568,8 @@ private:
   const BRepGraphInc::EdgeDef* myEdge   = nullptr;
   uint32_t                     myIndex  = 0;
   uint32_t                     myLength = 0;
+  uint32_t                     myNbVertexRefs = 0;
+  uint32_t                     myNbVertices   = 0;
 };
 
 } // namespace BRepGraph_RefsIterator

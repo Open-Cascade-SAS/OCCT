@@ -19,6 +19,7 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_RepId.hxx>
 #include <BRepGraph_LayerHistory.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
@@ -51,6 +52,19 @@ protected:
 
   BRepGraph myGraph;
 };
+
+static NCollection_LinearVector<BRepGraph_WireId> collectWiresOfEdge(
+  const BRepGraph&       theGraph,
+  const BRepGraph_EdgeId theEdge)
+{
+  NCollection_LinearVector<BRepGraph_WireId> aWires;
+  for (BRepGraph_WiresOfEdge aWireIt = theGraph.Topo().Edges().WiresOf(theEdge); aWireIt.More();
+       aWireIt.Next())
+  {
+    aWires.Append(aWireIt.CurrentId());
+  }
+  return aWires;
+}
 
 // ============================================================
 // History chain tests
@@ -408,8 +422,8 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_RewritesAllContainingWires)
   ASSERT_TRUE(aSplitVertex.IsValid());
   EXPECT_EQ(myGraph.Topo().Vertices().Nb(), aNbVerticesBefore + 1);
 
-  const NCollection_LinearVector<BRepGraph_WireId>& aWireIndices =
-    myGraph.Topo().Edges().Wires(anEdgeId);
+  const NCollection_LinearVector<BRepGraph_WireId> aWireIndices =
+    collectWiresOfEdge(myGraph, anEdgeId);
   ASSERT_GT(aWireIndices.Size(), 0u);
 
   const uint32_t aNbEdgesBefore       = myGraph.Topo().Edges().Nb();
@@ -476,8 +490,8 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_IgnoresRemovedCoEdgeEntries)
   const std::pair<double, double> anEdgeRange = BRepGraph_Tool::Edge::Range(myGraph, anEdgeId);
   const double                    aSplitParam = 0.5 * (anEdgeRange.first + anEdgeRange.second);
 
-  const NCollection_LinearVector<BRepGraph_WireId>& aWireIndices =
-    myGraph.Topo().Edges().Wires(anEdgeId);
+  const NCollection_LinearVector<BRepGraph_WireId> aWireIndices =
+    collectWiresOfEdge(myGraph, anEdgeId);
   ASSERT_GT(aWireIndices.Size(), 1);
 
   const BRepGraph_WireId                              aWireId = aWireIndices.Value(0);

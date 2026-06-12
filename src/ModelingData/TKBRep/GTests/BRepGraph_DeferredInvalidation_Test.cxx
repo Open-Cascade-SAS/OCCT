@@ -16,6 +16,7 @@
 #include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Reference.hxx>
@@ -61,20 +62,21 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
 
   // During deferred mode: edge is mutated, but parent wire/face are NOT yet.
-  const NCollection_LinearVector<BRepGraph_WireId>& aWires =
-    myGraph.Topo().Edges().Wires(BRepGraph_EdgeId::Start());
-  ASSERT_GT(aWires.Size(), 0);
-  EXPECT_EQ(myGraph.Topo().Wires().Definition(aWires.Value(0)).SubtreeGen, 0u);
+  BRepGraph_WiresOfEdge aWireIt =
+    myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
+  ASSERT_TRUE(aWireIt.More());
+  const BRepGraph_WireId aWireId = aWireIt.CurrentId();
+  EXPECT_EQ(myGraph.Topo().Wires().Definition(aWireId).SubtreeGen, 0u);
 
   myGraph.Editor().EndDeferredInvalidation();
 
   // After flush: wire and face SubtreeGen should be propagated.
-  EXPECT_GT(myGraph.Topo().Wires().Definition(aWires.Value(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Wires().Definition(aWireId).SubtreeGen, 0u);
 
   // Check propagation to face.
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    if (BRepGraph_TestTools::FaceUsesWire(myGraph, aFaceIt.CurrentId(), aWires.Value(0)))
+    if (BRepGraph_TestTools::FaceUsesWire(myGraph, aFaceIt.CurrentId(), aWireId))
     {
       EXPECT_GT(aFaceIt.Current().SubtreeGen, 0u);
       break;
@@ -227,10 +229,10 @@ TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyOnOuterDestruction)
 {
-  const NCollection_LinearVector<BRepGraph_WireId>& aWires =
-    myGraph.Topo().Edges().Wires(BRepGraph_EdgeId::Start());
-  ASSERT_GT(aWires.Size(), 0);
-  const BRepGraph_WireId aWireId = aWires.Value(0);
+  BRepGraph_WiresOfEdge aWireIt =
+    myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
+  ASSERT_TRUE(aWireIt.More());
+  const BRepGraph_WireId aWireId = aWireIt.CurrentId();
 
   {
     BRepGraph_DeferredScope anOuterScope(myGraph);

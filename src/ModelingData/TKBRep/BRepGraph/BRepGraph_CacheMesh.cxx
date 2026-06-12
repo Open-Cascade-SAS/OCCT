@@ -17,7 +17,9 @@
 #include <BRepGraph_CacheRegistry.hxx>
 #include <BRepGraph_ChildExplorer.hxx>
 #include <BRepGraph_CopyRemap.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
 
@@ -932,7 +934,7 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(BRepGraph&  theG
        anEdgeId < theGraph.Topo().Edges().EndId();
        ++anEdgeId)
   {
-    if (anEdgeId.IsRemoved(theGraph) || !theGraph.Topo().Edges().Faces(anEdgeId).IsEmpty())
+    if (anEdgeId.IsRemoved(theGraph) || theGraph.Topo().Edges().FacesOf(anEdgeId).More())
     {
       continue;
     }
@@ -1008,9 +1010,9 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
   const NCollection_Array1<BRepGraph_NodeId>& theNodes,
   const Slot&                                 theSlot) const
 {
-  DirtySet                          aDirtySet;
-  NCollection_Map<BRepGraph_FaceId> aFaces;
-  NCollection_Map<BRepGraph_EdgeId> aFreeEdges;
+  DirtySet                              aDirtySet;
+  NCollection_FlatMap<BRepGraph_FaceId> aFaces;
+  NCollection_FlatMap<BRepGraph_EdgeId> aFreeEdges;
 
   auto addFace = [&](const BRepGraph_FaceId theFace) {
     if (theFace.IsRemoved(theGraph) || !aFaces.Add(theFace))
@@ -1028,7 +1030,7 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
   };
 
   auto addFreeEdge = [&](const BRepGraph_EdgeId theEdge) {
-    if (theEdge.IsRemoved(theGraph) || !theGraph.Topo().Edges().Faces(theEdge).IsEmpty()
+    if (theEdge.IsRemoved(theGraph) || theGraph.Topo().Edges().FacesOf(theEdge).More()
         || !aFreeEdges.Add(theEdge))
     {
       return;
@@ -1074,8 +1076,10 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
   }
 
   // Check coedges of non-dirty faces for face-mesh-driven staleness.
-  for (const auto& aFaceId : aFaces)
+  for (NCollection_FlatMap<BRepGraph_FaceId>::Iterator aFaceIt(aFaces); aFaceIt.More();
+       aFaceIt.Next())
   {
+    const BRepGraph_FaceId aFaceId = aFaceIt.Value();
     bool aFaceAlreadyDirty = false;
     for (const auto& aDirtyFace : aDirtySet.Faces)
     {

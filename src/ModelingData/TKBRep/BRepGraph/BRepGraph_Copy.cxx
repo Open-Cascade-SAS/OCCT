@@ -29,6 +29,7 @@
 #include <Geom_Surface.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_FlatDataMap.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <NCollection_Map.hxx>
@@ -1139,7 +1140,7 @@ bool BRepGraph_Copy::Perform(const BRepGraph& theSourceGraph,
     // Build root product list.
     if (!aCtx.Products.IsEmpty())
     {
-      NCollection_Map<BRepGraph_ProductId> aReferencedProducts;
+      NCollection_FlatMap<BRepGraph_ProductId> aReferencedProducts;
       for (BRepGraph_FullOccurrenceIterator anOccIt(theTargetGraph); anOccIt.More(); anOccIt.Next())
       {
         const BRepGraph_OccurrenceId       anOccId = anOccIt.CurrentId();
@@ -1514,7 +1515,7 @@ bool BRepGraph_Copy::Perform(const BRepGraph& theSourceGraph,
 
   // Build root product set: products not referenced as ChildNodeId by any occurrence.
   {
-    NCollection_Map<BRepGraph_ProductId> aReferencedProducts;
+    NCollection_FlatMap<BRepGraph_ProductId> aReferencedProducts;
     for (BRepGraph_FullOccurrenceIterator anOccIt(theTargetGraph); anOccIt.More(); anOccIt.Next())
     {
       const BRepGraph_OccurrenceId       anOccId = anOccIt.CurrentId();
@@ -1584,7 +1585,7 @@ BRepGraph_NodeId BRepGraph_Copy::CopyNode(const BRepGraph&       theSourceGraph,
   // Build root product list when product entities were copied.
   if (!theCtx.Products.IsEmpty())
   {
-    NCollection_Map<BRepGraph_ProductId> aReferencedProducts;
+    NCollection_FlatMap<BRepGraph_ProductId> aReferencedProducts;
     for (BRepGraph_FullOccurrenceIterator anOccIt(theTargetGraph); anOccIt.More(); anOccIt.Next())
     {
       const BRepGraph_OccurrenceId       anOccId = anOccIt.CurrentId();

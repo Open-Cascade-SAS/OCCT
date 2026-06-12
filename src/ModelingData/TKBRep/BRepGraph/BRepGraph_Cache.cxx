@@ -423,7 +423,7 @@ bool BRepGraph_Cache::ResolveActiveRefChild(const BRepGraph_RefId theRef,
     return false;
   }
 
-  const BRepGraph_NodeId       aNode = myGraph->Refs().ChildNode(theRef);
+  const BRepGraph_NodeId       aNode = myGraph->Refs().Gen().ChildNode(theRef);
   const BRepGraphInc::BaseDef* aDef  = myGraph->topoEntity(aNode);
   if (aDef == nullptr || aNode.IsRemoved(*myGraph))
   {

@@ -254,10 +254,54 @@ const NCollection_LinearVector<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::
 
 //=================================================================================================
 
-BRepGraph_RefId BRepGraph::RefsView::RefAtStep(const BRepGraph_NodeId theParent,
-                                               const int              theStep) const
+uint32_t BRepGraph::RefsView::GenOps::Nb(const BRepGraph_RefId::Kind theKind) const
 {
-  if (!theParent.IsValid() || theStep < 0 || theParent.IsRemoved(*myGraph))
+  const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
+  switch (theKind)
+  {
+    case BRepGraph_RefId::Kind::Shell:
+      return aS.NbShellRefs();
+    case BRepGraph_RefId::Kind::Face:
+      return aS.NbFaceRefs();
+    case BRepGraph_RefId::Kind::Wire:
+      return aS.NbWireRefs();
+    case BRepGraph_RefId::Kind::Vertex:
+      return aS.NbVertexRefs();
+    case BRepGraph_RefId::Kind::Solid:
+      return aS.NbSolidRefs();
+    case BRepGraph_RefId::Kind::Child:
+      return aS.NbChildRefs();
+    case BRepGraph_RefId::Kind::Occurrence:
+      return aS.NbOccurrenceRefs();
+  }
+
+  return 0;
+}
+
+//=================================================================================================
+
+bool BRepGraph::RefsView::GenOps::IsValid(const BRepGraph_RefId theRef) const
+{
+  if (!theRef.IsValid())
+  {
+    return false;
+  }
+  return theRef.Index < Nb(theRef.RefKind);
+}
+
+//=================================================================================================
+
+bool BRepGraph::RefsView::GenOps::IsActive(const BRepGraph_RefId theRef) const
+{
+  return IsValid(theRef) && !theRef.IsRemoved(*myGraph);
+}
+
+//=================================================================================================
+
+BRepGraph_RefId BRepGraph::RefsView::GenOps::RefAtStep(const BRepGraph_NodeId theParent,
+                                                       const int              theStep) const
+{
+  if (!myGraph->Topo().Gen().IsActive(theParent) || theStep < 0)
   {
     return BRepGraph_RefId();
   }
@@ -331,9 +375,9 @@ BRepGraph_RefId BRepGraph::RefsView::RefAtStep(const BRepGraph_NodeId theParent,
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::RefsView::ChildNode(const BRepGraph_RefId theRef) const
+BRepGraph_NodeId BRepGraph::RefsView::GenOps::ChildNode(const BRepGraph_RefId theRef) const
 {
-  if (!theRef.IsValid())
+  if (!IsValid(theRef))
   {
     return BRepGraph_NodeId();
   }
@@ -341,19 +385,20 @@ BRepGraph_NodeId BRepGraph::RefsView::ChildNode(const BRepGraph_RefId theRef) co
   switch (theRef.RefKind)
   {
     case BRepGraph_RefId::Kind::Shell:
-      return Shells().Entry(BRepGraph_ShellRefId::FromRefId(theRef)).ChildShellId;
+      return myGraph->Refs().Shells().Entry(BRepGraph_ShellRefId::FromRefId(theRef)).ChildShellId;
     case BRepGraph_RefId::Kind::Face:
-      return Faces().Entry(BRepGraph_FaceRefId::FromRefId(theRef)).ChildFaceId;
+      return myGraph->Refs().Faces().Entry(BRepGraph_FaceRefId::FromRefId(theRef)).ChildFaceId;
     case BRepGraph_RefId::Kind::Wire:
-      return Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).ChildWireId;
+      return myGraph->Refs().Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).ChildWireId;
     case BRepGraph_RefId::Kind::Vertex:
-      return Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).ChildVertexId;
+      return myGraph->Refs().Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).ChildVertexId;
     case BRepGraph_RefId::Kind::Solid:
-      return Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).ChildSolidId;
+      return myGraph->Refs().Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).ChildSolidId;
     case BRepGraph_RefId::Kind::Child:
-      return Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).ChildNodeId;
+      return myGraph->Refs().Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).ChildNodeId;
     case BRepGraph_RefId::Kind::Occurrence:
-      return Occurrences().Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef)).ChildOccurrenceId;
+      return myGraph->Refs().Occurrences().Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef))
+        .ChildOccurrenceId;
   }
 
   return BRepGraph_NodeId();
@@ -361,9 +406,9 @@ BRepGraph_NodeId BRepGraph::RefsView::ChildNode(const BRepGraph_RefId theRef) co
 
 //=================================================================================================
 
-bool BRepGraph::RefsView::IsRemoved(const BRepGraph_RefId theRef) const
+bool BRepGraph::RefsView::GenOps::IsRemoved(const BRepGraph_RefId theRef) const
 {
-  if (!theRef.IsValid())
+  if (!IsValid(theRef))
   {
     return true;
   }
@@ -391,9 +436,9 @@ bool BRepGraph::RefsView::IsRemoved(const BRepGraph_RefId theRef) const
 
 //=================================================================================================
 
-TopLoc_Location BRepGraph::RefsView::LocalLocation(const BRepGraph_RefId theRef) const
+TopLoc_Location BRepGraph::RefsView::GenOps::LocalLocation(const BRepGraph_RefId theRef) const
 {
-  if (!theRef.IsValid())
+  if (!IsValid(theRef))
   {
     return TopLoc_Location();
   }
@@ -407,9 +452,11 @@ TopLoc_Location BRepGraph::RefsView::LocalLocation(const BRepGraph_RefId theRef)
     case BRepGraph_RefId::Kind::Solid:
       return TopLoc_Location();
     case BRepGraph_RefId::Kind::Child:
-      return Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).LocalLocation;
+      return myGraph->Refs().Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef))
+        .LocalLocation;
     case BRepGraph_RefId::Kind::Occurrence:
-      return Occurrences().Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef)).LocalLocation;
+      return myGraph->Refs().Occurrences().Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef))
+        .LocalLocation;
   }
 
   return TopLoc_Location();
@@ -417,9 +464,9 @@ TopLoc_Location BRepGraph::RefsView::LocalLocation(const BRepGraph_RefId theRef)
 
 //=================================================================================================
 
-TopAbs_Orientation BRepGraph::RefsView::Orientation(const BRepGraph_RefId theRef) const
+TopAbs_Orientation BRepGraph::RefsView::GenOps::Orientation(const BRepGraph_RefId theRef) const
 {
-  if (!theRef.IsValid())
+  if (!IsValid(theRef))
   {
     return TopAbs_FORWARD;
   }
@@ -427,17 +474,19 @@ TopAbs_Orientation BRepGraph::RefsView::Orientation(const BRepGraph_RefId theRef
   switch (theRef.RefKind)
   {
     case BRepGraph_RefId::Kind::Shell:
-      return Shells().Entry(BRepGraph_ShellRefId::FromRefId(theRef)).Orientation;
+      return myGraph->Refs().Shells().Entry(BRepGraph_ShellRefId::FromRefId(theRef)).Orientation;
     case BRepGraph_RefId::Kind::Face:
-      return Faces().Entry(BRepGraph_FaceRefId::FromRefId(theRef)).Orientation;
+      return myGraph->Refs().Faces().Entry(BRepGraph_FaceRefId::FromRefId(theRef)).Orientation;
     case BRepGraph_RefId::Kind::Wire:
-      return Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).Orientation;
+      return myGraph->Refs().Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).Orientation;
     case BRepGraph_RefId::Kind::Vertex:
-      return Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).Orientation;
+      return myGraph->Refs().Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef))
+        .Orientation;
     case BRepGraph_RefId::Kind::Solid:
-      return Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).Orientation;
+      return myGraph->Refs().Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).Orientation;
     case BRepGraph_RefId::Kind::Child:
-      return Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).Orientation;
+      return myGraph->Refs().Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef))
+        .Orientation;
     case BRepGraph_RefId::Kind::Occurrence:
       return TopAbs_FORWARD;
   }

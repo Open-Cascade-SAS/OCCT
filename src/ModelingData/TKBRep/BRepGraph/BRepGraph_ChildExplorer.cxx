@@ -100,7 +100,7 @@ static BRepGraph_RefId childRefIdForStep(const BRepGraph&       theGraph,
   const BRepGraph::RefsView& aRefs = theGraph.Refs();
   if (theParent.NodeKind != BRepGraph_NodeId::Kind::Product)
   {
-    return aRefs.RefAtStep(theParent, theStep);
+    return aRefs.Gen().RefAtStep(theParent, theStep);
   }
 
   const BRepGraph_ProductId aProductId = BRepGraph_ProductId::FromNodeId(theParent);
@@ -404,18 +404,18 @@ void BRepGraph_ChildExplorer::advance()
         for (; i < aNbChildren; ++i)
         {
           const BRepGraph_ChildRefId aRefId = aRel.ChildRefIds.Value(static_cast<size_t>(i));
-          if (!aRefs.IsRemoved(aRefId))
+          if (!aRefs.Gen().IsRemoved(aRefId))
           {
-            aChildNode = aRefs.ChildNode(aRefId);
+            aChildNode = aRefs.Gen().ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
-              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+              aChildLoc = aFrame.AccLocation * aRefs.Gen().LocalLocation(aRefId);
             }
             if (myConfig.AccumulateOrientation)
             {
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Gen().Orientation(aRefId));
             }
             break;
           }
@@ -432,18 +432,18 @@ void BRepGraph_ChildExplorer::advance()
         for (; i < aNbSolids; ++i)
         {
           const BRepGraph_SolidRefId aRefId = aRel.SolidRefIds.Value(static_cast<size_t>(i));
-          if (!aRefs.IsRemoved(aRefId))
+          if (!aRefs.Gen().IsRemoved(aRefId))
           {
-            aChildNode = aRefs.ChildNode(aRefId);
+            aChildNode = aRefs.Gen().ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
-              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+              aChildLoc = aFrame.AccLocation * aRefs.Gen().LocalLocation(aRefId);
             }
             if (myConfig.AccumulateOrientation)
             {
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Gen().Orientation(aRefId));
             }
             break;
           }
@@ -460,18 +460,18 @@ void BRepGraph_ChildExplorer::advance()
         for (; i < aNbShells; ++i)
         {
           const BRepGraph_RefId aRefId = aRel.ShellRefIds.Value(static_cast<size_t>(i));
-          if (!aRefs.IsRemoved(aRefId))
+          if (!aRefs.Gen().IsRemoved(aRefId))
           {
-            aChildNode = aRefs.ChildNode(aRefId);
+            aChildNode = aRefs.Gen().ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
-              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+              aChildLoc = aFrame.AccLocation * aRefs.Gen().LocalLocation(aRefId);
             }
             if (myConfig.AccumulateOrientation)
             {
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Gen().Orientation(aRefId));
             }
             break;
           }
@@ -488,18 +488,18 @@ void BRepGraph_ChildExplorer::advance()
         for (; i < aNbFaces; ++i)
         {
           const BRepGraph_RefId aRefId = aRel.FaceRefIds.Value(static_cast<size_t>(i));
-          if (!aRefs.IsRemoved(aRefId))
+          if (!aRefs.Gen().IsRemoved(aRefId))
           {
-            aChildNode = aRefs.ChildNode(aRefId);
+            aChildNode = aRefs.Gen().ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
-              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+              aChildLoc = aFrame.AccLocation * aRefs.Gen().LocalLocation(aRefId);
             }
             if (myConfig.AccumulateOrientation)
             {
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Gen().Orientation(aRefId));
             }
             break;
           }
@@ -516,18 +516,18 @@ void BRepGraph_ChildExplorer::advance()
         for (; i < aNbWires; ++i)
         {
           const BRepGraph_RefId aRefId = aRel.WireRefIds.Value(static_cast<size_t>(i));
-          if (!aRefs.IsRemoved(aRefId))
+          if (!aRefs.Gen().IsRemoved(aRefId))
           {
-            aChildNode = aRefs.ChildNode(aRefId);
+            aChildNode = aRefs.Gen().ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             aCachedRef = aRefId;
             if (myConfig.AccumulateLocation)
             {
-              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+              aChildLoc = aFrame.AccLocation * aRefs.Gen().LocalLocation(aRefId);
             }
             if (myConfig.AccumulateOrientation)
             {
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Gen().Orientation(aRefId));
             }
             break;
           }
@@ -583,18 +583,18 @@ void BRepGraph_ChildExplorer::advance()
           {
             continue;
           }
-          if (!aRefs.IsRemoved(aVRefId))
+          if (!aRefs.Gen().IsRemoved(aVRefId))
           {
-            aChildNode = aRefs.ChildNode(aVRefId);
+            aChildNode = aRefs.Gen().ChildNode(aVRefId);
             aStepIdx   = static_cast<int>(i);
             aCachedRef = aVRefId;
             if (myConfig.AccumulateLocation)
             {
-              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aVRefId);
+              aChildLoc = aFrame.AccLocation * aRefs.Gen().LocalLocation(aVRefId);
             }
             if (myConfig.AccumulateOrientation)
             {
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aVRefId));
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Gen().Orientation(aVRefId));
             }
             break;
           }

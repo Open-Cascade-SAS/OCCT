@@ -174,6 +174,56 @@ TEST_F(BRepGraph_DefsIteratorTest, ChildOfCompound_EnumeratesHeterogeneousChildr
   EXPECT_EQ(anIt.CurrentId().NodeKind, BRepGraph_NodeId::Kind::Vertex);
 }
 
+TEST_F(BRepGraph_DefsIteratorTest, ChildOfCompound_SkipsOutOfRangeChildNode)
+{
+  const BRepGraph_VertexId aLooseVertex =
+    myGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 0.01);
+  ASSERT_TRUE(aLooseVertex.IsValid());
+
+  NCollection_LinearVector<BRepGraph_NodeId> aChildren;
+  aChildren.Append(BRepGraph_SolidId::Start());
+  aChildren.Append(aLooseVertex);
+  aChildren.Append(aLooseVertex);
+  const BRepGraph_CompoundId aCompound = myGraph.Editor().Compounds().Add(aChildren.ToArray1());
+  ASSERT_TRUE(aCompound.IsValid());
+
+  const NCollection_LinearVector<BRepGraph_ChildRefId>& aChildRefs =
+    myGraph.Topo().Compounds().Relations(aCompound).ChildRefIds;
+  ASSERT_EQ(aChildRefs.Size(), 3);
+  {
+    BRepGraph_MutGuard<BRepGraphInc::ChildRef> aBadRef =
+      myGraph.Editor().Gen().MutChildRef(aChildRefs.Value(1));
+    aBadRef.Internal().ChildNodeId =
+      BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, myGraph.Topo().Vertices().Nb());
+  }
+
+  uint32_t aCount = 0;
+  for (BRepGraph_DefsChildOfCompound anIt(myGraph, aCompound); anIt.More(); anIt.Next())
+  {
+    EXPECT_TRUE(myGraph.Topo().Gen().IsActive(anIt.CurrentId()));
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 2u);
+}
+
+TEST_F(BRepGraph_DefsIteratorTest, ChildOfCompound_SkipsRemovedChildNode)
+{
+  const BRepGraph_VertexId aLooseVertex =
+    myGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 0.01);
+  ASSERT_TRUE(aLooseVertex.IsValid());
+
+  NCollection_LinearVector<BRepGraph_NodeId> aChildren;
+  aChildren.Append(BRepGraph_SolidId::Start());
+  aChildren.Append(aLooseVertex);
+  const BRepGraph_CompoundId aCompound = myGraph.Editor().Compounds().Add(aChildren.ToArray1());
+  ASSERT_TRUE(aCompound.IsValid());
+
+  myGraph.Editor().Gen().RemoveNode(aLooseVertex);
+
+  ASSERT_TRUE(BRepGraph_DefsChildOfCompound(myGraph, aCompound).More());
+  EXPECT_EQ(countIterator(BRepGraph_DefsChildOfCompound(myGraph, aCompound)), 1);
+}
+
 TEST_F(BRepGraph_DefsIteratorTest, SolidOfCompSolid_EnumeratesDirectSolids)
 {
   const BRepGraph_SolidId aSolidA = myGraph.Editor().Solids().Add();

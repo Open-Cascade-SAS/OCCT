@@ -29,9 +29,9 @@
 namespace
 {
 template <typename IteratorT>
-static int countIterator(IteratorT theIterator)
+static uint32_t countIterator(IteratorT theIterator)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (; theIterator.More(); theIterator.Next())
   {
     ++aCount;
@@ -57,9 +57,8 @@ protected:
 TEST_F(BRepGraph_ReverseIteratorTest, FacesOfEdge_BoxEdgeSharedByTwoFaces)
 {
   // Every edge of a box is shared by exactly 2 faces.
-  const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
-  const int aCount = countIterator(BRepGraph_FacesOfEdge(myGraph, aFaces));
+  const BRepGraph_EdgeId anEdgeId(0);
+  const uint32_t              aCount = countIterator(myGraph.Topo().Edges().FacesOf(anEdgeId));
   EXPECT_EQ(aCount, 2);
 }
 
@@ -67,7 +66,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, EdgesOfVertex_BoxVertexSharedByThreeEdges)
 {
   // Every vertex of a box is shared by exactly 3 edges.
   const BRepGraph_VertexId aVertexId(0);
-  const int                aCount =
+  const uint32_t                aCount =
     countIterator(BRepGraph_EdgesOfVertex(myGraph, myGraph.Topo().Vertices().Edges(aVertexId)));
   EXPECT_EQ(aCount, 3);
 }
@@ -75,7 +74,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, EdgesOfVertex_BoxVertexSharedByThreeEdges)
 TEST_F(BRepGraph_ReverseIteratorTest, SolidsOfShell_BoxShellHasOneSolid)
 {
   const BRepGraph_ShellId aShellId(0);
-  const int               aCount = countIterator(
+  const uint32_t               aCount = countIterator(
     BRepGraph_SolidsOfShell(myGraph,
                             myGraph.Topo().Shells().Relations(aShellId).ParentShellRefIds));
   EXPECT_EQ(aCount, 1);
@@ -84,7 +83,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, SolidsOfShell_BoxShellHasOneSolid)
 TEST_F(BRepGraph_ReverseIteratorTest, ShellsOfFace_BoxFaceHasOneShell)
 {
   const BRepGraph_FaceId aFaceId(0);
-  const int              aCount = countIterator(
+  const uint32_t              aCount = countIterator(
     BRepGraph_ShellsOfFace(myGraph, myGraph.Topo().Faces().Relations(aFaceId).ParentFaceRefIds));
   EXPECT_EQ(aCount, 1);
 }
@@ -92,41 +91,44 @@ TEST_F(BRepGraph_ReverseIteratorTest, ShellsOfFace_BoxFaceHasOneShell)
 TEST_F(BRepGraph_ReverseIteratorTest, FacesOfWire_BoxWireHasOneFace)
 {
   const BRepGraph_WireId aWireId(0);
-  const int              aCount = countIterator(
+  const uint32_t              aCount = countIterator(
     BRepGraph_FacesOfWire(myGraph, myGraph.Topo().Wires().Relations(aWireId).ParentWireRefIds));
   EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraph_ReverseIteratorTest, WiresOfEdge_BoxEdgeBelongsToTwoWires)
 {
-  const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_WireId> aWires = myGraph.Topo().Edges().Wires(anEdgeId);
-  const int aCount = countIterator(BRepGraph_WiresOfEdge(myGraph, aWires));
+  const BRepGraph_EdgeId anEdgeId(0);
+  const uint32_t              aCount = countIterator(myGraph.Topo().Edges().WiresOf(anEdgeId));
   EXPECT_EQ(aCount, 2);
 }
 
 TEST_F(BRepGraph_ReverseIteratorTest, SequentialIteration_SkipsRemovedParent)
 {
-  const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
-  ASSERT_EQ(aFaces.Size(), 2);
+  const BRepGraph_EdgeId anEdgeId(0);
+  BRepGraph_FacesOfEdge  aFaces = myGraph.Topo().Edges().FacesOf(anEdgeId);
+  ASSERT_TRUE(aFaces.More());
+  const BRepGraph_FaceId aFirstFace = aFaces.CurrentId();
+  EXPECT_EQ(countIterator(myGraph.Topo().Edges().FacesOf(anEdgeId)), 2);
 
   // Remove one parent face.
-  myGraph.Editor().Gen().RemoveNode(aFaces.Value(0));
+  myGraph.Editor().Gen().RemoveNode(aFirstFace);
 
-  const int aCount = countIterator(BRepGraph_FacesOfEdge(myGraph, aFaces));
+  const uint32_t aCount = countIterator(myGraph.Topo().Edges().FacesOf(anEdgeId));
   EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraph_ReverseIteratorTest, IndexedAccess_TracksActiveReverseBucket)
 {
-  const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
-  ASSERT_EQ(aFaces.Size(), 2);
+  const BRepGraph_EdgeId anEdgeId(0);
+  BRepGraph_FacesOfEdge  aFaces = myGraph.Topo().Edges().FacesOf(anEdgeId);
+  ASSERT_TRUE(aFaces.More());
+  const BRepGraph_FaceId aFirstFace = aFaces.CurrentId();
+  EXPECT_EQ(countIterator(myGraph.Topo().Edges().FacesOf(anEdgeId)), 2);
 
-  myGraph.Editor().Gen().RemoveNode(aFaces.Value(0));
+  myGraph.Editor().Gen().RemoveNode(aFirstFace);
 
-  BRepGraph_FacesOfEdge anIt(myGraph, aFaces);
+  BRepGraph_FacesOfEdge anIt = myGraph.Topo().Edges().FacesOf(anEdgeId);
   // Reverse buckets are maintained as active relationships after removals.
   ASSERT_TRUE(anIt.More());
   EXPECT_TRUE(anIt.CurrentId().IsValid(myGraph.Topo().Faces().Nb()));
@@ -136,10 +138,9 @@ TEST_F(BRepGraph_ReverseIteratorTest, IndexedAccess_TracksActiveReverseBucket)
 
 TEST_F(BRepGraph_ReverseIteratorTest, RangeFor_WorksCorrectly)
 {
-  const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
-  int                                              aCount = 0;
-  for (const BRepGraph_FaceId aFaceId : BRepGraph_FacesOfEdge(myGraph, aFaces))
+  const BRepGraph_EdgeId anEdgeId(0);
+  uint32_t           aCount = 0;
+  for (const BRepGraph_FaceId aFaceId : myGraph.Topo().Edges().FacesOf(anEdgeId))
   {
     EXPECT_TRUE(aFaceId.IsValid(myGraph.Topo().Faces().Nb()));
     ++aCount;
@@ -161,7 +162,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, RefsShellsOfFace_ReturnsValidRefId)
 TEST_F(BRepGraph_ReverseIteratorTest, RefsEdgesOfVertex_ReturnsValidRefId)
 {
   const BRepGraph_VertexId aVertexId(0);
-  int                      aCount = 0;
+  uint32_t           aCount = 0;
   for (BRepGraph_RefsEdgesOfVertex anIt(myGraph,
                                         myGraph.Topo().Vertices().Edges(aVertexId),
                                         aVertexId);
@@ -179,7 +180,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, CoEdgesOfEdge_BoxEdgeHasCoEdges)
 {
   // Each edge of a box is used in 2 coedges (one per adjacent face).
   const BRepGraph_EdgeId anEdgeId(0);
-  const int              aCount =
+  const uint32_t              aCount =
     countIterator(BRepGraph_CoEdgesOfEdge(myGraph, myGraph.Topo().Edges().CoEdges(anEdgeId)));
   EXPECT_EQ(aCount, 2);
 }
@@ -192,9 +193,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, WiresOfCoEdge_BoxCoEdgeBelongsToOneWire)
 
 TEST_F(BRepGraph_ReverseIteratorTest, Definition_ReturnsFaceDefinition)
 {
-  const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
-  BRepGraph_FacesOfEdge                            anIt(myGraph, aFaces);
+  const BRepGraph_EdgeId anEdgeId(0);
+  BRepGraph_FacesOfEdge  anIt = myGraph.Topo().Edges().FacesOf(anEdgeId);
   ASSERT_TRUE(anIt.More());
 
   const BRepGraph_FaceId aFaceId = anIt.CurrentId();
@@ -225,22 +225,25 @@ TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_EdgesOfVertex)
 
   myGraph.Editor().Gen().RemoveNode(anEdges.Value(0));
 
-  const int aCount = countIterator(BRepGraph_EdgesOfVertex(myGraph, anEdges));
+  const uint32_t aCount = countIterator(BRepGraph_EdgesOfVertex(myGraph, anEdges));
   EXPECT_EQ(aCount, 2);
 }
 
 TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_AllRemoved)
 {
-  const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
-  ASSERT_EQ(aFaces.Size(), 2);
-  const BRepGraph_FaceId aFirstFace  = aFaces.Value(0);
-  const BRepGraph_FaceId aSecondFace = aFaces.Value(1);
+  const BRepGraph_EdgeId anEdgeId(0);
+  BRepGraph_FacesOfEdge  aFaces = myGraph.Topo().Edges().FacesOf(anEdgeId);
+  ASSERT_TRUE(aFaces.More());
+  const BRepGraph_FaceId aFirstFace = aFaces.CurrentId();
+  aFaces.Next();
+  ASSERT_TRUE(aFaces.More());
+  const BRepGraph_FaceId aSecondFace = aFaces.CurrentId();
+  EXPECT_EQ(countIterator(myGraph.Topo().Edges().FacesOf(anEdgeId)), 2);
 
   myGraph.Editor().Gen().RemoveNode(aFirstFace);
   myGraph.Editor().Gen().RemoveNode(aSecondFace);
 
-  const int aCount = countIterator(BRepGraph_FacesOfEdge(myGraph, aFaces));
+  const uint32_t aCount = countIterator(myGraph.Topo().Edges().FacesOf(anEdgeId));
   EXPECT_EQ(aCount, 0);
 }
 
@@ -253,7 +256,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, StartingIndex_SkipsToPosition)
 
   // Start at index 1 - should yield only edges at index >= 1.
   BRepGraph_EdgesOfVertex anIt(myGraph, anEdges, 1);
-  const int               aCount = countIterator(anIt);
+  const uint32_t               aCount = countIterator(anIt);
   EXPECT_EQ(aCount, 2);
 }
 

@@ -21,6 +21,7 @@
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_LayerHistory.hxx>
@@ -60,7 +61,7 @@ void redirectOccurrenceChildren(BRepGraph&             theGraph,
   }
   for (const BRepGraph_OccurrenceRefId& aOccRefId : aSnapshot)
   {
-    if (!aOccRefId.IsValid() || theGraph.Refs().IsRemoved(aOccRefId))
+    if (!aOccRefId.IsValid() || theGraph.Refs().Gen().IsRemoved(aOccRefId))
     {
       continue;
     }
@@ -413,7 +414,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           {
             const BRepGraphInc::ChildRef& aCR =
               theGraph.Refs().Children().Entry(aRefIt.CurrentId());
-            if (!theGraph.Refs().IsRemoved(aRefIt.CurrentId()) && aCR.ChildNodeId == anOldId)
+            if (!theGraph.Refs().Gen().IsRemoved(aRefIt.CurrentId()) && aCR.ChildNodeId == anOldId)
             {
               BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMutCR =
                 theGraph.Editor().Gen().MutChildRef(aRefIt.CurrentId());
@@ -602,13 +603,11 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
         // Replace in wires - copy wire list before iterating because ReplaceEdge
         // mutates myEdgeToWires[oldEdgeId.Index] via eraseSwapLast.
         aWires.Clear(false);
+        for (BRepGraph_WiresOfEdge aWireIt = theGraph.Topo().Edges().WiresOf(anOldEdgeId);
+             aWireIt.More();
+             aWireIt.Next())
         {
-          const NCollection_LinearVector<BRepGraph_WireId>& aWiresRef =
-            theGraph.Topo().Edges().Wires(anOldEdgeId);
-          for (const BRepGraph_WireId& aWireId : aWiresRef)
-          {
-            aWires.Append(aWireId);
-          }
+          aWires.Append(aWireIt.CurrentId());
         }
         for (const BRepGraph_WireId& aWireId : aWires)
         {
@@ -634,7 +633,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           {
             const BRepGraphInc::ChildRef& aCR =
               theGraph.Refs().Children().Entry(aRefIt.CurrentId());
-            if (!theGraph.Refs().IsRemoved(aRefIt.CurrentId()) && aCR.ChildNodeId == anOldId)
+            if (!theGraph.Refs().Gen().IsRemoved(aRefIt.CurrentId()) && aCR.ChildNodeId == anOldId)
             {
               BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMutCR =
                 theGraph.Editor().Gen().MutChildRef(aRefIt.CurrentId());
@@ -791,7 +790,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
                theGraph.Topo().Faces().Relations(aFaceId).WireRefIds)
           {
             const BRepGraphInc::WireRef& aWireRef = theGraph.Refs().Wires().Entry(aWireRefId);
-            if (!theGraph.Refs().IsRemoved(aWireRefId) && aWireRef.ChildWireId == anOldWireId)
+            if (!theGraph.Refs().Gen().IsRemoved(aWireRefId) && aWireRef.ChildWireId == anOldWireId)
             {
               BRepGraph_MutGuard<BRepGraphInc::WireRef> aMutWireRef =
                 theGraph.Editor().Wires().MutRef(aWireRefId);
@@ -814,7 +813,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           {
             const BRepGraphInc::ChildRef& aCR =
               theGraph.Refs().Children().Entry(aRefIt.CurrentId());
-            if (!theGraph.Refs().IsRemoved(aRefIt.CurrentId()) && aCR.ChildNodeId == anOldId)
+            if (!theGraph.Refs().Gen().IsRemoved(aRefIt.CurrentId()) && aCR.ChildNodeId == anOldId)
             {
               BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMutCR =
                 theGraph.Editor().Gen().MutChildRef(aRefIt.CurrentId());
@@ -1000,7 +999,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
         {
           const BRepGraph_FaceRefId    aFaceRefId = aFaceRefIt.CurrentId();
           const BRepGraphInc::FaceRef& aFaceRef   = theGraph.Refs().Faces().Entry(aFaceRefId);
-          if (!theGraph.Refs().IsRemoved(aFaceRefId) && aFaceRef.ChildFaceId == anOldFaceId)
+          if (!theGraph.Refs().Gen().IsRemoved(aFaceRefId) && aFaceRef.ChildFaceId == anOldFaceId)
           {
             BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMutFaceRef =
               theGraph.Editor().Faces().MutRef(aFaceRefId);
@@ -1040,7 +1039,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           {
             const BRepGraphInc::ChildRef& aCR =
               theGraph.Refs().Children().Entry(aRefIt.CurrentId());
-            if (!theGraph.Refs().IsRemoved(aRefIt.CurrentId()) && aCR.ChildNodeId == anOldId)
+            if (!theGraph.Refs().Gen().IsRemoved(aRefIt.CurrentId()) && aCR.ChildNodeId == anOldId)
             {
               BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMutCR =
                 theGraph.Editor().Gen().MutChildRef(aRefIt.CurrentId());

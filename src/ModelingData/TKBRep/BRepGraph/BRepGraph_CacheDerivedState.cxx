@@ -26,6 +26,7 @@
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_Map.hxx>
 #include <cmath>
 
@@ -450,7 +451,7 @@ bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&  theGraph,
     return true;
   }
 
-  NCollection_Map<BRepGraph_FaceId> anActiveFaces;
+  NCollection_FlatMap<BRepGraph_FaceId> anActiveFaces;
 
   for (const BRepGraph_FaceRefId& aFaceRefId : aSR.FaceRefIds)
   {
@@ -475,7 +476,7 @@ bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&  theGraph,
 
   NCollection_DataMap<BRepGraph_EdgeId, uint32_t> anEdgeUsage;
 
-  for (NCollection_Map<BRepGraph_FaceId>::Iterator aFaceIter(anActiveFaces); aFaceIter.More();
+  for (NCollection_FlatMap<BRepGraph_FaceId>::Iterator aFaceIter(anActiveFaces); aFaceIter.More();
        aFaceIter.Next())
   {
     const BRepGraph_FaceId             aFaceId = aFaceIter.Value();

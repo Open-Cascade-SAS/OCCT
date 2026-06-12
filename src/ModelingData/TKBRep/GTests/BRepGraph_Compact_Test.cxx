@@ -31,8 +31,10 @@
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_UIDsView.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
 #include <BRepGraph_Compact.hxx>
@@ -325,7 +327,7 @@ TEST(BRepGraph_CompactTest, RemovalCompact_PreservesClosedTopologyAndValidShape)
   BRepGraph_EdgeId aLooseEdge;
   for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    if (aGraph.Topo().Edges().Faces(anEdgeIt.CurrentId()).IsEmpty())
+    if (!aGraph.Topo().Edges().FacesOf(anEdgeIt.CurrentId()).More())
     {
       aLooseEdge = anEdgeIt.CurrentId();
       break;
@@ -383,7 +385,7 @@ TEST(BRepGraph_CompactTest, AuditMode_PassesAfterRemovalCompact)
   BRepGraph_EdgeId aLooseEdge;
   for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    if (aGraph.Topo().Edges().Faces(anEdgeIt.CurrentId()).IsEmpty())
+    if (!aGraph.Topo().Edges().FacesOf(anEdgeIt.CurrentId()).More())
     {
       aLooseEdge = anEdgeIt.CurrentId();
       break;
@@ -407,9 +409,9 @@ TEST(BRepGraph_CompactTest, Compact_PreservesTopologyUIDs)
 
   // Collect the set of all original topology UIDs before dedup+compact.
   // Helper: record UIDs for all defs of a given kind.
-  auto collectUIDs = [&](BRepGraph_NodeId::Kind theKind, int theCount) {
-    NCollection_Map<BRepGraph_UID> aMap;
-    for (int anIdx = 0; anIdx < theCount; ++anIdx)
+  auto collectUIDs = [&](BRepGraph_NodeId::Kind theKind, uint32_t theCount) {
+    NCollection_FlatMap<BRepGraph_UID> aMap;
+    for (uint32_t anIdx = 0; anIdx < theCount; ++anIdx)
     {
       const BRepGraph_UID aUID = aGraph.UIDs().Of(BRepGraph_NodeId(theKind, anIdx));
       EXPECT_TRUE(aUID.IsValid());
@@ -418,21 +420,21 @@ TEST(BRepGraph_CompactTest, Compact_PreservesTopologyUIDs)
     return aMap;
   };
 
-  const NCollection_Map<BRepGraph_UID> anOrigVertexUIDs =
+  const NCollection_FlatMap<BRepGraph_UID> anOrigVertexUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::Vertex, aGraph.Topo().Vertices().Nb());
-  const NCollection_Map<BRepGraph_UID> anOrigEdgeUIDs =
+  const NCollection_FlatMap<BRepGraph_UID> anOrigEdgeUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::Edge, aGraph.Topo().Edges().Nb());
-  const NCollection_Map<BRepGraph_UID> anOrigWireUIDs =
+  const NCollection_FlatMap<BRepGraph_UID> anOrigWireUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::Wire, aGraph.Topo().Wires().Nb());
-  const NCollection_Map<BRepGraph_UID> anOrigFaceUIDs =
+  const NCollection_FlatMap<BRepGraph_UID> anOrigFaceUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Topo().Faces().Nb());
-  const NCollection_Map<BRepGraph_UID> anOrigShellUIDs =
+  const NCollection_FlatMap<BRepGraph_UID> anOrigShellUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Topo().Shells().Nb());
-  const NCollection_Map<BRepGraph_UID> anOrigSolidUIDs =
+  const NCollection_FlatMap<BRepGraph_UID> anOrigSolidUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Topo().Solids().Nb());
-  const NCollection_Map<BRepGraph_UID> anOrigCompoundUIDs =
+  const NCollection_FlatMap<BRepGraph_UID> anOrigCompoundUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::Compound, aGraph.Topo().Compounds().Nb());
-  const NCollection_Map<BRepGraph_UID> anOrigCompSolidUIDs =
+  const NCollection_FlatMap<BRepGraph_UID> anOrigCompSolidUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::CompSolid, aGraph.Topo().CompSolids().Nb());
   // Geometry is now stored inline on defs; no separate geometry UIDs to collect.
 
@@ -447,10 +449,10 @@ TEST(BRepGraph_CompactTest, Compact_PreservesTopologyUIDs)
 
   // Helper: verify surviving defs of a kind retain original UIDs.
   auto verifyUIDs = [&](BRepGraph_NodeId::Kind                theKind,
-                        int                                   theCount,
-                        const NCollection_Map<BRepGraph_UID>& theOriginals,
+                        uint32_t                              theCount,
+                        const NCollection_FlatMap<BRepGraph_UID>& theOriginals,
                         const char*                           theLabel) {
-    for (int anIdx = 0; anIdx < theCount; ++anIdx)
+    for (uint32_t anIdx = 0; anIdx < theCount; ++anIdx)
     {
       const BRepGraph_NodeId aNewId(theKind, anIdx);
       const BRepGraph_UID    aNewUID = aGraph.UIDs().Of(aNewId);

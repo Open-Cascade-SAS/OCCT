@@ -34,6 +34,7 @@
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_Validate.hxx>
 #include <BRepGraphInc_Definition.hxx>
@@ -223,7 +224,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
         aOrigGraph.Topo().Edges().Relations(anEdgeId).CoEdgeIds;
       for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
       {
-        if (aOrigGraph.Topo().CoEdges().SeamPair(aCoEdgeId).IsValid())
+        if (BRepGraph_Tool::CoEdge::SeamPair(aOrigGraph, aCoEdgeId).IsValid())
         {
           aSeamEdgeId = anEdgeId;
           break;
@@ -274,7 +275,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
         aReconGraph.Topo().Edges().Relations(anEdgeId).CoEdgeIds;
       for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
       {
-        if (aReconGraph.Topo().CoEdges().SeamPair(aCoEdgeId).IsValid())
+        if (BRepGraph_Tool::CoEdge::SeamPair(aReconGraph, aCoEdgeId).IsValid())
         {
           aSeamFound = true;
           break;
@@ -558,7 +559,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
       aBaseGraph.Topo().Edges().Relations(anEdgeId).CoEdgeIds;
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      if (aBaseGraph.Topo().CoEdges().SeamPair(aCoEdgeId).IsValid())
+      if (BRepGraph_Tool::CoEdge::SeamPair(aBaseGraph, aCoEdgeId).IsValid())
       {
         ++aBaseSeamCount;
         break; // count each seam edge once
@@ -621,7 +622,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
       aReconGraph.Topo().Edges().Relations(anEdgeId).CoEdgeIds;
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      if (aReconGraph.Topo().CoEdges().SeamPair(aCoEdgeId).IsValid())
+      if (BRepGraph_Tool::CoEdge::SeamPair(aReconGraph, aCoEdgeId).IsValid())
       {
         ++aReconSeamCount;
         break;
@@ -955,7 +956,7 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aPopGraph.Topo().CoEdges().Nb());
        ++aCoEdgeId)
   {
-    const BRepGraph_CoEdgeId aPairId = aPopGraph.Topo().CoEdges().SeamPair(aCoEdgeId);
+    const BRepGraph_CoEdgeId aPairId = BRepGraph_Tool::CoEdge::SeamPair(aPopGraph, aCoEdgeId);
     if (!aPairId.IsValid())
     {
       continue;
@@ -963,7 +964,7 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
     ++aNbPairedCoEdges;
 
     // Symmetry: the partner's partner is us.
-    const BRepGraph_CoEdgeId aBackId = aPopGraph.Topo().CoEdges().SeamPair(aPairId);
+    const BRepGraph_CoEdgeId aBackId = BRepGraph_Tool::CoEdge::SeamPair(aPopGraph, aPairId);
     EXPECT_EQ(aBackId, aCoEdgeId) << "Seam relation must be symmetric";
     const BRepGraphInc::CoEdgeDef& aCoEdge = aPopGraph.Topo().CoEdges().Definition(aCoEdgeId);
     const BRepGraphInc::CoEdgeDef& aPaired = aPopGraph.Topo().CoEdges().Definition(aPairId);
@@ -993,13 +994,13 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aReconGraph.Topo().CoEdges().Nb());
        ++aCoEdgeId)
   {
-    const BRepGraph_CoEdgeId aPairId = aReconGraph.Topo().CoEdges().SeamPair(aCoEdgeId);
+    const BRepGraph_CoEdgeId aPairId = BRepGraph_Tool::CoEdge::SeamPair(aReconGraph, aCoEdgeId);
     if (!aPairId.IsValid())
     {
       continue;
     }
     ++aNbPairedAfter;
-    const BRepGraph_CoEdgeId aBackId = aReconGraph.Topo().CoEdges().SeamPair(aPairId);
+    const BRepGraph_CoEdgeId aBackId = BRepGraph_Tool::CoEdge::SeamPair(aReconGraph, aPairId);
     EXPECT_EQ(aBackId, aCoEdgeId) << "Post-reconstruct seam pair must remain symmetric";
   }
   EXPECT_EQ(aNbPairedAfter, aNbPairedCoEdges)
@@ -1133,8 +1134,8 @@ TEST(BRepGraph_ScenarioMatrix, EditorFaceBoundPCurveCoEdge_RelationsAndLookup)
   EXPECT_EQ(aPCurveCoEdge.Orientation, TopAbs_REVERSED);
   EXPECT_TRUE(aPCurveCoEdge.Curve2DRepId.IsValid());
 
-  EXPECT_EQ(aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId), aPCurveCoEdgeId);
-  EXPECT_EQ(aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId, TopAbs_REVERSED),
+  EXPECT_EQ(BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeId, aFaceId), aPCurveCoEdgeId);
+  EXPECT_EQ(BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeId, aFaceId, TopAbs_REVERSED),
             aPCurveCoEdgeId);
 
   bool isCoEdgeListedByEdge = false;
@@ -1150,7 +1151,7 @@ TEST(BRepGraph_ScenarioMatrix, EditorFaceBoundPCurveCoEdge_RelationsAndLookup)
     << "Face-bound PCurve CoEdge must be reachable through EdgeRelations::CoEdgeIds";
 
   bool isFaceListedByEdge = false;
-  for (const BRepGraph_FaceId& anAdjacentFaceId : aGraph.Topo().Edges().Faces(anEdgeId))
+  for (const BRepGraph_FaceId& anAdjacentFaceId : aGraph.Topo().Edges().FacesOf(anEdgeId))
   {
     if (anAdjacentFaceId == aFaceId)
     {

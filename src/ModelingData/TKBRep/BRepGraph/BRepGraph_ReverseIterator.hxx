@@ -20,26 +20,25 @@
 #include <BRepGraph_TopoView.hxx>
 #include <NCollection_ForwardRange.hxx>
 #include <NCollection_LinearVector.hxx>
+#include <type_traits>
 
 //! @brief Single-level typed iterators over parent definitions via relation lists.
 //!
-//! These iterators wrap parent relation containers returned by TopoView accessors
-//! (e.g. Edges().Faces(), Wires().Faces(), Vertices().Edges()).
+//! These iterators wrap parent relation containers returned by TopoView accessors,
+//! or derive parent definitions from const relation storage such as EdgeRelations::CoEdgeIds.
 //! They provide a typed, skip-removed iteration pattern consistent with the
 //! forward iterators in BRepGraph_DefsIterator and BRepGraph_RefsIterator.
 //!
 //! Usage:
 //! @code
 //!   // Traditional iteration:
-//!   for (BRepGraph_FacesOfEdge anIt(aGraph, aGraph.Topo().Edges().Faces(anEdgeId));
-//!        anIt.More(); anIt.Next())
+//!   for (BRepGraph_FacesOfEdge anIt(aGraph, anEdgeId); anIt.More(); anIt.Next())
 //!   {
 //!     const BRepGraph_FaceId aFaceId = anIt.CurrentId();
 //!   }
 //!
 //!   // Range-based for:
-//!   for (const BRepGraph_FaceId aFaceId :
-//!        BRepGraph_FacesOfEdge(aGraph, aGraph.Topo().Edges().Faces(anEdgeId)))
+//!   for (const BRepGraph_FaceId aFaceId : BRepGraph_FacesOfEdge(aGraph, anEdgeId))
 //!   {
 //!     // ...
 //!   }
@@ -183,7 +182,8 @@ class ParentsOf
 public:
   ParentsOf(const BRepGraph& theGraph, const ContainerT& theParents)
       : myGraph(&theGraph),
-        myParents(&theParents)
+        myParents(&theParents),
+        myNbParents(theGraph.Topo().Gen().Nb(BRepGraph_NodeId(TypedIdT()).NodeKind))
   {
     skipRemoved();
   }
@@ -193,6 +193,7 @@ public:
   ParentsOf(const BRepGraph& theGraph, const ContainerT& theParents, const uint32_t theStartIndex)
       : myGraph(&theGraph),
         myParents(&theParents),
+        myNbParents(theGraph.Topo().Gen().Nb(BRepGraph_NodeId(TypedIdT()).NodeKind)),
         myIndex(theStartIndex)
   {
     skipRemoved();
@@ -242,7 +243,7 @@ private:
     while (myIndex < static_cast<uint32_t>(myParents->Size()))
     {
       const TypedIdT aParentId = myParents->Value(static_cast<size_t>(myIndex));
-      if (!aParentId.IsRemoved(*myGraph))
+      if (aParentId.IsValid(myNbParents) && !aParentId.IsRemoved(*myGraph))
       {
         return;
       }
@@ -252,7 +253,134 @@ private:
 
   const BRepGraph*  myGraph   = nullptr;
   const ContainerT* myParents = nullptr;
+  uint32_t          myNbParents = 0;
   uint32_t          myIndex   = 0;
+};
+
+template <typename TraitsT>
+class EdgeParentsOf
+{
+public:
+  using ParentId = typename TraitsT::ParentId;
+
+  EdgeParentsOf(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
+      : myGraph(&theGraph),
+        myEdge(theEdge)
+  {
+    init();
+    advance();
+  }
+
+  //! Construct starting at a given coedge relation index (for resumable iteration).
+  EdgeParentsOf(const BRepGraph& theGraph,
+                const BRepGraph_EdgeId theEdge,
+                const uint32_t         theStartIndex)
+      : myGraph(&theGraph),
+        myEdge(theEdge),
+        myIndex(theStartIndex)
+  {
+    init();
+    advance();
+  }
+
+  [[nodiscard]] bool More() const { return myHasCurrent; }
+
+  void Next()
+  {
+    ++myIndex;
+    advance();
+  }
+
+  [[nodiscard]] ParentId CurrentId() const { return myCurrent; }
+
+  [[nodiscard]] ParentId Current() const { return CurrentId(); }
+
+  [[nodiscard]] const typename DefTraits<ParentId>::DefType& Definition() const
+  {
+    return DefTraits<ParentId>::Get(*myGraph, CurrentId());
+  }
+
+  [[nodiscard]] uint32_t Index() const { return myIndex; }
+
+  NCollection_ForwardRangeIterator<EdgeParentsOf> begin()
+  {
+    return NCollection_ForwardRangeIterator<EdgeParentsOf>(this);
+  }
+
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
+
+private:
+  void init()
+  {
+    if (!myEdge.IsValid(myGraph->Topo().Edges().Nb()) || myEdge.IsRemoved(*myGraph))
+    {
+      return;
+    }
+    myNbParents = TraitsT::NbParents(*myGraph);
+    myCoEdges = &myGraph->Topo().Edges().CoEdges(myEdge);
+  }
+
+  [[nodiscard]] ParentId parentAt(const uint32_t theIndex) const
+  {
+    if (myCoEdges == nullptr || theIndex >= static_cast<uint32_t>(myCoEdges->Size()))
+    {
+      return ParentId();
+    }
+    const BRepGraph_CoEdgeId aCoEdgeId = myCoEdges->Value(static_cast<size_t>(theIndex));
+    if (!aCoEdgeId.IsValid(myGraph->Topo().CoEdges().Nb()) || aCoEdgeId.IsRemoved(*myGraph))
+    {
+      return ParentId();
+    }
+
+    const BRepGraphInc::CoEdgeDef& aCoEdge = myGraph->Topo().CoEdges().Definition(aCoEdgeId);
+    const ParentId aParent = TraitsT::ParentIdOf(aCoEdge);
+    if (!aParent.IsValid(myNbParents) || aParent.IsRemoved(*myGraph))
+    {
+      return ParentId();
+    }
+    return aParent;
+  }
+
+  [[nodiscard]] bool isFirstOccurrence(const ParentId theParent, const uint32_t theIndex) const
+  {
+    for (uint32_t anIndex = 0; anIndex < theIndex; ++anIndex)
+    {
+      if (parentAt(anIndex) == theParent)
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void advance()
+  {
+    myHasCurrent = false;
+    if (myCoEdges == nullptr)
+    {
+      return;
+    }
+
+    while (myIndex < static_cast<uint32_t>(myCoEdges->Size()))
+    {
+      const ParentId aParent = parentAt(myIndex);
+      if (aParent.IsValid() && isFirstOccurrence(aParent, myIndex))
+      {
+        myCurrent    = aParent;
+        myHasCurrent = true;
+        return;
+      }
+      ++myIndex;
+    }
+  }
+
+  const BRepGraph* myGraph = nullptr;
+  BRepGraph_EdgeId myEdge;
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>* myCoEdges = nullptr;
+  ParentId myCurrent;
+  uint32_t myNbParents   = 0;
+  uint32_t myIndex      = 0;
+  bool     myHasCurrent = false;
 };
 
 //! Result pair returned by parent-ref iterators: parent definition ID + the RefId
@@ -284,7 +412,18 @@ public:
                      const ChildIdType    theChild)
       : myGraph(&theGraph),
         myParents(&theParents),
-        myChild(theChild)
+        myChild(theChild),
+        myNbParents(theGraph.Topo().Gen().Nb(BRepGraph_NodeId(ParentIdType()).NodeKind)),
+        myNbRefs([&]() {
+          if constexpr (std::is_convertible_v<RefIdType, BRepGraph_NodeId>)
+          {
+            return theGraph.Topo().Gen().Nb(BRepGraph_NodeId(RefIdType()).NodeKind);
+          }
+          else
+          {
+            return theGraph.Refs().Gen().Nb(BRepGraph_RefId(RefIdType()).RefKind);
+          }
+        }())
   {
     advance();
   }
@@ -321,10 +460,10 @@ private:
     while (myIndex < static_cast<uint32_t>(myParents->Size()))
     {
       const ParentIdType aParentId = myParents->Value(static_cast<size_t>(myIndex));
-      if (!aParentId.IsRemoved(*myGraph))
+      if (aParentId.IsValid(myNbParents) && !aParentId.IsRemoved(*myGraph))
       {
         const RefIdType aRefId = TraitsT::FindRef(*myGraph, aParentId, myChild);
-        if (aRefId.IsValid())
+        if (aRefId.IsValid(myNbRefs) && !aRefId.IsRemoved(*myGraph))
         {
           myCurrent    = ResultType{aParentId, aRefId};
           myHasCurrent = true;
@@ -339,6 +478,8 @@ private:
   const ContainerType* myParents = nullptr;
   ChildIdType          myChild;
   ResultType           myCurrent;
+  uint32_t             myNbParents   = 0;
+  uint32_t             myNbRefs      = 0;
   uint32_t             myIndex      = 0;
   bool                 myHasCurrent = false;
 };
@@ -353,7 +494,9 @@ public:
 
   IdsOfRefs(const BRepGraph& theGraph, const ContainerType& theRefs)
       : myGraph(&theGraph),
-        myRefs(&theRefs)
+        myRefs(&theRefs),
+        myNbRefs(theGraph.Refs().Gen().Nb(BRepGraph_RefId(RefIdType()).RefKind)),
+        myNbIds(theGraph.Topo().Gen().Nb(BRepGraph_NodeId(IdType()).NodeKind))
   {
     advance();
   }
@@ -361,6 +504,8 @@ public:
   IdsOfRefs(const BRepGraph& theGraph, const ContainerType& theRefs, const uint32_t theStartIndex)
       : myGraph(&theGraph),
         myRefs(&theRefs),
+        myNbRefs(theGraph.Refs().Gen().Nb(BRepGraph_RefId(RefIdType()).RefKind)),
+        myNbIds(theGraph.Topo().Gen().Nb(BRepGraph_NodeId(IdType()).NodeKind)),
         myIndex(theStartIndex)
   {
     advance();
@@ -403,10 +548,10 @@ private:
     while (myIndex < static_cast<uint32_t>(myRefs->Size()))
     {
       const RefIdType aRefId = myRefs->Value(static_cast<size_t>(myIndex));
-      if (!aRefId.IsRemoved(*myGraph))
+      if (aRefId.IsValid(myNbRefs) && !aRefId.IsRemoved(*myGraph))
       {
         const IdType anId = TraitsT::Id(*myGraph, aRefId);
-        if (anId.IsValid() && !anId.IsRemoved(*myGraph))
+        if (anId.IsValid(myNbIds) && !anId.IsRemoved(*myGraph))
         {
           myCurrent    = anId;
           myCurrentRef = aRefId;
@@ -422,6 +567,8 @@ private:
   const ContainerType* myRefs  = nullptr;
   IdType               myCurrent;
   RefIdType            myCurrentRef;
+  uint32_t             myNbRefs     = 0;
+  uint32_t             myNbIds      = 0;
   uint32_t             myIndex      = 0;
   bool                 myHasCurrent = false;
 };
@@ -448,6 +595,36 @@ struct WireOfCoEdgeUsageTraits
   }
 };
 
+struct WireFromEdgeCoEdgeTraits
+{
+  using ParentId = BRepGraph_WireId;
+
+  static ParentId ParentIdOf(const BRepGraphInc::CoEdgeDef& theCoEdge)
+  {
+    return theCoEdge.ParentWireId;
+  }
+
+  static uint32_t NbParents(const BRepGraph& theGraph)
+  {
+    return theGraph.Topo().Wires().Nb();
+  }
+};
+
+struct FaceFromEdgeCoEdgeTraits
+{
+  using ParentId = BRepGraph_FaceId;
+
+  static ParentId ParentIdOf(const BRepGraphInc::CoEdgeDef& theCoEdge)
+  {
+    return theCoEdge.FaceId;
+  }
+
+  static uint32_t NbParents(const BRepGraph& theGraph)
+  {
+    return theGraph.Topo().Faces().Nb();
+  }
+};
+
 struct EdgeOfVertexRefTraits
 {
   using ParentId      = BRepGraph_EdgeId;
@@ -461,7 +638,7 @@ struct EdgeOfVertexRefTraits
   {
     for (BRepGraph_RefsVertexOfEdge aIt(theGraph, theParent); aIt.More(); aIt.Next())
     {
-      if (theGraph.Refs().ChildNode(aIt.CurrentId()) == BRepGraph_NodeId(theChild))
+      if (theGraph.Refs().Gen().ChildNode(aIt.CurrentId()) == BRepGraph_NodeId(theChild))
       {
         return aIt.CurrentId();
       }
@@ -564,17 +741,27 @@ using BRepGraph_EdgesOfVertex =
 using BRepGraph_CompoundsOfVertex =
   BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Edge -> parent Wires
-using BRepGraph_WiresOfEdge =
-  BRepGraph_ReverseIterator::ParentsOf<BRepGraph_WireId,
-                                       NCollection_LinearVector<BRepGraph_WireId>>;
+class BRepGraph_WiresOfEdge
+    : public BRepGraph_ReverseIterator::EdgeParentsOf<
+        BRepGraph_ReverseIterator::WireFromEdgeCoEdgeTraits>
+{
+public:
+  using BRepGraph_ReverseIterator::EdgeParentsOf<
+    BRepGraph_ReverseIterator::WireFromEdgeCoEdgeTraits>::EdgeParentsOf;
+};
 // Edge -> parent CoEdges
 using BRepGraph_CoEdgesOfEdge =
   BRepGraph_ReverseIterator::ParentsOf<BRepGraph_CoEdgeId,
                                        NCollection_LinearVector<BRepGraph_CoEdgeId>>;
 // Edge -> parent Faces (derived from CoEdge.FaceId)
-using BRepGraph_FacesOfEdge =
-  BRepGraph_ReverseIterator::ParentsOf<BRepGraph_FaceId,
-                                       NCollection_LinearVector<BRepGraph_FaceId>>;
+class BRepGraph_FacesOfEdge
+    : public BRepGraph_ReverseIterator::EdgeParentsOf<
+        BRepGraph_ReverseIterator::FaceFromEdgeCoEdgeTraits>
+{
+public:
+  using BRepGraph_ReverseIterator::EdgeParentsOf<
+    BRepGraph_ReverseIterator::FaceFromEdgeCoEdgeTraits>::EdgeParentsOf;
+};
 // Edge -> parent Compounds
 using BRepGraph_CompoundsOfEdge =
   BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;

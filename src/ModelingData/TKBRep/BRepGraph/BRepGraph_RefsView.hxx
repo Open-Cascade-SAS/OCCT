@@ -267,6 +267,53 @@ public:
     BRepGraph* myGraph;
   };
 
+  //! @brief Generic reference id queries.
+  class GenOps
+  {
+  public:
+    //! Return the number of references of the specified kind (including soft-removed).
+    [[nodiscard]] Standard_EXPORT uint32_t Nb(const BRepGraph_RefId::Kind theKind) const;
+
+    //! Return true if the reference id kind and index are within storage bounds.
+    [[nodiscard]] Standard_EXPORT bool IsValid(const BRepGraph_RefId theRef) const;
+
+    //! Return true if the reference id is valid and not soft-removed.
+    [[nodiscard]] Standard_EXPORT bool IsActive(const BRepGraph_RefId theRef) const;
+
+    //! Return true if the specified typed RefId is invalid or marked removed.
+    [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_RefId theRef) const;
+
+    //! Return the direct parent-owned RefId stored at the specified child step.
+    //! This is a structural lookup over the parent's raw ref arrays and does not
+    //! skip removed refs or refs targeting removed child defs.
+    [[nodiscard]] Standard_EXPORT BRepGraph_RefId RefAtStep(
+      const BRepGraph_NodeId theParent,
+      const int              theStep) const;
+
+    //! Resolve the child definition node referenced by any typed RefId.
+    [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ChildNode(const BRepGraph_RefId theRef) const;
+
+    //! Return the local location carried by the specified typed RefId.
+    //! OccurrenceRef and invalid refs return identity.
+    [[nodiscard]] Standard_EXPORT TopLoc_Location LocalLocation(
+      const BRepGraph_RefId theRef) const;
+
+    //! Return the orientation carried by the specified typed RefId.
+    //! OccurrenceRef and invalid refs return TopAbs_FORWARD.
+    [[nodiscard]] Standard_EXPORT TopAbs_Orientation Orientation(
+      const BRepGraph_RefId theRef) const;
+
+  private:
+    friend class RefsView;
+
+    explicit GenOps(BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    BRepGraph* myGraph;
+  };
+
   //! Grouped shell reference queries.
   [[nodiscard]] const ShellOps& Shells() const { return myShells; }
 
@@ -288,25 +335,8 @@ public:
   //! Grouped occurrence reference queries.
   [[nodiscard]] const OccurrenceOps& Occurrences() const { return myOccurrences; }
 
-  //! Return the direct parent-owned RefId stored at the specified child step.
-  //! This is a structural lookup over the parent's raw ref arrays and does not
-  //! skip removed refs or refs targeting removed child defs.
-  [[nodiscard]] Standard_EXPORT BRepGraph_RefId RefAtStep(const BRepGraph_NodeId theParent,
-                                                          const int              theStep) const;
-
-  //! Resolve the child definition node referenced by any typed RefId.
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ChildNode(const BRepGraph_RefId theRef) const;
-
-  //! Return true if the specified typed RefId is marked removed.
-  [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_RefId theRef) const;
-
-  //! Return the local location carried by the specified typed RefId.
-  //! OccurrenceRef and invalid refs return identity.
-  [[nodiscard]] Standard_EXPORT TopLoc_Location LocalLocation(const BRepGraph_RefId theRef) const;
-
-  //! Return the orientation carried by the specified typed RefId.
-  //! OccurrenceRef and invalid refs return TopAbs_FORWARD.
-  [[nodiscard]] Standard_EXPORT TopAbs_Orientation Orientation(const BRepGraph_RefId theRef) const;
+  //! Grouped generic reference id queries.
+  [[nodiscard]] const GenOps& Gen() const { return myGen; }
 
 private:
   friend class BRepGraph;
@@ -320,7 +350,8 @@ private:
         myVertices(theGraph),
         mySolids(theGraph),
         myChildren(theGraph),
-        myOccurrences(theGraph)
+        myOccurrences(theGraph),
+        myGen(theGraph)
   {
   }
 
@@ -332,6 +363,7 @@ private:
   SolidOps      mySolids;
   ChildOps      myChildren;
   OccurrenceOps myOccurrences;
+  GenOps        myGen;
 };
 
 #endif // _BRepGraph_RefsView_HeaderFile

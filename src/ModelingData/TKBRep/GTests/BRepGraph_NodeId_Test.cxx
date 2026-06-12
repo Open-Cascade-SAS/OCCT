@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_RelatedIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -64,9 +65,16 @@ TEST(BRepGraph_NodeIdTest, ImplicitConversion_PassToFunction)
   ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_FaceId aFace(0);
-  // AdjacentFaces takes BRepGraph_FaceId - typed id works directly.
-  NCollection_LinearVector<BRepGraph_FaceId> aAdj = aGraph.Topo().Faces().Adjacent(aFace);
-  EXPECT_GT(aAdj.Size(), 0);
+  // RelatedIterator accepts typed ids converted through BRepGraph_NodeId.
+  int aNbAdjacentFaces = 0;
+  for (BRepGraph_RelatedIterator anIt(aGraph, BRepGraph_NodeId(aFace)); anIt.More(); anIt.Next())
+  {
+    if (anIt.CurrentRelation() == BRepGraph_RelatedIterator::RelationKind::AdjacentFace)
+    {
+      ++aNbAdjacentFaces;
+    }
+  }
+  EXPECT_GT(aNbAdjacentFaces, 0);
 }
 
 TEST(BRepGraph_NodeIdTest, FromNodeId_CorrectKind)

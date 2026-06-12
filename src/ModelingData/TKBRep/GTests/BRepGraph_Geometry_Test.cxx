@@ -98,6 +98,28 @@ static NCollection_DataMap<int, int> faceCountsByComponent(const BRepGraph& theG
   return aCounts;
 }
 
+static NCollection_LinearVector<BRepGraph_FaceId> collectSameDomainFaces(
+  const BRepGraph&       theGraph,
+  const BRepGraph_FaceId theFace)
+{
+  NCollection_LinearVector<BRepGraph_FaceId> aFaces;
+  const occ::handle<Geom_Surface>&           aSurface = BRepGraph_Tool::Face::Surface(theGraph, theFace);
+  if (aSurface.IsNull())
+  {
+    return aFaces;
+  }
+
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraph_FaceId anOtherFace = aFaceIt.CurrentId();
+    if (anOtherFace != theFace && BRepGraph_Tool::Face::Surface(theGraph, anOtherFace) == aSurface)
+    {
+      aFaces.Append(anOtherFace);
+    }
+  }
+  return aFaces;
+}
+
 } // namespace
 
 // ============================================================
@@ -207,7 +229,7 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurveCoEdgeId_AllEdgeFacePairs_Valid)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       const BRepGraph_CoEdgeId       aPCurveId =
-        aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, BRepGraph_FaceId(aCE.FaceId));
+        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeId, BRepGraph_FaceId(aCE.FaceId));
       EXPECT_TRUE(aPCurveId.IsValid());
       ++aPCurveCount;
     }
@@ -338,7 +360,7 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SimpleBox_Empty)
   {
     const BRepGraph_FaceId                           aFaceId = aFaceIt.CurrentId();
     const NCollection_LinearVector<BRepGraph_FaceId> aSameDomain =
-      aGraph.Topo().Faces().SameDomain(aFaceId);
+      collectSameDomainFaces(aGraph, aFaceId);
     EXPECT_EQ(aSameDomain.Size(), 0)
       << "Face def " << aFaceId.Index << " has unexpected same-domain faces";
   }
@@ -361,12 +383,12 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SharedSurfaceAcrossOwnedUses)
             aGraph.Topo().Faces().Definition(aFaceB).SurfaceRepId);
 
   const NCollection_LinearVector<BRepGraph_FaceId> aSameAsA =
-    aGraph.Topo().Faces().SameDomain(aFaceA);
+    collectSameDomainFaces(aGraph, aFaceA);
   ASSERT_EQ(aSameAsA.Size(), 1u);
   EXPECT_EQ(aSameAsA.Value(0), aFaceB);
 
   const NCollection_LinearVector<BRepGraph_FaceId> aSameAsB =
-    aGraph.Topo().Faces().SameDomain(aFaceB);
+    collectSameDomainFaces(aGraph, aFaceB);
   ASSERT_EQ(aSameAsB.Size(), 1u);
   EXPECT_EQ(aSameAsB.Value(0), aFaceA);
 }
@@ -869,9 +891,9 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurveCoEdgeId_WithOrientatio
       // This is a seam edge - test oriented overload.
       const BRepGraph_FaceId   aFaceId(aCE.FaceId.Index);
       const BRepGraph_CoEdgeId aPC_Fwd =
-        aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId, TopAbs_FORWARD);
+        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeId, aFaceId, TopAbs_FORWARD);
       const BRepGraph_CoEdgeId aPC_Rev =
-        aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId, TopAbs_REVERSED);
+        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeId, aFaceId, TopAbs_REVERSED);
 
       EXPECT_TRUE(aPC_Fwd.IsValid()) << "FindPCurveCoEdgeId FORWARD returned invalid for seam edge";
       EXPECT_TRUE(aPC_Rev.IsValid())
@@ -901,7 +923,7 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurveCoEdgeId_MatchesCoEdge)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       const BRepGraph_CoEdgeId       aFoundId =
-        aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aCE.FaceId, aCE.Orientation);
+        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeId, aCE.FaceId, aCE.Orientation);
 
       EXPECT_EQ(aFoundId, aCoEdgeId);
     }
@@ -934,9 +956,9 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurveCoEdgeId_DistinguishesO
       const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
 
       const BRepGraph_CoEdgeId aPCFwd =
-        aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId, TopAbs_FORWARD);
+        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeId, aFaceId, TopAbs_FORWARD);
       const BRepGraph_CoEdgeId aPCRev =
-        aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId, TopAbs_REVERSED);
+        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdgeId, aFaceId, TopAbs_REVERSED);
 
       EXPECT_TRUE(aPCFwd.IsValid());
       EXPECT_TRUE(aPCRev.IsValid());

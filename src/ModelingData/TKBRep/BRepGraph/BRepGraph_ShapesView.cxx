@@ -29,6 +29,7 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRep_Builder.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_Map.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -42,7 +43,7 @@ struct BRepGraph_ReconstructionContext
   const BRepGraph*                     Graph   = nullptr;
   const BRepGraphInc_Storage*          Storage = nullptr;
   BRepGraphInc_Reconstruct::Cache      Cache;
-  NCollection_Map<BRepGraph_ProductId> ActiveProducts;
+  NCollection_FlatMap<BRepGraph_ProductId> ActiveProducts;
 };
 
 enum class ShapeParentRoute
@@ -1015,12 +1016,12 @@ void BRepGraph::ShapesView::ClearCached(const BRepGraph_NodeId theNode)
 
 void BRepGraph::ShapesView::ClearCached(const BRepGraph_RefId theRef)
 {
-  if (myGraph == nullptr || !theRef.IsValid() || myGraph->Refs().IsRemoved(theRef))
+  if (myGraph == nullptr || !theRef.IsValid() || myGraph->Refs().Gen().IsRemoved(theRef))
   {
     return;
   }
 
-  const BRepGraph_NodeId aChildNode = myGraph->Refs().ChildNode(theRef);
+  const BRepGraph_NodeId aChildNode = myGraph->Refs().Gen().ChildNode(theRef);
   ClearCached(aChildNode);
 }
 

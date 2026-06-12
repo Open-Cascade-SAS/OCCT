@@ -42,6 +42,7 @@
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -2417,7 +2418,7 @@ TEST(BRepGraph_DeduplicateTest, ThreeCopiedBoxes_DedupMergeCompact_FacesKeepOute
     int aWireCount = 0;
     for (const BRepGraph_WireRefId& aRefId : aGraph.Topo().Faces().Relations(aFaceId).WireRefIds)
     {
-      if (!aGraph.Refs().IsRemoved(aRefId))
+      if (!aGraph.Refs().Gen().IsRemoved(aRefId))
       {
         ++aWireCount;
       }
@@ -2570,14 +2571,14 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_TwoBoxesWithSharedEdge_EdgeFaceCountC
   anOpts.MergeEntitiesWhenSafe = true;
   std::ignore                  = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
-  int aNbEdgesWith2Faces = 0;
+  uint32_t aNbEdgesWith2Faces = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
     const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
 
-    NCollection_Map<BRepGraph_FaceId> aFaceSet;
+    NCollection_FlatMap<BRepGraph_FaceId> aFaceSet;
     for (size_t aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Size(); ++aCEIdx)
     {
       const BRepGraph_CoEdgeId       aCEId = aCoEdgeIdxs.Value(aCEIdx);
@@ -2588,7 +2589,7 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_TwoBoxesWithSharedEdge_EdgeFaceCountC
       }
     }
 
-    const int aNbFaces = aFaceSet.Extent();
+    const uint32_t aNbFaces = static_cast<uint32_t>(aFaceSet.Size());
     if (aNbFaces == 2)
     {
       ++aNbEdgesWith2Faces;
@@ -2683,7 +2684,7 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_ThreeBoxes_AllEdgesMergeCorrectly)
     int aWireCount = 0;
     for (const BRepGraph_WireRefId& aRefId : aGraph.Topo().Faces().Relations(aFaceId).WireRefIds)
     {
-      if (!aGraph.Refs().IsRemoved(aRefId))
+      if (!aGraph.Refs().Gen().IsRemoved(aRefId))
       {
         ++aWireCount;
       }

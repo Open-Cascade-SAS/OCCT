@@ -39,6 +39,7 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRep_Tool.hxx>
 #include <GProp_GProps.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_Map.hxx>
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
@@ -84,7 +85,7 @@ public:
   bool Has(const BRepGraph_NodeId theNode) const { return myNodes.Contains(theNode); }
 
 private:
-  NCollection_Map<BRepGraph_NodeId> myNodes;
+  NCollection_FlatMap<BRepGraph_NodeId> myNodes;
 };
 
 template <typename IdT>
@@ -1008,8 +1009,8 @@ TEST(BRepGraph_CopyTest, CopyBox_UIDsPreserved)
   ASSERT_FALSE(aCopyGraph.IsEmpty());
 
   // Helper to check UIDs for a given node kind.
-  auto checkUIDs = [&](BRepGraph_NodeId::Kind theKind, int theCount, const char* theLabel) {
-    for (int anIdx = 0; anIdx < theCount; ++anIdx)
+  auto checkUIDs = [&](BRepGraph_NodeId::Kind theKind, uint32_t theCount, const char* theLabel) {
+    for (uint32_t anIdx = 0; anIdx < theCount; ++anIdx)
     {
       BRepGraph_NodeId aNodeId(theKind, anIdx);
       BRepGraph_UID    anOrigUID = aGraph.UIDs().Of(aNodeId);

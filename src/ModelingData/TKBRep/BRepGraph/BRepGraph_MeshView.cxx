@@ -16,6 +16,7 @@
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_CacheMesh.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
 namespace
@@ -257,7 +258,8 @@ bool BRepGraph::MeshView::PersistentView::EdgeOps::HasPolygonOnTriangulation(
   const BRepGraph_EdgeId theEdge,
   const BRepGraph_FaceId theFace) const
 {
-  const BRepGraph_CoEdgeId aCoEdgeId = myGraph->Topo().Edges().FindCoEdgeId(theEdge, theFace);
+  const BRepGraph_CoEdgeId aCoEdgeId =
+    BRepGraph_Tool::Edge::FindCoEdgeId(*myGraph, theEdge, theFace);
   if (!aCoEdgeId.IsValid())
   {
     return false;
@@ -275,7 +277,8 @@ static const occ::handle<Poly_PolygonOnTriangulation> THE_NULL_POLYGON_ON_TRI_MV
 const occ::handle<Poly_PolygonOnTriangulation>& BRepGraph::MeshView::PersistentView::EdgeOps::
   PolygonOnTriangulation(const BRepGraph_EdgeId theEdge, const BRepGraph_FaceId theFace) const
 {
-  const BRepGraph_CoEdgeId aCoEdgeId = myGraph->Topo().Edges().FindCoEdgeId(theEdge, theFace);
+  const BRepGraph_CoEdgeId aCoEdgeId =
+    BRepGraph_Tool::Edge::FindCoEdgeId(*myGraph, theEdge, theFace);
   if (!aCoEdgeId.IsValid())
   {
     return THE_NULL_POLYGON_ON_TRI_MV;

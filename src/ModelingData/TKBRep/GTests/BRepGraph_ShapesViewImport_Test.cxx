@@ -21,7 +21,9 @@
 #include <BRepGraph_Iterator.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_ChildExplorer.hxx>
+#include <BRepGraph_RelatedIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -39,6 +41,105 @@
 #include <TopoDS.hxx>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+template <class theIteratorType>
+static uint32_t countIterator(theIteratorType theIterator)
+{
+  uint32_t aCount = 0;
+  for (; theIterator.More(); theIterator.Next())
+  {
+    ++aCount;
+  }
+  return aCount;
+}
+
+static bool edgeHasFace(const BRepGraph&       theGraph,
+                        const BRepGraph_EdgeId theEdge,
+                        const BRepGraph_FaceId theFace)
+{
+  for (BRepGraph_FacesOfEdge aFaceIt = theGraph.Topo().Edges().FacesOf(theEdge); aFaceIt.More();
+       aFaceIt.Next())
+  {
+    if (aFaceIt.CurrentId() == theFace)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+static uint32_t countSharedEdges(const BRepGraph&       theGraph,
+                                 const BRepGraph_FaceId theFaceA,
+                                 const BRepGraph_FaceId theFaceB)
+{
+  uint32_t aCount = 0;
+  for (BRepGraph_RelatedIterator anEdgeIt(theGraph, BRepGraph_NodeId(theFaceA)); anEdgeIt.More();
+       anEdgeIt.Next())
+  {
+    if (anEdgeIt.CurrentRelation() == BRepGraph_RelatedIterator::RelationKind::BoundaryEdge
+        && edgeHasFace(theGraph, BRepGraph_EdgeId::FromNodeId(anEdgeIt.Current()), theFaceB))
+    {
+      ++aCount;
+    }
+  }
+  return aCount;
+}
+
+static uint32_t countAdjacentFaces(const BRepGraph& theGraph, const BRepGraph_FaceId theFace)
+{
+  uint32_t aCount = 0;
+  for (BRepGraph_RelatedIterator anIt(theGraph, BRepGraph_NodeId(theFace)); anIt.More();
+       anIt.Next())
+  {
+    if (anIt.CurrentRelation() == BRepGraph_RelatedIterator::RelationKind::AdjacentFace)
+    {
+      ++aCount;
+    }
+  }
+  return aCount;
+}
+
+static bool containsEdge(const NCollection_LinearVector<BRepGraph_EdgeId>& theEdges,
+                         const BRepGraph_EdgeId                            theEdge)
+{
+  for (const BRepGraph_EdgeId& anEdge : theEdges)
+  {
+    if (anEdge == theEdge)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+static uint32_t countAdjacentEdgesOfEdge(const BRepGraph&       theGraph,
+                                         const BRepGraph_EdgeId theEdge)
+{
+  if (!theEdge.IsValid(theGraph.Topo().Edges().Nb()) || theEdge.IsRemoved(theGraph))
+  {
+    return 0;
+  }
+
+  NCollection_LinearVector<BRepGraph_EdgeId> anAdjacentEdges;
+  for (BRepGraph_DefsVertexOfEdge aVertexIt(theGraph, theEdge); aVertexIt.More();
+       aVertexIt.Next())
+  {
+    for (const BRepGraph_EdgeId& anAdjacentEdgeId :
+         theGraph.Topo().Vertices().Edges(aVertexIt.CurrentId()))
+    {
+      if (anAdjacentEdgeId == theEdge || anAdjacentEdgeId.IsRemoved(theGraph)
+          || containsEdge(anAdjacentEdges, anAdjacentEdgeId))
+      {
+        continue;
+      }
+      anAdjacentEdges.Append(anAdjacentEdgeId);
+    }
+  }
+  return static_cast<uint32_t>(anAdjacentEdges.Size());
+}
+} // namespace
 
 // ============================================================
 // Task 2A: Programmatic Node Addition API
@@ -643,7 +744,7 @@ TEST(BRepGraph_ShapesViewImportTest, SkipsRemovedFaces)
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 0));
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
 
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
     EXPECT_FALSE(aFaceIt.CurrentId().IsRemoved(aGraph));
@@ -665,7 +766,7 @@ TEST(BRepGraph_ShapesViewImportTest, SkipsRemovedEdges)
 
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     EXPECT_FALSE(anEdgeIt.CurrentId().IsRemoved(aGraph));
@@ -684,7 +785,7 @@ TEST(BRepGraph_ShapesViewImportTest, SkipsFirstNode)
   // Remove the first vertex.
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, 0));
 
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_VertexIterator aVertexIt(aGraph); aVertexIt.More(); aVertexIt.Next())
   {
     EXPECT_FALSE(aVertexIt.CurrentId().IsRemoved(aGraph));
@@ -836,10 +937,8 @@ TEST(BRepGraph_ShapesViewImportTest, FacesOfEdge_BoxSharedEdge)
   const uint32_t aNbEdges = aGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const NCollection_LinearVector<BRepGraph_FaceId>& aFaces =
-      aGraph.Topo().Edges().Faces(anEdgeId);
-    EXPECT_EQ(aFaces.Size(), 2) << "Edge " << anEdgeId.Index << " has " << aFaces.Size()
-                                << " faces";
+    const uint32_t aNbFaces = countIterator(aGraph.Topo().Edges().FacesOf(anEdgeId));
+    EXPECT_EQ(aNbFaces, 2) << "Edge " << anEdgeId.Index << " has " << aNbFaces << " faces";
   }
 }
 
@@ -860,9 +959,7 @@ TEST(BRepGraph_ShapesViewImportTest, SharedEdges_AdjacentBoxFaces)
   {
     for (BRepGraph_FaceId aFaceB(aFaceA.Index + 1); aFaceB.IsValid(aNbFaces); ++aFaceB)
     {
-      NCollection_LinearVector<BRepGraph_EdgeId> aShared =
-        aGraph.Topo().Faces().SharedEdges(aFaceA, aFaceB);
-      if (!aShared.IsEmpty())
+      if (countSharedEdges(aGraph, aFaceA, aFaceB) > 0)
       {
         ++aSharingPairs;
       }
@@ -886,8 +983,8 @@ TEST(BRepGraph_ShapesViewImportTest, AdjacentFaces_BoxFace)
   const uint32_t aNbFaces = aGraph.Topo().Faces().Nb();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    NCollection_LinearVector<BRepGraph_FaceId> aAdj = aGraph.Topo().Faces().Adjacent(aFaceId);
-    EXPECT_EQ(aAdj.Size(), 4) << "Face " << aFaceId.Index << " has " << aAdj.Size()
+    const uint32_t aNbAdjacentFaces = countAdjacentFaces(aGraph, aFaceId);
+    EXPECT_EQ(aNbAdjacentFaces, 4) << "Face " << aFaceId.Index << " has " << aNbAdjacentFaces
                               << " adjacent faces";
   }
 }
@@ -902,8 +999,7 @@ TEST(BRepGraph_ShapesViewImportTest, FacesOfEdge_NoFaces_Programmatic)
   BRepGraph_EdgeId       anEdgeId = aGraph.Editor().Edges().Add(aV0, aV1, aLine, 0.0, 10.0, 0.001);
 
   // Edge not in any face => empty result.
-  const NCollection_LinearVector<BRepGraph_FaceId>& aFaces = aGraph.Topo().Edges().Faces(anEdgeId);
-  EXPECT_EQ(aFaces.Size(), 0);
+  EXPECT_EQ(countIterator(aGraph.Topo().Edges().FacesOf(anEdgeId)), 0);
 }
 
 // ============ Topology adjacency methods ============
@@ -916,7 +1012,7 @@ TEST(BRepGraph_ShapesViewImportTest, EdgesOfFace_Box_HasEdges)
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
 
   // Each box face has 4 edges (rectangular loop).
-  int aNbEdges = 0;
+  uint32_t aNbEdges = 0;
   for (BRepGraph_ChildExplorer anExp(aGraph,
                                      BRepGraph_FaceId::Start(),
                                      BRepGraph_NodeId::Kind::Edge);
@@ -935,7 +1031,7 @@ TEST(BRepGraph_ShapesViewImportTest, VerticesOfEdge_Box_HasTwoVertices)
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes15 =
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
 
-  int aNbVertices = 0;
+  uint32_t aNbVertices = 0;
   for (BRepGraph_ChildExplorer anExp(aGraph,
                                      BRepGraph_EdgeId::Start(),
                                      BRepGraph_NodeId::Kind::Vertex);
@@ -969,9 +1065,7 @@ TEST(BRepGraph_ShapesViewImportTest, AdjacentEdges_Box_SharedVertex)
 
   // Box edge shares 2 vertices, each with 3 incident edges.
   // Adjacent = (3 - 1) + (3 - 1) - overlap = at least 4 adjacent edges.
-  NCollection_LinearVector<BRepGraph_EdgeId> aAdj =
-    aGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId::Start());
-  EXPECT_GE(aAdj.Size(), 4);
+  EXPECT_GE(countAdjacentEdgesOfEdge(aGraph, BRepGraph_EdgeId::Start()), 4);
 }
 
 TEST(BRepGraph_ShapesViewImportTest, NbFacesOfEdge_Box_TwoFaces)
@@ -992,8 +1086,8 @@ TEST(BRepGraph_ShapesViewImportTest, IsManifoldEdge_Box_True)
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes19 =
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
 
-  EXPECT_TRUE(aGraph.Topo().Edges().IsManifold(BRepGraph_EdgeId::Start()));
-  EXPECT_FALSE(aGraph.Topo().Edges().IsBoundary(BRepGraph_EdgeId::Start()));
+  EXPECT_TRUE(BRepGraph_Tool::Edge::IsManifold(aGraph, BRepGraph_EdgeId::Start()));
+  EXPECT_FALSE(BRepGraph_Tool::Edge::IsBoundary(aGraph, BRepGraph_EdgeId::Start()));
 }
 
 TEST(BRepGraph_ShapesViewImportTest, InvalidInput_ReturnsEmpty)
@@ -1005,7 +1099,7 @@ TEST(BRepGraph_ShapesViewImportTest, InvalidInput_ReturnsEmpty)
 
   // Out-of-range typed ids return empty results.
   EXPECT_EQ(aGraph.Topo().Vertices().Edges(BRepGraph_VertexId(999)).Size(), 0);
-  EXPECT_EQ(aGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId(999)).Size(), 0);
+  EXPECT_EQ(countAdjacentEdgesOfEdge(aGraph, BRepGraph_EdgeId(999)), 0);
 }
 
 TEST(BRepGraph_ShapesViewImportTest, AddWithHistory_PreservesRequestedAddedNodes)

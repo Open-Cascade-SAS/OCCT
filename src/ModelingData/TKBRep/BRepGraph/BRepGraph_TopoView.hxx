@@ -29,6 +29,8 @@ class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
 class Poly_Triangulation;
+class BRepGraph_FacesOfEdge;
+class BRepGraph_WiresOfEdge;
 
 //! @brief Unified read-only view over topology definitions, adjacency, and representations.
 //!
@@ -95,23 +97,6 @@ public:
     [[nodiscard]] Standard_EXPORT occ::handle<Poly_Triangulation> ActiveTriangulation(
       const BRepGraph_FaceId theFace) const;
 
-    //! Return all faces that share the same domain as the given face.
-    //! @param[in] theFace typed face identifier
-    [[nodiscard]] Standard_EXPORT NCollection_LinearVector<BRepGraph_FaceId> SameDomain(
-      const BRepGraph_FaceId theFace) const;
-
-    //! Return edges shared between two faces.
-    //! @param[in] theFaceA first face identifier
-    //! @param[in] theFaceB second face identifier
-    [[nodiscard]] Standard_EXPORT NCollection_LinearVector<BRepGraph_EdgeId> SharedEdges(
-      const BRepGraph_FaceId theFaceA,
-      const BRepGraph_FaceId theFaceB) const;
-
-    //! Return faces adjacent to the given face (share at least one edge).
-    //! @param[in] theFace typed face identifier
-    [[nodiscard]] Standard_EXPORT NCollection_LinearVector<BRepGraph_FaceId> Adjacent(
-      const BRepGraph_FaceId theFace) const;
-
   private:
     friend class TopoView;
 
@@ -149,23 +134,42 @@ public:
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeRelations& Relations(
       const BRepGraph_EdgeId theEdge) const;
 
-    //! Return the number of faces adjacent to the given edge.
-    //! @param[in] theEdge typed edge identifier
+    //! Return the number of active faces adjacent to the given edge through active coedges.
+    //! @param[in] theEdge typed edge definition identifier
+    //! @return active adjacent face count
     [[nodiscard]] Standard_EXPORT uint32_t NbFaces(const BRepGraph_EdgeId theEdge) const;
 
-    //! Return the wires that reference the given edge.
-    //! @param[in] theEdge typed edge identifier
-    [[nodiscard]] Standard_EXPORT NCollection_LinearVector<BRepGraph_WireId> Wires(
+    //! Return an iterator over active wires that reference the given edge through active coedges.
+    //! @param[in] theEdge typed edge definition identifier
+    //! @return iterator positioned at the first active wire, or at end if none exists
+    [[nodiscard]] Standard_EXPORT BRepGraph_WiresOfEdge WiresOf(
       const BRepGraph_EdgeId theEdge) const;
+
+    //! Return an iterator over active wires from a stored edge-coedge relation index.
+    //! @param[in] theEdge       typed edge definition identifier
+    //! @param[in] theStartIndex zero-based index in EdgeRelations::CoEdgeIds to resume from
+    //! @return iterator positioned at the first active wire at or after theStartIndex
+    [[nodiscard]] Standard_EXPORT BRepGraph_WiresOfEdge WiresOf(
+      const BRepGraph_EdgeId theEdge,
+      const uint32_t         theStartIndex) const;
+
+    //! Return an iterator over active faces adjacent to the given edge through active coedges.
+    //! @param[in] theEdge typed edge definition identifier
+    //! @return iterator positioned at the first active face, or at end if none exists
+    [[nodiscard]] Standard_EXPORT BRepGraph_FacesOfEdge FacesOf(
+      const BRepGraph_EdgeId theEdge) const;
+
+    //! Return an iterator over active faces from a stored edge-coedge relation index.
+    //! @param[in] theEdge       typed edge definition identifier
+    //! @param[in] theStartIndex zero-based index in EdgeRelations::CoEdgeIds to resume from
+    //! @return iterator positioned at the first active face at or after theStartIndex
+    [[nodiscard]] Standard_EXPORT BRepGraph_FacesOfEdge FacesOf(
+      const BRepGraph_EdgeId theEdge,
+      const uint32_t         theStartIndex) const;
 
     //! Return the coedges that reference the given edge.
     //! @param[in] theEdge typed edge identifier
     [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_CoEdgeId>& CoEdges(
-      const BRepGraph_EdgeId theEdge) const;
-
-    //! Return the faces adjacent to the given edge.
-    //! @param[in] theEdge typed edge identifier
-    [[nodiscard]] Standard_EXPORT NCollection_LinearVector<BRepGraph_FaceId> Faces(
       const BRepGraph_EdgeId theEdge) const;
 
     //! Return the 3D curve handle for the given edge.
@@ -173,66 +177,6 @@ public:
     //! @param[in] theEdge typed edge identifier
     [[nodiscard]] Standard_EXPORT occ::handle<Geom_Curve> Curve3D(
       const BRepGraph_EdgeId theEdge) const;
-
-    //! Return edges adjacent to the given edge (share at least one vertex).
-    //! @param[in] theEdge typed edge identifier
-    [[nodiscard]] Standard_EXPORT NCollection_LinearVector<BRepGraph_EdgeId> Adjacent(
-      const BRepGraph_EdgeId theEdge) const;
-
-    //! True if the edge is on the boundary of a face (has exactly one coedge).
-    //! @param[in] theEdge typed edge identifier
-    [[nodiscard]] Standard_EXPORT bool IsBoundary(const BRepGraph_EdgeId theEdge) const;
-
-    //! True if the edge is manifold (has exactly two coedges).
-    //! @param[in] theEdge typed edge identifier
-    [[nodiscard]] Standard_EXPORT bool IsManifold(const BRepGraph_EdgeId theEdge) const;
-
-    //! Find an active edge by its boundary vertices.
-    //! @param[in] theStartVertex start vertex to match
-    //! @param[in] theEndVertex   end vertex to match
-    //! @param[in] theToIgnoreOrientation when true, also matches the reverse vertex order
-    //! @return EdgeId, or invalid if no active edge has the requested boundary vertices
-    [[nodiscard]] Standard_EXPORT BRepGraph_EdgeId
-      FindByVertices(const BRepGraph_VertexId theStartVertex,
-                     const BRepGraph_VertexId theEndVertex,
-                     const bool               theToIgnoreOrientation = false) const;
-
-    //! Find the CoEdgeId carrying PCurve data for a given (edge, face) pair.
-    //! @param[in] theEdge edge to look up
-    //! @param[in] theFace face the edge belongs to
-    //! @return CoEdgeId, or invalid if no active coedge with PCurve data matches
-    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId
-      FindPCurveCoEdgeId(const BRepGraph_EdgeId theEdge, const BRepGraph_FaceId theFace) const;
-
-    //! Find the CoEdgeId carrying PCurve data for a given (edge, face, orientation) triple.
-    //! Useful for seam edges where two coedges share the same face.
-    //! @param[in] theEdge        edge to look up
-    //! @param[in] theFace        face the edge belongs to
-    //! @param[in] theOrientation orientation to match (FORWARD or REVERSED)
-    //! @return matching CoEdgeId, first active coedge with PCurve data if orientation is absent,
-    //! or invalid if no active coedge with PCurve data matches
-    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId
-      FindPCurveCoEdgeId(const BRepGraph_EdgeId   theEdge,
-                         const BRepGraph_FaceId   theFace,
-                         const TopAbs_Orientation theOrientation) const;
-
-    //! Find the CoEdgeId for a given (edge, face) pair.
-    //! @param[in] theEdge edge to look up
-    //! @param[in] theFace face the edge belongs to
-    //! @return CoEdgeId, or invalid if no coedge binds this edge to this face
-    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId
-      FindCoEdgeId(const BRepGraph_EdgeId theEdge, const BRepGraph_FaceId theFace) const;
-
-    //! Find the CoEdgeId for a given (edge, face, orientation) triple.
-    //! Useful for seam edges where two coedges share the same face.
-    //! @param[in] theEdge        edge to look up
-    //! @param[in] theFace        face the edge belongs to
-    //! @param[in] theOrientation orientation to match (FORWARD or REVERSED)
-    //! @return CoEdgeId, or invalid if no coedge matches
-    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId
-      FindCoEdgeId(const BRepGraph_EdgeId   theEdge,
-                   const BRepGraph_FaceId   theFace,
-                   const TopAbs_Orientation theOrientation) const;
 
   private:
     friend class TopoView;
@@ -436,12 +380,6 @@ public:
     //! @param[in] theCoEdge typed coedge identifier
     [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Curve> Curve2D(
       const BRepGraph_CoEdgeId theCoEdge) const;
-
-    //! Return the seam-pair coedge (the other coedge on the same edge and face).
-    //! Returns an invalid CoEdgeId if no seam pair exists.
-    //! @param[in] theCoEdge typed coedge identifier
-    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId
-      SeamPair(const BRepGraph_CoEdgeId theCoEdge) const;
 
   private:
     friend class TopoView;
@@ -654,7 +592,7 @@ public:
   {
   public:
     //! Return the base definition pointer for any topology node (polymorphic).
-    //! Returns null if the node id is out of range or soft-removed.
+    //! Returns null if the node id is invalid, out of range, or soft-removed.
     //! @param[in] theId node identifier (any kind)
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(
       const BRepGraph_NodeId theId) const;
@@ -680,7 +618,16 @@ public:
     //! Return the total number of nodes across all topology kinds (including soft-removed).
     [[nodiscard]] Standard_EXPORT uint32_t NbNodes() const;
 
-    //! True if the given node has been soft-removed.
+    //! Return the number of node definitions of the specified kind (including soft-removed).
+    [[nodiscard]] Standard_EXPORT uint32_t Nb(const BRepGraph_NodeId::Kind theKind) const;
+
+    //! Return true if the node id kind and index are within storage bounds.
+    [[nodiscard]] Standard_EXPORT bool IsValid(const BRepGraph_NodeId theNode) const;
+
+    //! Return true if the node id is valid and not soft-removed.
+    [[nodiscard]] Standard_EXPORT bool IsActive(const BRepGraph_NodeId theNode) const;
+
+    //! Return true if the given node is invalid or has been soft-removed.
     //! @param[in] theNode node identifier
     [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
 

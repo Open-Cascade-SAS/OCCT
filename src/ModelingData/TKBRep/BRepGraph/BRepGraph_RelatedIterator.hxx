@@ -115,7 +115,7 @@ private:
       BRepGraph_NodeId aChildNode;
       if constexpr (std::is_convertible_v<decltype(theIterator.CurrentId()), BRepGraph_RefId>)
       {
-        aChildNode = myGraph->Refs().ChildNode(theIterator.CurrentId());
+        aChildNode = myGraph->Refs().Gen().ChildNode(theIterator.CurrentId());
       }
       else
       {

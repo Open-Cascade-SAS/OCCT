@@ -29,6 +29,7 @@
 #include <BRepGraph_LayerTopoSupplement.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Failure.hxx>
@@ -356,7 +357,7 @@ void checkRelationConsistency(const BRepGraph&                                  
   using Severity = BRepGraph_Validate::Severity;
 
   // Build expected edge->wires mapping from wire-owned coedge scans.
-  NCollection_DataMap<BRepGraph_EdgeId, NCollection_Map<BRepGraph_WireId>> anExpected;
+  NCollection_DataMap<BRepGraph_EdgeId, NCollection_FlatMap<BRepGraph_WireId>> anExpected;
   for (BRepGraph_Iterator<BRepGraphInc::WireDef> aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
     const BRepGraph_WireId aWireId = aWireIt.CurrentId();
@@ -372,7 +373,7 @@ void checkRelationConsistency(const BRepGraph&                                  
 
       if (!anExpected.IsBound(aCoEdge.ChildEdgeId))
       {
-        anExpected.Bind(aCoEdge.ChildEdgeId, NCollection_Map<BRepGraph_WireId>());
+        anExpected.Bind(aCoEdge.ChildEdgeId, NCollection_FlatMap<BRepGraph_WireId>());
       }
       anExpected.ChangeFind(aCoEdge.ChildEdgeId).Add(aWireId);
     }
@@ -384,37 +385,40 @@ void checkRelationConsistency(const BRepGraph&                                  
   {
     const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
 
-    const NCollection_LinearVector<BRepGraph_WireId>& aActualWires =
-      theGraph.Topo().Edges().Wires(anEdgeId);
-    const NCollection_Map<BRepGraph_WireId>* anExpectedWires = anExpected.Seek(anEdgeId);
+    const NCollection_FlatMap<BRepGraph_WireId>* anExpectedWires = anExpected.Seek(anEdgeId);
 
     const uint32_t anExpectedCount =
-      (anExpectedWires != nullptr) ? static_cast<uint32_t>(anExpectedWires->Extent()) : 0u;
+      (anExpectedWires != nullptr) ? static_cast<uint32_t>(anExpectedWires->Size()) : 0u;
 
     // Build a set from actual wires for comparison.
-    NCollection_Map<BRepGraph_WireId> anActualSet;
-    for (const BRepGraph_WireId& aWireId : aActualWires)
+    NCollection_FlatMap<BRepGraph_WireId> anActualSet;
+    for (BRepGraph_WiresOfEdge aWireIt = theGraph.Topo().Edges().WiresOf(anEdgeId);
+         aWireIt.More();
+         aWireIt.Next())
     {
-      anActualSet.Add(aWireId);
+      anActualSet.Add(aWireIt.CurrentId());
     }
 
-    if (static_cast<uint32_t>(anActualSet.Extent()) != anExpectedCount)
+    if (static_cast<uint32_t>(anActualSet.Size()) != anExpectedCount)
     {
       TCollection_AsciiString aDesc("Relation Edges.Wires size mismatch: expected=");
       aDesc += TCollection_AsciiString(static_cast<int>(anExpectedCount));
       aDesc += ", actual=";
-      aDesc += TCollection_AsciiString(static_cast<int>(anActualSet.Extent()));
+      aDesc += TCollection_AsciiString(static_cast<int>(anActualSet.Size()));
       aDesc += ", edge=";
       aDesc += TCollection_AsciiString(static_cast<int>(anEdgeId.Index));
       aDesc += ", actualWires=[";
       bool isFirstActual = true;
-      for (const BRepGraph_WireId& aWireId : aActualWires)
+      for (BRepGraph_WiresOfEdge aWireIt = theGraph.Topo().Edges().WiresOf(anEdgeId);
+           aWireIt.More();
+           aWireIt.Next())
       {
         if (!isFirstActual)
         {
           aDesc += ",";
         }
         isFirstActual = false;
+        const BRepGraph_WireId aWireId = aWireIt.CurrentId();
         aDesc += TCollection_AsciiString(static_cast<int>(aWireId.Index));
         if (!aWireId.IsValid(theGraph.Topo().Wires().Nb()) || aWireId.IsRemoved(theGraph))
         {
@@ -428,8 +432,11 @@ void checkRelationConsistency(const BRepGraph&                                  
 
     if (anExpectedWires != nullptr)
     {
-      for (const BRepGraph_WireId& aWireId : *anExpectedWires)
+      for (NCollection_FlatMap<BRepGraph_WireId>::Iterator aWireIt(*anExpectedWires);
+           aWireIt.More();
+           aWireIt.Next())
       {
+        const BRepGraph_WireId aWireId = aWireIt.Value();
         if (!anActualSet.Contains(aWireId))
         {
           theIssues.Append(Issue{Severity::Error,
@@ -457,7 +464,7 @@ void checkRelationFaceCountCache(const BRepGraph&                               
   {
     const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
 
-    NCollection_Map<BRepGraph_FaceId>                   aUniqueFaces;
+    NCollection_FlatMap<BRepGraph_FaceId>               aUniqueFaces;
     const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges = aDefs.Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
@@ -470,7 +477,7 @@ void checkRelationFaceCountCache(const BRepGraph&                               
     }
 
     const uint32_t aCachedCount  = aDefs.Edges().NbFaces(anEdgeId);
-    const uint32_t anActualCount = static_cast<uint32_t>(aUniqueFaces.Extent());
+    const uint32_t anActualCount = static_cast<uint32_t>(aUniqueFaces.Size());
     if (aCachedCount != anActualCount)
     {
       TCollection_AsciiString aDesc("Relation face-count cache mismatch: cached=");
@@ -481,13 +488,16 @@ void checkRelationFaceCountCache(const BRepGraph&                               
       aDesc += TCollection_AsciiString(static_cast<int>(anEdgeId.Index));
       aDesc += " faces=[";
       bool isFirstFace = true;
-      for (const BRepGraph_FaceId& aFaceId : aDefs.Edges().Faces(anEdgeId))
+      for (BRepGraph_FacesOfEdge aFaceIt = theGraph.Topo().Edges().FacesOf(anEdgeId);
+           aFaceIt.More();
+           aFaceIt.Next())
       {
         if (!isFirstFace)
         {
           aDesc += ",";
         }
         isFirstFace = false;
+        const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
         aDesc += TCollection_AsciiString(static_cast<int>(aFaceId.Index));
       }
       aDesc += "]";
@@ -588,15 +598,14 @@ void checkGeometryReferences(const BRepGraph&                                   
     const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
     const BRepGraphInc::EdgeDef& anEdge   = anEdgeIt.Current();
 
-    bool                                             needsCurve3D = true;
-    const NCollection_LinearVector<BRepGraph_FaceId> aFaceIds =
-      theGraph.Topo().Edges().Faces(anEdgeId);
-    if (!aFaceIds.IsEmpty())
+    bool needsCurve3D = true;
+    BRepGraph_FacesOfEdge aFaceIt = theGraph.Topo().Edges().FacesOf(anEdgeId);
+    if (aFaceIt.More())
     {
       needsCurve3D = false;
-      for (const BRepGraph_FaceId& aFaceId : aFaceIds)
+      for (; aFaceIt.More(); aFaceIt.Next())
       {
-        if (hasActiveSurface(aFaceId))
+        if (hasActiveSurface(aFaceIt.CurrentId()))
         {
           needsCurve3D = true;
           break;
@@ -1289,8 +1298,8 @@ void checkDocumentRootProducts(const BRepGraph&                                 
   using Issue    = BRepGraph_Validate::Issue;
   using Severity = BRepGraph_Validate::Severity;
 
-  const BRepGraph::TopoView&           aDefs = theGraph.Topo();
-  NCollection_Map<BRepGraph_ProductId> aSeenRoots;
+  const BRepGraph::TopoView&               aDefs = theGraph.Topo();
+  NCollection_FlatMap<BRepGraph_ProductId> aSeenRoots;
   for (const BRepGraph_ProductId& aRootProductId : theGraph.RootProductIds())
   {
     if (!aRootProductId.IsValidIn(aDefs.Products()))
@@ -1469,7 +1478,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
 
     // BFS from this product's children; skip already-visited to avoid
     // exponential blowup on DAGs. A cycle exists if we re-encounter aProdIdx.
-    NCollection_Map<BRepGraph_ProductId>          aVisited;
+    NCollection_FlatMap<BRepGraph_ProductId>      aVisited;
     NCollection_LinearVector<BRepGraph_ProductId> aQueue;
     size_t                                        aHead = 0;
 
@@ -1555,14 +1564,14 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
        aCompIt.Next())
   {
     const BRepGraph_CompoundId                     aRootCompoundId = aCompIt.CurrentId();
-    NCollection_Map<BRepGraph_CompoundId>          aVisited;
+    NCollection_FlatMap<BRepGraph_CompoundId>      aVisited;
     NCollection_LinearVector<BRepGraph_CompoundId> aQueue;
     size_t                                         aHead = 0;
 
     for (BRepGraph_RefsChildOfCompound anIt(theGraph, aRootCompoundId); anIt.More(); anIt.Next())
     {
       const BRepGraphInc::ChildRef& aCR = theGraph.Refs().Children().Entry(anIt.CurrentId());
-      if (theGraph.Refs().IsRemoved(anIt.CurrentId())
+      if (theGraph.Refs().Gen().IsRemoved(anIt.CurrentId())
           || aCR.ChildNodeId.NodeKind != BRepGraph_NodeId::Kind::Compound
           || !aCR.ChildNodeId.IsValid())
       {
@@ -1601,7 +1610,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
            aRefIt.Next())
       {
         const BRepGraphInc::ChildRef& aCR = theGraph.Refs().Children().Entry(aRefIt.CurrentId());
-        if (theGraph.Refs().IsRemoved(aRefIt.CurrentId())
+        if (theGraph.Refs().Gen().IsRemoved(aRefIt.CurrentId())
             || aCR.ChildNodeId.NodeKind != BRepGraph_NodeId::Kind::Compound
             || !aCR.ChildNodeId.IsValid())
         {
@@ -1659,7 +1668,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     {
       const BRepGraph_ChildRefId    aChildRefId = aChildRefIt.CurrentId();
       const BRepGraphInc::ChildRef& aCR         = aRefs.Children().Entry(aChildRefId);
-      if (theGraph.Refs().IsRemoved(aChildRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aChildRefId))
       {
         continue;
       }
@@ -1689,7 +1698,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     {
       const BRepGraph_SolidRefId    aSolidRefId = aSolidRefIt.CurrentId();
       const BRepGraphInc::SolidRef& aSR         = aRefs.Solids().Entry(aSolidRefId);
-      if (theGraph.Refs().IsRemoved(aSolidRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aSolidRefId))
       {
         continue;
       }
@@ -1719,7 +1728,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     {
       const BRepGraph_ShellRefId    aShellRefId = aShellRefIt.CurrentId();
       const BRepGraphInc::ShellRef& aRef        = aRefs.Shells().Entry(aShellRefId);
-      if (theGraph.Refs().IsRemoved(aShellRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aShellRefId))
       {
         continue;
       }
@@ -1747,7 +1756,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     {
       const BRepGraph_FaceRefId    aFaceRefId = aFaceRefIt.CurrentId();
       const BRepGraphInc::FaceRef& aRef       = aRefs.Faces().Entry(aFaceRefId);
-      if (theGraph.Refs().IsRemoved(aFaceRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aFaceRefId))
       {
         continue;
       }
@@ -1775,7 +1784,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     {
       const BRepGraph_WireRefId    aWireRefId = aWireRefIt.CurrentId();
       const BRepGraphInc::WireRef& aRef       = aRefs.Wires().Entry(aWireRefId);
-      if (theGraph.Refs().IsRemoved(aWireRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aWireRefId))
       {
         continue;
       }
@@ -1824,7 +1833,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     {
       const BRepGraph_VertexRefId    aVertexRefId = aVertexRefIt.CurrentId();
       const BRepGraphInc::VertexRef& aRef         = aRefs.Vertices().Entry(aVertexRefId);
-      if (theGraph.Refs().IsRemoved(aVertexRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aVertexRefId))
       {
         continue;
       }
@@ -1855,7 +1864,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     {
       const BRepGraph_OccurrenceRefId    aOccurrenceRefId = anOccurrenceRefIt.CurrentId();
       const BRepGraphInc::OccurrenceRef& aRef = aRefs.Occurrences().Entry(aOccurrenceRefId);
-      if (theGraph.Refs().IsRemoved(aOccurrenceRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aOccurrenceRefId))
       {
         continue;
       }
@@ -1885,7 +1894,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
       for (BRepGraph_FullOccurrenceRefIterator aRefIt(theGraph); aRefIt.More(); aRefIt.Next())
       {
         const BRepGraphInc::OccurrenceRef& aRef = aRefs.Occurrences().Entry(aRefIt.CurrentId());
-        if (!theGraph.Refs().IsRemoved(aRefIt.CurrentId())
+        if (!theGraph.Refs().Gen().IsRemoved(aRefIt.CurrentId())
             && aRef.ChildOccurrenceId == anOccIt.CurrentId())
         {
           ++anOwnerCount;
@@ -1920,14 +1929,14 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
   // an active Compound ChildRef AND an active CompSolid SolidRef. OCCT models
   // a solid as belonging to either a Compound or a CompSolid, not both.
   {
-    const BRepGraph::RefsView&         aRefs = theGraph.Refs();
-    NCollection_Map<BRepGraph_SolidId> aCompoundOwnedSolids;
+    const BRepGraph::RefsView&             aRefs = theGraph.Refs();
+    NCollection_FlatMap<BRepGraph_SolidId> aCompoundOwnedSolids;
     for (BRepGraph_FullChildRefIterator aChildRefIt(theGraph); aChildRefIt.More();
          aChildRefIt.Next())
     {
       const BRepGraph_ChildRefId    aChildRefId = aChildRefIt.CurrentId();
       const BRepGraphInc::ChildRef& aCR         = aRefs.Children().Entry(aChildRefId);
-      if (theGraph.Refs().IsRemoved(aChildRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aChildRefId))
       {
         continue;
       }
@@ -1941,7 +1950,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     {
       const BRepGraph_SolidRefId    aSolidRefId = aSolidRefIt.CurrentId();
       const BRepGraphInc::SolidRef& aSR         = aRefs.Solids().Entry(aSolidRefId);
-      if (theGraph.Refs().IsRemoved(aSolidRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aSolidRefId))
       {
         continue;
       }

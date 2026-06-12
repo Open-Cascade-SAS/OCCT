@@ -567,7 +567,7 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
     for (const BRepGraph_OccurrenceRefId& aRefId :
          theGraph.Topo().Products().Relations(theProductId).OccurrenceRefIds)
     {
-      if (theGraph.Refs().IsRemoved(aRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aRefId))
       {
         continue;
       }
@@ -589,7 +589,7 @@ void applyLocationTransformInCopiedRange(BRepGraph&         theGraph,
     for (const BRepGraph_OccurrenceRefId& aRefId :
          theGraph.Topo().Products().Relations(theProductId).OccurrenceRefIds)
     {
-      if (theGraph.Refs().IsRemoved(aRefId))
+      if (theGraph.Refs().Gen().IsRemoved(aRefId))
       {
         continue;
       }
@@ -764,7 +764,7 @@ bool BRepGraph_Transform::MoveRef(BRepGraph&                 theGraph,
   {
     return false;
   }
-  if (!theRefId.IsValid(theGraph.Refs().Children().Nb()) || theGraph.Refs().IsRemoved(theRefId))
+  if (!theRefId.IsValid(theGraph.Refs().Children().Nb()) || theGraph.Refs().Gen().IsRemoved(theRefId))
   {
     return false;
   }
@@ -786,7 +786,7 @@ bool BRepGraph_Transform::MoveRef(BRepGraph&                      theGraph,
   {
     return false;
   }
-  if (!theRefId.IsValid(theGraph.Refs().Occurrences().Nb()) || theGraph.Refs().IsRemoved(theRefId))
+  if (!theRefId.IsValid(theGraph.Refs().Occurrences().Nb()) || theGraph.Refs().Gen().IsRemoved(theRefId))
   {
     return false;
   }

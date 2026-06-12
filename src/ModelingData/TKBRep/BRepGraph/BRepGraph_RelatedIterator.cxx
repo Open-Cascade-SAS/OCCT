@@ -81,19 +81,21 @@ bool BRepGraph_RelatedIterator::advanceAdjacentFace()
         continue;
       }
 
-      const NCollection_LinearVector<BRepGraph_FaceId>& aFaces =
-        myGraph->Topo().Edges().Faces(aCoEdgeIt.Current().ChildEdgeId);
-      for (; myDeepIndex < static_cast<uint32_t>(aFaces.Size()); ++myDeepIndex)
+      for (BRepGraph_FacesOfEdge aFaceIt =
+             myGraph->Topo().Edges().FacesOf(aCoEdgeIt.Current().ChildEdgeId, myDeepIndex);
+           aFaceIt.More();
+           aFaceIt.Next())
       {
-        const BRepGraph_FaceId anAdjacentFaceId = aFaces.Value(static_cast<size_t>(myDeepIndex));
+        const BRepGraph_FaceId anAdjacentFaceId = aFaceIt.CurrentId();
         if (anAdjacentFaceId == aFaceId)
         {
+          myDeepIndex = aFaceIt.Index() + 1;
           continue;
         }
 
         myIndex      = aWireIt.Index();
         myInnerIndex = aCoEdgeIt.Index();
-        ++myDeepIndex;
+        myDeepIndex  = aFaceIt.Index() + 1;
         return setCurrent(BRepGraph_NodeId(anAdjacentFaceId), RelationKind::AdjacentFace);
       }
 
@@ -168,8 +170,9 @@ void BRepGraph_RelatedIterator::advance()
       case BRepGraph_NodeId::Kind::Edge: {
         if (myStage == Stage::First)
         {
-          if (advanceParents(myGraph->Topo().Edges().Faces(BRepGraph_EdgeId::FromNodeId(myNode)),
-                             RelationKind::ReferencedByFace))
+          if (advanceParentIterator(
+                myGraph->Topo().Edges().FacesOf(BRepGraph_EdgeId::FromNodeId(myNode), myIndex),
+                RelationKind::ReferencedByFace))
           {
             return;
           }

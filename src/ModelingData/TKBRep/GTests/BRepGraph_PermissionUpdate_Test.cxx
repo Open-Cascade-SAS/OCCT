@@ -216,7 +216,7 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveRef_CoEdge_PreservesEdgeToWireWhenSib
   ASSERT_TRUE(aFirstCoEdge.IsValid());
 
   auto containsWire = [&](const BRepGraph_EdgeId theE) -> bool {
-    for (const BRepGraph_WireId& aW : aGraph.Topo().Edges().Wires(theE))
+    for (const BRepGraph_WireId& aW : aGraph.Topo().Edges().WiresOf(theE))
     {
       if (aW == aWireId)
       {

@@ -25,6 +25,7 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_SupplementEditor.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Storage.hxx>
@@ -145,7 +146,7 @@ void clearCoEdgeFaceScopedRepresentations(BRepGraphInc_Storage&    theStorage,
 
 BRepGraph_NodeId refChildNode(const BRepGraph& theGraph, const BRepGraph_RefId theRef)
 {
-  return theGraph.Refs().ChildNode(theRef);
+  return theGraph.Refs().Gen().ChildNode(theRef);
 }
 
 bool hasAnyActiveUsage(const BRepGraph& theGraph, const BRepGraph_NodeId theChild)
@@ -3474,10 +3475,12 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
         // Vertex modifications don't propagate in deferred mode.
         break;
       case BRepGraph_NodeId::Kind::Edge: {
-        for (const BRepGraph_WireId& aWireId :
-             myGraph->Topo().Edges().Wires(BRepGraph_EdgeId(aNodeId)))
+        for (BRepGraph_WiresOfEdge aWireIt =
+               myGraph->Topo().Edges().WiresOf(BRepGraph_EdgeId(aNodeId));
+             aWireIt.More();
+             aWireIt.Next())
         {
-          appendParent(aWireId);
+          appendParent(aWireIt.CurrentId());
         }
         break;
       }
@@ -3774,9 +3777,11 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
 
   // Copy wire indices: relation table may be rebuilt below.
   NCollection_LinearVector<BRepGraph_WireId> aOrigWires;
-  for (const BRepGraph_WireId& aWireId : myGraph->Topo().Edges().Wires(theEdgeEntity))
+  for (BRepGraph_WiresOfEdge aWireIt = myGraph->Topo().Edges().WiresOf(theEdgeEntity);
+       aWireIt.More();
+       aWireIt.Next())
   {
-    aOrigWires.Append(aWireId);
+    aOrigWires.Append(aWireIt.CurrentId());
   }
 
   BRepGraphInc_Storage& aMutStorage = myGraph->myData->myIncStorage;

@@ -22,7 +22,6 @@
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ReverseIterator.hxx>
-#include <NCollection_Map.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
@@ -90,7 +89,7 @@ BRepGraph_EdgeId edgeOf(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theC
 
 BRepGraph_FaceId faceOf(const BRepGraph& theGraph, const BRepGraph_FaceRefId theFaceRef)
 {
-  if (!theFaceRef.IsValid() || theGraph.Refs().IsRemoved(theFaceRef))
+  if (!theFaceRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theFaceRef))
   {
     return BRepGraph_FaceId();
   }
@@ -100,7 +99,7 @@ BRepGraph_FaceId faceOf(const BRepGraph& theGraph, const BRepGraph_FaceRefId the
 
 BRepGraph_WireId wireOf(const BRepGraph& theGraph, const BRepGraph_WireRefId theWireRef)
 {
-  if (!theWireRef.IsValid() || theGraph.Refs().IsRemoved(theWireRef))
+  if (!theWireRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theWireRef))
   {
     return BRepGraph_WireId();
   }
@@ -110,7 +109,7 @@ BRepGraph_WireId wireOf(const BRepGraph& theGraph, const BRepGraph_WireRefId the
 
 BRepGraph_ShellId shellOf(const BRepGraph& theGraph, const BRepGraph_ShellRefId theShellRef)
 {
-  if (!theShellRef.IsValid() || theGraph.Refs().IsRemoved(theShellRef))
+  if (!theShellRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theShellRef))
   {
     return BRepGraph_ShellId();
   }
@@ -122,12 +121,87 @@ occ::handle<BRepGraph_CacheDerivedState> derivedStateCache(const BRepGraph& theG
 {
   return const_cast<BRepGraph&>(theGraph).CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
 }
+
+enum class CoEdgeLookupContent
+{
+  Any,
+  WithPCurve
+};
+
+bool matchesLookupContent(const BRepGraph&              theGraph,
+                          const BRepGraphInc::CoEdgeDef& theCoEdge,
+                          const CoEdgeLookupContent      theContent)
+{
+  return theContent == CoEdgeLookupContent::Any
+         || (theCoEdge.Curve2DRepId.IsValid(theGraph.Topo().Geometry().NbCoEdgeCurves2D())
+             && !theCoEdge.Curve2DRepId.IsRemoved(theGraph));
+}
+
+BRepGraph_CoEdgeId findCoEdgeId(const BRepGraph&          theGraph,
+                                const BRepGraph_EdgeId   theEdge,
+                                const BRepGraph_FaceId   theFace,
+                                const CoEdgeLookupContent theContent)
+{
+  if (!theEdge.IsValid(theGraph.Topo().Edges().Nb())
+      || !theFace.IsValid(theGraph.Topo().Faces().Nb()))
+  {
+    return BRepGraph_CoEdgeId();
+  }
+
+  for (BRepGraph_CoEdgesOfEdge aCoEdgeIt(theGraph, theGraph.Topo().Edges().CoEdges(theEdge));
+       aCoEdgeIt.More();
+       aCoEdgeIt.Next())
+  {
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aCoEdgeIt.Definition();
+    if (aCoEdge.ChildEdgeId == theEdge && aCoEdge.FaceId == theFace
+        && matchesLookupContent(theGraph, aCoEdge, theContent))
+    {
+      return aCoEdgeIt.CurrentId();
+    }
+  }
+  return BRepGraph_CoEdgeId();
+}
+
+BRepGraph_CoEdgeId findCoEdgeId(const BRepGraph&          theGraph,
+                                const BRepGraph_EdgeId   theEdge,
+                                const BRepGraph_FaceId   theFace,
+                                const TopAbs_Orientation theOrientation,
+                                const CoEdgeLookupContent theContent)
+{
+  if (!theEdge.IsValid(theGraph.Topo().Edges().Nb())
+      || !theFace.IsValid(theGraph.Topo().Faces().Nb()))
+  {
+    return BRepGraph_CoEdgeId();
+  }
+
+  BRepGraph_CoEdgeId aFirstMatch;
+  for (BRepGraph_CoEdgesOfEdge aCoEdgeIt(theGraph, theGraph.Topo().Edges().CoEdges(theEdge));
+       aCoEdgeIt.More();
+       aCoEdgeIt.Next())
+  {
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aCoEdgeIt.Definition();
+    if (aCoEdge.ChildEdgeId != theEdge || aCoEdge.FaceId != theFace
+        || !matchesLookupContent(theGraph, aCoEdge, theContent))
+    {
+      continue;
+    }
+    if (!aFirstMatch.IsValid())
+    {
+      aFirstMatch = aCoEdgeIt.CurrentId();
+    }
+    if (aCoEdge.Orientation == theOrientation)
+    {
+      return aCoEdgeIt.CurrentId();
+    }
+  }
+  return aFirstMatch;
+}
 } // namespace
 
 BRepGraph_Tool::VertexUsage BRepGraph_Tool::Vertex::Usage(const BRepGraph&            theGraph,
                                                           const BRepGraph_VertexRefId theVertexRef)
 {
-  if (!theVertexRef.IsValid() || theGraph.Refs().IsRemoved(theVertexRef))
+  if (!theVertexRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theVertexRef))
   {
     return VertexUsage();
   }
@@ -181,7 +255,7 @@ double BRepGraph_Tool::Vertex::Tolerance(const BRepGraph&         theGraph,
 double BRepGraph_Tool::Vertex::Tolerance(const BRepGraph&            theGraph,
                                          const BRepGraph_VertexRefId theVertexRef)
 {
-  if (!theVertexRef.IsValid() || theGraph.Refs().IsRemoved(theVertexRef))
+  if (!theVertexRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theVertexRef))
   {
     return 0.0;
   }
@@ -506,6 +580,94 @@ uint32_t BRepGraph_Tool::Vertex::NbEdges(const BRepGraph&         theGraph,
 
 //=================================================================================================
 
+BRepGraph_EdgeId BRepGraph_Tool::Edge::FindByVertices(
+  const BRepGraph&         theGraph,
+  const BRepGraph_VertexId theStartVertex,
+  const BRepGraph_VertexId theEndVertex,
+  const bool               theToIgnoreOrientation)
+{
+  if (!theStartVertex.IsValid(theGraph.Topo().Vertices().Nb())
+      || !theEndVertex.IsValid(theGraph.Topo().Vertices().Nb())
+      || theStartVertex.IsRemoved(theGraph) || theEndVertex.IsRemoved(theGraph))
+  {
+    return BRepGraph_EdgeId();
+  }
+
+  for (const BRepGraph_EdgeId& anEdgeId : theGraph.Topo().Vertices().Edges(theStartVertex))
+  {
+    if (!anEdgeId.IsValid(theGraph.Topo().Edges().Nb()) || anEdgeId.IsRemoved(theGraph))
+    {
+      continue;
+    }
+
+    const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(anEdgeId);
+    if (!anEdge.StartVertexRefId.IsValid(theGraph.Refs().Vertices().Nb())
+        || !anEdge.EndVertexRefId.IsValid(theGraph.Refs().Vertices().Nb())
+        || anEdge.StartVertexRefId.IsRemoved(theGraph) || anEdge.EndVertexRefId.IsRemoved(theGraph))
+    {
+      continue;
+    }
+
+    const BRepGraph_VertexId aStart =
+      theGraph.Refs().Vertices().Entry(anEdge.StartVertexRefId).ChildVertexId;
+    const BRepGraph_VertexId anEnd =
+      theGraph.Refs().Vertices().Entry(anEdge.EndVertexRefId).ChildVertexId;
+    if (aStart == theStartVertex && anEnd == theEndVertex)
+    {
+      return anEdgeId;
+    }
+    if (theToIgnoreOrientation && aStart == theEndVertex && anEnd == theStartVertex)
+    {
+      return anEdgeId;
+    }
+  }
+
+  return BRepGraph_EdgeId();
+}
+
+//=================================================================================================
+
+BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindPCurveCoEdgeId(
+  const BRepGraph&       theGraph,
+  const BRepGraph_EdgeId theEdge,
+  const BRepGraph_FaceId theFace)
+{
+  return findCoEdgeId(theGraph, theEdge, theFace, CoEdgeLookupContent::WithPCurve);
+}
+
+//=================================================================================================
+
+BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindPCurveCoEdgeId(
+  const BRepGraph&         theGraph,
+  const BRepGraph_EdgeId   theEdge,
+  const BRepGraph_FaceId   theFace,
+  const TopAbs_Orientation theOrientation)
+{
+  return findCoEdgeId(theGraph, theEdge, theFace, theOrientation, CoEdgeLookupContent::WithPCurve);
+}
+
+//=================================================================================================
+
+BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindCoEdgeId(const BRepGraph&       theGraph,
+                                                       const BRepGraph_EdgeId theEdge,
+                                                       const BRepGraph_FaceId theFace)
+{
+  return findCoEdgeId(theGraph, theEdge, theFace, CoEdgeLookupContent::Any);
+}
+
+//=================================================================================================
+
+BRepGraph_CoEdgeId BRepGraph_Tool::Edge::FindCoEdgeId(
+  const BRepGraph&         theGraph,
+  const BRepGraph_EdgeId   theEdge,
+  const BRepGraph_FaceId   theFace,
+  const TopAbs_Orientation theOrientation)
+{
+  return findCoEdgeId(theGraph, theEdge, theFace, theOrientation, CoEdgeLookupContent::Any);
+}
+
+//=================================================================================================
+
 uint32_t BRepGraph_Tool::Edge::NbFaces(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   return theGraph.Topo().Edges().NbFaces(theEdge);
@@ -524,7 +686,7 @@ uint32_t BRepGraph_Tool::Edge::NbFaces(const BRepGraph&         theGraph,
 
 bool BRepGraph_Tool::Edge::IsManifold(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Topo().Edges().IsManifold(theEdge);
+  return NbFaces(theGraph, theEdge) == 2;
 }
 
 //=================================================================================================
@@ -539,7 +701,7 @@ bool BRepGraph_Tool::Edge::IsManifold(const BRepGraph& theGraph, const BRepGraph
 
 bool BRepGraph_Tool::Edge::IsBoundary(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Topo().Edges().IsBoundary(theEdge);
+  return NbFaces(theGraph, theEdge) == 1;
 }
 
 //=================================================================================================
@@ -808,7 +970,7 @@ bool BRepGraph_Tool::Edge::IsSeamOnFace(const BRepGraph&       theGraph,
 BRepGraph_Tool::FaceUsage BRepGraph_Tool::Face::Usage(const BRepGraph&          theGraph,
                                                       const BRepGraph_FaceRefId theFaceRef)
 {
-  if (!theFaceRef.IsValid() || theGraph.Refs().IsRemoved(theFaceRef))
+  if (!theFaceRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theFaceRef))
   {
     return FaceUsage();
   }
@@ -1123,7 +1285,7 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph_Tool::Edge::CurveOnSurface(
 BRepGraph_Tool::WireUsage BRepGraph_Tool::Wire::Usage(const BRepGraph&          theGraph,
                                                       const BRepGraph_WireRefId theWireRef)
 {
-  if (!theWireRef.IsValid() || theGraph.Refs().IsRemoved(theWireRef))
+  if (!theWireRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theWireRef))
   {
     return WireUsage();
   }
@@ -1172,13 +1334,28 @@ uint32_t BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph&          theGraph,
 uint32_t BRepGraph_Tool::Wire::NbDistinctEdges(const BRepGraph&       theGraph,
                                                const BRepGraph_WireId theWire)
 {
-  // Wires are small (typically 3-8 entries); a typed Map dedup on ChildEdgeId is fine.
-  NCollection_Map<BRepGraph_EdgeId> aSeenEdges;
+  uint32_t aCount = 0;
   for (BRepGraph_CoEdgesOfWire anIt(theGraph, theWire); anIt.More(); anIt.Next())
   {
-    aSeenEdges.Add(theGraph.Topo().CoEdges().Definition(anIt.CurrentId()).ChildEdgeId);
+    const BRepGraph_EdgeId anEdgeId =
+      theGraph.Topo().CoEdges().Definition(anIt.CurrentId()).ChildEdgeId;
+    bool wasSeen = false;
+    for (BRepGraph_CoEdgesOfWire aPrevIt(theGraph, theWire);
+         aPrevIt.More() && aPrevIt.Index() < anIt.Index();
+         aPrevIt.Next())
+    {
+      if (theGraph.Topo().CoEdges().Definition(aPrevIt.CurrentId()).ChildEdgeId == anEdgeId)
+      {
+        wasSeen = true;
+        break;
+      }
+    }
+    if (!wasSeen)
+    {
+      ++aCount;
+    }
   }
-  return static_cast<uint32_t>(aSeenEdges.Extent());
+  return aCount;
 }
 
 //=================================================================================================
@@ -1237,7 +1414,7 @@ bool BRepGraph_Tool::Wire::IsOuter(const BRepGraph& theGraph, const BRepGraph_Wi
     for (BRepGraph_RefsWireOfFace aWireIt(theGraph, aFaceId); aWireIt.More(); aWireIt.Next())
     {
       const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aWireIt.CurrentId());
-      if (!theGraph.Refs().IsRemoved(aWireIt.CurrentId()) && aRef.ChildWireId == theWire)
+      if (!theGraph.Refs().Gen().IsRemoved(aWireIt.CurrentId()) && aRef.ChildWireId == theWire)
       {
         return BRepGraph_Tool::Face::OuterWire(theGraph, aFaceId) == theWire;
       }
@@ -1259,7 +1436,7 @@ bool BRepGraph_Tool::Wire::IsOuter(const BRepGraph& theGraph, const BRepGraph_Wi
 BRepGraph_Tool::ShellUsage BRepGraph_Tool::Shell::Usage(const BRepGraph&           theGraph,
                                                         const BRepGraph_ShellRefId theShellRef)
 {
-  if (!theShellRef.IsValid() || theGraph.Refs().IsRemoved(theShellRef))
+  if (!theShellRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theShellRef))
   {
     return ShellUsage();
   }

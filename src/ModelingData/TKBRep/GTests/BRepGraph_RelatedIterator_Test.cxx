@@ -15,6 +15,7 @@
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RelatedIterator.hxx>
+#include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 
@@ -46,11 +47,11 @@ static bool hasRelatedNode(const BRepGraph&                              theGrap
   return false;
 }
 
-static int countRelations(const BRepGraph&                              theGraph,
-                          const BRepGraph_NodeId                        theNode,
-                          const BRepGraph_RelatedIterator::RelationKind theRelation)
+static uint32_t countRelations(const BRepGraph&                              theGraph,
+                               const BRepGraph_NodeId                        theNode,
+                               const BRepGraph_RelatedIterator::RelationKind theRelation)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_RelatedIterator anIt(theGraph, theNode); anIt.More(); anIt.Next())
   {
     if (anIt.CurrentRelation() == theRelation)
@@ -80,17 +81,18 @@ TEST_F(BRepGraph_RelatedIteratorTest, FaceOfBox_ReturnsBoundaryEdgesAndOuterWire
 {
   const BRepGraph_FaceId aFaceId(0);
 
-  const int aBoundaryEdgeCount =
+  const uint32_t aBoundaryEdgeCount =
     countRelations(myGraph,
                    BRepGraph_NodeId(aFaceId),
                    BRepGraph_RelatedIterator::RelationKind::BoundaryEdge);
-  const int anAdjacentFaceCount =
+  const uint32_t anAdjacentFaceCount =
     countRelations(myGraph,
                    BRepGraph_NodeId(aFaceId),
                    BRepGraph_RelatedIterator::RelationKind::AdjacentFace);
-  const int anOuterWireCount = countRelations(myGraph,
-                                              BRepGraph_NodeId(aFaceId),
-                                              BRepGraph_RelatedIterator::RelationKind::OuterWire);
+  const uint32_t anOuterWireCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(aFaceId),
+                   BRepGraph_RelatedIterator::RelationKind::OuterWire);
 
   EXPECT_EQ(aBoundaryEdgeCount, 4);
   EXPECT_EQ(anAdjacentFaceCount, 4);
@@ -105,12 +107,14 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_ReturnsIncidentVerticesAndFaces)
 {
   const BRepGraph_EdgeId anEdgeId(0);
 
-  const int aVertexCount = countRelations(myGraph,
-                                          BRepGraph_NodeId(anEdgeId),
-                                          BRepGraph_RelatedIterator::RelationKind::IncidentVertex);
-  const int aFaceCount   = countRelations(myGraph,
-                                        BRepGraph_NodeId(anEdgeId),
-                                        BRepGraph_RelatedIterator::RelationKind::ReferencedByFace);
+  const uint32_t aVertexCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(anEdgeId),
+                   BRepGraph_RelatedIterator::RelationKind::IncidentVertex);
+  const uint32_t aFaceCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(anEdgeId),
+                   BRepGraph_RelatedIterator::RelationKind::ReferencedByFace);
 
   EXPECT_EQ(aVertexCount, 2);
   EXPECT_EQ(aFaceCount, 2);
@@ -152,18 +156,23 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeReferencedByFace_RemovedFaceIsSkipped)
   const BRepGraph_EdgeId anEdgeId(0);
 
   // Find the two faces that reference this edge.
-  const NCollection_LinearVector<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
-  ASSERT_EQ(aFaces.Size(), 2);
+  BRepGraph_FacesOfEdge aFaceIt = myGraph.Topo().Edges().FacesOf(anEdgeId);
+  ASSERT_TRUE(aFaceIt.More());
+  const BRepGraph_FaceId aRemovedFace = aFaceIt.CurrentId();
+  aFaceIt.Next();
+  ASSERT_TRUE(aFaceIt.More());
+  const BRepGraph_FaceId aSurvivor = aFaceIt.CurrentId();
+  aFaceIt.Next();
+  ASSERT_FALSE(aFaceIt.More());
 
   // Remove the first face.
-  const BRepGraph_FaceId aRemovedFace = aFaces.Value(0);
-  const BRepGraph_FaceId aSurvivor    = aFaces.Value(1);
   myGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aRemovedFace));
 
   // The edge should report exactly 1 ReferencedByFace (the surviving face).
-  const int aFaceCount = countRelations(myGraph,
-                                        BRepGraph_NodeId(anEdgeId),
-                                        BRepGraph_RelatedIterator::RelationKind::ReferencedByFace);
+  const uint32_t aFaceCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(anEdgeId),
+                   BRepGraph_RelatedIterator::RelationKind::ReferencedByFace);
   EXPECT_EQ(aFaceCount, 1);
   EXPECT_TRUE(hasRelatedNode(myGraph,
                              BRepGraph_NodeId(anEdgeId),
@@ -184,27 +193,30 @@ TEST_F(BRepGraph_RelatedIteratorTest, ContainerNodes_YieldNoRelations)
 TEST_F(BRepGraph_RelatedIteratorTest, WireOfBox_ReturnsCoEdges)
 {
   const BRepGraph_WireId aWireId(0);
-  const int              aCount = countRelations(myGraph,
-                                    BRepGraph_NodeId(aWireId),
-                                    BRepGraph_RelatedIterator::RelationKind::WireCoEdge);
+  const uint32_t aCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(aWireId),
+                   BRepGraph_RelatedIterator::RelationKind::WireCoEdge);
   EXPECT_EQ(aCount, 4);
 }
 
 TEST_F(BRepGraph_RelatedIteratorTest, WireOfBox_ReturnsOwningFace)
 {
   const BRepGraph_WireId aWireId(0);
-  const int              aCount = countRelations(myGraph,
-                                    BRepGraph_NodeId(aWireId),
-                                    BRepGraph_RelatedIterator::RelationKind::OwningFace);
+  const uint32_t aCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(aWireId),
+                   BRepGraph_RelatedIterator::RelationKind::OwningFace);
   EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraph_RelatedIteratorTest, VertexOfBox_ReturnsIncidentEdges)
 {
   const BRepGraph_VertexId aVertexId(0);
-  const int                aCount = countRelations(myGraph,
-                                    BRepGraph_NodeId(aVertexId),
-                                    BRepGraph_RelatedIterator::RelationKind::IncidentEdge);
+  const uint32_t aCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(aVertexId),
+                   BRepGraph_RelatedIterator::RelationKind::IncidentEdge);
   // Each vertex of a box touches exactly 3 edges.
   EXPECT_EQ(aCount, 3);
 }
@@ -212,12 +224,14 @@ TEST_F(BRepGraph_RelatedIteratorTest, VertexOfBox_ReturnsIncidentEdges)
 TEST_F(BRepGraph_RelatedIteratorTest, CoEdgeOfBox_ReturnsParentEdgeAndOwningFace)
 {
   const BRepGraph_CoEdgeId aCoEdgeId(0);
-  const int                aParentEdgeCount = countRelations(myGraph,
-                                              BRepGraph_NodeId(aCoEdgeId),
-                                              BRepGraph_RelatedIterator::RelationKind::ParentEdge);
-  const int                aOwningFaceCount = countRelations(myGraph,
-                                              BRepGraph_NodeId(aCoEdgeId),
-                                              BRepGraph_RelatedIterator::RelationKind::OwningFace);
+  const uint32_t aParentEdgeCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(aCoEdgeId),
+                   BRepGraph_RelatedIterator::RelationKind::ParentEdge);
+  const uint32_t aOwningFaceCount =
+    countRelations(myGraph,
+                   BRepGraph_NodeId(aCoEdgeId),
+                   BRepGraph_RelatedIterator::RelationKind::OwningFace);
   EXPECT_EQ(aParentEdgeCount, 1);
   EXPECT_EQ(aOwningFaceCount, 1);
 }
@@ -250,7 +264,7 @@ TEST(BRepGraph_RelatedIteratorStandalone, Compound_YieldsNoRelations)
 TEST_F(BRepGraph_RelatedIteratorTest, RangeFor_WorksCorrectly)
 {
   const BRepGraph_FaceId aFaceId(0);
-  int                    aCount = 0;
+  uint32_t               aCount = 0;
   for (const BRepGraph_NodeId& aNode :
        BRepGraph_RelatedIterator(myGraph, BRepGraph_NodeId(aFaceId)))
   {
@@ -301,15 +315,19 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_RemovedFace_CorrectTransition)
   const BRepGraph_NodeId anEdgeNode(anEdgeId);
 
   // Remove one parent face.
-  const NCollection_LinearVector<BRepGraph_FaceId>& aParentFaces =
-    myGraph.Topo().Edges().Faces(anEdgeId);
-  ASSERT_EQ(aParentFaces.Size(), 2);
-  myGraph.Editor().Gen().RemoveNode(aParentFaces.Value(0));
+  BRepGraph_FacesOfEdge aParentFaceIt = myGraph.Topo().Edges().FacesOf(anEdgeId);
+  ASSERT_TRUE(aParentFaceIt.More());
+  const BRepGraph_FaceId aRemovedFace = aParentFaceIt.CurrentId();
+  aParentFaceIt.Next();
+  ASSERT_TRUE(aParentFaceIt.More());
+  aParentFaceIt.Next();
+  ASSERT_FALSE(aParentFaceIt.More());
+  myGraph.Editor().Gen().RemoveNode(aRemovedFace);
 
   // Iterate - expect 1 face + 2 vertices, confirming correct stage transition.
-  const int aFaceCount =
+  const uint32_t aFaceCount =
     countRelations(myGraph, anEdgeNode, BRepGraph_RelatedIterator::RelationKind::ReferencedByFace);
-  const int aVertexCount =
+  const uint32_t aVertexCount =
     countRelations(myGraph, anEdgeNode, BRepGraph_RelatedIterator::RelationKind::IncidentVertex);
   EXPECT_EQ(aFaceCount, 1);
   EXPECT_EQ(aVertexCount, 2);

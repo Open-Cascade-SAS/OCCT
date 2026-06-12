@@ -43,6 +43,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
@@ -177,6 +178,26 @@ static int countFaceComponents(const BRepGraph& theGraph)
   return aRoots.Extent();
 }
 
+static uint32_t countSameDomainFaces(const BRepGraph& theGraph, const BRepGraph_FaceId theFace)
+{
+  const occ::handle<Geom_Surface>& aSurface = BRepGraph_Tool::Face::Surface(theGraph, theFace);
+  if (aSurface.IsNull())
+  {
+    return 0;
+  }
+
+  uint32_t aCount = 0;
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraph_FaceId anOtherFace = aFaceIt.CurrentId();
+    if (anOtherFace != theFace && BRepGraph_Tool::Face::Surface(theGraph, anOtherFace) == aSurface)
+    {
+      ++aCount;
+    }
+  }
+  return aCount;
+}
+
 class BRepGraphTest : public testing::Test
 {
 protected:
@@ -279,7 +300,7 @@ TEST_F(BRepGraphTest, FindPCurveCoEdgeId_ValidPair)
         continue;
       }
       const BRepGraph_CoEdgeId aPCurveId =
-        myGraph.Topo().Edges().FindPCurveCoEdgeId(BRepGraph_EdgeId(aCoEdge.ChildEdgeId),
+        BRepGraph_Tool::Edge::FindPCurveCoEdgeId(myGraph, BRepGraph_EdgeId(aCoEdge.ChildEdgeId),
                                                   aFaceIt.CurrentId());
       EXPECT_TRUE(aPCurveId.IsValid()) << "Missing PCurve for edge " << aCoEdge.ChildEdgeId.Index
                                        << " on face " << aFaceIt.CurrentId().Index;
@@ -289,7 +310,7 @@ TEST_F(BRepGraphTest, FindPCurveCoEdgeId_ValidPair)
 
 TEST_F(BRepGraphTest, UID_Unique)
 {
-  NCollection_Map<BRepGraph_UID> aUIDSet;
+  NCollection_FlatMap<BRepGraph_UID> aUIDSet;
   for (BRepGraph_SolidIterator aSolidIt(myGraph); aSolidIt.More(); aSolidIt.Next())
   {
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(aSolidIt.CurrentId()))));
@@ -332,10 +353,8 @@ TEST_F(BRepGraphTest, SameDomainFaces_Box_Empty)
 {
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    BRepGraph_FaceId                           aFaceId = aFaceIt.CurrentId();
-    NCollection_LinearVector<BRepGraph_FaceId> aSameDomain =
-      myGraph.Topo().Faces().SameDomain(aFaceId);
-    EXPECT_EQ(aSameDomain.Size(), 0)
+    BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    EXPECT_EQ(countSameDomainFaces(myGraph, aFaceId), 0)
       << "Box face " << aFaceId.Index << " should have no same-domain faces";
   }
 }
@@ -416,7 +435,7 @@ TEST_F(BRepGraphTest, DetectMissingPCurves_ValidBox_Empty)
         continue;
       }
 
-      if (!myGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId).IsValid())
+      if (!BRepGraph_Tool::Edge::FindPCurveCoEdgeId(myGraph, anEdgeId, aFaceId).IsValid())
       {
         aMissing.Append(std::make_pair(anEdgeId, aFaceId));
       }
@@ -786,15 +805,16 @@ TEST_F(BRepGraphTest, OwnGen_MutableEdge_PropagatesSubtreeGenUp)
   if (BRepGraph_EdgeId::Start().IsValid(myGraph.Topo().Edges().Nb()))
   {
     // Find a wire containing this edge.
-    const NCollection_LinearVector<BRepGraph_WireId>& aWires =
-      myGraph.Topo().Edges().Wires(BRepGraph_EdgeId::Start());
-    if (aWires.Size() > 0)
+    BRepGraph_WiresOfEdge aWireIt =
+      myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
+    if (aWireIt.More())
     {
-      EXPECT_GT(myGraph.Topo().Wires().Definition(aWires.Value(0)).SubtreeGen, 0u);
+      const BRepGraph_WireId aWireId = aWireIt.CurrentId();
+      EXPECT_GT(myGraph.Topo().Wires().Definition(aWireId).SubtreeGen, 0u);
       // Check propagation to owning face.
       for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
       {
-        if (BRepGraph_TestTools::FaceUsesWire(myGraph, aFaceIt.CurrentId(), aWires.Value(0)))
+        if (BRepGraph_TestTools::FaceUsesWire(myGraph, aFaceIt.CurrentId(), aWireId))
         {
           EXPECT_GT(myGraph.Topo().Faces().Definition(aFaceIt.CurrentId()).SubtreeGen, 0u);
           break;
@@ -1096,7 +1116,7 @@ TEST_F(BRepGraphTest, AddPCurve_NewPCurve_RetrievableViaFindPCurveCoEdgeId)
   std::ignore = myGraph.Editor().CoEdges().Add(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
 
   const BRepGraph_CoEdgeId aRetrievedId =
-    myGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId);
+    BRepGraph_Tool::Edge::FindPCurveCoEdgeId(myGraph, anEdgeId, aFaceId);
   EXPECT_TRUE(aRetrievedId.IsValid());
   if (aRetrievedId.IsValid())
   {
@@ -1193,7 +1213,7 @@ TEST_F(BRepGraphTest, RemoveCoEdge_PrunesOrphanAndKeepsRelationsConsistent)
   EXPECT_TRUE(aCoEdgeId.IsRemoved(myGraph));
   EXPECT_TRUE(myGraph.Editor().ValidateMutationBoundary());
 
-  for (const BRepGraph_WireId& aWireId : myGraph.Topo().Edges().Wires(anEdgeId))
+  for (const BRepGraph_WireId& aWireId : myGraph.Topo().Edges().WiresOf(anEdgeId))
   {
     EXPECT_NE(aWireId, BRepGraph_WireId::Start());
   }
@@ -1213,14 +1233,14 @@ TEST_F(BRepGraphTest, CleanupRemovedRefs_ManuallyRemovedEdge_UnbindsEdgeWireRela
 
   const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIds.Value(0);
   const BRepGraph_EdgeId   anEdgeId  = myGraph.Topo().CoEdges().Definition(aCoEdgeId).ChildEdgeId;
-  ASSERT_TRUE(containsId(myGraph.Topo().Edges().Wires(anEdgeId), aWireId));
+  ASSERT_TRUE(containsId(myGraph.Topo().Edges().WiresOf(anEdgeId), aWireId));
 
   myGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(anEdgeId));
 
   myGraph.Editor().Gen().CleanupRemovedReferences();
 
   EXPECT_TRUE(aCoEdgeId.IsRemoved(myGraph));
-  EXPECT_FALSE(containsId(myGraph.Topo().Edges().Wires(anEdgeId), aWireId));
+  EXPECT_FALSE(containsId(myGraph.Topo().Edges().WiresOf(anEdgeId), aWireId));
   EXPECT_TRUE(myGraph.Editor().ValidateMutationBoundary());
 }
 
