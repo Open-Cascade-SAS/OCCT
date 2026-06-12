@@ -314,7 +314,7 @@ void BRepGraph_CacheMesh::UnregisterDriver(const SlotId theSlot)
   {
     return;
   }
-  aSlot->Driver.Nullify();
+  aSlot->MeshDriver.Nullify();
   aSlot->RecipeHash = 0;
   aSlot->Clear();
 }
@@ -326,7 +326,7 @@ const occ::handle<BRepGraph_CacheMesh::Driver>& BRepGraph_CacheMesh::DriverOf(
 {
   static const occ::handle<Driver> THE_NULL_DRIVER;
   const Slot*                      aSlot = findSlot(theSlot);
-  return aSlot == nullptr ? THE_NULL_DRIVER : aSlot->Driver;
+  return aSlot == nullptr ? THE_NULL_DRIVER : aSlot->MeshDriver;
 }
 
 //=================================================================================================
@@ -339,7 +339,7 @@ BRepGraph_CacheMesh::SlotState BRepGraph_CacheMesh::State(const SlotId theSlot) 
   {
     aState.RecipeHash = aSlot->RecipeHash;
     aState.Generation = aSlot->Generation;
-    aState.HasDriver  = !aSlot->Driver.IsNull();
+    aState.HasDriver  = !aSlot->MeshDriver.IsNull();
   }
   return aState;
 }
@@ -527,7 +527,7 @@ bool BRepGraph_CacheMesh::Needs(BRepGraph&             theGraph,
   {
     return true;
   }
-  if (!aSlot->Driver.IsNull() && aSlot->RecipeHash != aSlot->Driver->RecipeHash())
+  if (!aSlot->MeshDriver.IsNull() && aSlot->RecipeHash != aSlot->MeshDriver->RecipeHash())
   {
     return true;
   }
