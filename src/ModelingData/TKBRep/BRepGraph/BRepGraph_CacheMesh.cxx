@@ -87,7 +87,7 @@ struct BRepGraph_CacheMesh::Slot
   }
 
   SlotId              Id = DefaultDisplaySlot;
-  occ::handle<Driver> Driver;
+  occ::handle<Driver> MeshDriver;
   uint64_t            RecipeHash = 0;
   uint32_t            Generation = 1;
 
@@ -169,7 +169,7 @@ void BRepGraph_CacheMesh::CopyFreshTo(const BRepGraph_CopyRemap& theCopy) const
     const Slot& aSrcSlot = mySlots.Value(aSlotIdx);
     Slot&       aDstSlot = aTargetCache->changeSlot(aSrcSlot.Id);
 
-    aDstSlot.Driver     = aSrcSlot.Driver;
+    aDstSlot.MeshDriver     = aSrcSlot.MeshDriver;
     aDstSlot.RecipeHash = aSrcSlot.RecipeHash;
     aDstSlot.Clear();
 
@@ -294,13 +294,13 @@ const BRepGraph_CacheMesh::Slot* BRepGraph_CacheMesh::findSlot(const SlotId theS
 void BRepGraph_CacheMesh::RegisterDriver(const SlotId theSlot, const occ::handle<Driver>& theDriver)
 {
   Slot& aSlot = changeSlot(theSlot);
-  if (isSameDriver(aSlot.Driver, theDriver))
+  if (isSameDriver(aSlot.MeshDriver, theDriver))
   {
-    aSlot.Driver = theDriver;
+    aSlot.MeshDriver = theDriver;
     return;
   }
 
-  aSlot.Driver     = theDriver;
+  aSlot.MeshDriver     = theDriver;
   aSlot.RecipeHash = theDriver.IsNull() ? 0 : theDriver->RecipeHash();
   aSlot.Clear();
 }
@@ -440,12 +440,12 @@ bool BRepGraph_CacheMesh::Ensure(BRepGraph&                   theGraph,
                                  const Message_ProgressRange& theRange)
 {
   Slot& aSlot = changeSlot(theSlot);
-  if (aSlot.Driver.IsNull())
+  if (aSlot.MeshDriver.IsNull())
   {
     return false;
   }
 
-  const uint64_t aRecipeHash = aSlot.Driver->RecipeHash();
+  const uint64_t aRecipeHash = aSlot.MeshDriver->RecipeHash();
   if (aSlot.RecipeHash != aRecipeHash)
   {
     aSlot.RecipeHash = aRecipeHash;
@@ -457,7 +457,7 @@ bool BRepGraph_CacheMesh::Ensure(BRepGraph&                   theGraph,
   {
     return true;
   }
-  return aSlot.Driver->Fill(theGraph, theSlot, aDirtySet, theRange);
+  return aSlot.MeshDriver->Fill(theGraph, theSlot, aDirtySet, theRange);
 }
 
 //=================================================================================================
@@ -468,12 +468,12 @@ bool BRepGraph_CacheMesh::Ensure(BRepGraph&                   theGraph,
                                  const Message_ProgressRange& theRange)
 {
   Slot& aSlot = changeSlot(theSlot);
-  if (aSlot.Driver.IsNull())
+  if (aSlot.MeshDriver.IsNull())
   {
     return false;
   }
 
-  const uint64_t aRecipeHash = aSlot.Driver->RecipeHash();
+  const uint64_t aRecipeHash = aSlot.MeshDriver->RecipeHash();
   if (aSlot.RecipeHash != aRecipeHash)
   {
     aSlot.RecipeHash = aRecipeHash;
@@ -485,7 +485,7 @@ bool BRepGraph_CacheMesh::Ensure(BRepGraph&                   theGraph,
   {
     return true;
   }
-  return aSlot.Driver->Fill(theGraph, theSlot, aDirtySet, theRange);
+  return aSlot.MeshDriver->Fill(theGraph, theSlot, aDirtySet, theRange);
 }
 
 //=================================================================================================
@@ -496,12 +496,12 @@ bool BRepGraph_CacheMesh::Ensure(BRepGraph&                                  the
                                  const Message_ProgressRange&                theRange)
 {
   Slot& aSlot = changeSlot(theSlot);
-  if (aSlot.Driver.IsNull())
+  if (aSlot.MeshDriver.IsNull())
   {
     return false;
   }
 
-  const uint64_t aRecipeHash = aSlot.Driver->RecipeHash();
+  const uint64_t aRecipeHash = aSlot.MeshDriver->RecipeHash();
   if (aSlot.RecipeHash != aRecipeHash)
   {
     aSlot.RecipeHash = aRecipeHash;
@@ -513,7 +513,7 @@ bool BRepGraph_CacheMesh::Ensure(BRepGraph&                                  the
   {
     return true;
   }
-  return aSlot.Driver->Fill(theGraph, theSlot, aDirtySet, theRange);
+  return aSlot.MeshDriver->Fill(theGraph, theSlot, aDirtySet, theRange);
 }
 
 //=================================================================================================
