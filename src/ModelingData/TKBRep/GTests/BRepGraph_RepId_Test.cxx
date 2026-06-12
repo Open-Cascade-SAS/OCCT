@@ -23,9 +23,9 @@ TEST(BRepGraph_RepIdTest, DefaultRepId_IsInvalid)
 
 TEST(BRepGraph_RepIdTest, TypedDefaultRepId_IsInvalid)
 {
-  const BRepGraph_EdgeCurve3DRepId aCurve;
-  const BRepGraph_FaceSurfaceRepId aSurface;
-  const BRepGraph_CoEdgeCurve2DRepId aPCurve;
+  const BRepGraph_EdgeCurve3DRepId       aCurve;
+  const BRepGraph_FaceSurfaceRepId       aSurface;
+  const BRepGraph_CoEdgeCurve2DRepId     aPCurve;
   const BRepGraph_FaceTriangulationRepId aTri;
   EXPECT_FALSE(aCurve.IsValid());
   EXPECT_FALSE(aSurface.IsValid());
@@ -36,7 +36,7 @@ TEST(BRepGraph_RepIdTest, TypedDefaultRepId_IsInvalid)
 TEST(BRepGraph_RepIdTest, TypedRepId_ConvertsToUntyped)
 {
   const BRepGraph_EdgeCurve3DRepId aTyped(42);
-  const BRepGraph_RepId anUntyped = aTyped;
+  const BRepGraph_RepId            anUntyped = aTyped;
   EXPECT_EQ(anUntyped.RepKind, BRepGraph_RepId::Kind::EdgeCurve3D);
   EXPECT_EQ(anUntyped.Index, 42u);
 }

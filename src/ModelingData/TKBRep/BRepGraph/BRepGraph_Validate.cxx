@@ -588,7 +588,7 @@ void checkGeometryReferences(const BRepGraph&                                   
     const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
     const BRepGraphInc::EdgeDef& anEdge   = anEdgeIt.Current();
 
-    bool                                           needsCurve3D = true;
+    bool                                             needsCurve3D = true;
     const NCollection_LinearVector<BRepGraph_FaceId> aFaceIds =
       theGraph.Topo().Edges().Faces(anEdgeId);
     if (!aFaceIds.IsEmpty())
@@ -1139,8 +1139,8 @@ void checkWireConnectivity(const BRepGraph&                                     
                                                     : aPrevEdge.StartVertexRefId;
       const BRepGraph_NodeId      aPrevEnd =
         aPrevEndRefId.IsValid()
-          ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aPrevEndRefId).ChildVertexId)
-          : BRepGraph_NodeId();
+               ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aPrevEndRefId).ChildVertexId)
+               : BRepGraph_NodeId();
 
       // Resolve oriented start vertex of current edge.
       const BRepGraph_VertexRefId aCurrStartRefId = (aCurrCoEdge.Orientation == TopAbs_FORWARD)
@@ -1148,8 +1148,8 @@ void checkWireConnectivity(const BRepGraph&                                     
                                                       : aCurrEdge.EndVertexRefId;
       const BRepGraph_NodeId      aCurrStart =
         aCurrStartRefId.IsValid()
-          ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aCurrStartRefId).ChildVertexId)
-          : BRepGraph_NodeId();
+               ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aCurrStartRefId).ChildVertexId)
+               : BRepGraph_NodeId();
 
       if (aPrevEnd.IsValid() && aCurrStart.IsValid() && aPrevEnd != aCurrStart)
       {
@@ -1636,8 +1636,8 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
   {
     const BRepGraph::RefsView& aRefs            = theGraph.Refs();
     auto                       appendOwnerIssue = [&](const BRepGraph_NodeId         theNode,
-                                                      const int                      theOwnerCount,
-                                                      const TCollection_AsciiString& theKind) {
+                                const int                      theOwnerCount,
+                                const TCollection_AsciiString& theKind) {
       if (theOwnerCount == 0)
       {
         TCollection_AsciiString aDesc("Orphan ");

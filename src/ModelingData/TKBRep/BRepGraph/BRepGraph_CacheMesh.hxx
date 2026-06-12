@@ -64,7 +64,7 @@ public:
 
     [[nodiscard]] bool IsPresent() const { return !Triangulation.IsNull(); }
 
-    //! Clear triangulation representation. Does NOT bump MeshGeneration —
+    //! Clear triangulation representation. Does NOT bump MeshGeneration -
     //! callers must call BRepGraph_CacheMesh::BumpFaceMeshGeneration() separately.
     void ClearRepresentation() noexcept { Triangulation.Nullify(); }
 

@@ -31,8 +31,7 @@ BRepGraph_CopyRemap::BRepGraph_CopyRemap(const BRepGraph& theSourceGraph,
 
 //=================================================================================================
 
-const BRepGraph_ItemId* BRepGraph_CopyRemap::TargetItem(
-  const BRepGraph_ItemId theSourceItem) const
+const BRepGraph_ItemId* BRepGraph_CopyRemap::TargetItem(const BRepGraph_ItemId theSourceItem) const
 {
   return theSourceItem.IsValid() ? myItemRemap->Seek(theSourceItem) : nullptr;
 }

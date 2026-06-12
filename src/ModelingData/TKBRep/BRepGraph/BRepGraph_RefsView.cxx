@@ -225,8 +225,8 @@ const NCollection_LinearVector<BRepGraph_ChildRefId>& BRepGraph::RefsView::Child
 
 //=================================================================================================
 
-const NCollection_LinearVector<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildOps::
-  IdsReferencing(const BRepGraph_NodeId theChild) const
+const NCollection_LinearVector<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildOps::IdsReferencing(
+  const BRepGraph_NodeId theChild) const
 {
   return myGraph->myData->myIncStorage.CompoundRefsOfNode(theChild);
 }

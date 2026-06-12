@@ -215,8 +215,7 @@ struct ShellOfSolidTraits
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
-    return theParent.IsValid(theGraph.Topo().Solids().Nb())
-           && !theParent.IsRemoved(theGraph);
+    return theParent.IsValid(theGraph.Topo().Solids().Nb()) && !theParent.IsRemoved(theGraph);
   }
 
   static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
@@ -241,8 +240,7 @@ struct FaceOfShellTraits
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
-    return theParent.IsValid(theGraph.Topo().Shells().Nb())
-           && !theParent.IsRemoved(theGraph);
+    return theParent.IsValid(theGraph.Topo().Shells().Nb()) && !theParent.IsRemoved(theGraph);
   }
 
   static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
@@ -267,8 +265,7 @@ struct WireOfFaceTraits
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
-    return theParent.IsValid(theGraph.Topo().Faces().Nb())
-           && !theParent.IsRemoved(theGraph);
+    return theParent.IsValid(theGraph.Topo().Faces().Nb()) && !theParent.IsRemoved(theGraph);
   }
 
   static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
@@ -295,8 +292,7 @@ struct CoEdgeOfWireTraits
 
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
-    return theParent.IsValid(theGraph.Topo().Wires().Nb())
-           && !theParent.IsRemoved(theGraph);
+    return theParent.IsValid(theGraph.Topo().Wires().Nb()) && !theParent.IsRemoved(theGraph);
   }
 
   static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
@@ -316,8 +312,7 @@ struct SolidOfCompSolidTraits
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
-    return theParent.IsValid(theGraph.Topo().CompSolids().Nb())
-           && !theParent.IsRemoved(theGraph);
+    return theParent.IsValid(theGraph.Topo().CompSolids().Nb()) && !theParent.IsRemoved(theGraph);
   }
 
   static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
@@ -342,8 +337,7 @@ struct ChildOfCompoundTraits
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
-    return theParent.IsValid(theGraph.Topo().Compounds().Nb())
-           && !theParent.IsRemoved(theGraph);
+    return theParent.IsValid(theGraph.Topo().Compounds().Nb()) && !theParent.IsRemoved(theGraph);
   }
 
   static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
@@ -368,8 +362,7 @@ struct OccurrenceOfProductTraits
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
-    return theParent.IsValid(theGraph.Topo().Products().Nb())
-           && !theParent.IsRemoved(theGraph);
+    return theParent.IsValid(theGraph.Topo().Products().Nb()) && !theParent.IsRemoved(theGraph);
   }
 
   static const NCollection_LinearVector<RefId>& RefIds(const BRepGraph& theGraph,
@@ -441,8 +434,8 @@ private:
       {
         if constexpr (!TraitsT::THE_IS_DIRECT)
         {
-          const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
-          const auto aChildId = TraitsT::ChildIdOf(myGraph, aRef);
+          const typename TraitsT::RefEntry& aRef     = TraitsT::Ref(myGraph, aRefId);
+          const auto                        aChildId = TraitsT::ChildIdOf(myGraph, aRef);
           if (!aChildId.IsValid() || aChildId.IsRemoved(myGraph))
           {
             ++myIndex;
@@ -472,8 +465,7 @@ public:
   RefsVertexOfEdge(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdgeId)
       : myGraph(theGraph)
   {
-    if (!theEdgeId.IsValid(theGraph.Topo().Edges().Nb())
-        || theEdgeId.IsRemoved(theGraph))
+    if (!theEdgeId.IsValid(theGraph.Topo().Edges().Nb()) || theEdgeId.IsRemoved(theGraph))
     {
       return;
     }
@@ -519,8 +511,7 @@ private:
     while (myEdge != nullptr && myIndex < myLength)
     {
       const RefId aRefId = refIdAt(myIndex);
-      if (aRefId.IsValid()
-          && !myGraph.Refs().IsRemoved(aRefId))
+      if (aRefId.IsValid() && !myGraph.Refs().IsRemoved(aRefId))
       {
         const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertices().Entry(aRefId);
         if (aRef.ChildVertexId.IsRemoved(myGraph))

@@ -39,8 +39,7 @@ bool isSameDriver(const occ::handle<BRepGraph_CacheMesh::Driver>& theLeft,
   {
     return theLeft == theRight;
   }
-  return theLeft->ID().IsSame(theRight->ID())
-         && theLeft->RecipeHash() == theRight->RecipeHash();
+  return theLeft->ID().IsSame(theRight->ID()) && theLeft->RecipeHash() == theRight->RecipeHash();
 }
 
 template <typename IdT>
@@ -59,7 +58,7 @@ IdT remappedNode(const BRepGraph_CopyRemap& theCopy, const IdT theId)
 }
 
 void appendPolygonsOnTri(
-  NCollection_LinearVector<occ::handle<Poly_PolygonOnTriangulation>>& theTarget,
+  NCollection_LinearVector<occ::handle<Poly_PolygonOnTriangulation>>&       theTarget,
   const NCollection_LinearVector<occ::handle<Poly_PolygonOnTriangulation>>& theSource)
 {
   for (const occ::handle<Poly_PolygonOnTriangulation>& aPolygon : theSource)
@@ -85,12 +84,12 @@ struct BRepGraph_CacheMesh::Slot
     Allocator->SetThreadSafe(true);
   }
 
-  SlotId             Id = DefaultDisplaySlot;
+  SlotId              Id = DefaultDisplaySlot;
   occ::handle<Driver> Driver;
   uint64_t            RecipeHash = 0;
   uint32_t            Generation = 1;
 
-  occ::handle<NCollection_IncAllocator>       Allocator;
+  occ::handle<NCollection_IncAllocator>     Allocator;
   NCollection_DynamicArray<FaceMeshEntry>   FaceMeshes;
   NCollection_DynamicArray<CoEdgeMeshEntry> CoEdgeMeshes;
   NCollection_DynamicArray<EdgeMeshEntry>   EdgeMeshes;
@@ -108,8 +107,7 @@ struct BRepGraph_CacheMesh::Slot
 //=================================================================================================
 
 template <typename T>
-void BRepGraph_CacheMesh::ensureSize(NCollection_DynamicArray<T>& theVec,
-                                     const size_t                 theIndex)
+void BRepGraph_CacheMesh::ensureSize(NCollection_DynamicArray<T>& theVec, const size_t theIndex)
 {
   while (theVec.Size() <= theIndex)
   {
@@ -222,9 +220,8 @@ void BRepGraph_CacheMesh::CopyFreshTo(const BRepGraph_CopyRemap& theCopy) const
         continue;
       }
 
-      const bool hasFreshPolygon2D = FindCoEdgePolygon2D(aSrcSlot.Id, aSrcCoEdge) != nullptr;
-      bool       hasFreshPolygonsOnTri =
-        FindCoEdgePolygonOnTri(aSrcSlot.Id, aSrcCoEdge) != nullptr;
+      const bool hasFreshPolygon2D     = FindCoEdgePolygon2D(aSrcSlot.Id, aSrcCoEdge) != nullptr;
+      bool       hasFreshPolygonsOnTri = FindCoEdgePolygonOnTri(aSrcSlot.Id, aSrcCoEdge) != nullptr;
       if (!hasFreshPolygon2D && !hasFreshPolygonsOnTri)
       {
         continue;
@@ -275,7 +272,7 @@ BRepGraph_CacheMesh::Slot& BRepGraph_CacheMesh::changeSlot(const SlotId theSlot)
     mySlots.EmplaceAppend();
   }
   Slot& aSlot = mySlots.ChangeValue(static_cast<size_t>(theSlot));
-  aSlot.Id = theSlot;
+  aSlot.Id    = theSlot;
   return aSlot;
 }
 
@@ -292,8 +289,7 @@ const BRepGraph_CacheMesh::Slot* BRepGraph_CacheMesh::findSlot(const SlotId theS
 
 //=================================================================================================
 
-void BRepGraph_CacheMesh::RegisterDriver(const SlotId theSlot,
-                                         const occ::handle<Driver>& theDriver)
+void BRepGraph_CacheMesh::RegisterDriver(const SlotId theSlot, const occ::handle<Driver>& theDriver)
 {
   Slot& aSlot = changeSlot(theSlot);
   if (isSameDriver(aSlot.Driver, theDriver))
@@ -302,7 +298,7 @@ void BRepGraph_CacheMesh::RegisterDriver(const SlotId theSlot,
     return;
   }
 
-  aSlot.Driver = theDriver;
+  aSlot.Driver     = theDriver;
   aSlot.RecipeHash = theDriver.IsNull() ? 0 : theDriver->RecipeHash();
   aSlot.Clear();
 }
@@ -327,7 +323,7 @@ const occ::handle<BRepGraph_CacheMesh::Driver>& BRepGraph_CacheMesh::DriverOf(
   const SlotId theSlot) const
 {
   static const occ::handle<Driver> THE_NULL_DRIVER;
-  const Slot* aSlot = findSlot(theSlot);
+  const Slot*                      aSlot = findSlot(theSlot);
   return aSlot == nullptr ? THE_NULL_DRIVER : aSlot->Driver;
 }
 
@@ -351,13 +347,12 @@ BRepGraph_CacheMesh::SlotState BRepGraph_CacheMesh::State(const SlotId theSlot) 
 bool BRepGraph_CacheMesh::isSlotActual(const Slot&       theSlot,
                                        const EntryStamp& theStamp) const noexcept
 {
-  return theStamp.RecipeHash == theSlot.RecipeHash
-         && theStamp.SlotGeneration == theSlot.Generation;
+  return theStamp.RecipeHash == theSlot.RecipeHash && theStamp.SlotGeneration == theSlot.Generation;
 }
 
 //=================================================================================================
 
-void BRepGraph_CacheMesh::bindEntry(FaceMeshEntry&        theEntry,
+void BRepGraph_CacheMesh::bindEntry(FaceMeshEntry&         theEntry,
                                     const BRepGraph_FaceId theFace,
                                     const Slot&            theSlot) const
 {
@@ -368,7 +363,7 @@ void BRepGraph_CacheMesh::bindEntry(FaceMeshEntry&        theEntry,
 
 //=================================================================================================
 
-void BRepGraph_CacheMesh::bindEntry(CoEdgeMeshEntry&        theEntry,
+void BRepGraph_CacheMesh::bindEntry(CoEdgeMeshEntry&         theEntry,
                                     const BRepGraph_CoEdgeId theCoEdge,
                                     const Slot&              theSlot) const
 {
@@ -377,16 +372,13 @@ void BRepGraph_CacheMesh::bindEntry(CoEdgeMeshEntry&        theEntry,
   const BRepGraph* aGraph = AttachedGraph();
   if (aGraph != nullptr)
   {
-    const BRepGraphInc::CoEdgeDef& aDef =
-      aGraph->Topo().CoEdges().Definition(theCoEdge);
+    const BRepGraphInc::CoEdgeDef& aDef = aGraph->Topo().CoEdges().Definition(theCoEdge);
     if (aDef.FaceId.IsValid())
     {
-      (void)theEntry.FaceTopologyStamp.BindSubtreeGen(
-        *this, BRepGraph_NodeId(aDef.FaceId));
-      theEntry.BoundFaceId = aDef.FaceId;
+      (void)theEntry.FaceTopologyStamp.BindSubtreeGen(*this, BRepGraph_NodeId(aDef.FaceId));
+      theEntry.BoundFaceId            = aDef.FaceId;
       const FaceMeshEntry* aFaceEntry = findFaceEntryRaw(theSlot.Id, aDef.FaceId);
-      theEntry.FaceMeshGeneration =
-        aFaceEntry != nullptr ? aFaceEntry->MeshGeneration : 0;
+      theEntry.FaceMeshGeneration     = aFaceEntry != nullptr ? aFaceEntry->MeshGeneration : 0;
     }
   }
 
@@ -396,7 +388,7 @@ void BRepGraph_CacheMesh::bindEntry(CoEdgeMeshEntry&        theEntry,
 
 //=================================================================================================
 
-void BRepGraph_CacheMesh::bindEntry(EdgeMeshEntry&        theEntry,
+void BRepGraph_CacheMesh::bindEntry(EdgeMeshEntry&         theEntry,
                                     const BRepGraph_EdgeId theEdge,
                                     const Slot&            theSlot) const
 {
@@ -407,8 +399,7 @@ void BRepGraph_CacheMesh::bindEntry(EdgeMeshEntry&        theEntry,
 
 //=================================================================================================
 
-void BRepGraph_CacheMesh::BindFresh(FaceMeshEntry&         theEntry,
-                                    const BRepGraph_FaceId theFace) const
+void BRepGraph_CacheMesh::BindFresh(FaceMeshEntry& theEntry, const BRepGraph_FaceId theFace) const
 {
   const Slot* aSlot = findSlot(DefaultDisplaySlot);
   if (aSlot != nullptr)
@@ -431,8 +422,7 @@ void BRepGraph_CacheMesh::BindFresh(CoEdgeMeshEntry&         theEntry,
 
 //=================================================================================================
 
-void BRepGraph_CacheMesh::BindFresh(EdgeMeshEntry&         theEntry,
-                                    const BRepGraph_EdgeId theEdge) const
+void BRepGraph_CacheMesh::BindFresh(EdgeMeshEntry& theEntry, const BRepGraph_EdgeId theEdge) const
 {
   const Slot* aSlot = findSlot(DefaultDisplaySlot);
   if (aSlot != nullptr)
@@ -646,8 +636,7 @@ const BRepGraph_CacheMesh::FaceMeshEntry* BRepGraph_CacheMesh::FindFaceMesh(
   }
 
   const FaceMeshEntry& anEntry = aSlot->FaceMeshes.Value(static_cast<size_t>(theFace.Index));
-  if (!anEntry.IsPresent() || !isSlotActual(*aSlot, anEntry.Stamp)
-      || !anEntry.IsFresh(*this))
+  if (!anEntry.IsPresent() || !isSlotActual(*aSlot, anEntry.Stamp) || !anEntry.IsFresh(*this))
   {
     return nullptr;
   }
@@ -689,42 +678,39 @@ bool BRepGraph_CacheMesh::HasCoEdgeMesh(const SlotId             theSlot,
 //=================================================================================================
 
 bool BRepGraph_CacheMesh::isCoEdgePolygon2DFresh(const CoEdgeMeshEntry& theEntry,
-                                                  const Slot&            theSlot) const noexcept
+                                                 const Slot&            theSlot) const noexcept
 {
-  return isSlotActual(theSlot, theEntry.SlotStamp)
-      && theEntry.CoEdgeStamp.IsFresh(*this);
+  return isSlotActual(theSlot, theEntry.SlotStamp) && theEntry.CoEdgeStamp.IsFresh(*this);
 }
 
 //=================================================================================================
 
 bool BRepGraph_CacheMesh::isCoEdgePolygonOnTriFresh(const CoEdgeMeshEntry& theEntry,
-                                                     const Slot&            theSlot) const noexcept
+                                                    const Slot&            theSlot) const noexcept
 {
-  if (!isSlotActual(theSlot, theEntry.SlotStamp)
-      || !theEntry.CoEdgeStamp.IsFresh(*this))
+  if (!isSlotActual(theSlot, theEntry.SlotStamp) || !theEntry.CoEdgeStamp.IsFresh(*this))
   {
     return false;
   }
   if (!theEntry.FaceTopologyStamp.IsBound())
   {
-    return true;  // free coedge: no face dependency
+    return true; // free coedge: no face dependency
   }
-  return theEntry.FaceTopologyStamp.IsFresh(*this)
-      && isFaceMeshFresh(theEntry, theSlot);
+  return theEntry.FaceTopologyStamp.IsFresh(*this) && isFaceMeshFresh(theEntry, theSlot);
 }
 
 //=================================================================================================
 
 bool BRepGraph_CacheMesh::isFaceMeshFresh(const CoEdgeMeshEntry& theEntry,
-                                           const Slot&            theSlot) const noexcept
+                                          const Slot&            theSlot) const noexcept
 {
   if (!theEntry.BoundFaceId.IsValid())
   {
-    return true;  // no face bound
+    return true; // no face bound
   }
   if (!theEntry.BoundFaceId.IsValidIn(theSlot.FaceMeshes))
   {
-    return false;  // face entry doesn't exist
+    return false; // face entry doesn't exist
   }
   const FaceMeshEntry& aFaceEntry =
     theSlot.FaceMeshes.Value(static_cast<size_t>(theEntry.BoundFaceId.Index));
@@ -742,8 +728,7 @@ const BRepGraph_CacheMesh::CoEdgeMeshEntry* BRepGraph_CacheMesh::findCoEdgeEntry
   {
     return nullptr;
   }
-  const CoEdgeMeshEntry& anEntry =
-    aSlot->CoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
+  const CoEdgeMeshEntry& anEntry = aSlot->CoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
   return anEntry.IsPresent() ? &anEntry : nullptr;
 }
 
@@ -758,8 +743,7 @@ const BRepGraph_CacheMesh::CoEdgeMeshEntry* BRepGraph_CacheMesh::FindCoEdgePolyg
   {
     return nullptr;
   }
-  const CoEdgeMeshEntry& anEntry =
-    aSlot->CoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
+  const CoEdgeMeshEntry& anEntry = aSlot->CoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
   if (!anEntry.IsPresent() || !isCoEdgePolygon2DFresh(anEntry, *aSlot))
   {
     return nullptr;
@@ -778,8 +762,7 @@ const BRepGraph_CacheMesh::CoEdgeMeshEntry* BRepGraph_CacheMesh::FindCoEdgePolyg
   {
     return nullptr;
   }
-  const CoEdgeMeshEntry& anEntry =
-    aSlot->CoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
+  const CoEdgeMeshEntry& anEntry = aSlot->CoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
   if (!anEntry.IsPresent() || !isCoEdgePolygonOnTriFresh(anEntry, *aSlot))
   {
     return nullptr;
@@ -816,8 +799,7 @@ BRepGraph_CacheMesh::CoEdgeMeshEntry& BRepGraph_CacheMesh::ChangeCoEdgeMesh(
 
 //=================================================================================================
 
-void BRepGraph_CacheMesh::ClearCoEdgeMesh(const SlotId             theSlot,
-                                          const BRepGraph_CoEdgeId theCoEdge)
+void BRepGraph_CacheMesh::ClearCoEdgeMesh(const SlotId theSlot, const BRepGraph_CoEdgeId theCoEdge)
 {
   Slot* aSlot = const_cast<Slot*>(findSlot(theSlot));
   if (aSlot != nullptr && theCoEdge.IsValidIn(aSlot->CoEdgeMeshes))
@@ -846,8 +828,7 @@ const BRepGraph_CacheMesh::EdgeMeshEntry* BRepGraph_CacheMesh::FindEdgeMesh(
   }
 
   const EdgeMeshEntry& anEntry = aSlot->EdgeMeshes.Value(static_cast<size_t>(theEdge.Index));
-  if (!anEntry.IsPresent() || !isSlotActual(*aSlot, anEntry.Stamp)
-      || !anEntry.IsFresh(*this))
+  if (!anEntry.IsPresent() || !isSlotActual(*aSlot, anEntry.Stamp) || !anEntry.IsFresh(*this))
   {
     return nullptr;
   }
@@ -857,7 +838,7 @@ const BRepGraph_CacheMesh::EdgeMeshEntry* BRepGraph_CacheMesh::FindEdgeMesh(
 //=================================================================================================
 
 const BRepGraph_CacheMesh::CoEdgeMeshEntry* BRepGraph_CacheMesh::findCoEdgeMesh(
-  const SlotId           theSlot,
+  const SlotId             theSlot,
   const BRepGraph_CoEdgeId theCoEdge) const
 {
   const Slot* aSlot = findSlot(theSlot);
@@ -866,8 +847,7 @@ const BRepGraph_CacheMesh::CoEdgeMeshEntry* BRepGraph_CacheMesh::findCoEdgeMesh(
     return nullptr;
   }
 
-  const CoEdgeMeshEntry& anEntry =
-    aSlot->CoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
+  const CoEdgeMeshEntry& anEntry = aSlot->CoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
   if (!anEntry.IsPresent() || !isSlotActual(*aSlot, anEntry.SlotStamp)
       || !anEntry.CoEdgeStamp.IsFresh(*this))
   {
@@ -901,7 +881,7 @@ void BRepGraph_CacheMesh::ClearEdgeMesh(const SlotId theSlot, const BRepGraph_Ed
 //=================================================================================================
 
 void BRepGraph_CacheMesh::BumpFaceMeshGeneration(const BRepGraph_FaceId theFace,
-                                                  const SlotId          theSlot)
+                                                 const SlotId           theSlot)
 {
   Slot& aSlot = changeSlot(theSlot);
   ensureSize(aSlot.FaceMeshes, static_cast<size_t>(theFace.Index));
@@ -925,13 +905,14 @@ const BRepGraph_CacheMesh::FaceMeshEntry* BRepGraph_CacheMesh::findFaceEntryRaw(
 
 //=================================================================================================
 
-BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(BRepGraph& theGraph,
+BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(BRepGraph&  theGraph,
                                                                 const Slot& theSlot) const
 {
   DirtySet aDirtySet;
 
   for (BRepGraph_FaceId aFaceId = theGraph.Topo().Faces().StartId();
-       aFaceId < theGraph.Topo().Faces().EndId(); ++aFaceId)
+       aFaceId < theGraph.Topo().Faces().EndId();
+       ++aFaceId)
   {
     if (aFaceId.IsRemoved(theGraph))
     {
@@ -940,8 +921,7 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(BRepGraph& theGr
     const FaceMeshEntry* anEntry = aFaceId.IsValidIn(theSlot.FaceMeshes)
                                      ? &theSlot.FaceMeshes.Value(static_cast<size_t>(aFaceId.Index))
                                      : nullptr;
-    if (anEntry == nullptr || !anEntry->IsPresent()
-        || !isSlotActual(theSlot, anEntry->Stamp)
+    if (anEntry == nullptr || !anEntry->IsPresent() || !isSlotActual(theSlot, anEntry->Stamp)
         || !anEntry->IsFresh(*this))
     {
       aDirtySet.Faces.Append(aFaceId);
@@ -949,17 +929,18 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(BRepGraph& theGr
   }
 
   for (BRepGraph_EdgeId anEdgeId = theGraph.Topo().Edges().StartId();
-       anEdgeId < theGraph.Topo().Edges().EndId(); ++anEdgeId)
+       anEdgeId < theGraph.Topo().Edges().EndId();
+       ++anEdgeId)
   {
     if (anEdgeId.IsRemoved(theGraph) || !theGraph.Topo().Edges().Faces(anEdgeId).IsEmpty())
     {
       continue;
     }
-    const EdgeMeshEntry* anEntry = anEdgeId.IsValidIn(theSlot.EdgeMeshes)
-                                     ? &theSlot.EdgeMeshes.Value(static_cast<size_t>(anEdgeId.Index))
-                                     : nullptr;
-    if (anEntry == nullptr || !anEntry->IsPresent()
-        || !isSlotActual(theSlot, anEntry->Stamp)
+    const EdgeMeshEntry* anEntry =
+      anEdgeId.IsValidIn(theSlot.EdgeMeshes)
+        ? &theSlot.EdgeMeshes.Value(static_cast<size_t>(anEdgeId.Index))
+        : nullptr;
+    if (anEntry == nullptr || !anEntry->IsPresent() || !isSlotActual(theSlot, anEntry->Stamp)
         || !anEntry->IsFresh(*this))
     {
       aDirtySet.FreeEdges.Append(anEdgeId);
@@ -968,7 +949,8 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(BRepGraph& theGr
 
   // Check coedges for face-mesh-driven staleness on non-dirty faces.
   for (BRepGraph_FaceId aFaceId = theGraph.Topo().Faces().StartId();
-       aFaceId < theGraph.Topo().Faces().EndId(); ++aFaceId)
+       aFaceId < theGraph.Topo().Faces().EndId();
+       ++aFaceId)
   {
     if (aFaceId.IsRemoved(theGraph))
     {
@@ -988,13 +970,15 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(BRepGraph& theGr
       continue;
     }
 
-    for (BRepGraph_ChildExplorer aCoEdgeIt(theGraph, BRepGraph_NodeId(aFaceId),
+    for (BRepGraph_ChildExplorer aCoEdgeIt(theGraph,
+                                           BRepGraph_NodeId(aFaceId),
                                            BRepGraph_NodeId::Kind::CoEdge,
                                            BRepGraph_ChildExplorer::TraversalMode::Recursive);
-         aCoEdgeIt.More(); aCoEdgeIt.Next())
+         aCoEdgeIt.More();
+         aCoEdgeIt.Next())
     {
       const BRepGraph_CoEdgeId aCoEdgeId(aCoEdgeIt.Current().DefId);
-      const CoEdgeMeshEntry*  aRaw = findCoEdgeEntryRaw(theSlot.Id, aCoEdgeId);
+      const CoEdgeMeshEntry*   aRaw = findCoEdgeEntryRaw(theSlot.Id, aCoEdgeId);
       if (aRaw != nullptr && aRaw->IsPresent() && !isCoEdgePolygonOnTriFresh(*aRaw, theSlot))
       {
         aDirtySet.Faces.Append(aFaceId);
@@ -1024,7 +1008,7 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
   const NCollection_Array1<BRepGraph_NodeId>& theNodes,
   const Slot&                                 theSlot) const
 {
-  DirtySet aDirtySet;
+  DirtySet                          aDirtySet;
   NCollection_Map<BRepGraph_FaceId> aFaces;
   NCollection_Map<BRepGraph_EdgeId> aFreeEdges;
 
@@ -1036,8 +1020,7 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
     const FaceMeshEntry* anEntry = theFace.IsValidIn(theSlot.FaceMeshes)
                                      ? &theSlot.FaceMeshes.Value(static_cast<size_t>(theFace.Index))
                                      : nullptr;
-    if (anEntry == nullptr || !anEntry->IsPresent()
-        || !isSlotActual(theSlot, anEntry->Stamp)
+    if (anEntry == nullptr || !anEntry->IsPresent() || !isSlotActual(theSlot, anEntry->Stamp)
         || !anEntry->IsFresh(*this))
     {
       aDirtySet.Faces.Append(theFace);
@@ -1053,8 +1036,7 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
     const EdgeMeshEntry* anEntry = theEdge.IsValidIn(theSlot.EdgeMeshes)
                                      ? &theSlot.EdgeMeshes.Value(static_cast<size_t>(theEdge.Index))
                                      : nullptr;
-    if (anEntry == nullptr || !anEntry->IsPresent()
-        || !isSlotActual(theSlot, anEntry->Stamp)
+    if (anEntry == nullptr || !anEntry->IsPresent() || !isSlotActual(theSlot, anEntry->Stamp)
         || !anEntry->IsFresh(*this))
     {
       aDirtySet.FreeEdges.Append(theEdge);
@@ -1078,12 +1060,14 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
     }
 
     for (BRepGraph_ChildExplorer aFaceIt(theGraph, aNode, BRepGraph_NodeId::Kind::Face);
-         aFaceIt.More(); aFaceIt.Next())
+         aFaceIt.More();
+         aFaceIt.Next())
     {
       addFace(BRepGraph_FaceId(aFaceIt.Current().DefId));
     }
     for (BRepGraph_ChildExplorer anEdgeIt(theGraph, aNode, BRepGraph_NodeId::Kind::Edge);
-         anEdgeIt.More(); anEdgeIt.Next())
+         anEdgeIt.More();
+         anEdgeIt.Next())
     {
       addFreeEdge(BRepGraph_EdgeId(anEdgeIt.Current().DefId));
     }
@@ -1106,13 +1090,15 @@ BRepGraph_CacheMesh::DirtySet BRepGraph_CacheMesh::collectDirty(
       continue;
     }
 
-    for (BRepGraph_ChildExplorer aCoEdgeIt(theGraph, BRepGraph_NodeId(aFaceId),
+    for (BRepGraph_ChildExplorer aCoEdgeIt(theGraph,
+                                           BRepGraph_NodeId(aFaceId),
                                            BRepGraph_NodeId::Kind::CoEdge,
                                            BRepGraph_ChildExplorer::TraversalMode::Recursive);
-         aCoEdgeIt.More(); aCoEdgeIt.Next())
+         aCoEdgeIt.More();
+         aCoEdgeIt.Next())
     {
       const BRepGraph_CoEdgeId aCoEdgeId(aCoEdgeIt.Current().DefId);
-      const CoEdgeMeshEntry*  aRaw = findCoEdgeEntryRaw(theSlot.Id, aCoEdgeId);
+      const CoEdgeMeshEntry*   aRaw = findCoEdgeEntryRaw(theSlot.Id, aCoEdgeId);
       if (aRaw != nullptr && aRaw->IsPresent() && !isCoEdgePolygonOnTriFresh(*aRaw, theSlot))
       {
         aDirtySet.Faces.Append(aFaceId);

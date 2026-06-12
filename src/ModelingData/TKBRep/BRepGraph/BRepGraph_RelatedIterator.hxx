@@ -54,10 +54,10 @@ public:
   //! Internal traversal stage tracking which sub-iteration is active.
   enum class Stage
   {
-    First,     //!< Primary relation iteration.
-    Second,    //!< Secondary relation iteration.
-    Third,     //!< Tertiary relation iteration.
-    Finished,  //!< All relations exhausted.
+    First,    //!< Primary relation iteration.
+    Second,   //!< Secondary relation iteration.
+    Third,    //!< Tertiary relation iteration.
+    Finished, //!< All relations exhausted.
   };
 
   //! Construct an iterator over all semantically related nodes of the given source node.
@@ -111,7 +111,7 @@ private:
         continue;
       }
 
-      myIndex                           = theIterator.Index() + 1;
+      myIndex = theIterator.Index() + 1;
       BRepGraph_NodeId aChildNode;
       if constexpr (std::is_convertible_v<decltype(theIterator.CurrentId()), BRepGraph_RefId>)
       {

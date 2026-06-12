@@ -1904,19 +1904,34 @@ private:
   template <>                                                                                      \
   struct TypedStorePlanes<T>                                                                       \
   {                                                                                                \
-    static uint32_t               Nb(const BRepGraphInc_Storage& s) { return s.F.Nb(); }           \
-    static uint32_t&              NbActive(BRepGraphInc_Storage& s) { return s.F.NbActive; }       \
-    static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& s) { return s.F.RemovedFlags; }    \
+    static uint32_t Nb(const BRepGraphInc_Storage& s)                                              \
+    {                                                                                              \
+      return s.F.Nb();                                                                             \
+    }                                                                                              \
+    static uint32_t& NbActive(BRepGraphInc_Storage& s)                                             \
+    {                                                                                              \
+      return s.F.NbActive;                                                                         \
+    }                                                                                              \
+    static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& s)                                 \
+    {                                                                                              \
+      return s.F.RemovedFlags;                                                                     \
+    }                                                                                              \
     static const BRepGraphInc_BitFlags& Removed(const BRepGraphInc_Storage& s)                     \
     {                                                                                              \
       return s.F.RemovedFlags;                                                                     \
     }                                                                                              \
-    static BRepGraphInc_BitFlags&       Owned(BRepGraphInc_Storage& s) { return s.F.OwnedFlags; }  \
+    static BRepGraphInc_BitFlags& Owned(BRepGraphInc_Storage& s)                                   \
+    {                                                                                              \
+      return s.F.OwnedFlags;                                                                       \
+    }                                                                                              \
     static const BRepGraphInc_BitFlags& Owned(const BRepGraphInc_Storage& s)                       \
     {                                                                                              \
       return s.F.OwnedFlags;                                                                       \
     }                                                                                              \
-    static BRepGraphInc_BitFlags&       Guard(BRepGraphInc_Storage& s) { return s.F.GuardFlags; }  \
+    static BRepGraphInc_BitFlags& Guard(BRepGraphInc_Storage& s)                                   \
+    {                                                                                              \
+      return s.F.GuardFlags;                                                                       \
+    }                                                                                              \
     static const BRepGraphInc_BitFlags& Guard(const BRepGraphInc_Storage& s)                       \
     {                                                                                              \
       return s.F.GuardFlags;                                                                       \
@@ -1973,19 +1988,34 @@ private:
   template <>                                                                                      \
   struct TypedStorePlanes<T>                                                                       \
   {                                                                                                \
-    static uint32_t               Nb(const BRepGraphInc_Storage& s) { return s.F.Nb(); }           \
-    static uint32_t&              NbActive(BRepGraphInc_Storage& s) { return s.F.NbActive; }       \
-    static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& s) { return s.F.RemovedFlags; }    \
+    static uint32_t Nb(const BRepGraphInc_Storage& s)                                              \
+    {                                                                                              \
+      return s.F.Nb();                                                                             \
+    }                                                                                              \
+    static uint32_t& NbActive(BRepGraphInc_Storage& s)                                             \
+    {                                                                                              \
+      return s.F.NbActive;                                                                         \
+    }                                                                                              \
+    static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& s)                                 \
+    {                                                                                              \
+      return s.F.RemovedFlags;                                                                     \
+    }                                                                                              \
     static const BRepGraphInc_BitFlags& Removed(const BRepGraphInc_Storage& s)                     \
     {                                                                                              \
       return s.F.RemovedFlags;                                                                     \
     }                                                                                              \
-    static BRepGraphInc_BitFlags& Owned(BRepGraphInc_Storage&) { return theEmptyRepBitFlags(); }   \
+    static BRepGraphInc_BitFlags& Owned(BRepGraphInc_Storage&)                                     \
+    {                                                                                              \
+      return theEmptyRepBitFlags();                                                                \
+    }                                                                                              \
     static const BRepGraphInc_BitFlags& Owned(const BRepGraphInc_Storage&)                         \
     {                                                                                              \
       return theEmptyRepBitFlags();                                                                \
     }                                                                                              \
-    static BRepGraphInc_BitFlags& Guard(BRepGraphInc_Storage&) { return theEmptyRepBitFlags(); }   \
+    static BRepGraphInc_BitFlags& Guard(BRepGraphInc_Storage&)                                     \
+    {                                                                                              \
+      return theEmptyRepBitFlags();                                                                \
+    }                                                                                              \
     static const BRepGraphInc_BitFlags& Guard(const BRepGraphInc_Storage&)                         \
     {                                                                                              \
       return theEmptyRepBitFlags();                                                                \

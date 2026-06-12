@@ -176,12 +176,12 @@ void expectMeshHandlesCopied(const occ::handle<Poly_Triangulation>&          the
   EXPECT_TRUE(theCopiedTriangulation->Node(2).IsEqual(theSourceTriangulation->Node(2), 0.0));
 
   EXPECT_EQ(theCopiedPolygon3D->NbNodes(), theSourcePolygon3D->NbNodes());
-  EXPECT_TRUE(theCopiedPolygon3D->Nodes().Value(2).IsEqual(theSourcePolygon3D->Nodes().Value(2),
-                                                           0.0));
+  EXPECT_TRUE(
+    theCopiedPolygon3D->Nodes().Value(2).IsEqual(theSourcePolygon3D->Nodes().Value(2), 0.0));
 
   EXPECT_EQ(theCopiedPolygon2D->NbNodes(), theSourcePolygon2D->NbNodes());
-  EXPECT_TRUE(theCopiedPolygon2D->Nodes().Value(2).IsEqual(theSourcePolygon2D->Nodes().Value(2),
-                                                           0.0));
+  EXPECT_TRUE(
+    theCopiedPolygon2D->Nodes().Value(2).IsEqual(theSourcePolygon2D->Nodes().Value(2), 0.0));
 
   EXPECT_EQ(theCopiedPolygonOnTri->NbNodes(), theSourcePolygonOnTri->NbNodes());
   EXPECT_EQ(theCopiedPolygonOnTri->Node(2), theSourcePolygonOnTri->Node(2));
@@ -604,7 +604,7 @@ TEST(BRepGraph_CopyTest, CopyNode_DoesNotReviveRemovedPersistentMeshReps)
   ASSERT_FALSE(aGraph.Mesh().Persistent().Faces().Has(aFaceId));
   ASSERT_FALSE(aGraph.Mesh().Persistent().Edges().Has(anEdgeId));
 
-  BRepGraph aCopyGraph;
+  BRepGraph                               aCopyGraph;
   [[maybe_unused]] const BRepGraph_NodeId aCopiedNodeId =
     BRepGraph_Copy::CopyNode(aGraph, aCopyGraph, BRepGraph_NodeId(aFaceId));
   ASSERT_FALSE(aCopyGraph.IsEmpty());

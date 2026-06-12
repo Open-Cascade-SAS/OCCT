@@ -35,7 +35,7 @@ namespace
 {
 BRepGraph buildBoxGraph()
 {
-  BRepGraph aGraph;
+  BRepGraph                                        aGraph;
   const occ::handle<BRepGraph_LayerTopoSupplement> aRegisteredLayer =
     aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
   EXPECT_FALSE(aRegisteredLayer.IsNull());
@@ -44,7 +44,7 @@ BRepGraph buildBoxGraph()
   return aGraph;
 }
 
-BRepGraph_EdgeId addSegment(BRepGraph& theGraph,
+BRepGraph_EdgeId addSegment(BRepGraph&               theGraph,
                             const BRepGraph_VertexId theStart,
                             const BRepGraph_VertexId theEnd)
 {
@@ -65,8 +65,8 @@ TEST(BRepGraph_WireReverseTest, OrderAndOrientationFlipped)
 
   const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdgesBefore =
     aGraph.Topo().Wires().Relations(aWire).CoEdgeIds;
-  std::vector<BRepGraph_CoEdgeId>    aOrderBefore;
-  std::vector<TopAbs_Orientation>    aOriBefore;
+  std::vector<BRepGraph_CoEdgeId> aOrderBefore;
+  std::vector<TopAbs_Orientation> aOriBefore;
   for (size_t i = 0; i < aCoEdgesBefore.Size(); ++i)
   {
     const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgesBefore.Value(i);
@@ -88,8 +88,7 @@ TEST(BRepGraph_WireReverseTest, OrderAndOrientationFlipped)
 
     const BRepGraph_CoEdgeId       aCoEdgeId = aCoEdgesAfter.Value(i);
     const BRepGraphInc::CoEdgeDef& aCoEdge   = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
-    EXPECT_EQ(aCoEdge.Orientation,
-              TopAbs::Reverse(aOriBefore[aOrderBefore.size() - 1 - i]))
+    EXPECT_EQ(aCoEdge.Orientation, TopAbs::Reverse(aOriBefore[aOrderBefore.size() - 1 - i]))
       << "CoEdge orientation should be flipped at slot " << i;
   }
 }
@@ -154,7 +153,7 @@ TEST(BRepGraph_WireOrderTest, CheckCoEdgeOrderReportsCurrentAndReordered)
 
 TEST(BRepGraph_WireOrderTest, SetCoEdgeOrderCanonicalizesOpenWirePermutation)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aV2 = aGraph.Editor().Vertices().Add(gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
@@ -186,18 +185,18 @@ TEST(BRepGraph_WireOrderTest, SetCoEdgeOrderCanonicalizesOpenWirePermutation)
 
 TEST(BRepGraph_WireOrderTest, CheckAppendCoEdgeReportsReadyAndAlreadyContained)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aV2 = aGraph.Editor().Vertices().Add(gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
 
-  const BRepGraph_EdgeId aFirstEdge = addSegment(aGraph, aV0, aV1);
+  const BRepGraph_EdgeId                       aFirstEdge = addSegment(aGraph, aV0, aV1);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aInitialCoEdges;
   aInitialCoEdges.Append(aGraph.Editor().CoEdges().Add(aFirstEdge, TopAbs_FORWARD));
   const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aInitialCoEdges.ToArray1());
   ASSERT_TRUE(aWire.IsValid());
 
-  const BRepGraph_EdgeId aSecondEdge = addSegment(aGraph, aV1, aV2);
+  const BRepGraph_EdgeId   aSecondEdge = addSegment(aGraph, aV1, aV2);
   const BRepGraph_CoEdgeId aSecondCoEdge =
     aGraph.Editor().CoEdges().Add(aSecondEdge, TopAbs_FORWARD);
 
@@ -210,22 +209,22 @@ TEST(BRepGraph_WireOrderTest, CheckAppendCoEdgeReportsReadyAndAlreadyContained)
 
 TEST(BRepGraph_WireOrderTest, CheckReplaceEdgeReportsReadyAndDisconnected)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aV2 = aGraph.Editor().Vertices().Add(gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aV3 = aGraph.Editor().Vertices().Add(gp_Pnt(3.0, 0.0, 0.0), 1.0e-7);
   const BRepGraph_VertexId aV4 = aGraph.Editor().Vertices().Add(gp_Pnt(4.0, 0.0, 0.0), 1.0e-7);
 
-  const BRepGraph_EdgeId anOldEdge = addSegment(aGraph, aV0, aV1);
-  const BRepGraph_EdgeId aNextEdge = addSegment(aGraph, aV1, aV2);
+  const BRepGraph_EdgeId                       anOldEdge = addSegment(aGraph, aV0, aV1);
+  const BRepGraph_EdgeId                       aNextEdge = addSegment(aGraph, aV1, aV2);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anOldEdge, TopAbs_FORWARD));
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(aNextEdge, TopAbs_FORWARD));
   const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   ASSERT_TRUE(aWire.IsValid());
 
-  const BRepGraph_EdgeId aCompatibleEdge = addSegment(aGraph, aV0, aV1);
+  const BRepGraph_EdgeId aCompatibleEdge   = addSegment(aGraph, aV0, aV1);
   const BRepGraph_EdgeId aDisconnectedEdge = addSegment(aGraph, aV3, aV4);
 
   using ReplaceEdgeStatus = BRepGraph::EditorView::WireOps::ReplaceEdgeStatus;
@@ -264,8 +263,7 @@ TEST(BRepGraph_EdgeReverseTest, StartEndVertexRefsSwapped)
 
   const BRepGraph_VertexRefId aStartBefore =
     aGraph.Topo().Edges().Definition(anEdge).StartVertexRefId;
-  const BRepGraph_VertexRefId aEndBefore =
-    aGraph.Topo().Edges().Definition(anEdge).EndVertexRefId;
+  const BRepGraph_VertexRefId aEndBefore = aGraph.Topo().Edges().Definition(anEdge).EndVertexRefId;
   ASSERT_TRUE(aStartBefore.IsValid());
   ASSERT_TRUE(aEndBefore.IsValid());
   ASSERT_NE(aStartBefore, aEndBefore);
@@ -282,10 +280,8 @@ TEST(BRepGraph_EdgeReverseTest, RoundTripRestoresOriginal)
   const BRepGraph_EdgeId anEdge(0);
   ASSERT_TRUE(anEdge.IsValid(aGraph.Topo().Edges().Nb()));
 
-  const BRepGraph_VertexRefId aStart =
-    aGraph.Topo().Edges().Definition(anEdge).StartVertexRefId;
-  const BRepGraph_VertexRefId aEnd =
-    aGraph.Topo().Edges().Definition(anEdge).EndVertexRefId;
+  const BRepGraph_VertexRefId aStart = aGraph.Topo().Edges().Definition(anEdge).StartVertexRefId;
+  const BRepGraph_VertexRefId aEnd   = aGraph.Topo().Edges().Definition(anEdge).EndVertexRefId;
 
   aGraph.Editor().Edges().Reverse(anEdge);
   aGraph.Editor().Edges().Reverse(anEdge);
@@ -300,8 +296,7 @@ TEST(BRepGraph_LayerTopoSupplementTest, AddVertexToFaceGoesToSupplementLayer)
   const BRepGraph_FaceId aFaceId(0);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
-  const BRepGraph_VertexId aVertex =
-    aGraph.Editor().Vertices().Add(gp_Pnt(0.5, 0.5, 0.5), 1.0e-7);
+  const BRepGraph_VertexId aVertex = aGraph.Editor().Vertices().Add(gp_Pnt(0.5, 0.5, 0.5), 1.0e-7);
   ASSERT_TRUE(aVertex.IsValid());
 
   // Faces().AddVertex() removed; use Shapes().Add(vertexShape, faceNode) instead.
@@ -312,8 +307,9 @@ TEST(BRepGraph_LayerTopoSupplementTest, AddVertexToFaceGoesToSupplementLayer)
   const occ::handle<BRepGraph_LayerTopoSupplement> aLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
   ASSERT_FALSE(aLayer.IsNull());
-  const NCollection_LinearVector<uint64_t>& anAttached = aLayer->AttachedTo(BRepGraph_NodeId(aFaceId));
-  // No vertex added → no supplement attachments.
+  const NCollection_LinearVector<uint64_t>& anAttached =
+    aLayer->AttachedTo(BRepGraph_NodeId(aFaceId));
+  // No vertex added -> no supplement attachments.
   ASSERT_EQ(anAttached.Size(), 0u);
   // Skip removal test since no attachments exist.
 }
@@ -348,7 +344,7 @@ TEST(BRepGraph_RelationsTest, SupplementLayerClearedOnGraphClear)
   const occ::handle<BRepGraph_LayerTopoSupplement> aLayerBefore =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
   ASSERT_FALSE(aLayerBefore.IsNull());
-  // No vertex added → no supplement attachments before clear.
+  // No vertex added -> no supplement attachments before clear.
   ASSERT_EQ(aLayerBefore->AttachedTo(BRepGraph_NodeId(aFaceId)).Size(), 0u);
 
   aGraph.Clear();

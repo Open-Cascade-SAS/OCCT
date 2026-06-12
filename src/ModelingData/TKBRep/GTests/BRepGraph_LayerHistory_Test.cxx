@@ -86,7 +86,8 @@ TEST_F(BRepGraph_LayerHistoryTest, FindOriginal_ChainABC_ReturnsA)
     },
     "Step2");
 
-  const BRepGraph_NodeId anOriginal = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(anEdge2);
+  const BRepGraph_NodeId anOriginal =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(anEdge2);
   EXPECT_TRUE(anOriginal.IsValid());
   EXPECT_EQ(anOriginal, anEdge0);
 }
@@ -140,7 +141,8 @@ TEST_F(BRepGraph_LayerHistoryTest, FindOriginal_UnmodifiedNode_ReturnsSelf)
 {
   // FindOriginal returns the node itself when it is not derived from anything.
   const BRepGraph_NodeId aFace(BRepGraph_NodeId::Kind::Face, 0);
-  const BRepGraph_NodeId anOriginal = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(aFace);
+  const BRepGraph_NodeId anOriginal =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(aFace);
   EXPECT_TRUE(anOriginal.IsValid());
   EXPECT_EQ(anOriginal, aFace);
 }
@@ -148,7 +150,8 @@ TEST_F(BRepGraph_LayerHistoryTest, FindOriginal_UnmodifiedNode_ReturnsSelf)
 TEST_F(BRepGraph_LayerHistoryTest, FindDerived_UnmodifiedNode_ReturnsEmpty)
 {
   const BRepGraph_NodeId                           aFace(BRepGraph_NodeId::Kind::Face, 0);
-  const NCollection_LinearVector<BRepGraph_NodeId> aDerived = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindDerived(aFace);
+  const NCollection_LinearVector<BRepGraph_NodeId> aDerived =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindDerived(aFace);
   EXPECT_EQ(aDerived.Size(), size_t(0));
 }
 
@@ -192,7 +195,7 @@ TEST_F(BRepGraph_LayerHistoryTest, ReEnabled_RecordsAfterReEnable)
   myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->SetEnabled(true);
   EXPECT_TRUE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->IsEnabled());
 
-  const size_t                               aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+  const size_t aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
   const BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   NCollection_LinearVector<BRepGraph_NodeId> aReplacements;
   aReplacements.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
@@ -206,7 +209,7 @@ TEST_F(BRepGraph_LayerHistoryTest, ReEnabled_RecordsAfterReEnable)
 TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_EmptyReplacements)
 {
   const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  const size_t           aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+  const size_t aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
 
   myGraph.Editor().Gen().ApplyModification(
     anEdge0,
@@ -216,7 +219,9 @@ TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_EmptyReplacements)
     "Delete");
 
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), aNbBefore + 1);
-  const BRepGraph_LayerHistory::Event& aRec = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords() - 1);
+  const BRepGraph_LayerHistory::Event& aRec =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(
+      myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords() - 1);
   EXPECT_TRUE(aRec.OperationName.IsEqual("Delete"));
 }
 
@@ -230,8 +235,8 @@ TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_MultipleReplacements)
     anEdge0,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_LinearVector<BRepGraph_NodeId> {
       const uint32_t aBase = theGraph.Topo().Edges().Nb();
-      aNew1           = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aBase);
-      aNew2           = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aBase + 1);
+      aNew1                = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aBase);
+      aNew2                = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aBase + 1);
       NCollection_LinearVector<BRepGraph_NodeId> aResult;
       aResult.Append(aNew1);
       aResult.Append(aNew2);
@@ -260,7 +265,7 @@ TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_MultipleReplacements)
 
 TEST_F(BRepGraph_LayerHistoryTest, RecordHistory_EmptyReplacements_Stored)
 {
-  const size_t                               aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+  const size_t aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
   const BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   NCollection_LinearVector<BRepGraph_NodeId> anEmpty;
   myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("Erase",
@@ -290,8 +295,10 @@ TEST_F(BRepGraph_LayerHistoryTest, HistoryRecord_SequenceNumber_Monotonic)
 
   const size_t aNb = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
   ASSERT_GE(aNb, 2);
-  const BRepGraph_LayerHistory::Event& aRec1 = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aNb - 2);
-  const BRepGraph_LayerHistory::Event& aRec2 = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aNb - 1);
+  const BRepGraph_LayerHistory::Event& aRec1 =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aNb - 2);
+  const BRepGraph_LayerHistory::Event& aRec2 =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aNb - 1);
   EXPECT_LT(aRec1.SequenceNumber, aRec2.SequenceNumber);
 }
 
@@ -304,7 +311,9 @@ TEST_F(BRepGraph_LayerHistoryTest, HistoryRecord_OperationName_Stored)
                                                                    anEdge0,
                                                                    aRepl.ToArray1());
 
-  const BRepGraph_LayerHistory::Event& aRec = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords() - 1);
+  const BRepGraph_LayerHistory::Event& aRec =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(
+      myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords() - 1);
   EXPECT_TRUE(aRec.OperationName.IsEqual("MyCustomOp"));
 }
 
@@ -316,15 +325,9 @@ TEST_F(BRepGraph_LayerHistoryTest, NbHistoryRecords_AfterMultipleOps_Correct)
   NCollection_LinearVector<BRepGraph_NodeId> aRepl;
   aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
 
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("A",
-                                                                   anEdge0,
-                                                                   aRepl.ToArray1());
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("B",
-                                                                   anEdge0,
-                                                                   aRepl.ToArray1());
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("C",
-                                                                   anEdge0,
-                                                                   aRepl.ToArray1());
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("A", anEdge0, aRepl.ToArray1());
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("B", anEdge0, aRepl.ToArray1());
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("C", anEdge0, aRepl.ToArray1());
 
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), aNbBefore + 3);
 }
@@ -356,19 +359,22 @@ TEST_F(BRepGraph_LayerHistoryTest, FindOriginal_TwoApply_TransitiveTrace)
     "Move2");
 
   // FindOriginal from the end of a 2-step chain should reach the root.
-  const BRepGraph_NodeId anOriginal = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(aVtx2);
+  const BRepGraph_NodeId anOriginal =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(aVtx2);
   EXPECT_TRUE(anOriginal.IsValid());
   EXPECT_EQ(anOriginal, aVtx0);
 
   // Intermediate node should also trace back to root.
-  const BRepGraph_NodeId anOriginal1 = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(aVtx1);
+  const BRepGraph_NodeId anOriginal1 =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(aVtx1);
   EXPECT_TRUE(anOriginal1.IsValid());
   EXPECT_EQ(anOriginal1, aVtx0);
 }
 
 TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_WhenModifierThrows_DoesNotRecordHistory)
 {
-  const size_t aNbRecordsBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+  const size_t aNbRecordsBefore =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
 
   const BRepGraph_NodeId anEdge(BRepGraph_NodeId::Kind::Edge, 0);
 
@@ -382,14 +388,15 @@ TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_WhenModifierThrows_DoesNotR
                Standard_Failure);
 #endif
 
-  EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), aNbRecordsBefore);
+  EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(),
+            aNbRecordsBefore);
 }
 
 TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_RewritesAllContainingWires)
 {
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0u);
 
-  const BRepGraph_EdgeId       anEdgeId(0);
+  const BRepGraph_EdgeId          anEdgeId(0);
   const std::pair<double, double> anEdgeRange = BRepGraph_Tool::Edge::Range(myGraph, anEdgeId);
 
   const double aSplitParam = 0.5 * (anEdgeRange.first + anEdgeRange.second);
@@ -423,9 +430,9 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_RewritesAllContainingWires)
     const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdgeIds =
       myGraph.Topo().Wires().Relations(aWireId).CoEdgeIds;
 
-    bool hasOld   = false;
-    bool hasSubA  = false;
-    bool hasSubB  = false;
+    bool             hasOld        = false;
+    bool             hasSubA       = false;
+    bool             hasSubB       = false;
     constexpr size_t THE_NOT_FOUND = std::numeric_limits<size_t>::max();
     size_t           aSubAOrd      = THE_NOT_FOUND;
     size_t           aSubBOrd      = THE_NOT_FOUND;
@@ -434,7 +441,7 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_RewritesAllContainingWires)
     {
       const BRepGraphInc::CoEdgeDef& aCoEdge =
         myGraph.Topo().CoEdges().Definition(aCoEdgeIds.Value(anIdx));
-      const BRepGraph_NodeId         anId(aCoEdge.ChildEdgeId);
+      const BRepGraph_NodeId anId(aCoEdge.ChildEdgeId);
       if (anId == anEdgeId)
       {
         hasOld = true;
@@ -456,8 +463,7 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_RewritesAllContainingWires)
     EXPECT_TRUE(hasSubB);
     EXPECT_NE(aSubAOrd, THE_NOT_FOUND);
     EXPECT_NE(aSubBOrd, THE_NOT_FOUND);
-    const size_t aDistance =
-      (aSubAOrd < aSubBOrd) ? (aSubBOrd - aSubAOrd) : (aSubAOrd - aSubBOrd);
+    const size_t aDistance = (aSubAOrd < aSubBOrd) ? (aSubBOrd - aSubAOrd) : (aSubAOrd - aSubBOrd);
     EXPECT_TRUE(aDistance == 1 || aDistance + 1 == aCoEdgeIds.Size());
   }
 }
@@ -466,15 +472,15 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_IgnoresRemovedCoEdgeEntries)
 {
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0u);
 
-  const BRepGraph_EdgeId       anEdgeId(0);
+  const BRepGraph_EdgeId          anEdgeId(0);
   const std::pair<double, double> anEdgeRange = BRepGraph_Tool::Edge::Range(myGraph, anEdgeId);
-  const double                 aSplitParam = 0.5 * (anEdgeRange.first + anEdgeRange.second);
+  const double                    aSplitParam = 0.5 * (anEdgeRange.first + anEdgeRange.second);
 
   const NCollection_LinearVector<BRepGraph_WireId>& aWireIndices =
     myGraph.Topo().Edges().Wires(anEdgeId);
   ASSERT_GT(aWireIndices.Size(), 1);
 
-  const BRepGraph_WireId aWireId = aWireIndices.Value(0);
+  const BRepGraph_WireId                              aWireId = aWireIndices.Value(0);
   const NCollection_LinearVector<BRepGraph_CoEdgeId>& aWireCoEdgesBefore =
     myGraph.Topo().Wires().Relations(aWireId).CoEdgeIds;
   ASSERT_GT(aWireCoEdgesBefore.Size(), 0u);
@@ -500,7 +506,8 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_IgnoresRemovedCoEdgeEntries)
   ASSERT_TRUE(aCoEdgeToRemove.IsRemoved(myGraph));
   const BRepGraph_CoEdgeId aRemovedCoEdgeId = aCoEdgeToRemove;
 
-  const size_t aRemovedWireNbActiveBefore = myGraph.Topo().Wires().Relations(aWireId).CoEdgeIds.Size();
+  const size_t aRemovedWireNbActiveBefore =
+    myGraph.Topo().Wires().Relations(aWireId).CoEdgeIds.Size();
 
   const BRepGraph_VertexId aSplitVertex =
     myGraph.Editor().Vertices().Add(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
@@ -513,8 +520,7 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_IgnoresRemovedCoEdgeEntries)
   ASSERT_TRUE(aSubB.IsValid());
 
   EXPECT_TRUE(aCoEdgeToRemove.IsRemoved(myGraph));
-  EXPECT_EQ(myGraph.Topo().Wires().Relations(aWireId).CoEdgeIds.Size(),
-            aRemovedWireNbActiveBefore);
+  EXPECT_EQ(myGraph.Topo().Wires().Relations(aWireId).CoEdgeIds.Size(), aRemovedWireNbActiveBefore);
   const BRepGraphInc::CoEdgeDef& aRemovedCoEdgeAfter =
     myGraph.Topo().CoEdges().Definition(aRemovedCoEdgeId);
   EXPECT_EQ(aRemovedCoEdgeAfter.ChildEdgeId, anEdgeId);
@@ -548,15 +554,16 @@ TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_SplitEdge_RecordsBothDerive
 {
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0u);
 
-  const BRepGraph_EdgeId       anEdgeId(0);
+  const BRepGraph_EdgeId          anEdgeId(0);
   const std::pair<double, double> anEdgeRange = BRepGraph_Tool::Edge::Range(myGraph, anEdgeId);
-  const double                 aSplitParam = 0.5 * (anEdgeRange.first + anEdgeRange.second);
+  const double                    aSplitParam = 0.5 * (anEdgeRange.first + anEdgeRange.second);
 
   const BRepGraph_VertexId aSplitVertex =
     myGraph.Editor().Vertices().Add(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
-  const size_t aNbRecordsBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+  const size_t aNbRecordsBefore =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
 
   myGraph.Editor().Gen().ApplyModification(
     anEdgeId,
@@ -577,7 +584,8 @@ TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_SplitEdge_RecordsBothDerive
     },
     "Split");
 
-  EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), aNbRecordsBefore + 1);
+  EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(),
+            aNbRecordsBefore + 1);
 
   const NCollection_LinearVector<BRepGraph_NodeId> aDerived =
     myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindDerived(anEdgeId);
@@ -618,10 +626,11 @@ TEST_F(BRepGraph_LayerHistoryTest, FindGenerated_PerKindLookup_ReturnsOnlyGenera
   NCollection_LinearVector<BRepGraph_NodeId> aReplVec;
   aReplVec.Append(anRepl);
 
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("Generate",
-                                                                   anOrig,
-                                                                   aReplVec.ToArray1(),
-                                                                   BRepGraph_LayerHistory::Kind::Generated);
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(
+    "Generate",
+    anOrig,
+    aReplVec.ToArray1(),
+    BRepGraph_LayerHistory::Kind::Generated);
 
   const NCollection_LinearVector<BRepGraph_NodeId>* aGen =
     myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindGenerated(anOrig);
@@ -659,7 +668,7 @@ TEST_F(BRepGraph_LayerHistoryTest, RecordDeleted_MarksNodesAsDeleted)
 
 TEST_F(BRepGraph_LayerHistoryTest, RecordDeleted_EmptyList_IsNoop)
 {
-  const size_t                      aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+  const size_t aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
   NCollection_LinearVector<BRepGraph_NodeId> aEmpty;
   myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->RecordDeleted("Noop",
                                                                           aEmpty.ToArray1());
@@ -668,13 +677,14 @@ TEST_F(BRepGraph_LayerHistoryTest, RecordDeleted_EmptyList_IsNoop)
 
 TEST_F(BRepGraph_LayerHistoryTest, Record_EmptyReplacements_AutoDeleted)
 {
-  const BRepGraph_NodeId               anOrig(BRepGraph_NodeId::Kind::Edge, 0);
+  const BRepGraph_NodeId                     anOrig(BRepGraph_NodeId::Kind::Edge, 0);
   NCollection_LinearVector<BRepGraph_NodeId> aEmpty;
 
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("Consumed",
-                                                                   anOrig,
-                                                                   aEmpty.ToArray1(),
-                                                                   BRepGraph_LayerHistory::Kind::Generated);
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(
+    "Consumed",
+    anOrig,
+    aEmpty.ToArray1(),
+    BRepGraph_LayerHistory::Kind::Generated);
 
   EXPECT_TRUE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->IsDeleted(anOrig));
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), 1);
@@ -702,12 +712,14 @@ TEST_F(BRepGraph_LayerHistoryTest, FindDerived_ModifiedAndGenerated_CollectsBoth
   aGenRepl = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 2);
   NCollection_LinearVector<BRepGraph_NodeId> aGenRepVec;
   aGenRepVec.Append(aGenRepl);
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("ThenGenerated",
-                                                                   aModRepl,
-                                                                   aGenRepVec.ToArray1(),
-                                                                   BRepGraph_LayerHistory::Kind::Generated);
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(
+    "ThenGenerated",
+    aModRepl,
+    aGenRepVec.ToArray1(),
+    BRepGraph_LayerHistory::Kind::Generated);
 
-  const NCollection_LinearVector<BRepGraph_NodeId> aAll = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindDerived(anOrig);
+  const NCollection_LinearVector<BRepGraph_NodeId> aAll =
+    myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindDerived(anOrig);
   EXPECT_GE(aAll.Size(), 1);
   bool aFoundGen = false;
   for (const BRepGraph_NodeId& aNode : aAll)
@@ -719,8 +731,10 @@ TEST_F(BRepGraph_LayerHistoryTest, FindDerived_ModifiedAndGenerated_CollectsBoth
   }
   EXPECT_TRUE(aFoundGen);
   // Verify the Generated record is in the per-kind map.
-  EXPECT_NE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindGenerated(aModRepl), nullptr);
-  EXPECT_NE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindModified(anOrig), nullptr);
+  EXPECT_NE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindGenerated(aModRepl),
+            nullptr);
+  EXPECT_NE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindModified(anOrig),
+            nullptr);
 }
 
 TEST_F(BRepGraph_LayerHistoryTest, RecordBatch_ExplicitGeneratedKind_StoredCorrectly)
@@ -733,17 +747,20 @@ TEST_F(BRepGraph_LayerHistoryTest, RecordBatch_ExplicitGeneratedKind_StoredCorre
   aOriginals.Append(anOrig);
   aReplacements.Append(anRepl);
 
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->RecordBatch("BatchGen",
-                                                                        aOriginals.ToArray1(),
-                                                                        aReplacements.ToArray1(),
-                                                                        TCollection_AsciiString(),
-                                                                        BRepGraph_LayerHistory::Kind::Generated);
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->RecordBatch(
+    "BatchGen",
+    aOriginals.ToArray1(),
+    aReplacements.ToArray1(),
+    TCollection_AsciiString(),
+    BRepGraph_LayerHistory::Kind::Generated);
 
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), 1);
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(size_t(0)).RecordKind,
             BRepGraph_LayerHistory::Kind::Generated);
-  EXPECT_NE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindGenerated(anOrig), nullptr);
-  EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindModified(anOrig), nullptr);
+  EXPECT_NE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindGenerated(anOrig),
+            nullptr);
+  EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindModified(anOrig),
+            nullptr);
 }
 
 TEST_F(BRepGraph_LayerHistoryTest, Record_ExplicitModifiedKind_DefaultMatches)
@@ -752,10 +769,11 @@ TEST_F(BRepGraph_LayerHistoryTest, Record_ExplicitModifiedKind_DefaultMatches)
   aRepls.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
 
   const size_t aNbBefore = myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record("ExplicitMod",
-                                                                   BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0),
-                                                                   aRepls.ToArray1(),
-                                                                   BRepGraph_LayerHistory::Kind::Modified);
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(
+    "ExplicitMod",
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0),
+    aRepls.ToArray1(),
+    BRepGraph_LayerHistory::Kind::Modified);
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), aNbBefore + 1);
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aNbBefore).RecordKind,
             BRepGraph_LayerHistory::Kind::Modified);
@@ -767,14 +785,14 @@ TEST_F(BRepGraph_LayerHistoryTest, IsDeleted_UnrelatedNode_ReturnsFalse)
   EXPECT_FALSE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->IsDeleted(aNode));
 }
 
-
-
 TEST_F(BRepGraph_LayerHistoryTest, RecordReplaced_MapsImageAndMarksDeleted)
 {
   const BRepGraph_NodeId anOrig(BRepGraph_NodeId::Kind::Face, 0);
   const BRepGraph_NodeId aReplacement(BRepGraph_NodeId::Kind::Face, 1);
 
-  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->RecordReplaced("ReplaceFace", anOrig, aReplacement);
+  myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->RecordReplaced("ReplaceFace",
+                                                                           anOrig,
+                                                                           aReplacement);
 
   ASSERT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), size_t(1));
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(size_t(0)).RecordKind,
@@ -805,7 +823,8 @@ TEST_F(BRepGraph_LayerHistoryTest, StructuralReplacement_DoesNotEmitSemanticHist
 
   EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), size_t(0));
   EXPECT_FALSE(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->IsDeleted(aRemoved));
-  EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindModified(aRemoved), nullptr);
+  EXPECT_EQ(myGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindModified(aRemoved),
+            nullptr);
 }
 
 TEST_F(BRepGraph_LayerHistoryTest, FindOriginals_DerivedWithTwoParents_ReturnsBoth)
@@ -919,19 +938,19 @@ TopoDS_Shape MakeVertexShape(const double theX, const double theY, const double 
 
 TEST_F(BRepGraph_LayerHistoryTest, Absorb_NullSource_NoOp)
 {
-  BRepGraph_LayerHistory                            aHist;
-  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>          anInputs;
-  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>          anOutputs;
-  const occ::handle<BRepTools_History>         aNullSrc;
+  BRepGraph_LayerHistory                                                       aHist;
+  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> anInputs;
+  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> anOutputs;
+  const occ::handle<BRepTools_History>                                         aNullSrc;
   aHist.Absorb(anInputs, anOutputs, aNullSrc, "NullSrc");
   EXPECT_EQ(aHist.NbRecords(), size_t(0));
 }
 
 TEST_F(BRepGraph_LayerHistoryTest, Absorb_EmptyInputs_NoOp)
 {
-  BRepGraph_LayerHistory                    aHist;
-  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>  anInputs;
-  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>  anOutputs;
+  BRepGraph_LayerHistory                                                       aHist;
+  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> anInputs;
+  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> anOutputs;
   const occ::handle<BRepTools_History> aSrc = new BRepTools_History();
   aHist.Absorb(anInputs, anOutputs, aSrc, "EmptyInputs");
   EXPECT_EQ(aHist.NbRecords(), size_t(0));
@@ -939,12 +958,12 @@ TEST_F(BRepGraph_LayerHistoryTest, Absorb_EmptyInputs_NoOp)
 
 TEST_F(BRepGraph_LayerHistoryTest, Absorb_ModifiedOnly_EmitsModifiedRecord)
 {
-  const TopoDS_Shape         anInShape  = MakeVertexShape(0, 0, false);
-  const TopoDS_Shape         anOutShape = MakeVertexShape(1, 0, false);
-  const BRepGraph_NodeId     anInNode(BRepGraph_NodeId::Kind::Vertex, 100);
-  const BRepGraph_NodeId     anOutNode(BRepGraph_NodeId::Kind::Vertex, 101);
+  const TopoDS_Shape     anInShape  = MakeVertexShape(0, 0, false);
+  const TopoDS_Shape     anOutShape = MakeVertexShape(1, 0, false);
+  const BRepGraph_NodeId anInNode(BRepGraph_NodeId::Kind::Vertex, 100);
+  const BRepGraph_NodeId anOutNode(BRepGraph_NodeId::Kind::Vertex, 101);
 
-  occ::handle<BRepTools_History>      aSrc = new BRepTools_History();
+  occ::handle<BRepTools_History> aSrc = new BRepTools_History();
   aSrc->AddModified(anInShape, anOutShape);
 
   NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> anInputs;
@@ -999,8 +1018,8 @@ TEST_F(BRepGraph_LayerHistoryTest, Absorb_RemovedTakesPrecedenceOverModified)
   // The OCCT bug being guarded against: a shape can show up as both
   // IsRemoved() and in Modified()/Generated().  Absorb must classify it
   // as a deletion event regardless.
-  const TopoDS_Shape     anInShape  = MakeVertexShape(0, 0, false);
-  const TopoDS_Shape     aGhostOut  = MakeVertexShape(3, 0, false);
+  const TopoDS_Shape     anInShape = MakeVertexShape(0, 0, false);
+  const TopoDS_Shape     aGhostOut = MakeVertexShape(3, 0, false);
   const BRepGraph_NodeId anInNode(BRepGraph_NodeId::Kind::Vertex, 300);
   const BRepGraph_NodeId aGhostNode(BRepGraph_NodeId::Kind::Vertex, 301);
 
@@ -1049,7 +1068,7 @@ TEST_F(BRepGraph_LayerHistoryTest, ClearReleasesHistoryAndAllowsFreshUidRecordin
 
   for (uint32_t anIdx = 0; anIdx < 1000; ++anIdx)
   {
-    const BRepGraph_UID anOriginal(BRepGraph_NodeId::Kind::Edge, anIdx + 1);
+    const BRepGraph_UID                     anOriginal(BRepGraph_NodeId::Kind::Edge, anIdx + 1);
     NCollection_LinearVector<BRepGraph_UID> aReplacements(1);
     aReplacements.Append(BRepGraph_UID(BRepGraph_NodeId::Kind::Edge, anIdx + 1001));
     aHist.RecordUid("Stress", anOriginal, aReplacements.ToArray1());
@@ -1059,8 +1078,8 @@ TEST_F(BRepGraph_LayerHistoryTest, ClearReleasesHistoryAndAllowsFreshUidRecordin
   aHist.Clear();
   ASSERT_EQ(aHist.NbRecords(), size_t(0));
 
-  const BRepGraph_UID aFreshOriginal(BRepGraph_NodeId::Kind::Face, 20);
-  const BRepGraph_UID aFreshReplacement(BRepGraph_NodeId::Kind::Face, 21);
+  const BRepGraph_UID                     aFreshOriginal(BRepGraph_NodeId::Kind::Face, 20);
+  const BRepGraph_UID                     aFreshReplacement(BRepGraph_NodeId::Kind::Face, 21);
   NCollection_LinearVector<BRepGraph_UID> aFreshReplacements(1);
   aFreshReplacements.Append(aFreshReplacement);
   aHist.RecordUid("AfterClear", aFreshOriginal, aFreshReplacements.ToArray1());

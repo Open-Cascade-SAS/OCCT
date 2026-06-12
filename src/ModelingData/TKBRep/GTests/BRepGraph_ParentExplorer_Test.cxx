@@ -56,8 +56,7 @@ bool locationsEquivalent(const TopLoc_Location& theActual, const TopLoc_Location
   return anActualPoint.Distance(anExpectedPoint) <= Precision::Confusion();
 }
 
-void expectLocationsEquivalent(const TopLoc_Location& theActual,
-                               const TopLoc_Location& theExpected)
+void expectLocationsEquivalent(const TopLoc_Location& theActual, const TopLoc_Location& theExpected)
 {
   const gp_Pnt aProbe(3.0, 5.0, 7.0);
   const gp_Pnt anActualPoint   = aProbe.Transformed(theActual.Transformation());
@@ -257,8 +256,7 @@ TEST(BRepGraph_ParentExplorerTest, SharedProduct_ProductParentsKeepDistinctConte
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  const BRepGraph_ProductId aPart =
-    aGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
+  const BRepGraph_ProductId aPart = aGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
   aGraph.Editor().Products().AppendDocumentRoot(aPart);
   const BRepGraph_ProductId anAssembly = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(anAssembly);
@@ -269,10 +267,8 @@ TEST(BRepGraph_ParentExplorerTest, SharedProduct_ProductParentsKeepDistinctConte
   aT1.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
   gp_Trsf aT2;
   aT2.SetTranslation(gp_Vec(25.0, 0.0, 0.0));
-  ASSERT_TRUE(
-    aGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location(aT1)).IsValid());
-  ASSERT_TRUE(
-    aGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location(aT2)).IsValid());
+  ASSERT_TRUE(aGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location(aT1)).IsValid());
+  ASSERT_TRUE(aGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location(aT2)).IsValid());
 
   int             aPartCount = 0;
   TopLoc_Location aLoc1;
@@ -310,7 +306,7 @@ TEST(BRepGraph_ParentExplorerTest, DeepProductOccurrenceChain_ComposesToTopProdu
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  const BRepGraph_ProductId aPart = BRepGraph_ProductId::Start();
+  const BRepGraph_ProductId aPart         = BRepGraph_ProductId::Start();
   BRepGraph_ProductId       aChildProduct = aPart;
   double                    anExpectedX   = 0.0;
   BRepGraph_ProductId       aTopProduct;
@@ -423,8 +419,7 @@ TEST(BRepGraph_ParentExplorerTest, VertexChildOfDeepCompoundChain_ReachesTopComp
 {
   BRepGraph aGraph;
   aGraph.Clear();
-  const BRepGraph_VertexId aVertex =
-    aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 1.0e-7);
+  const BRepGraph_VertexId aVertex = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 1.0e-7);
   ASSERT_TRUE(aVertex.IsValid());
 
   BRepGraph_NodeId     aChild = aVertex;
@@ -643,8 +638,7 @@ TEST(BRepGraph_ParentExplorerTest, TargetProductAvoidCompound_StopsAtCompound)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Topo().Products().Nb(), 0);
 
@@ -664,8 +658,7 @@ TEST(BRepGraph_ParentExplorerTest, OccurrenceParent_ExposeOccurrenceRef)
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  const BRepGraph_ProductId aPart =
-    aGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
+  const BRepGraph_ProductId aPart = aGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
   aGraph.Editor().Products().AppendDocumentRoot(aPart);
   const BRepGraph_ProductId anAssembly = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(anAssembly);
@@ -698,8 +691,7 @@ TEST(BRepGraph_ParentExplorerTest, OccurrenceParents_SetRefOccurrenceDefRejectsS
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  const BRepGraph_ProductId aPart =
-    aGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
+  const BRepGraph_ProductId aPart = aGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
   aGraph.Editor().Products().AppendDocumentRoot(aPart);
   const BRepGraph_ProductId anAssembly1 = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(anAssembly1);
@@ -709,20 +701,18 @@ TEST(BRepGraph_ParentExplorerTest, OccurrenceParents_SetRefOccurrenceDefRejectsS
   ASSERT_TRUE(anAssembly1.IsValid());
   ASSERT_TRUE(anAssembly2.IsValid());
 
-  BRepGraph_OccurrenceRefId anOccRef1;
-  BRepGraph_OccurrenceRefId anOccRef2;
-  const BRepGraph_OccurrenceId anOcc1 =
-    aGraph.Editor().Products().Append(anAssembly1,
-                                            aPart,
-                                            TopLoc_Location(),
-                                            BRepGraph_OccurrenceId(),
-                                            &anOccRef1);
-  const BRepGraph_OccurrenceId anOcc2 =
-    aGraph.Editor().Products().Append(anAssembly2,
-                                            aPart,
-                                            TopLoc_Location(),
-                                            BRepGraph_OccurrenceId(),
-                                            &anOccRef2);
+  BRepGraph_OccurrenceRefId    anOccRef1;
+  BRepGraph_OccurrenceRefId    anOccRef2;
+  const BRepGraph_OccurrenceId anOcc1 = aGraph.Editor().Products().Append(anAssembly1,
+                                                                          aPart,
+                                                                          TopLoc_Location(),
+                                                                          BRepGraph_OccurrenceId(),
+                                                                          &anOccRef1);
+  const BRepGraph_OccurrenceId anOcc2 = aGraph.Editor().Products().Append(anAssembly2,
+                                                                          aPart,
+                                                                          TopLoc_Location(),
+                                                                          BRepGraph_OccurrenceId(),
+                                                                          &anOccRef2);
   ASSERT_TRUE(anOcc1.IsValid());
   ASSERT_TRUE(anOcc2.IsValid());
   ASSERT_TRUE(anOccRef1.IsValid());
@@ -745,8 +735,7 @@ TEST(BRepGraph_ParentExplorerTest, ProductParents_ImmediateOccurrence_IsStructur
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  const BRepGraph_ProductId aPart =
-    aGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
+  const BRepGraph_ProductId aPart = aGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
   aGraph.Editor().Products().AppendDocumentRoot(aPart);
   const BRepGraph_ProductId anAssembly = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(anAssembly);
@@ -805,10 +794,11 @@ TEST(BRepGraph_ParentExplorerTest, CoEdgeChildOfCompound_ImmediateCompoundIsVisi
   ASSERT_FALSE(aGraph.IsEmpty());
 
   const BRepGraph_WireId aWireId =
-    aGraph.Refs().Wires().Entry(aGraph.Refs().Wires().IdsOf(BRepGraph_FaceId::Start()).First())
+    aGraph.Refs()
+      .Wires()
+      .Entry(aGraph.Refs().Wires().IdsOf(BRepGraph_FaceId::Start()).First())
       .ChildWireId;
-  const BRepGraph_CoEdgeId aCoEdgeId =
-    aGraph.Topo().Wires().Relations(aWireId).CoEdgeIds.First();
+  const BRepGraph_CoEdgeId aCoEdgeId = aGraph.Topo().Wires().Relations(aWireId).CoEdgeIds.First();
 
   NCollection_LinearVector<BRepGraph_NodeId> aChildren;
   aChildren.Append(aCoEdgeId);

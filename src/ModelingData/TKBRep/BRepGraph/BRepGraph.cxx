@@ -58,9 +58,8 @@ BRepGraph::BRepGraph()
     : myData(std::make_unique<BRepGraph_Data>())
 {
   initViewsAndRegistries();
-  (void )myData->myLayerRegistry.Ensure<BRepGraph_LayerHistory>();
+  (void)myData->myLayerRegistry.Ensure<BRepGraph_LayerHistory>();
 }
-
 
 //=================================================================================================
 
@@ -72,7 +71,6 @@ BRepGraph::~BRepGraph()
     myData->myCacheRegistry.Detach();
   }
 }
-
 
 //=================================================================================================
 
@@ -184,8 +182,6 @@ BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
 }
 
 //=================================================================================================
-
-
 
 //=================================================================================================
 
@@ -532,7 +528,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
                             + aStorage.NbCompounds() + aStorage.NbCompSolids()
                             + aStorage.NbProducts() + aStorage.NbOccurrences();
   const uint32_t                        aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
-  occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator> anAlloc   = new NCollection_IncAllocator();
   NCollection_LinearVector<StackEntry>  aStack(64);
   NCollection_Map<BRepGraph_NodeId>     aVisited(static_cast<size_t>(aNbNodes), anAlloc);
   aStack.Append({theNode, 0});
@@ -948,7 +944,8 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
           continue;
         }
         const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
-        if (aRef.ParentProductId.IsValid(aStorage.NbProducts()) && !aStorage.IsRemoved(aRef.ParentProductId))
+        if (aRef.ParentProductId.IsValid(aStorage.NbProducts())
+            && !aStorage.IsRemoved(aRef.ParentProductId))
         {
           markParentSubtreeGen(aRef.ParentProductId);
         }
@@ -969,7 +966,8 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
           }
           const BRepGraph_OccurrenceId anOccurrenceId =
             aStorage.OccurrenceRef(aRefId).ChildOccurrenceId;
-          if (anOccurrenceId.IsValid(aStorage.NbOccurrences()) && !aStorage.IsRemoved(anOccurrenceId))
+          if (anOccurrenceId.IsValid(aStorage.NbOccurrences())
+              && !aStorage.IsRemoved(anOccurrenceId))
           {
             markParentSubtreeGen(anOccurrenceId);
           }

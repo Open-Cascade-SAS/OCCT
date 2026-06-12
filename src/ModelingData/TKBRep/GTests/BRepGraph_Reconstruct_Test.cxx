@@ -24,7 +24,6 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -639,8 +638,8 @@ TEST(BRepGraph_ReconstructTest, CompoundRoot_TwoSolids_Preserved)
   const double aReconVol2 = computeVolume(aRecon2);
 
   // The two volumes should match the originals (order may vary, so check both assignments).
-  const bool isDirectMatch  = (std::abs(aReconVol1 - anOrigVol1) < anOrigVol1 * 0.01)
-                              && (std::abs(aReconVol2 - anOrigVol2) < anOrigVol2 * 0.01);
+  const bool isDirectMatch = (std::abs(aReconVol1 - anOrigVol1) < anOrigVol1 * 0.01)
+                             && (std::abs(aReconVol2 - anOrigVol2) < anOrigVol2 * 0.01);
   const bool isSwappedMatch = (std::abs(aReconVol1 - anOrigVol2) < anOrigVol2 * 0.01)
                               && (std::abs(aReconVol2 - anOrigVol1) < anOrigVol1 * 0.01);
 

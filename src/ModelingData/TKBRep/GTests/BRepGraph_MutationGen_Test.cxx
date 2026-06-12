@@ -35,8 +35,7 @@ protected:
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
     myGraph.Clear();
-    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
-      myGraph.Shapes().Add(aBox);
+    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 = myGraph.Shapes().Add(aBox);
     ASSERT_FALSE(myGraph.IsEmpty());
   }
 
@@ -70,7 +69,7 @@ TEST(BRepGraph_MutationGenEditorTest, EditorCreationRegistersOwnGeneration)
   const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
 
   NCollection_LinearVector<BRepGraph_WireId> anInnerWires;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(new Geom_Plane(gp_Pln()), aWire, anInnerWires.ToArray1(), 1.e-7);
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
   const BRepGraph_SolidId aSolid = aGraph.Editor().Solids().Add();
@@ -105,10 +104,10 @@ TEST(BRepGraph_MutationGenEditorTest, ProductAppendRegistersBothProductsAndOccur
   const BRepGraph_ProductId aChild  = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(aChild);
 
-  const BRepGraph_VersionStamp aParentStamp = aGraph.UIDs().StampOf(aParent);
-  const BRepGraph_VersionStamp aChildStamp  = aGraph.UIDs().StampOf(aChild);
-  const uint32_t aParentOwnGen = aGraph.Topo().Products().Definition(aParent).OwnGen;
-  const uint32_t aChildOwnGen  = aGraph.Topo().Products().Definition(aChild).OwnGen;
+  const BRepGraph_VersionStamp aParentStamp  = aGraph.UIDs().StampOf(aParent);
+  const BRepGraph_VersionStamp aChildStamp   = aGraph.UIDs().StampOf(aChild);
+  const uint32_t               aParentOwnGen = aGraph.Topo().Products().Definition(aParent).OwnGen;
+  const uint32_t               aChildOwnGen  = aGraph.Topo().Products().Definition(aChild).OwnGen;
 
   const BRepGraph_OccurrenceId anOccurrence =
     aGraph.Editor().Products().Append(aParent, aChild, TopLoc_Location());
@@ -271,7 +270,7 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
 TEST_F(BRepGraph_MutationGenTest, SubtreeGen_SolidMutation_PropagatesThroughRootOccurrence)
 {
   ASSERT_EQ(myGraph.RootProductIds().Size(), 1);
-  const BRepGraph_ProductId aRootProduct = myGraph.RootProductIds().Value(0);
+  const BRepGraph_ProductId    aRootProduct = myGraph.RootProductIds().Value(0);
   const BRepGraph_OccurrenceId aRootOccurrence =
     myGraph.Topo().Products().Component(aRootProduct, 0);
   ASSERT_TRUE(aRootOccurrence.IsValid());
@@ -296,7 +295,7 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_SolidMutation_PropagatesThroughRoot
 TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredSolidMutation_PropagatesThroughRootOccurrence)
 {
   ASSERT_EQ(myGraph.RootProductIds().Size(), 1);
-  const BRepGraph_ProductId aRootProduct = myGraph.RootProductIds().Value(0);
+  const BRepGraph_ProductId    aRootProduct = myGraph.RootProductIds().Value(0);
   const BRepGraph_OccurrenceId aRootOccurrence =
     myGraph.Topo().Products().Component(aRootProduct, 0);
   ASSERT_TRUE(aRootOccurrence.IsValid());

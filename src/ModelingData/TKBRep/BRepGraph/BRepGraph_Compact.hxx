@@ -40,7 +40,7 @@ public:
       CopyFresh //!< Copy fresh, remappable transient entries into the compacted graph.
     };
 
-    bool        HistoryMode = true; //!< Record index remapping in history.
+    bool        HistoryMode = true;              //!< Record index remapping in history.
     CachePolicy CacheMode   = CachePolicy::Drop; //!< Runtime cache migration policy.
   };
 
@@ -59,7 +59,8 @@ public:
     uint32_t NbRemovedCurves     = 0;
     uint32_t NbNodesBefore       = 0;
     uint32_t NbNodesAfter        = 0;
-    uint32_t NbUnmappedActiveDefs = 0; //!< Active defs not present in any remap (orphans + drop-outs).
+    uint32_t NbUnmappedActiveDefs =
+      0; //!< Active defs not present in any remap (orphans + drop-outs).
   };
 
   //! Run compaction with default options.

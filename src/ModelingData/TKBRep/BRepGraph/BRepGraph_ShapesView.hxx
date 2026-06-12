@@ -93,8 +93,7 @@ public:
   //! @param[in] theOptions shape-ingestion options
   //! @return Result with TopologyRoot set on success; Product/Occurrence set
   //!         when theOptions.CreateAutoProduct is true.
-  [[nodiscard]] Standard_EXPORT Result Add(const TopoDS_Shape& theShape,
-                                           const Options&      theOptions);
+  [[nodiscard]] Standard_EXPORT Result Add(const TopoDS_Shape& theShape, const Options& theOptions);
 
   //! Ingest a TopoDS_Shape under an existing parent.
   //!
@@ -124,43 +123,41 @@ public:
   //! reconstruct selected graph roots to TopoDS, run OCCT, and then need to
   //! translate BRepTools_History back to graph NodeIds.
   Standard_EXPORT void CollectHistoryInputs(
-    const NCollection_Array1<BRepGraph_NodeId>& theRoots,
-    NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>&
-      theOutInputs) const;
+    const NCollection_Array1<BRepGraph_NodeId>&                                   theRoots,
+    NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theOutInputs)
+    const;
 
   //! Add an OCCT algorithm result and absorb BRepTools_History into the
   //! registered BRepGraph_LayerHistory layer using explicit input shape mapping.
   [[nodiscard]] Standard_EXPORT Result AddWithHistory(
     const TopoDS_Shape& theResultShape,
-    const NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>&
-                                           theInputs,
-    const occ::handle<BRepTools_History>&  theHistory,
-    const TCollection_AsciiString&         theOpLabel);
+    const NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theInputs,
+    const occ::handle<BRepTools_History>&                                               theHistory,
+    const TCollection_AsciiString&                                                      theOpLabel);
 
   //! Add an OCCT algorithm result and absorb BRepTools_History with explicit options.
   [[nodiscard]] Standard_EXPORT Result AddWithHistory(
     const TopoDS_Shape& theResultShape,
-    const NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>&
-                                           theInputs,
-    const occ::handle<BRepTools_History>&  theHistory,
-    const TCollection_AsciiString&         theOpLabel,
-    const Options&                         theOptions);
+    const NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theInputs,
+    const occ::handle<BRepTools_History>&                                               theHistory,
+    const TCollection_AsciiString&                                                      theOpLabel,
+    const Options&                                                                      theOptions);
 
   //! Convenience overload that collects the history input map from selected roots.
-  [[nodiscard]] Standard_EXPORT Result AddWithHistory(
-    const TopoDS_Shape&                         theResultShape,
-    const NCollection_Array1<BRepGraph_NodeId>& theInputRoots,
-    const occ::handle<BRepTools_History>&       theHistory,
-    const TCollection_AsciiString&              theOpLabel);
+  [[nodiscard]] Standard_EXPORT Result
+    AddWithHistory(const TopoDS_Shape&                         theResultShape,
+                   const NCollection_Array1<BRepGraph_NodeId>& theInputRoots,
+                   const occ::handle<BRepTools_History>&       theHistory,
+                   const TCollection_AsciiString&              theOpLabel);
 
   //! Convenience overload that collects the history input map from selected roots
   //! and uses explicit options.
-  [[nodiscard]] Standard_EXPORT Result AddWithHistory(
-    const TopoDS_Shape&                         theResultShape,
-    const NCollection_Array1<BRepGraph_NodeId>& theInputRoots,
-    const occ::handle<BRepTools_History>&       theHistory,
-    const TCollection_AsciiString&              theOpLabel,
-    const Options&                              theOptions);
+  [[nodiscard]] Standard_EXPORT Result
+    AddWithHistory(const TopoDS_Shape&                         theResultShape,
+                   const NCollection_Array1<BRepGraph_NodeId>& theInputRoots,
+                   const occ::handle<BRepTools_History>&       theHistory,
+                   const TCollection_AsciiString&              theOpLabel,
+                   const Options&                              theOptions);
 
   //! Return or reconstruct a TopoDS_Shape for a node.
   //! Prefer this route for repeated public queries.
@@ -182,8 +179,7 @@ public:
   //! Return the original TopoDS_Shape stored during graph construction.
   //! @param[in] theNode node identifier
   //! @return original shape for an active node, or null shape when absent/invalid/removed
-  [[nodiscard]] Standard_EXPORT TopoDS_Shape Original(
-    const BRepGraph_NodeId theNode) const;
+  [[nodiscard]] Standard_EXPORT TopoDS_Shape Original(const BRepGraph_NodeId theNode) const;
 
   //! Reconstruct a TopoDS_Shape from a graph node without using the persistent cache.
   //! Use this when the caller explicitly needs a fresh rebuild instead of the
@@ -254,8 +250,8 @@ private:
   //! Shape identity follows TopTools_ShapeMapHasher (TShape pointer +
   //! Location), matching OCCT's standard shape-keyed maps.
   static void collectAddedNodes(
-    const BRepGraph& theGraph,
-    const TopoDS_Shape& theShape,
+    const BRepGraph&                                                              theGraph,
+    const TopoDS_Shape&                                                           theShape,
     NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theMap);
 
   static BRepGraph_NodeId detectTopologyRoot(const BRepGraph&       theGraph,
@@ -265,7 +261,7 @@ private:
   static uint32_t snapshotCountForKind(const BRepGraph&       theGraph,
                                        const TopAbs_ShapeEnum theShapeType);
 
-  static void populateUIDsIncremental(BRepGraph&    theGraph,
+  static void populateUIDsIncremental(BRepGraph&     theGraph,
                                       const uint32_t theOldVtx,
                                       const uint32_t theOldEdge,
                                       const uint32_t theOldCoEdge,

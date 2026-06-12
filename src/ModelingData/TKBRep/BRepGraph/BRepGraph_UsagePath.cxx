@@ -43,19 +43,19 @@ size_t BRepGraph_UsagePath::HashCode() const
   const Step& aFirst = First();
   if (aSize == 1)
   {
-    size_t aCombination[] = { opencascade::hash(aSize),
-                              opencascade::hash(aFirst.Node),
-                              opencascade::hash(aFirst.Ref),
-                              opencascade::hash(aFirst.StepIndex) };
+    size_t aCombination[] = {opencascade::hash(aSize),
+                             opencascade::hash(aFirst.Node),
+                             opencascade::hash(aFirst.Ref),
+                             opencascade::hash(aFirst.StepIndex)};
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }
-  const Step& aLast = Last();
-  size_t aCombination[] = { opencascade::hash(aSize),
-                            opencascade::hash(aFirst.Node),
-                            opencascade::hash(aFirst.Ref),
-                            opencascade::hash(aFirst.StepIndex),
-                            opencascade::hash(aLast.Node),
-                            opencascade::hash(aLast.Ref),
-                            opencascade::hash(aLast.StepIndex) };
+  const Step& aLast          = Last();
+  size_t      aCombination[] = {opencascade::hash(aSize),
+                                opencascade::hash(aFirst.Node),
+                                opencascade::hash(aFirst.Ref),
+                                opencascade::hash(aFirst.StepIndex),
+                                opencascade::hash(aLast.Node),
+                                opencascade::hash(aLast.Ref),
+                                opencascade::hash(aLast.StepIndex)};
   return opencascade::hashBytes(aCombination, sizeof(aCombination));
 }

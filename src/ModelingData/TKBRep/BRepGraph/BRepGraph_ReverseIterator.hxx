@@ -177,8 +177,7 @@ struct DefTraits<BRepGraph_OccurrenceId>
 //! Also provides indexed access (Length/Value) for callers that need
 //! random access into the underlying vector (e.g. BRepGraph_ParentExplorer).
 //! @tparam TypedIdT Typed ID such as BRepGraph_FaceId, BRepGraph_EdgeId, etc.
-template <typename TypedIdT,
-          typename ContainerT = NCollection_LinearVector<TypedIdT>>
+template <typename TypedIdT, typename ContainerT = NCollection_LinearVector<TypedIdT>>
 class ParentsOf
 {
 public:
@@ -191,9 +190,7 @@ public:
 
   //! Construct starting at a given vector index (for resumable iteration).
   //! Skips to the first non-removed entry at or after theStartIndex.
-  ParentsOf(const BRepGraph& theGraph,
-            const ContainerT& theParents,
-            const uint32_t   theStartIndex)
+  ParentsOf(const BRepGraph& theGraph, const ContainerT& theParents, const uint32_t theStartIndex)
       : myGraph(&theGraph),
         myParents(&theParents),
         myIndex(theStartIndex)
@@ -253,9 +250,9 @@ private:
     }
   }
 
-  const BRepGraph* myGraph   = nullptr;
+  const BRepGraph*  myGraph   = nullptr;
   const ContainerT* myParents = nullptr;
-  uint32_t         myIndex   = 0;
+  uint32_t          myIndex   = 0;
 };
 
 //! Result pair returned by parent-ref iterators: parent definition ID + the RefId
@@ -276,10 +273,10 @@ template <typename TraitsT>
 class LookupParentRefsOf
 {
 public:
-  using ParentIdType = typename TraitsT::ParentId;
-  using ChildIdType  = typename TraitsT::ChildId;
-  using RefIdType    = typename TraitsT::RefId;
-  using ResultType   = ParentRef<ParentIdType, RefIdType>;
+  using ParentIdType  = typename TraitsT::ParentId;
+  using ChildIdType   = typename TraitsT::ChildId;
+  using RefIdType     = typename TraitsT::RefId;
+  using ResultType    = ParentRef<ParentIdType, RefIdType>;
   using ContainerType = typename TraitsT::ContainerType;
 
   LookupParentRefsOf(const BRepGraph&     theGraph,
@@ -338,12 +335,12 @@ private:
     }
   }
 
-  const BRepGraph* myGraph   = nullptr;
+  const BRepGraph*     myGraph   = nullptr;
   const ContainerType* myParents = nullptr;
-  ChildIdType      myChild;
-  ResultType       myCurrent;
-  uint32_t         myIndex      = 0;
-  bool             myHasCurrent = false;
+  ChildIdType          myChild;
+  ResultType           myCurrent;
+  uint32_t             myIndex      = 0;
+  bool                 myHasCurrent = false;
 };
 
 template <typename TraitsT>
@@ -409,31 +406,31 @@ private:
       if (!aRefId.IsRemoved(*myGraph))
       {
         const IdType anId = TraitsT::Id(*myGraph, aRefId);
-	        if (anId.IsValid() && !anId.IsRemoved(*myGraph))
-	        {
-	          myCurrent    = anId;
-	          myCurrentRef = aRefId;
-	          myHasCurrent = true;
-	          return;
-	        }
+        if (anId.IsValid() && !anId.IsRemoved(*myGraph))
+        {
+          myCurrent    = anId;
+          myCurrentRef = aRefId;
+          myHasCurrent = true;
+          return;
+        }
       }
       ++myIndex;
     }
   }
 
-  const BRepGraph* myGraph = nullptr;
-  const ContainerType* myRefs = nullptr;
-  IdType           myCurrent;
-  RefIdType        myCurrentRef;
-  uint32_t         myIndex      = 0;
-  bool             myHasCurrent = false;
+  const BRepGraph*     myGraph = nullptr;
+  const ContainerType* myRefs  = nullptr;
+  IdType               myCurrent;
+  RefIdType            myCurrentRef;
+  uint32_t             myIndex      = 0;
+  bool                 myHasCurrent = false;
 };
 
 struct WireOfCoEdgeUsageTraits
 {
-  using ParentId = BRepGraph_WireId;
-  using ChildId  = BRepGraph_CoEdgeId;
-  using RefId    = BRepGraph_CoEdgeId;
+  using ParentId      = BRepGraph_WireId;
+  using ChildId       = BRepGraph_CoEdgeId;
+  using RefId         = BRepGraph_CoEdgeId;
   using ContainerType = NCollection_LinearVector<ParentId>;
 
   static RefId FindRef(const BRepGraph&         theGraph,
@@ -453,9 +450,9 @@ struct WireOfCoEdgeUsageTraits
 
 struct EdgeOfVertexRefTraits
 {
-  using ParentId = BRepGraph_EdgeId;
-  using ChildId  = BRepGraph_VertexId;
-  using RefId    = BRepGraph_VertexRefId;
+  using ParentId      = BRepGraph_EdgeId;
+  using ChildId       = BRepGraph_VertexId;
+  using RefId         = BRepGraph_VertexRefId;
   using ContainerType = NCollection_LinearVector<ParentId>;
 
   static RefId FindRef(const BRepGraph&         theGraph,
@@ -618,11 +615,11 @@ using BRepGraph_CompoundsOfCompound =
 using BRepGraph_CompoundsOfChild =
   BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>;
 // Product -> Occurrences
-using BRepGraph_OccurrencesOfProduct =
-  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::OccurrenceFromOccurrenceRefTraits>;
+using BRepGraph_OccurrencesOfProduct = BRepGraph_ReverseIterator::IdsOfRefs<
+  BRepGraph_ReverseIterator::OccurrenceFromOccurrenceRefTraits>;
 // Any occurrence child -> Occurrences
-using BRepGraph_OccurrencesOfChild =
-  BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::OccurrenceFromOccurrenceRefTraits>;
+using BRepGraph_OccurrencesOfChild = BRepGraph_ReverseIterator::IdsOfRefs<
+  BRepGraph_ReverseIterator::OccurrenceFromOccurrenceRefTraits>;
 // Occurrence -> parent Products
 using BRepGraph_ProductsOfOccurrence =
   BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::ProductFromOccurrenceRefTraits>;

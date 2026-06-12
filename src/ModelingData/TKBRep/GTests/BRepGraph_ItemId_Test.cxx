@@ -54,9 +54,9 @@ TEST(BRepGraph_ItemIdTest, ReferenceRoundTrip)
 
 TEST(BRepGraph_ItemIdTest, InvalidSourceKindProducesInvalidItem)
 {
-  constexpr uint32_t      THE_RESERVED_KIND = 9u;
-  const BRepGraph_NodeId  aNode(static_cast<BRepGraph_NodeId::Kind>(THE_RESERVED_KIND), 0u);
-  const BRepGraph_ItemId  anItem(aNode);
+  constexpr uint32_t     THE_RESERVED_KIND = 9u;
+  const BRepGraph_NodeId aNode(static_cast<BRepGraph_NodeId::Kind>(THE_RESERVED_KIND), 0u);
+  const BRepGraph_ItemId anItem(aNode);
 
   EXPECT_FALSE(aNode.IsValid());
   EXPECT_FALSE(anItem.IsValid());

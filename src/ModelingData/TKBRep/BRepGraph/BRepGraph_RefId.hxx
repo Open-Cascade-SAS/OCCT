@@ -242,10 +242,7 @@ struct BRepGraph_RefId
     return BRepGraph_RefId(theKind, THE_INVALID_INDEX);
   }
 
-  [[nodiscard]] bool IsValid() const
-  {
-    return IsValidKind(RefKind) && Index != THE_INVALID_INDEX;
-  }
+  [[nodiscard]] bool IsValid() const { return IsValidKind(RefKind) && Index != THE_INVALID_INDEX; }
 
   //! True if this id points to an allocated slot within [0, theMaxCount).
   //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.

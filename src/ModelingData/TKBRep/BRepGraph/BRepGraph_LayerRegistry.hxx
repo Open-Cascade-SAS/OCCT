@@ -134,7 +134,7 @@ public:
   //! Ask every registered source layer to copy itself into the target graph.
   //! For Mode::Compact, layers are unregistered first and CopyTo creates fresh instances.
   //! @param[in] theTargetGraph target graph to receive layer data
-  //! @param[in] theItemRemap   source → target item id mapping
+  //! @param[in] theItemRemap   source -> target item id mapping
   //! @param[in] theMode        Copy or Compact semantics
   Standard_EXPORT void CopyLayersTo(
     BRepGraph&                                                         theTargetGraph,

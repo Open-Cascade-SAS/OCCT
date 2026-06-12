@@ -33,7 +33,6 @@
 class BRepGraph_UsagePath
 {
 public:
-
   //! One concrete traversal step in a usage path.
   //!
   //! Ref is valid for reference-owned links and invalid for structural links
@@ -48,20 +47,18 @@ public:
 
     bool operator==(const Step& theOther) const
     {
-      return Node == theOther.Node && Ref == theOther.Ref
-          && StepIndex == theOther.StepIndex;
+      return Node == theOther.Node && Ref == theOther.Ref && StepIndex == theOther.StepIndex;
     }
   };
 
 public:
-
   //! Creates an empty usage path.
   BRepGraph_UsagePath() = default;
 
   //! Creates a usage path with pre-allocated capacity.
   //! @param[in] theCapacity number of steps to pre-allocate
   explicit BRepGraph_UsagePath(const size_t theCapacity)
-    : mySteps(theCapacity)
+      : mySteps(theCapacity)
   {
   }
 
@@ -102,17 +99,13 @@ public:
 
   //! Returns true if this path is equal to the other path.
   //! @param[in] theOther path to compare with
-  bool operator==(const BRepGraph_UsagePath& theOther) const
-  {
-    return IsEqual(theOther);
-  }
+  bool operator==(const BRepGraph_UsagePath& theOther) const { return IsEqual(theOther); }
 
   //! Returns a hash code for this path.
   //! Uses first step, last step, and size for O(1) computation.
   size_t HashCode() const;
 
 private:
-
   NCollection_LinearVector<Step> mySteps;
 };
 

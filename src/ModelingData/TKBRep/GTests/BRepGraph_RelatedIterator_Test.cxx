@@ -152,8 +152,7 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeReferencedByFace_RemovedFaceIsSkipped)
   const BRepGraph_EdgeId anEdgeId(0);
 
   // Find the two faces that reference this edge.
-  const NCollection_LinearVector<BRepGraph_FaceId>& aFaces =
-    myGraph.Topo().Edges().Faces(anEdgeId);
+  const NCollection_LinearVector<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
   ASSERT_EQ(aFaces.Size(), 2);
 
   // Remove the first face.
@@ -233,8 +232,7 @@ TEST(BRepGraph_RelatedIteratorStandalone, Compound_YieldsNoRelations)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_CompoundId aCompoundId;

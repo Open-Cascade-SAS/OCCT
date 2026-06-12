@@ -109,7 +109,6 @@ public:
     //! @return edge count
     [[nodiscard]] Standard_EXPORT static uint32_t NbEdges(const BRepGraph&         theGraph,
                                                           const BRepGraph_VertexId theVertex);
-
   };
 
   //! @brief Edge geometry, curve, and continuity accessors.
@@ -320,7 +319,6 @@ public:
       const BRepGraph&       theGraph,
       const CoEdgeUsage&     theRef,
       const BRepGraph_FaceId theFace);
-
   };
 
   //! @brief CoEdge (half-edge) parametric curve accessors.
@@ -570,7 +568,6 @@ public:
                                        double&                   theUMax,
                                        double&                   theVMin,
                                        double&                   theVMax);
-
   };
 
   //! @brief Wire property accessors.
@@ -663,7 +660,8 @@ public:
     [[nodiscard]] Standard_EXPORT static ShellUsage Usage(const BRepGraph&           theGraph,
                                                           const BRepGraph_ShellRefId theShellRef);
 
-    //! Returns true if the shell is topologically closed, derived from face-boundary edge incidence.
+    //! Returns true if the shell is topologically closed, derived from face-boundary edge
+    //! incidence.
     //! @param[in] theGraph source graph
     //! @param[in] theShell typed shell definition identifier
     //! @return true if closed

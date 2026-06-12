@@ -219,7 +219,7 @@ public:
     [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_ChildRefId>& IdsOf(
       const BRepGraph_CompoundId theCompound) const;
     [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_ChildRefId>&
-      IdsReferencing(const BRepGraph_NodeId theChild) const;
+                                        IdsReferencing(const BRepGraph_NodeId theChild) const;
 
   private:
     friend class RefsView;
@@ -254,7 +254,7 @@ public:
     [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_OccurrenceRefId>& IdsOf(
       const BRepGraph_ProductId theProduct) const;
     [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_OccurrenceRefId>&
-      IdsReferencing(const BRepGraph_NodeId theChild) const;
+                                        IdsReferencing(const BRepGraph_NodeId theChild) const;
 
   private:
     friend class RefsView;
@@ -324,14 +324,14 @@ private:
   {
   }
 
-  BRepGraph* myGraph;
-  ShellOps         myShells;
-  FaceOps          myFaces;
-  WireOps          myWires;
-  VertexOps        myVertices;
-  SolidOps         mySolids;
-  ChildOps         myChildren;
-  OccurrenceOps    myOccurrences;
+  BRepGraph*    myGraph;
+  ShellOps      myShells;
+  FaceOps       myFaces;
+  WireOps       myWires;
+  VertexOps     myVertices;
+  SolidOps      mySolids;
+  ChildOps      myChildren;
+  OccurrenceOps myOccurrences;
 };
 
 #endif // _BRepGraph_RefsView_HeaderFile

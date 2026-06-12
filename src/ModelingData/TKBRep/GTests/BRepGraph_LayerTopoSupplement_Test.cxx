@@ -339,7 +339,7 @@ TEST(BRepGraph_LayerTopoSupplementTest, LegacyEdgeInternalVertexWriterUsesSupple
 
   const occ::handle<BRepGraph_LayerTopoSupplement> aLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  // No internal vertex added → supplement layer may not be created.
+  // No internal vertex added -> supplement layer may not be created.
   if (!aLayer.IsNull())
   {
     const NCollection_LinearVector<uint64_t>& anAttached =
@@ -556,7 +556,7 @@ TEST(BRepGraph_LayerTopoSupplementTest, SolidAddChild_ReconstructPreservesSupple
   ASSERT_FALSE(aLayer.IsNull());
 
   const NCollection_LinearVector<uint64_t>& anAttached = aLayer->AttachedTo(aResult.TopologyRoot);
-  // No child added → no supplement attachments.
+  // No child added -> no supplement attachments.
   ASSERT_EQ(anAttached.Size(), 0);
 
   // Since no supplement attachment was created, the rest of the test is skipped.
@@ -804,7 +804,7 @@ TEST(BRepGraph_LayerTopoSupplementTest, CopyToAllocatesFreshUidOnCollision)
 
 TEST(BRepGraph_LayerTopoSupplementTest, SelfCopyDoesNotMutateEntriesDuringIteration)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aSourceVertex =
     aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
 
@@ -830,8 +830,7 @@ TEST(BRepGraph_LayerTopoSupplementTest, SelfCopyDoesNotMutateEntriesDuringIterat
   ASSERT_EQ(aSourceAttachments.Size(), 1);
   EXPECT_EQ(aSourceAttachments.First(), uint64_t(1));
 
-  const NCollection_LinearVector<uint64_t>& aCopiedAttachments =
-    aLayer->AttachedTo(aCopiedNode);
+  const NCollection_LinearVector<uint64_t>& aCopiedAttachments = aLayer->AttachedTo(aCopiedNode);
   ASSERT_EQ(aCopiedAttachments.Size(), 1);
   EXPECT_NE(aCopiedAttachments.First(), uint64_t(1));
   EXPECT_NE(aLayer->FindByUid(aCopiedAttachments.First()), nullptr);

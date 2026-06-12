@@ -75,8 +75,7 @@ BRepGraph_CoEdgeId firstCoEdgeOfFace(const BRepGraph& theGraph, const BRepGraph_
   {
     const BRepGraph_WireId aWireId =
       theGraph.Refs().Wires().Entry(aWireRefIt.CurrentId()).ChildWireId;
-    for (BRepGraph_CoEdgesOfWire aCoEdgeIt(theGraph, aWireId); aCoEdgeIt.More();
-         aCoEdgeIt.Next())
+    for (BRepGraph_CoEdgesOfWire aCoEdgeIt(theGraph, aWireId); aCoEdgeIt.More(); aCoEdgeIt.Next())
     {
       const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIt.CurrentId();
       if (theGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceId == theFaceId)
@@ -95,9 +94,9 @@ void writeFaceMesh(BRepGraph& theGraph, const BRepGraph_FaceId theFaceId)
   theGraph.Mesh().Editor().Faces().SetCachedTriangulation(theFaceId, aTri);
 }
 
-void writeCoEdgeMesh(BRepGraph&                   theGraph,
-                     const BRepGraph_CoEdgeId      theCoEdgeId,
-                     const BRepGraph_FaceId        theFaceId)
+void writeCoEdgeMesh(BRepGraph&               theGraph,
+                     const BRepGraph_CoEdgeId theCoEdgeId,
+                     const BRepGraph_FaceId   theFaceId)
 {
   const occ::handle<Poly_Polygon2D> aPoly2D = new Poly_Polygon2D(2);
   theGraph.Mesh().Editor().CoEdges().SetCachedPolygon2D(theCoEdgeId, aPoly2D);
@@ -213,7 +212,7 @@ TEST(BRepGraph_CacheMeshTest, ClearDropsLargeCacheAndAllowsSmallRegenerate)
 
 TEST(BRepGraph_CacheMeshTest, FaceCache_StaleAfterEdgeMutation)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -234,7 +233,7 @@ TEST(BRepGraph_CacheMeshTest, FaceCache_StaleAfterEdgeMutation)
 
 TEST(BRepGraph_CacheMeshTest, FaceCache_StaleAfterCoEdgeMutation)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -245,8 +244,7 @@ TEST(BRepGraph_CacheMeshTest, FaceCache_StaleAfterCoEdgeMutation)
   ASSERT_NE(aGraph.Mesh().Cache().Faces().Entry(aFaceId), nullptr);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aGuard =
-      aGraph.Editor().CoEdges().Mut(aCoEdgeId);
+    BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aGuard = aGraph.Editor().CoEdges().Mut(aCoEdgeId);
     aGraph.Editor().CoEdges().SetOrientation(aGuard, TopAbs_REVERSED);
   }
 
@@ -256,7 +254,7 @@ TEST(BRepGraph_CacheMeshTest, FaceCache_StaleAfterCoEdgeMutation)
 
 TEST(BRepGraph_CacheMeshTest, FaceCache_StaleAfterVertexMutation)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -267,8 +265,7 @@ TEST(BRepGraph_CacheMeshTest, FaceCache_StaleAfterVertexMutation)
   ASSERT_NE(aGraph.Mesh().Cache().Faces().Entry(aFaceId), nullptr);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
-      aGraph.Editor().Vertices().Mut(aVtxId);
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard = aGraph.Editor().Vertices().Mut(aVtxId);
     aGraph.Editor().Vertices().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
@@ -278,7 +275,7 @@ TEST(BRepGraph_CacheMeshTest, FaceCache_StaleAfterVertexMutation)
 
 TEST(BRepGraph_CacheMeshTest, EdgeCache_StaleAfterVertexMutation)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph   = makeBoxGraph();
   const BRepGraph_EdgeId anEdgeId = firstEdgeId(aGraph);
   ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
 
@@ -289,8 +286,7 @@ TEST(BRepGraph_CacheMeshTest, EdgeCache_StaleAfterVertexMutation)
   ASSERT_NE(aGraph.Mesh().Cache().Edges().Entry(anEdgeId), nullptr);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
-      aGraph.Editor().Vertices().Mut(aVtxId);
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard = aGraph.Editor().Vertices().Mut(aVtxId);
     aGraph.Editor().Vertices().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
@@ -300,7 +296,7 @@ TEST(BRepGraph_CacheMeshTest, EdgeCache_StaleAfterVertexMutation)
 
 TEST(BRepGraph_CacheMeshTest, EdgeCache_FreshAfterUnrelatedFaceMutation)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph   = makeBoxGraph();
   const BRepGraph_EdgeId anEdgeId = firstEdgeId(aGraph);
   ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
 
@@ -319,7 +315,7 @@ TEST(BRepGraph_CacheMeshTest, EdgeCache_FreshAfterUnrelatedFaceMutation)
 
 TEST(BRepGraph_CacheMeshTest, CoEdge_Polygon2DFreshAfterFaceMeshChange)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -327,18 +323,20 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_Polygon2DFreshAfterFaceMeshChange)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId), nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
+            nullptr);
 
   const occ::handle<Poly_Triangulation> aNewTri = new Poly_Triangulation(4, 1, false);
   aGraph.Mesh().Editor().Faces().SetCachedTriangulation(aFaceId, aNewTri);
 
-  EXPECT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId), nullptr)
+  EXPECT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
+            nullptr)
     << "Polygon2D must stay fresh when only face mesh content changes";
 }
 
 TEST(BRepGraph_CacheMeshTest, CoEdge_PolygonOnTriStaleAfterFaceMeshChange)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -346,18 +344,20 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_PolygonOnTriStaleAfterFaceMeshChange)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr);
 
   const occ::handle<Poly_Triangulation> aNewTri = new Poly_Triangulation(4, 1, false);
   aGraph.Mesh().Editor().Faces().SetCachedTriangulation(aFaceId, aNewTri);
 
-  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr)
+  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr)
     << "PolygonOnTri must become stale when face mesh content changes";
 }
 
 TEST(BRepGraph_CacheMeshTest, CoEdge_PolygonOnTriStaleAfterFaceTopologyChange)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -365,20 +365,22 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_PolygonOnTriStaleAfterFaceTopologyChange)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aGuard = aGraph.Editor().Faces().Mut(aFaceId);
     aGraph.Editor().Faces().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
-  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr)
+  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr)
     << "PolygonOnTri must become stale when face topology changes";
 }
 
 TEST(BRepGraph_CacheMeshTest, CoEdge_PolygonOnTriStaleAfterCoEdgeMutation)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -386,21 +388,22 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_PolygonOnTriStaleAfterCoEdgeMutation)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aGuard =
-      aGraph.Editor().CoEdges().Mut(aCoEdgeId);
+    BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aGuard = aGraph.Editor().CoEdges().Mut(aCoEdgeId);
     aGraph.Editor().CoEdges().SetOrientation(aGuard, TopAbs_REVERSED);
   }
 
-  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr)
+  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr)
     << "PolygonOnTri must become stale when coedge topology changes";
 }
 
 TEST(BRepGraph_CacheMeshTest, CoEdge_FreshAfterUnrelatedEdgeMutation)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -408,26 +411,28 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_FreshAfterUnrelatedEdgeMutation)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId), nullptr);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
+            nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr);
 
   BRepGraph_EdgeIterator anEdgeIt(aGraph);
   anEdgeIt.Next();
   const BRepGraph_EdgeId anOtherEdgeId = anEdgeIt.CurrentId();
   if (anOtherEdgeId.IsValid(aGraph.Topo().Edges().Nb()))
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aGuard =
-      aGraph.Editor().Edges().Mut(anOtherEdgeId);
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aGuard = aGraph.Editor().Edges().Mut(anOtherEdgeId);
     aGraph.Editor().Edges().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
-  EXPECT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId), nullptr)
+  EXPECT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
+            nullptr)
     << "Polygon2D must survive unrelated edge mutation";
 }
 
 TEST(BRepGraph_CacheMeshTest, CoEdge_UsesCoEdgeDefFaceId)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -435,24 +440,25 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_UsesCoEdgeDefFaceId)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr);
 
   const BRepGraphInc::CoEdgeDef& aDef = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
   ASSERT_TRUE(aDef.FaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aGuard =
-      aGraph.Editor().Faces().Mut(aDef.FaceId);
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aGuard = aGraph.Editor().Faces().Mut(aDef.FaceId);
     aGraph.Editor().Faces().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
-  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr)
+  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr)
     << "Coedge freshness must use CoEdgeDef::FaceId for face binding";
 }
 
 TEST(BRepGraph_CacheMeshTest, CoEdge_Polygon2DStaleAfterSlotRecipeChange)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -460,17 +466,19 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_Polygon2DStaleAfterSlotRecipeChange)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId), nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
+            nullptr);
 
   aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Clear();
 
-  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId), nullptr)
+  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
+            nullptr)
     << "Polygon2D must become stale after cache clear (SlotGeneration bump)";
 }
 
 TEST(BRepGraph_CacheMeshTest, CoEdge_FaceNotYetMeshed_SnapshotZero)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -483,39 +491,42 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_FaceNotYetMeshed_SnapshotZero)
     new Poly_PolygonOnTriangulation(2, false);
   aGraph.Mesh().Editor().CoEdges().AppendCachedPolygonOnTri(aCoEdgeId, aPolyOnTri);
 
-  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr)
+  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr)
     << "PolygonOnTri must be stale when face has never been meshed (snapshot=0 vs default=0)";
 
   writeFaceMesh(aGraph, aFaceId);
 
-  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr)
+  EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
+            nullptr)
     << "PolygonOnTri must remain stale after face is meshed (MeshGeneration bumped to 1)";
 }
 
 TEST(BRepGraph_CacheMeshTest, Needs_DetectsChildDrivenFaceStaleness)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
   writeFaceMesh(aGraph, aFaceId);
-  ASSERT_FALSE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Needs(aGraph, BRepGraph_NodeId(aFaceId)));
+  ASSERT_FALSE(
+    aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Needs(aGraph, BRepGraph_NodeId(aFaceId)));
 
   const BRepGraph_VertexId aVtxId = firstVertexId(aGraph);
   ASSERT_TRUE(aVtxId.IsValid(aGraph.Topo().Vertices().Nb()));
   {
-    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
-      aGraph.Editor().Vertices().Mut(aVtxId);
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard = aGraph.Editor().Vertices().Mut(aVtxId);
     aGraph.Editor().Vertices().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
-  EXPECT_TRUE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Needs(aGraph, BRepGraph_NodeId(aFaceId)))
+  EXPECT_TRUE(
+    aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Needs(aGraph, BRepGraph_NodeId(aFaceId)))
     << "Needs(face) must detect staleness driven by child vertex mutation";
 }
 
 TEST(BRepGraph_CacheMeshTest, Needs_DetectsStaleCoedgeOnTri)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -523,18 +534,20 @@ TEST(BRepGraph_CacheMeshTest, Needs_DetectsStaleCoedgeOnTri)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_FALSE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Needs(aGraph, BRepGraph_NodeId(aFaceId)));
+  ASSERT_FALSE(
+    aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Needs(aGraph, BRepGraph_NodeId(aFaceId)));
 
   const occ::handle<Poly_Triangulation> aNewTri = new Poly_Triangulation(4, 1, false);
   aGraph.Mesh().Editor().Faces().SetCachedTriangulation(aFaceId, aNewTri);
 
-  EXPECT_TRUE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Needs(aGraph, BRepGraph_NodeId(aFaceId)))
+  EXPECT_TRUE(
+    aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->Needs(aGraph, BRepGraph_NodeId(aFaceId)))
     << "Needs(face) must detect coedge PolygonOnTri staleness from face mesh change";
 }
 
 TEST(BRepGraph_CacheMeshTest, VertexPropagation_ReachesFaces)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -545,8 +558,7 @@ TEST(BRepGraph_CacheMeshTest, VertexPropagation_ReachesFaces)
   ASSERT_NE(aGraph.Mesh().Cache().Faces().Entry(aFaceId), nullptr);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
-      aGraph.Editor().Vertices().Mut(aVtxId);
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard = aGraph.Editor().Vertices().Mut(aVtxId);
     aGraph.Editor().Vertices().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
@@ -556,7 +568,7 @@ TEST(BRepGraph_CacheMeshTest, VertexPropagation_ReachesFaces)
 
 TEST(BRepGraph_CacheMeshTest, MeshGeneration_MonotonicAcrossClear)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -573,10 +585,14 @@ TEST(BRepGraph_CacheMeshTest, MeshGeneration_MonotonicAcrossClear)
   writeFaceMesh(aGraph, aFaceId);
 
   const BRepGraph_CacheMesh::CoEdgeMeshEntry* aAfterEntry =
-    aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->findCoEdgeEntryRaw(BRepGraph_CacheMesh::DefaultDisplaySlot, aCoEdgeId);
+    aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->findCoEdgeEntryRaw(
+      BRepGraph_CacheMesh::DefaultDisplaySlot,
+      aCoEdgeId);
   ASSERT_NE(aAfterEntry, nullptr);
   const BRepGraph_CacheMesh::FaceMeshEntry* aFaceEntry =
-    aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->findFaceEntryRaw(BRepGraph_CacheMesh::DefaultDisplaySlot, aFaceId);
+    aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->findFaceEntryRaw(
+      BRepGraph_CacheMesh::DefaultDisplaySlot,
+      aFaceId);
   ASSERT_NE(aFaceEntry, nullptr);
   EXPECT_GT(aFaceEntry->MeshGeneration, aAfterEntry->FaceMeshGeneration)
     << "Face MeshGeneration must exceed coedge snapshot after clear+rewrite";
@@ -584,7 +600,7 @@ TEST(BRepGraph_CacheMeshTest, MeshGeneration_MonotonicAcrossClear)
 
 TEST(BRepGraph_CacheMeshTest, FaceClear_PreservesCoEdgePolygon2D)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
@@ -592,10 +608,12 @@ TEST(BRepGraph_CacheMeshTest, FaceClear_PreservesCoEdgePolygon2D)
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
   writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
-  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId), nullptr);
+  ASSERT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
+            nullptr);
 
   aGraph.Mesh().Editor().Faces().Clear(aFaceId);
 
-  EXPECT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId), nullptr)
+  EXPECT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
+            nullptr)
     << "FaceOps::Clear must not destroy coedge Polygon2D";
 }

@@ -145,15 +145,13 @@ BRepGraph_ItemUID BRepGraph::UIDsView::Of(const BRepGraph_ItemId theItem) const
   {
     case BRepGraph_ItemId::Domain::Node: {
       const BRepGraph_UID aUID = Of(theItem.NodeId());
-      return aUID.IsValid()
-               ? BRepGraph_ItemUID::Node(theItem.NodeKind(), aUID.Counter)
-               : BRepGraph_ItemUID();
+      return aUID.IsValid() ? BRepGraph_ItemUID::Node(theItem.NodeKind(), aUID.Counter)
+                            : BRepGraph_ItemUID();
     }
     case BRepGraph_ItemId::Domain::Reference: {
       const BRepGraph_RefUID aUID = Of(theItem.RefId());
-      return aUID.IsValid()
-               ? BRepGraph_ItemUID::Reference(theItem.RefKind(), aUID.Counter)
-               : BRepGraph_ItemUID();
+      return aUID.IsValid() ? BRepGraph_ItemUID::Reference(theItem.RefKind(), aUID.Counter)
+                            : BRepGraph_ItemUID();
     }
     case BRepGraph_ItemId::Domain::None:
       return BRepGraph_ItemUID();
@@ -173,7 +171,7 @@ BRepGraph_NodeId BRepGraph::UIDsView::NodeIdFrom(const BRepGraph_UID& theUID) co
   myGraph->myData->myIncStorage.EnsureUIDReverseIndex();
 
   std::shared_lock<std::shared_mutex> aReadLock(myGraph->myData->myIncStorage.myUIDToNodeIdMutex);
-  const BRepGraph_NodeId*             aNodeId = myGraph->myData->myIncStorage.myUIDToNodeId.Seek(theUID);
+  const BRepGraph_NodeId* aNodeId = myGraph->myData->myIncStorage.myUIDToNodeId.Seek(theUID);
   if (aNodeId == nullptr)
   {
     return BRepGraph_NodeId();
@@ -200,7 +198,7 @@ BRepGraph_RefId BRepGraph::UIDsView::RefIdFrom(const BRepGraph_RefUID& theUID) c
   myGraph->myData->myIncStorage.EnsureRefUIDReverseIndex();
 
   std::shared_lock<std::shared_mutex> aReadLock(myGraph->myData->myIncStorage.myRefUIDToRefIdMutex);
-  const BRepGraph_RefId*              aRefId = myGraph->myData->myIncStorage.myRefUIDToRefId.Seek(theUID);
+  const BRepGraph_RefId* aRefId = myGraph->myData->myIncStorage.myRefUIDToRefId.Seek(theUID);
   if (aRefId == nullptr)
   {
     return BRepGraph_RefId();

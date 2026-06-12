@@ -56,7 +56,8 @@ public:
     Drop   //!< Pure topology: edges carry no curves, faces carry no surfaces
   };
 
-  //! Policy for handling mesh data (Poly_Triangulation, Poly_Polygon3D, Poly_PolygonOnTriangulation).
+  //! Policy for handling mesh data (Poly_Triangulation, Poly_Polygon3D,
+  //! Poly_PolygonOnTriangulation).
   enum class MeshPolicy
   {
     Copy,  //!< Deep-clone mesh data; independent result
@@ -90,8 +91,8 @@ public:
   //! @return true on success, false on failure (empty source)
   Standard_EXPORT static bool Perform(const BRepGraph& theSourceGraph,
                                       BRepGraph&       theTargetGraph,
-                                      GeomPolicy       theGeomPolicy = GeomPolicy::Copy,
-                                      MeshPolicy       theMeshPolicy = MeshPolicy::Copy,
+                                      GeomPolicy       theGeomPolicy  = GeomPolicy::Copy,
+                                      MeshPolicy       theMeshPolicy  = MeshPolicy::Copy,
                                       CachePolicy      theCachePolicy = CachePolicy::Drop);
 
   //! Copy a single node sub-graph of any kind (Face, Shell, Solid, Wire, Edge, Vertex, etc.).
@@ -116,8 +117,8 @@ public:
     const BRepGraph&       theSourceGraph,
     BRepGraph&             theTargetGraph,
     const BRepGraph_NodeId theNodeId,
-    GeomPolicy             theGeomPolicy = GeomPolicy::Copy,
-    MeshPolicy             theMeshPolicy = MeshPolicy::Copy,
+    GeomPolicy             theGeomPolicy  = GeomPolicy::Copy,
+    MeshPolicy             theMeshPolicy  = MeshPolicy::Copy,
     CachePolicy            theCachePolicy = CachePolicy::Drop);
 
   BRepGraph_Copy() = delete;

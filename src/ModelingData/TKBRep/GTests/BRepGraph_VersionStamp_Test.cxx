@@ -34,8 +34,7 @@ protected:
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
     myGraph.Clear();
-    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
-      myGraph.Shapes().Add(aBox);
+    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 = myGraph.Shapes().Add(aBox);
     ASSERT_FALSE(myGraph.IsEmpty());
   }
 
@@ -81,8 +80,9 @@ TEST_F(BRepGraph_VersionStampTest, IsStale_MutatedNode_ReturnsTrue)
   const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
   // Mutate the face.
-  myGraph.Editor().Faces().SetTolerance(BRepGraph_FaceId::Start(),
-                                        BRepGraph_Tool::Face::Tolerance(myGraph, BRepGraph_FaceId::Start()) + 0.01);
+  myGraph.Editor().Faces().SetTolerance(
+    BRepGraph_FaceId::Start(),
+    BRepGraph_Tool::Face::Tolerance(myGraph, BRepGraph_FaceId::Start()) + 0.01);
 
   EXPECT_TRUE(myGraph.UIDs().IsStale(aStamp));
 }
@@ -155,8 +155,9 @@ TEST_F(BRepGraph_VersionStampTest, IsSameItem_DifferentVersion_StillSameItem)
 {
   const BRepGraph_VersionStamp aStampBefore = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
-  myGraph.Editor().Faces().SetTolerance(BRepGraph_FaceId::Start(),
-                                        BRepGraph_Tool::Face::Tolerance(myGraph, BRepGraph_FaceId::Start()) + 0.01);
+  myGraph.Editor().Faces().SetTolerance(
+    BRepGraph_FaceId::Start(),
+    BRepGraph_Tool::Face::Tolerance(myGraph, BRepGraph_FaceId::Start()) + 0.01);
 
   const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
@@ -178,8 +179,8 @@ TEST_F(BRepGraph_VersionStampTest, StampOf_AssemblyNodes_WorksForProductsAndOccu
 
 TEST_F(BRepGraph_VersionStampTest, GenericItemUID_NodeAndReferenceItems_RoundTrip)
 {
-  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
-  const BRepGraph_ItemId aFaceItem(aFaceId);
+  const BRepGraph_FaceId  aFaceId = BRepGraph_FaceId::Start();
+  const BRepGraph_ItemId  aFaceItem(aFaceId);
   const BRepGraph_ItemUID aFaceUID = myGraph.UIDs().Of(aFaceItem);
   ASSERT_TRUE(aFaceUID.IsValid());
   EXPECT_TRUE(aFaceUID.IsNode());
@@ -209,9 +210,8 @@ TEST_F(BRepGraph_VersionStampTest, GenericItemUID_NodeAndReferenceItems_RoundTri
 
 TEST_F(BRepGraph_VersionStampTest, StampOf_RemovedUse_ReturnsInvalidUntilReused)
 {
-  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
-  const BRepGraph_FaceSurfaceRepId aRepId =
-    myGraph.Topo().Faces().Definition(aFaceId).SurfaceRepId;
+  const BRepGraph_FaceId           aFaceId = BRepGraph_FaceId::Start();
+  const BRepGraph_FaceSurfaceRepId aRepId = myGraph.Topo().Faces().Definition(aFaceId).SurfaceRepId;
   ASSERT_TRUE(aRepId.IsValid());
 
   const occ::handle<Geom_Surface> aSurface = BRepGraph_Tool::Face::Surface(myGraph, aFaceId);
@@ -268,8 +268,9 @@ TEST_F(BRepGraph_VersionStampTest, ToGUID_DifferentMutationGen_DifferentGUID)
   const Standard_GUID&         aGraph       = myGraph.UIDs().GraphGUID();
   const Standard_GUID          aGUIDBefore  = aStampBefore.ToGUID(aGraph);
 
-  myGraph.Editor().Faces().SetTolerance(BRepGraph_FaceId::Start(),
-                                        BRepGraph_Tool::Face::Tolerance(myGraph, BRepGraph_FaceId::Start()) + 0.01);
+  myGraph.Editor().Faces().SetTolerance(
+    BRepGraph_FaceId::Start(),
+    BRepGraph_Tool::Face::Tolerance(myGraph, BRepGraph_FaceId::Start()) + 0.01);
 
   const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   const Standard_GUID          aGUIDAfter  = aStampAfter.ToGUID(aGraph);

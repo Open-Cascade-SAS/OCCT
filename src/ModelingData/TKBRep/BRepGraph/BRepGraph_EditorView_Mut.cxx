@@ -93,7 +93,7 @@ static bool isRefIndexInRange(const BRepGraphInc_Storage& theStorage,
 //==================================================================================================
 
 [[maybe_unused]] static bool isActiveNode(const BRepGraphInc_Storage& theStorage,
-                                           const BRepGraph_NodeId      theNode)
+                                          const BRepGraph_NodeId      theNode)
 {
   if (!isNodeIndexInRange(theStorage, theNode))
   {
@@ -161,7 +161,7 @@ static bool isRefIndexInRange(const BRepGraphInc_Storage& theStorage,
 //==================================================================================================
 
 [[maybe_unused]] static bool isOwnedNode(const BRepGraphInc_Storage& theStorage,
-                                          const BRepGraph_NodeId      theNodeId)
+                                         const BRepGraph_NodeId      theNodeId)
 {
   if (!isNodeIndexInRange(theStorage, theNodeId))
   {
@@ -199,7 +199,7 @@ static bool isRefIndexInRange(const BRepGraphInc_Storage& theStorage,
 
 static void validateMutableNodeId(const BRepGraphInc_Storage& theStorage [[maybe_unused]],
                                   const BRepGraph_NodeId      theNodeId [[maybe_unused]],
-                                  const BRepGraph&            /*theGraph*/)
+                                  const BRepGraph& /*theGraph*/)
 {
   Standard_ProgramError_Raise_if(!isActiveNode(theStorage, theNodeId),
                                  "BRepGraph::EditorView::Mut*(): invalid node id");
@@ -211,7 +211,7 @@ static void validateMutableNodeId(const BRepGraphInc_Storage& theStorage [[maybe
 
 static void validateMutableRefId(const BRepGraphInc_Storage& theStorage [[maybe_unused]],
                                  const BRepGraph_RefId       theRefId [[maybe_unused]],
-                                 const BRepGraph&            /*theGraph*/)
+                                 const BRepGraph& /*theGraph*/)
 {
   Standard_ProgramError_Raise_if(!isActiveRef(theStorage, theRefId),
                                  "BRepGraph::EditorView::Mut*(): invalid reference id");
@@ -276,7 +276,10 @@ BRepGraph_MutGuard<BRepGraphInc::EdgeDef> BRepGraph::EditorView::EdgeOps::Mut(
   validateMutableNodeId(aStorage, BRepGraph_NodeId(theEdge), *myGraph);
   Standard_ProgramError_Raise_if(aStorage.IsGuarded(BRepGraph_ItemId(theEdge)),
                                  "BRepGraph::EditorView::Mut*(): guard already active");
-  return BRepGraph_MutGuard<BRepGraphInc::EdgeDef>(*myGraph, aStorage, &aStorage.ChangeEdge(theEdge), theEdge);
+  return BRepGraph_MutGuard<BRepGraphInc::EdgeDef>(*myGraph,
+                                                   aStorage,
+                                                   &aStorage.ChangeEdge(theEdge),
+                                                   theEdge);
 }
 
 //==================================================================================================
@@ -288,7 +291,10 @@ BRepGraph_MutGuard<BRepGraphInc::WireDef> BRepGraph::EditorView::WireOps::Mut(
   validateMutableNodeId(aStorage, BRepGraph_NodeId(theWire), *myGraph);
   Standard_ProgramError_Raise_if(aStorage.IsGuarded(BRepGraph_ItemId(theWire)),
                                  "BRepGraph::EditorView::Mut*(): guard already active");
-  return BRepGraph_MutGuard<BRepGraphInc::WireDef>(*myGraph, aStorage, &aStorage.ChangeWire(theWire), theWire);
+  return BRepGraph_MutGuard<BRepGraphInc::WireDef>(*myGraph,
+                                                   aStorage,
+                                                   &aStorage.ChangeWire(theWire),
+                                                   theWire);
 }
 
 //==================================================================================================
@@ -300,7 +306,10 @@ BRepGraph_MutGuard<BRepGraphInc::FaceDef> BRepGraph::EditorView::FaceOps::Mut(
   validateMutableNodeId(aStorage, BRepGraph_NodeId(theFace), *myGraph);
   Standard_ProgramError_Raise_if(aStorage.IsGuarded(BRepGraph_ItemId(theFace)),
                                  "BRepGraph::EditorView::Mut*(): guard already active");
-  return BRepGraph_MutGuard<BRepGraphInc::FaceDef>(*myGraph, aStorage, &aStorage.ChangeFace(theFace), theFace);
+  return BRepGraph_MutGuard<BRepGraphInc::FaceDef>(*myGraph,
+                                                   aStorage,
+                                                   &aStorage.ChangeFace(theFace),
+                                                   theFace);
 }
 
 //==================================================================================================
@@ -513,5 +522,3 @@ BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> BRepGraph::EditorView::Occurrenc
     &aStorage.ChangeOccurrenceRef(theOccurrenceRef),
     theOccurrenceRef);
 }
-
-

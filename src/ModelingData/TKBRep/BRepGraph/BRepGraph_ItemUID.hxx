@@ -88,22 +88,20 @@ public:
   //! Return node kind. Valid only for node UIDs.
   [[nodiscard]] BRepGraph_NodeId::Kind NodeKind() const noexcept
   {
-    Standard_ASSERT_RETURN(IsNode()
-                             && BRepGraph_NodeId::IsValidKind(
-                               static_cast<BRepGraph_NodeId::Kind>(myKind)),
-                           "BRepGraph_ItemUID::NodeKind(): UID is not a valid node UID",
-                           BRepGraph_NodeId::Kind::Solid);
+    Standard_ASSERT_RETURN(
+      IsNode() && BRepGraph_NodeId::IsValidKind(static_cast<BRepGraph_NodeId::Kind>(myKind)),
+      "BRepGraph_ItemUID::NodeKind(): UID is not a valid node UID",
+      BRepGraph_NodeId::Kind::Solid);
     return static_cast<BRepGraph_NodeId::Kind>(myKind);
   }
 
   //! Return reference kind. Valid only for reference UIDs.
   [[nodiscard]] BRepGraph_RefId::Kind RefKind() const noexcept
   {
-    Standard_ASSERT_RETURN(IsReference()
-                             && BRepGraph_RefId::IsValidKind(
-                               static_cast<BRepGraph_RefId::Kind>(myKind)),
-                           "BRepGraph_ItemUID::RefKind(): UID is not a valid reference UID",
-                           BRepGraph_RefId::Kind::Shell);
+    Standard_ASSERT_RETURN(
+      IsReference() && BRepGraph_RefId::IsValidKind(static_cast<BRepGraph_RefId::Kind>(myKind)),
+      "BRepGraph_ItemUID::RefKind(): UID is not a valid reference UID",
+      BRepGraph_RefId::Kind::Shell);
     return static_cast<BRepGraph_RefId::Kind>(myKind);
   }
 
@@ -165,8 +163,7 @@ private:
         myDomain(theDomain),
         myKind(theKind)
   {
-    Standard_ASSERT_VOID(theCounter > 0,
-                         "BRepGraph_ItemUID: counter must be > 0 for valid UIDs");
+    Standard_ASSERT_VOID(theCounter > 0, "BRepGraph_ItemUID: counter must be > 0 for valid UIDs");
     Standard_ASSERT_VOID(theCounter <= std::numeric_limits<uint32_t>::max(),
                          "BRepGraph_ItemUID: counter exceeds 32-bit storage");
     if (theCounter > 0 && theCounter <= std::numeric_limits<uint32_t>::max())
@@ -186,10 +183,7 @@ static_assert(sizeof(BRepGraph_ItemUID) <= 8, "BRepGraph_ItemUID must stay compa
 template <>
 struct std::hash<BRepGraph_ItemUID>
 {
-  size_t operator()(const BRepGraph_ItemUID& theUID) const noexcept
-  {
-    return theUID.HashValue();
-  }
+  size_t operator()(const BRepGraph_ItemUID& theUID) const noexcept { return theUID.HashValue(); }
 };
 
 #endif // _BRepGraph_ItemUID_HeaderFile

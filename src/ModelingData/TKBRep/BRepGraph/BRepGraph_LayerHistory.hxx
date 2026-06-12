@@ -369,7 +369,7 @@ public:
 
 private:
   //! Rebuild all lookup caches from myRecords.
-  void                                  rebuildCaches();
+  void rebuildCaches();
 
   NCollection_DynamicArray<Event> myRecords;
 

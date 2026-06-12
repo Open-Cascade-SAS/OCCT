@@ -43,7 +43,7 @@
 class BRepGraphInc_BitFlags
 {
   static constexpr uint32_t THE_BITS_PER_BLOCK = 64;
-  using BlockType = uint64_t;
+  using BlockType                              = uint64_t;
 
 public:
   //! Construct an empty bit-vector.
@@ -62,24 +62,24 @@ public:
   //! Set the bit at theIndex to true.
   void Set(const uint32_t theIndex)
   {
-    const size_t aBlock = theIndex / THE_BITS_PER_BLOCK;
-    const uint32_t aBit = theIndex % THE_BITS_PER_BLOCK;
+    const size_t   aBlock = theIndex / THE_BITS_PER_BLOCK;
+    const uint32_t aBit   = theIndex % THE_BITS_PER_BLOCK;
     myBlocks[aBlock] |= (BlockType(1) << aBit);
   }
 
   //! Clear the bit at theIndex to false.
   void Clear(const uint32_t theIndex)
   {
-    const size_t aBlock = theIndex / THE_BITS_PER_BLOCK;
-    const uint32_t aBit = theIndex % THE_BITS_PER_BLOCK;
+    const size_t   aBlock = theIndex / THE_BITS_PER_BLOCK;
+    const uint32_t aBit   = theIndex % THE_BITS_PER_BLOCK;
     myBlocks[aBlock] &= ~(BlockType(1) << aBit);
   }
 
   //! Return the value of the bit at theIndex.
   [[nodiscard]] bool Test(const uint32_t theIndex) const
   {
-    const size_t aBlock = theIndex / THE_BITS_PER_BLOCK;
-    const uint32_t aBit = theIndex % THE_BITS_PER_BLOCK;
+    const size_t   aBlock = theIndex / THE_BITS_PER_BLOCK;
+    const uint32_t aBit   = theIndex % THE_BITS_PER_BLOCK;
     return (myBlocks[aBlock] & (BlockType(1) << aBit)) != 0;
   }
 
@@ -141,7 +141,7 @@ private:
   }
 
   NCollection_LinearVector<BlockType> myBlocks;
-  size_t myBitCount = 0;
+  size_t                              myBitCount = 0;
 };
 
 #endif // _BRepGraphInc_BitFlags_HeaderFile

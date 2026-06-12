@@ -16,7 +16,6 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <TopoDS_Compound.hxx>
@@ -33,8 +32,7 @@ TEST(BRepGraph_EdgeCasesTest, Build_NullShape_IsEmpty)
   BRepGraph    aGraph;
   TopoDS_Shape aNullShape;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
-    aGraph.Shapes().Add(aNullShape);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 = aGraph.Shapes().Add(aNullShape);
   EXPECT_TRUE(aGraph.IsEmpty());
 }
 
@@ -45,8 +43,7 @@ TEST(BRepGraph_EdgeCasesTest, Build_EmptyCompound_IsEmptyZeroCounts)
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 = aGraph.Shapes().Add(aCompound);
 
   // Whether IsDone is true or false for an empty compound is implementation-defined;
   // the key invariant is that all definition counts are zero.
@@ -120,14 +117,12 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_GenerationIncrements)
   const TopoDS_Shape  aBox = aBoxMaker.Shape();
 
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes6 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes6 = aGraph.Shapes().Add(aBox);
   ASSERT_FALSE(aGraph.IsEmpty());
   const uint32_t aFirstGen = aGraph.UIDs().Generation();
 
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes7 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes7 = aGraph.Shapes().Add(aBox);
   ASSERT_FALSE(aGraph.IsEmpty());
   const uint32_t aSecondGen = aGraph.UIDs().Generation();
 
@@ -143,8 +138,7 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
 
   // First build: collect total UID counter used.
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes8 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes8 = aGraph.Shapes().Add(aBox);
   ASSERT_FALSE(aGraph.IsEmpty());
   const uint32_t aFirstGen = aGraph.UIDs().Generation();
 
@@ -154,8 +148,7 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
 
   // Second build.
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes9 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes9 = aGraph.Shapes().Add(aBox);
   ASSERT_FALSE(aGraph.IsEmpty());
   const uint32_t aSecondGen = aGraph.UIDs().Generation();
   EXPECT_NE(aFirstGen, aSecondGen);
@@ -174,8 +167,7 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
   const TopoDS_Shape  aBox = aBoxMaker.Shape();
 
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes10 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes10 = aGraph.Shapes().Add(aBox);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   const uint32_t aSolids1 = aGraph.Topo().Solids().Nb();
@@ -189,8 +181,7 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
 
   // Rebuild with same shape.
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes11 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes11 = aGraph.Shapes().Add(aBox);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), aSolids1);
@@ -271,8 +262,7 @@ TEST(BRepGraph_EdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
   BRepGraph aSeqGraph;
   aSeqGraph.Clear();
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes15 =
-    aSeqGraph.Shapes().Add(aCompound,
-                           BRepGraph::ShapesView::Options{{}, true, false, false});
+    aSeqGraph.Shapes().Add(aCompound, BRepGraph::ShapesView::Options{{}, true, false, false});
   ASSERT_FALSE(aSeqGraph.IsEmpty());
 
   BRepGraph aParGraph;

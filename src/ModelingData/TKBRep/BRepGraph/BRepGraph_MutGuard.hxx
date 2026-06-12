@@ -83,7 +83,10 @@ public:
   //! @param[in] theStorage storage instance (for bit-plane guard tracking)
   //! @param[in] theEntity  pointer to the mutable entity
   //! @param[in] theId      identity for notification and guard registration
-  BRepGraph_MutGuard(BRepGraph& theGraph, BRepGraphInc_Storage& theStorage, T* theEntity, const TypeId theId)
+  BRepGraph_MutGuard(BRepGraph&            theGraph,
+                     BRepGraphInc_Storage& theStorage,
+                     T*                    theEntity,
+                     const TypeId          theId)
       : myGraph(&theGraph),
         myStorage(&theStorage),
         myEntity(theEntity),
@@ -140,11 +143,11 @@ public:
           notify();
         }
       }
-      myGraph           = theOther.myGraph;
-      myStorage         = theOther.myStorage;
-      myEntity          = theOther.myEntity;
-      myId              = theOther.myId;
-      myDirty           = theOther.myDirty;
+      myGraph            = theOther.myGraph;
+      myStorage          = theOther.myStorage;
+      myEntity           = theOther.myEntity;
+      myId               = theOther.myId;
+      myDirty            = theOther.myDirty;
       theOther.myEntity  = nullptr;
       theOther.myDirty   = false;
       theOther.myGraph   = nullptr;
@@ -201,11 +204,11 @@ public:
   }
 
 private:
-  BRepGraph*             myGraph;   //!< Owning graph, non-owning.
-  BRepGraphInc_Storage*  myStorage; //!< Storage instance for bit-plane guard tracking, non-owning.
-  T*                     myEntity;  //!< Mutable entity pointer; access via Editor setters.
-  TypeId                 myId;      //!< Identity for notification and guard registration.
-  bool                   myDirty;   //!< True once a setter has modified the entity in this scope.
+  BRepGraph*            myGraph;   //!< Owning graph, non-owning.
+  BRepGraphInc_Storage* myStorage; //!< Storage instance for bit-plane guard tracking, non-owning.
+  T*                    myEntity;  //!< Mutable entity pointer; access via Editor setters.
+  TypeId                myId;      //!< Identity for notification and guard registration.
+  bool                  myDirty;   //!< True once a setter has modified the entity in this scope.
 };
 
 #endif // _BRepGraph_MutGuard_HeaderFile

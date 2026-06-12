@@ -45,14 +45,14 @@ public:
   //! Result counters for diagnostics and tests.
   struct Result
   {
-    uint32_t  NbCanonicalSurfaces  = 0;
-    uint32_t  NbCanonicalCurves    = 0;
-    uint32_t  NbSurfaceRewrites    = 0;
-    uint32_t  NbCurveRewrites      = 0;
-    uint32_t  NbNullifiedSurfaces  = 0;
-    uint32_t  NbNullifiedCurves    = 0;
-    uint32_t  NbHistoryRecords     = 0;
-    bool IsEntityMergeApplied = false;
+    uint32_t NbCanonicalSurfaces  = 0;
+    uint32_t NbCanonicalCurves    = 0;
+    uint32_t NbSurfaceRewrites    = 0;
+    uint32_t NbCurveRewrites      = 0;
+    uint32_t NbNullifiedSurfaces  = 0;
+    uint32_t NbNullifiedCurves    = 0;
+    uint32_t NbHistoryRecords     = 0;
+    bool     IsEntityMergeApplied = false;
 
     //! Topology definition merge counters (active when MergeEntitiesWhenSafe = true).
     uint32_t NbMergedVertices = 0;

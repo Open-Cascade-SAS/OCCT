@@ -59,15 +59,16 @@ public:
     Cache();
 
     //! Seek a cached shape. Returns nullptr if not yet cached.
-    [[nodiscard]] const TopoDS_Shape* Seek(
-      const BRepGraph_NodeId theNode) const;
+    [[nodiscard]] const TopoDS_Shape* Seek(const BRepGraph_NodeId theNode) const;
 
     //! Bind a reconstructed shape to a node. Grows the vector as needed.
-    void Bind(const BRepGraph_NodeId theNode,
-              const TopoDS_Shape&    theShape);
+    void Bind(const BRepGraph_NodeId theNode, const TopoDS_Shape& theShape);
 
     //! Check if a node is already cached.
-    [[nodiscard]] bool IsBound(const BRepGraph_NodeId theNode) const { return Seek(theNode) != nullptr; }
+    [[nodiscard]] bool IsBound(const BRepGraph_NodeId theNode) const
+    {
+      return Seek(theNode) != nullptr;
+    }
   };
 
   //! Reconstruct a TopoDS_Shape from an entity node.

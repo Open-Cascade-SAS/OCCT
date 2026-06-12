@@ -38,7 +38,7 @@ static BRepGraph_FaceId createSimpleFace(BRepGraph& theGraph)
     theGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(theGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
-  const BRepGraph_WireId aWire = theGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  const BRepGraph_WireId          aWire  = theGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
   return theGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
@@ -260,7 +260,8 @@ TEST(BRepGraph_BatchOpsTest, CompoundOps_AppendBatch_AllForward)
   ASSERT_TRUE(aFace1.IsValid());
 
   NCollection_LinearVector<BRepGraph_NodeId> anEmptyChildren;
-  const BRepGraph_CompoundId aCompound = aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
+  const BRepGraph_CompoundId                 aCompound =
+    aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
   ASSERT_TRUE(aCompound.IsValid());
 
   NCollection_Array1<BRepGraph_NodeId> aChildren(2);
@@ -286,7 +287,8 @@ TEST(BRepGraph_BatchOpsTest, CompoundOps_RemoveChildren_AllRemoved)
   ASSERT_TRUE(aFace0.IsValid());
 
   NCollection_LinearVector<BRepGraph_NodeId> anEmptyChildren;
-  const BRepGraph_CompoundId aCompound = aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
+  const BRepGraph_CompoundId                 aCompound =
+    aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
   ASSERT_TRUE(aCompound.IsValid());
 
   const BRepGraph_ChildRefId aRef0 =
@@ -313,7 +315,8 @@ TEST(BRepGraph_BatchOpsTest, CompoundOps_ReplaceChild)
   ASSERT_TRUE(aFace1.IsValid());
 
   NCollection_LinearVector<BRepGraph_NodeId> anEmptyChildren;
-  const BRepGraph_CompoundId aCompound = aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
+  const BRepGraph_CompoundId                 aCompound =
+    aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
   ASSERT_TRUE(aCompound.IsValid());
 
   const BRepGraph_ChildRefId aRef0 =
@@ -353,7 +356,8 @@ TEST(BRepGraph_BatchOpsTest, CompSolidOps_AppendBatch_AllForward)
   aGraph.Editor().Solids().Append(aSolid1, aShell1);
 
   NCollection_LinearVector<BRepGraph_SolidId> anEmptySolids;
-  const BRepGraph_CompSolidId aCompSolid = aGraph.Editor().CompSolids().Add(anEmptySolids.ToArray1());
+  const BRepGraph_CompSolidId                 aCompSolid =
+    aGraph.Editor().CompSolids().Add(anEmptySolids.ToArray1());
   ASSERT_TRUE(aCompSolid.IsValid());
 
   NCollection_Array1<BRepGraph_SolidId> aSolids(2);
@@ -387,7 +391,8 @@ TEST(BRepGraph_BatchOpsTest, CompSolidOps_RemoveSolids_AllRemoved)
   aGraph.Editor().Solids().Append(aSolid0, aShell0);
 
   NCollection_LinearVector<BRepGraph_SolidId> anEmptySolids;
-  const BRepGraph_CompSolidId aCompSolid = aGraph.Editor().CompSolids().Add(anEmptySolids.ToArray1());
+  const BRepGraph_CompSolidId                 aCompSolid =
+    aGraph.Editor().CompSolids().Add(anEmptySolids.ToArray1());
   ASSERT_TRUE(aCompSolid.IsValid());
 
   const BRepGraph_SolidRefId aRef0 = aGraph.Editor().CompSolids().Append(aCompSolid, aSolid0);
@@ -429,7 +434,8 @@ TEST(BRepGraph_BatchOpsTest, CompSolidOps_ReplaceSolid)
   aGraph.Editor().Solids().Append(aSolid1, aShell1);
 
   NCollection_LinearVector<BRepGraph_SolidId> anEmptySolids;
-  const BRepGraph_CompSolidId aCompSolid = aGraph.Editor().CompSolids().Add(anEmptySolids.ToArray1());
+  const BRepGraph_CompSolidId                 aCompSolid =
+    aGraph.Editor().CompSolids().Add(anEmptySolids.ToArray1());
   ASSERT_TRUE(aCompSolid.IsValid());
 
   const BRepGraph_SolidRefId aRef0 = aGraph.Editor().CompSolids().Append(aCompSolid, aSolid0);
@@ -467,8 +473,10 @@ TEST(BRepGraph_BatchOpsTest, ProductOps_AppendBatch)
   aGraph.Editor().Solids().Append(aSolid0, aShell0);
   aGraph.Editor().Solids().Append(aSolid1, aShell1);
 
-  const BRepGraph_ProductId aChildProduct0 = aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid0));
-  const BRepGraph_ProductId aChildProduct1 = aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid1));
+  const BRepGraph_ProductId aChildProduct0 =
+    aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid0));
+  const BRepGraph_ProductId aChildProduct1 =
+    aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid1));
   ASSERT_TRUE(aChildProduct0.IsValid());
   ASSERT_TRUE(aChildProduct1.IsValid());
 
@@ -509,16 +517,20 @@ TEST(BRepGraph_BatchOpsTest, ProductOps_RemoveOccurrences_AllRemoved)
   ASSERT_TRUE(aSolid0.IsValid());
   aGraph.Editor().Solids().Append(aSolid0, aShell0);
 
-  const BRepGraph_ProductId aChildProduct = aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid0));
+  const BRepGraph_ProductId aChildProduct =
+    aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid0));
   ASSERT_TRUE(aChildProduct.IsValid());
 
   const BRepGraph_ProductId aParentProduct = aGraph.Editor().Products().Add();
   ASSERT_TRUE(aParentProduct.IsValid());
 
-  BRepGraph_OccurrenceRefId anOutRefId;
+  BRepGraph_OccurrenceRefId               anOutRefId;
   [[maybe_unused]] BRepGraph_OccurrenceId anOccId =
-    aGraph.Editor().Products().Append(aParentProduct, aChildProduct, TopLoc_Location(),
-                                      BRepGraph_OccurrenceId(), &anOutRefId);
+    aGraph.Editor().Products().Append(aParentProduct,
+                                      aChildProduct,
+                                      TopLoc_Location(),
+                                      BRepGraph_OccurrenceId(),
+                                      &anOutRefId);
   ASSERT_TRUE(anOccId.IsValid());
   ASSERT_TRUE(anOutRefId.IsValid());
 

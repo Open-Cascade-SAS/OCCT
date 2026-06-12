@@ -496,9 +496,9 @@ bool BRepGraph_ParentExplorer::nextParentFrame(StackFrame& theChild, StackFrame&
       case Kind::Wire: {
         const BRepGraph_WireId      aWireId(theChild.Node);
         const BRepGraph_FacesOfWire aFaces(*myGraph,
-                                            aTopo.Wires().Relations(aWireId).ParentWireRefIds);
-        uint32_t         aRemainingParentIdx = aParentIdx;
-        BRepGraph_FaceId aFaceId;
+                                           aTopo.Wires().Relations(aWireId).ParentWireRefIds);
+        uint32_t                    aRemainingParentIdx = aParentIdx;
+        BRepGraph_FaceId            aFaceId;
         if (nthParentId(aFaces, aRemainingParentIdx, aFaceId))
         {
           const int aStepToChild = findFaceChildStep(aFaceId, theChild.Node);
@@ -518,8 +518,8 @@ bool BRepGraph_ParentExplorer::nextParentFrame(StackFrame& theChild, StackFrame&
         const BRepGraph_FaceId       aFaceId(theChild.Node);
         const BRepGraph_ShellsOfFace aShells(*myGraph,
                                              aTopo.Faces().Relations(aFaceId).ParentFaceRefIds);
-        uint32_t          aRemainingParentIdx = aParentIdx;
-        BRepGraph_ShellId aShellId;
+        uint32_t                     aRemainingParentIdx = aParentIdx;
+        BRepGraph_ShellId            aShellId;
         if (nthParentId(aShells, aRemainingParentIdx, aShellId))
         {
           const int aStepToChild = findShellChildStep(aShellId, theChild.Node);
@@ -538,9 +538,9 @@ bool BRepGraph_ParentExplorer::nextParentFrame(StackFrame& theChild, StackFrame&
       case Kind::Shell: {
         const BRepGraph_ShellId       aShellId = BRepGraph_ShellId(theChild.Node);
         const BRepGraph_SolidsOfShell aSolids(*myGraph,
-                                               aTopo.Shells().Relations(aShellId).ParentShellRefIds);
-        uint32_t          aRemainingParentIdx = aParentIdx;
-        BRepGraph_SolidId aSolidId;
+                                              aTopo.Shells().Relations(aShellId).ParentShellRefIds);
+        uint32_t                      aRemainingParentIdx = aParentIdx;
+        BRepGraph_SolidId             aSolidId;
         if (nthParentId(aSolids, aRemainingParentIdx, aSolidId))
         {
           const int aStepToChild = findSolidChildStep(aSolidId, theChild.Node);
@@ -586,7 +586,7 @@ bool BRepGraph_ParentExplorer::nextParentFrame(StackFrame& theChild, StackFrame&
 
       case Kind::CoEdge: {
         const BRepGraph_CoEdgeId aCoEdgeId(theChild.Node);
-        const BRepGraph_WireId   aWireId = aTopo.CoEdges().Wire(aCoEdgeId);
+        const BRepGraph_WireId   aWireId  = aTopo.CoEdges().Wire(aCoEdgeId);
         const uint32_t           aNbWires = aWireId.IsValid() ? 1u : 0u;
         if (aParentIdx < aNbWires)
         {
@@ -808,19 +808,19 @@ bool BRepGraph_ParentExplorer::findNthOccurrenceWrapper(
 
 //=================================================================================================
 
-bool BRepGraph_ParentExplorer::nextCompoundOrOccurrenceParent(
-  const BRepGraph_NodeId theNode,
-  const uint32_t         theRemainingIdx,
-  StackFrame&            theParent) const
+bool BRepGraph_ParentExplorer::nextCompoundOrOccurrenceParent(const BRepGraph_NodeId theNode,
+                                                              const uint32_t theRemainingIdx,
+                                                              StackFrame&    theParent) const
 {
   const BRepGraph::TopoView& aTopo = myGraph->Topo();
 
   uint32_t aConsumedIdx = 0;
   if (aTopo.Gen().HasCompoundParents(theNode))
   {
-    for (BRepGraph_ReverseIterator::IdsOfRefs<
-      BRepGraph_ReverseIterator::CompoundFromChildRefTraits>
-             aCompounds(*myGraph, aTopo.Gen().CompoundRefIds(theNode)); aCompounds.More(); aCompounds.Next())
+    for (BRepGraph_ReverseIterator::IdsOfRefs<BRepGraph_ReverseIterator::CompoundFromChildRefTraits>
+           aCompounds(*myGraph, aTopo.Gen().CompoundRefIds(theNode));
+         aCompounds.More();
+         aCompounds.Next())
     {
       const BRepGraph_CompoundId aCompoundId = aCompounds.CurrentId();
       if (aCompoundId.IsRemoved(*myGraph))
@@ -850,7 +850,10 @@ bool BRepGraph_ParentExplorer::nextCompoundOrOccurrenceParent(
   }
   BRepGraph_OccurrenceId    anOccurrenceId;
   BRepGraph_OccurrenceRefId anOccurrenceRefId;
-  if (!findNthOccurrenceWrapper(theNode, theRemainingIdx - aConsumedIdx, anOccurrenceId, anOccurrenceRefId))
+  if (!findNthOccurrenceWrapper(theNode,
+                                theRemainingIdx - aConsumedIdx,
+                                anOccurrenceId,
+                                anOccurrenceRefId))
   {
     return false;
   }

@@ -48,9 +48,10 @@ bool isValidSupplementOwner(const BRepGraph& theGraph, const BRepGraph_NodeId th
 
 //=================================================================================================
 
-uint64_t BRepGraph_SupplementEditor::Attach(const BRepGraph_NodeId                        theOwner,
-                                            const BRepGraph_LayerTopoSupplement::AttachmentKind theKind,
-                                            const TopoDS_Shape&                          theShape)
+uint64_t BRepGraph_SupplementEditor::Attach(
+  const BRepGraph_NodeId                              theOwner,
+  const BRepGraph_LayerTopoSupplement::AttachmentKind theKind,
+  const TopoDS_Shape&                                 theShape)
 {
   if (!isValidSupplementOwner(myGraph, theOwner) || theShape.IsNull())
   {
@@ -58,15 +59,15 @@ uint64_t BRepGraph_SupplementEditor::Attach(const BRepGraph_NodeId              
   }
 
   return myGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>()->AddAttachment(theOwner,
-                                                                                         theKind,
-                                                                                         theShape);
+                                                                                        theKind,
+                                                                                        theShape);
 }
 
 //=================================================================================================
 
 uint64_t BRepGraph_SupplementEditor::AttachToVertex(
-  const BRepGraph_VertexId                        theVertex,
-  const TopoDS_Shape&                            theShape,
+  const BRepGraph_VertexId                            theVertex,
+  const TopoDS_Shape&                                 theShape,
   const BRepGraph_LayerTopoSupplement::AttachmentKind theKind)
 {
   return Attach(BRepGraph_NodeId(theVertex), theKind, theShape);
@@ -75,8 +76,8 @@ uint64_t BRepGraph_SupplementEditor::AttachToVertex(
 //=================================================================================================
 
 uint64_t BRepGraph_SupplementEditor::AttachToEdge(
-  const BRepGraph_EdgeId                          theEdge,
-  const TopoDS_Shape&                             theShape,
+  const BRepGraph_EdgeId                              theEdge,
+  const TopoDS_Shape&                                 theShape,
   const BRepGraph_LayerTopoSupplement::AttachmentKind theKind)
 {
   return Attach(BRepGraph_NodeId(theEdge), theKind, theShape);
@@ -85,8 +86,8 @@ uint64_t BRepGraph_SupplementEditor::AttachToEdge(
 //=================================================================================================
 
 uint64_t BRepGraph_SupplementEditor::AttachToFace(
-  const BRepGraph_FaceId                          theFace,
-  const TopoDS_Shape&                             theShape,
+  const BRepGraph_FaceId                              theFace,
+  const TopoDS_Shape&                                 theShape,
   const BRepGraph_LayerTopoSupplement::AttachmentKind theKind)
 {
   return Attach(BRepGraph_NodeId(theFace), theKind, theShape);
@@ -95,8 +96,8 @@ uint64_t BRepGraph_SupplementEditor::AttachToFace(
 //=================================================================================================
 
 uint64_t BRepGraph_SupplementEditor::AttachToSolid(
-  const BRepGraph_SolidId                         theSolid,
-  const TopoDS_Shape&                             theShape,
+  const BRepGraph_SolidId                             theSolid,
+  const TopoDS_Shape&                                 theShape,
   const BRepGraph_LayerTopoSupplement::AttachmentKind theKind)
 {
   return Attach(BRepGraph_NodeId(theSolid), theKind, theShape);
@@ -105,8 +106,8 @@ uint64_t BRepGraph_SupplementEditor::AttachToSolid(
 //=================================================================================================
 
 uint64_t BRepGraph_SupplementEditor::AttachToCompSolid(
-  const BRepGraph_CompSolidId                     theCompSolid,
-  const TopoDS_Shape&                             theShape,
+  const BRepGraph_CompSolidId                         theCompSolid,
+  const TopoDS_Shape&                                 theShape,
   const BRepGraph_LayerTopoSupplement::AttachmentKind theKind)
 {
   return Attach(BRepGraph_NodeId(theCompSolid), theKind, theShape);
@@ -115,8 +116,8 @@ uint64_t BRepGraph_SupplementEditor::AttachToCompSolid(
 //=================================================================================================
 
 uint64_t BRepGraph_SupplementEditor::AttachToShell(
-  const BRepGraph_ShellId                         theShell,
-  const TopoDS_Shape&                             theShape,
+  const BRepGraph_ShellId                             theShell,
+  const TopoDS_Shape&                                 theShape,
   const BRepGraph_LayerTopoSupplement::AttachmentKind theKind)
 {
   return Attach(BRepGraph_NodeId(theShell), theKind, theShape);
@@ -125,8 +126,8 @@ uint64_t BRepGraph_SupplementEditor::AttachToShell(
 //=================================================================================================
 
 uint64_t BRepGraph_SupplementEditor::AttachToCompound(
-  const BRepGraph_CompoundId                      theCompound,
-  const TopoDS_Shape&                             theShape,
+  const BRepGraph_CompoundId                          theCompound,
+  const TopoDS_Shape&                                 theShape,
   const BRepGraph_LayerTopoSupplement::AttachmentKind theKind)
 {
   return Attach(BRepGraph_NodeId(theCompound), theKind, theShape);

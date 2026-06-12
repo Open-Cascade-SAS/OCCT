@@ -811,7 +811,7 @@ void BRepGraph::EditorView::CoEdgeOps::SetFaceId(const BRepGraph_CoEdgeId theCoE
   {
     return;
   }
-  aDef.FaceId                      = theFace;
+  aDef.FaceId = theFace;
   clearCoEdgeFaceScopedRepresentations(aStorage, aDef);
   myGraph->markModified(theCoEdge);
 }
@@ -824,9 +824,9 @@ void BRepGraph::EditorView::CoEdgeOps::SetFaceId(
   {
     return;
   }
-  BRepGraphInc_Storage&    aStorage  = myGraph->myData->myIncStorage;
-  BRepGraphInc::CoEdgeDef& aCoEdge   = theMut.Internal();
-  aCoEdge.FaceId                     = theFace;
+  BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
+  BRepGraphInc::CoEdgeDef& aCoEdge  = theMut.Internal();
+  aCoEdge.FaceId                    = theFace;
   clearCoEdgeFaceScopedRepresentations(aStorage, aCoEdge);
 }
 

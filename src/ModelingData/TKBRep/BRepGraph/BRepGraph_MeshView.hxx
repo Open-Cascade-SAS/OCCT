@@ -24,17 +24,17 @@
 //! @brief Read/write view over mesh data.
 //!
 //! Splits mesh access into three explicit sub-views:
-//! - `Cache()`     — reads from the BRepGraphMesh cache only (algorithm-derived,
+//! - `Cache()`     - reads from the BRepGraphMesh cache only (algorithm-derived,
 //!                   freshness-checked against the entity's OwnGen).
-//! - `Persistent()` — reads from definition-resident mesh (FaceDef.TriangulationRepId,
+//! - `Persistent()` - reads from definition-resident mesh (FaceDef.TriangulationRepId,
 //!                   EdgeDef.Polygon3DRepId, CoEdgeDef.Polygon2DRepId,
 //!                   CoEdgeDef.PolygonOnTriRepId).
-//! - `Editor()`    — cache mutations (append/clear). Persistent rep creation lives on
+//! - `Editor()`    - cache mutations (append/clear). Persistent rep creation lives on
 //!                   `BRepGraph::Editor().Edges()`, `BRepGraph::Editor().CoEdges()`,
 //!                   `BRepGraph::Editor().Faces()` since reps back the topology defs.
-//! - `Poly()`      — mesh element count queries (shared by all paths).
+//! - `Poly()`      - mesh element count queries (shared by all paths).
 //!
-//! There is no fallback path that mixes cache and persistent — callers pick the
+//! There is no fallback path that mixes cache and persistent - callers pick the
 //! source explicitly.
 //!
 //! Obtained via `BRepGraph::Mesh()` (const) or `BRepGraph::Mesh()` (non-const for Editor).
@@ -227,8 +227,8 @@ public:
       //! @param[in] theFace typed face definition identifier
       //! @return polygon-on-triangulation handle, or null handle if absent
       [[nodiscard]] Standard_EXPORT const occ::handle<Poly_PolygonOnTriangulation>&
-        PolygonOnTriangulation(const BRepGraph_EdgeId theEdge,
-                               const BRepGraph_FaceId theFace) const;
+                                          PolygonOnTriangulation(const BRepGraph_EdgeId theEdge,
+                                                                 const BRepGraph_FaceId theFace) const;
 
     private:
       friend class PersistentView;
@@ -425,7 +425,7 @@ public:
     CoEdgeOps myCoEdges;
   };
 
-  //! Cache mutation surface. Mutates the BRepGraphMesh cache only — does not
+  //! Cache mutation surface. Mutates the BRepGraphMesh cache only - does not
   //! touch persistent definition data. Persistent rep creation/edit lives on
   //! `BRepGraph::Editor().Edges()`, `BRepGraph::Editor().CoEdges()`,
   //! `BRepGraph::Editor().Faces()`.
@@ -580,7 +580,7 @@ public:
   //! Persistent (definition-resident) reads.
   [[nodiscard]] const PersistentView& Persistent() const { return myPersistent; }
 
-  //! Effective reads — cache first, persistent fallback. Use when source is irrelevant.
+  //! Effective reads - cache first, persistent fallback. Use when source is irrelevant.
   [[nodiscard]] const EffectiveView& Effective() const { return myEffective; }
 
   //! Cache mutations.

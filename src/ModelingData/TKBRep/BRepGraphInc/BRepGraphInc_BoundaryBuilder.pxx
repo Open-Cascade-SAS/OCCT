@@ -40,21 +40,21 @@ struct SurfaceBoundaryVertex
 
 struct SurfaceBoundaryEdge
 {
-  size_t                   StartVertex = 0;
-  size_t                   EndVertex   = 0;
-  occ::handle<Geom_Curve>  Curve3D;
-  double                   First        = 0.0;
-  double                   Last         = 0.0;
-  bool                     IsDegenerate = false;
+  size_t                  StartVertex = 0;
+  size_t                  EndVertex   = 0;
+  occ::handle<Geom_Curve> Curve3D;
+  double                  First        = 0.0;
+  double                  Last         = 0.0;
+  bool                    IsDegenerate = false;
 };
 
 struct SurfaceBoundaryCoEdge
 {
-  size_t                     EdgeIndex = 0;
-  TopAbs_Orientation         Orientation = TopAbs_FORWARD;
-  occ::handle<Geom2d_Curve>  PCurve;
-  double                     First = 0.0;
-  double                     Last  = 0.0;
+  size_t                    EdgeIndex   = 0;
+  TopAbs_Orientation        Orientation = TopAbs_FORWARD;
+  occ::handle<Geom2d_Curve> PCurve;
+  double                    First = 0.0;
+  double                    Last  = 0.0;
 };
 
 struct SurfaceBoundary
@@ -88,8 +88,8 @@ inline bool isFullPeriod(const occ::handle<Geom_Surface>& theSurface,
 }
 
 inline size_t addSurfaceVertex(SurfaceBoundary& theBoundary,
-                               const gp_Pnt&   thePoint,
-                               const double    theTolerance)
+                               const gp_Pnt&    thePoint,
+                               const double     theTolerance)
 {
   const double aTol2 = theTolerance * theTolerance;
   for (size_t anIdx = 0; anIdx < theBoundary.Vertices.Size(); ++anIdx)
@@ -101,12 +101,11 @@ inline size_t addSurfaceVertex(SurfaceBoundary& theBoundary,
   }
 
   SurfaceBoundaryVertex& aVertex = theBoundary.Vertices.Appended();
-  aVertex.Point = thePoint;
+  aVertex.Point                  = thePoint;
   return theBoundary.Vertices.Size() - 1;
 }
 
-inline bool isDegenerateIsoCurve(const occ::handle<Geom_Curve>& theCurve,
-                                 const double                   theTolerance)
+inline bool isDegenerateIsoCurve(const occ::handle<Geom_Curve>& theCurve, const double theTolerance)
 {
   if (theCurve.IsNull())
   {
@@ -114,50 +113,49 @@ inline bool isDegenerateIsoCurve(const occ::handle<Geom_Curve>& theCurve,
   }
 
   GeomAdaptor_Curve anAdaptor(theCurve);
-  return anAdaptor.GetType() == GeomAbs_Circle
-      && anAdaptor.Circle().Radius() <= theTolerance;
+  return anAdaptor.GetType() == GeomAbs_Circle && anAdaptor.Circle().Radius() <= theTolerance;
 }
 
-inline size_t addSurfaceEdge(SurfaceBoundary&              theBoundary,
-                             const size_t                  theStartVertex,
-                             const size_t                  theEndVertex,
+inline size_t addSurfaceEdge(SurfaceBoundary&               theBoundary,
+                             const size_t                   theStartVertex,
+                             const size_t                   theEndVertex,
                              const occ::handle<Geom_Curve>& theCurve,
-                             const double                  theFirst,
-                             const double                  theLast,
-                             const bool                    theIsDegenerate)
+                             const double                   theFirst,
+                             const double                   theLast,
+                             const bool                     theIsDegenerate)
 {
   SurfaceBoundaryEdge& anEdge = theBoundary.Edges.Appended();
-  anEdge.StartVertex   = theStartVertex;
-  anEdge.EndVertex     = theEndVertex;
-  anEdge.Curve3D       = theCurve;
-  anEdge.First         = theFirst;
-  anEdge.Last          = theLast;
-  anEdge.IsDegenerate  = theIsDegenerate;
+  anEdge.StartVertex          = theStartVertex;
+  anEdge.EndVertex            = theEndVertex;
+  anEdge.Curve3D              = theCurve;
+  anEdge.First                = theFirst;
+  anEdge.Last                 = theLast;
+  anEdge.IsDegenerate         = theIsDegenerate;
   return theBoundary.Edges.Size() - 1;
 }
 
-inline void addSurfaceCoEdge(SurfaceBoundary&              theBoundary,
-                             const size_t                  theEdgeIndex,
-                             const TopAbs_Orientation      theOrientation,
+inline void addSurfaceCoEdge(SurfaceBoundary&                 theBoundary,
+                             const size_t                     theEdgeIndex,
+                             const TopAbs_Orientation         theOrientation,
                              const occ::handle<Geom2d_Curve>& thePCurve,
-                             const double                  theFirst,
-                             const double                  theLast)
+                             const double                     theFirst,
+                             const double                     theLast)
 {
   SurfaceBoundaryCoEdge& aCoEdge = theBoundary.CoEdges.Appended();
-  aCoEdge.EdgeIndex   = theEdgeIndex;
-  aCoEdge.Orientation = theOrientation;
-  aCoEdge.PCurve      = thePCurve;
-  aCoEdge.First       = theFirst;
-  aCoEdge.Last        = theLast;
+  aCoEdge.EdgeIndex              = theEdgeIndex;
+  aCoEdge.Orientation            = theOrientation;
+  aCoEdge.PCurve                 = thePCurve;
+  aCoEdge.First                  = theFirst;
+  aCoEdge.Last                   = theLast;
 }
 
-inline bool BuildSurfaceBoundary(SurfaceBoundary&                  theBoundary,
-                                 const occ::handle<Geom_Surface>&  theSurface,
-                                 const double                      theUMin,
-                                 const double                      theUMax,
-                                 const double                      theVMin,
-                                 const double                      theVMax,
-                                 const double                      theTolerance)
+inline bool BuildSurfaceBoundary(SurfaceBoundary&                 theBoundary,
+                                 const occ::handle<Geom_Surface>& theSurface,
+                                 const double                     theUMin,
+                                 const double                     theUMax,
+                                 const double                     theVMin,
+                                 const double                     theVMax,
+                                 const double                     theTolerance)
 {
   if (theSurface.IsNull())
   {
@@ -168,7 +166,7 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                  theBoundary,
   theBoundary.Edges.Clear();
   theBoundary.CoEdges.Clear();
 
-  const double aTol = std::max(theTolerance, Precision::Confusion());
+  const double aTol       = std::max(theTolerance, Precision::Confusion());
   const double aPeriodTol = Precision::PConfusion();
 
   const bool isUClosed = isFullPeriod(theSurface, true, theUMin, theUMax, aPeriodTol);
@@ -200,42 +198,22 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                  theBoundary,
   const bool isTopDegenerate    = isDegenerateIsoCurve(aTopCurve, aTol);
   const bool isLeftDegenerate   = isDegenerateIsoCurve(aLeftCurve, aTol);
 
-  const size_t aBottomEdge = addSurfaceEdge(theBoundary,
-                                            aV00,
-                                            aV10,
-                                            aBottomCurve,
-                                            theUMin,
-                                            theUMax,
-                                            isBottomDegenerate);
+  const size_t aBottomEdge =
+    addSurfaceEdge(theBoundary, aV00, aV10, aBottomCurve, theUMin, theUMax, isBottomDegenerate);
   size_t aRightEdge = 0;
   if (!isUClosed)
   {
-    aRightEdge = addSurfaceEdge(theBoundary,
-                                aV10,
-                                aV11,
-                                aRightCurve,
-                                theVMin,
-                                theVMax,
-                                isRightDegenerate);
+    aRightEdge =
+      addSurfaceEdge(theBoundary, aV10, aV11, aRightCurve, theVMin, theVMax, isRightDegenerate);
   }
   size_t aTopEdge = 0;
   if (!isVClosed)
   {
-    aTopEdge = addSurfaceEdge(theBoundary,
-                              aV01,
-                              aV11,
-                              aTopCurve,
-                              theUMin,
-                              theUMax,
-                              isTopDegenerate);
+    aTopEdge =
+      addSurfaceEdge(theBoundary, aV01, aV11, aTopCurve, theUMin, theUMax, isTopDegenerate);
   }
-  const size_t aLeftEdge = addSurfaceEdge(theBoundary,
-                                          aV00,
-                                          aV01,
-                                          aLeftCurve,
-                                          theVMin,
-                                          theVMax,
-                                          isLeftDegenerate);
+  const size_t aLeftEdge =
+    addSurfaceEdge(theBoundary, aV00, aV01, aLeftCurve, theVMin, theVMax, isLeftDegenerate);
 
   addSurfaceCoEdge(theBoundary,
                    aBottomEdge,
@@ -301,9 +279,8 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                  theBoundary,
                      theVMax);
   }
 
-  return !theBoundary.Vertices.IsEmpty()
-      && !theBoundary.Edges.IsEmpty()
-      && !theBoundary.CoEdges.IsEmpty();
+  return !theBoundary.Vertices.IsEmpty() && !theBoundary.Edges.IsEmpty()
+         && !theBoundary.CoEdges.IsEmpty();
 }
 
 } // namespace BRepGraphInc_BoundaryBuilder

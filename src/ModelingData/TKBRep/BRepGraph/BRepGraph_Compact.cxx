@@ -239,9 +239,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     static_cast<size_t>(aNbCoEdges),
     aPermAlloc);
   NCollection_DataMap<BRepGraph_WireId, BRepGraph_WireId>   aWireMap(static_cast<size_t>(aNbWires),
-                                                                     aPermAlloc);
+                                                                   aPermAlloc);
   NCollection_DataMap<BRepGraph_FaceId, BRepGraph_FaceId>   aFaceMap(static_cast<size_t>(aNbFaces),
-                                                                     aPermAlloc);
+                                                                   aPermAlloc);
   NCollection_DataMap<BRepGraph_ShellId, BRepGraph_ShellId> aShellMap(
     static_cast<size_t>(aNbShells),
     aPermAlloc);
@@ -613,7 +613,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   // Free coedges without wire membership can be remapped by matching
   // (ChildEdgeId, FaceId) pairs against the new graph's coedge set.
   // Note: the new graph's derived relation tables have not yet been rebuilt at this
-  // point — see RebuildDerivedRelations() further below — so a direct linear scan
+  // point - see RebuildDerivedRelations() further below - so a direct linear scan
   // is used. Free coedges are rare in practice (only PCurves added outside
   // wires create them) so the O(old_free * new_total) cost is bounded.
   for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> anIt(theGraph); anIt.More(); anIt.Next())
@@ -1270,7 +1270,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       aOriginalBindings.Append({theNodeId, theShape});
     });
 
-  // Build full ItemId→ItemId remap covering nodes, refs, and exact geometry reps (not mesh).
+  // Build full ItemId->ItemId remap covering nodes, refs, and exact geometry reps (not mesh).
   NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId> anItemRemap;
   for (const auto& [anOldId, aNewId] : aVertexMap.Items())
   {

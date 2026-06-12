@@ -45,11 +45,11 @@ struct BRepGraph_VersionStamp
     Reference = 2
   };
 
-  BRepGraph_UID    myNodeUID; //!< Definition-node identity for node-domain stamps.
-  BRepGraph_RefUID myRefUID;  //!< Reference-entry identity for reference-domain stamps.
-  uint32_t myMutationGen;     //!< OwnGen counter at snapshot time.
-  uint32_t myGeneration;      //!< Graph BRepGraph::Clear() generation at snapshot time.
-  Domain   myDomain;          //!< Active identity domain.
+  BRepGraph_UID    myNodeUID;     //!< Definition-node identity for node-domain stamps.
+  BRepGraph_RefUID myRefUID;      //!< Reference-entry identity for reference-domain stamps.
+  uint32_t         myMutationGen; //!< OwnGen counter at snapshot time.
+  uint32_t         myGeneration;  //!< Graph BRepGraph::Clear() generation at snapshot time.
+  Domain           myDomain;      //!< Active identity domain.
 
   //! Default constructor. Creates an invalid stamp (invalid UID, zero counters).
   BRepGraph_VersionStamp()

@@ -47,5 +47,3 @@ TEST(BRepGraph_TypedIdDispatchTest, VisitRefId_ConvertsToMatchingTypedId)
   EXPECT_TRUE(isVertex);
   EXPECT_EQ(anIdx, 6);
 }
-
-

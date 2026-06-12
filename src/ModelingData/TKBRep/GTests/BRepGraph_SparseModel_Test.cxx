@@ -34,7 +34,7 @@
 #include <gtest/gtest.h>
 
 // =======================================================================
-// Group 1 — Compact on sparse models (no removed nodes → no-op or valid pass)
+// Group 1 - Compact on sparse models (no removed nodes -> no-op or valid pass)
 // =======================================================================
 
 TEST(BRepGraph_SparseModelTest, Compact_BareVertices_NoOp)
@@ -51,16 +51,16 @@ TEST(BRepGraph_SparseModelTest, Compact_BareVertices_NoOp)
   EXPECT_EQ(aRes.NbNodesBefore, aRes.NbNodesAfter);
   EXPECT_EQ(aGraph.Topo().Vertices().NbActive(), 3);
   const BRepGraph_Validate::Result aValidateResult = BRepGraph_Validate::Perform(aGraph);
-  EXPECT_TRUE(aValidateResult.IsValid()) << (aValidateResult.Issues.IsEmpty()
-                                              ? ""
-                                              : aValidateResult.Issues.First().Description.ToCString());
+  EXPECT_TRUE(aValidateResult.IsValid())
+    << (aValidateResult.Issues.IsEmpty() ? ""
+                                         : aValidateResult.Issues.First().Description.ToCString());
 }
 
 // =======================================================================
 
 TEST(BRepGraph_SparseModelTest, Compact_FreeEdgeNoCurve_NoOp)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
   ASSERT_TRUE(aV0.IsValid() && aV1.IsValid());
@@ -81,7 +81,7 @@ TEST(BRepGraph_SparseModelTest, Compact_FreeEdgeNoCurve_NoOp)
 
 TEST(BRepGraph_SparseModelTest, Compact_FreeWireSingleCoEdge_NoOp)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
   ASSERT_TRUE(aV0.IsValid() && aV1.IsValid());
@@ -109,10 +109,9 @@ TEST(BRepGraph_SparseModelTest, Compact_FreeWireSingleCoEdge_NoOp)
 
 TEST(BRepGraph_SparseModelTest, Compact_EmptyCompound_NoOp)
 {
-  BRepGraph aGraph;
+  BRepGraph                                  aGraph;
   NCollection_LinearVector<BRepGraph_NodeId> anEmpty;
   ASSERT_TRUE(aGraph.Editor().Compounds().Add(anEmpty.ToArray1()).IsValid());
-
 
   ASSERT_EQ(aGraph.Topo().Compounds().NbActive(), 1);
 
@@ -129,7 +128,6 @@ TEST(BRepGraph_SparseModelTest, Compact_EmptyShell_NoOp)
   BRepGraph aGraph;
   ASSERT_TRUE(aGraph.Editor().Shells().Add().IsValid());
 
-
   ASSERT_EQ(aGraph.Topo().Shells().NbActive(), 1);
 
   [[maybe_unused]] const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
@@ -145,7 +143,6 @@ TEST(BRepGraph_SparseModelTest, Compact_EmptySolid_NoOp)
   BRepGraph aGraph;
   ASSERT_TRUE(aGraph.Editor().Solids().Add().IsValid());
 
-
   ASSERT_EQ(aGraph.Topo().Solids().NbActive(), 1);
 
   [[maybe_unused]] const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
@@ -158,14 +155,12 @@ TEST(BRepGraph_SparseModelTest, Compact_EmptySolid_NoOp)
 
 TEST(BRepGraph_SparseModelTest, Compact_WirelessSurfacelessFace_NoOp)
 {
-  BRepGraph aGraph;
+  BRepGraph                                  aGraph;
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  ASSERT_TRUE(
-    aGraph.Editor()
-      .Faces()
-      .Add(occ::handle<Geom_Surface>(), BRepGraph_WireId(), anEmpty.ToArray1(), 1.e-7)
-      .IsValid());
-
+  ASSERT_TRUE(aGraph.Editor()
+                .Faces()
+                .Add(occ::handle<Geom_Surface>(), BRepGraph_WireId(), anEmpty.ToArray1(), 1.e-7)
+                .IsValid());
 
   ASSERT_EQ(aGraph.Topo().Faces().NbActive(), 1);
 
@@ -176,12 +171,12 @@ TEST(BRepGraph_SparseModelTest, Compact_WirelessSurfacelessFace_NoOp)
 }
 
 // =======================================================================
-// Group 2 — Compact after RemoveNode on sparse models
+// Group 2 - Compact after RemoveNode on sparse models
 // =======================================================================
 
 TEST(BRepGraph_SparseModelTest, Compact_RemoveVertexFromFreeEdge_RemapsEdgeRefs)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
   ASSERT_TRUE(aV0.IsValid() && aV1.IsValid());
@@ -207,17 +202,16 @@ TEST(BRepGraph_SparseModelTest, Compact_RemoveVertexFromFreeEdge_RemapsEdgeRefs)
 
 TEST(BRepGraph_SparseModelTest, Compact_RemoveEdgeFromFreeWire_RetiresCoEdgeAndPrunesRef)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   ASSERT_TRUE(anEdge.IsValid());
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
   ASSERT_TRUE(aGraph.Editor().Wires().Add(aCoEdges.ToArray1()).IsValid());
-
 
   const uint32_t aCoEdgesBefore = aGraph.Topo().CoEdges().NbActive();
   ASSERT_GE(aCoEdgesBefore, 1);
@@ -242,10 +236,10 @@ TEST(BRepGraph_SparseModelTest, Compact_RemoveEdgeFromFreeWire_RetiresCoEdgeAndP
 
 TEST(BRepGraph_SparseModelTest, Compact_RemoveFace_FreeWireCoEdgesSurvive)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
@@ -254,10 +248,9 @@ TEST(BRepGraph_SparseModelTest, Compact_RemoveFace_FreeWireCoEdgesSurvive)
 
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
   ASSERT_TRUE(aFace.IsValid());
-
 
   const uint32_t aCoEdgesBefore = aGraph.Topo().CoEdges().NbActive();
   const uint32_t aWiresBefore   = aGraph.Topo().Wires().NbActive();
@@ -271,8 +264,7 @@ TEST(BRepGraph_SparseModelTest, Compact_RemoveFace_FreeWireCoEdgesSurvive)
   EXPECT_EQ(aGraph.Topo().Faces().NbActive(), 0);
   EXPECT_EQ(aGraph.Topo().CoEdges().NbActive(), aCoEdgesBefore)
     << "Free-wire CoEdges must survive face removal (FaceId cleared, ChildEdgeId valid)";
-  EXPECT_EQ(aGraph.Topo().Wires().NbActive(), aWiresBefore)
-    << "Wire must survive face removal";
+  EXPECT_EQ(aGraph.Topo().Wires().NbActive(), aWiresBefore) << "Wire must survive face removal";
 
   [[maybe_unused]] const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
   EXPECT_EQ(aGraph.Topo().Faces().NbActive(), 0);
@@ -286,17 +278,17 @@ TEST(BRepGraph_SparseModelTest, Compact_RemoveFace_FreeWireCoEdgesSurvive)
 
 TEST(BRepGraph_SparseModelTest, Compact_RemoveTopologyChild_OccurrenceRetired)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
-  const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  const BRepGraph_WireId          aWire  = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
   aGraph.Editor().Shells().Append(aShell, aFace);
@@ -306,7 +298,6 @@ TEST(BRepGraph_SparseModelTest, Compact_RemoveTopologyChild_OccurrenceRetired)
   const BRepGraph_ProductId aProduct = aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid));
   ASSERT_TRUE(aProduct.IsValid());
   aGraph.Editor().Products().AppendDocumentRoot(aProduct);
-
 
   ASSERT_EQ(aGraph.Topo().Products().NbActive(), 1);
   ASSERT_EQ(aGraph.Topo().Occurrences().NbActive(), 1);
@@ -337,23 +328,22 @@ TEST(BRepGraph_SparseModelTest, Compact_MultipleRemovals_VertexEdgeFace_Validate
 
   const BRepGraph_VertexId aV0f = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1f = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId aFreeEdge =
+  const BRepGraph_EdgeId   aFreeEdge =
     aGraph.Editor().Edges().Add(aV0f, aV1f, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
 
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 1, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 1, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
-  const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  const BRepGraph_WireId          aWire  = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
   ASSERT_TRUE(aFace.IsValid());
   ASSERT_TRUE(aFreeEdge.IsValid());
-
 
   const uint32_t aVtxBefore = aGraph.Topo().Vertices().NbActive();
 
@@ -370,7 +360,7 @@ TEST(BRepGraph_SparseModelTest, Compact_MultipleRemovals_VertexEdgeFace_Validate
 }
 
 // =======================================================================
-// Group 3 — Deduplicate on sparse models
+// Group 3 - Deduplicate on sparse models
 // =======================================================================
 
 TEST(BRepGraph_SparseModelTest, Dedup_BareVertices_NoRewrite)
@@ -379,7 +369,6 @@ TEST(BRepGraph_SparseModelTest, Dedup_BareVertices_NoRewrite)
   ASSERT_TRUE(aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7).IsValid());
   ASSERT_TRUE(aGraph.Editor().Vertices().Add(gp_Pnt(1, 0, 0), 1.e-7).IsValid());
   ASSERT_TRUE(aGraph.Editor().Vertices().Add(gp_Pnt(2, 0, 0), 1.e-7).IsValid());
-
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 0);
@@ -401,7 +390,7 @@ TEST(BRepGraph_SparseModelTest, Dedup_TwoIdenticalVertices_MergeWhenSafe)
   ASSERT_EQ(aGraph.Topo().Vertices().NbActive(), 2);
 
   BRepGraph_Deduplicate::Options anOpts;
-  anOpts.MergeEntitiesWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe             = true;
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   EXPECT_GE(aRes.NbMergedVertices, 1);
@@ -430,18 +419,17 @@ TEST(BRepGraph_SparseModelTest, Dedup_TwoIdenticalVertices_NoMergeByDefault)
 
 TEST(BRepGraph_SparseModelTest, Dedup_FreeEdgesWithCurve_CanonicalizesCurves)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId aV0  = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
-  const BRepGraph_VertexId aV1  = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_VertexId aV0b = aGraph.Editor().Vertices().Add(gp_Pnt(0, 1, 0), 1.e-7);
-  const BRepGraph_VertexId aV1b = aGraph.Editor().Vertices().Add(gp_Pnt(10, 1, 0), 1.e-7);
+  BRepGraph                     aGraph;
+  const BRepGraph_VertexId      aV0    = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
+  const BRepGraph_VertexId      aV1    = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
+  const BRepGraph_VertexId      aV0b   = aGraph.Editor().Vertices().Add(gp_Pnt(0, 1, 0), 1.e-7);
+  const BRepGraph_VertexId      aV1b   = aGraph.Editor().Vertices().Add(gp_Pnt(10, 1, 0), 1.e-7);
   const occ::handle<Geom_Curve> aLine1 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   const occ::handle<Geom_Curve> aLine2 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   ASSERT_NE(aLine1.get(), aLine2.get());
 
   ASSERT_TRUE(aGraph.Editor().Edges().Add(aV0, aV1, aLine1, 0.0, 10.0, 1.e-7).IsValid());
   ASSERT_TRUE(aGraph.Editor().Edges().Add(aV0b, aV1b, aLine2, 0.0, 10.0, 1.e-7).IsValid());
-
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalCurves, 1);
@@ -453,15 +441,14 @@ TEST(BRepGraph_SparseModelTest, Dedup_FreeEdgesWithCurve_CanonicalizesCurves)
 
 TEST(BRepGraph_SparseModelTest, Dedup_FreeWireSingleCoEdge_NoGeometryRewrite)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
   ASSERT_TRUE(aGraph.Editor().Wires().Add(aCoEdges.ToArray1()).IsValid());
-
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 0);
@@ -473,10 +460,9 @@ TEST(BRepGraph_SparseModelTest, Dedup_FreeWireSingleCoEdge_NoGeometryRewrite)
 
 TEST(BRepGraph_SparseModelTest, Dedup_EmptyCompound_NoOp)
 {
-  BRepGraph aGraph;
+  BRepGraph                                  aGraph;
   NCollection_LinearVector<BRepGraph_NodeId> anEmpty;
   ASSERT_TRUE(aGraph.Editor().Compounds().Add(anEmpty.ToArray1()).IsValid());
-
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 0);
@@ -485,25 +471,24 @@ TEST(BRepGraph_SparseModelTest, Dedup_EmptyCompound_NoOp)
 }
 
 // =======================================================================
-// Group 4 — CleanupRemovedReferences edge cases
+// Group 4 - CleanupRemovedReferences edge cases
 // =======================================================================
 
 TEST(BRepGraph_SparseModelTest, Cleanup_RemoveFace_CoEdgeFaceIdCleared_CoEdgeSurvives)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
-  const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  const BRepGraph_WireId          aWire  = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
   ASSERT_TRUE(aFace.IsValid());
-
 
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aFace));
   aGraph.Editor().Gen().CleanupRemovedReferences();
@@ -511,11 +496,11 @@ TEST(BRepGraph_SparseModelTest, Cleanup_RemoveFace_CoEdgeFaceIdCleared_CoEdgeSur
   for (BRepGraph_CoEdgeIterator anIt(aGraph); anIt.More(); anIt.Next())
   {
     const BRepGraphInc::CoEdgeDef& aCE = anIt.Current();
-    EXPECT_FALSE(anIt.CurrentId().IsRemoved(aGraph)) << "Free-wire CoEdge must not be retired by Phase 4a";
+    EXPECT_FALSE(anIt.CurrentId().IsRemoved(aGraph))
+      << "Free-wire CoEdge must not be retired by Phase 4a";
     EXPECT_FALSE(aCE.FaceId.IsValid())
       << "FaceId should be cleared for CoEdges whose face was removed";
-    EXPECT_TRUE(aCE.ChildEdgeId.IsValid())
-      << "ChildEdgeId must remain valid for free-wire CoEdges";
+    EXPECT_TRUE(aCE.ChildEdgeId.IsValid()) << "ChildEdgeId must remain valid for free-wire CoEdges";
   }
 }
 
@@ -523,15 +508,14 @@ TEST(BRepGraph_SparseModelTest, Cleanup_RemoveFace_CoEdgeFaceIdCleared_CoEdgeSur
 
 TEST(BRepGraph_SparseModelTest, Cleanup_RemoveEdge_FreeWireCoEdgeRetired)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
   ASSERT_TRUE(aGraph.Editor().Wires().Add(aCoEdges.ToArray1()).IsValid());
-
 
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(anEdge));
   aGraph.Editor().Gen().CleanupRemovedReferences();
@@ -546,14 +530,11 @@ TEST(BRepGraph_SparseModelTest, Cleanup_RemoveEdge_FreeWireCoEdgeRetired)
 
 TEST(BRepGraph_SparseModelTest, Cleanup_RemoveVertex_EdgeVertexRefsCleared)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  ASSERT_TRUE(aGraph.Editor()
-                .Edges()
-                .Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7)
-                .IsValid());
-
+  ASSERT_TRUE(
+    aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7).IsValid());
 
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aV0));
   aGraph.Editor().Gen().CleanupRemovedReferences();
@@ -574,20 +555,19 @@ TEST(BRepGraph_SparseModelTest, Cleanup_RemoveVertex_EdgeVertexRefsCleared)
 
 TEST(BRepGraph_SparseModelTest, Cleanup_RemoveWire_FaceWireRefPruned)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
-  const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  const BRepGraph_WireId          aWire  = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
   ASSERT_TRUE(aFace.IsValid());
-
 
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aWire));
   aGraph.Editor().Gen().CleanupRemovedReferences();
@@ -600,14 +580,13 @@ TEST(BRepGraph_SparseModelTest, Cleanup_RemoveWire_FaceWireRefPruned)
 }
 
 // =======================================================================
-// Group 5 — Product / Occurrence canonical pattern stress
+// Group 5 - Product / Occurrence canonical pattern stress
 // =======================================================================
 
 TEST(BRepGraph_SparseModelTest, Product_EmptyProduct_CompactAndAudit)
 {
   BRepGraph aGraph;
   ASSERT_TRUE(aGraph.Editor().Products().Add().IsValid());
-
 
   ASSERT_EQ(aGraph.Topo().Products().NbActive(), 1);
   ASSERT_EQ(aGraph.Topo().Occurrences().NbActive(), 0);
@@ -622,17 +601,17 @@ TEST(BRepGraph_SparseModelTest, Product_EmptyProduct_CompactAndAudit)
 
 TEST(BRepGraph_SparseModelTest, Product_FullCanonical_RemoveSolid_WholeChainCleans)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
   const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
-  const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  const BRepGraph_WireId          aWire  = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
   aGraph.Editor().Shells().Append(aShell, aFace);
@@ -641,7 +620,6 @@ TEST(BRepGraph_SparseModelTest, Product_FullCanonical_RemoveSolid_WholeChainClea
   const BRepGraph_ProductId aProduct = aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid));
   ASSERT_TRUE(aProduct.IsValid());
   aGraph.Editor().Products().AppendDocumentRoot(aProduct);
-
 
   ASSERT_EQ(aGraph.Topo().Products().NbActive(), 1);
   ASSERT_EQ(aGraph.Topo().Occurrences().NbActive(), 1);
@@ -664,18 +642,17 @@ TEST(BRepGraph_SparseModelTest, Product_FullCanonical_RemoveSolid_WholeChainClea
 
 TEST(BRepGraph_SparseModelTest, Product_FullCanonical_CompactAndDedup_NoRegression)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
-  const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
+  BRepGraph                     aGraph;
+  const BRepGraph_VertexId      aV0   = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
+  const BRepGraph_VertexId      aV1   = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
   const occ::handle<Geom_Curve> aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  const BRepGraph_EdgeId anEdge =
-    aGraph.Editor().Edges().Add(aV0, aV1, aLine, 0.0, 10.0, 1.e-7);
+  const BRepGraph_EdgeId anEdge = aGraph.Editor().Edges().Add(aV0, aV1, aLine, 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
-  const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  const BRepGraph_WireId          aWire  = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
   aGraph.Editor().Shells().Append(aShell, aFace);
@@ -684,7 +661,6 @@ TEST(BRepGraph_SparseModelTest, Product_FullCanonical_CompactAndDedup_NoRegressi
   const BRepGraph_ProductId aProduct = aGraph.Editor().Products().Add(BRepGraph_NodeId(aSolid));
   ASSERT_TRUE(aProduct.IsValid());
   aGraph.Editor().Products().AppendDocumentRoot(aProduct);
-
 
   std::ignore = BRepGraph_Compact::Perform(aGraph);
   EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
@@ -696,26 +672,25 @@ TEST(BRepGraph_SparseModelTest, Product_FullCanonical_CompactAndDedup_NoRegressi
 }
 
 // =======================================================================
-// Group 6 — Stress pipelines (multiple operations combined)
+// Group 6 - Stress pipelines (multiple operations combined)
 // =======================================================================
 
 TEST(BRepGraph_SparseModelTest, Pipeline_RemoveCleanupCompact_GraphValid)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
-  const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
+  BRepGraph                aGraph;
+  const BRepGraph_VertexId aV0     = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
+  const BRepGraph_VertexId aV1     = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
   const BRepGraph_VertexId aVExtra = aGraph.Editor().Vertices().Add(gp_Pnt(100, 0, 0), 1.e-7);
-  const BRepGraph_EdgeId anEdge =
+  const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 10.0, 1.e-7);
   NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD));
-  const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  const BRepGraph_WireId          aWire  = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
   const occ::handle<Geom_Surface> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   NCollection_LinearVector<BRepGraph_WireId> anEmpty;
-  const BRepGraph_FaceId aFace =
+  const BRepGraph_FaceId                     aFace =
     aGraph.Editor().Faces().Add(aPlane, aWire, anEmpty.ToArray1(), 1.e-7);
   ASSERT_TRUE(aFace.IsValid());
-
 
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aFace));
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aVExtra));
@@ -727,11 +702,11 @@ TEST(BRepGraph_SparseModelTest, Pipeline_RemoveCleanupCompact_GraphValid)
 
 TEST(BRepGraph_SparseModelTest, Pipeline_RemoveCleanupDedupCompact_GraphValid)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId aV0a = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
-  const BRepGraph_VertexId aV1a = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
-  const BRepGraph_VertexId aV0b = aGraph.Editor().Vertices().Add(gp_Pnt(0, 1, 0), 1.e-7);
-  const BRepGraph_VertexId aV1b = aGraph.Editor().Vertices().Add(gp_Pnt(10, 1, 0), 1.e-7);
+  BRepGraph                     aGraph;
+  const BRepGraph_VertexId      aV0a   = aGraph.Editor().Vertices().Add(gp_Pnt(0, 0, 0), 1.e-7);
+  const BRepGraph_VertexId      aV1a   = aGraph.Editor().Vertices().Add(gp_Pnt(10, 0, 0), 1.e-7);
+  const BRepGraph_VertexId      aV0b   = aGraph.Editor().Vertices().Add(gp_Pnt(0, 1, 0), 1.e-7);
+  const BRepGraph_VertexId      aV1b   = aGraph.Editor().Vertices().Add(gp_Pnt(10, 1, 0), 1.e-7);
   const occ::handle<Geom_Curve> aLine1 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   const occ::handle<Geom_Curve> aLine2 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   ASSERT_NE(aLine1.get(), aLine2.get());
@@ -739,14 +714,13 @@ TEST(BRepGraph_SparseModelTest, Pipeline_RemoveCleanupDedupCompact_GraphValid)
   ASSERT_TRUE(aGraph.Editor().Edges().Add(aV0a, aV1a, aLine1, 0.0, 10.0, 1.e-7).IsValid());
   ASSERT_TRUE(aGraph.Editor().Edges().Add(aV0b, aV1b, aLine2, 0.0, 10.0, 1.e-7).IsValid());
 
-
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aV0a));
   aGraph.Editor().Gen().CleanupRemovedReferences();
 
   BRepGraph_Deduplicate::Options aDedupOpts;
   aDedupOpts.MergeEntitiesWhenSafe = true;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, aDedupOpts);
-  std::ignore = BRepGraph_Compact::Perform(aGraph);
+  std::ignore                      = BRepGraph_Deduplicate::Perform(aGraph, aDedupOpts);
+  std::ignore                      = BRepGraph_Compact::Perform(aGraph);
 
   EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
 }
@@ -755,7 +729,7 @@ TEST(BRepGraph_SparseModelTest, Pipeline_RemoveCleanupDedupCompact_GraphValid)
 
 TEST(BRepGraph_SparseModelTest, Pipeline_CompoundWithEmptyShells_CompactAndAudit)
 {
-  BRepGraph aGraph;
+  BRepGraph               aGraph;
   const BRepGraph_ShellId aShell1 = aGraph.Editor().Shells().Add();
   const BRepGraph_ShellId aShell2 = aGraph.Editor().Shells().Add();
   ASSERT_TRUE(aShell1.IsValid() && aShell2.IsValid());
@@ -764,7 +738,6 @@ TEST(BRepGraph_SparseModelTest, Pipeline_CompoundWithEmptyShells_CompactAndAudit
   aChildren.Append(BRepGraph_NodeId(aShell1));
   aChildren.Append(BRepGraph_NodeId(aShell2));
   ASSERT_TRUE(aGraph.Editor().Compounds().Add(aChildren.ToArray1()).IsValid());
-
 
   ASSERT_EQ(aGraph.Topo().Shells().NbActive(), 2);
   ASSERT_EQ(aGraph.Topo().Compounds().NbActive(), 1);

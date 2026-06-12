@@ -357,7 +357,7 @@ private:
     BRepGraph_NodeId   Node;
     uint32_t           NextChildIdx   = 0;
     int                StepFromParent = -1;
-    BRepGraph_RefId    Ref;           //!< RefId resolved at push time (O(1) in CurrentRef)
+    BRepGraph_RefId    Ref; //!< RefId resolved at push time (O(1) in CurrentRef)
     TopLoc_Location    AccLocation;
     TopAbs_Orientation AccOrientation = TopAbs_FORWARD;
   };

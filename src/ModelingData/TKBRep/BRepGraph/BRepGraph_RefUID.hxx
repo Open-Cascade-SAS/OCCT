@@ -33,8 +33,7 @@ struct BRepGraph_RefUID
 
   BRepGraph_RefUID() = default;
 
-  BRepGraph_RefUID(const BRepGraph_RefId::Kind theKind,
-                   const uint32_t              theCounter)
+  BRepGraph_RefUID(const BRepGraph_RefId::Kind theKind, const uint32_t theCounter)
       : Kind(theKind),
         Counter(theCounter)
   {
@@ -43,13 +42,9 @@ struct BRepGraph_RefUID
   static BRepGraph_RefUID Invalid() { return BRepGraph_RefUID(); }
 
   //! True if this UID has a valid kind and a non-zero counter.
-  [[nodiscard]] bool IsValid() const
-  {
-    return Counter > 0 && BRepGraph_RefId::IsValidKind(Kind);
-  }
+  [[nodiscard]] bool IsValid() const { return Counter > 0 && BRepGraph_RefId::IsValidKind(Kind); }
 
-  friend bool operator==(const BRepGraph_RefUID& theLeft,
-                          const BRepGraph_RefUID& theRight) noexcept
+  friend bool operator==(const BRepGraph_RefUID& theLeft, const BRepGraph_RefUID& theRight) noexcept
   {
     if (theLeft.Counter == 0 || theRight.Counter == 0)
     {
@@ -58,14 +53,12 @@ struct BRepGraph_RefUID
     return theLeft.Kind == theRight.Kind && theLeft.Counter == theRight.Counter;
   }
 
-  friend bool operator!=(const BRepGraph_RefUID& theLeft,
-                          const BRepGraph_RefUID& theRight) noexcept
+  friend bool operator!=(const BRepGraph_RefUID& theLeft, const BRepGraph_RefUID& theRight) noexcept
   {
     return !(theLeft == theRight);
   }
 
-  friend bool operator<(const BRepGraph_RefUID& theLeft,
-                         const BRepGraph_RefUID& theRight) noexcept
+  friend bool operator<(const BRepGraph_RefUID& theLeft, const BRepGraph_RefUID& theRight) noexcept
   {
     if (theLeft.Kind != theRight.Kind)
     {

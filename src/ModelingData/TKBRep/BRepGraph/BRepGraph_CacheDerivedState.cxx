@@ -57,8 +57,7 @@ IdT remappedNode(const BRepGraph_CopyRemap& theCopy, const IdT theId)
 
 //=================================================================================================
 
-BRepGraph_VertexId resolveChildVertex(const BRepGraph&      theGraph,
-                                      BRepGraph_VertexRefId theRef)
+BRepGraph_VertexId resolveChildVertex(const BRepGraph& theGraph, BRepGraph_VertexRefId theRef)
 {
   if (!theRef.IsValid(theGraph.Refs().Vertices().Nb()) || theRef.IsRemoved(theGraph))
   {
@@ -100,7 +99,7 @@ occ::handle<Geom_Surface> faceSurface(const BRepGraph& theGraph, const BRepGraph
 
 //=================================================================================================
 
-bool coEdgeOrientedVertices(const BRepGraph&          theGraph,
+bool coEdgeOrientedVertices(const BRepGraph&         theGraph,
                             const BRepGraph_CoEdgeId theCoEdge,
                             BRepGraph_VertexId&      theStartVertex,
                             BRepGraph_VertexId&      theEndVertex)
@@ -117,9 +116,8 @@ bool coEdgeOrientedVertices(const BRepGraph&          theGraph,
     return false;
   }
 
-  const BRepGraphInc::EdgeDef& anEdge =
-    theGraph.Topo().Edges().Definition(aCoEdge.ChildEdgeId);
-  const BRepGraph_VertexRefId aStartRef =
+  const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(aCoEdge.ChildEdgeId);
+  const BRepGraph_VertexRefId  aStartRef =
     aCoEdge.Orientation == TopAbs_REVERSED ? anEdge.EndVertexRefId : anEdge.StartVertexRefId;
   const BRepGraph_VertexRefId anEndRef =
     aCoEdge.Orientation == TopAbs_REVERSED ? anEdge.StartVertexRefId : anEdge.EndVertexRefId;
@@ -131,8 +129,8 @@ bool coEdgeOrientedVertices(const BRepGraph&          theGraph,
 
 //=================================================================================================
 
-bool isEdgeSameRange(const BRepGraph&              theGraph,
-                     const BRepGraph_EdgeId       theEdge,
+bool isEdgeSameRange(const BRepGraph&                 theGraph,
+                     const BRepGraph_EdgeId           theEdge,
                      const std::pair<double, double>& theEdgeRange)
 {
   const BRepGraphInc::EdgeRelations& anEdgeRel = theGraph.Topo().Edges().Relations(theEdge);
@@ -143,8 +141,7 @@ bool isEdgeSameRange(const BRepGraph&              theGraph,
       continue;
     }
 
-    const BRepGraphInc::CoEdgeDef& aCoEdge =
-      theGraph.Topo().CoEdges().Definition(aCoEdgeId);
+    const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCoEdgeId);
     if (!aCoEdge.FaceId.IsValid(theGraph.Topo().Faces().Nb()) || aCoEdge.FaceId.IsRemoved(theGraph))
     {
       continue;
@@ -168,21 +165,20 @@ bool isEdgeSameRange(const BRepGraph&              theGraph,
 
 //=================================================================================================
 
-bool isEdgeSameParameter(const BRepGraph&              theGraph,
-                         const BRepGraph_EdgeId       theEdge,
-                         const BRepGraphInc::EdgeDef& theEdgeDef,
-                         const occ::handle<Geom_Curve>& theCurve3D,
+bool isEdgeSameParameter(const BRepGraph&                 theGraph,
+                         const BRepGraph_EdgeId           theEdge,
+                         const BRepGraphInc::EdgeDef&     theEdgeDef,
+                         const occ::handle<Geom_Curve>&   theCurve3D,
                          const std::pair<double, double>& theEdgeRange)
 {
-  const double aTol = theEdgeDef.Tolerance + Precision::Confusion();
+  const double  aTol           = theEdgeDef.Tolerance + Precision::Confusion();
   constexpr int THE_NB_SAMPLES = 5;
 
   const BRepGraphInc::EdgeRelations& anEdgeRel = theGraph.Topo().Edges().Relations(theEdge);
   for (int anIdx = 0; anIdx <= THE_NB_SAMPLES; ++anIdx)
   {
     const double aParam =
-      theEdgeRange.first
-      + (theEdgeRange.second - theEdgeRange.first) * anIdx / THE_NB_SAMPLES;
+      theEdgeRange.first + (theEdgeRange.second - theEdgeRange.first) * anIdx / THE_NB_SAMPLES;
     const gp_Pnt aPoint3D = theCurve3D->Value(aParam);
 
     for (const BRepGraph_CoEdgeId& aCoEdgeId : anEdgeRel.CoEdgeIds)
@@ -192,8 +188,7 @@ bool isEdgeSameParameter(const BRepGraph&              theGraph,
         continue;
       }
 
-      const BRepGraphInc::CoEdgeDef& aCoEdge =
-        theGraph.Topo().CoEdges().Definition(aCoEdgeId);
+      const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCoEdgeId);
       if (!aCoEdge.FaceId.IsValid(theGraph.Topo().Faces().Nb())
           || aCoEdge.FaceId.IsRemoved(theGraph))
       {
@@ -212,7 +207,7 @@ bool isEdgeSameParameter(const BRepGraph&              theGraph,
         continue;
       }
 
-      const gp_Pnt2d aUV = aPCurve->Value(aParam);
+      const gp_Pnt2d aUV           = aPCurve->Value(aParam);
       const gp_Pnt   aSurfacePoint = aSurface->Value(aUV.X(), aUV.Y());
       if (aPoint3D.Distance(aSurfacePoint) > aTol)
       {
@@ -267,11 +262,10 @@ void BRepGraph_CacheDerivedState::CopyFreshTo(const BRepGraph_CopyRemap& theCopy
   std::shared_lock aSourceLock(myMutex);
   std::unique_lock aTargetLock(aTargetCache->myMutex);
 
-  for (NCollection_DataMap<BRepGraph_EdgeId, EdgeEntry>::Iterator anIt(myEdgeEntries);
-       anIt.More();
+  for (NCollection_DataMap<BRepGraph_EdgeId, EdgeEntry>::Iterator anIt(myEdgeEntries); anIt.More();
        anIt.Next())
   {
-    const BRepGraph_EdgeId aSourceEdge = anIt.Key();
+    const BRepGraph_EdgeId aSourceEdge  = anIt.Key();
     const EdgeEntry&       aSourceEntry = anIt.Value();
     if (!aSourceEntry.IsFreshOwn(*this, BRepGraph_NodeId(aSourceEdge)))
     {
@@ -289,11 +283,10 @@ void BRepGraph_CacheDerivedState::CopyFreshTo(const BRepGraph_CopyRemap& theCopy
     }
   }
 
-  for (NCollection_DataMap<BRepGraph_WireId, WireEntry>::Iterator anIt(myWireEntries);
-       anIt.More();
+  for (NCollection_DataMap<BRepGraph_WireId, WireEntry>::Iterator anIt(myWireEntries); anIt.More();
        anIt.Next())
   {
-    const BRepGraph_WireId aSourceWire = anIt.Key();
+    const BRepGraph_WireId aSourceWire  = anIt.Key();
     const WireEntry&       aSourceEntry = anIt.Value();
     if (!aSourceEntry.IsFreshOwn(*this, BRepGraph_NodeId(aSourceWire)))
     {
@@ -336,9 +329,9 @@ void BRepGraph_CacheDerivedState::CopyFreshTo(const BRepGraph_CopyRemap& theCopy
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::ComputeEdgeStatus(const BRepGraph&  theGraph,
-                                                    BRepGraph_EdgeId  theEdge,
-                                                    EdgeEntry&        theEntry)
+bool BRepGraph_CacheDerivedState::ComputeEdgeStatus(const BRepGraph& theGraph,
+                                                    BRepGraph_EdgeId theEdge,
+                                                    EdgeEntry&       theEntry)
 {
   theEntry.Status        = EdgeGeometryStatus::Invalid;
   theEntry.IsClosed      = false;
@@ -354,16 +347,17 @@ bool BRepGraph_CacheDerivedState::ComputeEdgeStatus(const BRepGraph&  theGraph,
 
   const BRepGraph_VertexId aStartV = resolveChildVertex(theGraph, aDef.StartVertexRefId);
   const BRepGraph_VertexId aEndV   = resolveChildVertex(theGraph, aDef.EndVertexRefId);
-  theEntry.IsClosed = aStartV.IsValid() && aStartV == aEndV;
+  theEntry.IsClosed                = aStartV.IsValid() && aStartV == aEndV;
 
-  const occ::handle<Geom_Curve>& aCurve3D = edgeCurve3D(theGraph, theEdge);
-  const bool hasCurve3D = !aCurve3D.IsNull();
-  theEntry.Status = hasCurve3D ? EdgeGeometryStatus::HasCurve3D : EdgeGeometryStatus::MissingCurve3D;
+  const occ::handle<Geom_Curve>& aCurve3D   = edgeCurve3D(theGraph, theEdge);
+  const bool                     hasCurve3D = !aCurve3D.IsNull();
+  theEntry.Status =
+    hasCurve3D ? EdgeGeometryStatus::HasCurve3D : EdgeGeometryStatus::MissingCurve3D;
 
   if (hasCurve3D)
   {
     const std::pair<double, double> anEdgeRange = BRepGraph_Tool::Edge::Range(theGraph, theEdge);
-    theEntry.SameRange = isEdgeSameRange(theGraph, theEdge, anEdgeRange);
+    theEntry.SameRange                          = isEdgeSameRange(theGraph, theEdge, anEdgeRange);
     theEntry.SameParameter =
       theEntry.SameRange && isEdgeSameParameter(theGraph, theEdge, aDef, aCurve3D, anEdgeRange);
     return true;
@@ -396,8 +390,8 @@ bool BRepGraph_CacheDerivedState::ComputeEdgeStatus(const BRepGraph&  theGraph,
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::ComputeWireIsClosed(const BRepGraph&  theGraph,
-                                                      BRepGraph_WireId  theWire)
+bool BRepGraph_CacheDerivedState::ComputeWireIsClosed(const BRepGraph& theGraph,
+                                                      BRepGraph_WireId theWire)
 {
   if (!theWire.IsValid(theGraph.Topo().Wires().Nb()) || theWire.IsRemoved(theGraph))
   {
@@ -438,9 +432,9 @@ bool BRepGraph_CacheDerivedState::ComputeWireIsClosed(const BRepGraph&  theGraph
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&   theGraph,
-                                                     BRepGraph_ShellId  theShell,
-                                                     ShellEntry&        theEntry)
+bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&  theGraph,
+                                                     BRepGraph_ShellId theShell,
+                                                     ShellEntry&       theEntry)
 {
   theEntry.Status = ShellClosureStatus::Invalid;
 
@@ -466,7 +460,7 @@ bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&   theGraph
     }
 
     const BRepGraphInc::FaceRef& aFaceRef = theGraph.Refs().Faces().Entry(aFaceRefId);
-    const BRepGraph_FaceId aFaceId = aFaceRef.ChildFaceId;
+    const BRepGraph_FaceId       aFaceId  = aFaceRef.ChildFaceId;
     if (aFaceId.IsValid(theGraph.Topo().Faces().Nb()) && !aFaceId.IsRemoved(theGraph))
     {
       anActiveFaces.Add(aFaceId);
@@ -481,11 +475,11 @@ bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&   theGraph
 
   NCollection_DataMap<BRepGraph_EdgeId, uint32_t> anEdgeUsage;
 
-  for (NCollection_Map<BRepGraph_FaceId>::Iterator aFaceIter(anActiveFaces);
-       aFaceIter.More(); aFaceIter.Next())
+  for (NCollection_Map<BRepGraph_FaceId>::Iterator aFaceIter(anActiveFaces); aFaceIter.More();
+       aFaceIter.Next())
   {
-    const BRepGraph_FaceId aFaceId = aFaceIter.Value();
-    const BRepGraphInc::FaceRelations& aFR = theGraph.Topo().Faces().Relations(aFaceId);
+    const BRepGraph_FaceId             aFaceId = aFaceIter.Value();
+    const BRepGraphInc::FaceRelations& aFR     = theGraph.Topo().Faces().Relations(aFaceId);
     for (const BRepGraph_WireRefId& aWireRefId : aFR.WireRefIds)
     {
       if (!aWireRefId.IsValid(theGraph.Refs().Wires().Nb()) || aWireRefId.IsRemoved(theGraph))
@@ -494,7 +488,7 @@ bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&   theGraph
       }
 
       const BRepGraphInc::WireRef& aWireRef = theGraph.Refs().Wires().Entry(aWireRefId);
-      const BRepGraph_WireId aWireId = aWireRef.ChildWireId;
+      const BRepGraph_WireId       aWireId  = aWireRef.ChildWireId;
       if (!aWireId.IsValid(theGraph.Topo().Wires().Nb()) || aWireId.IsRemoved(theGraph))
       {
         continue;
@@ -546,11 +540,11 @@ bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&   theGraph
     return true;
   }
 
-  bool hasOpen       = false;
+  bool hasOpen        = false;
   bool hasNonManifold = false;
 
-  for (NCollection_DataMap<BRepGraph_EdgeId, uint32_t>::Iterator anIter(anEdgeUsage);
-       anIter.More(); anIter.Next())
+  for (NCollection_DataMap<BRepGraph_EdgeId, uint32_t>::Iterator anIter(anEdgeUsage); anIter.More();
+       anIter.Next())
   {
     const uint32_t aCount = anIter.Value();
     if (aCount == 1u)
@@ -581,8 +575,7 @@ bool BRepGraph_CacheDerivedState::ComputeShellStatus(const BRepGraph&   theGraph
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::GetEdgeStatus(BRepGraph_EdgeId theEdge,
-                                                EdgeEntry&       theEntry)
+bool BRepGraph_CacheDerivedState::GetEdgeStatus(BRepGraph_EdgeId theEdge, EdgeEntry& theEntry)
 {
   EdgeEntry aComputed;
   if (!ComputeEdgeStatus(Graph(), theEdge, aComputed))
@@ -591,7 +584,7 @@ bool BRepGraph_CacheDerivedState::GetEdgeStatus(BRepGraph_EdgeId theEdge,
   }
 
   std::unique_lock aLock(myMutex);
-  EdgeEntry* aStored = myEdgeEntries.ChangeSeek(theEdge);
+  EdgeEntry*       aStored = myEdgeEntries.ChangeSeek(theEdge);
   if (aStored != nullptr)
   {
     *aStored = aComputed;
@@ -612,13 +605,12 @@ bool BRepGraph_CacheDerivedState::GetEdgeStatus(BRepGraph_EdgeId theEdge,
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::GetWireIsClosed(BRepGraph_WireId theWire,
-                                                  bool&            theClosed)
+bool BRepGraph_CacheDerivedState::GetWireIsClosed(BRepGraph_WireId theWire, bool& theClosed)
 {
   const bool aClosed = ComputeWireIsClosed(Graph(), theWire);
 
   std::unique_lock aLock(myMutex);
-  WireEntry* aStored = myWireEntries.ChangeSeek(theWire);
+  WireEntry*       aStored = myWireEntries.ChangeSeek(theWire);
   if (aStored == nullptr)
   {
     myWireEntries.Bind(theWire, WireEntry());
@@ -636,8 +628,7 @@ bool BRepGraph_CacheDerivedState::GetWireIsClosed(BRepGraph_WireId theWire,
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::GetShellStatus(BRepGraph_ShellId theShell,
-                                                 ShellEntry&       theEntry)
+bool BRepGraph_CacheDerivedState::GetShellStatus(BRepGraph_ShellId theShell, ShellEntry& theEntry)
 {
   ShellEntry aComputed;
   if (!ComputeShellStatus(Graph(), theShell, aComputed))
@@ -646,7 +637,7 @@ bool BRepGraph_CacheDerivedState::GetShellStatus(BRepGraph_ShellId theShell,
   }
 
   std::unique_lock aLock(myMutex);
-  ShellEntry* aStored = myShellEntries.ChangeSeek(theShell);
+  ShellEntry*      aStored = myShellEntries.ChangeSeek(theShell);
   if (aStored != nullptr)
   {
     *aStored = aComputed;
@@ -667,11 +658,10 @@ bool BRepGraph_CacheDerivedState::GetShellStatus(BRepGraph_ShellId theShell,
 
 //=================================================================================================
 
-void BRepGraph_CacheDerivedState::SetEdgeStatus(BRepGraph_EdgeId  theEdge,
-                                                const EdgeEntry& theEntry)
+void BRepGraph_CacheDerivedState::SetEdgeStatus(BRepGraph_EdgeId theEdge, const EdgeEntry& theEntry)
 {
   std::unique_lock aLock(myMutex);
-  EdgeEntry* aStored = myEdgeEntries.ChangeSeek(theEdge);
+  EdgeEntry*       aStored = myEdgeEntries.ChangeSeek(theEdge);
   if (aStored != nullptr)
   {
     *aStored = theEntry;
@@ -686,27 +676,26 @@ void BRepGraph_CacheDerivedState::SetEdgeStatus(BRepGraph_EdgeId  theEdge,
 
 //=================================================================================================
 
-void BRepGraph_CacheDerivedState::SetWireIsClosed(BRepGraph_WireId theWire,
-                                                   bool            theClosed)
+void BRepGraph_CacheDerivedState::SetWireIsClosed(BRepGraph_WireId theWire, bool theClosed)
 {
   std::unique_lock aLock(myMutex);
-  WireEntry* aStored = myWireEntries.ChangeSeek(theWire);
+  WireEntry*       aStored = myWireEntries.ChangeSeek(theWire);
   if (aStored == nullptr)
   {
     myWireEntries.Bind(theWire, WireEntry());
     aStored = myWireEntries.ChangeSeek(theWire);
   }
-  aStored->IsClosed = theClosed;
+  aStored->IsClosed                   = theClosed;
   [[maybe_unused]] const bool isBound = aStored->BindOwnGen(*this, theWire);
 }
 
 //=================================================================================================
 
-void BRepGraph_CacheDerivedState::SetShellStatus(BRepGraph_ShellId  theShell,
+void BRepGraph_CacheDerivedState::SetShellStatus(BRepGraph_ShellId theShell,
                                                  const ShellEntry& theEntry)
 {
   std::unique_lock aLock(myMutex);
-  ShellEntry* aStored = myShellEntries.ChangeSeek(theShell);
+  ShellEntry*      aStored = myShellEntries.ChangeSeek(theShell);
   if (aStored != nullptr)
   {
     *aStored = theEntry;

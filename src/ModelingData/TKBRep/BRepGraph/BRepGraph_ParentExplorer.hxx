@@ -237,29 +237,29 @@ private:
 
   [[nodiscard]] Standard_EXPORT int branchRootFrame() const;
 
-  Standard_EXPORT bool findNthOccurrenceWrapper(
-    const BRepGraph_NodeId       theNode,
-    const uint32_t               theOrdinal,
-    BRepGraph_OccurrenceId&      theOccurrence,
-    BRepGraph_OccurrenceRefId&   theOccurrenceRef) const;
+  Standard_EXPORT bool findNthOccurrenceWrapper(const BRepGraph_NodeId     theNode,
+                                                const uint32_t             theOrdinal,
+                                                BRepGraph_OccurrenceId&    theOccurrence,
+                                                BRepGraph_OccurrenceRefId& theOccurrenceRef) const;
 
-  Standard_EXPORT int  findOccurrenceStep(const BRepGraph_ProductId    theParentProduct,
-                                          const BRepGraph_OccurrenceId theOccurrence,
-                                          BRepGraph_OccurrenceRefId*   theOccurrenceRef = nullptr) const;
-  Standard_EXPORT int  findCompoundChildStep(const BRepGraph_CompoundId theParent,
-                                             const BRepGraph_NodeId     theChild) const;
-  Standard_EXPORT int  findCompSolidSolidStep(const BRepGraph_CompSolidId theParent,
-                                              const BRepGraph_SolidId     theChild) const;
-  Standard_EXPORT int  findSolidChildStep(const BRepGraph_SolidId theParent,
-                                          const BRepGraph_NodeId  theChild) const;
-  Standard_EXPORT int  findShellChildStep(const BRepGraph_ShellId theParent,
-                                          const BRepGraph_NodeId  theChild) const;
-  Standard_EXPORT int  findFaceChildStep(const BRepGraph_FaceId theParent,
-                                         const BRepGraph_NodeId theChild) const;
-  Standard_EXPORT int  findWireCoEdgeStep(const BRepGraph_WireId   theParent,
-                                          const BRepGraph_CoEdgeId theChild) const;
-  Standard_EXPORT int  findEdgeVertexStep(const BRepGraph_EdgeId   theParent,
-                                           const BRepGraph_VertexId theChild) const;
+  Standard_EXPORT int findOccurrenceStep(
+    const BRepGraph_ProductId    theParentProduct,
+    const BRepGraph_OccurrenceId theOccurrence,
+    BRepGraph_OccurrenceRefId*   theOccurrenceRef = nullptr) const;
+  Standard_EXPORT int findCompoundChildStep(const BRepGraph_CompoundId theParent,
+                                            const BRepGraph_NodeId     theChild) const;
+  Standard_EXPORT int findCompSolidSolidStep(const BRepGraph_CompSolidId theParent,
+                                             const BRepGraph_SolidId     theChild) const;
+  Standard_EXPORT int findSolidChildStep(const BRepGraph_SolidId theParent,
+                                         const BRepGraph_NodeId  theChild) const;
+  Standard_EXPORT int findShellChildStep(const BRepGraph_ShellId theParent,
+                                         const BRepGraph_NodeId  theChild) const;
+  Standard_EXPORT int findFaceChildStep(const BRepGraph_FaceId theParent,
+                                        const BRepGraph_NodeId theChild) const;
+  Standard_EXPORT int findWireCoEdgeStep(const BRepGraph_WireId   theParent,
+                                         const BRepGraph_CoEdgeId theChild) const;
+  Standard_EXPORT int findEdgeVertexStep(const BRepGraph_EdgeId   theParent,
+                                         const BRepGraph_VertexId theChild) const;
 
   //! Try compound parents, then occurrence parents for the given node.
   //! Returns true and fills theParent if a match is found at theRemainingIdx.

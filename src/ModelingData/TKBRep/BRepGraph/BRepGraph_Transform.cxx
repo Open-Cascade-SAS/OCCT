@@ -728,10 +728,10 @@ BRepGraph_NodeId BRepGraph_Transform::TransformNode(const BRepGraph&            
   // Copy node into target, then transform.
   const GraphCounts      aTargetCounts = graphCounts(theTargetGraph);
   const BRepGraph_NodeId aRootId       = BRepGraph_Copy::CopyNode(theSourceGraph,
-                                                                  theTargetGraph,
-                                                                  theNodeId,
-                                                                  theGeomPolicy,
-                                                                  theMeshPolicy);
+                                                            theTargetGraph,
+                                                            theNodeId,
+                                                            theGeomPolicy,
+                                                            theMeshPolicy);
   if (!aRootId.IsValid())
   {
     return BRepGraph_NodeId();

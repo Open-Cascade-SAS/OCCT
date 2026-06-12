@@ -25,7 +25,7 @@
 #include <limits>
 
 //! Generic BRepGraph item identifier covering definitions and references.
-//! Use-records are NOT included — they are session-local, not graph identity.
+//! Use-records are NOT included - they are session-local, not graph identity.
 class BRepGraph_ItemId
 {
 public:
@@ -110,22 +110,20 @@ public:
   //! Return node kind. Valid only when IsNode() is true.
   [[nodiscard]] BRepGraph_NodeId::Kind NodeKind() const noexcept
   {
-    Standard_ASSERT_RETURN(IsNode()
-                             && BRepGraph_NodeId::IsValidKind(
-                               static_cast<BRepGraph_NodeId::Kind>(myKind)),
-                           "BRepGraph_ItemId::NodeKind(): item is not a valid node",
-                           BRepGraph_NodeId::Kind::Solid);
+    Standard_ASSERT_RETURN(
+      IsNode() && BRepGraph_NodeId::IsValidKind(static_cast<BRepGraph_NodeId::Kind>(myKind)),
+      "BRepGraph_ItemId::NodeKind(): item is not a valid node",
+      BRepGraph_NodeId::Kind::Solid);
     return static_cast<BRepGraph_NodeId::Kind>(myKind);
   }
 
   //! Return reference kind. Valid only when IsReference() is true.
   [[nodiscard]] BRepGraph_RefId::Kind RefKind() const noexcept
   {
-    Standard_ASSERT_RETURN(IsReference()
-                             && BRepGraph_RefId::IsValidKind(
-                               static_cast<BRepGraph_RefId::Kind>(myKind)),
-                           "BRepGraph_ItemId::RefKind(): item is not a valid reference",
-                           BRepGraph_RefId::Kind::Shell);
+    Standard_ASSERT_RETURN(
+      IsReference() && BRepGraph_RefId::IsValidKind(static_cast<BRepGraph_RefId::Kind>(myKind)),
+      "BRepGraph_ItemId::RefKind(): item is not a valid reference",
+      BRepGraph_RefId::Kind::Shell);
     return static_cast<BRepGraph_RefId::Kind>(myKind);
   }
 

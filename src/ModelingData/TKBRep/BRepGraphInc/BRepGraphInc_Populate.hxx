@@ -56,10 +56,10 @@ public:
   //! @param[in]  theParallel if true, face-level extraction runs in parallel
   //! @param[in]  theOptions  optional post-pass controls
   //! @return build status indicating success, warnings, or failure
-  [[nodiscard]] static Standard_EXPORT BuildStatus Perform(BRepGraph&       theGraph,
-                                                            const TopoDS_Shape& theShape,
-                                                            bool theParallel,
-                                                            const Options& theOptions = Options());
+  [[nodiscard]] static Standard_EXPORT BuildStatus Perform(BRepGraph&          theGraph,
+                                                           const TopoDS_Shape& theShape,
+                                                           bool                theParallel,
+                                                           const Options& theOptions = Options());
 
   //! Extend existing backend storage with additional shapes (no clear).
   //! Flattens hierarchy containers away; Solid/Shell/Compound/CompSolid inputs
@@ -71,12 +71,12 @@ public:
   //! @param[out]    theAppendedRoots collected root NodeIds for non-container shapes
   //! @param[in]     theOptions       optional post-pass controls
   //! @return build status indicating success, warnings, or failure
-  [[nodiscard]] static Standard_EXPORT BuildStatus AppendFlattened(
-    BRepGraph&                                  theGraph,
-    const TopoDS_Shape&                         theShape,
-    bool                                        theParallel,
-    NCollection_LinearVector<BRepGraph_NodeId>& theAppendedRoots,
-    const Options&                              theOptions = Options());
+  [[nodiscard]] static Standard_EXPORT BuildStatus
+    AppendFlattened(BRepGraph&                                  theGraph,
+                    const TopoDS_Shape&                         theShape,
+                    bool                                        theParallel,
+                    NCollection_LinearVector<BRepGraph_NodeId>& theAppendedRoots,
+                    const Options&                              theOptions = Options());
 
   //! Extend existing backend storage with additional shapes (no clear).
   //! Preserves the full shape hierarchy: Solid/Shell/Compound/CompSolid nodes
@@ -87,10 +87,10 @@ public:
   //! @param[in]     theParallel if true, face-level extraction runs in parallel
   //! @param[in]     theOptions  optional post-pass controls
   //! @return build status indicating success, warnings, or failure
-  [[nodiscard]] static Standard_EXPORT BuildStatus Append(BRepGraph&       theGraph,
-                                                           const TopoDS_Shape& theShape,
-                                                           bool theParallel,
-                                                           const Options& theOptions = Options());
+  [[nodiscard]] static Standard_EXPORT BuildStatus Append(BRepGraph&          theGraph,
+                                                          const TopoDS_Shape& theShape,
+                                                          bool                theParallel,
+                                                          const Options& theOptions = Options());
 
   BRepGraphInc_Populate() = delete;
 };

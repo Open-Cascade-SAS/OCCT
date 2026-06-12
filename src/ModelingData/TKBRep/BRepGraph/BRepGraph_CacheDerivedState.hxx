@@ -32,7 +32,6 @@ class BRepGraphInc_Storage;
 class BRepGraph_CacheDerivedState : public BRepGraph_Cache
 {
 public:
-
   //! @brief Geometry status of an edge.
   //!
   enum class EdgeGeometryStatus
@@ -60,10 +59,10 @@ public:
   //! edge-specific derived properties.
   struct EdgeEntry : public NodeEntry
   {
-    EdgeGeometryStatus Status       = EdgeGeometryStatus::Invalid; //!< Edge geometry status
-    bool               IsClosed     = false; //!< True if start vertex == end vertex
-    bool               SameRange    = false; //!< True if all PCurve ranges equal 3D curve range
-    bool               SameParameter = false; //!< True if PCurves evaluate to the 3D curve on surfaces
+    EdgeGeometryStatus Status    = EdgeGeometryStatus::Invalid; //!< Edge geometry status
+    bool               IsClosed  = false; //!< True if start vertex == end vertex
+    bool               SameRange = false; //!< True if all PCurve ranges equal 3D curve range
+    bool SameParameter           = false; //!< True if PCurves evaluate to the 3D curve on surfaces
   };
 
   //! @brief Cached derived-state entry for a wire.
@@ -138,36 +137,33 @@ public:
   //! @param[in]  theEdge  edge definition identifier
   //! @param[out] theEntry filled with computed entry
   //! @return true if computation succeeded
-  [[nodiscard]] Standard_EXPORT static bool ComputeEdgeStatus(
-    const BRepGraph& theGraph,
-    BRepGraph_EdgeId theEdge,
-    EdgeEntry&       theEntry);
+  [[nodiscard]] Standard_EXPORT static bool ComputeEdgeStatus(const BRepGraph& theGraph,
+                                                              BRepGraph_EdgeId theEdge,
+                                                              EdgeEntry&       theEntry);
 
   //! Compute wire closure directly from a BRepGraph without caching.
   //! @param[in] theGraph source graph
   //! @param[in] theWire  wire definition identifier
   //! @return true if the wire is closed
-  [[nodiscard]] Standard_EXPORT static bool ComputeWireIsClosed(
-    const BRepGraph&  theGraph,
-    BRepGraph_WireId  theWire);
+  [[nodiscard]] Standard_EXPORT static bool ComputeWireIsClosed(const BRepGraph& theGraph,
+                                                                BRepGraph_WireId theWire);
 
   //! Compute shell closure status directly from a BRepGraph without caching.
   //! @param[in]  theGraph source graph
   //! @param[in]  theShell shell definition identifier
   //! @param[out] theEntry filled with computed entry
   //! @return true if computation succeeded
-  [[nodiscard]] Standard_EXPORT static bool ComputeShellStatus(
-    const BRepGraph&   theGraph,
-    BRepGraph_ShellId  theShell,
-    ShellEntry&        theEntry);
+  [[nodiscard]] Standard_EXPORT static bool ComputeShellStatus(const BRepGraph&  theGraph,
+                                                               BRepGraph_ShellId theShell,
+                                                               ShellEntry&       theEntry);
 
   DEFINE_STANDARD_RTTIEXT(BRepGraph_CacheDerivedState, BRepGraph_Cache)
 
 private:
   mutable std::shared_mutex myMutex;
 
-  NCollection_DataMap<BRepGraph_EdgeId, EdgeEntry>  myEdgeEntries;
-  NCollection_DataMap<BRepGraph_WireId, WireEntry>  myWireEntries;
+  NCollection_DataMap<BRepGraph_EdgeId, EdgeEntry>   myEdgeEntries;
+  NCollection_DataMap<BRepGraph_WireId, WireEntry>   myWireEntries;
   NCollection_DataMap<BRepGraph_ShellId, ShellEntry> myShellEntries;
 };
 

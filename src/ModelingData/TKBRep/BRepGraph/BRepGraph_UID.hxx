@@ -40,8 +40,7 @@ struct BRepGraph_UID
 
   //! Construct a valid UID.  Called internally by BRepGraphInc_Storage::AllocateNodeUID().
   //! @pre theCounter > 0 (counter = 0 is reserved as the invalid sentinel)
-  BRepGraph_UID(const BRepGraph_NodeId::Kind theKind,
-                const uint32_t               theCounter)
+  BRepGraph_UID(const BRepGraph_NodeId::Kind theKind, const uint32_t theCounter)
       : Kind(theKind),
         Counter(theCounter)
   {
@@ -51,18 +50,20 @@ struct BRepGraph_UID
   static BRepGraph_UID Invalid() { return BRepGraph_UID(); }
 
   //! True if this UID has a valid kind and a non-zero counter.
-  [[nodiscard]] bool IsValid() const
+  [[nodiscard]] bool IsValid() const { return Counter > 0 && BRepGraph_NodeId::IsValidKind(Kind); }
+
+  [[nodiscard]] bool IsTopology() const
   {
-    return Counter > 0 && BRepGraph_NodeId::IsValidKind(Kind);
+    return IsValid() && BRepGraph_NodeId::IsTopologyKind(Kind);
   }
 
-  [[nodiscard]] bool IsTopology() const { return IsValid() && BRepGraph_NodeId::IsTopologyKind(Kind); }
-
-  [[nodiscard]] bool IsAssembly() const { return IsValid() && BRepGraph_NodeId::IsAssemblyKind(Kind); }
+  [[nodiscard]] bool IsAssembly() const
+  {
+    return IsValid() && BRepGraph_NodeId::IsAssemblyKind(Kind);
+  }
 
   //! Equality: Identity = (Kind, Counter). Two invalid UIDs are equal.
-  friend bool operator==(const BRepGraph_UID& theLeft,
-                          const BRepGraph_UID& theRight) noexcept
+  friend bool operator==(const BRepGraph_UID& theLeft, const BRepGraph_UID& theRight) noexcept
   {
     if (theLeft.Counter == 0 || theRight.Counter == 0)
     {
@@ -71,14 +72,12 @@ struct BRepGraph_UID
     return theLeft.Kind == theRight.Kind && theLeft.Counter == theRight.Counter;
   }
 
-  friend bool operator!=(const BRepGraph_UID& theLeft,
-                          const BRepGraph_UID& theRight) noexcept
+  friend bool operator!=(const BRepGraph_UID& theLeft, const BRepGraph_UID& theRight) noexcept
   {
     return !(theLeft == theRight);
   }
 
-  friend bool operator<(const BRepGraph_UID& theLeft,
-                         const BRepGraph_UID& theRight) noexcept
+  friend bool operator<(const BRepGraph_UID& theLeft, const BRepGraph_UID& theRight) noexcept
   {
     if (theLeft.Kind != theRight.Kind)
     {

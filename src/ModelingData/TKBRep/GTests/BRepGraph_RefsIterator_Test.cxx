@@ -112,8 +112,8 @@ TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfEdge_ExposesBoundaryVertexRef
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
     aGraph.Shapes().Add(wrapEdgeInFace(makeEdgeWithInternalVertex()));
 
-  bool aFoundInternal = false;
-  uint32_t aCount     = 0;
+  bool     aFoundInternal = false;
+  uint32_t aCount         = 0;
   for (BRepGraph_RefsVertexOfEdge anIt(aGraph, BRepGraph_EdgeId::Start()); anIt.More(); anIt.Next())
   {
     ++aCount;
@@ -152,18 +152,15 @@ TEST_F(BRepGraph_RefsIteratorTest, ChildOfCompound_EnumeratesChildRefs)
 
 TEST_F(BRepGraph_RefsIteratorTest, OccurrenceOfProduct_EnumeratesOccurrenceRefs)
 {
-  const BRepGraph_ProductId aPart =
-    myGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
+  const BRepGraph_ProductId aPart = myGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
   myGraph.Editor().Products().AppendDocumentRoot(aPart);
   const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().Add();
   myGraph.Editor().Products().AppendDocumentRoot(anAssembly);
   ASSERT_TRUE(aPart.IsValid());
   ASSERT_TRUE(anAssembly.IsValid());
 
-  EXPECT_TRUE(
-    myGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location()).IsValid());
-  EXPECT_TRUE(
-    myGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location()).IsValid());
+  EXPECT_TRUE(myGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location()).IsValid());
+  EXPECT_TRUE(myGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location()).IsValid());
 
   EXPECT_EQ(countIterator(BRepGraph_RefsOccurrenceOfProduct(myGraph, anAssembly)), 2);
 }

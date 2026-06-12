@@ -123,8 +123,8 @@ static ShapeParentRoute classifyShapeToParent(const TopAbs_ShapeEnum   theShapeT
   return ShapeParentRoute::Reject;
 }
 
-static uint64_t attachSupplementToParent(BRepGraph&            theGraph,
-                                         const TopoDS_Shape&   theShape,
+static uint64_t attachSupplementToParent(BRepGraph&             theGraph,
+                                         const TopoDS_Shape&    theShape,
                                          const BRepGraph_NodeId theParent)
 {
   TopoDS_Shape aSuppShape = theShape;
@@ -171,7 +171,7 @@ static uint64_t attachSupplementToParent(BRepGraph&            theGraph,
 //=================================================================================================
 
 uint32_t BRepGraph::ShapesView::snapshotCountForKind(const BRepGraph&       theGraph,
-                                                 const TopAbs_ShapeEnum theShapeType)
+                                                     const TopAbs_ShapeEnum theShapeType)
 {
   const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
   switch (theShapeType)
@@ -200,8 +200,8 @@ uint32_t BRepGraph::ShapesView::snapshotCountForKind(const BRepGraph&       theG
 //=================================================================================================
 
 BRepGraph_NodeId BRepGraph::ShapesView::detectTopologyRoot(const BRepGraph&       theGraph,
-                                                       const TopAbs_ShapeEnum theShapeType,
-                                                       const uint32_t theOldCountOfShapeKind)
+                                                           const TopAbs_ShapeEnum theShapeType,
+                                                           const uint32_t theOldCountOfShapeKind)
 {
   const uint32_t aNewCount = snapshotCountForKind(theGraph, theShapeType);
   if (aNewCount <= theOldCountOfShapeKind)
@@ -235,24 +235,25 @@ BRepGraph_NodeId BRepGraph::ShapesView::detectTopologyRoot(const BRepGraph&     
       return BRepGraph_NodeId();
   }
 }
-void BRepGraph::ShapesView::populateUIDsIncremental(BRepGraph& theGraph,
-                                                const uint32_t  theOldVtx,
-                                                const uint32_t  theOldEdge,
-                                                const uint32_t  theOldCoEdge,
-                                                const uint32_t  theOldWire,
-                                                const uint32_t  theOldFace,
-                                                const uint32_t  theOldShell,
-                                                const uint32_t  theOldSolid,
-                                                const uint32_t  theOldComp,
-                                                const uint32_t  theOldCS,
-                                                const uint32_t  theOldProduct,
-                                                const uint32_t  theOldOccurrence,
-                                                const uint32_t  theOldShellRef,
-                                                const uint32_t  theOldFaceRef,
-                                                const uint32_t  theOldWireRef,
-                                                const uint32_t  theOldVertexRef,
-                                                const uint32_t  theOldSolidRef,
-                                                const uint32_t  theOldChildRef)
+
+void BRepGraph::ShapesView::populateUIDsIncremental(BRepGraph&     theGraph,
+                                                    const uint32_t theOldVtx,
+                                                    const uint32_t theOldEdge,
+                                                    const uint32_t theOldCoEdge,
+                                                    const uint32_t theOldWire,
+                                                    const uint32_t theOldFace,
+                                                    const uint32_t theOldShell,
+                                                    const uint32_t theOldSolid,
+                                                    const uint32_t theOldComp,
+                                                    const uint32_t theOldCS,
+                                                    const uint32_t theOldProduct,
+                                                    const uint32_t theOldOccurrence,
+                                                    const uint32_t theOldShellRef,
+                                                    const uint32_t theOldFaceRef,
+                                                    const uint32_t theOldWireRef,
+                                                    const uint32_t theOldVertexRef,
+                                                    const uint32_t theOldSolidRef,
+                                                    const uint32_t theOldChildRef)
 {
   for (BRepGraph_FullVertexIterator aVertexIt(theGraph, BRepGraph_VertexId(theOldVtx));
        aVertexIt.More();
@@ -356,8 +357,6 @@ void BRepGraph::ShapesView::populateUIDsIncremental(BRepGraph& theGraph,
   {
     theGraph.allocateRefUID(aChildRefIt.CurrentId());
   }
-
-
 }
 
 BRepGraph::ShapesView::AddStatus BRepGraph::ShapesView::appendImpl(
@@ -367,23 +366,23 @@ BRepGraph::ShapesView::AddStatus BRepGraph::ShapesView::appendImpl(
   NCollection_LinearVector<BRepGraph_NodeId>* theOutFlatRoots)
 {
   BRepGraphInc_Storage& aStorage        = theGraph.myData->myIncStorage;
-  const uint32_t anOldVtx        = aStorage.NbVertices();
-  const uint32_t anOldEdge       = aStorage.NbEdges();
-  const uint32_t anOldCoEdge     = aStorage.NbCoEdges();
-  const uint32_t anOldWire       = aStorage.NbWires();
-  const uint32_t anOldFace       = aStorage.NbFaces();
-  const uint32_t anOldShell      = aStorage.NbShells();
-  const uint32_t anOldSolid      = aStorage.NbSolids();
-  const uint32_t anOldComp       = aStorage.NbCompounds();
-  const uint32_t anOldCS         = aStorage.NbCompSolids();
-  const uint32_t anOldProduct    = aStorage.NbProducts();
-  const uint32_t anOldOccurrence = aStorage.NbOccurrences();
-  const uint32_t anOldShellRef   = aStorage.NbShellRefs();
-  const uint32_t anOldFaceRef    = aStorage.NbFaceRefs();
-  const uint32_t anOldWireRef    = aStorage.NbWireRefs();
-  const uint32_t anOldVertexRef  = aStorage.NbVertexRefs();
-  const uint32_t anOldSolidRef   = aStorage.NbSolidRefs();
-  const uint32_t anOldChildRef   = aStorage.NbChildRefs();
+  const uint32_t        anOldVtx        = aStorage.NbVertices();
+  const uint32_t        anOldEdge       = aStorage.NbEdges();
+  const uint32_t        anOldCoEdge     = aStorage.NbCoEdges();
+  const uint32_t        anOldWire       = aStorage.NbWires();
+  const uint32_t        anOldFace       = aStorage.NbFaces();
+  const uint32_t        anOldShell      = aStorage.NbShells();
+  const uint32_t        anOldSolid      = aStorage.NbSolids();
+  const uint32_t        anOldComp       = aStorage.NbCompounds();
+  const uint32_t        anOldCS         = aStorage.NbCompSolids();
+  const uint32_t        anOldProduct    = aStorage.NbProducts();
+  const uint32_t        anOldOccurrence = aStorage.NbOccurrences();
+  const uint32_t        anOldShellRef   = aStorage.NbShellRefs();
+  const uint32_t        anOldFaceRef    = aStorage.NbFaceRefs();
+  const uint32_t        anOldWireRef    = aStorage.NbWireRefs();
+  const uint32_t        anOldVertexRef  = aStorage.NbVertexRefs();
+  const uint32_t        anOldSolidRef   = aStorage.NbSolidRefs();
+  const uint32_t        anOldChildRef   = aStorage.NbChildRefs();
 
   BRepGraphInc_Populate::BuildStatus aBuildStatus;
   if (theOptions.Flatten)
@@ -404,10 +403,8 @@ BRepGraph::ShapesView::AddStatus BRepGraph::ShapesView::appendImpl(
   }
   else
   {
-    aBuildStatus = BRepGraphInc_Populate::Append(theGraph,
-                                                 theShape,
-                                                 theOptions.Parallel,
-                                                 theOptions.Populate);
+    aBuildStatus =
+      BRepGraphInc_Populate::Append(theGraph, theShape, theOptions.Parallel, theOptions.Populate);
   }
 
   // Map internal BuildStatus to public AddStatus.
@@ -453,8 +450,8 @@ BRepGraph::ShapesView::AddStatus BRepGraph::ShapesView::appendImpl(
 //=================================================================================================
 
 void BRepGraph::ShapesView::collectAddedNodes(
-  const BRepGraph& theGraph,
-  const TopoDS_Shape& theShape,
+  const BRepGraph&                                                              theGraph,
+  const TopoDS_Shape&                                                           theShape,
   NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theMap)
 {
   if (theShape.IsNull())
@@ -501,9 +498,8 @@ void BRepGraph::ShapesView::collectAddedNodes(
 
 namespace
 {
-static TopoDS_Shape reconstructProductLocal(
-  BRepGraph_ReconstructionContext& theContext,
-  const BRepGraph_ProductId        theProduct);
+static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& theContext,
+                                            const BRepGraph_ProductId        theProduct);
 
 static TopoDS_Shape reconstructOccurrenceLocal(BRepGraph_ReconstructionContext& theContext,
                                                const BRepGraph_OccurrenceId     theOccurrence,
@@ -528,9 +524,8 @@ static TopoDS_Shape reconstructOccurrenceLocal(BRepGraph_ReconstructionContext& 
   }
   else
   {
-    aShape = BRepGraphInc_Reconstruct::Node(*theContext.Graph,
-                                             anOccurrence.ChildNodeId,
-                                             theContext.Cache);
+    aShape =
+      BRepGraphInc_Reconstruct::Node(*theContext.Graph, anOccurrence.ChildNodeId, theContext.Cache);
   }
   if (!aShape.IsNull() && !theLocalLocation.IsIdentity())
   {
@@ -579,9 +574,7 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
   }
   if (aShapeRootNode.IsValid())
   {
-    aResult = BRepGraphInc_Reconstruct::Node(*theContext.Graph,
-                                             aShapeRootNode,
-                                             theContext.Cache);
+    aResult = BRepGraphInc_Reconstruct::Node(*theContext.Graph, aShapeRootNode, theContext.Cache);
     if (!aResult.IsNull() && !aRootLocation.IsIdentity())
     {
       aResult.Move(aRootLocation);
@@ -657,14 +650,14 @@ static TopoDS_Shape reconstructShape(BRepGraph_ReconstructionContext& theContext
       TopoDS_Shape aShape;
       if (anOccurrenceDef.ChildNodeId.NodeKind == BRepGraph_NodeId::Kind::Product)
       {
-        aShape = reconstructProductLocal(theContext,
-                                         BRepGraph_ProductId(anOccurrenceDef.ChildNodeId));
+        aShape =
+          reconstructProductLocal(theContext, BRepGraph_ProductId(anOccurrenceDef.ChildNodeId));
       }
       else
       {
         aShape = BRepGraphInc_Reconstruct::Node(*theContext.Graph,
-                                                 anOccurrenceDef.ChildNodeId,
-                                                 theContext.Cache);
+                                                anOccurrenceDef.ChildNodeId,
+                                                theContext.Cache);
       }
       if (!aShape.IsNull())
       {
@@ -678,9 +671,7 @@ static TopoDS_Shape reconstructShape(BRepGraph_ReconstructionContext& theContext
       return aShape;
     }
     default:
-      return BRepGraphInc_Reconstruct::Node(*theContext.Graph,
-                                             theNode,
-                                             theContext.Cache);
+      return BRepGraphInc_Reconstruct::Node(*theContext.Graph, theNode, theContext.Cache);
   }
 }
 
@@ -698,9 +689,8 @@ static BRepGraph_ReconstructionContext makeReconstructionContext(
 //=================================================================================================
 
 void BRepGraph::ShapesView::CollectHistoryInputs(
-  const NCollection_Array1<BRepGraph_NodeId>& theRoots,
-  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>&
-    theOutInputs) const
+  const NCollection_Array1<BRepGraph_NodeId>&                                   theRoots,
+  NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theOutInputs) const
 {
   const BRepGraph& theGraph = *myGraph;
 
@@ -715,10 +705,9 @@ void BRepGraph::ShapesView::CollectHistoryInputs(
 
 BRepGraph::ShapesView::Result BRepGraph::ShapesView::AddWithHistory(
   const TopoDS_Shape& theResultShape,
-  const NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>&
-                                           theInputs,
-  const occ::handle<BRepTools_History>&  theHistory,
-  const TCollection_AsciiString&         theOpLabel)
+  const NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theInputs,
+  const occ::handle<BRepTools_History>&                                               theHistory,
+  const TCollection_AsciiString&                                                      theOpLabel)
 {
   Options anOptions;
   anOptions.CreateAutoProduct = false;
@@ -729,18 +718,17 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::AddWithHistory(
 
 BRepGraph::ShapesView::Result BRepGraph::ShapesView::AddWithHistory(
   const TopoDS_Shape& theResultShape,
-  const NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>&
-                                           theInputs,
-  const occ::handle<BRepTools_History>&  theHistory,
-  const TCollection_AsciiString&         theOpLabel,
-  const BRepGraph::ShapesView::Options&  theOptions)
+  const NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theInputs,
+  const occ::handle<BRepTools_History>&                                               theHistory,
+  const TCollection_AsciiString&                                                      theOpLabel,
+  const BRepGraph::ShapesView::Options&                                               theOptions)
 {
   BRepGraph& theGraph = *myGraph;
 
   BRepGraph_LayerHistory& aHistory = *theGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>();
-  const bool         shouldAbsorbHistory = aHistory.IsEnabled() && !theHistory.IsNull();
-  Options aBuildOptions = theOptions;
-  aBuildOptions.TrackAddedNodes = theOptions.TrackAddedNodes || shouldAbsorbHistory;
+  const bool              shouldAbsorbHistory = aHistory.IsEnabled() && !theHistory.IsNull();
+  Options                 aBuildOptions       = theOptions;
+  aBuildOptions.TrackAddedNodes               = theOptions.TrackAddedNodes || shouldAbsorbHistory;
 
   Result aResult = Add(theResultShape, aBuildOptions);
   if (aResult.IsOk() && shouldAbsorbHistory)
@@ -786,11 +774,12 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape& the
 
 //=================================================================================================
 
-BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape& theShape,
-                                                            const BRepGraph::ShapesView::Options& theOptions)
+BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
+  const TopoDS_Shape&                   theShape,
+  const BRepGraph::ShapesView::Options& theOptions)
 {
   BRepGraph& theGraph = *myGraph;
-  Result aResult;
+  Result     aResult;
   if (theShape.IsNull())
   {
     return aResult;
@@ -799,7 +788,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape& the
   const uint32_t anOldCount = snapshotCountForKind(theGraph, theShape.ShapeType());
 
   NCollection_LinearVector<BRepGraph_NodeId> aFlatRoots;
-  const AddStatus aAddStatus =
+  const AddStatus                            aAddStatus =
     appendImpl(theGraph, theShape, theOptions, theOptions.Flatten ? &aFlatRoots : nullptr);
 
   aResult.Status = aAddStatus;
@@ -815,8 +804,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape& the
 
   if (theOptions.CreateAutoProduct && aResult.TopologyRoot.IsValid())
   {
-    aResult.Product =
-      theGraph.Editor().Products().Add(aResult.TopologyRoot, theShape.Location());
+    aResult.Product = theGraph.Editor().Products().Add(aResult.TopologyRoot, theShape.Location());
     theGraph.Editor().Products().AppendDocumentRoot(aResult.Product);
     if (aResult.Product.IsValid())
     {
@@ -847,19 +835,20 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape& the
 //=================================================================================================
 
 BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape&    theShape,
-                                                            const BRepGraph_NodeId theParent)
+                                                         const BRepGraph_NodeId theParent)
 {
   return Add(theShape, theParent, Options{});
 }
 
 //=================================================================================================
 
-BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape&    theShape,
-                                                            const BRepGraph_NodeId theParent,
-                                                            const BRepGraph::ShapesView::Options& theOptions)
+BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
+  const TopoDS_Shape&                   theShape,
+  const BRepGraph_NodeId                theParent,
+  const BRepGraph::ShapesView::Options& theOptions)
 {
   BRepGraph& theGraph = *myGraph;
-  Result aResult;
+  Result     aResult;
   if (theShape.IsNull() || !theParent.IsValid())
   {
     return aResult;
@@ -886,7 +875,8 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape&    
   anInner.CreateAutoProduct = false;
 
   NCollection_LinearVector<BRepGraph_NodeId> aFlatRoots;
-  const AddStatus aStatus = appendImpl(theGraph, theShape, anInner, anInner.Flatten ? &aFlatRoots : nullptr);
+  const AddStatus                            aStatus =
+    appendImpl(theGraph, theShape, anInner, anInner.Flatten ? &aFlatRoots : nullptr);
 
   if (aStatus == AddStatus::Failed)
   {
@@ -939,7 +929,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape&    
       return aResult;
     }
     case BRepGraph_NodeId::Kind::Compound: {
-      const TopAbs_Orientation aShapeOri = theShape.Orientation();
+      const TopAbs_Orientation   aShapeOri = theShape.Orientation();
       const BRepGraph_ChildRefId aRid =
         theGraph.Editor().Compounds().Append(BRepGraph_CompoundId(theParent),
                                              aResult.TopologyRoot,
@@ -953,8 +943,8 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape&    
       return aResult;
     }
     case BRepGraph_NodeId::Kind::Shell: {
-      const TopAbs_Orientation aShapeOri = theShape.Orientation();
-      const BRepGraph_ShellId aShell(theParent);
+      const TopAbs_Orientation  aShapeOri = theShape.Orientation();
+      const BRepGraph_ShellId   aShell(theParent);
       const BRepGraph_FaceRefId aRid =
         theGraph.Editor().Shells().Append(aShell,
                                           BRepGraph_FaceId(aResult.TopologyRoot),
@@ -971,7 +961,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape&    
       const BRepGraph_SolidId aSolid(theParent);
       if (aResult.TopologyRoot.NodeKind == BRepGraph_NodeId::Kind::Shell)
       {
-        const TopAbs_Orientation aShapeOri = theShape.Orientation();
+        const TopAbs_Orientation   aShapeOri = theShape.Orientation();
         const BRepGraph_ShellRefId aRid =
           theGraph.Editor().Solids().Append(aSolid,
                                             BRepGraph_ShellId(aResult.TopologyRoot),
@@ -991,7 +981,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape&    
       {
         return aResult;
       }
-      const TopAbs_Orientation aShapeOri = theShape.Orientation();
+      const TopAbs_Orientation   aShapeOri = theShape.Orientation();
       const BRepGraph_SolidRefId aRid =
         theGraph.Editor().CompSolids().Append(BRepGraph_CompSolidId(theParent),
                                               BRepGraph_SolidId(aResult.TopologyRoot),
@@ -1008,7 +998,6 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(const TopoDS_Shape&    
       return aResult;
   }
 }
-
 
 //=================================================================================================
 
@@ -1061,7 +1050,8 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
 
   // Check mutable cache under shared lock with SubtreeGen validation.
   {
-    std::shared_lock<std::shared_mutex> aReadLock(myGraph->myData->myIncStorage.CurrentShapesMutex());
+    std::shared_lock<std::shared_mutex> aReadLock(
+      myGraph->myData->myIncStorage.CurrentShapesMutex());
     const BRepGraphInc_Storage::CachedShape* aCached =
       myGraph->myData->myIncStorage.CurrentShapes().Seek(theNode);
     if (aCached != nullptr && aDef != nullptr && aCached->StoredSubtreeGen == aDef->SubtreeGen)
@@ -1079,7 +1069,8 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
   // when multiple threads reconstruct the same parent node concurrently.
   if (!aReconstructed.IsNull() && aDef != nullptr)
   {
-    std::unique_lock<std::shared_mutex> aWriteLock(myGraph->myData->myIncStorage.CurrentShapesMutex());
+    std::unique_lock<std::shared_mutex> aWriteLock(
+      myGraph->myData->myIncStorage.CurrentShapesMutex());
     const BRepGraphInc_Storage::CachedShape* aExisting =
       myGraph->myData->myIncStorage.CurrentShapes().Seek(theNode);
     if (aExisting != nullptr && aExisting->StoredSubtreeGen == aDef->SubtreeGen)

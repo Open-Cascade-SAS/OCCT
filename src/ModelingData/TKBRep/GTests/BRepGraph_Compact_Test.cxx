@@ -39,7 +39,6 @@
 #include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraph_Validate.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_CacheRegistry.hxx>
 #include <BRepGraph_CacheMesh.hxx>
 #include <BRepGraph_MeshView.hxx>
@@ -1121,8 +1120,8 @@ private:
 
 TEST(BRepGraph_CompactTest, CacheMesh_DriverSurvivesCompact)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph           aGraph;
+  BRepPrimAPI_MakeBox                                  aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                            aGraph;
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
     aGraph.Shapes().Add(aBoxMaker.Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
@@ -1166,14 +1165,14 @@ TEST(BRepGraph_CompactTest, CacheMesh_DriverSurvivesCompact)
   EXPECT_EQ(aDriverAfter->RecipeHash(), THE_RECIPE_HASH);
   EXPECT_TRUE(aCacheAfter->State(BRepGraph_CacheMesh::DefaultDisplaySlot).HasDriver);
 
-  // No removed nodes — compact short-circuits, cache representation is untouched.
+  // No removed nodes - compact short-circuits, cache representation is untouched.
   EXPECT_NE(aCacheAfter->FindFaceMesh(aFaceId), nullptr)
     << "Cache entry must survive when compact short-circuits (no removed nodes)";
 }
 
 TEST(BRepGraph_CompactTest, CacheMesh_DriverSurvivesCompactWithDedup)
 {
-  BRepGraph aGraph;
+  BRepGraph                                            aGraph;
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
     aGraph.Shapes().Add(makeTwoCopiedFaces());
   ASSERT_FALSE(aGraph.IsEmpty());
@@ -1218,7 +1217,7 @@ TEST(BRepGraph_CompactTest, CacheMesh_DriverSurvivesCompactWithDedup)
   ASSERT_FALSE(aDriverAfter.IsNull());
   EXPECT_EQ(aDriverAfter->RecipeHash(), THE_RECIPE_HASH);
 
-  // Cache representation is cleared — no entries should remain.
+  // Cache representation is cleared - no entries should remain.
   for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
        aFaceId.IsValid(aGraph.Topo().Faces().Nb());
        ++aFaceId)
@@ -1264,7 +1263,7 @@ TEST(BRepGraph_CompactTest, CacheMesh_CanCopyFreshEntriesThroughCompact)
   }
 
   BRepGraph_Compact::Options aCompactOpts;
-  aCompactOpts.CacheMode = BRepGraph_Compact::Options::CachePolicy::CopyFresh;
+  aCompactOpts.CacheMode               = BRepGraph_Compact::Options::CachePolicy::CopyFresh;
   const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph, aCompactOpts);
   EXPECT_GT(aRes.NbRemovedVertices + aRes.NbRemovedEdges + aRes.NbRemovedFaces, 0u);
 

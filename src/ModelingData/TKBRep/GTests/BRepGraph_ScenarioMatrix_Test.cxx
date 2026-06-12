@@ -34,7 +34,6 @@
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsView.hxx>
-#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_Validate.hxx>
 #include <BRepGraphInc_Definition.hxx>
@@ -113,8 +112,7 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
   // --- Build BRepGraph ---
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 = aGraph.Shapes().Add(aBox);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // --- Validate clean graph (full audit) ---
@@ -179,7 +177,9 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
   ASSERT_FALSE(aRoundTripGraph.IsEmpty());
 
   // Relation table must be consistent.
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aRoundTripGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aRoundTripGraph, BRepGraph_Validate::Options::Lightweight())
+      .IsValid())
     << "Relation table must be consistent for reconstructed solid";
 
   // Sub-shape counts of the reconstructed solid must be identical to the original.
@@ -205,8 +205,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
   // --- Build both representations from the original shape ---
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
-    aGraph.Shapes().Add(aCyl);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 = aGraph.Shapes().Add(aCyl);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph aOrigGraph;
@@ -286,7 +285,8 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
   EXPECT_TRUE(aSeamFound)
     << "Seam edge must still be present in BRepGraphInc storage after reconstruct";
 
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aReconGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aReconGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Relation table must be consistent for reconstructed cylinder";
 }
 
@@ -330,17 +330,19 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
       aOrigGraph.Topo().Solids().Relations(aSolidId).ParentSolidRefIds;
     EXPECT_GE(aSolidRefs.Size(), 1u) << "Solid " << aSolidId.Index << " not in any CompSolid";
   }
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aOrigGraph, BRepGraph_Validate::Options::Lightweight()).IsValid()) << "Relation table must be consistent";
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aOrigGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+    << "Relation table must be consistent";
 
   // --- BRepGraph build ---
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes3 =
-    aGraph.Shapes().Add(aCompSolid);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes3 = aGraph.Shapes().Add(aCompSolid);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // --- Validate(Audit) clean graph ---
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "CompSolid graph must be structurally valid before mutation";
 
   // --- Mutate: bump edge(0) tolerance ---
@@ -352,7 +354,8 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
   }
 
   // --- Validate(Audit) after mutation ---
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "CompSolid graph must remain structurally valid after edge tolerance mutation";
 
   // --- Reconstruct the CompSolid ---
@@ -374,7 +377,8 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
   EXPECT_EQ(aReconGraph.Topo().Faces().Nb(), aOrigGraph.Topo().Faces().Nb());
   EXPECT_EQ(aReconGraph.Topo().Edges().Nb(), aOrigGraph.Topo().Edges().Nb());
 
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aReconGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aReconGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Relation table must be consistent for reconstructed CompSolid";
 }
 
@@ -446,7 +450,8 @@ TEST(BRepGraph_ScenarioMatrix, Assembly_TwoOccurrences_ValidateDAGReconstructPar
   EXPECT_EQ(aPartGraph.Topo().Solids().Nb(), 1);
   EXPECT_EQ(aPartGraph.Topo().Faces().Nb(), anOrigFaces);
 
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aPartGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aPartGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Relation table must be consistent for BRepGraphInc of reconstructed part";
 }
 
@@ -486,8 +491,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
   // --- BRepGraph build ---
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes5 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes5 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   EXPECT_EQ(aGraph.Topo().Compounds().Nb(), 1);
@@ -509,7 +513,8 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
   ASSERT_GE(aPopGraph.Topo().Wires().Nb(), 1u);
   ASSERT_GE(aPopGraph.Topo().Edges().Nb(), 2u);
 
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aPopGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aPopGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Relation table must be consistent for compound with atomic sub-shapes";
 }
 
@@ -565,13 +570,13 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
   // --- BRepGraph build ---
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes6 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes6 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), 2);
 
   // --- Validate(Audit) clean ---
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Compound [box+cylinder] must pass full audit before mutation";
 
   // --- Mutate: change face(0) tolerance (a box face) ---
@@ -583,7 +588,8 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
   }
 
   // --- Validate(Audit) after mutation ---
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Compound [box+cylinder] graph must remain structurally valid after face tolerance change";
 
   // --- Reconstruct the compound ---
@@ -625,7 +631,8 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
   EXPECT_EQ(aReconSeamCount, aBaseSeamCount)
     << "Seam edge count must be unchanged after compound reconstruct";
 
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aReconGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aReconGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Relation table must be consistent for reconstructed compound [box+cylinder]";
 }
 
@@ -650,9 +657,9 @@ TEST(BRepGraph_ScenarioMatrix, Assembly_ThreeLevelNesting_CleanAudit_CycleDetect
   const BRepGraph_ProductId aLeafPart = BRepGraph_ProductId::Start();
   const BRepGraph_ProductId aMidAsm   = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(aMidAsm);
-  const BRepGraph_ProductId aRootAsm  = aGraph.Editor().Products().Add();
+  const BRepGraph_ProductId aRootAsm = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(aRootAsm);
-  const BRepGraph_ProductId aTopAsm   = aGraph.Editor().Products().Add();
+  const BRepGraph_ProductId aTopAsm = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(aTopAsm);
 
   gp_Trsf aT1, aT2, aT3;
@@ -730,21 +737,17 @@ TEST(BRepGraph_ScenarioMatrix, Assembly_SharedPartBetweenTwoRootAssemblies)
   const BRepGraph_ProductId aSharedPart = BRepGraph_ProductId::Start();
   const BRepGraph_ProductId aAsmA       = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(aAsmA);
-  const BRepGraph_ProductId aAsmB       = aGraph.Editor().Products().Add();
+  const BRepGraph_ProductId aAsmB = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(aAsmB);
 
   gp_Trsf aOffsetA, aOffsetB;
   aOffsetA.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
   aOffsetB.SetTranslation(gp_Vec(0.0, 100.0, 0.0));
 
-  ASSERT_TRUE(aGraph.Editor()
-                .Products()
-                .Append(aAsmA, aSharedPart, TopLoc_Location(aOffsetA))
-                .IsValid());
-  ASSERT_TRUE(aGraph.Editor()
-                .Products()
-                .Append(aAsmB, aSharedPart, TopLoc_Location(aOffsetB))
-                .IsValid());
+  ASSERT_TRUE(
+    aGraph.Editor().Products().Append(aAsmA, aSharedPart, TopLoc_Location(aOffsetA)).IsValid());
+  ASSERT_TRUE(
+    aGraph.Editor().Products().Append(aAsmB, aSharedPart, TopLoc_Location(aOffsetB)).IsValid());
 
   // The shared part must not have grown the topology pool.
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), aNbSolidsBefore)
@@ -752,7 +755,8 @@ TEST(BRepGraph_ScenarioMatrix, Assembly_SharedPartBetweenTwoRootAssemblies)
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), aNbFacesBefore);
 
   // Audit passes: DAG sharing is not a cycle.
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Shared Product across assemblies must pass audit";
 
   // Reconstruct each assembly and verify each emits a TopoDS_Compound with
@@ -827,8 +831,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_MixedAtomicChildren_RelationsCoverage)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes9 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes9 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Topo().Compounds().Nb(), 0);
 
@@ -840,11 +843,11 @@ TEST(BRepGraph_ScenarioMatrix, Compound_MixedAtomicChildren_RelationsCoverage)
 
   // The compound at index 0 must enumerate at least one each of solid/shell/
   // face/edge/vertex via its child refs.
-  const BRepGraph_CompoundId aCompoundId(0);
-  bool                       aHasSolid = false;
-  [[maybe_unused]] bool      aHasShell = false;
-  [[maybe_unused]] bool      aHasFace  = false;
-  bool                       aHasEdge = false, aHasVertex = false;
+  const BRepGraph_CompoundId                            aCompoundId(0);
+  bool                                                  aHasSolid = false;
+  [[maybe_unused]] bool                                 aHasShell = false;
+  [[maybe_unused]] bool                                 aHasFace  = false;
+  bool                                                  aHasEdge = false, aHasVertex = false;
   const NCollection_LinearVector<BRepGraph_ChildRefId>& aChildRefs =
     aGraph.Topo().Compounds().Relations(aCompoundId).ChildRefIds;
   for (const BRepGraph_ChildRefId& aChildRefId : aChildRefs)
@@ -882,9 +885,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_MixedAtomicChildren_RelationsCoverage)
   BRepGraph aPopGraph;
   std::ignore = BRepGraphInc_Populate::Perform(aPopGraph, aCompound, false);
   ASSERT_FALSE(aPopGraph.IsEmpty());
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aPopGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aPopGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Relation table must be consistent for atomic-mixed compound";
-
 }
 
 // =============================================================================
@@ -909,7 +912,8 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_ThreeBoxes_RelationsPerSolid)
     aGraph.Shapes().Add(aCompSolid);
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Three-solid CompSolid must pass full audit";
 
   BRepGraph aPopGraph;
@@ -926,7 +930,8 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_ThreeBoxes_RelationsPerSolid)
       << "Solid " << aSolidId.Index << " should have exactly one CompSolid parent";
   }
 
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aPopGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aPopGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Relation table must be consistent for 3-solid CompSolid";
 }
 
@@ -947,10 +952,10 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   ASSERT_FALSE(aPopGraph.IsEmpty());
 
   int aNbPairedCoEdges = 0;
-  for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aPopGraph.Topo().CoEdges().Nb()); ++aCoEdgeId)
+  for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aPopGraph.Topo().CoEdges().Nb());
+       ++aCoEdgeId)
   {
-    const BRepGraph_CoEdgeId aPairId =
-      aPopGraph.Topo().CoEdges().SeamPair(aCoEdgeId);
+    const BRepGraph_CoEdgeId aPairId = aPopGraph.Topo().CoEdges().SeamPair(aCoEdgeId);
     if (!aPairId.IsValid())
     {
       continue;
@@ -970,10 +975,10 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   // Build the graph, audit, reconstruct, repopulate, re-verify symmetry.
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes11 =
-    aGraph.Shapes().Add(aSphere);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes11 = aGraph.Shapes().Add(aSphere);
   ASSERT_FALSE(aGraph.IsEmpty());
-  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
+  EXPECT_TRUE(
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight()).IsValid())
     << "Sphere graph must pass full audit";
 
   TopoDS_Shape aRecon =
@@ -985,17 +990,16 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   ASSERT_FALSE(aReconGraph.IsEmpty());
 
   int aNbPairedAfter = 0;
-  for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aReconGraph.Topo().CoEdges().Nb()); ++aCoEdgeId)
+  for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aReconGraph.Topo().CoEdges().Nb());
+       ++aCoEdgeId)
   {
-    const BRepGraph_CoEdgeId aPairId =
-      aReconGraph.Topo().CoEdges().SeamPair(aCoEdgeId);
+    const BRepGraph_CoEdgeId aPairId = aReconGraph.Topo().CoEdges().SeamPair(aCoEdgeId);
     if (!aPairId.IsValid())
     {
       continue;
     }
     ++aNbPairedAfter;
-    const BRepGraph_CoEdgeId aBackId =
-      aReconGraph.Topo().CoEdges().SeamPair(aPairId);
+    const BRepGraph_CoEdgeId aBackId = aReconGraph.Topo().CoEdges().SeamPair(aPairId);
     EXPECT_EQ(aBackId, aCoEdgeId) << "Post-reconstruct seam pair must remain symmetric";
   }
   EXPECT_EQ(aNbPairedAfter, aNbPairedCoEdges)
@@ -1102,8 +1106,7 @@ TEST(BRepGraph_ScenarioMatrix, EditorFaceBoundPCurveCoEdge_RelationsAndLookup)
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.0e-7);
   ASSERT_TRUE(anEdgeId.IsValid());
 
-  const BRepGraph_CoEdgeId aWireCoEdgeId =
-    aGraph.Editor().CoEdges().Add(anEdgeId, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aWireCoEdgeId = aGraph.Editor().CoEdges().Add(anEdgeId, TopAbs_FORWARD);
   ASSERT_TRUE(aWireCoEdgeId.IsValid());
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aWireCoEdgeIds;
@@ -1112,15 +1115,14 @@ TEST(BRepGraph_ScenarioMatrix, EditorFaceBoundPCurveCoEdge_RelationsAndLookup)
   ASSERT_TRUE(aWireId.IsValid());
 
   NCollection_LinearVector<BRepGraph_WireId> anInnerWireIds;
-  const occ::handle<Geom_Plane> aPlane =
+  const occ::handle<Geom_Plane>              aPlane =
     new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   const BRepGraph_FaceId aFaceId =
     aGraph.Editor().Faces().Add(aPlane, aWireId, anInnerWireIds.ToArray1(), 1.0e-7);
   ASSERT_TRUE(aFaceId.IsValid());
 
-  const occ::handle<Geom2d_Line> aCurve2d =
-    new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
-  const BRepGraph_CoEdgeId aPCurveCoEdgeId =
+  const occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  const BRepGraph_CoEdgeId       aPCurveCoEdgeId =
     aGraph.Editor().CoEdges().Add(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0, TopAbs_REVERSED);
   ASSERT_TRUE(aPCurveCoEdgeId.IsValid());
 
@@ -1201,8 +1203,8 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
   ASSERT_TRUE(aSeamEdgeId.IsValid());
 
   const std::pair<double, double> aSeamRange2 = BRepGraph_Tool::Edge::Range(aGraph, aSeamEdgeId);
-  const double                 aMidParam = 0.5 * (aSeamRange2.first + aSeamRange2.second);
-  const BRepGraph_VertexId     aSplitVertex =
+  const double                    aMidParam   = 0.5 * (aSeamRange2.first + aSeamRange2.second);
+  const BRepGraph_VertexId        aSplitVertex =
     aGraph.Editor().Vertices().Add(gp_Pnt(5.0, 0.0, 7.5), 1.0e-7);
 
   BRepGraph_EdgeId aSubA, aSubB;
@@ -1221,8 +1223,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
         << "Sub-CoEdge must carry Curve2DRepId after Split";
       EXPECT_TRUE(aCoEdge.FaceId.IsValid()) << "Sub-CoEdge must carry FaceId after Split";
       EXPECT_EQ(aCoEdge.ChildEdgeId, theSubId);
-      const std::pair<double, double> aCERange =
-        BRepGraph_Tool::CoEdge::Range(aGraph, aCoEdgeId);
+      const std::pair<double, double> aCERange = BRepGraph_Tool::CoEdge::Range(aGraph, aCoEdgeId);
       EXPECT_LT(aCERange.first, aCERange.second)
         << "Sub-CoEdge must have a non-degenerate parameter range";
     }
@@ -1263,8 +1264,11 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_BoundaryVertexRetirement)
     if (!BRepGraph_Tool::Edge::Degenerated(aGraph, aCand) && anEdgeDef.Curve3DRepId.IsValid()
         && anEdgeDef.StartVertexRefId.IsValid() && anEdgeDef.EndVertexRefId.IsValid())
     {
-      anEdgeId    = aCand;
-      { const auto _r = BRepGraph_Tool::Edge::Range(aGraph, aCand); aSplitParam = 0.5 * (_r.first + _r.second); }
+      anEdgeId = aCand;
+      {
+        const auto _r = BRepGraph_Tool::Edge::Range(aGraph, aCand);
+        aSplitParam   = 0.5 * (_r.first + _r.second);
+      }
       break;
     }
   }
@@ -1314,8 +1318,11 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_SubEdgesHaveNoOriginal)
     const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edges().Definition(aCand);
     if (!BRepGraph_Tool::Edge::Degenerated(aGraph, aCand) && anEdgeDef.Curve3DRepId.IsValid())
     {
-      anEdgeId    = aCand;
-      { const auto _r = BRepGraph_Tool::Edge::Range(aGraph, aCand); aSplitParam = 0.5 * (_r.first + _r.second); }
+      anEdgeId = aCand;
+      {
+        const auto _r = BRepGraph_Tool::Edge::Range(aGraph, aCand);
+        aSplitParam   = 0.5 * (_r.first + _r.second);
+      }
       break;
     }
   }
@@ -1351,8 +1358,11 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_ShapeReconstructsSubEdge)
     const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edges().Definition(aCand);
     if (!BRepGraph_Tool::Edge::Degenerated(aGraph, aCand) && anEdgeDef.Curve3DRepId.IsValid())
     {
-      anEdgeId    = aCand;
-      { const auto _r = BRepGraph_Tool::Edge::Range(aGraph, aCand); aSplitParam = 0.5 * (_r.first + _r.second); }
+      anEdgeId = aCand;
+      {
+        const auto _r = BRepGraph_Tool::Edge::Range(aGraph, aCand);
+        aSplitParam   = 0.5 * (_r.first + _r.second);
+      }
       break;
     }
   }

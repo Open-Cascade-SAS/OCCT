@@ -30,8 +30,7 @@ public:
   //! @brief Construct an iterator over supplement attachments of one owner.
   //! @param[in] theGraph graph providing the supplement layer
   //! @param[in] theOwner core owner node whose attachments should be iterated
-  explicit BRepGraph_SupplementIterator(const BRepGraph&       theGraph,
-                                         const BRepGraph_NodeId theOwner)
+  explicit BRepGraph_SupplementIterator(const BRepGraph& theGraph, const BRepGraph_NodeId theOwner)
       : myLayer(theGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>()),
         myUids(myLayer.IsNull() ? nullptr : &myLayer->AttachedTo(theOwner))
   {
@@ -52,16 +51,10 @@ public:
   }
 
   //! @brief Return the current layer-local attachment uid.
-  [[nodiscard]] uint64_t Uid() const
-  {
-    return More() ? myUids->Value(myIndex) : uint64_t(0);
-  }
+  [[nodiscard]] uint64_t Uid() const { return More() ? myUids->Value(myIndex) : uint64_t(0); }
 
   //! @brief Return the current attachment entry.
-  [[nodiscard]] const BRepGraph_LayerTopoSupplement::Entry& Value() const
-  {
-    return *myEntry;
-  }
+  [[nodiscard]] const BRepGraph_LayerTopoSupplement::Entry& Value() const { return *myEntry; }
 
   //! @brief STL range-for support.
   NCollection_ForwardRangeIterator<BRepGraph_SupplementIterator> begin()
@@ -70,10 +63,7 @@ public:
   }
 
   //! @brief Sentinel marking end of iteration.
-  NCollection_ForwardRangeSentinel end() const
-  {
-    return NCollection_ForwardRangeSentinel{};
-  }
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
   //! @brief Skip missing entries in owner-local uid storage.

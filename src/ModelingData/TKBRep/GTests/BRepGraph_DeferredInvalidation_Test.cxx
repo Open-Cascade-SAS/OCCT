@@ -20,7 +20,6 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include "BRepGraph_RefTestTools.hxx"
-#include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
@@ -38,8 +37,7 @@ protected:
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
     myGraph.Clear();
-    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 =
-      myGraph.Shapes().Add(aBox);
+    [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes1 = myGraph.Shapes().Add(aBox);
     ASSERT_FALSE(myGraph.IsEmpty());
   }
 
@@ -311,8 +309,8 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
        DeferredMode_OccurrenceMutation_PropagatesSubtreeGenToProduct)
 {
   // Build an assembly: root product + child occurrence referencing it.
-  const BRepGraph_ProductId    aPartId     = BRepGraph_ProductId::Start();
-  const BRepGraph_ProductId    aAssemblyId = myGraph.Editor().Products().Add();
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId::Start();
+  const BRepGraph_ProductId aAssemblyId = myGraph.Editor().Products().Add();
   myGraph.Editor().Products().AppendDocumentRoot(aAssemblyId);
   const BRepGraph_OccurrenceId anOccId =
     myGraph.Editor().Products().Append(aAssemblyId, aPartId, TopLoc_Location());
@@ -320,10 +318,8 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
 
   // LinkProducts is a structural mutation in immediate mode, so SubtreeGen
   // may already be non-zero.  Capture the baseline after linking.
-  const uint32_t aBaselineSubtreeGen =
-    myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen;
-  const uint32_t aBaselineOwnGen =
-    myGraph.Topo().Products().Definition(aAssemblyId).OwnGen;
+  const uint32_t aBaselineSubtreeGen = myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen;
+  const uint32_t aBaselineOwnGen     = myGraph.Topo().Products().Definition(aAssemblyId).OwnGen;
 
   // Find the OccurrenceRefId for the occurrence.
   const NCollection_LinearVector<BRepGraph_OccurrenceRefId>& aOccRefs =
@@ -339,11 +335,10 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
     myGraph.Editor().Occurrences().SetRefLocalLocation(anOccRefId, TopLoc_Location(aTrsf));
   }
 
-  // During deferred mode: ref modified — parent product's OwnGen should be bumped.
+  // During deferred mode: ref modified - parent product's OwnGen should be bumped.
   const BRepGraph_ProductId aParentProductId =
     myGraph.Refs().Occurrences().Entry(anOccRefId).ParentProductId;
-  EXPECT_EQ(myGraph.Topo().Products().Definition(aParentProductId).OwnGen,
-            aBaselineOwnGen + 1);
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aParentProductId).OwnGen, aBaselineOwnGen + 1);
 
   const uint32_t aSubtreeGenBeforeFlush = aBaselineSubtreeGen;
 

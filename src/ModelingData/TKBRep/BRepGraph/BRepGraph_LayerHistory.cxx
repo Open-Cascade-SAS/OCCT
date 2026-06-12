@@ -52,9 +52,11 @@ inline NCollection_DataMap<BRepGraph_UID, NCollection_LinearVector<BRepGraph_UID
 
 inline NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>&
   selectItemUidForwardMap(
-    const BRepGraph_LayerHistory::Kind                                                   theKind,
-    NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>& theModified,
-    NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>& theGenerated)
+    const BRepGraph_LayerHistory::Kind theKind,
+    NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>&
+      theModified,
+    NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>&
+      theGenerated)
 {
   return theKind == BRepGraph_LayerHistory::Kind::Generated ? theGenerated : theModified;
 }
@@ -159,8 +161,8 @@ inline BRepGraph_ItemUID itemUidOf(const BRepGraph* theGraph, const BRepGraph_It
 }
 
 inline NCollection_LinearVector<BRepGraph_ItemUID> itemUidsOfNodes(
-  const BRepGraph*                              theGraph,
-  const NCollection_Array1<BRepGraph_NodeId>&   theNodes)
+  const BRepGraph*                            theGraph,
+  const NCollection_Array1<BRepGraph_NodeId>& theNodes)
 {
   NCollection_LinearVector<BRepGraph_ItemUID> aResult(THE_HISTORY_FILTERED_BLOCK_SIZE);
   if (theGraph == nullptr)
@@ -277,13 +279,12 @@ void BRepGraph_LayerHistory::rebuildCaches()
 
   for (const Event& aRecord : myRecords)
   {
-    for (NCollection_DataMap<BRepGraph_NodeId,
-                             NCollection_LinearVector<BRepGraph_NodeId>>::Iterator anIt(
-           aRecord.Mapping);
+    for (NCollection_DataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_NodeId>>::Iterator
+           anIt(aRecord.Mapping);
          anIt.More();
          anIt.Next())
     {
-      const BRepGraph_NodeId& anOriginal = anIt.Key();
+      const BRepGraph_NodeId&                           anOriginal    = anIt.Key();
       const NCollection_LinearVector<BRepGraph_NodeId>& aReplacements = anIt.Value();
       if (aRecord.RecordKind == BRepGraph_LayerHistory::Kind::Deleted || aReplacements.IsEmpty())
       {
@@ -358,8 +359,8 @@ void BRepGraph_LayerHistory::rebuildCaches()
     }
 
     for (NCollection_DataMap<BRepGraph_ItemUID,
-                             NCollection_LinearVector<BRepGraph_ItemUID>>::Iterator anIt(
-           aRecord.ItemUidMapping);
+                             NCollection_LinearVector<BRepGraph_ItemUID>>::Iterator
+           anIt(aRecord.ItemUidMapping);
          anIt.More();
          anIt.Next())
     {
@@ -412,7 +413,7 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
     aTarget->SetEnabled(true);
 
     static const TCollection_AsciiString THE_COMPACT_REMAP_LABEL("Compact:Remap");
-    NCollection_DynamicArray<Event> aNewRecords(32);
+    NCollection_DynamicArray<Event>      aNewRecords(32);
 
     for (const Event& aRecord : myRecords)
     {
@@ -428,16 +429,16 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
       aNewRecord.ExtraInfo      = aRecord.ExtraInfo;
 
       // Preserve durable UID mappings as-is.
-      for (NCollection_DataMap<BRepGraph_UID, NCollection_LinearVector<BRepGraph_UID>>::Iterator anIt(
-             aRecord.UidMapping);
+      for (NCollection_DataMap<BRepGraph_UID, NCollection_LinearVector<BRepGraph_UID>>::Iterator
+             anIt(aRecord.UidMapping);
            anIt.More();
            anIt.Next())
       {
         aNewRecord.UidMapping.Bind(anIt.Key(), copyUids(anIt.Value()));
       }
       for (NCollection_DataMap<BRepGraph_ItemUID,
-                               NCollection_LinearVector<BRepGraph_ItemUID>>::Iterator anIt(
-             aRecord.ItemUidMapping);
+                               NCollection_LinearVector<BRepGraph_ItemUID>>::Iterator
+             anIt(aRecord.ItemUidMapping);
            anIt.More();
            anIt.Next())
       {
@@ -446,8 +447,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
 
       // Remap NodeId-based entries through the ItemId map.
       for (NCollection_DataMap<BRepGraph_NodeId,
-                               NCollection_LinearVector<BRepGraph_NodeId>>::Iterator anIt(
-             aRecord.Mapping);
+                               NCollection_LinearVector<BRepGraph_NodeId>>::Iterator
+             anIt(aRecord.Mapping);
            anIt.More();
            anIt.Next())
       {
@@ -491,10 +492,10 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
     return theCopy.SourceGraph().UIDs().ItemIdFrom(theUID);
   };
 
-  auto replayItems = [&](const TCollection_AsciiString&                theOperationName,
-                         const BRepGraph_LayerHistory::Kind            theKind,
-                         const BRepGraph_ItemId                        theSourceOriginal,
-                         const BRepGraph_ItemUID&                      theDurableOriginalUID,
+  auto replayItems = [&](const TCollection_AsciiString&                    theOperationName,
+                         const BRepGraph_LayerHistory::Kind                theKind,
+                         const BRepGraph_ItemId                            theSourceOriginal,
+                         const BRepGraph_ItemUID&                          theDurableOriginalUID,
                          const NCollection_LinearVector<BRepGraph_ItemId>& theSourceImages) {
     const BRepGraph_ItemId* aTargetOriginal = theCopy.TargetItem(theSourceOriginal);
     if (aTargetOriginal == nullptr || !aTargetOriginal->IsValid())
@@ -502,7 +503,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
       if (theKind == BRepGraph_LayerHistory::Kind::Deleted)
       {
         if (theSourceOriginal.IsNode()
-            && theCopy.TargetGraphConst().Topo().Gen().TopoEntity(theSourceOriginal.NodeId()) != nullptr)
+            && theCopy.TargetGraphConst().Topo().Gen().TopoEntity(theSourceOriginal.NodeId())
+                 != nullptr)
         {
           NCollection_LinearVector<BRepGraph_NodeId> aDeleted(THE_HISTORY_REPLACEMENT_BLOCK_SIZE);
           aDeleted.Append(theSourceOriginal.NodeId());
@@ -520,8 +522,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
     }
 
     NCollection_LinearVector<BRepGraph_ItemUID> aTargetImageUIDs(THE_HISTORY_FILTERED_BLOCK_SIZE);
-    NCollection_LinearVector<BRepGraph_NodeId> aTargetImageNodes(THE_HISTORY_FILTERED_BLOCK_SIZE);
-    bool areAllItemsNodes = aTargetOriginal->IsNode();
+    NCollection_LinearVector<BRepGraph_NodeId>  aTargetImageNodes(THE_HISTORY_FILTERED_BLOCK_SIZE);
+    bool                                        areAllItemsNodes = aTargetOriginal->IsNode();
     for (const BRepGraph_ItemId& aSourceImage : theSourceImages)
     {
       const BRepGraph_ItemId* aTargetImage = theCopy.TargetItem(aSourceImage);
@@ -598,12 +600,12 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
       aNewRecord.ExtraInfo      = aRecord.ExtraInfo;
 
       for (NCollection_DataMap<BRepGraph_NodeId,
-                               NCollection_LinearVector<BRepGraph_NodeId>>::Iterator anIt(
-             aRecord.Mapping);
+                               NCollection_LinearVector<BRepGraph_NodeId>>::Iterator
+             anIt(aRecord.Mapping);
            anIt.More();
            anIt.Next())
       {
-        BRepGraph_NodeId aTargetNode;
+        BRepGraph_NodeId        aTargetNode;
         const BRepGraph_ItemId* aTargetOriginal = theCopy.TargetItem(BRepGraph_ItemId(anIt.Key()));
         if (aTargetOriginal != nullptr && aTargetOriginal->IsNode())
         {
@@ -633,8 +635,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
       if (!aRecord.ItemUidMapping.IsEmpty())
       {
         for (NCollection_DataMap<BRepGraph_ItemUID,
-                                 NCollection_LinearVector<BRepGraph_ItemUID>>::Iterator anIt(
-               aRecord.ItemUidMapping);
+                                 NCollection_LinearVector<BRepGraph_ItemUID>>::Iterator
+               anIt(aRecord.ItemUidMapping);
              anIt.More();
              anIt.Next())
         {
@@ -653,8 +655,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
     if (!aRecord.ItemUidMapping.IsEmpty())
     {
       for (NCollection_DataMap<BRepGraph_ItemUID,
-                               NCollection_LinearVector<BRepGraph_ItemUID>>::Iterator anIt(
-             aRecord.ItemUidMapping);
+                               NCollection_LinearVector<BRepGraph_ItemUID>>::Iterator
+             anIt(aRecord.ItemUidMapping);
            anIt.More();
            anIt.Next())
       {
@@ -678,8 +680,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
 
     if (!aRecord.UidMapping.IsEmpty())
     {
-      for (NCollection_DataMap<BRepGraph_UID, NCollection_LinearVector<BRepGraph_UID>>::Iterator anIt(
-             aRecord.UidMapping);
+      for (NCollection_DataMap<BRepGraph_UID, NCollection_LinearVector<BRepGraph_UID>>::Iterator
+             anIt(aRecord.UidMapping);
            anIt.More();
            anIt.Next())
       {
@@ -692,17 +694,19 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
         }
 
         NCollection_LinearVector<BRepGraph_ItemId> aSourceImages(THE_HISTORY_FILTERED_BLOCK_SIZE);
-        NCollection_LinearVector<BRepGraph_UID>    aTargetImageUIDs(THE_HISTORY_FILTERED_BLOCK_SIZE);
+        NCollection_LinearVector<BRepGraph_UID> aTargetImageUIDs(THE_HISTORY_FILTERED_BLOCK_SIZE);
         for (const BRepGraph_UID& aUid : anIt.Value())
         {
-          const BRepGraph_ItemId aSourceImage = toSourceItem(BRepGraph_ItemUID::Node(aUid.Kind, aUid.Counter));
+          const BRepGraph_ItemId aSourceImage =
+            toSourceItem(BRepGraph_ItemUID::Node(aUid.Kind, aUid.Counter));
           if (aSourceImage.IsValid())
           {
             aSourceImages.Append(aSourceImage);
             const BRepGraph_ItemId* aTargetImage = theCopy.TargetItem(aSourceImage);
             if (aTargetImage != nullptr && aTargetImage->IsNode())
             {
-              const BRepGraph_UID aTargetUID = theCopy.TargetGraphConst().UIDs().Of(aTargetImage->NodeId());
+              const BRepGraph_UID aTargetUID =
+                theCopy.TargetGraphConst().UIDs().Of(aTargetImage->NodeId());
               if (aTargetUID.IsValid())
               {
                 appendUniqueUid(aTargetImageUIDs, aTargetUID);
@@ -721,9 +725,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
       continue;
     }
 
-    for (NCollection_DataMap<BRepGraph_NodeId,
-                             NCollection_LinearVector<BRepGraph_NodeId>>::Iterator anIt(
-           aRecord.Mapping);
+    for (NCollection_DataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_NodeId>>::Iterator
+           anIt(aRecord.Mapping);
          anIt.More();
          anIt.Next())
     {
@@ -756,11 +759,10 @@ void BRepGraph_LayerHistory::InvalidateAll() noexcept
 
 //=================================================================================================
 
-void BRepGraph_LayerHistory::Record(
-  const TCollection_AsciiString&                    theOpLabel,
-  const BRepGraph_NodeId                            theOriginal,
-  const NCollection_Array1<BRepGraph_NodeId>&       theReplacements,
-  const BRepGraph_LayerHistory::Kind                theKind)
+void BRepGraph_LayerHistory::Record(const TCollection_AsciiString&              theOpLabel,
+                                    const BRepGraph_NodeId                      theOriginal,
+                                    const NCollection_Array1<BRepGraph_NodeId>& theReplacements,
+                                    const BRepGraph_LayerHistory::Kind          theKind)
 {
   if (!myEnabled)
   {
@@ -774,7 +776,7 @@ void BRepGraph_LayerHistory::Record(
   aRecord.SequenceNumber = myRecords.Size();
   aRecord.RecordKind = theReplacements.IsEmpty() ? BRepGraph_LayerHistory::Kind::Deleted : theKind;
   aRecord.Mapping.Bind(theOriginal, copyNodes(theReplacements));
-  const BRepGraph* aGraph = AttachedGraph();
+  const BRepGraph*        aGraph            = AttachedGraph();
   const BRepGraph_ItemUID anOriginalItemUID = itemUidOf(aGraph, BRepGraph_ItemId(theOriginal));
   const NCollection_LinearVector<BRepGraph_ItemUID> anItemReplacements =
     itemUidsOfNodes(aGraph, theReplacements);
@@ -842,10 +844,8 @@ void BRepGraph_LayerHistory::Record(
 
   if (anOriginalItemUID.IsValid())
   {
-    NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>&
-      anItemFwd = selectItemUidForwardMap(theKind,
-                                          myItemUidOriginalToModified,
-                                          myItemUidOriginalToGenerated);
+    NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>& anItemFwd =
+      selectItemUidForwardMap(theKind, myItemUidOriginalToModified, myItemUidOriginalToGenerated);
     for (const BRepGraph_ItemUID& aDerivedUID : anItemReplacements)
     {
       if (aDerivedUID != anOriginalItemUID)
@@ -869,11 +869,11 @@ void BRepGraph_LayerHistory::Record(
 //=================================================================================================
 
 void BRepGraph_LayerHistory::RecordBatch(
-  const TCollection_AsciiString&                    theOpLabel,
-  const NCollection_Array1<BRepGraph_NodeId>&       theOriginals,
-  const NCollection_Array1<BRepGraph_NodeId>&       theReplacements,
-  const TCollection_AsciiString&                    theExtraInfo,
-  const BRepGraph_LayerHistory::Kind                theKind)
+  const TCollection_AsciiString&              theOpLabel,
+  const NCollection_Array1<BRepGraph_NodeId>& theOriginals,
+  const NCollection_Array1<BRepGraph_NodeId>& theReplacements,
+  const TCollection_AsciiString&              theExtraInfo,
+  const BRepGraph_LayerHistory::Kind          theKind)
 {
   Standard_ASSERT_VOID(theOriginals.Size() == theReplacements.Size(),
                        "RecordBatch: mismatched array lengths");
@@ -909,9 +909,8 @@ void BRepGraph_LayerHistory::RecordBatch(
       aRepVec.Append(aReplacement);
       aRecord.Mapping.Bind(anOriginal, std::move(aRepVec));
 
-      const BRepGraph_ItemUID anOriginalUID = itemUidOf(aGraph, BRepGraph_ItemId(anOriginal));
-      const BRepGraph_ItemUID aReplacementUID =
-        itemUidOf(aGraph, BRepGraph_ItemId(aReplacement));
+      const BRepGraph_ItemUID anOriginalUID   = itemUidOf(aGraph, BRepGraph_ItemId(anOriginal));
+      const BRepGraph_ItemUID aReplacementUID = itemUidOf(aGraph, BRepGraph_ItemId(aReplacement));
       if (anOriginalUID.IsValid())
       {
         myItemUidKnownInputs.Add(anOriginalUID);
@@ -930,19 +929,17 @@ void BRepGraph_LayerHistory::RecordBatch(
   // Update per-kind forward map and reverse map in bulk.
   NCollection_DataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_NodeId>>& aFwd =
     selectForwardMap(theKind, myOriginalToModified, myOriginalToGenerated);
-  NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>&
-    anItemFwd =
-      selectItemUidForwardMap(theKind, myItemUidOriginalToModified, myItemUidOriginalToGenerated);
+  NCollection_DataMap<BRepGraph_ItemUID, NCollection_LinearVector<BRepGraph_ItemUID>>& anItemFwd =
+    selectItemUidForwardMap(theKind, myItemUidOriginalToModified, myItemUidOriginalToGenerated);
   aFwd.ReSize(aFwd.Extent() + aNbPairs);
 
   {
     for (size_t aPairIdx = 0; aPairIdx < aNbPairs; ++aPairIdx)
     {
-      const BRepGraph_NodeId& anOriginal   = theOriginals.At(aPairIdx);
-      const BRepGraph_NodeId& aReplacement = theReplacements.At(aPairIdx);
-      const BRepGraph_ItemUID anOriginalUID = itemUidOf(aGraph, BRepGraph_ItemId(anOriginal));
-      const BRepGraph_ItemUID aReplacementUID =
-        itemUidOf(aGraph, BRepGraph_ItemId(aReplacement));
+      const BRepGraph_NodeId& anOriginal      = theOriginals.At(aPairIdx);
+      const BRepGraph_NodeId& aReplacement    = theReplacements.At(aPairIdx);
+      const BRepGraph_ItemUID anOriginalUID   = itemUidOf(aGraph, BRepGraph_ItemId(anOriginal));
+      const BRepGraph_ItemUID aReplacementUID = itemUidOf(aGraph, BRepGraph_ItemId(aReplacement));
       if (aReplacement == anOriginal)
       {
         continue;
@@ -979,8 +976,7 @@ void BRepGraph_LayerHistory::RecordBatch(
         myDeleted.Add(anOriginal);
       }
 
-      if (anOriginalUID.IsValid() && aReplacementUID.IsValid()
-          && aReplacementUID != anOriginalUID)
+      if (anOriginalUID.IsValid() && aReplacementUID.IsValid() && aReplacementUID != anOriginalUID)
       {
         appendItemUidForward(anItemFwd, anOriginalUID, aReplacementUID);
       }
@@ -996,9 +992,8 @@ void BRepGraph_LayerHistory::RecordBatch(
 
 //=================================================================================================
 
-void BRepGraph_LayerHistory::RecordDeleted(
-  const TCollection_AsciiString&                    theOpLabel,
-  const NCollection_Array1<BRepGraph_NodeId>&       theDeleted)
+void BRepGraph_LayerHistory::RecordDeleted(const TCollection_AsciiString&              theOpLabel,
+                                           const NCollection_Array1<BRepGraph_NodeId>& theDeleted)
 {
   if (!myEnabled || theDeleted.IsEmpty())
   {
@@ -1058,10 +1053,10 @@ void BRepGraph_LayerHistory::RecordReplaced(const TCollection_AsciiString& theOp
 //=================================================================================================
 
 void BRepGraph_LayerHistory::RecordReplacedBatch(
-  const TCollection_AsciiString&                    theOpLabel,
-  const NCollection_Array1<BRepGraph_NodeId>&       theOriginals,
-  const NCollection_Array1<BRepGraph_NodeId>&       theReplacements,
-  const TCollection_AsciiString&                    theExtraInfo)
+  const TCollection_AsciiString&              theOpLabel,
+  const NCollection_Array1<BRepGraph_NodeId>& theOriginals,
+  const NCollection_Array1<BRepGraph_NodeId>& theReplacements,
+  const TCollection_AsciiString&              theExtraInfo)
 {
   RecordBatch(theOpLabel,
               theOriginals,
@@ -1072,11 +1067,10 @@ void BRepGraph_LayerHistory::RecordReplacedBatch(
 
 //=================================================================================================
 
-void BRepGraph_LayerHistory::RecordUid(
-  const TCollection_AsciiString&                 theOpLabel,
-  const BRepGraph_UID&                           theOriginal,
-  const NCollection_Array1<BRepGraph_UID>&       theReplacements,
-  const BRepGraph_LayerHistory::Kind             theKind)
+void BRepGraph_LayerHistory::RecordUid(const TCollection_AsciiString&           theOpLabel,
+                                       const BRepGraph_UID&                     theOriginal,
+                                       const NCollection_Array1<BRepGraph_UID>& theReplacements,
+                                       const BRepGraph_LayerHistory::Kind       theKind)
 {
   if (!myEnabled || !theOriginal.IsValid())
   {
@@ -1097,7 +1091,7 @@ void BRepGraph_LayerHistory::RecordUid(
   Standard_ASSERT_VOID(theKind != BRepGraph_LayerHistory::Kind::Deleted,
                        "RecordUid: use RecordDeletedUid() for deletions");
 
-  NCollection_LinearVector<BRepGraph_UID> aValidReplacements(THE_HISTORY_FILTERED_BLOCK_SIZE);
+  NCollection_LinearVector<BRepGraph_UID>     aValidReplacements(THE_HISTORY_FILTERED_BLOCK_SIZE);
   NCollection_LinearVector<BRepGraph_ItemUID> aValidItemReplacements(
     THE_HISTORY_FILTERED_BLOCK_SIZE);
   for (const BRepGraph_UID& aDerived : theReplacements)
@@ -1105,7 +1099,8 @@ void BRepGraph_LayerHistory::RecordUid(
     if (aDerived.IsValid())
     {
       appendUniqueUid(aValidReplacements, aDerived);
-      appendUniqueItemUid(aValidItemReplacements, BRepGraph_ItemUID::Node(aDerived.Kind, aDerived.Counter));
+      appendUniqueItemUid(aValidItemReplacements,
+                          BRepGraph_ItemUID::Node(aDerived.Kind, aDerived.Counter));
     }
   }
   if (aValidReplacements.IsEmpty())
@@ -1145,7 +1140,9 @@ void BRepGraph_LayerHistory::RecordUid(
     selectItemUidForwardMap(theKind, myItemUidOriginalToModified, myItemUidOriginalToGenerated);
   for (const BRepGraph_ItemUID& aDerived : aValidItemReplacements)
   {
-    appendItemUidForward(anItemFwd, BRepGraph_ItemUID::Node(theOriginal.Kind, theOriginal.Counter), aDerived);
+    appendItemUidForward(anItemFwd,
+                         BRepGraph_ItemUID::Node(theOriginal.Kind, theOriginal.Counter),
+                         aDerived);
   }
 
   if (theKind == BRepGraph_LayerHistory::Kind::Replaced)
@@ -1158,9 +1155,8 @@ void BRepGraph_LayerHistory::RecordUid(
 
 //=================================================================================================
 
-void BRepGraph_LayerHistory::RecordDeletedUid(
-  const TCollection_AsciiString&                 theOpLabel,
-  const NCollection_Array1<BRepGraph_UID>&       theDeleted)
+void BRepGraph_LayerHistory::RecordDeletedUid(const TCollection_AsciiString&           theOpLabel,
+                                              const NCollection_Array1<BRepGraph_UID>& theDeleted)
 {
   if (!myEnabled || theDeleted.IsEmpty())
   {
@@ -1208,10 +1204,10 @@ void BRepGraph_LayerHistory::RecordDeletedUid(
 //=================================================================================================
 
 void BRepGraph_LayerHistory::RecordItemUid(
-  const TCollection_AsciiString&                     theOpLabel,
-  const BRepGraph_ItemUID&                           theOriginal,
-  const NCollection_Array1<BRepGraph_ItemUID>&       theReplacements,
-  const BRepGraph_LayerHistory::Kind                 theKind)
+  const TCollection_AsciiString&               theOpLabel,
+  const BRepGraph_ItemUID&                     theOriginal,
+  const NCollection_Array1<BRepGraph_ItemUID>& theReplacements,
+  const BRepGraph_LayerHistory::Kind           theKind)
 {
   if (!myEnabled || !theOriginal.IsValid())
   {
@@ -1268,8 +1264,8 @@ void BRepGraph_LayerHistory::RecordItemUid(
 //=================================================================================================
 
 void BRepGraph_LayerHistory::RecordDeletedItemUid(
-  const TCollection_AsciiString&                     theOpLabel,
-  const NCollection_Array1<BRepGraph_ItemUID>&       theDeleted)
+  const TCollection_AsciiString&               theOpLabel,
+  const NCollection_Array1<BRepGraph_ItemUID>& theDeleted)
 {
   if (!myEnabled || theDeleted.IsEmpty())
   {

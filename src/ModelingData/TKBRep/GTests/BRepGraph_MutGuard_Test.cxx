@@ -181,10 +181,12 @@ TEST(BRepGraph_MutGuardTest, DuplicateGuard_Rejected)
   EXPECT_TRUE(static_cast<bool>(aGuard1));
 
   // Attempting to acquire a second guard on the same vertex must throw.
-  EXPECT_THROW({
-    auto aDuplicate = aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
-    (void)aDuplicate;
-  }, Standard_ProgramError);
+  EXPECT_THROW(
+    {
+      auto aDuplicate = aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
+      (void)aDuplicate;
+    },
+    Standard_ProgramError);
 }
 
 TEST(BRepGraph_MutGuardTest, GuardAllowsGuardedSetter)
@@ -211,9 +213,8 @@ TEST(BRepGraph_MutGuardTest, GuardBlocksStructuralRemoval)
   EXPECT_TRUE(static_cast<bool>(aGuard));
 
   // Structural removal must throw while a guard is active on the item.
-  EXPECT_THROW(
-    aGraph.Editor().Gen().RemoveNode(BRepGraph_VertexId::Start()),
-    Standard_ProgramError);
+  EXPECT_THROW(aGraph.Editor().Gen().RemoveNode(BRepGraph_VertexId::Start()),
+               Standard_ProgramError);
 }
 
 TEST(BRepGraph_MutGuardTest, GuardReleasedOnDestruction_CanReacquire)
@@ -226,7 +227,7 @@ TEST(BRepGraph_MutGuardTest, GuardReleasedOnDestruction_CanReacquire)
       aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
     EXPECT_TRUE(static_cast<bool>(aGuard));
   }
-  // Guard destroyed — should be able to acquire again.
+  // Guard destroyed - should be able to acquire again.
   BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard2 =
     aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
   EXPECT_TRUE(static_cast<bool>(aGuard2));

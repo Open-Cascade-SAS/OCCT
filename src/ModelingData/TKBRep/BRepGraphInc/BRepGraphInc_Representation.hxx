@@ -38,10 +38,10 @@ struct EdgeCurve3DRep
 {
   using TypeId = BRepGraph_EdgeCurve3DRepId;
 
-  BRepGraph_EdgeId ParentEdgeId;              //!< Owning edge identifier
-  occ::handle<Geom_Curve> Curve;              //!< 3D curve geometry
-  double ParamFirst = 0.0;                    //!< First curve parameter
-  double ParamLast  = 0.0;                    //!< Last curve parameter
+  BRepGraph_EdgeId        ParentEdgeId;     //!< Owning edge identifier
+  occ::handle<Geom_Curve> Curve;            //!< 3D curve geometry
+  double                  ParamFirst = 0.0; //!< First curve parameter
+  double                  ParamLast  = 0.0; //!< Last curve parameter
 };
 
 //! 3D polygon use for edges. Owned by a single edge.
@@ -49,8 +49,8 @@ struct EdgePolygon3DRep
 {
   using TypeId = BRepGraph_EdgePolygon3DRepId;
 
-  BRepGraph_EdgeId ParentEdgeId;              //!< Owning edge identifier
-  occ::handle<Poly_Polygon3D> Polygon;        //!< 3D polygon geometry
+  BRepGraph_EdgeId            ParentEdgeId; //!< Owning edge identifier
+  occ::handle<Poly_Polygon3D> Polygon;      //!< 3D polygon geometry
 };
 
 //! 2D parametric curve (PCurve) use for coedges. Owned by a single coedge.
@@ -58,10 +58,10 @@ struct CoEdgeCurve2DRep
 {
   using TypeId = BRepGraph_CoEdgeCurve2DRepId;
 
-  BRepGraph_CoEdgeId ParentCoEdgeId;          //!< Owning coedge identifier
+  BRepGraph_CoEdgeId        ParentCoEdgeId;   //!< Owning coedge identifier
   occ::handle<Geom2d_Curve> Curve;            //!< 2D parametric curve geometry
-  double ParamFirst = 0.0;                    //!< First curve parameter
-  double ParamLast  = 0.0;                    //!< Last curve parameter
+  double                    ParamFirst = 0.0; //!< First curve parameter
+  double                    ParamLast  = 0.0; //!< Last curve parameter
 };
 
 //! 2D polygon-on-surface use for coedges. Owned by a single coedge.
@@ -69,7 +69,7 @@ struct CoEdgePolygon2DRep
 {
   using TypeId = BRepGraph_CoEdgePolygon2DRepId;
 
-  BRepGraph_CoEdgeId ParentCoEdgeId;          //!< Owning coedge identifier
+  BRepGraph_CoEdgeId          ParentCoEdgeId; //!< Owning coedge identifier
   occ::handle<Poly_Polygon2D> Polygon;        //!< 2D polygon geometry
 };
 
@@ -78,8 +78,8 @@ struct CoEdgePolygonOnTriRep
 {
   using TypeId = BRepGraph_CoEdgePolygonOnTriRepId;
 
-  BRepGraph_CoEdgeId ParentCoEdgeId;          //!< Owning coedge identifier
-  occ::handle<Poly_PolygonOnTriangulation> Polygon; //!< Polygon-on-triangulation geometry
+  BRepGraph_CoEdgeId                       ParentCoEdgeId; //!< Owning coedge identifier
+  occ::handle<Poly_PolygonOnTriangulation> Polygon;        //!< Polygon-on-triangulation geometry
 };
 
 //! Surface geometry use for faces. Owned by a single face.
@@ -87,8 +87,8 @@ struct FaceSurfaceRep
 {
   using TypeId = BRepGraph_FaceSurfaceRepId;
 
-  BRepGraph_FaceId ParentFaceId;              //!< Owning face identifier
-  occ::handle<Geom_Surface> Surface;          //!< Surface geometry
+  BRepGraph_FaceId          ParentFaceId; //!< Owning face identifier
+  occ::handle<Geom_Surface> Surface;      //!< Surface geometry
 };
 
 //! Triangulation mesh use for faces. Owned by a single face.
@@ -96,7 +96,7 @@ struct FaceTriangulationRep
 {
   using TypeId = BRepGraph_FaceTriangulationRepId;
 
-  BRepGraph_FaceId ParentFaceId;              //!< Owning face identifier
+  BRepGraph_FaceId                ParentFaceId;  //!< Owning face identifier
   occ::handle<Poly_Triangulation> Triangulation; //!< Triangulation mesh
 };
 

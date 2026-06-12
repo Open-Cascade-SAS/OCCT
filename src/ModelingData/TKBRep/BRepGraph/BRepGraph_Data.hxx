@@ -51,7 +51,6 @@ struct BRepGraph_Data
   BRepGraph::ShapesView myShapesView{nullptr};
   BRepGraph::EditorView myEditorView{nullptr};
   BRepGraph::MeshView   myMeshView{nullptr};
-
 };
 
 #endif // _BRepGraph_Data_HeaderFile

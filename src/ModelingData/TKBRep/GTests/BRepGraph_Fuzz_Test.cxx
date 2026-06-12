@@ -170,8 +170,7 @@ FuzzOutcome runFuzz(BRepGraph& theGraph, const uint32_t theSeed, const int theNb
       EXPECT_TRUE(aResult.IsValid())
         << "Fuzz iteration " << aIt << " (seed=" << theSeed << ") left the graph invalid. "
         << "First issue: "
-        << (aResult.Issues.Size() > 0 ? aResult.Issues.First().Description.ToCString()
-                                        : "(none)");
+        << (aResult.Issues.Size() > 0 ? aResult.Issues.First().Description.ToCString() : "(none)");
     }
     else
     {

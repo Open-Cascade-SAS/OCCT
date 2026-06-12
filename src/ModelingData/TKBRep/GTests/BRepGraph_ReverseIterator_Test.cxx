@@ -58,8 +58,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, FacesOfEdge_BoxEdgeSharedByTwoFaces)
 {
   // Every edge of a box is shared by exactly 2 faces.
   const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces =
-    myGraph.Topo().Edges().Faces(anEdgeId);
+  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
   const int aCount = countIterator(BRepGraph_FacesOfEdge(myGraph, aFaces));
   EXPECT_EQ(aCount, 2);
 }
@@ -76,32 +75,32 @@ TEST_F(BRepGraph_ReverseIteratorTest, EdgesOfVertex_BoxVertexSharedByThreeEdges)
 TEST_F(BRepGraph_ReverseIteratorTest, SolidsOfShell_BoxShellHasOneSolid)
 {
   const BRepGraph_ShellId aShellId(0);
-  const int               aCount =
-    countIterator(BRepGraph_SolidsOfShell(myGraph, myGraph.Topo().Shells().Relations(aShellId).ParentShellRefIds));
+  const int               aCount = countIterator(
+    BRepGraph_SolidsOfShell(myGraph,
+                            myGraph.Topo().Shells().Relations(aShellId).ParentShellRefIds));
   EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraph_ReverseIteratorTest, ShellsOfFace_BoxFaceHasOneShell)
 {
   const BRepGraph_FaceId aFaceId(0);
-  const int              aCount =
-    countIterator(BRepGraph_ShellsOfFace(myGraph, myGraph.Topo().Faces().Relations(aFaceId).ParentFaceRefIds));
+  const int              aCount = countIterator(
+    BRepGraph_ShellsOfFace(myGraph, myGraph.Topo().Faces().Relations(aFaceId).ParentFaceRefIds));
   EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraph_ReverseIteratorTest, FacesOfWire_BoxWireHasOneFace)
 {
   const BRepGraph_WireId aWireId(0);
-  const int              aCount =
-    countIterator(BRepGraph_FacesOfWire(myGraph, myGraph.Topo().Wires().Relations(aWireId).ParentWireRefIds));
+  const int              aCount = countIterator(
+    BRepGraph_FacesOfWire(myGraph, myGraph.Topo().Wires().Relations(aWireId).ParentWireRefIds));
   EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraph_ReverseIteratorTest, WiresOfEdge_BoxEdgeBelongsToTwoWires)
 {
   const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_WireId> aWires =
-    myGraph.Topo().Edges().Wires(anEdgeId);
+  const NCollection_LinearVector<BRepGraph_WireId> aWires = myGraph.Topo().Edges().Wires(anEdgeId);
   const int aCount = countIterator(BRepGraph_WiresOfEdge(myGraph, aWires));
   EXPECT_EQ(aCount, 2);
 }
@@ -138,9 +137,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, IndexedAccess_TracksActiveReverseBucket)
 TEST_F(BRepGraph_ReverseIteratorTest, RangeFor_WorksCorrectly)
 {
   const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces =
-    myGraph.Topo().Edges().Faces(anEdgeId);
-  int aCount = 0;
+  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
+  int                                              aCount = 0;
   for (const BRepGraph_FaceId aFaceId : BRepGraph_FacesOfEdge(myGraph, aFaces))
   {
     EXPECT_TRUE(aFaceId.IsValid(myGraph.Topo().Faces().Nb()));
@@ -195,9 +193,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, WiresOfCoEdge_BoxCoEdgeBelongsToOneWire)
 TEST_F(BRepGraph_ReverseIteratorTest, Definition_ReturnsFaceDefinition)
 {
   const BRepGraph_EdgeId                           anEdgeId(0);
-  const NCollection_LinearVector<BRepGraph_FaceId> aFaces =
-    myGraph.Topo().Edges().Faces(anEdgeId);
-  BRepGraph_FacesOfEdge anIt(myGraph, aFaces);
+  const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
+  BRepGraph_FacesOfEdge                            anIt(myGraph, aFaces);
   ASSERT_TRUE(anIt.More());
 
   const BRepGraph_FaceId aFaceId = anIt.CurrentId();
@@ -220,7 +217,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, Definition_ReturnsEdgeDefinition)
 
 TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_EdgesOfVertex)
 {
-  const BRepGraph_VertexId                         aVertexId(0);
+  const BRepGraph_VertexId                          aVertexId(0);
   const NCollection_LinearVector<BRepGraph_EdgeId>& anEdges =
     myGraph.Topo().Vertices().Edges(aVertexId);
   // Box vertex touches 3 edges.
@@ -237,7 +234,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_AllRemoved)
   const BRepGraph_EdgeId                           anEdgeId(0);
   const NCollection_LinearVector<BRepGraph_FaceId> aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
   ASSERT_EQ(aFaces.Size(), 2);
-  const BRepGraph_FaceId aFirstFace = aFaces.Value(0);
+  const BRepGraph_FaceId aFirstFace  = aFaces.Value(0);
   const BRepGraph_FaceId aSecondFace = aFaces.Value(1);
 
   myGraph.Editor().Gen().RemoveNode(aFirstFace);
@@ -249,7 +246,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_AllRemoved)
 
 TEST_F(BRepGraph_ReverseIteratorTest, StartingIndex_SkipsToPosition)
 {
-  const BRepGraph_VertexId                         aVertexId(0);
+  const BRepGraph_VertexId                          aVertexId(0);
   const NCollection_LinearVector<BRepGraph_EdgeId>& anEdges =
     myGraph.Topo().Vertices().Edges(aVertexId);
   ASSERT_EQ(anEdges.Size(), 3);
@@ -264,10 +261,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, CompoundsOfChild_AllTopologyKinds)
 {
   BRepGraph aGraph;
   aGraph.Clear();
-  const BRepGraph_VertexId aV0 =
-    aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
-  const BRepGraph_VertexId aV1 =
-    aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
   ASSERT_TRUE(aV0.IsValid());
   ASSERT_TRUE(aV1.IsValid());
 
@@ -282,11 +277,10 @@ TEST_F(BRepGraph_ReverseIteratorTest, CompoundsOfChild_AllTopologyKinds)
   ASSERT_EQ(aGraph.Topo().Edges().CoEdges(anEdge).Size(), 1);
   const BRepGraph_CoEdgeId aCoEdge = aGraph.Topo().Edges().CoEdges(anEdge).First();
 
-  const BRepGraph_FaceId aFace =
-    aGraph.Editor().Faces().Add(occ::handle<Geom_Surface>(),
-                                aWire,
-                                NCollection_Array1<BRepGraph_WireId>(),
-                                1.0e-7);
+  const BRepGraph_FaceId aFace = aGraph.Editor().Faces().Add(occ::handle<Geom_Surface>(),
+                                                             aWire,
+                                                             NCollection_Array1<BRepGraph_WireId>(),
+                                                             1.0e-7);
   ASSERT_TRUE(aFace.IsValid());
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
   ASSERT_TRUE(aShell.IsValid());
@@ -302,7 +296,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, CompoundsOfChild_AllTopologyKinds)
 
   NCollection_LinearVector<BRepGraph_NodeId> aNestedChildren;
   aNestedChildren.Append(aSolid);
-  const BRepGraph_CompoundId aNestedCompound = aGraph.Editor().Compounds().Add(aNestedChildren.ToArray1());
+  const BRepGraph_CompoundId aNestedCompound =
+    aGraph.Editor().Compounds().Add(aNestedChildren.ToArray1());
   ASSERT_TRUE(aNestedCompound.IsValid());
 
   NCollection_LinearVector<BRepGraph_NodeId> aChildren;
@@ -318,7 +313,9 @@ TEST_F(BRepGraph_ReverseIteratorTest, CompoundsOfChild_AllTopologyKinds)
   const BRepGraph_CompoundId aCompound = aGraph.Editor().Compounds().Add(aChildren.ToArray1());
   ASSERT_TRUE(aCompound.IsValid());
 
-  BRepGraph_CompoundsOfVertex aVertexParents(aGraph, aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aV0)));
+  BRepGraph_CompoundsOfVertex aVertexParents(
+    aGraph,
+    aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aV0)));
   ASSERT_TRUE(aVertexParents.More());
   EXPECT_EQ(aVertexParents.CurrentId(), aCompound);
   aVertexParents.Next();
@@ -332,31 +329,41 @@ TEST_F(BRepGraph_ReverseIteratorTest, CompoundsOfChild_AllTopologyKinds)
   aCoEdgeParents.Next();
   EXPECT_FALSE(aCoEdgeParents.More());
 
-  BRepGraph_CompoundsOfEdge anEdgeParents(aGraph, aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(anEdge)));
+  BRepGraph_CompoundsOfEdge anEdgeParents(
+    aGraph,
+    aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(anEdge)));
   ASSERT_TRUE(anEdgeParents.More());
   EXPECT_EQ(anEdgeParents.CurrentId(), aCompound);
   anEdgeParents.Next();
   EXPECT_FALSE(anEdgeParents.More());
 
-  BRepGraph_CompoundsOfWire aWireParents(aGraph, aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aWire)));
+  BRepGraph_CompoundsOfWire aWireParents(
+    aGraph,
+    aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aWire)));
   ASSERT_TRUE(aWireParents.More());
   EXPECT_EQ(aWireParents.CurrentId(), aCompound);
   aWireParents.Next();
   EXPECT_FALSE(aWireParents.More());
 
-  BRepGraph_CompoundsOfFace aFaceParents(aGraph, aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aFace)));
+  BRepGraph_CompoundsOfFace aFaceParents(
+    aGraph,
+    aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aFace)));
   ASSERT_TRUE(aFaceParents.More());
   EXPECT_EQ(aFaceParents.CurrentId(), aCompound);
   aFaceParents.Next();
   EXPECT_FALSE(aFaceParents.More());
 
-  BRepGraph_CompoundsOfShell aShellParents(aGraph, aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aShell)));
+  BRepGraph_CompoundsOfShell aShellParents(
+    aGraph,
+    aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aShell)));
   ASSERT_TRUE(aShellParents.More());
   EXPECT_EQ(aShellParents.CurrentId(), aCompound);
   aShellParents.Next();
   EXPECT_FALSE(aShellParents.More());
 
-  BRepGraph_CompoundsOfSolid aSolidParents(aGraph, aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aSolid)));
+  BRepGraph_CompoundsOfSolid aSolidParents(
+    aGraph,
+    aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aSolid)));
   ASSERT_TRUE(aSolidParents.More());
   EXPECT_EQ(aSolidParents.CurrentId(), aNestedCompound);
   aSolidParents.Next();
@@ -365,8 +372,9 @@ TEST_F(BRepGraph_ReverseIteratorTest, CompoundsOfChild_AllTopologyKinds)
   aSolidParents.Next();
   EXPECT_FALSE(aSolidParents.More());
 
-  BRepGraph_CompoundsOfCompSolid aCompSolidParents(aGraph,
-                                                   aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aCompSolid)));
+  BRepGraph_CompoundsOfCompSolid aCompSolidParents(
+    aGraph,
+    aGraph.Topo().Gen().CompoundRefIds(BRepGraph_NodeId(aCompSolid)));
   ASSERT_TRUE(aCompSolidParents.More());
   EXPECT_EQ(aCompSolidParents.CurrentId(), aCompound);
   aCompSolidParents.Next();
@@ -386,7 +394,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, CompoundsOfChild_AllTopologyKinds)
   aGenericParents.Next();
   EXPECT_FALSE(aGenericParents.More());
 
-  BRepGraph_FacesOfWire aFaceParentsOfWire(aGraph, aGraph.Topo().Wires().Relations(aWire).ParentWireRefIds);
+  BRepGraph_FacesOfWire aFaceParentsOfWire(aGraph,
+                                           aGraph.Topo().Wires().Relations(aWire).ParentWireRefIds);
   ASSERT_TRUE(aFaceParentsOfWire.More());
   EXPECT_EQ(aFaceParentsOfWire.CurrentId(), aFace);
   aFaceParentsOfWire.Next();
@@ -417,7 +426,9 @@ TEST_F(BRepGraph_ReverseIteratorTest, OccurrencesOfChild_ProductAndTopologyChild
     aGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location());
   ASSERT_TRUE(aPartOccurrence.IsValid());
 
-  BRepGraph_OccurrencesOfChild aTopologyOccurrences(aGraph, aGraph.Topo().Gen().OccurrenceRefIds(aCompound));
+  BRepGraph_OccurrencesOfChild aTopologyOccurrences(
+    aGraph,
+    aGraph.Topo().Gen().OccurrenceRefIds(aCompound));
   ASSERT_TRUE(aTopologyOccurrences.More());
   const BRepGraph_OccurrenceId aCompoundOccurrence = aTopologyOccurrences.CurrentId();
   ASSERT_TRUE(aCompoundOccurrence.IsValid());
@@ -426,7 +437,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, OccurrencesOfChild_ProductAndTopologyChild
   aTopologyOccurrences.Next();
   EXPECT_FALSE(aTopologyOccurrences.More());
 
-  BRepGraph_OccurrencesOfChild aProductOccurrences(aGraph, aGraph.Topo().Gen().OccurrenceRefIds(aPart));
+  BRepGraph_OccurrencesOfChild aProductOccurrences(aGraph,
+                                                   aGraph.Topo().Gen().OccurrenceRefIds(aPart));
   ASSERT_TRUE(aProductOccurrences.More());
   EXPECT_EQ(aProductOccurrences.CurrentId(), aPartOccurrence);
   aProductOccurrences.Next();

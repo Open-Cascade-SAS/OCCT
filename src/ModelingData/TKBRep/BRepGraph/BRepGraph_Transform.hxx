@@ -76,12 +76,14 @@ public:
   //! @param[in] theTrsf       the transformation to apply
   //! @param[in] theGeomPolicy geometry handle policy (default: Copy)
   //! @param[in] theMeshPolicy mesh data policy (default: Drop)
-  //! @return true on success, false on failure (empty source, or Drop + geometry-modification-required)
-  Standard_EXPORT static bool Perform(const BRepGraph&                   theSourceGraph,
-                                      BRepGraph&                         theTargetGraph,
-                                      const gp_Trsf&                     theTrsf,
-                                      const BRepGraph_Copy::GeomPolicy   theGeomPolicy = BRepGraph_Copy::GeomPolicy::Copy,
-                                      const BRepGraph_Copy::MeshPolicy   theMeshPolicy = BRepGraph_Copy::MeshPolicy::Drop);
+  //! @return true on success, false on failure (empty source, or Drop +
+  //! geometry-modification-required)
+  Standard_EXPORT static bool Perform(
+    const BRepGraph&                 theSourceGraph,
+    BRepGraph&                       theTargetGraph,
+    const gp_Trsf&                   theTrsf,
+    const BRepGraph_Copy::GeomPolicy theGeomPolicy = BRepGraph_Copy::GeomPolicy::Copy,
+    const BRepGraph_Copy::MeshPolicy theMeshPolicy = BRepGraph_Copy::MeshPolicy::Drop);
 
   //! Transform a single node sub-graph of any kind.
   //! Topology nodes are copied and transformed by baking the transform into their definitions.
@@ -100,12 +102,12 @@ public:
   //! @param[in] theMeshPolicy mesh data policy (default: Drop)
   //! @return the mapped root NodeId in theTargetGraph, or invalid NodeId on failure
   [[nodiscard]] Standard_EXPORT static BRepGraph_NodeId TransformNode(
-    const BRepGraph&                   theSourceGraph,
-    BRepGraph&                         theTargetGraph,
-    const BRepGraph_NodeId             theNodeId,
-    const gp_Trsf&                     theTrsf,
-    const BRepGraph_Copy::GeomPolicy   theGeomPolicy = BRepGraph_Copy::GeomPolicy::Copy,
-    const BRepGraph_Copy::MeshPolicy   theMeshPolicy = BRepGraph_Copy::MeshPolicy::Drop);
+    const BRepGraph&                 theSourceGraph,
+    BRepGraph&                       theTargetGraph,
+    const BRepGraph_NodeId           theNodeId,
+    const gp_Trsf&                   theTrsf,
+    const BRepGraph_Copy::GeomPolicy theGeomPolicy = BRepGraph_Copy::GeomPolicy::Copy,
+    const BRepGraph_Copy::MeshPolicy theMeshPolicy = BRepGraph_Copy::MeshPolicy::Drop);
 
   //! Apply an in-place location-only transform to a child reference.
   //! Composes theTrsf into ChildRef placement without copying any geometry.
@@ -118,17 +120,17 @@ public:
   //! @param[in] theRefId  child reference to move
   //! @param[in] theTrsf   the transformation to compose into the location
   //! @return true on success; false if the ref is invalid/removed or theTrsf has non-unit scale
-  Standard_EXPORT static bool MoveRef(BRepGraph&                  theGraph,
-                                      const BRepGraph_ChildRefId  theRefId,
-                                      const gp_Trsf&              theTrsf);
+  Standard_EXPORT static bool MoveRef(BRepGraph&                 theGraph,
+                                      const BRepGraph_ChildRefId theRefId,
+                                      const gp_Trsf&             theTrsf);
 
   //! Apply an in-place location-only transform to an occurrence reference.
   //! Composes theTrsf into OccurrenceRef placement without copying any geometry.
   //! @note Only pure rotation/translation transforms (scale == 1) are supported.
   //! @return true on success; false if the ref is invalid/removed or theTrsf has non-unit scale
-  Standard_EXPORT static bool MoveRef(BRepGraph&                       theGraph,
-                                      const BRepGraph_OccurrenceRefId  theRefId,
-                                      const gp_Trsf&                   theTrsf);
+  Standard_EXPORT static bool MoveRef(BRepGraph&                      theGraph,
+                                      const BRepGraph_OccurrenceRefId theRefId,
+                                      const gp_Trsf&                  theTrsf);
 
   BRepGraph_Transform() = delete;
 

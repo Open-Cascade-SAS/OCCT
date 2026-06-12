@@ -50,10 +50,10 @@
 //!
 //! | Mode | What it checks | Cost | Recommended use |
 //! |------|----------------|------|-----------------|
-//! | `Lightweight` | Active entity count boundary plus removed-node isolation | Low | Hot-path release builds when the
-//! graph structure is already trusted | | `Audit` | Full structural audit from cross-reference
-//! bounds through assembly DAG cycle detection | Higher | Default validation mode for production
-//! pipelines, test gates, and API-boundary verification |
+//! | `Lightweight` | Active entity count boundary plus removed-node isolation | Low | Hot-path
+//! release builds when the graph structure is already trusted | | `Audit` | Full structural audit
+//! from cross-reference bounds through assembly DAG cycle detection | Higher | Default validation
+//! mode for production pipelines, test gates, and API-boundary verification |
 //!
 //! For production pipelines, prefer `Mode::Audit`; `Mode::Lightweight` is intended
 //! for hot-path release builds where the graph structure is already trusted.
@@ -144,8 +144,9 @@ public:
   BRepGraph_Validate() = delete;
 
 private:
-  static void CheckOwnedUseReferences(const BRepGraph&                                     theGraph,
-                                      NCollection_LinearVector<BRepGraph_Validate::Issue>& theIssues);
+  static void CheckOwnedUseReferences(
+    const BRepGraph&                                     theGraph,
+    NCollection_LinearVector<BRepGraph_Validate::Issue>& theIssues);
 };
 
 #endif // _BRepGraph_Validate_HeaderFile

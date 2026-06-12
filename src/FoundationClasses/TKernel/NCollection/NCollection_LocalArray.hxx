@@ -305,7 +305,10 @@ public:
   //! Returns a span as Array1 with shared memory.
   //! Modifying the local array or the array view may invalidate the shared buffer.
   //! @return array view of the local array data
-  NCollection_Array1<theItem> ToArray1() const { return NCollection_Array1<theItem>(myPtr, mySize); }
+  NCollection_Array1<theItem> ToArray1() const
+  {
+    return NCollection_Array1<theItem>(myPtr, mySize);
+  }
 
   NCollection_LocalArray(const NCollection_LocalArray&)            = delete;
   NCollection_LocalArray& operator=(const NCollection_LocalArray&) = delete;

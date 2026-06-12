@@ -27,7 +27,6 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraph_Validate.hxx>
-#include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -65,7 +64,7 @@ const NCollection_LinearVector<BRepGraph_CoEdgeId>& coEdgesOfWire(const BRepGrap
   return theGraph.Topo().Wires().Relations(theWireId).CoEdgeIds;
 }
 
-BRepGraph_EdgeId edgeWithCurve(const BRepGraph& theGraph,
+BRepGraph_EdgeId edgeWithCurve(const BRepGraph&       theGraph,
                                const BRepGraph_EdgeId theSkip = BRepGraph_EdgeId())
 {
   for (BRepGraph_EdgeIterator anIt(theGraph); anIt.More(); anIt.Next())
@@ -161,9 +160,9 @@ TEST(BRepGraph_ValidateTest, DetectsRemovedNodeReference)
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
   // Find an edge that has a valid start vertex, then corrupt its ref to point to a removed vertex.
-  BRepGraph_VertexId aVtxToRemove;
+  BRepGraph_VertexId    aVtxToRemove;
   BRepGraph_VertexRefId aRefToCorrupt;
-  const uint32_t     aNbEdges = aGraph.Topo().Edges().Nb();
+  const uint32_t        aNbEdges = aGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const BRepGraph_VertexRefId aStartRef = BRepGraph_Tool::Edge::StartVertexId(aGraph, anEdgeId);
@@ -179,7 +178,8 @@ TEST(BRepGraph_ValidateTest, DetectsRemovedNodeReference)
   ASSERT_TRUE(aRefToCorrupt.IsValid());
 
   aGraph.Editor().Gen().RemoveNode(aVtxToRemove);
-  BRepGraph_MutGuard<BRepGraphInc::VertexRef> aRefMut = aGraph.Editor().Vertices().MutRef(aRefToCorrupt);
+  BRepGraph_MutGuard<BRepGraphInc::VertexRef> aRefMut =
+    aGraph.Editor().Vertices().MutRef(aRefToCorrupt);
   aRefMut.Internal().ChildVertexId = aVtxToRemove;
 
   const BRepGraph_Validate::Result aDefaultResult = BRepGraph_Validate::Perform(aGraph);
@@ -314,10 +314,10 @@ TEST(BRepGraph_ValidateTest, AfterSplitEdge_ProducesSubEdges)
         && BRepGraph_Tool::Edge::StartVertexId(aGraph, anCandEdgeId).IsValid()
         && BRepGraph_Tool::Edge::EndVertexId(aGraph, anCandEdgeId).IsValid())
     {
-      anEdgeId    = anCandEdgeId;
+      anEdgeId = anCandEdgeId;
       {
         const auto _r = BRepGraph_Tool::Edge::Range(aGraph, anCandEdgeId);
-        aSplitParam = 0.5 * (_r.first + _r.second);
+        aSplitParam   = 0.5 * (_r.first + _r.second);
       }
       break;
     }
@@ -515,10 +515,8 @@ TEST(BRepGraph_ValidateTest, DocumentRootReferencedByOccurrence_Detected)
   const BRepGraph_ProductId aRootAssembly = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(aRootAssembly);
   ASSERT_TRUE(aRootAssembly.IsValid());
-  ASSERT_TRUE(aGraph.Editor()
-                .Products()
-                .Append(aRootAssembly, aPartProduct, TopLoc_Location())
-                .IsValid());
+  ASSERT_TRUE(
+    aGraph.Editor().Products().Append(aRootAssembly, aPartProduct, TopLoc_Location()).IsValid());
 
   ASSERT_EQ(aGraph.RootProductIds().Size(), 1);
   ASSERT_EQ(aGraph.RootProductIds().First(), aRootAssembly);
@@ -700,11 +698,13 @@ TEST(BRepGraph_ValidateTest, LightweightVsAudit_RemovedVertexReference_Different
   ASSERT_TRUE(aVtxToRemove.IsValid()) << "Need a vertex referenced by an edge.";
 
   // Remove a loose vertex, then corrupt an active edge ref to point at it.
-  const BRepGraph_VertexRefId aRefToCorrupt = BRepGraph_Tool::Edge::StartVertexId(aGraph, BRepGraph_EdgeId::Start());
+  const BRepGraph_VertexRefId aRefToCorrupt =
+    BRepGraph_Tool::Edge::StartVertexId(aGraph, BRepGraph_EdgeId::Start());
   ASSERT_TRUE(aRefToCorrupt.IsValid());
   aVtxToRemove = aGraph.Editor().Vertices().Add(gp_Pnt(100.0, 0.0, 0.0), Precision::Confusion());
   aGraph.Editor().Gen().RemoveNode(aVtxToRemove);
-  BRepGraph_MutGuard<BRepGraphInc::VertexRef> aRefMut = aGraph.Editor().Vertices().MutRef(aRefToCorrupt);
+  BRepGraph_MutGuard<BRepGraphInc::VertexRef> aRefMut =
+    aGraph.Editor().Vertices().MutRef(aRefToCorrupt);
   aRefMut.Internal().ChildVertexId = aVtxToRemove;
 
   const BRepGraph_Validate::Result aLightResult =
@@ -743,7 +743,7 @@ TEST(BRepGraph_ValidateTest, Audit_WarnsSurfacedFaceWithNoWireRefs)
   bool aDidCorrupt = false;
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More() && !aDidCorrupt; aFaceIt.Next())
   {
-    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    const BRepGraph_FaceId             aFaceId        = aFaceIt.CurrentId();
     const BRepGraphInc::FaceRelations& aFaceRelations = aGraph.Topo().Faces().Relations(aFaceId);
     if (aFaceRelations.WireRefIds.IsEmpty())
     {
@@ -779,7 +779,7 @@ TEST(BRepGraph_ValidateTest, Audit_DetectsSharedOwnedUse)
   ASSERT_TRUE(aRepId1.IsValid());
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = aGraph.Editor().Edges().Mut(anEdgeId2);
-    anEdge.Internal().Curve3DRepId = aRepId1;
+    anEdge.Internal().Curve3DRepId                   = aRepId1;
   }
 
   const BRepGraph_Validate::Result aResult =
@@ -798,13 +798,12 @@ TEST(BRepGraph_ValidateTest, Audit_DetectsActiveOwnedUseWithoutOwner)
 
   const BRepGraph_EdgeId anEdgeId = edgeWithCurve(aGraph);
   ASSERT_TRUE(anEdgeId.IsValid());
-  const BRepGraph_EdgeCurve3DRepId aRepId =
-    aGraph.Topo().Edges().Definition(anEdgeId).Curve3DRepId;
+  const BRepGraph_EdgeCurve3DRepId aRepId = aGraph.Topo().Edges().Definition(anEdgeId).Curve3DRepId;
   ASSERT_TRUE(aRepId.IsValid());
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = aGraph.Editor().Edges().Mut(anEdgeId);
-    anEdge.Internal().Curve3DRepId = BRepGraph_EdgeCurve3DRepId();
+    anEdge.Internal().Curve3DRepId                   = BRepGraph_EdgeCurve3DRepId();
   }
 
   const BRepGraph_Validate::Result aResult =
@@ -818,35 +817,47 @@ TEST(BRepGraph_ValidateTest, Synthetic_Box_AuditClean)
   BRepGraph aGraph;
   aGraph.Clear();
 
-  auto& aVtxOps = aGraph.Editor().Vertices();
-  const BRepGraph_VertexId aV0 = aVtxOps.Add(gp_Pnt(0, 0, 0), 1e-7);
-  const BRepGraph_VertexId aV1 = aVtxOps.Add(gp_Pnt(10, 0, 0), 1e-7);
-  const BRepGraph_VertexId aV2 = aVtxOps.Add(gp_Pnt(10, 20, 0), 1e-7);
-  const BRepGraph_VertexId aV3 = aVtxOps.Add(gp_Pnt(0, 20, 0), 1e-7);
-  const BRepGraph_VertexId aV4 = aVtxOps.Add(gp_Pnt(0, 0, 30), 1e-7);
-  const BRepGraph_VertexId aV5 = aVtxOps.Add(gp_Pnt(10, 0, 30), 1e-7);
-  const BRepGraph_VertexId aV6 = aVtxOps.Add(gp_Pnt(10, 20, 30), 1e-7);
-  const BRepGraph_VertexId aV7 = aVtxOps.Add(gp_Pnt(0, 20, 30), 1e-7);
+  auto&                    aVtxOps = aGraph.Editor().Vertices();
+  const BRepGraph_VertexId aV0     = aVtxOps.Add(gp_Pnt(0, 0, 0), 1e-7);
+  const BRepGraph_VertexId aV1     = aVtxOps.Add(gp_Pnt(10, 0, 0), 1e-7);
+  const BRepGraph_VertexId aV2     = aVtxOps.Add(gp_Pnt(10, 20, 0), 1e-7);
+  const BRepGraph_VertexId aV3     = aVtxOps.Add(gp_Pnt(0, 20, 0), 1e-7);
+  const BRepGraph_VertexId aV4     = aVtxOps.Add(gp_Pnt(0, 0, 30), 1e-7);
+  const BRepGraph_VertexId aV5     = aVtxOps.Add(gp_Pnt(10, 0, 30), 1e-7);
+  const BRepGraph_VertexId aV6     = aVtxOps.Add(gp_Pnt(10, 20, 30), 1e-7);
+  const BRepGraph_VertexId aV7     = aVtxOps.Add(gp_Pnt(0, 20, 30), 1e-7);
 
-  auto& anEdgeOps = aGraph.Editor().Edges();
-  const BRepGraph_EdgeId aE0 = anEdgeOps.Add(aV0, aV1, new Geom_Line(gp_Pnt(0,0,0), gp_Dir(1,0,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE1 = anEdgeOps.Add(aV1, aV2, new Geom_Line(gp_Pnt(10,0,0), gp_Dir(0,1,0)), 0.0, 20.0, 1e-7);
-  const BRepGraph_EdgeId aE2 = anEdgeOps.Add(aV2, aV3, new Geom_Line(gp_Pnt(10,20,0), gp_Dir(-1,0,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE3 = anEdgeOps.Add(aV3, aV0, new Geom_Line(gp_Pnt(0,20,0), gp_Dir(0,-1,0)), 0.0, 20.0, 1e-7);
-  const BRepGraph_EdgeId aE4 = anEdgeOps.Add(aV4, aV5, new Geom_Line(gp_Pnt(0,0,30), gp_Dir(1,0,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE5 = anEdgeOps.Add(aV5, aV6, new Geom_Line(gp_Pnt(10,0,30), gp_Dir(0,1,0)), 0.0, 20.0, 1e-7);
-  const BRepGraph_EdgeId aE6 = anEdgeOps.Add(aV6, aV7, new Geom_Line(gp_Pnt(10,20,30), gp_Dir(-1,0,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE7 = anEdgeOps.Add(aV7, aV4, new Geom_Line(gp_Pnt(0,20,30), gp_Dir(0,-1,0)), 0.0, 20.0, 1e-7);
-  const BRepGraph_EdgeId aE8  = anEdgeOps.Add(aV0, aV4, new Geom_Line(gp_Pnt(0,0,0), gp_Dir(0,0,1)), 0.0, 30.0, 1e-7);
-  const BRepGraph_EdgeId aE9  = anEdgeOps.Add(aV1, aV5, new Geom_Line(gp_Pnt(10,0,0), gp_Dir(0,0,1)), 0.0, 30.0, 1e-7);
-  const BRepGraph_EdgeId aE10 = anEdgeOps.Add(aV2, aV6, new Geom_Line(gp_Pnt(10,20,0), gp_Dir(0,0,1)), 0.0, 30.0, 1e-7);
-  const BRepGraph_EdgeId aE11 = anEdgeOps.Add(aV3, aV7, new Geom_Line(gp_Pnt(0,20,0), gp_Dir(0,0,1)), 0.0, 30.0, 1e-7);
+  auto&                  anEdgeOps = aGraph.Editor().Edges();
+  const BRepGraph_EdgeId aE0 =
+    anEdgeOps.Add(aV0, aV1, new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE1 =
+    anEdgeOps.Add(aV1, aV2, new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0)), 0.0, 20.0, 1e-7);
+  const BRepGraph_EdgeId aE2 =
+    anEdgeOps.Add(aV2, aV3, new Geom_Line(gp_Pnt(10, 20, 0), gp_Dir(-1, 0, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE3 =
+    anEdgeOps.Add(aV3, aV0, new Geom_Line(gp_Pnt(0, 20, 0), gp_Dir(0, -1, 0)), 0.0, 20.0, 1e-7);
+  const BRepGraph_EdgeId aE4 =
+    anEdgeOps.Add(aV4, aV5, new Geom_Line(gp_Pnt(0, 0, 30), gp_Dir(1, 0, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE5 =
+    anEdgeOps.Add(aV5, aV6, new Geom_Line(gp_Pnt(10, 0, 30), gp_Dir(0, 1, 0)), 0.0, 20.0, 1e-7);
+  const BRepGraph_EdgeId aE6 =
+    anEdgeOps.Add(aV6, aV7, new Geom_Line(gp_Pnt(10, 20, 30), gp_Dir(-1, 0, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE7 =
+    anEdgeOps.Add(aV7, aV4, new Geom_Line(gp_Pnt(0, 20, 30), gp_Dir(0, -1, 0)), 0.0, 20.0, 1e-7);
+  const BRepGraph_EdgeId aE8 =
+    anEdgeOps.Add(aV0, aV4, new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.0, 30.0, 1e-7);
+  const BRepGraph_EdgeId aE9 =
+    anEdgeOps.Add(aV1, aV5, new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 0.0, 30.0, 1e-7);
+  const BRepGraph_EdgeId aE10 =
+    anEdgeOps.Add(aV2, aV6, new Geom_Line(gp_Pnt(10, 20, 0), gp_Dir(0, 0, 1)), 0.0, 30.0, 1e-7);
+  const BRepGraph_EdgeId aE11 =
+    anEdgeOps.Add(aV3, aV7, new Geom_Line(gp_Pnt(0, 20, 0), gp_Dir(0, 0, 1)), 0.0, 30.0, 1e-7);
 
   auto& aCoEdgeOps = aGraph.Editor().CoEdges();
-  auto makeWire = [&](std::initializer_list<BRepGraph_EdgeId> theEdges,
+  auto  makeWire   = [&](std::initializer_list<BRepGraph_EdgeId>   theEdges,
                       std::initializer_list<TopAbs_Orientation> theOrients) -> BRepGraph_WireId {
     NCollection_LinearVector<BRepGraph_CoEdgeId> aCEs;
-    auto anOrientIt = theOrients.begin();
+    auto                                         anOrientIt = theOrients.begin();
     for (const BRepGraph_EdgeId& anEdge : theEdges)
     {
       aCEs.Append(aCoEdgeOps.Add(anEdge, *anOrientIt));
@@ -855,21 +866,57 @@ TEST(BRepGraph_ValidateTest, Synthetic_Box_AuditClean)
     return aGraph.Editor().Wires().Add(aCEs.ToArray1());
   };
 
-  const BRepGraph_WireId aW0 = makeWire({aE0, aE1, aE2, aE3}, {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_FORWARD});
-  const BRepGraph_WireId aW1 = makeWire({aE4, aE5, aE6, aE7}, {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_FORWARD});
-  const BRepGraph_WireId aW2 = makeWire({aE0, aE9, aE4, aE8}, {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_REVERSED});
-  const BRepGraph_WireId aW3 = makeWire({aE1, aE10, aE5, aE9}, {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_REVERSED});
-  const BRepGraph_WireId aW4 = makeWire({aE2, aE11, aE6, aE10}, {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_REVERSED});
-  const BRepGraph_WireId aW5 = makeWire({aE3, aE8, aE7, aE11}, {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_REVERSED});
+  const BRepGraph_WireId aW0 =
+    makeWire({aE0, aE1, aE2, aE3},
+             {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_FORWARD});
+  const BRepGraph_WireId aW1 =
+    makeWire({aE4, aE5, aE6, aE7},
+             {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_FORWARD});
+  const BRepGraph_WireId aW2 =
+    makeWire({aE0, aE9, aE4, aE8},
+             {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_REVERSED});
+  const BRepGraph_WireId aW3 =
+    makeWire({aE1, aE10, aE5, aE9},
+             {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_REVERSED});
+  const BRepGraph_WireId aW4 =
+    makeWire({aE2, aE11, aE6, aE10},
+             {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_REVERSED});
+  const BRepGraph_WireId aW5 =
+    makeWire({aE3, aE8, aE7, aE11},
+             {TopAbs_FORWARD, TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_REVERSED});
 
-  auto& aFaceOps = aGraph.Editor().Faces();
+  auto&                                      aFaceOps = aGraph.Editor().Faces();
   NCollection_LinearVector<BRepGraph_WireId> aNoInner;
-  const BRepGraph_FaceId aF0 = aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0,0,0), gp_Dir(0,0,-1)))), aW0, aNoInner.ToArray1(), 1e-7);
-  const BRepGraph_FaceId aF1 = aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0,0,30), gp_Dir(0,0,1)))), aW1, aNoInner.ToArray1(), 1e-7);
-  const BRepGraph_FaceId aF2 = aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0,0,0), gp_Dir(0,-1,0)))), aW2, aNoInner.ToArray1(), 1e-7);
-  const BRepGraph_FaceId aF3 = aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(10,0,0), gp_Dir(1,0,0)))), aW3, aNoInner.ToArray1(), 1e-7);
-  const BRepGraph_FaceId aF4 = aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(10,20,0), gp_Dir(0,1,0)))), aW4, aNoInner.ToArray1(), 1e-7);
-  const BRepGraph_FaceId aF5 = aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0,20,0), gp_Dir(-1,0,0)))), aW5, aNoInner.ToArray1(), 1e-7);
+  const BRepGraph_FaceId                     aF0 =
+    aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, -1)))),
+                 aW0,
+                 aNoInner.ToArray1(),
+                 1e-7);
+  const BRepGraph_FaceId aF1 =
+    aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 30), gp_Dir(0, 0, 1)))),
+                 aW1,
+                 aNoInner.ToArray1(),
+                 1e-7);
+  const BRepGraph_FaceId aF2 =
+    aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, -1, 0)))),
+                 aW2,
+                 aNoInner.ToArray1(),
+                 1e-7);
+  const BRepGraph_FaceId aF3 =
+    aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(1, 0, 0)))),
+                 aW3,
+                 aNoInner.ToArray1(),
+                 1e-7);
+  const BRepGraph_FaceId aF4 =
+    aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(10, 20, 0), gp_Dir(0, 1, 0)))),
+                 aW4,
+                 aNoInner.ToArray1(),
+                 1e-7);
+  const BRepGraph_FaceId aF5 =
+    aFaceOps.Add(new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 20, 0), gp_Dir(-1, 0, 0)))),
+                 aW5,
+                 aNoInner.ToArray1(),
+                 1e-7);
 
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
   for (const BRepGraph_FaceId& aF : {aF0, aF1, aF2, aF3, aF4, aF5})
@@ -881,8 +928,7 @@ TEST(BRepGraph_ValidateTest, Synthetic_Box_AuditClean)
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_TRUE(aResult.IsValid())
-    << "Synthetic box must pass Audit";
+  EXPECT_TRUE(aResult.IsValid()) << "Synthetic box must pass Audit";
   EXPECT_EQ(aResult.NbIssues(BRepGraph_Validate::Severity::Error), 0);
 }
 
@@ -891,17 +937,19 @@ TEST(BRepGraph_ValidateTest, Synthetic_Cylinder_AuditClean)
   BRepGraph aGraph;
   aGraph.Clear();
 
-  auto& aVtxOps = aGraph.Editor().Vertices();
-  const BRepGraph_VertexId aVBot = aVtxOps.Add(gp_Pnt(5, 0, 0), 1e-7);
-  const BRepGraph_VertexId aVTop = aVtxOps.Add(gp_Pnt(5, 0, 15), 1e-7);
+  auto&                    aVtxOps = aGraph.Editor().Vertices();
+  const BRepGraph_VertexId aVBot   = aVtxOps.Add(gp_Pnt(5, 0, 0), 1e-7);
+  const BRepGraph_VertexId aVTop   = aVtxOps.Add(gp_Pnt(5, 0, 15), 1e-7);
 
-  auto& anEdgeOps = aGraph.Editor().Edges();
-  occ::handle<Geom_Circle> aBotCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0,0,0), gp_Dir(0,0,1)), 5.0);
-  const BRepGraph_EdgeId aEBot = anEdgeOps.Add(aVBot, aVBot, aBotCircle, 0.0, 2*M_PI, 1e-7);
-  occ::handle<Geom_Circle> aTopCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0,0,15), gp_Dir(0,0,1)), 5.0);
-  const BRepGraph_EdgeId aETop = anEdgeOps.Add(aVTop, aVTop, aTopCircle, 0.0, 2*M_PI, 1e-7);
-  occ::handle<Geom_Line> aSeamLine = new Geom_Line(gp_Pnt(5,0,0), gp_Dir(0,0,1));
-  const BRepGraph_EdgeId aESeam = anEdgeOps.Add(aVBot, aVTop, aSeamLine, 0.0, 15.0, 1e-7);
+  auto&                    anEdgeOps = aGraph.Editor().Edges();
+  occ::handle<Geom_Circle> aBotCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  const BRepGraph_EdgeId   aEBot = anEdgeOps.Add(aVBot, aVBot, aBotCircle, 0.0, 2 * M_PI, 1e-7);
+  occ::handle<Geom_Circle> aTopCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 15), gp_Dir(0, 0, 1)), 5.0);
+  const BRepGraph_EdgeId aETop     = anEdgeOps.Add(aVTop, aVTop, aTopCircle, 0.0, 2 * M_PI, 1e-7);
+  occ::handle<Geom_Line> aSeamLine = new Geom_Line(gp_Pnt(5, 0, 0), gp_Dir(0, 0, 1));
+  const BRepGraph_EdgeId aESeam    = anEdgeOps.Add(aVBot, aVTop, aSeamLine, 0.0, 15.0, 1e-7);
 
   auto& aCoEdgeOps = aGraph.Editor().CoEdges();
 
@@ -920,11 +968,14 @@ TEST(BRepGraph_ValidateTest, Synthetic_Cylinder_AuditClean)
   aLatWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_REVERSED));
   const BRepGraph_WireId aWLat = aGraph.Editor().Wires().Add(aLatWireCEs.ToArray1());
 
-  auto& aFaceOps = aGraph.Editor().Faces();
+  auto&                                      aFaceOps = aGraph.Editor().Faces();
   NCollection_LinearVector<BRepGraph_WireId> aNoInner;
-  occ::handle<Geom_Plane> aBotPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0,0,0), gp_Dir(0,0,-1))));
-  occ::handle<Geom_Plane> aTopPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0,0,15), gp_Dir(0,0,1))));
-  occ::handle<Geom_CylindricalSurface> aLatSurf = new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0,0,0), gp_Dir(0,0,1)), 5.0);
+  occ::handle<Geom_Plane>                    aBotPlane =
+    new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, -1))));
+  occ::handle<Geom_Plane> aTopPlane =
+    new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 15), gp_Dir(0, 0, 1))));
+  occ::handle<Geom_CylindricalSurface> aLatSurf =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
   const BRepGraph_FaceId aFBot = aFaceOps.Add(aBotPlane, aWBot, aNoInner.ToArray1(), 1e-7);
   const BRepGraph_FaceId aFTop = aFaceOps.Add(aTopPlane, aWTop, aNoInner.ToArray1(), 1e-7);
@@ -939,8 +990,7 @@ TEST(BRepGraph_ValidateTest, Synthetic_Cylinder_AuditClean)
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_TRUE(aResult.IsValid())
-    << "Synthetic cylinder must pass Audit";
+  EXPECT_TRUE(aResult.IsValid()) << "Synthetic cylinder must pass Audit";
 }
 
 TEST(BRepGraph_ValidateTest, Synthetic_Sphere_AuditClean)
@@ -948,22 +998,23 @@ TEST(BRepGraph_ValidateTest, Synthetic_Sphere_AuditClean)
   BRepGraph aGraph;
   aGraph.Clear();
 
-  auto& aVtxOps = aGraph.Editor().Vertices();
-  const BRepGraph_VertexId aVSeam = aVtxOps.Add(gp_Pnt(8, 0, 0), 1e-7);
+  auto&                    aVtxOps = aGraph.Editor().Vertices();
+  const BRepGraph_VertexId aVSeam  = aVtxOps.Add(gp_Pnt(8, 0, 0), 1e-7);
 
-  auto& anEdgeOps = aGraph.Editor().Edges();
-  occ::handle<Geom_Circle> aSeamCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0,0,0), gp_Dir(0,1,0)), 8.0);
-  const BRepGraph_EdgeId aESeam = anEdgeOps.Add(aVSeam, aVSeam, aSeamCircle, 0.0, 2*M_PI, 1e-7);
+  auto&                    anEdgeOps = aGraph.Editor().Edges();
+  occ::handle<Geom_Circle> aSeamCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 8.0);
+  const BRepGraph_EdgeId aESeam = anEdgeOps.Add(aVSeam, aVSeam, aSeamCircle, 0.0, 2 * M_PI, 1e-7);
 
-  auto& aCoEdgeOps = aGraph.Editor().CoEdges();
+  auto&                                        aCoEdgeOps = aGraph.Editor().CoEdges();
   NCollection_LinearVector<BRepGraph_CoEdgeId> aWireCEs;
   aWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_FORWARD));
   aWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_REVERSED));
   const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aWireCEs.ToArray1());
 
-  auto& aFaceOps = aGraph.Editor().Faces();
+  auto&                                      aFaceOps = aGraph.Editor().Faces();
   NCollection_LinearVector<BRepGraph_WireId> aNoInner;
-  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 8.0);
+  occ::handle<Geom_SphericalSurface>         aSphere = new Geom_SphericalSurface(gp_Ax3(), 8.0);
   const BRepGraph_FaceId aFace = aFaceOps.Add(aSphere, aWire, aNoInner.ToArray1(), 1e-7);
 
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
@@ -973,8 +1024,7 @@ TEST(BRepGraph_ValidateTest, Synthetic_Sphere_AuditClean)
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_TRUE(aResult.IsValid())
-    << "Synthetic sphere must pass Audit";
+  EXPECT_TRUE(aResult.IsValid()) << "Synthetic sphere must pass Audit";
 }
 
 TEST(BRepGraph_ValidateTest, Synthetic_Compound_AuditClean)
@@ -982,27 +1032,40 @@ TEST(BRepGraph_ValidateTest, Synthetic_Compound_AuditClean)
   BRepGraph aGraph;
   aGraph.Clear();
 
-  auto& aVtxOps = aGraph.Editor().Vertices();
-  const BRepGraph_VertexId aV0 = aVtxOps.Add(gp_Pnt(0, 0, 0), 1e-7);
-  const BRepGraph_VertexId aV1 = aVtxOps.Add(gp_Pnt(10, 0, 0), 1e-7);
-  const BRepGraph_VertexId aV2 = aVtxOps.Add(gp_Pnt(5, 10, 0), 1e-7);
+  auto&                    aVtxOps = aGraph.Editor().Vertices();
+  const BRepGraph_VertexId aV0     = aVtxOps.Add(gp_Pnt(0, 0, 0), 1e-7);
+  const BRepGraph_VertexId aV1     = aVtxOps.Add(gp_Pnt(10, 0, 0), 1e-7);
+  const BRepGraph_VertexId aV2     = aVtxOps.Add(gp_Pnt(5, 10, 0), 1e-7);
 
-  auto& anEdgeOps = aGraph.Editor().Edges();
-  const BRepGraph_EdgeId aE0 = anEdgeOps.Add(aV0, aV1, new Geom_Line(gp_Pnt(0,0,0), gp_Dir(1,0,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE1 = anEdgeOps.Add(aV1, aV2, new Geom_Line(gp_Pnt(10,0,0), gp_Vec(-5.0,10.0,0.0).Normalized()), 0.0, std::sqrt(125.0), 1e-7);
-  const BRepGraph_EdgeId aE2 = anEdgeOps.Add(aV2, aV0, new Geom_Line(gp_Pnt(5,10,0), gp_Vec(-5.0,-10.0,0.0).Normalized()), 0.0, std::sqrt(125.0), 1e-7);
+  auto&                  anEdgeOps = aGraph.Editor().Edges();
+  const BRepGraph_EdgeId aE0 =
+    anEdgeOps.Add(aV0, aV1, new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE1 =
+    anEdgeOps.Add(aV1,
+                  aV2,
+                  new Geom_Line(gp_Pnt(10, 0, 0), gp_Vec(-5.0, 10.0, 0.0).Normalized()),
+                  0.0,
+                  std::sqrt(125.0),
+                  1e-7);
+  const BRepGraph_EdgeId aE2 =
+    anEdgeOps.Add(aV2,
+                  aV0,
+                  new Geom_Line(gp_Pnt(5, 10, 0), gp_Vec(-5.0, -10.0, 0.0).Normalized()),
+                  0.0,
+                  std::sqrt(125.0),
+                  1e-7);
 
-  auto& aCoEdgeOps = aGraph.Editor().CoEdges();
+  auto&                                        aCoEdgeOps = aGraph.Editor().CoEdges();
   NCollection_LinearVector<BRepGraph_CoEdgeId> aWireCEs;
   aWireCEs.Append(aCoEdgeOps.Add(aE0, TopAbs_FORWARD));
   aWireCEs.Append(aCoEdgeOps.Add(aE1, TopAbs_FORWARD));
   aWireCEs.Append(aCoEdgeOps.Add(aE2, TopAbs_FORWARD));
   const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aWireCEs.ToArray1());
 
-  auto& aFaceOps = aGraph.Editor().Faces();
+  auto&                                      aFaceOps = aGraph.Editor().Faces();
   NCollection_LinearVector<BRepGraph_WireId> aNoInner;
-  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0,0,0), gp_Dir(0,0,1))));
-  const BRepGraph_FaceId aFace = aFaceOps.Add(aPlane, aWire, aNoInner.ToArray1(), 1e-7);
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1))));
+  const BRepGraph_FaceId  aFace  = aFaceOps.Add(aPlane, aWire, aNoInner.ToArray1(), 1e-7);
 
   const BRepGraph_ShellId aShell1 = aGraph.Editor().Shells().Add();
   aGraph.Editor().Shells().Append(aShell1, aFace);
@@ -1013,9 +1076,22 @@ TEST(BRepGraph_ValidateTest, Synthetic_Compound_AuditClean)
   const BRepGraph_VertexId aV4 = aVtxOps.Add(gp_Pnt(30, 0, 0), 1e-7);
   const BRepGraph_VertexId aV5 = aVtxOps.Add(gp_Pnt(25, 10, 0), 1e-7);
 
-  const BRepGraph_EdgeId aE3 = anEdgeOps.Add(aV3, aV4, new Geom_Line(gp_Pnt(20,0,0), gp_Dir(1,0,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE4 = anEdgeOps.Add(aV4, aV5, new Geom_Line(gp_Pnt(30,0,0), gp_Vec(-5.0,10.0,0.0).Normalized()), 0.0, std::sqrt(125.0), 1e-7);
-  const BRepGraph_EdgeId aE5 = anEdgeOps.Add(aV5, aV3, new Geom_Line(gp_Pnt(25,10,0), gp_Vec(-5.0,-10.0,0.0).Normalized()), 0.0, std::sqrt(125.0), 1e-7);
+  const BRepGraph_EdgeId aE3 =
+    anEdgeOps.Add(aV3, aV4, new Geom_Line(gp_Pnt(20, 0, 0), gp_Dir(1, 0, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE4 =
+    anEdgeOps.Add(aV4,
+                  aV5,
+                  new Geom_Line(gp_Pnt(30, 0, 0), gp_Vec(-5.0, 10.0, 0.0).Normalized()),
+                  0.0,
+                  std::sqrt(125.0),
+                  1e-7);
+  const BRepGraph_EdgeId aE5 =
+    anEdgeOps.Add(aV5,
+                  aV3,
+                  new Geom_Line(gp_Pnt(25, 10, 0), gp_Vec(-5.0, -10.0, 0.0).Normalized()),
+                  0.0,
+                  std::sqrt(125.0),
+                  1e-7);
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aWire2CEs;
   aWire2CEs.Append(aCoEdgeOps.Add(aE3, TopAbs_FORWARD));
@@ -1033,12 +1109,12 @@ TEST(BRepGraph_ValidateTest, Synthetic_Compound_AuditClean)
   NCollection_LinearVector<BRepGraph_NodeId> aChildren;
   aChildren.Append(aSolid1);
   aChildren.Append(aSolid2);
-  [[maybe_unused]] const BRepGraph_CompoundId aCompId = aGraph.Editor().Compounds().Add(aChildren.ToArray1());
+  [[maybe_unused]] const BRepGraph_CompoundId aCompId =
+    aGraph.Editor().Compounds().Add(aChildren.ToArray1());
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_TRUE(aResult.IsValid())
-    << "Synthetic compound must pass Audit";
+  EXPECT_TRUE(aResult.IsValid()) << "Synthetic compound must pass Audit";
 }
 
 TEST(BRepGraph_ValidateTest, Synthetic_Assembly_AuditClean)
@@ -1046,19 +1122,23 @@ TEST(BRepGraph_ValidateTest, Synthetic_Assembly_AuditClean)
   BRepGraph aGraph;
   aGraph.Clear();
 
-  auto& aVtxOps = aGraph.Editor().Vertices();
-  const BRepGraph_VertexId aV0 = aVtxOps.Add(gp_Pnt(0, 0, 0), 1e-7);
-  const BRepGraph_VertexId aV1 = aVtxOps.Add(gp_Pnt(10, 0, 0), 1e-7);
-  const BRepGraph_VertexId aV2 = aVtxOps.Add(gp_Pnt(10, 10, 0), 1e-7);
-  const BRepGraph_VertexId aV3 = aVtxOps.Add(gp_Pnt(0, 10, 0), 1e-7);
+  auto&                    aVtxOps = aGraph.Editor().Vertices();
+  const BRepGraph_VertexId aV0     = aVtxOps.Add(gp_Pnt(0, 0, 0), 1e-7);
+  const BRepGraph_VertexId aV1     = aVtxOps.Add(gp_Pnt(10, 0, 0), 1e-7);
+  const BRepGraph_VertexId aV2     = aVtxOps.Add(gp_Pnt(10, 10, 0), 1e-7);
+  const BRepGraph_VertexId aV3     = aVtxOps.Add(gp_Pnt(0, 10, 0), 1e-7);
 
-  auto& anEdgeOps = aGraph.Editor().Edges();
-  const BRepGraph_EdgeId aE0 = anEdgeOps.Add(aV0, aV1, new Geom_Line(gp_Pnt(0,0,0), gp_Dir(1,0,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE1 = anEdgeOps.Add(aV1, aV2, new Geom_Line(gp_Pnt(10,0,0), gp_Dir(0,1,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE2 = anEdgeOps.Add(aV2, aV3, new Geom_Line(gp_Pnt(10,10,0), gp_Dir(-1,0,0)), 0.0, 10.0, 1e-7);
-  const BRepGraph_EdgeId aE3 = anEdgeOps.Add(aV3, aV0, new Geom_Line(gp_Pnt(0,10,0), gp_Dir(0,-1,0)), 0.0, 10.0, 1e-7);
+  auto&                  anEdgeOps = aGraph.Editor().Edges();
+  const BRepGraph_EdgeId aE0 =
+    anEdgeOps.Add(aV0, aV1, new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE1 =
+    anEdgeOps.Add(aV1, aV2, new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE2 =
+    anEdgeOps.Add(aV2, aV3, new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0)), 0.0, 10.0, 1e-7);
+  const BRepGraph_EdgeId aE3 =
+    anEdgeOps.Add(aV3, aV0, new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0)), 0.0, 10.0, 1e-7);
 
-  auto& aCoEdgeOps = aGraph.Editor().CoEdges();
+  auto&                                        aCoEdgeOps = aGraph.Editor().CoEdges();
   NCollection_LinearVector<BRepGraph_CoEdgeId> aWireCEs;
   aWireCEs.Append(aCoEdgeOps.Add(aE0, TopAbs_FORWARD));
   aWireCEs.Append(aCoEdgeOps.Add(aE1, TopAbs_FORWARD));
@@ -1066,9 +1146,9 @@ TEST(BRepGraph_ValidateTest, Synthetic_Assembly_AuditClean)
   aWireCEs.Append(aCoEdgeOps.Add(aE3, TopAbs_FORWARD));
   const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aWireCEs.ToArray1());
 
-  auto& aFaceOps = aGraph.Editor().Faces();
+  auto&                                      aFaceOps = aGraph.Editor().Faces();
   NCollection_LinearVector<BRepGraph_WireId> aNoInner;
-  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane>                    aPlane = new Geom_Plane(gp_Pln());
   const BRepGraph_FaceId aFace = aFaceOps.Add(aPlane, aWire, aNoInner.ToArray1(), 1e-7);
 
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
@@ -1095,6 +1175,5 @@ TEST(BRepGraph_ValidateTest, Synthetic_Assembly_AuditClean)
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_TRUE(aResult.IsValid())
-    << "Synthetic assembly must pass Audit";
+  EXPECT_TRUE(aResult.IsValid()) << "Synthetic assembly must pass Audit";
 }

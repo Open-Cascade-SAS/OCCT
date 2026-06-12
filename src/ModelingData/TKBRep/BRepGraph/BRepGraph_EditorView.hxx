@@ -369,7 +369,7 @@ public:
                                                 const occ::handle<Poly_Polygon2D>& thePolygon);
 
     //! Set the persistent polygon-on-triangulation on a coedge.
-    //! The triangulation is resolved via CoEdgeDef.FaceId → FaceDef.TriangulationRepId.
+    //! The triangulation is resolved via CoEdgeDef.FaceId -> FaceDef.TriangulationRepId.
     //! @param[in] theCoEdge       coedge definition identifier
     //! @param[in] thePolygon      polygon-on-triangulation (must not be null)
     Standard_EXPORT void SetPersistentPolygonOnTri(

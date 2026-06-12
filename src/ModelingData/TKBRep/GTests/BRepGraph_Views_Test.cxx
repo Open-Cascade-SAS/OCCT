@@ -27,7 +27,6 @@
 #include <BRepGraph_UIDsView.hxx>
 
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Compact.hxx>
 #include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraph_Validate.hxx>

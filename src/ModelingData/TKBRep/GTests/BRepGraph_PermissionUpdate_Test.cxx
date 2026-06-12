@@ -107,19 +107,18 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveShell_SameSolidSiblingRef_PreservesRe
   BRepGraph aGraph = makeBoxGraph();
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  const BRepGraph_SolidId aSolidId = BRepGraph_SolidId::Start();
+  const BRepGraph_SolidId    aSolidId = BRepGraph_SolidId::Start();
   BRepGraph_RefsShellOfSolid aShellRefs(aGraph, aSolidId);
   ASSERT_TRUE(aShellRefs.More());
   const BRepGraph_ShellRefId aFirstRefId = aShellRefs.CurrentId();
-  const BRepGraph_ShellId aShellId = aGraph.Refs().Shells().Entry(aFirstRefId).ChildShellId;
+  const BRepGraph_ShellId    aShellId    = aGraph.Refs().Shells().Entry(aFirstRefId).ChildShellId;
 
   const BRepGraph_ShellRefId aSecondRefId =
     aGraph.Editor().Solids().Append(aSolidId, aShellId, TopAbs_REVERSED);
   ASSERT_TRUE(aSecondRefId.IsValid());
   ASSERT_NE(aSecondRefId, aFirstRefId);
   ASSERT_TRUE(containsCurrentId(
-    BRepGraph_SolidsOfShell(aGraph,
-                            aGraph.Topo().Shells().Relations(aShellId).ParentShellRefIds),
+    BRepGraph_SolidsOfShell(aGraph, aGraph.Topo().Shells().Relations(aShellId).ParentShellRefIds),
     aSolidId));
 
   ASSERT_TRUE(aGraph.Editor().Solids().RemoveShell(aSolidId, aFirstRefId));
@@ -127,8 +126,7 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveShell_SameSolidSiblingRef_PreservesRe
   EXPECT_TRUE(aFirstRefId.IsRemoved(aGraph));
   EXPECT_FALSE(aSecondRefId.IsRemoved(aGraph));
   EXPECT_TRUE(containsCurrentId(
-    BRepGraph_SolidsOfShell(aGraph,
-                            aGraph.Topo().Shells().Relations(aShellId).ParentShellRefIds),
+    BRepGraph_SolidsOfShell(aGraph, aGraph.Topo().Shells().Relations(aShellId).ParentShellRefIds),
     aSolidId))
     << "A sibling ShellRef still connects the same Solid to the same Shell";
   EXPECT_TRUE(aGraph.ValidateRelations());
@@ -147,7 +145,7 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveRef_OccurrenceRef_PreservesProductToO
 
   const BRepGraph_ProductId aParent = aProds.Add();
   aProds.AppendDocumentRoot(aParent);
-  const BRepGraph_ProductId aChild  = aProds.Add();
+  const BRepGraph_ProductId aChild = aProds.Add();
   aProds.AppendDocumentRoot(aChild);
   ASSERT_TRUE(aParent.IsValid());
   ASSERT_TRUE(aChild.IsValid());
@@ -180,9 +178,9 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveRef_OccurrenceRef_PreservesProductToO
   }
 
   // The wrong-key bug would also leave a stale entry under the parent product id.
-  for (const BRepGraph_OccurrenceId& anId :
-       BRepGraph_OccurrencesOfChild(aGraph,
-                                    aGraph.Topo().Gen().OccurrenceRefIds(BRepGraph_NodeId(aParent))))
+  for (const BRepGraph_OccurrenceId& anId : BRepGraph_OccurrencesOfChild(
+         aGraph,
+         aGraph.Topo().Gen().OccurrenceRefIds(BRepGraph_NodeId(aParent))))
   {
     EXPECT_NE(anId, aOccId) << "Bug: Unbind happened against parent product key";
   }
@@ -293,9 +291,12 @@ TEST(BRepGraph_PermissionUpdateTest, CopyNode_SelfReferencingCompound_Terminates
   const BRepGraph_ChildRefId aChildRefId = aRelations.ChildRefIds.First();
   aGraph.Editor().Gen().SetChildRefChildNodeId(aChildRefId, BRepGraph_NodeId(aRoot));
 
-  BRepGraph aCopy;
-  const BRepGraph_NodeId aRootId =
-    BRepGraph_Copy::CopyNode(aGraph, aCopy, BRepGraph_NodeId(aRoot), BRepGraph_Copy::GeomPolicy::Copy, BRepGraph_Copy::MeshPolicy::Drop);
+  BRepGraph              aCopy;
+  const BRepGraph_NodeId aRootId = BRepGraph_Copy::CopyNode(aGraph,
+                                                            aCopy,
+                                                            BRepGraph_NodeId(aRoot),
+                                                            BRepGraph_Copy::GeomPolicy::Copy,
+                                                            BRepGraph_Copy::MeshPolicy::Drop);
   EXPECT_TRUE(aRootId.IsValid());
   EXPECT_FALSE(aCopy.IsEmpty());
   EXPECT_TRUE(aCopy.ValidateRelations());
@@ -313,9 +314,14 @@ TEST(BRepGraph_PermissionUpdateTest, TransformNode_AssemblyWithCopyGeom_Rejected
 
   gp_Trsf aT;
   aT.SetTranslation(gp_Vec(1.0, 0.0, 0.0));
-  BRepGraph aResult;
+  BRepGraph              aResult;
   const BRepGraph_NodeId aRootId =
-    BRepGraph_Transform::TransformNode(aGraph, aResult, BRepGraph_NodeId(aProd), aT, BRepGraph_Copy::GeomPolicy::Copy, BRepGraph_Copy::MeshPolicy::Drop);
+    BRepGraph_Transform::TransformNode(aGraph,
+                                       aResult,
+                                       BRepGraph_NodeId(aProd),
+                                       aT,
+                                       BRepGraph_Copy::GeomPolicy::Copy,
+                                       BRepGraph_Copy::MeshPolicy::Drop);
   EXPECT_FALSE(aRootId.IsValid());
 }
 
@@ -327,7 +333,7 @@ TEST(BRepGraph_PermissionUpdateTest, TransformNode_OccurrenceWithCopyGeom_Reject
   BRepGraph::EditorView::ProductOps& aProds  = aGraph.Editor().Products();
   const BRepGraph_ProductId          aParent = aProds.Add();
   aProds.AppendDocumentRoot(aParent);
-  const BRepGraph_ProductId          aChild  = aProds.Add();
+  const BRepGraph_ProductId aChild = aProds.Add();
   aProds.AppendDocumentRoot(aChild);
   ASSERT_TRUE(aParent.IsValid());
   ASSERT_TRUE(aChild.IsValid());
@@ -336,9 +342,14 @@ TEST(BRepGraph_PermissionUpdateTest, TransformNode_OccurrenceWithCopyGeom_Reject
 
   gp_Trsf aT;
   aT.SetTranslation(gp_Vec(1.0, 0.0, 0.0));
-  BRepGraph aResult;
+  BRepGraph              aResult;
   const BRepGraph_NodeId aRootId =
-    BRepGraph_Transform::TransformNode(aGraph, aResult, BRepGraph_NodeId(aOccId), aT, BRepGraph_Copy::GeomPolicy::Copy, BRepGraph_Copy::MeshPolicy::Drop);
+    BRepGraph_Transform::TransformNode(aGraph,
+                                       aResult,
+                                       BRepGraph_NodeId(aOccId),
+                                       aT,
+                                       BRepGraph_Copy::GeomPolicy::Copy,
+                                       BRepGraph_Copy::MeshPolicy::Drop);
   EXPECT_FALSE(aRootId.IsValid());
 }
 
@@ -351,7 +362,7 @@ TEST(BRepGraph_PermissionUpdateTest, LinkProducts_OutOccurrenceRefId_Populated)
   BRepGraph::EditorView::ProductOps& aProds  = aGraph.Editor().Products();
   const BRepGraph_ProductId          aParent = aProds.Add();
   aProds.AppendDocumentRoot(aParent);
-  const BRepGraph_ProductId          aChild  = aProds.Add();
+  const BRepGraph_ProductId aChild = aProds.Add();
   aProds.AppendDocumentRoot(aChild);
   ASSERT_TRUE(aParent.IsValid());
   ASSERT_TRUE(aChild.IsValid());
@@ -375,7 +386,7 @@ TEST(BRepGraph_PermissionUpdateTest, SetOccurrenceChildNodeId_RejectsOccurrenceC
   BRepGraph::EditorView::ProductOps& aProds  = aGraph.Editor().Products();
   const BRepGraph_ProductId          aParent = aProds.Add();
   aProds.AppendDocumentRoot(aParent);
-  const BRepGraph_ProductId          aChild  = aProds.Add();
+  const BRepGraph_ProductId aChild = aProds.Add();
   aProds.AppendDocumentRoot(aChild);
   ASSERT_TRUE(aParent.IsValid());
   ASSERT_TRUE(aChild.IsValid());
@@ -387,14 +398,13 @@ TEST(BRepGraph_PermissionUpdateTest, SetOccurrenceChildNodeId_RejectsOccurrenceC
   aGraph.Editor().Occurrences().SetChildNodeId(aOccId, BRepGraph_NodeId(aOccId));
 
   EXPECT_EQ(aGraph.Topo().Occurrences().Definition(aOccId).ChildNodeId, anOldChild);
-  EXPECT_TRUE(containsCurrentId(BRepGraph_OccurrencesOfChild(
-                                  aGraph,
-                                  aGraph.Topo().Gen().OccurrenceRefIds(anOldChild)),
-                                aOccId));
-  EXPECT_FALSE(containsCurrentId(BRepGraph_OccurrencesOfChild(
-                                   aGraph,
-                                   aGraph.Topo().Gen().OccurrenceRefIds(BRepGraph_NodeId(aOccId))),
-                                 aOccId));
+  EXPECT_TRUE(containsCurrentId(
+    BRepGraph_OccurrencesOfChild(aGraph, aGraph.Topo().Gen().OccurrenceRefIds(anOldChild)),
+    aOccId));
+  EXPECT_FALSE(containsCurrentId(
+    BRepGraph_OccurrencesOfChild(aGraph,
+                                 aGraph.Topo().Gen().OccurrenceRefIds(BRepGraph_NodeId(aOccId))),
+    aOccId));
   EXPECT_TRUE(aGraph.ValidateRelations());
 }
 
@@ -408,7 +418,7 @@ TEST(BRepGraph_PermissionUpdateTest, SetOccurrenceChildNodeId_InvalidOccurrenceN
   ASSERT_TRUE(aChild.IsValid());
 
   EXPECT_NO_THROW(aGraph.Editor().Occurrences().SetChildNodeId(BRepGraph_OccurrenceId(100000),
-                                                              BRepGraph_NodeId(aChild)));
+                                                               BRepGraph_NodeId(aChild)));
   EXPECT_TRUE(aGraph.ValidateRelations());
 }
 
@@ -419,9 +429,9 @@ TEST(BRepGraph_PermissionUpdateTest, SetOccurrenceChildNodeId_MutGuardRejectsRem
   BRepGraph::EditorView::ProductOps& aProds  = aGraph.Editor().Products();
   const BRepGraph_ProductId          aParent = aProds.Add();
   aProds.AppendDocumentRoot(aParent);
-  const BRepGraph_ProductId          aChild  = aProds.Add();
+  const BRepGraph_ProductId aChild = aProds.Add();
   aProds.AppendDocumentRoot(aChild);
-  const BRepGraph_ProductId          aRemovedChild = aProds.Add();
+  const BRepGraph_ProductId aRemovedChild = aProds.Add();
   aProds.AppendDocumentRoot(aRemovedChild);
   ASSERT_TRUE(aParent.IsValid());
   ASSERT_TRUE(aChild.IsValid());
@@ -440,15 +450,13 @@ TEST(BRepGraph_PermissionUpdateTest, SetOccurrenceChildNodeId_MutGuardRejectsRem
   }
 
   EXPECT_EQ(aGraph.Topo().Occurrences().Definition(aOccId).ChildNodeId, anOldChild);
-  EXPECT_TRUE(containsCurrentId(BRepGraph_OccurrencesOfChild(
-                                  aGraph,
-                                  aGraph.Topo().Gen().OccurrenceRefIds(anOldChild)),
-                                aOccId));
-  EXPECT_FALSE(containsCurrentId(
-    BRepGraph_OccurrencesOfChild(
-      aGraph,
-      aGraph.Topo().Gen().OccurrenceRefIds(BRepGraph_NodeId(aRemovedChild))),
+  EXPECT_TRUE(containsCurrentId(
+    BRepGraph_OccurrencesOfChild(aGraph, aGraph.Topo().Gen().OccurrenceRefIds(anOldChild)),
     aOccId));
+  EXPECT_FALSE(containsCurrentId(BRepGraph_OccurrencesOfChild(aGraph,
+                                                              aGraph.Topo().Gen().OccurrenceRefIds(
+                                                                BRepGraph_NodeId(aRemovedChild))),
+                                 aOccId));
   EXPECT_TRUE(aGraph.ValidateRelations());
 }
 
@@ -516,7 +524,7 @@ TEST(BRepGraph_PermissionUpdateTest, MutGuard_DirtyFlag_RespectsExplicitMarkAndC
   const uint32_t aOwnGenBefore = aGraph.Topo().Edges().Definition(aEdgeId).OwnGen;
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aGuard = aGraph.Editor().Edges().Mut(aEdgeId);
-    std::ignore = aGuard->Tolerance; // read-only access only
+    std::ignore                                      = aGuard->Tolerance; // read-only access only
   }
   EXPECT_EQ(aOwnGenBefore, aGraph.Topo().Edges().Definition(aEdgeId).OwnGen)
     << "Read-only guard scope must not bump OwnGen";

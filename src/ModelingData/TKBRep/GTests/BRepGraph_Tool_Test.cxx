@@ -160,15 +160,14 @@ TEST_F(BRepGraph_QuerySurfaceTest, CoEdge_PolygonOnTriangulation_RoundTrip)
 {
   ASSERT_GT(myBoxGraph.Topo().CoEdges().Nb(), 0);
   const BRepGraph_CoEdgeId aCoEdgeId(0);
-  const BRepGraph_FaceId   aFaceId  = BRepGraph_Tool::CoEdge::FaceOf(myBoxGraph, aCoEdgeId);
+  const BRepGraph_FaceId   aFaceId = BRepGraph_Tool::CoEdge::FaceOf(myBoxGraph, aCoEdgeId);
   EXPECT_FALSE(myBoxGraph.Mesh().Persistent().CoEdges().HasPolygonOnTriangulation(aCoEdgeId));
   EXPECT_TRUE(myBoxGraph.Mesh().Persistent().CoEdges().PolygonOnTriangulation(aCoEdgeId).IsNull());
 
   occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(1, 1, false);
   myBoxGraph.Editor().Faces().SetPersistentTriangulation(aFaceId, aTri);
 
-  occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
-    new Poly_PolygonOnTriangulation(2, false);
+  occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri = new Poly_PolygonOnTriangulation(2, false);
   myBoxGraph.Editor().CoEdges().SetPersistentPolygonOnTri(aCoEdgeId, aPolyOnTri);
 
   EXPECT_TRUE(myBoxGraph.Mesh().Persistent().CoEdges().HasPolygonOnTriangulation(aCoEdgeId));
@@ -190,8 +189,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Edge_PolygonOnTriangulation_ResolvesViaFace)
   occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(1, 1, false);
   myBoxGraph.Editor().Faces().SetPersistentTriangulation(aFaceId, aTri);
 
-  occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
-    new Poly_PolygonOnTriangulation(2, false);
+  occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri = new Poly_PolygonOnTriangulation(2, false);
   myBoxGraph.Editor().CoEdges().SetPersistentPolygonOnTri(aCoEdgeId, aPolyOnTri);
 
   EXPECT_TRUE(myBoxGraph.Mesh().Persistent().Edges().HasPolygonOnTriangulation(anEdgeId, aFaceId));
@@ -249,7 +247,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Vertex_ParametersDerivedFromGraph)
 {
   ASSERT_GT(myBoxGraph.Topo().Vertices().Nb(), 0);
   ASSERT_GT(myBoxGraph.Topo().Edges().Nb(), 0);
-  const BRepGraph_VertexId aVertexId(0);
+  const BRepGraph_VertexId                          aVertexId(0);
   const NCollection_LinearVector<BRepGraph_EdgeId>& anEdges =
     myBoxGraph.Topo().Vertices().Edges(aVertexId);
   ASSERT_FALSE(anEdges.IsEmpty());

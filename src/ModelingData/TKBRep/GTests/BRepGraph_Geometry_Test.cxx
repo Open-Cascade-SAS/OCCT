@@ -207,7 +207,7 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurveCoEdgeId_AllEdgeFacePairs_Valid)
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
-      const BRepGraph_CoEdgeId aPCurveId =
+      const BRepGraph_CoEdgeId       aPCurveId =
         aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, BRepGraph_FaceId(aCE.FaceId));
       EXPECT_TRUE(aPCurveId.IsValid());
       ++aPCurveCount;
@@ -255,7 +255,7 @@ TEST(BRepGraph_GeometryTest, CoEdge_ParamRange_NonZero)
     {
       const std::pair<double, double> aRange =
         BRepGraph_Tool::CoEdge::Range(aGraph, aCoEdgeIdxs.Value(j));
-      const double                   aRangeVal = aRange.second - aRange.first;
+      const double aRangeVal = aRange.second - aRange.first;
       EXPECT_GT(std::abs(aRangeVal), Precision::PConfusion())
         << "Edge " << anEdgeIt.CurrentId().Index << " CoEdge " << j << " has zero parameter range";
       ++aCoEdgeCount;
@@ -302,8 +302,7 @@ TEST(BRepGraph_GeometryTest, Edge_Continuity_Valid)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes8 =
-    aGraph.Shapes().Add(aShape);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes8 = aGraph.Shapes().Add(aShape);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // Cylinder has at least the seam edge with C^k > C0 in BRepGraphAlgo_Regularity.
@@ -373,9 +372,9 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SharedSurfaceAcrossOwnedUses)
   BRepGraph aGraph;
   aGraph.Clear();
 
-  const occ::handle<Geom_Surface> aSurface = new Geom_Plane(gp_Pln());
+  const occ::handle<Geom_Surface>            aSurface = new Geom_Plane(gp_Pln());
   NCollection_LinearVector<BRepGraph_WireId> anInnerWires;
-  const BRepGraph_FaceId aFaceA =
+  const BRepGraph_FaceId                     aFaceA =
     aGraph.Editor().Faces().Add(aSurface, BRepGraph_WireId(), anInnerWires.ToArray1(), 1.e-7);
   const BRepGraph_FaceId aFaceB =
     aGraph.Editor().Faces().Add(aSurface, BRepGraph_WireId(), anInnerWires.ToArray1(), 1.e-7);
@@ -411,8 +410,7 @@ TEST(BRepGraph_GeometryTest, CompoundWithMovedChild_SharedSolidDef)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes12 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes12 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // Moved() preserves TShape, but locations are baked into topology definitions.
@@ -696,8 +694,7 @@ TEST(BRepGraph_GeometryTest, ConnectedComponents_TwoBoxCompound_TwoComponents)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes26 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes26 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   const NCollection_DataMap<int, int> aFaceCounts = faceCountsByComponent(aGraph);
@@ -718,8 +715,7 @@ TEST(BRepGraph_GeometryTest, ConnectedComponents_TwoBoxCompound_FacesGroupedPerR
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes27 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes27 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   const NCollection_DataMap<int, int> aFaceCounts = faceCountsByComponent(aGraph);
@@ -744,8 +740,7 @@ TEST(BRepGraph_GeometryTest, ConnectedComponents_TwoBoxCompound_CoverAllFaces)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes28 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes28 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   const NCollection_DataMap<int, int> aFaceCounts = faceCountsByComponent(aGraph);
@@ -809,14 +804,13 @@ TEST(BRepGraph_GeometryTest, DerivedStateCache_LazyAndFreshAfterPCurveRangeMutat
   for (BRepGraph_CoEdgeIterator aCoEdgeIt(aGraph); aCoEdgeIt.More(); aCoEdgeIt.Next())
   {
     const BRepGraph_CoEdgeId aCandidateCoEdge = aCoEdgeIt.CurrentId();
-    const BRepGraph_EdgeId aCandidateEdge =
+    const BRepGraph_EdgeId   aCandidateEdge =
       aGraph.Topo().CoEdges().Definition(aCandidateCoEdge).ChildEdgeId;
-    if (aCandidateEdge.IsValid(aGraph.Topo().Edges().Nb())
-        && !aCandidateEdge.IsRemoved(aGraph)
+    if (aCandidateEdge.IsValid(aGraph.Topo().Edges().Nb()) && !aCandidateEdge.IsRemoved(aGraph)
         && !BRepGraph_Tool::Edge::Curve(aGraph, aCandidateEdge).IsNull()
         && !BRepGraph_Tool::CoEdge::PCurve(aGraph, aCandidateCoEdge).IsNull())
     {
-      anEdgeId = aCandidateEdge;
+      anEdgeId  = aCandidateEdge;
       aCoEdgeId = aCandidateCoEdge;
       break;
     }
@@ -873,7 +867,8 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_HasTwoCoEdges)
 
 TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurveCoEdgeId_WithOrientation)
 {
-  // Verify FindPCurveCoEdgeId(edge, face, orientation) returns different entries for FORWARD vs REVERSED.
+  // Verify FindPCurveCoEdgeId(edge, face, orientation) returns different entries for FORWARD vs
+  // REVERSED.
   BRepGraph aGraph;
   aGraph.Clear();
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes32 =
@@ -902,7 +897,8 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurveCoEdgeId_WithOrientatio
         aGraph.Topo().Edges().FindPCurveCoEdgeId(anEdgeId, aFaceId, TopAbs_REVERSED);
 
       EXPECT_TRUE(aPC_Fwd.IsValid()) << "FindPCurveCoEdgeId FORWARD returned invalid for seam edge";
-      EXPECT_TRUE(aPC_Rev.IsValid()) << "FindPCurveCoEdgeId REVERSED returned invalid for seam edge";
+      EXPECT_TRUE(aPC_Rev.IsValid())
+        << "FindPCurveCoEdgeId REVERSED returned invalid for seam edge";
       EXPECT_NE(aPC_Fwd, aPC_Rev) << "FORWARD and REVERSED PCurves should be different entries";
       return; // one seam is enough
     }
@@ -1113,8 +1109,7 @@ TEST(BRepGraph_GeometryTest, Compound_TwoBoxes_SurfaceDedup)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes38 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes38 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 12);
@@ -1245,8 +1240,8 @@ TEST(BRepGraph_GeometryTest, ClearUseOwnersMarksRecordsRemovedAndSetReusesSlots)
   EXPECT_EQ(aGraph.Topo().Geometry().NbActiveCoEdgeCurves2D(), aNbActiveCurves2D - 1u);
 
   const occ::handle<Poly_Triangulation> aTriangulation = new Poly_Triangulation(3, 1, false);
-  const occ::handle<Poly_Polygon3D> aPolygon3D = new Poly_Polygon3D(2, false);
-  const occ::handle<Poly_Polygon2D> aPolygon2D = new Poly_Polygon2D(2);
+  const occ::handle<Poly_Polygon3D>     aPolygon3D     = new Poly_Polygon3D(2, false);
+  const occ::handle<Poly_Polygon2D>     aPolygon2D     = new Poly_Polygon2D(2);
   const occ::handle<Poly_PolygonOnTriangulation> aPolygonOnTri =
     new Poly_PolygonOnTriangulation(2, false);
   aGraph.Editor().Faces().SetPersistentTriangulation(aFaceId, aTriangulation);
@@ -1297,9 +1292,8 @@ TEST(BRepGraph_GeometryTest, ClearUseOwnersMarksRecordsRemovedAndSetReusesSlots)
 
   const uint32_t aNbActivePolygonsOnTri = aGraph.Mesh().Poly().NbActivePolygonsOnTri();
   ASSERT_GT(aNbActivePolygonsOnTri, 0u);
-  aGraph.Editor().CoEdges().SetPersistentPolygonOnTri(
-    aCoEdgeId,
-    occ::handle<Poly_PolygonOnTriangulation>());
+  aGraph.Editor().CoEdges().SetPersistentPolygonOnTri(aCoEdgeId,
+                                                      occ::handle<Poly_PolygonOnTriangulation>());
   EXPECT_EQ(aGraph.Topo().CoEdges().Definition(aCoEdgeId).PolygonOnTriRepId, aPolygonOnTriRepId);
   EXPECT_FALSE(aGraph.Mesh().Persistent().CoEdges().HasPolygonOnTriangulation(aCoEdgeId));
   EXPECT_EQ(aGraph.Mesh().Poly().NbActivePolygonsOnTri(), aNbActivePolygonsOnTri - 1u);

@@ -38,7 +38,6 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_FlatDataMap.hxx>
 #include <NCollection_FlatMap.hxx>
-#include <NCollection_LinearVector.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
@@ -366,8 +365,7 @@ bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
   }
   const BRepGraph_FaceId aParentId = theStorage.WireRef(theRefId).ParentFaceId;
   return aParentId.IsValid(theStorage.NbFaces()) && !theStorage.IsRemoved(aParentId)
-         && containsRelationId(theStorage.FaceRelations(aParentId).WireRefIds,
-                                             theRefId);
+         && containsRelationId(theStorage.FaceRelations(aParentId).WireRefIds, theRefId);
 }
 
 bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
@@ -379,8 +377,7 @@ bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
   }
   const BRepGraph_ShellId aParentId = theStorage.FaceRef(theRefId).ParentShellId;
   return aParentId.IsValid(theStorage.NbShells()) && !theStorage.IsRemoved(aParentId)
-         && containsRelationId(theStorage.ShellRelations(aParentId).FaceRefIds,
-                                             theRefId);
+         && containsRelationId(theStorage.ShellRelations(aParentId).FaceRefIds, theRefId);
 }
 
 bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
@@ -392,8 +389,7 @@ bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
   }
   const BRepGraph_SolidId aParentId = theStorage.ShellRef(theRefId).ParentSolidId;
   return aParentId.IsValid(theStorage.NbSolids()) && !theStorage.IsRemoved(aParentId)
-         && containsRelationId(theStorage.SolidRelations(aParentId).ShellRefIds,
-                                             theRefId);
+         && containsRelationId(theStorage.SolidRelations(aParentId).ShellRefIds, theRefId);
 }
 
 bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
@@ -405,8 +401,7 @@ bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
   }
   const BRepGraph_CompSolidId aParentId = theStorage.SolidRef(theRefId).ParentCompSolidId;
   return aParentId.IsValid(theStorage.NbCompSolids()) && !theStorage.IsRemoved(aParentId)
-         && containsRelationId(theStorage.CompSolidRelations(aParentId).SolidRefIds,
-                                             theRefId);
+         && containsRelationId(theStorage.CompSolidRelations(aParentId).SolidRefIds, theRefId);
 }
 
 bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
@@ -418,8 +413,7 @@ bool isRefOwnedByAnyParent(const BRepGraphInc_Storage& theStorage,
   }
   const BRepGraph_CompoundId aParentId = theStorage.ChildRef(theRefId).ParentCompoundId;
   return aParentId.IsValid(theStorage.NbCompounds()) && !theStorage.IsRemoved(aParentId)
-         && containsRelationId(theStorage.CompoundRelations(aParentId).ChildRefIds,
-                                             theRefId);
+         && containsRelationId(theStorage.CompoundRelations(aParentId).ChildRefIds, theRefId);
 }
 
 bool isRefOwnedByAnyParent(const BRepGraphInc_Storage&     theStorage,
@@ -431,9 +425,7 @@ bool isRefOwnedByAnyParent(const BRepGraphInc_Storage&     theStorage,
   }
   const BRepGraph_ProductId aParentId = theStorage.OccurrenceRef(theRefId).ParentProductId;
   return aParentId.IsValid(theStorage.NbProducts()) && !theStorage.IsRemoved(aParentId)
-         && containsRelationId(
-           theStorage.ProductRelations(aParentId).OccurrenceRefIds,
-           theRefId);
+         && containsRelationId(theStorage.ProductRelations(aParentId).OccurrenceRefIds, theRefId);
 }
 
 bool isExpectedParentKindForRef(const BRepGraph_NodeId      theParent,
@@ -2142,8 +2134,8 @@ void BRepGraph::EditorView::GenOps::RemoveNode(const BRepGraph_NodeId theNode)
       const BRepGraphInc::EdgeDef& anEdge   = aStorage.Edge(anEdgeId);
       const BRepGraph_VertexId     aStartVtx =
         anEdge.StartVertexRefId.IsValid(aStorage.NbVertexRefs())
-          ? aStorage.VertexRef(anEdge.StartVertexRefId).ChildVertexId
-          : BRepGraph_VertexId();
+              ? aStorage.VertexRef(anEdge.StartVertexRefId).ChildVertexId
+              : BRepGraph_VertexId();
       const BRepGraph_VertexId anEndVtx =
         anEdge.EndVertexRefId.IsValid(aStorage.NbVertexRefs())
           ? aStorage.VertexRef(anEdge.EndVertexRefId).ChildVertexId
@@ -2956,7 +2948,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 2: CoEdgeDefs — clear ChildEdgeId / FaceId.
+  // Phase 2: CoEdgeDefs - clear ChildEdgeId / FaceId.
   for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_CoEdgeId       aCEId = anIt.CurrentId();
@@ -2970,12 +2962,12 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     if (aCE.FaceId.IsValid(aStorage.NbFaces()) && aRemovedNodes.Contains(aCE.FaceId))
     {
       BRepGraphInc::CoEdgeDef& aMutCE = aStorage.ChangeCoEdge(aCEId);
-      aMutCE.FaceId = BRepGraph_FaceId();
+      aMutCE.FaceId                   = BRepGraph_FaceId();
       clearCoEdgeFaceScopedRepresentations(aStorage, aMutCE);
     }
   }
 
-  // Phase 3: EdgeDefs — clear vertex refs.
+  // Phase 3: EdgeDefs - clear vertex refs.
   for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_EdgeId       anEdgeId = anIt.CurrentId();
@@ -3023,7 +3015,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
   // Phase 4a: Mark orphaned CoEdges as removed. A CoEdge whose ChildEdgeId was
   // cleared in Phase 2 has no topological identity and must be retired before
   // wire refs are pruned (so Phase 4b's IsRemoved check picks it up).
-  // Note: do not check FaceId here — free-wire coedges have FaceId
+  // Note: do not check FaceId here - free-wire coedges have FaceId
   // intentionally invalid and must not be retired.
   for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
@@ -3040,7 +3032,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 4b: WireDefs — clean CoEdges that are removed/dangling.
+  // Phase 4b: WireDefs - clean CoEdges that are removed/dangling.
   for (BRepGraph_Iterator<BRepGraphInc::WireDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_WireId aWireId = anIt.CurrentId();
@@ -3068,7 +3060,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 5: FaceDefs — clean WireRefs.
+  // Phase 5: FaceDefs - clean WireRefs.
   for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_FaceId aFaceId = anIt.CurrentId();
@@ -3093,7 +3085,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 6: ShellDefs — clean FaceRefs.
+  // Phase 6: ShellDefs - clean FaceRefs.
   for (BRepGraph_Iterator<BRepGraphInc::ShellDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_ShellId aShellId = anIt.CurrentId();
@@ -3118,7 +3110,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 7: SolidDefs — clean ShellRefs.
+  // Phase 7: SolidDefs - clean ShellRefs.
   for (BRepGraph_Iterator<BRepGraphInc::SolidDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_SolidId aSolidId = anIt.CurrentId();
@@ -3144,7 +3136,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 8: CompoundDefs — clean ChildRefs.
+  // Phase 8: CompoundDefs - clean ChildRefs.
   for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_CompoundId aCompId = anIt.CurrentId();
@@ -3169,7 +3161,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 9: CompSolidDefs — clean SolidRefs.
+  // Phase 9: CompSolidDefs - clean SolidRefs.
   for (BRepGraph_Iterator<BRepGraphInc::CompSolidDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_CompSolidId aCSId = anIt.CurrentId();
@@ -3194,7 +3186,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 10: OccurrenceDefs — clear ChildNodeId and retire orphan Occurrences.
+  // Phase 10: OccurrenceDefs - clear ChildNodeId and retire orphan Occurrences.
   // An Occurrence with no live child has no semantic meaning, so mark it
   // removed and add it to aRemovedNodes for downstream cleanup phases.
   for (BRepGraph_Iterator<BRepGraphInc::OccurrenceDef> anIt(*myGraph); anIt.More(); anIt.Next())
@@ -3209,7 +3201,7 @@ void BRepGraph::EditorView::GenOps::CleanupRemovedReferences()
     }
   }
 
-  // Phase 11: ProductDefs — clean OccurrenceRefs.
+  // Phase 11: ProductDefs - clean OccurrenceRefs.
   for (BRepGraph_Iterator<BRepGraphInc::ProductDef> anIt(*myGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_ProductId aProdId = anIt.CurrentId();
@@ -3559,7 +3551,7 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
       }
       default: {
         // Solid/Compound/CompSolid/Product: propagate to parent occurrences
-        // that reference this node as ChildNodeId — matching immediate-mode
+        // that reference this node as ChildNodeId - matching immediate-mode
         // propagateSubtreeGen logic.
         if (BRepGraph_NodeId::IsTopologyKind(aNodeId.NodeKind)
             || aNodeId.NodeKind == BRepGraph_NodeId::Kind::Product)
@@ -5550,9 +5542,8 @@ NCollection_Array1<BRepGraph_SolidRefId> BRepGraph::EditorView::CompSolidOps::Ap
     const TopAbs_Orientation anOri =
       theOrientations.IsEmpty() ? TopAbs_FORWARD : TopAbs_Orientation(theOrientations.At(anIdx));
 
-    aResult.ChangeAt(anIdx) = aStorage.AttachSolidToCompSolid(theCompSolidEntity,
-                                                              theSolidIds.At(anIdx),
-                                                              anOri);
+    aResult.ChangeAt(anIdx) =
+      aStorage.AttachSolidToCompSolid(theCompSolidEntity, theSolidIds.At(anIdx), anOri);
     myGraph->allocateRefUID(aResult.At(anIdx));
     myGraph->markRefModified(aResult.At(anIdx));
   }
@@ -5604,10 +5595,10 @@ NCollection_Array1<BRepGraph_OccurrenceRefId> BRepGraph::EditorView::ProductOps:
   {
     BRepGraph_OccurrenceRefId anOccRefId;
     BRepGraph_OccurrenceId    anOccId = Append(theParentProduct,
-                                               theChildProducts.At(anIdx),
-                                               thePlacements.At(anIdx),
-                                               BRepGraph_OccurrenceId(),
-                                               &anOccRefId);
+                                            theChildProducts.At(anIdx),
+                                            thePlacements.At(anIdx),
+                                            BRepGraph_OccurrenceId(),
+                                            &anOccRefId);
     if (!anOccId.IsValid())
     {
       return NCollection_Array1<BRepGraph_OccurrenceRefId>();

@@ -35,15 +35,11 @@ const BRepGraph& BRepGraph_Layer::Graph() const
 
 //=================================================================================================
 
-void BRepGraph_Layer::OnAttached() noexcept
-{
-}
+void BRepGraph_Layer::OnAttached() noexcept {}
 
 //=================================================================================================
 
-void BRepGraph_Layer::OnDetached() noexcept
-{
-}
+void BRepGraph_Layer::OnDetached() noexcept {}
 
 //=================================================================================================
 
@@ -81,9 +77,7 @@ int BRepGraph_Layer::SubscribedKinds() const
 
 //=================================================================================================
 
-void BRepGraph_Layer::OnNodeRemoved(const BRepGraph_NodeId /*theNode*/) noexcept
-{
-}
+void BRepGraph_Layer::OnNodeRemoved(const BRepGraph_NodeId /*theNode*/) noexcept {}
 
 //=================================================================================================
 
@@ -156,9 +150,7 @@ int BRepGraph_Layer::SubscribedRefKinds() const
 
 //=================================================================================================
 
-void BRepGraph_Layer::OnRefRemoved(const BRepGraph_RefId /*theRef*/) noexcept
-{
-}
+void BRepGraph_Layer::OnRefRemoved(const BRepGraph_RefId /*theRef*/) noexcept {}
 
 //=================================================================================================
 

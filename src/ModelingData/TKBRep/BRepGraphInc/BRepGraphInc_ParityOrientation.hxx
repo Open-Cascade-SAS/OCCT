@@ -46,18 +46,15 @@ struct ParityOrientation
   }
 
   //! Converts stored parity back to `TopAbs_Orientation`.
-  operator TopAbs_Orientation() const
-  {
-    return IsReversed ? TopAbs_REVERSED : TopAbs_FORWARD;
-  }
+  operator TopAbs_Orientation() const { return IsReversed ? TopAbs_REVERSED : TopAbs_FORWARD; }
 
 private:
   //! Converts a core forward/reversed orientation to the stored parity bit.
   static bool toIsReversed(const TopAbs_Orientation theOrientation)
   {
-    Standard_ProgramError_Raise_if(
-      theOrientation != TopAbs_FORWARD && theOrientation != TopAbs_REVERSED,
-      "BRepGraphInc::ParityOrientation stores only FORWARD/REVERSED");
+    Standard_ProgramError_Raise_if(theOrientation != TopAbs_FORWARD
+                                     && theOrientation != TopAbs_REVERSED,
+                                   "BRepGraphInc::ParityOrientation stores only FORWARD/REVERSED");
     return theOrientation == TopAbs_REVERSED;
   }
 };

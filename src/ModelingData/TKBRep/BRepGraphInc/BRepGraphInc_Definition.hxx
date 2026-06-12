@@ -104,8 +104,8 @@ struct CoEdgeDef : public BaseDef
   BRepGraph_FaceId  FaceId;       //!< Face this coedge belongs to (invalid for free wires)
   ParityOrientation Orientation = TopAbs_FORWARD; //!< Orientation relative to parent edge
 
-  BRepGraph_CoEdgeCurve2DRepId Curve2DRepId;         //!< Owned 2D curve use id
-  BRepGraph_CoEdgePolygon2DRepId Polygon2DRepId;     //!< Owned 2D polygon use id
+  BRepGraph_CoEdgeCurve2DRepId      Curve2DRepId;      //!< Owned 2D curve use id
+  BRepGraph_CoEdgePolygon2DRepId    Polygon2DRepId;    //!< Owned 2D polygon use id
   BRepGraph_CoEdgePolygonOnTriRepId PolygonOnTriRepId; //!< Owned polygon-on-triangulation use id
 };
 
@@ -121,8 +121,9 @@ struct FaceDef : public BaseDef
 {
   using TypeId = BRepGraph_FaceId;
 
-  BRepGraph_FaceSurfaceRepId SurfaceRepId;             //!< Owned surface use id
-  BRepGraph_FaceTriangulationRepId TriangulationRepId; //!< Owned triangulation use id (persistent/imported)
+  BRepGraph_FaceSurfaceRepId SurfaceRepId; //!< Owned surface use id
+  BRepGraph_FaceTriangulationRepId
+    TriangulationRepId; //!< Owned triangulation use id (persistent/imported)
 
   double Tolerance = 0.0; //!< Face tolerance
 };

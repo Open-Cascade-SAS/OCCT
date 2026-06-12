@@ -1462,7 +1462,7 @@ bool BRepGraph_Copy::Perform(const BRepGraph& theSourceGraph,
     const BRepGraph_OccurrenceRefId    aNewId  = theTargetGraph.incStorage().AppendOccurrenceRef();
     BRepGraphInc::OccurrenceRef& aNewRef = theTargetGraph.incStorage().ChangeOccurrenceRef(aNewId);
     theTargetGraph.incStorage().SetRemoved(aNewId, theSourceGraph.incStorage().IsRemoved(aRefId));
-    aNewRef.ParentProductId    = aSrcRef.ParentProductId;
+    aNewRef.ParentProductId   = aSrcRef.ParentProductId;
     aNewRef.ChildOccurrenceId = aSrcRef.ChildOccurrenceId;
     aNewRef.LocalLocation     = aSrcRef.LocalLocation;
   }

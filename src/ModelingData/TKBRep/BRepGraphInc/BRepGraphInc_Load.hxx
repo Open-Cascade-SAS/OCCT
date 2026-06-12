@@ -23,24 +23,24 @@ namespace BRepGraphInc_Load
 //! Final section counts needed to prepare `BRepGraphInc_Storage` for indexed load.
 struct Counts
 {
-  uint32_t NbVertices       = 0; //!< Number of `VertexDef` slots.
-  uint32_t NbEdges          = 0; //!< Number of `EdgeDef` slots.
-  uint32_t NbCoEdges        = 0; //!< Number of `CoEdgeDef` slots.
-  uint32_t NbWires          = 0; //!< Number of `WireDef` slots.
-  uint32_t NbFaces          = 0; //!< Number of `FaceDef` slots.
-  uint32_t NbShells         = 0; //!< Number of `ShellDef` slots.
-  uint32_t NbSolids         = 0; //!< Number of `SolidDef` slots.
-  uint32_t NbCompounds      = 0; //!< Number of `CompoundDef` slots.
-  uint32_t NbCompSolids     = 0; //!< Number of `CompSolidDef` slots.
-  uint32_t NbProducts       = 0; //!< Number of `ProductDef` slots.
-  uint32_t NbOccurrences    = 0; //!< Number of `OccurrenceDef` slots.
-  uint32_t NbShellRefs      = 0; //!< Number of `ShellRef` slots.
-  uint32_t NbFaceRefs       = 0; //!< Number of `FaceRef` slots.
-  uint32_t NbWireRefs       = 0; //!< Number of `WireRef` slots.
-  uint32_t NbVertexRefs     = 0; //!< Number of `VertexRef` slots.
-  uint32_t NbSolidRefs      = 0; //!< Number of `SolidRef` slots.
-  uint32_t NbChildRefs      = 0; //!< Number of `ChildRef` slots.
-  uint32_t NbOccurrenceRefs = 0; //!< Number of `OccurrenceRef` slots.
+  uint32_t NbVertices               = 0; //!< Number of `VertexDef` slots.
+  uint32_t NbEdges                  = 0; //!< Number of `EdgeDef` slots.
+  uint32_t NbCoEdges                = 0; //!< Number of `CoEdgeDef` slots.
+  uint32_t NbWires                  = 0; //!< Number of `WireDef` slots.
+  uint32_t NbFaces                  = 0; //!< Number of `FaceDef` slots.
+  uint32_t NbShells                 = 0; //!< Number of `ShellDef` slots.
+  uint32_t NbSolids                 = 0; //!< Number of `SolidDef` slots.
+  uint32_t NbCompounds              = 0; //!< Number of `CompoundDef` slots.
+  uint32_t NbCompSolids             = 0; //!< Number of `CompSolidDef` slots.
+  uint32_t NbProducts               = 0; //!< Number of `ProductDef` slots.
+  uint32_t NbOccurrences            = 0; //!< Number of `OccurrenceDef` slots.
+  uint32_t NbShellRefs              = 0; //!< Number of `ShellRef` slots.
+  uint32_t NbFaceRefs               = 0; //!< Number of `FaceRef` slots.
+  uint32_t NbWireRefs               = 0; //!< Number of `WireRef` slots.
+  uint32_t NbVertexRefs             = 0; //!< Number of `VertexRef` slots.
+  uint32_t NbSolidRefs              = 0; //!< Number of `SolidRef` slots.
+  uint32_t NbChildRefs              = 0; //!< Number of `ChildRef` slots.
+  uint32_t NbOccurrenceRefs         = 0; //!< Number of `OccurrenceRef` slots.
   uint32_t NbFaceSurfaceReps        = 0; //!< Number of `FaceSurfaceRep` slots.
   uint32_t NbEdgeCurve3DReps        = 0; //!< Number of `EdgeCurve3DRep` slots.
   uint32_t NbCoEdgeCurve2DReps      = 0; //!< Number of `CoEdgeCurve2DRep` slots.

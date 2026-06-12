@@ -42,7 +42,7 @@ public:
   class ScopedOwnerEdit
   {
   public:
-    Standard_EXPORT ScopedOwnerEdit(BRepGraph_LayerLock&  theLayer,
+    Standard_EXPORT ScopedOwnerEdit(BRepGraph_LayerLock&   theLayer,
                                     const BRepGraph_ItemId theItem,
                                     const Standard_GUID&   theOwnerId);
     Standard_EXPORT ~ScopedOwnerEdit();
@@ -50,7 +50,7 @@ public:
     ScopedOwnerEdit(const ScopedOwnerEdit&)            = delete;
     ScopedOwnerEdit& operator=(const ScopedOwnerEdit&) = delete;
 
-    Standard_EXPORT ScopedOwnerEdit(ScopedOwnerEdit&& theOther) noexcept;
+    Standard_EXPORT                  ScopedOwnerEdit(ScopedOwnerEdit&& theOther) noexcept;
     Standard_EXPORT ScopedOwnerEdit& operator=(ScopedOwnerEdit&& theOther) noexcept;
 
   private:
@@ -72,7 +72,7 @@ public:
   //! Traverses upward for nodes/refs to find the root owner entry.
   //! @return true when the item has a resolved owner and @p theOwnerId was filled.
   [[nodiscard]] Standard_EXPORT bool FindOwnerId(const BRepGraph_ItemId theItem,
-                                                 Standard_GUID&          theOwnerId) const;
+                                                 Standard_GUID&         theOwnerId) const;
 
   //! Return owner ID for a node.
   [[nodiscard]] bool FindOwnerId(const BRepGraph_NodeId theNode, Standard_GUID& theOwnerId) const
@@ -175,12 +175,12 @@ private:
   //! Find the root node entry that covers a given node.
   //! Checks direct map entry first, then traverses upward via ParentExplorer.
   [[nodiscard]] bool findRootNodeId(const BRepGraph_NodeId theNode,
-                                    BRepGraph_ItemId&       theRootItem) const;
+                                    BRepGraph_ItemId&      theRootItem) const;
 
   //! Find the root entry that covers a given ref.
   //! Checks direct map entry first, then traverses via parent node.
   [[nodiscard]] bool findRootRefId(const BRepGraph_RefId theRef,
-                                   BRepGraph_ItemId&      theRootItem) const;
+                                   BRepGraph_ItemId&     theRootItem) const;
 
   //! Get the parent node of a ref from its storage struct.
   [[nodiscard]] BRepGraph_NodeId parentNodeId(const BRepGraph_RefId theRef) const;

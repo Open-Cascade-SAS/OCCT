@@ -80,11 +80,10 @@ bool BRepGraph_Cache::NodeEntry::bind(const BRepGraph_Cache& theCache,
                                       const BRepGraph_NodeId theNode,
                                       const GenKind          theKind) noexcept
 {
-  uint32_t aGeneration = 0;
-  const bool isValid =
-    theKind == GenKind::Own
-      ? theCache.NodeOwnGen(theNode, aGeneration)
-      : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration) : false;
+  uint32_t   aGeneration = 0;
+  const bool isValid     = theKind == GenKind::Own ? theCache.NodeOwnGen(theNode, aGeneration)
+                           : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
+                                                         : false;
   if (!isValid)
   {
     Reset();
@@ -108,11 +107,10 @@ bool BRepGraph_Cache::NodeEntry::isFresh(const BRepGraph_Cache& theCache,
     return false;
   }
 
-  uint32_t aGeneration = 0;
-  const bool isValid =
-    theKind == GenKind::Own
-      ? theCache.NodeOwnGen(theNode, aGeneration)
-      : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration) : false;
+  uint32_t   aGeneration = 0;
+  const bool isValid     = theKind == GenKind::Own ? theCache.NodeOwnGen(theNode, aGeneration)
+                           : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
+                                                         : false;
   return isValid && aGeneration == myGeneration;
 }
 
@@ -175,7 +173,7 @@ void BRepGraph_Cache::ItemEntry::Reset() noexcept
 
 //=================================================================================================
 
-bool BRepGraph_Cache::ItemEntry::BindOwnGen(const BRepGraph_Cache&  theCache,
+bool BRepGraph_Cache::ItemEntry::BindOwnGen(const BRepGraph_Cache& theCache,
                                             const BRepGraph_ItemId theItem) noexcept
 {
   uint32_t aGeneration = 0;
@@ -193,7 +191,7 @@ bool BRepGraph_Cache::ItemEntry::BindOwnGen(const BRepGraph_Cache&  theCache,
 
 //=================================================================================================
 
-bool BRepGraph_Cache::ItemEntry::IsFreshOwn(const BRepGraph_Cache&  theCache,
+bool BRepGraph_Cache::ItemEntry::IsFreshOwn(const BRepGraph_Cache& theCache,
                                             const BRepGraph_ItemId theItem) const noexcept
 {
   if (!myIsBound || myItem != theItem)
@@ -214,15 +212,11 @@ bool BRepGraph_Cache::ItemEntry::IsFresh(const BRepGraph_Cache& theCache) const 
 
 //=================================================================================================
 
-void BRepGraph_Cache::Clear() noexcept
-{
-}
+void BRepGraph_Cache::Clear() noexcept {}
 
 //=================================================================================================
 
-void BRepGraph_Cache::CopyFreshTo(const BRepGraph_CopyRemap&) const
-{
-}
+void BRepGraph_Cache::CopyFreshTo(const BRepGraph_CopyRemap&) const {}
 
 //=================================================================================================
 
@@ -237,15 +231,11 @@ const BRepGraph& BRepGraph_Cache::Graph() const
 
 //=================================================================================================
 
-void BRepGraph_Cache::OnAttached() noexcept
-{
-}
+void BRepGraph_Cache::OnAttached() noexcept {}
 
 //=================================================================================================
 
-void BRepGraph_Cache::OnDetached() noexcept
-{
-}
+void BRepGraph_Cache::OnDetached() noexcept {}
 
 //=================================================================================================
 
@@ -305,7 +295,7 @@ bool BRepGraph_Cache::RefOwnGen(const BRepGraph_RefId theRef, uint32_t& theGen) 
       {
         return false;
       }
-      // VertexRef parent is the edge referencing it — find via relations.
+      // VertexRef parent is the edge referencing it - find via relations.
       const BRepGraph_VertexId aVtxId = aStorage.VertexRef(aRefId).ChildVertexId;
       if (!aVtxId.IsValid(aStorage.NbVertices()))
       {
@@ -433,8 +423,8 @@ bool BRepGraph_Cache::ResolveActiveRefChild(const BRepGraph_RefId theRef,
     return false;
   }
 
-  const BRepGraph_NodeId aNode = myGraph->Refs().ChildNode(theRef);
-  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(aNode);
+  const BRepGraph_NodeId       aNode = myGraph->Refs().ChildNode(theRef);
+  const BRepGraphInc::BaseDef* aDef  = myGraph->topoEntity(aNode);
   if (aDef == nullptr || aNode.IsRemoved(*myGraph))
   {
     return false;

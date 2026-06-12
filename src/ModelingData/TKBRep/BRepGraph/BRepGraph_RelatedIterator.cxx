@@ -16,7 +16,7 @@
 //=================================================================================================
 
 bool BRepGraph_RelatedIterator::setCurrent(const BRepGraph_NodeId theNode,
-                                           const RelationKind    theRelation)
+                                           const RelationKind     theRelation)
 {
   if (!theNode.IsValid() || myGraph->Topo().Gen().IsRemoved(theNode))
   {
@@ -154,9 +154,10 @@ void BRepGraph_RelatedIterator::advance()
         if (myStage == Stage::Third)
         {
           myStage = Stage::Finished;
-          if (setCurrent(BRepGraph_NodeId(BRepGraph_Tool::Face::OuterWire(
-                           *myGraph, BRepGraph_FaceId::FromNodeId(myNode))),
-                         RelationKind::OuterWire))
+          if (setCurrent(
+                BRepGraph_NodeId(
+                  BRepGraph_Tool::Face::OuterWire(*myGraph, BRepGraph_FaceId::FromNodeId(myNode))),
+                RelationKind::OuterWire))
           {
             return;
           }
@@ -194,11 +195,12 @@ void BRepGraph_RelatedIterator::advance()
           myIndex = 0;
         }
         if (advanceParentIterator(
-              BRepGraph_FacesOfWire(
-                *myGraph,
-                myGraph->Topo().Wires().Relations(BRepGraph_WireId::FromNodeId(myNode))
-                  .ParentWireRefIds,
-                myIndex),
+              BRepGraph_FacesOfWire(*myGraph,
+                                    myGraph->Topo()
+                                      .Wires()
+                                      .Relations(BRepGraph_WireId::FromNodeId(myNode))
+                                      .ParentWireRefIds,
+                                    myIndex),
               RelationKind::OwningFace))
         {
           return;
@@ -206,9 +208,8 @@ void BRepGraph_RelatedIterator::advance()
         return;
       }
       case BRepGraph_NodeId::Kind::Vertex: {
-        if (advanceParents(
-              myGraph->Topo().Vertices().Edges(BRepGraph_VertexId::FromNodeId(myNode)),
-              RelationKind::IncidentEdge))
+        if (advanceParents(myGraph->Topo().Vertices().Edges(BRepGraph_VertexId::FromNodeId(myNode)),
+                           RelationKind::IncidentEdge))
         {
           return;
         }

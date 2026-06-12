@@ -339,9 +339,9 @@ void BRepGraph_LayerTopoSupplement::CopyTo(const BRepGraph_CopyRemap& theCopy) c
       continue;
     }
     const bool hasUidCollision = aTarget->myEntries.IsBound(anEntry.LocalUid);
-    const bool wasAdded = hasUidCollision
-                            ? aTarget->AddAttachment(aTargetOwner, anEntry.Kind, anEntry.Shape) != 0
-                            : aTarget->AddAttachmentWithUid(aTargetOwner,
+    const bool wasAdded        = hasUidCollision
+                                   ? aTarget->AddAttachment(aTargetOwner, anEntry.Kind, anEntry.Shape) != 0
+                                   : aTarget->AddAttachmentWithUid(aTargetOwner,
                                                             anEntry.LocalUid,
                                                             anEntry.Kind,
                                                             anEntry.Shape);

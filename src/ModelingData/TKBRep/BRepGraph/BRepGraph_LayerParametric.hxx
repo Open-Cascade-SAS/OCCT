@@ -53,7 +53,7 @@ public:
   struct AddResult
   {
     uint32_t         Instance = THE_INVALID_INSTANCE; //!< Created instance identifier.
-    BRepGraph_NodeId Root;                            //!< Root topology node of the created subtree.
+    BRepGraph_NodeId Root; //!< Root topology node of the created subtree.
   };
 
   //! Reserved sentinel used when an operation does not create an instance.
@@ -61,7 +61,8 @@ public:
 
   //! Default generation mode builds topology and analytic geometry only.
   static constexpr uint32_t THE_DEFAULT_GENERATION_FLAGS =
-    static_cast<uint32_t>(GenerationFlag::Topology) | static_cast<uint32_t>(GenerationFlag::Geometry);
+    static_cast<uint32_t>(GenerationFlag::Topology)
+    | static_cast<uint32_t>(GenerationFlag::Geometry);
 
   //! Convert one generation flag into its bit-mask value.
   //! @param[in] theFlag generation flag to convert
@@ -113,7 +114,6 @@ public:
   }
 
 protected:
-
   //! Return the attached graph and raise if the layer is detached.
   //! @return attached graph for mutation operations
   [[nodiscard]] Standard_EXPORT BRepGraph* graphForMutation() const;
@@ -121,7 +121,8 @@ protected:
   //! Return the ownership layer used by parametric generators.
   //! @param[in] theGraph graph whose ownership layer should be returned
   //! @return ownership layer handle
-  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_LayerLock> lockLayer(BRepGraph& theGraph) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_LayerLock> lockLayer(
+    BRepGraph& theGraph) const;
 
   DEFINE_STANDARD_RTTIEXT(BRepGraph_LayerParametric, BRepGraph_Layer)
 };

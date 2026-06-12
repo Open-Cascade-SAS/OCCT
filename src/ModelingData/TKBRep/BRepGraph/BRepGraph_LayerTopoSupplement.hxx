@@ -76,9 +76,9 @@ public:
   //! @param[in] theKind semantic attachment kind
   //! @param[in] theShape attached supplemental shape
   //! @return non-zero layer-local uid on success, `0` on rejection
-  Standard_EXPORT uint64_t AddAttachment(BRepGraph_NodeId      theOwner,
-                                         AttachmentKind        theKind,
-                                         const TopoDS_Shape&   theShape);
+  Standard_EXPORT uint64_t AddAttachment(BRepGraph_NodeId    theOwner,
+                                         AttachmentKind      theKind,
+                                         const TopoDS_Shape& theShape);
 
   //! @brief Add one supplemental shape attachment with an explicitly preserved uid.
   //! Supported owner kinds are vertex, edge, face, shell, solid, compsolid, and compound.

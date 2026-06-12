@@ -150,7 +150,8 @@ TEST(BRepGraph_ShapesViewImportTest, AddFace_WithSurface)
 
   occ::handle<Geom_Plane>                    aPlane = new Geom_Plane(gp_Pln());
   NCollection_LinearVector<BRepGraph_WireId> aInnerWires;
-  BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires.ToArray1(), 0.001);
+  BRepGraph_FaceId                           aFaceId =
+    aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires.ToArray1(), 0.001);
 
   EXPECT_TRUE(aFaceId.IsValid());
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 1);
@@ -192,15 +193,13 @@ TEST(BRepGraph_ShapesViewImportTest, AddWireToFace_AppendsInnerWireRefAndRelatio
   aInnerCoEdges.Append(aGraph.Editor().CoEdges().Add(aE2, TopAbs_FORWARD));
   aInnerCoEdges.Append(aGraph.Editor().CoEdges().Add(aE3, TopAbs_FORWARD));
 
-  const BRepGraph_WireId aOuterWire = aGraph.Editor().Wires().Add(aOuterCoEdges.ToArray1());
+  const BRepGraph_WireId aOuterWire  = aGraph.Editor().Wires().Add(aOuterCoEdges.ToArray1());
   const BRepGraph_WireId anInnerWire = aGraph.Editor().Wires().Add(aInnerCoEdges.ToArray1());
 
   occ::handle<Geom_Plane>                    aPlane = new Geom_Plane(gp_Pln());
   NCollection_LinearVector<BRepGraph_WireId> anInnerWires;
-  const BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane,
-                                                               aOuterWire,
-                                                               anInnerWires.ToArray1(),
-                                                               0.001);
+  const BRepGraph_FaceId                     aFaceId =
+    aGraph.Editor().Faces().Add(aPlane, aOuterWire, anInnerWires.ToArray1(), 0.001);
 
   const BRepGraph_WireRefId aWireRef =
     aGraph.Editor().Faces().Append(aFaceId, anInnerWire, TopAbs_FORWARD);
@@ -295,8 +294,7 @@ TEST(BRepGraph_ShapesViewImportTest, AppendTwoBoxFaces)
 
   // Append second face.
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
-    aGraph.Shapes().Add(aCopy2.Shape(),
-                           BRepGraph::ShapesView::Options{{}, false, true, false});
+    aGraph.Shapes().Add(aCopy2.Shape(), BRepGraph::ShapesView::Options{{}, false, true, false});
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 2);
 }
 
@@ -321,8 +319,7 @@ TEST(BRepGraph_ShapesViewImportTest, RemoveFaceFromBox)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes3 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes3 = aGraph.Shapes().Add(aBox);
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
   BRepGraph_FaceId aFaceId(0);
@@ -391,10 +388,11 @@ TEST(BRepGraph_ShapesViewImportTest, AddFace_CreatesUsage)
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(aE2, TopAbs_FORWARD));
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(aE3, TopAbs_FORWARD));
 
-  BRepGraph_WireId                           aWireId = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
-  occ::handle<Geom_Plane>                    aPlane  = new Geom_Plane(gp_Pln());
+  BRepGraph_WireId        aWireId = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  occ::handle<Geom_Plane> aPlane  = new Geom_Plane(gp_Pln());
   NCollection_LinearVector<BRepGraph_WireId> aInnerWires;
-  BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires.ToArray1(), 0.001);
+  BRepGraph_FaceId                           aFaceId =
+    aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires.ToArray1(), 0.001);
 
   // Create shell and link face to it.
   BRepGraph_ShellId         aShellId   = aGraph.Editor().Shells().Add();
@@ -433,13 +431,20 @@ TEST(BRepGraph_ShapesViewImportTest, MutInvalidTopologyDefs_ThrowProgramError)
 {
   BRepGraph aGraph;
 #if !defined(No_Exception)
-  EXPECT_THROW(std::ignore = aGraph.Editor().Vertices().Mut(BRepGraph_VertexId(7)), Standard_ProgramError);
-  EXPECT_THROW(std::ignore = aGraph.Editor().Edges().Mut(BRepGraph_EdgeId(7)), Standard_ProgramError);
-  EXPECT_THROW(std::ignore = aGraph.Editor().Wires().Mut(BRepGraph_WireId(7)), Standard_ProgramError);
-  EXPECT_THROW(std::ignore = aGraph.Editor().Faces().Mut(BRepGraph_FaceId(7)), Standard_ProgramError);
-  EXPECT_THROW(std::ignore = aGraph.Editor().Shells().Mut(BRepGraph_ShellId(7)), Standard_ProgramError);
-  EXPECT_THROW(std::ignore = aGraph.Editor().Solids().Mut(BRepGraph_SolidId(7)), Standard_ProgramError);
-  EXPECT_THROW(std::ignore = aGraph.Editor().CoEdges().Mut(BRepGraph_CoEdgeId(7)), Standard_ProgramError);
+  EXPECT_THROW(std::ignore = aGraph.Editor().Vertices().Mut(BRepGraph_VertexId(7)),
+               Standard_ProgramError);
+  EXPECT_THROW(std::ignore = aGraph.Editor().Edges().Mut(BRepGraph_EdgeId(7)),
+               Standard_ProgramError);
+  EXPECT_THROW(std::ignore = aGraph.Editor().Wires().Mut(BRepGraph_WireId(7)),
+               Standard_ProgramError);
+  EXPECT_THROW(std::ignore = aGraph.Editor().Faces().Mut(BRepGraph_FaceId(7)),
+               Standard_ProgramError);
+  EXPECT_THROW(std::ignore = aGraph.Editor().Shells().Mut(BRepGraph_ShellId(7)),
+               Standard_ProgramError);
+  EXPECT_THROW(std::ignore = aGraph.Editor().Solids().Mut(BRepGraph_SolidId(7)),
+               Standard_ProgramError);
+  EXPECT_THROW(std::ignore = aGraph.Editor().CoEdges().Mut(BRepGraph_CoEdgeId(7)),
+               Standard_ProgramError);
 #endif
 }
 
@@ -509,10 +514,11 @@ TEST(BRepGraph_ShapesViewImportTest, FullSolid_ProgrammaticConstruction)
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(aE2, TopAbs_FORWARD));
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(aE3, TopAbs_FORWARD));
 
-  BRepGraph_WireId                           aWireId = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
-  occ::handle<Geom_Plane>                    aPlane  = new Geom_Plane(gp_Pln());
+  BRepGraph_WireId        aWireId = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  occ::handle<Geom_Plane> aPlane  = new Geom_Plane(gp_Pln());
   NCollection_LinearVector<BRepGraph_WireId> aInnerWires;
-  BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires.ToArray1(), 0.001);
+  BRepGraph_FaceId                           aFaceId =
+    aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires.ToArray1(), 0.001);
 
   BRepGraph_ShellId aShellId = aGraph.Editor().Shells().Add();
   aGraph.Editor().Shells().Append(aShellId, aFaceId);
@@ -539,8 +545,7 @@ TEST(BRepGraph_ShapesViewImportTest, MutableFaceDefinition_ChangesTolerance)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes4 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes4 = aGraph.Shapes().Add(aBox);
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
   const double anOrigTol = BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId::Start());
@@ -561,8 +566,7 @@ TEST(BRepGraph_ShapesViewImportTest, MutableShellDefinition)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes5 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes5 = aGraph.Shapes().Add(aBox);
   ASSERT_GT(aGraph.Topo().Shells().Nb(), 0);
 
   {
@@ -580,8 +584,7 @@ TEST(BRepGraph_ShapesViewImportTest, MutableSolidDefinition)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes6 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes6 = aGraph.Shapes().Add(aBox);
   ASSERT_GT(aGraph.Topo().Solids().Nb(), 0);
 
   {
@@ -633,8 +636,7 @@ TEST(BRepGraph_ShapesViewImportTest, SkipsRemovedFaces)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes7 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes7 = aGraph.Shapes().Add(aBox);
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
   // Remove 2 faces.
@@ -657,9 +659,8 @@ TEST(BRepGraph_ShapesViewImportTest, SkipsRemovedEdges)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes8 =
-    aGraph.Shapes().Add(aBox);
-  const uint32_t aNbEdges = aGraph.Topo().Edges().Nb();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes8 = aGraph.Shapes().Add(aBox);
+  const uint32_t                                       aNbEdges   = aGraph.Topo().Edges().Nb();
   ASSERT_GT(aNbEdges, 0);
 
   aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
@@ -721,10 +722,11 @@ TEST(BRepGraph_ShapesViewImportTest, RemoveFace_RemovesWiresAndEdges)
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(aE2, TopAbs_FORWARD));
   aCoEdges.Append(aGraph.Editor().CoEdges().Add(aE3, TopAbs_FORWARD));
 
-  BRepGraph_WireId                           aWireId = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
-  occ::handle<Geom_Plane>                    aPlane  = new Geom_Plane(gp_Pln());
+  BRepGraph_WireId        aWireId = aGraph.Editor().Wires().Add(aCoEdges.ToArray1());
+  occ::handle<Geom_Plane> aPlane  = new Geom_Plane(gp_Pln());
   NCollection_LinearVector<BRepGraph_WireId> aInnerWires;
-  BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires.ToArray1(), 0.001);
+  BRepGraph_FaceId                           aFaceId =
+    aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires.ToArray1(), 0.001);
 
   // Remove the face subgraph.
   aGraph.Editor().Gen().RemoveSubgraph(aFaceId);
@@ -748,8 +750,7 @@ TEST(BRepGraph_ShapesViewImportTest, RemoveSolid_CascadesToFaces)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes9 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes9 = aGraph.Shapes().Add(aBox);
 
   BRepGraph_SolidId aSolidId(0);
   aGraph.Editor().Gen().RemoveSubgraph(aSolidId);
@@ -780,8 +781,7 @@ TEST(BRepGraph_ShapesViewImportTest, RemoveSubgraph_SharedFace_PreservesSharedEd
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes10 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes10 = aGraph.Shapes().Add(aBox);
 
   const uint32_t aNbFaces    = aGraph.Topo().Faces().Nb();
   const uint32_t aNbEdges    = aGraph.Topo().Edges().Nb();
@@ -830,8 +830,7 @@ TEST(BRepGraph_ShapesViewImportTest, FacesOfEdge_BoxSharedEdge)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes11 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes11 = aGraph.Shapes().Add(aBox);
 
   // Every edge in a box is shared by exactly 2 faces.
   const uint32_t aNbEdges = aGraph.Topo().Edges().Nb();
@@ -851,12 +850,11 @@ TEST(BRepGraph_ShapesViewImportTest, SharedEdges_AdjacentBoxFaces)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes12 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes12 = aGraph.Shapes().Add(aBox);
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
   // Count total shared edge pairs across all face pairs.
-  int       aSharingPairs = 0;
+  int            aSharingPairs = 0;
   const uint32_t aNbFaces      = aGraph.Topo().Faces().Nb();
   for (BRepGraph_FaceId aFaceA(0); aFaceA.IsValid(aNbFaces); ++aFaceA)
   {
@@ -881,18 +879,16 @@ TEST(BRepGraph_ShapesViewImportTest, AdjacentFaces_BoxFace)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes13 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes13 = aGraph.Shapes().Add(aBox);
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
   // Each face of a box is adjacent to 4 other faces.
   const uint32_t aNbFaces = aGraph.Topo().Faces().Nb();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    NCollection_LinearVector<BRepGraph_FaceId> aAdj =
-      aGraph.Topo().Faces().Adjacent(aFaceId);
+    NCollection_LinearVector<BRepGraph_FaceId> aAdj = aGraph.Topo().Faces().Adjacent(aFaceId);
     EXPECT_EQ(aAdj.Size(), 4) << "Face " << aFaceId.Index << " has " << aAdj.Size()
-                                << " adjacent faces";
+                              << " adjacent faces";
   }
 }
 
@@ -906,8 +902,7 @@ TEST(BRepGraph_ShapesViewImportTest, FacesOfEdge_NoFaces_Programmatic)
   BRepGraph_EdgeId       anEdgeId = aGraph.Editor().Edges().Add(aV0, aV1, aLine, 0.0, 10.0, 0.001);
 
   // Edge not in any face => empty result.
-  const NCollection_LinearVector<BRepGraph_FaceId>& aFaces =
-    aGraph.Topo().Edges().Faces(anEdgeId);
+  const NCollection_LinearVector<BRepGraph_FaceId>& aFaces = aGraph.Topo().Edges().Faces(anEdgeId);
   EXPECT_EQ(aFaces.Size(), 0);
 }
 
@@ -1022,8 +1017,8 @@ TEST(BRepGraph_ShapesViewImportTest, AddWithHistory_PreservesRequestedAddedNodes
   anOptions.TrackAddedNodes = true;
 
   NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> anInputs;
-  const TopoDS_Shape                    aBox = BRepPrimAPI_MakeBox(10, 20, 30).Shape();
-  const BRepGraph::ShapesView::Result   aResult =
+  const TopoDS_Shape                  aBox = BRepPrimAPI_MakeBox(10, 20, 30).Shape();
+  const BRepGraph::ShapesView::Result aResult =
     aGraph.Shapes().AddWithHistory(aBox,
                                    anInputs,
                                    occ::handle<BRepTools_History>(),

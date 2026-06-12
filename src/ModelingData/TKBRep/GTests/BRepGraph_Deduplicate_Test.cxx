@@ -36,7 +36,6 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_Validate.hxx>
-#include <BRepGraph_ShapesView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepTools.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -139,7 +138,8 @@ size_t nbPCurveEntries(const BRepGraph& theGraph)
 
 int countHistoryRecordsByOp(const BRepGraph& theGraph, const TCollection_AsciiString& theOp)
 {
-  const BRepGraph_LayerHistory* aHistory = theGraph.LayerRegistry().Find<BRepGraph_LayerHistory>().get();
+  const BRepGraph_LayerHistory* aHistory =
+    theGraph.LayerRegistry().Find<BRepGraph_LayerHistory>().get();
   if (aHistory == nullptr)
   {
     return 0;
@@ -291,8 +291,7 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
       continue;
     }
 
-    const std::pair<double, double> aRange =
-      BRepGraph_Tool::CoEdge::Range(theGraph, aCoEdgeId);
+    const std::pair<double, double>  aRange = BRepGraph_Tool::CoEdge::Range(theGraph, aCoEdgeId);
     const occ::handle<Geom2d_Curve>& aDupPCurve =
       BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeId);
     std::ignore = theGraph.Editor().CoEdges().Add(anEdgeId,
@@ -312,12 +311,12 @@ TopoDS_Compound makeThreeCopiedIdenticalEdges()
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
-  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
-  const TopoDS_Shape aEdge = anExp.Current();
+  TopExp_Explorer     anExp(aBox, TopAbs_EDGE);
+  const TopoDS_Shape  aEdge = anExp.Current();
   BRepBuilderAPI_Copy aCopy1(aEdge, true);
   BRepBuilderAPI_Copy aCopy2(aEdge, true);
-  BRep_Builder aBuilder;
-  TopoDS_Compound aCompound;
+  BRep_Builder        aBuilder;
+  TopoDS_Compound     aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aEdge);
   aBuilder.Add(aCompound, aCopy1.Shape());
@@ -394,13 +393,15 @@ TEST(BRepGraph_DeduplicateTest, CanonicalizeSurfaces_RewritesAndRecordsHistory)
   anOpts.AnalyzeOnly = false;
   anOpts.HistoryMode = true;
 
-  const size_t                        aHistoryBefore = aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+  const size_t aHistoryBefore =
+    aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
   EXPECT_EQ(nbUniqueFaceSurfaceDefs(aGraph), 1);
   // 1 surface canonicalize + 4 curve canonicalizes = 5 history records.
-  EXPECT_EQ(aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), aHistoryBefore + 5);
+  EXPECT_EQ(aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(),
+            aHistoryBefore + 5);
 }
 
 TEST(BRepGraph_DeduplicateTest, CanonicalizeCurves_RewritesAndReducesUnique)
@@ -453,7 +454,7 @@ TEST(BRepGraph_DeduplicateTest, RestoresHistoryEnabledFlag)
 
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.HistoryMode = true;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  std::ignore        = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   EXPECT_FALSE(aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->IsEnabled());
 }
@@ -543,8 +544,7 @@ TEST(BRepGraph_DeduplicateTest, FullBox_AllSurfacesUnique)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes10 =
-    aGraph.Shapes().Add(aBox);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes10 = aGraph.Shapes().Add(aBox);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // A box has 6 faces with 6 distinct Geom_Plane instances (different origins/normals).
@@ -589,8 +589,7 @@ TEST(BRepGraph_DeduplicateTest, EmptyCompound_NoRewrites)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes12 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes12 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
@@ -959,20 +958,24 @@ TEST(BRepGraph_DeduplicateTest, HistoryFindOriginal_TracesBackToCanonical)
   ASSERT_EQ(aRes.NbHistoryRecords, 5);
 
   // For each history record, FindOriginal on the replacement should trace back.
-  for (size_t aRecIdx = 0; aRecIdx < aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(); ++aRecIdx)
+  for (size_t aRecIdx = 0;
+       aRecIdx < aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+       ++aRecIdx)
   {
-    const BRepGraph_LayerHistory::Event& aRec = aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aRecIdx);
+    const BRepGraph_LayerHistory::Event& aRec =
+      aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aRecIdx);
     for (NCollection_DataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_NodeId>>::Iterator
            aMapIter(aRec.Mapping);
          aMapIter.More();
          aMapIter.Next())
     {
-      const BRepGraph_NodeId&                            anOriginal    = aMapIter.Key();
+      const BRepGraph_NodeId&                           anOriginal    = aMapIter.Key();
       const NCollection_LinearVector<BRepGraph_NodeId>& aReplacements = aMapIter.Value();
       for (size_t aReplIdx = 0; aReplIdx < aReplacements.Size(); ++aReplIdx)
       {
         const BRepGraph_NodeId aTraced =
-          aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(aReplacements.Value(aReplIdx));
+          aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->FindOriginal(
+            aReplacements.Value(aReplIdx));
         // FindOriginal should eventually reach a root - the canonical node.
         EXPECT_TRUE(aTraced.IsValid());
         // The original node from the record should match one of the trace results.
@@ -1000,9 +1003,12 @@ TEST(BRepGraph_DeduplicateTest, HistoryFindDerived_ContainsCanonicalNode)
   // For each history record, FindDerived on the original should contain the replacements.
   // All records are canonicalize records with 1 replacement (no nullify records).
   int aNbCanonMappings = 0;
-  for (size_t aRecIdx = 0; aRecIdx < aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(); ++aRecIdx)
+  for (size_t aRecIdx = 0;
+       aRecIdx < aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+       ++aRecIdx)
   {
-    const BRepGraph_LayerHistory::Event& aRec = aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aRecIdx);
+    const BRepGraph_LayerHistory::Event& aRec =
+      aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aRecIdx);
     for (NCollection_DataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_NodeId>>::Iterator
            aMapIter(aRec.Mapping);
          aMapIter.More();
@@ -1033,9 +1039,12 @@ TEST(BRepGraph_DeduplicateTest, HistoryRecordSequenceNumbers_AreMonotonic)
 
   bool   isFirst  = true;
   size_t aPrevSeq = 0;
-  for (size_t aRecIdx = 0; aRecIdx < aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(); ++aRecIdx)
+  for (size_t aRecIdx = 0;
+       aRecIdx < aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords();
+       ++aRecIdx)
   {
-    const BRepGraph_LayerHistory::Event& aRec = aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aRecIdx);
+    const BRepGraph_LayerHistory::Event& aRec =
+      aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->Record(aRecIdx);
     if (!isFirst)
     {
       EXPECT_GT(aRec.SequenceNumber, aPrevSeq);
@@ -1056,7 +1065,7 @@ TEST(BRepGraph_DeduplicateTest, HistoryOff_NbRecordsUnchanged)
   // Run once with history to get 5 records (1 surface + 4 curve canonicalizes).
   BRepGraph_Deduplicate::Options anOpts1;
   anOpts1.HistoryMode = true;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, anOpts1);
+  std::ignore         = BRepGraph_Deduplicate::Perform(aGraph, anOpts1);
   EXPECT_EQ(aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), 5);
 
   // Fresh graph, run with history off - no records should be added.
@@ -1203,8 +1212,7 @@ TEST(BRepGraph_DeduplicateTest, ParallelBuild_SameResultAsSequential)
   BRepGraph aGraphSeq;
   aGraphSeq.Clear();
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes37 =
-    aGraphSeq.Shapes().Add(aCompound,
-                           BRepGraph::ShapesView::Options{{}, true, false, false});
+    aGraphSeq.Shapes().Add(aCompound, BRepGraph::ShapesView::Options{{}, true, false, false});
   ASSERT_FALSE(aGraphSeq.IsEmpty());
 
   BRepGraph aGraphPar;
@@ -1355,7 +1363,7 @@ TEST(BRepGraph_DeduplicateTest, RestoresHistoryFlag_WhenHistoryModeOff)
 
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.HistoryMode = false;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  std::ignore        = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   // Should be restored to the original value (true).
   EXPECT_TRUE(aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->IsEnabled());
@@ -1374,7 +1382,7 @@ TEST(BRepGraph_DeduplicateTest, RestoresHistoryFlag_AnalyzeOnlyPath)
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.AnalyzeOnly = true;
   anOpts.HistoryMode = false;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  std::ignore        = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   // Restored even when exiting through the AnalyzeOnly early-return.
   EXPECT_TRUE(aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->IsEnabled());
@@ -1470,8 +1478,7 @@ TEST(BRepGraph_DeduplicateTest, TwoCopiedSphereFaces_Deduped)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes49 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes49 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // Two sphere face copies: 2 faces, 6 edges.
@@ -1507,8 +1514,7 @@ TEST(BRepGraph_DeduplicateTest, TwoCopiedCylinderFaces_Deduped)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes50 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes50 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // Two cylinder face copies: 2 faces, 6 edges, 2 surfaces, 6 curves, 12 PCurves.
@@ -1543,8 +1549,7 @@ TEST(BRepGraph_DeduplicateTest, DifferentSizedCylinders_NotDeduped)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes51 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes51 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // Two distinct cylinder faces: 2 surfaces, 6 curves.
@@ -1862,8 +1867,7 @@ TEST(BRepGraph_DeduplicateTest, Build_SharedTFace_OneSurfaceNode)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes63 =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes63 = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // Both face usages share the same TFace -> same raw surface pointer -> one surface node.
@@ -2092,7 +2096,7 @@ TEST(BRepGraph_DeduplicateTest, MergeFaces_SameSurfaceDifferentWires_NotMerged)
   gp_Pnt aP4(0, 20, 0);
 
   BRep_Builder aBuilder;
-  TopoDS_Wire aWire1;
+  TopoDS_Wire  aWire1;
   aBuilder.MakeWire(aWire1);
   aBuilder.Add(aWire1, BRepBuilderAPI_MakeEdge(aP1, aP2));
   aBuilder.Add(aWire1, BRepBuilderAPI_MakeEdge(aP2, aP3));
@@ -2125,8 +2129,7 @@ TEST(BRepGraph_DeduplicateTest, MergeFaces_SameSurfaceDifferentWires_NotMerged)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 2);
@@ -2150,7 +2153,8 @@ TEST(BRepGraph_DeduplicateTest, MergeFaces_SameSurfaceDifferentWires_NotMerged)
       ++aNbActiveFaces;
     }
   }
-  EXPECT_EQ(aNbActiveFaces, 2) << "Faces with same surface but different wires were incorrectly merged";
+  EXPECT_EQ(aNbActiveFaces, 2)
+    << "Faces with same surface but different wires were incorrectly merged";
   EXPECT_EQ(aRes.NbMergedFaces, 0) << "Faces with different wires should not be merged";
 }
 
@@ -2214,27 +2218,25 @@ int countSeamCoEdges(const BRepGraph& theGraph)
   for (BRepGraph_FullCoEdgeIterator aCEIt(theGraph); aCEIt.More(); aCEIt.Next())
   {
     const BRepGraph_CoEdgeId       aCoEdgeId = aCEIt.CurrentId();
-    const BRepGraphInc::CoEdgeDef& aCE =
-      theGraph.Topo().CoEdges().Definition(aCoEdgeId);
+    const BRepGraphInc::CoEdgeDef& aCE       = theGraph.Topo().CoEdges().Definition(aCoEdgeId);
     if (!aCoEdgeId.IsRemoved(theGraph) && aCE.FaceId.IsValid() && aCE.ChildEdgeId.IsValid())
     {
       const NCollection_LinearVector<BRepGraph_CoEdgeId>& aSiblings =
         theGraph.Topo().Edges().CoEdges(aCE.ChildEdgeId);
       for (const BRepGraph_CoEdgeId& aOtherId : aSiblings)
+      {
+        if (aOtherId == aCoEdgeId)
         {
-          if (aOtherId == aCoEdgeId)
-          {
-            continue;
-          }
-          const BRepGraphInc::CoEdgeDef& aOther =
-            theGraph.Topo().CoEdges().Definition(aOtherId);
-          if (!aOtherId.IsRemoved(theGraph) && aOther.FaceId == aCE.FaceId
-              && aOther.Orientation != aCE.Orientation)
-          {
-            ++aCount;
-            break;
-          }
+          continue;
         }
+        const BRepGraphInc::CoEdgeDef& aOther = theGraph.Topo().CoEdges().Definition(aOtherId);
+        if (!aOtherId.IsRemoved(theGraph) && aOther.FaceId == aCE.FaceId
+            && aOther.Orientation != aCE.Orientation)
+        {
+          ++aCount;
+          break;
+        }
+      }
     }
   }
   return aCount;
@@ -2249,7 +2251,7 @@ TEST(BRepGraph_DeduplicateTest, Sphere_SeamPCurve_SurvivesDedupCompactReconstruc
   ASSERT_FALSE(aGraph.IsEmpty());
 
   // Record PCurve count and seam coedge count before dedup.
-  const int aPCurvesBefore   = countValidCoEdgePCurves(aGraph);
+  const int aPCurvesBefore     = countValidCoEdgePCurves(aGraph);
   const int aSeamCoEdgesBefore = countSeamCoEdges(aGraph);
   ASSERT_EQ(aPCurvesBefore, 4) << "Full sphere must have 4 PCurves";
   ASSERT_EQ(aSeamCoEdgesBefore, 2) << "Full sphere must have 2 seam coedges";
@@ -2257,7 +2259,7 @@ TEST(BRepGraph_DeduplicateTest, Sphere_SeamPCurve_SurvivesDedupCompactReconstruc
   // Run full pipeline: dedup (with merge) -> compact.
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.MergeEntitiesWhenSafe = true;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  std::ignore                  = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   // Verify all PCurves are still non-null after dedup.
   for (BRepGraph_FullCoEdgeIterator aCEIt(aGraph); aCEIt.More(); aCEIt.Next())
@@ -2266,8 +2268,7 @@ TEST(BRepGraph_DeduplicateTest, Sphere_SeamPCurve_SurvivesDedupCompactReconstruc
     if (!aCoEdgeId.IsRemoved(aGraph)
         && aGraph.Topo().CoEdges().Definition(aCoEdgeId).Curve2DRepId.IsValid())
     {
-      const occ::handle<Geom2d_Curve>& aPCurve =
-        BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId);
+      const occ::handle<Geom2d_Curve>& aPCurve = BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId);
       EXPECT_FALSE(aPCurve.IsNull())
         << "CoEdge " << aCoEdgeId.Index << " has null PCurve after dedup";
     }
@@ -2277,8 +2278,7 @@ TEST(BRepGraph_DeduplicateTest, Sphere_SeamPCurve_SurvivesDedupCompactReconstruc
 
   // Verify all PCurves survived compact.
   const int aPCurvesAfter = countValidCoEdgePCurves(aGraph);
-  EXPECT_EQ(aPCurvesAfter, aPCurvesBefore)
-    << "PCurve count changed after dedup+compact on sphere";
+  EXPECT_EQ(aPCurvesAfter, aPCurvesBefore) << "PCurve count changed after dedup+compact on sphere";
 
   // Verify seam coedges still exist.
   const int aSeamCoEdgesAfter = countSeamCoEdges(aGraph);
@@ -2295,8 +2295,7 @@ TEST(BRepGraph_DeduplicateTest, Sphere_SeamPCurve_SurvivesDedupCompactReconstruc
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(aGraph.RootProductIds().Value(0)));
   ASSERT_FALSE(aReconstructed.IsNull());
   BRepCheck_Analyzer anAnalyzer(aReconstructed);
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "Reconstructed sphere is not valid after dedup+compact";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Reconstructed sphere is not valid after dedup+compact";
 }
 
 TEST(BRepGraph_DeduplicateTest, ThreeCopiedCylinderFaces_PCurvesSurviveFullPipeline)
@@ -2308,16 +2307,15 @@ TEST(BRepGraph_DeduplicateTest, ThreeCopiedCylinderFaces_PCurvesSurviveFullPipel
   ASSERT_FALSE(aGraph.IsEmpty());
 
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 3);
-  const uint32_t aEdgesBefore  = aGraph.Topo().Edges().Nb();
+  const uint32_t aEdgesBefore = aGraph.Topo().Edges().Nb();
   ASSERT_EQ(aEdgesBefore, 9) << "Three cylinder cap faces: 3 copies * 3 edges each = 9";
   ASSERT_EQ(countValidCoEdgePCurves(aGraph), 12)
     << "Three cylinder faces: 3 copies * 4 coedges each = 12 PCurves";
 
   // Run dedup with entity merge.
   BRepGraph_Deduplicate::Options anOpts;
-  anOpts.MergeEntitiesWhenSafe = true;
-  const BRepGraph_Deduplicate::Result aDedupRes =
-    BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  anOpts.MergeEntitiesWhenSafe                  = true;
+  const BRepGraph_Deduplicate::Result aDedupRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   // All surviving coedges must have non-null PCurves.
   for (BRepGraph_FullCoEdgeIterator aCEIt(aGraph); aCEIt.More(); aCEIt.Next())
@@ -2326,8 +2324,7 @@ TEST(BRepGraph_DeduplicateTest, ThreeCopiedCylinderFaces_PCurvesSurviveFullPipel
     if (!aCoEdgeId.IsRemoved(aGraph)
         && aGraph.Topo().CoEdges().Definition(aCoEdgeId).Curve2DRepId.IsValid())
     {
-      const occ::handle<Geom2d_Curve>& aPCurve =
-        BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId);
+      const occ::handle<Geom2d_Curve>& aPCurve = BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId);
       EXPECT_FALSE(aPCurve.IsNull())
         << "CoEdge " << aCoEdgeId.Index << " PCurve is null after dedup";
     }
@@ -2345,8 +2342,7 @@ TEST(BRepGraph_DeduplicateTest, ThreeCopiedCylinderFaces_PCurvesSurviveFullPipel
     if (!aCoEdgeId.IsRemoved(aGraph)
         && aGraph.Topo().CoEdges().Definition(aCoEdgeId).Curve2DRepId.IsValid())
     {
-      const occ::handle<Geom2d_Curve>& aPCurve =
-        BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId);
+      const occ::handle<Geom2d_Curve>& aPCurve = BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId);
       EXPECT_FALSE(aPCurve.IsNull())
         << "CoEdge " << aCoEdgeId.Index << " PCurve is null after compact";
     }
@@ -2366,8 +2362,8 @@ TEST(BRepGraph_DeduplicateTest, ThreeCopiedCylinderFaces_PCurvesSurviveFullPipel
     const TopoDS_Shape aFace = aGraph.Shapes().Reconstruct(aFaceIt.CurrentId());
     ASSERT_FALSE(aFace.IsNull());
     BRepCheck_Analyzer anFA(aFace);
-    EXPECT_TRUE(anFA.IsValid())
-      << "Reconstructed face " << aFaceIt.CurrentId().Index << " is not valid";
+    EXPECT_TRUE(anFA.IsValid()) << "Reconstructed face " << aFaceIt.CurrentId().Index
+                                << " is not valid";
   }
 }
 
@@ -2398,9 +2394,8 @@ TEST(BRepGraph_DeduplicateTest, ThreeCopiedBoxes_DedupMergeCompact_FacesKeepOute
   ASSERT_EQ(aGraph.Topo().Solids().Nb(), 3);
 
   BRepGraph_Deduplicate::Options anOpts;
-  anOpts.MergeEntitiesWhenSafe = true;
-  const BRepGraph_Deduplicate::Result aDedupRes =
-    BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  anOpts.MergeEntitiesWhenSafe                  = true;
+  const BRepGraph_Deduplicate::Result aDedupRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
   EXPECT_EQ(aDedupRes.NbMergedVertices, 16);
   EXPECT_EQ(aDedupRes.NbMergedEdges, 24);
   EXPECT_EQ(aDedupRes.NbMergedWires, 12);
@@ -2444,8 +2439,8 @@ TEST(BRepGraph_DeduplicateTest, ThreeCopiedBoxes_DedupMergeCompact_FacesKeepOute
     const TopoDS_Shape aSolid = aGraph.Shapes().Reconstruct(aSolidIt.CurrentId());
     ASSERT_FALSE(aSolid.IsNull());
     BRepCheck_Analyzer anSA(aSolid);
-    EXPECT_TRUE(anSA.IsValid())
-      << "Reconstructed solid " << aSolidIt.CurrentId().Index << " is not valid";
+    EXPECT_TRUE(anSA.IsValid()) << "Reconstructed solid " << aSolidIt.CurrentId().Index
+                                << " is not valid";
   }
 }
 
@@ -2468,15 +2463,14 @@ TEST(BRepGraph_DeduplicateTest, SelfLoopEdge_AfterVertexMerge_OrientationCorrect
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   ASSERT_EQ(aGraph.Topo().Solids().Nb(), 2);
 
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.MergeEntitiesWhenSafe = true;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  std::ignore                  = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   // Compact.
   std::ignore = BRepGraph_Compact::Perform(aGraph);
@@ -2515,8 +2509,7 @@ TEST(BRepGraph_DeduplicateTest, EdgeMerge_ThreeCopiedEdges_GraphValidates)
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.MergeEntitiesWhenSafe = true;
 
-  const BRepGraph_Deduplicate::Result aDedupRes =
-    BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  const BRepGraph_Deduplicate::Result aDedupRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
   EXPECT_EQ(aDedupRes.NbMergedEdges, 2);
 
   std::ignore = BRepGraph_Compact::Perform(aGraph);
@@ -2542,8 +2535,7 @@ TEST(BRepGraph_DeduplicateTest, FaceMerge_TwoIdenticalSingularFaces_Merge)
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.MergeEntitiesWhenSafe = true;
 
-  const BRepGraph_Deduplicate::Result aDedupRes =
-    BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  const BRepGraph_Deduplicate::Result aDedupRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
   EXPECT_EQ(aDedupRes.NbMergedFaces, 1);
 
   std::ignore = BRepGraph_Compact::Perform(aGraph);
@@ -2576,21 +2568,20 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_TwoBoxesWithSharedEdge_EdgeFaceCountC
 
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.MergeEntitiesWhenSafe = true;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  std::ignore                  = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   int aNbEdgesWith2Faces = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                              anEdgeId    = anEdgeIt.CurrentId();
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
     const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
 
     NCollection_Map<BRepGraph_FaceId> aFaceSet;
     for (size_t aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Size(); ++aCEIdx)
     {
-      const BRepGraph_CoEdgeId   aCEId = aCoEdgeIdxs.Value(aCEIdx);
-      const BRepGraphInc::CoEdgeDef& aCE =
-        aGraph.Topo().CoEdges().Definition(aCEId);
+      const BRepGraph_CoEdgeId       aCEId = aCoEdgeIdxs.Value(aCEIdx);
+      const BRepGraphInc::CoEdgeDef& aCE   = aGraph.Topo().CoEdges().Definition(aCEId);
       if (!aCEId.IsRemoved(aGraph) && aCE.FaceId.IsValid())
       {
         aFaceSet.Add(aCE.FaceId);
@@ -2611,7 +2602,7 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_TwoBoxesWithSharedEdge_EdgeFaceCountC
   EXPECT_EQ(aNbEdgesWith2Faces, 16);
 
   // Compact and validate.
-  std::ignore = BRepGraph_Compact::Perform(aGraph);
+  std::ignore                           = BRepGraph_Compact::Perform(aGraph);
   const BRepGraph_Validate::Result aVal = BRepGraph_Validate::Perform(aGraph);
   EXPECT_TRUE(aVal.IsValid());
 }
@@ -2633,12 +2624,11 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_TwoSpheres_DifferentSize_NotMerged)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
-    aGraph.Shapes().Add(aCompound);
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes = aGraph.Shapes().Add(aCompound);
   ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_Deduplicate::Options anOpts;
-  anOpts.MergeEntitiesWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe             = true;
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   EXPECT_EQ(aRes.NbMergedFaces, 0);
@@ -2656,7 +2646,7 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_TwoSpheres_DifferentSize_NotMerged)
 }
 
 // ---------------------------------------------------------------------------
-// Edge-case: three identical boxes — explicit merge count assertions
+// Edge-case: three identical boxes - explicit merge count assertions
 // ---------------------------------------------------------------------------
 
 TEST(BRepGraph_DeduplicateTest, DedupMerge_ThreeBoxes_AllEdgesMergeCorrectly)
@@ -2668,9 +2658,8 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_ThreeBoxes_AllEdgesMergeCorrectly)
   ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_Deduplicate::Options anOpts;
-  anOpts.MergeEntitiesWhenSafe = true;
-  const BRepGraph_Deduplicate::Result aDedupRes =
-    BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  anOpts.MergeEntitiesWhenSafe                  = true;
+  const BRepGraph_Deduplicate::Result aDedupRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   EXPECT_EQ(aDedupRes.NbMergedVertices, 16);
   EXPECT_EQ(aDedupRes.NbMergedEdges, 24);
@@ -2717,7 +2706,7 @@ TEST(BRepGraph_DeduplicateTest, DedupMerge_SelfLoopEdge_OrientationPreserved)
 
   BRepGraph_Deduplicate::Options anOpts;
   anOpts.MergeEntitiesWhenSafe = true;
-  std::ignore = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
+  std::ignore                  = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   std::ignore = BRepGraph_Compact::Perform(aGraph);
 

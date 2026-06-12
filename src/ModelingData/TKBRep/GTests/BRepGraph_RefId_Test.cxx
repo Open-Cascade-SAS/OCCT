@@ -249,7 +249,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_HasFaceRefs)
   {
     const BRepGraph_FaceRefId    aFaceRefId(0);
     const BRepGraphInc::FaceRef& anEntry = aGraph.Refs().Faces().Entry(aFaceRefId);
-    std::ignore = anEntry;
+    std::ignore                          = anEntry;
     EXPECT_TRUE(aFaceRefId.IsValid(aFaceRefCount));
   }
   else
@@ -484,9 +484,9 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
   EXPECT_TRUE(aGraph.UIDs().IsStale(aBeforeStamp));
 
   bool hasUpdatedParent = false;
-  for (BRepGraph_RefsShellsOfFace anIt(aGraph,
-                                       aGraph.Topo().Faces().Relations(aAfterEntry.ChildFaceId)
-                                         .ParentFaceRefIds);
+  for (BRepGraph_RefsShellsOfFace anIt(
+         aGraph,
+         aGraph.Topo().Faces().Relations(aAfterEntry.ChildFaceId).ParentFaceRefIds);
        anIt.More();
        anIt.Next())
   {

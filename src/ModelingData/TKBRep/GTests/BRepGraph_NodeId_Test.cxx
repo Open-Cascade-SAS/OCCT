@@ -207,8 +207,7 @@ TEST(BRepGraph_NodeIdTest, OutOfRangeMetadataQueriesReturnFalse)
   EXPECT_FALSE(anOutOfRangeVertex.IsRemoved(aGraph));
   EXPECT_FALSE(anOutOfRangeVertex.IsOwned(aGraph));
 
-  const BRepGraph_NodeId anOutOfRangeFace(BRepGraph_NodeId::Kind::Face,
-                                          aGraph.Topo().Faces().Nb());
+  const BRepGraph_NodeId anOutOfRangeFace(BRepGraph_NodeId::Kind::Face, aGraph.Topo().Faces().Nb());
   EXPECT_FALSE(anOutOfRangeFace.IsRemoved(aGraph));
   EXPECT_FALSE(anOutOfRangeFace.IsOwned(aGraph));
 }
