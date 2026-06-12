@@ -1172,7 +1172,8 @@ void extractFaceData(FaceBuildData& theData)
                         aPCurveContext,
                         aWireData.BakedLocation);
     }
-    aWireData.HasPartialExplorerOrder = !orderExtractedWire(aWireData, &aForwardFace);
+    aWireData.HasPartialExplorerOrder =
+      !orderExtractedWire(aWireData, aRawSurface.IsNull() ? nullptr : &aForwardFace);
   }
 
   if (theData.Wires.IsEmpty() && BRep_Tool::NaturalRestriction(aFace))
