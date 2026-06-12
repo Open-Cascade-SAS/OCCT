@@ -182,7 +182,7 @@ struct BRepGraph_RepId
   }
 
   //! Return true if this use entry has been soft-removed in the given graph.
-  [[nodiscard]] bool IsRemoved(const BRepGraph& theGraph) const;
+  [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph& theGraph) const;
 };
 
 // Convenience type aliases for typed RepIds.

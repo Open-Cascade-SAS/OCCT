@@ -119,8 +119,8 @@ public:
         return reinterpret_cast<Representation*>(&myRepresentationStorage[theIndex]);
       }
 
-      void copyFrom(const RepresentationStorage& theOther);
-      void moveFrom(RepresentationStorage& theOther);
+      Standard_EXPORT void copyFrom(const RepresentationStorage& theOther);
+      Standard_EXPORT void moveFrom(RepresentationStorage& theOther);
 
       using RepresentationSlot =
         std::aligned_storage_t<sizeof(Representation), alignof(Representation)>;

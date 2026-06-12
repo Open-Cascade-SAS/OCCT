@@ -1384,7 +1384,7 @@ private:
   Standard_EXPORT void ClearStorageForReuse();
   Standard_EXPORT void ClearUIDIndexes();
   Standard_EXPORT void ClearShapeCache();
-  void                 ClearRelations();
+  Standard_EXPORT void ClearRelations();
 
   BRepGraphInc::FaceRelations& ChangeFaceRelationsInternal(const BRepGraph_FaceId theId)
   {
@@ -1438,13 +1438,13 @@ private:
     return myOccurrenceRelations.ChangeValue(static_cast<size_t>(theId.Index));
   }
 
-  NCollection_LinearVector<BRepGraph_ChildRefId>& ChangeCompoundRefsOfNodeInternal(
+  Standard_EXPORT NCollection_LinearVector<BRepGraph_ChildRefId>& ChangeCompoundRefsOfNodeInternal(
     const BRepGraph_NodeId theNode);
 
-  NCollection_LinearVector<BRepGraph_OccurrenceRefId>& ChangeOccurrenceRefsOfNodeInternal(
+  Standard_EXPORT NCollection_LinearVector<BRepGraph_OccurrenceRefId>& ChangeOccurrenceRefsOfNodeInternal(
     const BRepGraph_NodeId theNode);
 
-  void rebuildDerivedRelationsInternal(const bool theRecountActiveCounts);
+  Standard_EXPORT void rebuildDerivedRelationsInternal(const bool theRecountActiveCounts);
 
   //! Return true if the typed entity has at least one parent compound (internal).
   template <typename T>

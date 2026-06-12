@@ -122,7 +122,7 @@ public:
   }
 
   //! Iterate registered cache services.
-  [[nodiscard]] BRepGraph_CacheIterator CacheIter() const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_CacheIterator CacheIter() const;
 
   //! Clear data in all registered cache services.
   Standard_EXPORT void ClearAll() noexcept;

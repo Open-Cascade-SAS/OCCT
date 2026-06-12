@@ -340,10 +340,10 @@ struct BRepGraph_RefId
   }
 
   //! Return true if this reference entry has been soft-removed in the given graph.
-  [[nodiscard]] bool IsRemoved(const BRepGraph& theGraph) const;
+  [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph& theGraph) const;
 
   //! Return true if this reference entry has an active owner in the given graph.
-  [[nodiscard]] bool IsOwned(const BRepGraph& theGraph) const;
+  [[nodiscard]] Standard_EXPORT bool IsOwned(const BRepGraph& theGraph) const;
 };
 
 using BRepGraph_ShellRefId      = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Shell>;

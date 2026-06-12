@@ -579,7 +579,6 @@ TEST(BRepGraph_CacheMeshTest, MeshGeneration_MonotonicAcrossClear)
   const BRepGraph_CacheMesh::CoEdgeMeshEntry* aCoEntry =
     aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId);
   ASSERT_NE(aCoEntry, nullptr);
-  const uint32_t aSnapGen = aCoEntry->FaceMeshGeneration;
 
   aGraph.Mesh().Editor().Faces().Clear(aFaceId);
   writeFaceMesh(aGraph, aFaceId);

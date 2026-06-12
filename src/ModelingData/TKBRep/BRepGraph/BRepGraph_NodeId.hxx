@@ -395,10 +395,10 @@ struct BRepGraph_NodeId
   }
 
   //! Return true if this node has been soft-removed in the given graph.
-  [[nodiscard]] bool IsRemoved(const BRepGraph& theGraph) const;
+  [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph& theGraph) const;
 
   //! Return true if this node has an active owner in the given graph.
-  [[nodiscard]] bool IsOwned(const BRepGraph& theGraph) const;
+  [[nodiscard]] Standard_EXPORT bool IsOwned(const BRepGraph& theGraph) const;
 };
 
 // Convenience type aliases for typed NodeIds.

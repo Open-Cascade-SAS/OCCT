@@ -84,16 +84,16 @@ public:
   };
 
   //! Returns the unique cache service GUID.
-  [[nodiscard]] static const Standard_GUID& GetID();
+  [[nodiscard]] Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Returns the unique cache service GUID.
-  [[nodiscard]] const Standard_GUID& ID() const override;
+  [[nodiscard]] Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Returns the cache service display name.
-  [[nodiscard]] const TCollection_AsciiString& Name() const override;
+  [[nodiscard]] Standard_EXPORT const TCollection_AsciiString& Name() const override;
 
   //! Clears all cached entries.
-  void Clear() noexcept override;
+  Standard_EXPORT void Clear() noexcept override;
 
   //! Copy fresh, remappable derived-state entries into the target graph.
   Standard_EXPORT void CopyFreshTo(const BRepGraph_CopyRemap& theCopy) const override;
@@ -102,34 +102,34 @@ public:
   //! @param[in]  theEdge  edge definition identifier
   //! @param[out] theEntry filled with a fresh derived entry
   //! @return true if computation succeeded
-  [[nodiscard]] bool GetEdgeStatus(BRepGraph_EdgeId theEdge, EdgeEntry& theEntry);
+  [[nodiscard]] Standard_EXPORT bool GetEdgeStatus(BRepGraph_EdgeId theEdge, EdgeEntry& theEntry);
 
   //! @brief Return wire closure, computing and storing a fresh entry.
   //! @param[in]  theWire   wire definition identifier
   //! @param[out] theClosed filled with the fresh derived value
   //! @return true if computation succeeded
-  [[nodiscard]] bool GetWireIsClosed(BRepGraph_WireId theWire, bool& theClosed);
+  [[nodiscard]] Standard_EXPORT bool GetWireIsClosed(BRepGraph_WireId theWire, bool& theClosed);
 
   //! @brief Return shell status, computing and storing a fresh entry.
   //! @param[in]  theShell shell definition identifier
   //! @param[out] theEntry filled with a fresh derived entry
   //! @return true if computation succeeded
-  [[nodiscard]] bool GetShellStatus(BRepGraph_ShellId theShell, ShellEntry& theEntry);
+  [[nodiscard]] Standard_EXPORT bool GetShellStatus(BRepGraph_ShellId theShell, ShellEntry& theEntry);
 
   //! @brief Store a pre-computed edge entry (warm-start from import or after computation).
   //! @param[in] theEdge  edge definition identifier
   //! @param[in] theEntry pre-computed entry to store
-  void SetEdgeStatus(BRepGraph_EdgeId theEdge, const EdgeEntry& theEntry);
+  Standard_EXPORT void SetEdgeStatus(BRepGraph_EdgeId theEdge, const EdgeEntry& theEntry);
 
   //! @brief Store a pre-computed wire closure value.
   //! @param[in] theWire   wire definition identifier
   //! @param[in] theClosed pre-computed closure value
-  void SetWireIsClosed(BRepGraph_WireId theWire, bool theClosed);
+  Standard_EXPORT void SetWireIsClosed(BRepGraph_WireId theWire, bool theClosed);
 
   //! @brief Store a pre-computed shell entry (warm-start from import or after computation).
   //! @param[in] theShell shell definition identifier
   //! @param[in] theEntry pre-computed entry to store
-  void SetShellStatus(BRepGraph_ShellId theShell, const ShellEntry& theEntry);
+  Standard_EXPORT void SetShellStatus(BRepGraph_ShellId theShell, const ShellEntry& theEntry);
 
   //! Compute edge derived state directly from a BRepGraph without caching.
   //! Used by callers like Reconstruct that need one-shot computation.

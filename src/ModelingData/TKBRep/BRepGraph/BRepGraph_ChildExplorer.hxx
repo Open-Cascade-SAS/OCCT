@@ -362,7 +362,7 @@ private:
     TopAbs_Orientation AccOrientation = TopAbs_FORWARD;
   };
 
-  void advance();
+  Standard_EXPORT void advance();
 
   void startTraversal(const TopLoc_Location& theStartLoc, TopAbs_Orientation theStartOri);
 

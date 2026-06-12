@@ -185,7 +185,7 @@ private:
     return false;
   }
 
-  void advance();
+  Standard_EXPORT void advance();
 
 private:
   const BRepGraph* myGraph;

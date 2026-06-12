@@ -67,7 +67,7 @@ public:
 
 private:
   //! @brief Skip missing entries in owner-local uid storage.
-  void skipInvalid();
+  Standard_EXPORT void skipInvalid();
 
 private:
   occ::handle<BRepGraph_LayerTopoSupplement>  myLayer;
