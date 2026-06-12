@@ -1448,41 +1448,19 @@ private:
 
   //! Return true if the typed entity has at least one parent compound (internal).
   template <typename T>
-  [[nodiscard]] bool HasCompoundParentTyped(const T theId) const
-  {
-    return isInRange(theId) && TypedStorePlanes<T>::HasCompoundParent(*this).Test(theId.Index);
-  }
+  [[nodiscard]] bool HasCompoundParentTyped(const T theId) const;
 
   //! Set or clear the "has parent compound" flag for a typed entity (internal).
   template <typename T>
-  void SetHasCompoundParentTyped(const T theId, const bool theVal)
-  {
-    if (!isInRange(theId))
-    {
-      return;
-    }
-    auto& aF = TypedStorePlanes<T>::HasCompoundParent(*this);
-    theVal ? aF.Set(theId.Index) : aF.Clear(theId.Index);
-  }
+  void SetHasCompoundParentTyped(const T theId, const bool theVal);
 
   //! Return true if the typed entity has at least one parent occurrence (internal).
   template <typename T>
-  [[nodiscard]] bool HasOccurrenceParentTyped(const T theId) const
-  {
-    return isInRange(theId) && TypedStorePlanes<T>::HasOccurrenceParent(*this).Test(theId.Index);
-  }
+  [[nodiscard]] bool HasOccurrenceParentTyped(const T theId) const;
 
   //! Set or clear the "has parent occurrence" flag for a typed entity (internal).
   template <typename T>
-  void SetHasOccurrenceParentTyped(const T theId, const bool theVal)
-  {
-    if (!isInRange(theId))
-    {
-      return;
-    }
-    auto& aF = TypedStorePlanes<T>::HasOccurrenceParent(*this);
-    theVal ? aF.Set(theId.Index) : aF.Clear(theId.Index);
-  }
+  void SetHasOccurrenceParentTyped(const T theId, const bool theVal);
 
   //! Set or clear the "has parent compound" flag for a generic NodeId (internal dispatch).
   Standard_EXPORT void SetHasCompoundParent(const BRepGraph_NodeId theNode, bool theVal);
@@ -1900,312 +1878,52 @@ private:
   template <typename T>
   struct TypedStorePlanes;
 
-#define OCCT_BG_STORE_PLANES(T, F)                                                                 \
-  template <>                                                                                      \
-  struct TypedStorePlanes<T>                                                                       \
-  {                                                                                                \
-    static uint32_t Nb(const BRepGraphInc_Storage& s)                                              \
-    {                                                                                              \
-      return s.F.Nb();                                                                             \
-    }                                                                                              \
-    static uint32_t& NbActive(BRepGraphInc_Storage& s)                                             \
-    {                                                                                              \
-      return s.F.NbActive;                                                                         \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& s)                                 \
-    {                                                                                              \
-      return s.F.RemovedFlags;                                                                     \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& Removed(const BRepGraphInc_Storage& s)                     \
-    {                                                                                              \
-      return s.F.RemovedFlags;                                                                     \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& Owned(BRepGraphInc_Storage& s)                                   \
-    {                                                                                              \
-      return s.F.OwnedFlags;                                                                       \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& Owned(const BRepGraphInc_Storage& s)                       \
-    {                                                                                              \
-      return s.F.OwnedFlags;                                                                       \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& Guard(BRepGraphInc_Storage& s)                                   \
-    {                                                                                              \
-      return s.F.GuardFlags;                                                                       \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& Guard(const BRepGraphInc_Storage& s)                       \
-    {                                                                                              \
-      return s.F.GuardFlags;                                                                       \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& HasCompoundParent(BRepGraphInc_Storage& s)                       \
-    {                                                                                              \
-      return s.F.HasCompoundParentFlags;                                                           \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& HasCompoundParent(const BRepGraphInc_Storage& s)           \
-    {                                                                                              \
-      return s.F.HasCompoundParentFlags;                                                           \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& HasOccurrenceParent(BRepGraphInc_Storage& s)                     \
-    {                                                                                              \
-      return s.F.HasOccurrenceParentFlags;                                                         \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& HasOccurrenceParent(const BRepGraphInc_Storage& s)         \
-    {                                                                                              \
-      return s.F.HasOccurrenceParentFlags;                                                         \
-    }                                                                                              \
-  };
-
-  OCCT_BG_STORE_PLANES(BRepGraph_VertexId, myVertices)
-  OCCT_BG_STORE_PLANES(BRepGraph_EdgeId, myEdges)
-  OCCT_BG_STORE_PLANES(BRepGraph_CoEdgeId, myCoEdges)
-  OCCT_BG_STORE_PLANES(BRepGraph_WireId, myWires)
-  OCCT_BG_STORE_PLANES(BRepGraph_FaceId, myFaces)
-  OCCT_BG_STORE_PLANES(BRepGraph_ShellId, myShells)
-  OCCT_BG_STORE_PLANES(BRepGraph_SolidId, mySolids)
-  OCCT_BG_STORE_PLANES(BRepGraph_CompoundId, myCompounds)
-  OCCT_BG_STORE_PLANES(BRepGraph_CompSolidId, myCompSolids)
-  OCCT_BG_STORE_PLANES(BRepGraph_ProductId, myProducts)
-  OCCT_BG_STORE_PLANES(BRepGraph_OccurrenceId, myOccurrences)
-
-  OCCT_BG_STORE_PLANES(BRepGraph_VertexRefId, myVertexRefs)
-  OCCT_BG_STORE_PLANES(BRepGraph_ShellRefId, myShellRefs)
-  OCCT_BG_STORE_PLANES(BRepGraph_FaceRefId, myFaceRefs)
-  OCCT_BG_STORE_PLANES(BRepGraph_WireRefId, myWireRefs)
-  OCCT_BG_STORE_PLANES(BRepGraph_SolidRefId, mySolidRefs)
-  OCCT_BG_STORE_PLANES(BRepGraph_ChildRefId, myChildRefs)
-  OCCT_BG_STORE_PLANES(BRepGraph_OccurrenceRefId, myOccurrenceRefs)
-
-#undef OCCT_BG_STORE_PLANES
-
-  //! Static empty bit-flag plane shared by all representation-use specializations.
-  //! Representation-use stores have no removed/owned/guard lifecycle.
-  static BRepGraphInc_BitFlags& theEmptyRepBitFlags()
-  {
-    static BRepGraphInc_BitFlags anEmpty;
-    return anEmpty;
-  }
-
-#define OCCT_BG_REP_PLANES(T, F)                                                                   \
-  template <>                                                                                      \
-  struct TypedStorePlanes<T>                                                                       \
-  {                                                                                                \
-    static uint32_t Nb(const BRepGraphInc_Storage& s)                                              \
-    {                                                                                              \
-      return s.F.Nb();                                                                             \
-    }                                                                                              \
-    static uint32_t& NbActive(BRepGraphInc_Storage& s)                                             \
-    {                                                                                              \
-      return s.F.NbActive;                                                                         \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& s)                                 \
-    {                                                                                              \
-      return s.F.RemovedFlags;                                                                     \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& Removed(const BRepGraphInc_Storage& s)                     \
-    {                                                                                              \
-      return s.F.RemovedFlags;                                                                     \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& Owned(BRepGraphInc_Storage&)                                     \
-    {                                                                                              \
-      return theEmptyRepBitFlags();                                                                \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& Owned(const BRepGraphInc_Storage&)                         \
-    {                                                                                              \
-      return theEmptyRepBitFlags();                                                                \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& Guard(BRepGraphInc_Storage&)                                     \
-    {                                                                                              \
-      return theEmptyRepBitFlags();                                                                \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& Guard(const BRepGraphInc_Storage&)                         \
-    {                                                                                              \
-      return theEmptyRepBitFlags();                                                                \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& HasCompoundParent(BRepGraphInc_Storage&)                         \
-    {                                                                                              \
-      return theEmptyRepBitFlags();                                                                \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& HasCompoundParent(const BRepGraphInc_Storage&)             \
-    {                                                                                              \
-      return theEmptyRepBitFlags();                                                                \
-    }                                                                                              \
-    static BRepGraphInc_BitFlags& HasOccurrenceParent(BRepGraphInc_Storage&)                       \
-    {                                                                                              \
-      return theEmptyRepBitFlags();                                                                \
-    }                                                                                              \
-    static const BRepGraphInc_BitFlags& HasOccurrenceParent(const BRepGraphInc_Storage&)           \
-    {                                                                                              \
-      return theEmptyRepBitFlags();                                                                \
-    }                                                                                              \
-  };
-
-  OCCT_BG_REP_PLANES(BRepGraph_FaceSurfaceRepId, myFaceSurfaces)
-  OCCT_BG_REP_PLANES(BRepGraph_FaceTriangulationRepId, myFaceTriangulations)
-  OCCT_BG_REP_PLANES(BRepGraph_EdgeCurve3DRepId, myEdgeCurves3D)
-  OCCT_BG_REP_PLANES(BRepGraph_EdgePolygon3DRepId, myEdgePolygons3D)
-  OCCT_BG_REP_PLANES(BRepGraph_CoEdgeCurve2DRepId, myCoEdgeCurves2D)
-  OCCT_BG_REP_PLANES(BRepGraph_CoEdgePolygon2DRepId, myCoEdgePolygons2D)
-  OCCT_BG_REP_PLANES(BRepGraph_CoEdgePolygonOnTriRepId, myCoEdgePolygonsOnTri)
-
-#undef OCCT_BG_REP_PLANES
+  template <typename T>
+  friend struct TypedStorePlanes;
 
   template <typename T>
-  [[nodiscard]] bool isInRange(const T theId) const
-  {
-    return theId.IsValid(TypedStorePlanes<T>::Nb(*this))
-           && TypedStorePlanes<T>::Removed(*this).IsValidIndex(theId.Index);
-  }
+  [[nodiscard]] bool isInRange(const T theId) const;
 
   template <typename FuncT>
-  [[nodiscard]] bool dispatchItemId(const BRepGraph_ItemId& theId, FuncT&& theFunc) const
-  {
-    switch (theId.ItemDomain())
-    {
-      case BRepGraph_ItemId::Domain::Node:
-        switch (static_cast<BRepGraph_NodeId::Kind>(theId.RawKind()))
-        {
-          case BRepGraph_NodeId::Kind::Vertex:
-            return std::forward<FuncT>(theFunc)(BRepGraph_VertexId(theId.Index()));
-          case BRepGraph_NodeId::Kind::Edge:
-            return std::forward<FuncT>(theFunc)(BRepGraph_EdgeId(theId.Index()));
-          case BRepGraph_NodeId::Kind::CoEdge:
-            return std::forward<FuncT>(theFunc)(BRepGraph_CoEdgeId(theId.Index()));
-          case BRepGraph_NodeId::Kind::Wire:
-            return std::forward<FuncT>(theFunc)(BRepGraph_WireId(theId.Index()));
-          case BRepGraph_NodeId::Kind::Face:
-            return std::forward<FuncT>(theFunc)(BRepGraph_FaceId(theId.Index()));
-          case BRepGraph_NodeId::Kind::Shell:
-            return std::forward<FuncT>(theFunc)(BRepGraph_ShellId(theId.Index()));
-          case BRepGraph_NodeId::Kind::Solid:
-            return std::forward<FuncT>(theFunc)(BRepGraph_SolidId(theId.Index()));
-          case BRepGraph_NodeId::Kind::Compound:
-            return std::forward<FuncT>(theFunc)(BRepGraph_CompoundId(theId.Index()));
-          case BRepGraph_NodeId::Kind::CompSolid:
-            return std::forward<FuncT>(theFunc)(BRepGraph_CompSolidId(theId.Index()));
-          case BRepGraph_NodeId::Kind::Product:
-            return std::forward<FuncT>(theFunc)(BRepGraph_ProductId(theId.Index()));
-          case BRepGraph_NodeId::Kind::Occurrence:
-            return std::forward<FuncT>(theFunc)(BRepGraph_OccurrenceId(theId.Index()));
-        }
-        break;
-      case BRepGraph_ItemId::Domain::Reference:
-        switch (static_cast<BRepGraph_RefId::Kind>(theId.RawKind()))
-        {
-          case BRepGraph_RefId::Kind::Shell:
-            return std::forward<FuncT>(theFunc)(BRepGraph_ShellRefId(theId.Index()));
-          case BRepGraph_RefId::Kind::Face:
-            return std::forward<FuncT>(theFunc)(BRepGraph_FaceRefId(theId.Index()));
-          case BRepGraph_RefId::Kind::Wire:
-            return std::forward<FuncT>(theFunc)(BRepGraph_WireRefId(theId.Index()));
-          case BRepGraph_RefId::Kind::Vertex:
-            return std::forward<FuncT>(theFunc)(BRepGraph_VertexRefId(theId.Index()));
-          case BRepGraph_RefId::Kind::Solid:
-            return std::forward<FuncT>(theFunc)(BRepGraph_SolidRefId(theId.Index()));
-          case BRepGraph_RefId::Kind::Child:
-            return std::forward<FuncT>(theFunc)(BRepGraph_ChildRefId(theId.Index()));
-          case BRepGraph_RefId::Kind::Occurrence:
-            return std::forward<FuncT>(theFunc)(BRepGraph_OccurrenceRefId(theId.Index()));
-        }
-        break;
-      default:
-        break;
-    }
-    return false;
-  }
+  [[nodiscard]] bool dispatchItemId(const BRepGraph_ItemId& theId, FuncT&& theFunc) const;
 
 public:
   //! Return true if the entity identified by the given typed ID is soft-removed.
   //! @param[in] theId typed entity identifier
   template <typename T>
-  [[nodiscard]] bool IsRemoved(const T theId) const
-  {
-    return isInRange(theId) && TypedStorePlanes<T>::Removed(*this).Test(theId.Index);
-  }
+  [[nodiscard]] bool IsRemoved(const T theId) const;
 
   //! Set or clear the soft-removal flag for the entity identified by the given typed ID.
   //! @param[in] theId typed entity identifier
   //! @param[in] theVal true to mark removed, false to mark active
   template <typename T>
-  void SetRemoved(const T theId, const bool theVal)
-  {
-    if (!isInRange(theId))
-    {
-      return;
-    }
-    auto&      aF          = TypedStorePlanes<T>::Removed(*this);
-    const bool aWasRemoved = aF.Test(theId.Index);
-    if (aWasRemoved == theVal)
-    {
-      return;
-    }
-    uint32_t& aNbActive = TypedStorePlanes<T>::NbActive(*this);
-    if (theVal)
-    {
-      aF.Set(theId.Index);
-      Standard_ASSERT_VOID(aNbActive > 0u,
-                           "BRepGraphInc_Storage::SetRemoved: active count underflow");
-      if (aNbActive > 0u)
-      {
-        --aNbActive;
-      }
-    }
-    else
-    {
-      aF.Clear(theId.Index);
-      ++aNbActive;
-    }
-  }
+  void SetRemoved(const T theId, const bool theVal);
 
   //! Return true if the entity identified by the given typed ID has a registered owner.
   //! @param[in] theId typed entity identifier
   template <typename T>
-  [[nodiscard]] bool IsOwned(const T theId) const
-  {
-    return isInRange(theId) && TypedStorePlanes<T>::Owned(*this).Test(theId.Index);
-  }
+  [[nodiscard]] bool IsOwned(const T theId) const;
 
   //! Set or clear the ownership flag for the entity identified by the given typed ID.
   //! @param[in] theId typed entity identifier
   //! @param[in] theVal true to mark owned, false to mark unowned
   template <typename T>
-  void SetOwned(const T theId, const bool theVal)
-  {
-    if (!isInRange(theId))
-    {
-      return;
-    }
-    auto& aF = TypedStorePlanes<T>::Owned(*this);
-    theVal ? aF.Set(theId.Index) : aF.Clear(theId.Index);
-  }
+  void SetOwned(const T theId, const bool theVal);
 
   //! Return true if the entity identified by the given typed ID has an active MutGuard.
   //! @param[in] theId typed entity identifier
   template <typename T>
-  [[nodiscard]] bool IsGuarded(const T theId) const
-  {
-    return isInRange(theId) && TypedStorePlanes<T>::Guard(*this).Test(theId.Index);
-  }
+  [[nodiscard]] bool IsGuarded(const T theId) const;
 
   //! Register an active MutGuard on the entity identified by the given typed ID.
   //! @param[in] theId typed entity identifier
   template <typename T>
-  void SetGuarded(const T theId)
-  {
-    if (isInRange(theId))
-    {
-      TypedStorePlanes<T>::Guard(*this).Set(theId.Index);
-    }
-  }
+  void SetGuarded(const T theId);
 
   //! Deregister an active MutGuard from the entity identified by the given typed ID.
   //! @param[in] theId typed entity identifier
   template <typename T>
-  void ClearGuarded(const T theId)
-  {
-    if (isInRange(theId))
-    {
-      TypedStorePlanes<T>::Guard(*this).Clear(theId.Index);
-    }
-  }
+  void ClearGuarded(const T theId);
 
   //! Return true if the node identified by the given generic NodeId has a parent compound.
   //! Dispatches by node kind to the appropriate per-kind bitset.
@@ -2219,40 +1937,21 @@ public:
 
   //! Return true if the entity identified by the given generic item id has an active MutGuard.
   //! @param[in] theId generic item identifier (node, reference, or representation)
-  [[nodiscard]] bool IsGuarded(const BRepGraph_ItemId& theId) const
-  {
-    return dispatchItemId(theId, [this](const auto theTypedId) { return IsGuarded(theTypedId); });
-  }
+  [[nodiscard]] bool IsGuarded(const BRepGraph_ItemId& theId) const;
 
   //! Register an active MutGuard on the entity identified by the given generic item id.
   //! @param[in] theId generic item identifier (node, reference, or representation)
-  void SetGuarded(const BRepGraph_ItemId& theId)
-  {
-    if (!dispatchItemId(theId, [this](const auto theTypedId) {
-          SetGuarded(theTypedId);
-          return true;
-        }))
-    {
-      Standard_ASSERT_VOID(false, "BRepGraphInc_Storage::SetGuarded: invalid item id");
-    }
-  }
+  void SetGuarded(const BRepGraph_ItemId& theId);
 
   //! Deregister an active MutGuard from the entity identified by the given generic item id.
   //! @param[in] theId generic item identifier (node, reference, or representation)
-  void ClearGuarded(const BRepGraph_ItemId& theId)
-  {
-    if (!dispatchItemId(theId, [this](const auto theTypedId) {
-          ClearGuarded(theTypedId);
-          return true;
-        }))
-    {
-      Standard_ASSERT_VOID(false, "BRepGraphInc_Storage::ClearGuarded: invalid item id");
-    }
-  }
+  void ClearGuarded(const BRepGraph_ItemId& theId);
 
   //! Return true if any entity in any store has an active MutGuard.
   //! Used to assert no guards are active before Clear().
   [[nodiscard]] Standard_EXPORT bool HasAnyGuard() const;
 };
+
+#include <BRepGraphInc_Storage.lxx>
 
 #endif // _BRepGraphInc_Storage_HeaderFile

@@ -17,4 +17,5 @@ set(OCCT_BRepGraphInc_FILES
   BRepGraphInc_Reconstruct.hxx
   BRepGraphInc_Storage.cxx
   BRepGraphInc_Storage.hxx
+  BRepGraphInc_Storage.lxx
 )
