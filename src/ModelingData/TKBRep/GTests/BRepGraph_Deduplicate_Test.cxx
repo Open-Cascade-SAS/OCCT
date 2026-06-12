@@ -267,7 +267,7 @@ uint32_t nbUniquePCurveNodes(const BRepGraph& theGraph)
     const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
     const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       theGraph.Topo().Edges().CoEdges(anEdgeId);
-    aCount += aCoEdgeIdxs.Size();
+    aCount += static_cast<uint32_t>(aCoEdgeIdxs.Size());
   }
   return aCount;
 }

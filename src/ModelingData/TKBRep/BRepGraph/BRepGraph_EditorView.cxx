@@ -3447,8 +3447,7 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
   // reached in subsequent iterations of the same loop.
   for (size_t i = 0; i < aAllModified.Size(); ++i)
   {
-    const BRepGraph_NodeId      aNodeId  = aAllModified.Value(i);
-    const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+    const BRepGraph_NodeId aNodeId = aAllModified.Value(i);
 
     const auto appendParent = [&](const BRepGraph_NodeId theParentId) {
       if (!markVisited(theParentId))

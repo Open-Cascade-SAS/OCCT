@@ -679,13 +679,8 @@ void checkGeometryReferences(const BRepGraph&                                   
     if (aFace.SurfaceRepId.IsValid(theGraph.Topo().Geometry().NbFaceSurfaces())
         && !aFace.SurfaceRepId.IsRemoved(theGraph))
     {
-      bool hasWire = false;
-      for (BRepGraph_RefsWireOfFace aWireIt(theGraph, aFaceIt.CurrentId()); aWireIt.More();
-           aWireIt.Next())
-      {
-        hasWire = true;
-        break;
-      }
+      const bool hasWire =
+        BRepGraph_RefsWireOfFace(theGraph, aFaceIt.CurrentId()).More();
       if (!hasWire)
       {
         theIssues.Append(

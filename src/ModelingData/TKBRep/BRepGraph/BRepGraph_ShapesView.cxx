@@ -409,7 +409,7 @@ BRepGraph::ShapesView::AddStatus BRepGraph::ShapesView::appendImpl(
   }
 
   // Map internal BuildStatus to public AddStatus.
-  AddStatus aAddStatus;
+  AddStatus aAddStatus = AddStatus::Failed;
   switch (aBuildStatus)
   {
     case BRepGraphInc_Populate::BuildStatus::Failed:

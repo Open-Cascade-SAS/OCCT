@@ -1406,10 +1406,10 @@ bool BRepGraph_Tool::Wire::IsOuter(const BRepGraph& theGraph, const BRepGraph_Wi
     {
       continue;
     }
-    const BRepGraph::RefsView& aRefs = theGraph.Refs();
+    const BRepGraph::RefsView& aRefsView = theGraph.Refs();
     for (BRepGraph_RefsWireOfFace aWireIt(theGraph, aFaceId); aWireIt.More(); aWireIt.Next())
     {
-      const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aWireIt.CurrentId());
+      const BRepGraphInc::WireRef& aRef = aRefsView.Wires().Entry(aWireIt.CurrentId());
       if (!theGraph.Refs().Gen().IsRemoved(aWireIt.CurrentId()) && aRef.ChildWireId == theWire)
       {
         return BRepGraph_Tool::Face::OuterWire(theGraph, aFaceId) == theWire;
