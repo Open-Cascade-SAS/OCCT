@@ -381,8 +381,8 @@ public:
         }
         else
         {
-          const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
-          const ChildId aChildId = TraitsT::ChildIdOf(myGraph, aRef);
+          const typename TraitsT::RefEntry& aRef     = TraitsT::Ref(myGraph, aRefId);
+          const ChildId                     aChildId = TraitsT::ChildIdOf(myGraph, aRef);
           if constexpr (std::is_same_v<ChildId, BRepGraph_NodeId>)
           {
             if (myGraph.Topo().Gen().IsActive(aChildId))
@@ -471,12 +471,12 @@ private:
   }
 
   const BRepGraph&                       myGraph;
-  const NCollection_LinearVector<RefId>* myRefIds       = nullptr;
+  const NCollection_LinearVector<RefId>* myRefIds = nullptr;
   ChildId                                myCurrentChild{};
-  uint32_t                               myIndex        = 0;
-  uint32_t                               myLength       = 0;
-  uint32_t                               myNbRefs       = 0;
-  uint32_t                               myNbChildren   = 0;
+  uint32_t                               myIndex      = 0;
+  uint32_t                               myLength     = 0;
+  uint32_t                               myNbRefs     = 0;
+  uint32_t                               myNbChildren = 0;
 };
 
 //! @brief Direct active boundary vertex children of an edge.

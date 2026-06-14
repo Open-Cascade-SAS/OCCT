@@ -443,11 +443,12 @@ public:
         }
         else
         {
-          const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
-          const auto aChildId = TraitsT::ChildIdOf(myGraph, aRef);
+          const typename TraitsT::RefEntry& aRef     = TraitsT::Ref(myGraph, aRefId);
+          const auto                        aChildId = TraitsT::ChildIdOf(myGraph, aRef);
           if constexpr (std::is_same_v<ChildId, BRepGraph_NodeId>)
           {
-            if (myGraph.Topo().Gen().IsActive(aChildId)) return;
+            if (myGraph.Topo().Gen().IsActive(aChildId))
+              return;
           }
           else if (aChildId.IsValid(myNbChildren) && !aChildId.IsRemoved(myGraph))
           {

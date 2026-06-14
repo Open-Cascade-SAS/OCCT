@@ -1011,7 +1011,8 @@ NCollection_LinearVector<BRepGraph_ChildRefId>& BRepGraphInc_Storage::
 NCollection_LinearVector<BRepGraph_OccurrenceRefId>& BRepGraphInc_Storage::
   ChangeOccurrenceRefsOfNodeInternal(const BRepGraph_NodeId theNode)
 {
-  return myNodeToOccurrences.TryBound(theNode, NCollection_LinearVector<BRepGraph_OccurrenceRefId>());
+  return myNodeToOccurrences.TryBound(theNode,
+                                      NCollection_LinearVector<BRepGraph_OccurrenceRefId>());
 }
 
 //=================================================================================================
@@ -1469,8 +1470,7 @@ void BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& 
   for (BRepGraph_CompoundId aC(0); aC.IsValid(NbCompounds()); ++aC)
   {
     if (aC.IsValid(theSource.NbCompounds()))
-      ChangeCompoundRelationsInternal(aC).ChildRefIds =
-        theSource.CompoundRelations(aC).ChildRefIds;
+      ChangeCompoundRelationsInternal(aC).ChildRefIds = theSource.CompoundRelations(aC).ChildRefIds;
   }
   for (BRepGraph_ProductId aP(0); aP.IsValid(NbProducts()); ++aP)
   {
@@ -1485,7 +1485,7 @@ void BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& 
         theSource.OccurrenceRelations(anO).ParentOccurrenceRefIds;
   }
 
-  // Copy sparse reverse maps (node → compound/occurrence child refs).
+  // Copy sparse reverse maps (node -> compound/occurrence child refs).
   myNodeToCompounds.Clear();
   for (NCollection_DataMap<BRepGraph_NodeId,
                            NCollection_LinearVector<BRepGraph_ChildRefId>>::Iterator
@@ -1507,27 +1507,27 @@ void BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& 
 
   // Copy compound/occurrence parent bit-planes for all node kinds.
   // These are indexed by the same type IDs in source and destination (identity copy).
-  myVertices.HasCompoundParentFlags   = theSource.myVertices.HasCompoundParentFlags;
-  myVertices.HasOccurrenceParentFlags  = theSource.myVertices.HasOccurrenceParentFlags;
-  myEdges.HasCompoundParentFlags      = theSource.myEdges.HasCompoundParentFlags;
-  myEdges.HasOccurrenceParentFlags     = theSource.myEdges.HasOccurrenceParentFlags;
-  myCoEdges.HasCompoundParentFlags    = theSource.myCoEdges.HasCompoundParentFlags;
-  myCoEdges.HasOccurrenceParentFlags   = theSource.myCoEdges.HasOccurrenceParentFlags;
-  myWires.HasCompoundParentFlags      = theSource.myWires.HasCompoundParentFlags;
-  myWires.HasOccurrenceParentFlags     = theSource.myWires.HasOccurrenceParentFlags;
-  myFaces.HasCompoundParentFlags      = theSource.myFaces.HasCompoundParentFlags;
-  myFaces.HasOccurrenceParentFlags     = theSource.myFaces.HasOccurrenceParentFlags;
-  myShells.HasCompoundParentFlags     = theSource.myShells.HasCompoundParentFlags;
-  myShells.HasOccurrenceParentFlags    = theSource.myShells.HasOccurrenceParentFlags;
-  mySolids.HasCompoundParentFlags     = theSource.mySolids.HasCompoundParentFlags;
-  mySolids.HasOccurrenceParentFlags    = theSource.mySolids.HasOccurrenceParentFlags;
-  myCompounds.HasCompoundParentFlags   = theSource.myCompounds.HasCompoundParentFlags;
-  myCompounds.HasOccurrenceParentFlags = theSource.myCompounds.HasOccurrenceParentFlags;
-  myCompSolids.HasCompoundParentFlags  = theSource.myCompSolids.HasCompoundParentFlags;
-  myCompSolids.HasOccurrenceParentFlags = theSource.myCompSolids.HasOccurrenceParentFlags;
-  myProducts.HasCompoundParentFlags   = theSource.myProducts.HasCompoundParentFlags;
-  myProducts.HasOccurrenceParentFlags  = theSource.myProducts.HasOccurrenceParentFlags;
-  myOccurrences.HasCompoundParentFlags = theSource.myOccurrences.HasCompoundParentFlags;
+  myVertices.HasCompoundParentFlags      = theSource.myVertices.HasCompoundParentFlags;
+  myVertices.HasOccurrenceParentFlags    = theSource.myVertices.HasOccurrenceParentFlags;
+  myEdges.HasCompoundParentFlags         = theSource.myEdges.HasCompoundParentFlags;
+  myEdges.HasOccurrenceParentFlags       = theSource.myEdges.HasOccurrenceParentFlags;
+  myCoEdges.HasCompoundParentFlags       = theSource.myCoEdges.HasCompoundParentFlags;
+  myCoEdges.HasOccurrenceParentFlags     = theSource.myCoEdges.HasOccurrenceParentFlags;
+  myWires.HasCompoundParentFlags         = theSource.myWires.HasCompoundParentFlags;
+  myWires.HasOccurrenceParentFlags       = theSource.myWires.HasOccurrenceParentFlags;
+  myFaces.HasCompoundParentFlags         = theSource.myFaces.HasCompoundParentFlags;
+  myFaces.HasOccurrenceParentFlags       = theSource.myFaces.HasOccurrenceParentFlags;
+  myShells.HasCompoundParentFlags        = theSource.myShells.HasCompoundParentFlags;
+  myShells.HasOccurrenceParentFlags      = theSource.myShells.HasOccurrenceParentFlags;
+  mySolids.HasCompoundParentFlags        = theSource.mySolids.HasCompoundParentFlags;
+  mySolids.HasOccurrenceParentFlags      = theSource.mySolids.HasOccurrenceParentFlags;
+  myCompounds.HasCompoundParentFlags     = theSource.myCompounds.HasCompoundParentFlags;
+  myCompounds.HasOccurrenceParentFlags   = theSource.myCompounds.HasOccurrenceParentFlags;
+  myCompSolids.HasCompoundParentFlags    = theSource.myCompSolids.HasCompoundParentFlags;
+  myCompSolids.HasOccurrenceParentFlags  = theSource.myCompSolids.HasOccurrenceParentFlags;
+  myProducts.HasCompoundParentFlags      = theSource.myProducts.HasCompoundParentFlags;
+  myProducts.HasOccurrenceParentFlags    = theSource.myProducts.HasOccurrenceParentFlags;
+  myOccurrences.HasCompoundParentFlags   = theSource.myOccurrences.HasCompoundParentFlags;
   myOccurrences.HasOccurrenceParentFlags = theSource.myOccurrences.HasOccurrenceParentFlags;
 }
 
@@ -2912,7 +2912,7 @@ void BRepGraphInc_Storage::Clear()
 
 void BRepGraphInc_Storage::PrepareForLoad(const BRepGraphInc_Load::Counts& theCounts)
 {
-  // Skip full Clear() when storage is already empty — avoids allocator reset + reallocation.
+  // Skip full Clear() when storage is already empty - avoids allocator reset + reallocation.
   if (!IsEmpty())
   {
     Clear();

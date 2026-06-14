@@ -133,7 +133,7 @@ occ::handle<BRepGraph_Cache> BRepGraph_CacheRegistry::ensureCache(
   // Fast path: shared lock for read-only lookup.
   {
     std::shared_lock<std::shared_mutex> aLock(myMutex);
-    occ::handle<BRepGraph_Cache> aCache = findCacheLocked(theGUID);
+    occ::handle<BRepGraph_Cache>        aCache = findCacheLocked(theGUID);
     if (!aCache.IsNull())
     {
       return aCache;
@@ -258,10 +258,9 @@ void BRepGraph_CacheRegistry::CopyFreshCachesTo(
 
 //=================================================================================================
 
-void BRepGraph_CacheRegistry::CopyFreshCachesTo(
-  BRepGraph&                        theTargetGraph,
-  BRepGraph_CopyRemap::MappingKind  theMappingKind,
-  BRepGraph_CopyRemap::Mode         theMode) const
+void BRepGraph_CacheRegistry::CopyFreshCachesTo(BRepGraph&                       theTargetGraph,
+                                                BRepGraph_CopyRemap::MappingKind theMappingKind,
+                                                BRepGraph_CopyRemap::Mode        theMode) const
 {
   BRepGraph* aSourceGraph = nullptr;
   {

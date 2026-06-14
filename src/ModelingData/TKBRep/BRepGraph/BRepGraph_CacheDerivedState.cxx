@@ -163,19 +163,18 @@ bool isCoEdgeSameRange(const BRepGraph&         theGraph,
   }
 
   const std::pair<double, double> anEdgeRange  = BRepGraph_Tool::Edge::Range(theGraph, theEdge);
-  const std::pair<double, double> aPCurveRange =
-    BRepGraph_Tool::CoEdge::Range(theGraph, theCoEdge);
+  const std::pair<double, double> aPCurveRange = BRepGraph_Tool::CoEdge::Range(theGraph, theCoEdge);
   return std::abs(aPCurveRange.first - anEdgeRange.first) <= Precision::PConfusion()
          && std::abs(aPCurveRange.second - anEdgeRange.second) <= Precision::PConfusion();
 }
 
 //=================================================================================================
 
-bool isCoEdgeSameParameter(const BRepGraph&               theGraph,
-                           const BRepGraph_CoEdgeId       theCoEdge,
-                           const BRepGraph_EdgeId         theEdge,
-                           const BRepGraphInc::EdgeDef&   theEdgeDef,
-                           const occ::handle<Geom_Curve>& theCurve3D,
+bool isCoEdgeSameParameter(const BRepGraph&                 theGraph,
+                           const BRepGraph_CoEdgeId         theCoEdge,
+                           const BRepGraph_EdgeId           theEdge,
+                           const BRepGraphInc::EdgeDef&     theEdgeDef,
+                           const occ::handle<Geom_Curve>&   theCurve3D,
                            const std::pair<double, double>& theEdgeRange)
 {
   if (!theCoEdge.IsValid(theGraph.Topo().CoEdges().Nb()) || theCoEdge.IsRemoved(theGraph))
@@ -204,7 +203,7 @@ bool isCoEdgeSameParameter(const BRepGraph&               theGraph,
   const double  aTol           = theEdgeDef.Tolerance + Precision::Confusion();
   constexpr int THE_NB_SAMPLES = 5;
 
-  GeomAdaptor_Curve  aCurveAdaptor(theCurve3D, theEdgeRange.first, theEdgeRange.second);
+  GeomAdaptor_Curve   aCurveAdaptor(theCurve3D, theEdgeRange.first, theEdgeRange.second);
   Geom2dAdaptor_Curve aPCurveAdaptor(aPCurve);
   GeomAdaptor_Surface aSurfAdaptor(aSurface);
 
@@ -212,8 +211,8 @@ bool isCoEdgeSameParameter(const BRepGraph&               theGraph,
   {
     const double aParam =
       theEdgeRange.first + (theEdgeRange.second - theEdgeRange.first) * anIdx / THE_NB_SAMPLES;
-    const gp_Pnt  aPoint3D      = aCurveAdaptor.EvalD0(aParam);
-    const gp_Pnt2d aUV          = aPCurveAdaptor.EvalD0(aParam);
+    const gp_Pnt   aPoint3D      = aCurveAdaptor.EvalD0(aParam);
+    const gp_Pnt2d aUV           = aPCurveAdaptor.EvalD0(aParam);
     const gp_Pnt   aSurfacePoint = aSurfAdaptor.EvalD0(aUV.X(), aUV.Y());
     if (aPoint3D.Distance(aSurfacePoint) > aTol)
     {
@@ -307,8 +306,7 @@ void BRepGraph_CacheDerivedState::CopyFreshTo(const BRepGraph_CopyRemap& theCopy
     {
       continue;
     }
-    const BRepGraph_CoEdgeId aSourceCoEdge =
-      BRepGraph_CoEdgeId::FromNodeId(aSourceEntry.Node());
+    const BRepGraph_CoEdgeId aSourceCoEdge = BRepGraph_CoEdgeId::FromNodeId(aSourceEntry.Node());
     const BRepGraph_CoEdgeId aTargetCoEdge = remappedNode(theCopy, aSourceCoEdge);
     if (!aTargetCoEdge.IsValidIn(theCopy.TargetGraph().Topo().CoEdges()))
     {
@@ -318,8 +316,8 @@ void BRepGraph_CacheDerivedState::CopyFreshTo(const BRepGraph_CopyRemap& theCopy
     CoEdgeSameRangeEntry aTargetEntry = aSourceEntry;
     if (aTargetEntry.BindOwnGen(*aTargetCache, BRepGraph_NodeId(aTargetCoEdge)))
     {
-      aTargetCache->myCoEdgeSameRangeEntries.ChangeValue(
-        static_cast<size_t>(aTargetCoEdge.Index)) = aTargetEntry;
+      aTargetCache->myCoEdgeSameRangeEntries.ChangeValue(static_cast<size_t>(aTargetCoEdge.Index)) =
+        aTargetEntry;
     }
   }
 
@@ -369,8 +367,8 @@ void BRepGraph_CacheDerivedState::CopyFreshTo(const BRepGraph_CopyRemap& theCopy
 //=================================================================================================
 
 void BRepGraph_CacheDerivedState::computeStatusOnly(const BRepGraph& theGraph,
-                                                     BRepGraph_EdgeId theEdge,
-                                                     EdgeEntry&       theEntry)
+                                                    BRepGraph_EdgeId theEdge,
+                                                    EdgeEntry&       theEntry)
 {
   const BRepGraphInc::EdgeDef& aDef = theGraph.Topo().Edges().Definition(theEdge);
 
@@ -379,10 +377,10 @@ void BRepGraph_CacheDerivedState::computeStatusOnly(const BRepGraph& theGraph,
   const bool               aClosed = aStartV.IsValid() && aStartV == aEndV;
 
   const occ::handle<Geom_Curve>& aCurve3D = edgeCurve3D(theGraph, theEdge);
-  EdgeEntry::GeomStatus aStatus;
+  EdgeEntry::GeomStatus          aStatus;
   if (!aCurve3D.IsNull())
   {
-    aStatus =   EdgeEntry::GeomStatus::HasCurve3D;
+    aStatus = EdgeEntry::GeomStatus::HasCurve3D;
   }
   else if (aClosed)
   {
@@ -465,8 +463,8 @@ void BRepGraph_CacheDerivedState::computeSameParameter(const BRepGraph&      the
     return;
   }
 
-  const BRepGraphInc::EdgeDef&    aDef    = theGraph.Topo().Edges().Definition(anEdge);
-  const occ::handle<Geom_Curve>&  aCurve3D = edgeCurve3D(theGraph, anEdge);
+  const BRepGraphInc::EdgeDef&   aDef     = theGraph.Topo().Edges().Definition(anEdge);
+  const occ::handle<Geom_Curve>& aCurve3D = edgeCurve3D(theGraph, anEdge);
 
   if (!aCurve3D.IsNull())
   {
@@ -491,8 +489,7 @@ void BRepGraph_CacheDerivedState::computeSameParameter(const BRepGraph&      the
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::ensureEdgeEntry(BRepGraph_EdgeId theEdge,
-                                                   EdgeEntry&      theEntry)
+bool BRepGraph_CacheDerivedState::ensureEdgeEntry(BRepGraph_EdgeId theEdge, EdgeEntry& theEntry)
 {
   // Lock-free read path: check packed flags without mutex.
   if (static_cast<size_t>(theEdge.Index) < myEdgeEntries.Size())
@@ -537,10 +534,9 @@ bool BRepGraph_CacheDerivedState::ensureEdgeEntry(BRepGraph_EdgeId theEdge,
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::ensureCoEdgeSameRangeEntry(
-  BRepGraph_CoEdgeId    theCoEdge,
-  uint8_t               theRequiredFlags,
-  CoEdgeSameRangeEntry& theEntry)
+bool BRepGraph_CacheDerivedState::ensureCoEdgeSameRangeEntry(BRepGraph_CoEdgeId    theCoEdge,
+                                                             uint8_t               theRequiredFlags,
+                                                             CoEdgeSameRangeEntry& theEntry)
 {
   // Lock-free read path: check packed flags without mutex.
   if (static_cast<size_t>(theCoEdge.Index) < myCoEdgeSameRangeEntries.Size())
@@ -593,17 +589,17 @@ bool BRepGraph_CacheDerivedState::ensureCoEdgeSameRangeEntry(
       myCoEdgeSameRangeEntries.ChangeValue(static_cast<size_t>(theCoEdge.Index));
     if (aStored.IsFreshOwn(*this, theCoEdge))
     {
-      const uint8_t aMyPacked     = aEntry.Packed.load(std::memory_order_relaxed);
-      const uint8_t aMyComputed   = aMyPacked & (CoEdgeSameRangeEntry::ComputedSameRange
-                                                  | CoEdgeSameRangeEntry::ComputedSameParam);
+      const uint8_t aMyPacked = aEntry.Packed.load(std::memory_order_relaxed);
+      const uint8_t aMyComputed =
+        aMyPacked
+        & (CoEdgeSameRangeEntry::ComputedSameRange | CoEdgeSameRangeEntry::ComputedSameParam);
       const uint8_t aStoredPacked = aStored.Packed.load(std::memory_order_relaxed);
       const uint8_t aNewBits      = aMyComputed & ~aStoredPacked;
       if (aNewBits != 0)
       {
         // Merge value bits (shifted by 2 from computed) and computed bits into a single store.
         const uint8_t aMerged = (aStoredPacked & ~((aNewBits << 2) | aNewBits))
-                                | (aMyPacked & (aNewBits << 2))
-                                | aNewBits;
+                                | (aMyPacked & (aNewBits << 2)) | aNewBits;
         aStored.Packed.store(aMerged, std::memory_order_release);
       }
     }
@@ -672,11 +668,10 @@ bool BRepGraph_CacheDerivedState::IsClosed(BRepGraph_EdgeId theEdge)
 
 //=================================================================================================
 
-bool BRepGraph_CacheDerivedState::ComputeEdgeProperties(
-  const BRepGraph& theGraph,
-  BRepGraph_EdgeId theEdge,
-  bool&            theIsDegenerated,
-  bool&            theIsClosed)
+bool BRepGraph_CacheDerivedState::ComputeEdgeProperties(const BRepGraph& theGraph,
+                                                        BRepGraph_EdgeId theEdge,
+                                                        bool&            theIsDegenerated,
+                                                        bool&            theIsClosed)
 {
   if (!theEdge.IsValid(theGraph.Topo().Edges().Nb()) || theEdge.IsRemoved(theGraph))
   {
@@ -735,9 +730,8 @@ bool BRepGraph_CacheDerivedState::ComputeWireIsClosed(const BRepGraph& theGraph,
 
 //=================================================================================================
 
-BRepGraph_CacheDerivedState::ShellEntry::ClosureStatus
-BRepGraph_CacheDerivedState::computeShellClosure(const BRepGraph&  theGraph,
-                                                 BRepGraph_ShellId theShell)
+BRepGraph_CacheDerivedState::ShellEntry::ClosureStatus BRepGraph_CacheDerivedState::
+  computeShellClosure(const BRepGraph& theGraph, BRepGraph_ShellId theShell)
 {
   if (!theShell.IsValid(theGraph.Topo().Shells().Nb()) || theShell.IsRemoved(theGraph))
   {

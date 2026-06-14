@@ -88,9 +88,8 @@ public:
   template <typename T>
   [[nodiscard]] occ::handle<T> Ensure()
   {
-    return occ::down_cast<T>(ensureCache(T::GetID(), []() -> occ::handle<BRepGraph_Cache> {
-      return new T();
-    }));
+    return occ::down_cast<T>(
+      ensureCache(T::GetID(), []() -> occ::handle<BRepGraph_Cache> { return new T(); }));
   }
 
   //! Return current graph-local slot for a GUID.
@@ -131,7 +130,7 @@ public:
     const BRepGraph_CopyRemap::Mode                                    theMode) const;
 
   //! Ask registered cache services to copy fresh data using identity mapping.
-  Standard_EXPORT void CopyFreshCachesTo(BRepGraph&                      theTargetGraph,
+  Standard_EXPORT void CopyFreshCachesTo(BRepGraph&                       theTargetGraph,
                                          BRepGraph_CopyRemap::MappingKind theMappingKind,
                                          BRepGraph_CopyRemap::Mode        theMode) const;
 

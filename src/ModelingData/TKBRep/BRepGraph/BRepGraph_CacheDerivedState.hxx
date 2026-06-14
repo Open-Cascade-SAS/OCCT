@@ -49,7 +49,7 @@ public:
   Standard_EXPORT void CopyFreshTo(const BRepGraph_CopyRemap& theCopy) const override;
 
   //! @brief Test if an edge is degenerate (no 3D curve and vertex collapse).
-  //! Computes and caches only Status — does NOT compute SameParameter/SameRange.
+  //! Computes and caches only Status - does NOT compute SameParameter/SameRange.
   //! @param[in] theEdge edge definition identifier
   //! @return true if the edge is degenerate
   [[nodiscard]] Standard_EXPORT bool IsDegenerated(BRepGraph_EdgeId theEdge);
@@ -87,17 +87,16 @@ public:
   [[nodiscard]] Standard_EXPORT bool IsShellClosed(BRepGraph_ShellId theShell);
 
   //! Compute edge-own derived state (Status, IsClosed).
-  //! SameRange/SameParameter are per-CoEdge — use the per-CoEdge cache directly.
+  //! SameRange/SameParameter are per-CoEdge - use the per-CoEdge cache directly.
   //! @param[in]  theGraph source graph
   //! @param[in]  theEdge  edge definition identifier
   //! @param[out] theIsDegenerated true if edge is degenerate
   //! @param[out] theIsClosed      true if edge is closed
   //! @return true if computation succeeded
-  [[nodiscard]] Standard_EXPORT static bool ComputeEdgeProperties(
-    const BRepGraph& theGraph,
-    BRepGraph_EdgeId theEdge,
-    bool&            theIsDegenerated,
-    bool&            theIsClosed);
+  [[nodiscard]] Standard_EXPORT static bool ComputeEdgeProperties(const BRepGraph& theGraph,
+                                                                  BRepGraph_EdgeId theEdge,
+                                                                  bool&            theIsDegenerated,
+                                                                  bool&            theIsClosed);
 
   //! Compute shell closure directly from a BRepGraph without caching.
   //! @param[in] theGraph source graph
@@ -140,10 +139,13 @@ private:
     std::atomic<uint8_t> Packed{FlagNone};
 
     EdgeEntry() = default;
+
     EdgeEntry(const EdgeEntry& theOther)
-        : NodeEntry(theOther)
-        , Packed(theOther.Packed.load(std::memory_order_relaxed))
-    {}
+        : NodeEntry(theOther),
+          Packed(theOther.Packed.load(std::memory_order_relaxed))
+    {
+    }
+
     EdgeEntry& operator=(const EdgeEntry& theOther)
     {
       NodeEntry::operator=(theOther);
@@ -155,10 +157,12 @@ private:
     {
       return static_cast<GeomStatus>(Packed.load(std::memory_order_acquire) & StatusMask);
     }
+
     [[nodiscard]] bool IsClosed() const
     {
       return (Packed.load(std::memory_order_acquire) & FlagClosed) != 0;
     }
+
     [[nodiscard]] bool IsComputed() const
     {
       return (Packed.load(std::memory_order_acquire) & FlagComputed) != 0;
@@ -176,7 +180,7 @@ private:
   };
 
   //! Per-CoEdge entry for SameRange/SameParameter.
-  //! Bound to CoEdge OwnGen — invalidates automatically when PCurve changes.
+  //! Bound to CoEdge OwnGen - invalidates automatically when PCurve changes.
   //! Packed into a single atomic byte for lock-free reads.
   struct CoEdgeSameRangeEntry : public NodeEntry
   {
@@ -192,10 +196,13 @@ private:
     std::atomic<uint8_t> Packed{FlagNone};
 
     CoEdgeSameRangeEntry() = default;
+
     CoEdgeSameRangeEntry(const CoEdgeSameRangeEntry& theOther)
-        : NodeEntry(theOther)
-        , Packed(theOther.Packed.load(std::memory_order_relaxed))
-    {}
+        : NodeEntry(theOther),
+          Packed(theOther.Packed.load(std::memory_order_relaxed))
+    {
+    }
+
     CoEdgeSameRangeEntry& operator=(const CoEdgeSameRangeEntry& theOther)
     {
       NodeEntry::operator=(theOther);
@@ -207,14 +214,13 @@ private:
     {
       return (Packed.load(std::memory_order_acquire) & FlagSameRange) != 0;
     }
+
     [[nodiscard]] bool SameParameter() const
     {
       return (Packed.load(std::memory_order_acquire) & FlagSameParameter) != 0;
     }
-    [[nodiscard]] uint8_t Computed() const
-    {
-      return Packed.load(std::memory_order_acquire);
-    }
+
+    [[nodiscard]] uint8_t Computed() const { return Packed.load(std::memory_order_acquire); }
 
     void SetSameRange(bool theVal)
     {
@@ -225,6 +231,7 @@ private:
       }
       Packed.fetch_or(aFlags, std::memory_order_release);
     }
+
     void SetSameParameter(bool theVal)
     {
       uint8_t aFlags = ComputedSameParam;
@@ -248,10 +255,13 @@ private:
     std::atomic<uint8_t> Packed{FlagNone};
 
     WireEntry() = default;
+
     WireEntry(const WireEntry& theOther)
-        : NodeEntry(theOther)
-        , Packed(theOther.Packed.load(std::memory_order_relaxed))
-    {}
+        : NodeEntry(theOther),
+          Packed(theOther.Packed.load(std::memory_order_relaxed))
+    {
+    }
+
     WireEntry& operator=(const WireEntry& theOther)
     {
       NodeEntry::operator=(theOther);
@@ -263,6 +273,7 @@ private:
     {
       return (Packed.load(std::memory_order_acquire) & FlagClosed) != 0;
     }
+
     [[nodiscard]] bool IsComputed() const
     {
       return (Packed.load(std::memory_order_acquire) & FlagComputed) != 0;
@@ -293,10 +304,13 @@ private:
     std::atomic<ClosureStatus> Status{ClosureStatus::Invalid};
 
     ShellEntry() = default;
+
     ShellEntry(const ShellEntry& theOther)
-        : NodeEntry(theOther)
-        , Status(theOther.Status.load(std::memory_order_relaxed))
-    {}
+        : NodeEntry(theOther),
+          Status(theOther.Status.load(std::memory_order_relaxed))
+    {
+    }
+
     ShellEntry& operator=(const ShellEntry& theOther)
     {
       NodeEntry::operator=(theOther);

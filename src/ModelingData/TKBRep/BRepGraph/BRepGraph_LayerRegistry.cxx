@@ -30,16 +30,16 @@ BRepGraph_LayerRegistry::BRepGraph_LayerRegistry() = default;
 BRepGraph_LayerRegistry::BRepGraph_LayerRegistry(BRepGraph_LayerRegistry&& theOther) noexcept
 {
   std::unique_lock<std::shared_mutex> aLock(theOther.myMutex);
-  myLayers                          = std::move(theOther.myLayers);
-  myGuidToSlot                      = std::move(theOther.myGuidToSlot);
-  mySubscribedKindsMask.store(
-    theOther.mySubscribedKindsMask.load(std::memory_order_relaxed), std::memory_order_relaxed);
-  mySubscribedRefKindsMask.store(
-    theOther.mySubscribedRefKindsMask.load(std::memory_order_relaxed), std::memory_order_relaxed);
-  myGraph                           = theOther.myGraph;
+  myLayers     = std::move(theOther.myLayers);
+  myGuidToSlot = std::move(theOther.myGuidToSlot);
+  mySubscribedKindsMask.store(theOther.mySubscribedKindsMask.load(std::memory_order_relaxed),
+                              std::memory_order_relaxed);
+  mySubscribedRefKindsMask.store(theOther.mySubscribedRefKindsMask.load(std::memory_order_relaxed),
+                                 std::memory_order_relaxed);
+  myGraph = theOther.myGraph;
   theOther.mySubscribedKindsMask.store(0, std::memory_order_relaxed);
   theOther.mySubscribedRefKindsMask.store(0, std::memory_order_relaxed);
-  theOther.myGraph                  = nullptr;
+  theOther.myGraph = nullptr;
 }
 
 //=================================================================================================
@@ -54,16 +54,17 @@ BRepGraph_LayerRegistry& BRepGraph_LayerRegistry::operator=(
     std::lock(aThisLock, anOtherLock);
 
     detachAllLocked();
-    myLayers                          = std::move(theOther.myLayers);
-    myGuidToSlot                      = std::move(theOther.myGuidToSlot);
-    mySubscribedKindsMask.store(
-      theOther.mySubscribedKindsMask.load(std::memory_order_relaxed), std::memory_order_relaxed);
+    myLayers     = std::move(theOther.myLayers);
+    myGuidToSlot = std::move(theOther.myGuidToSlot);
+    mySubscribedKindsMask.store(theOther.mySubscribedKindsMask.load(std::memory_order_relaxed),
+                                std::memory_order_relaxed);
     mySubscribedRefKindsMask.store(
-      theOther.mySubscribedRefKindsMask.load(std::memory_order_relaxed), std::memory_order_relaxed);
-    myGraph                           = theOther.myGraph;
+      theOther.mySubscribedRefKindsMask.load(std::memory_order_relaxed),
+      std::memory_order_relaxed);
+    myGraph = theOther.myGraph;
     theOther.mySubscribedKindsMask.store(0, std::memory_order_relaxed);
     theOther.mySubscribedRefKindsMask.store(0, std::memory_order_relaxed);
-    theOther.myGraph                  = nullptr;
+    theOther.myGraph = nullptr;
   }
   return *this;
 }
@@ -104,12 +105,12 @@ uint32_t BRepGraph_LayerRegistry::registerLayerLocked(const occ::handle<BRepGrap
   theLayer->attachGraph(myGraph);
   myLayers.Append(theLayer);
   myGuidToSlot.Bind(aGUID, aNewSlot);
-  mySubscribedKindsMask.store(
-    mySubscribedKindsMask.load(std::memory_order_relaxed) | theLayer->SubscribedKinds(),
-    std::memory_order_relaxed);
-  mySubscribedRefKindsMask.store(
-    mySubscribedRefKindsMask.load(std::memory_order_relaxed) | theLayer->SubscribedRefKinds(),
-    std::memory_order_relaxed);
+  mySubscribedKindsMask.store(mySubscribedKindsMask.load(std::memory_order_relaxed)
+                                | theLayer->SubscribedKinds(),
+                              std::memory_order_relaxed);
+  mySubscribedRefKindsMask.store(mySubscribedRefKindsMask.load(std::memory_order_relaxed)
+                                   | theLayer->SubscribedRefKinds(),
+                                 std::memory_order_relaxed);
   return aNewSlot;
 }
 
@@ -188,13 +189,13 @@ occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::findLayerLocked(
 //=================================================================================================
 
 occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::ensureLayer(
-  const Standard_GUID&                                theGUID,
+  const Standard_GUID&                                 theGUID,
   const std::function<occ::handle<BRepGraph_Layer>()>& theFactory)
 {
   // Fast path: shared lock for read-only lookup.
   {
     std::shared_lock<std::shared_mutex> aLock(myMutex);
-    occ::handle<BRepGraph_Layer> aLayer = findLayerLocked(theGUID);
+    occ::handle<BRepGraph_Layer>        aLayer = findLayerLocked(theGUID);
     if (!aLayer.IsNull())
     {
       return aLayer;
@@ -204,7 +205,7 @@ occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::ensureLayer(
   // Slow path: exclusive lock for creation.
   {
     std::unique_lock<std::shared_mutex> aLock(myMutex);
-    occ::handle<BRepGraph_Layer> aLayer = findLayerLocked(theGUID);
+    occ::handle<BRepGraph_Layer>        aLayer = findLayerLocked(theGUID);
     if (aLayer.IsNull())
     {
       aLayer = theFactory();
@@ -437,10 +438,9 @@ void BRepGraph_LayerRegistry::CopyLayersTo(
 
 //=================================================================================================
 
-void BRepGraph_LayerRegistry::CopyLayersTo(
-  BRepGraph&                        theTargetGraph,
-  BRepGraph_CopyRemap::MappingKind  theMappingKind,
-  BRepGraph_CopyRemap::Mode         theMode) const
+void BRepGraph_LayerRegistry::CopyLayersTo(BRepGraph&                       theTargetGraph,
+                                           BRepGraph_CopyRemap::MappingKind theMappingKind,
+                                           BRepGraph_CopyRemap::Mode        theMode) const
 {
   BRepGraph* aSourceGraph = nullptr;
   {
@@ -537,8 +537,7 @@ void BRepGraph_LayerRegistry::DispatchRefsModified(
   const int                                  theModifiedRefKindsMask) noexcept
 {
   // Lock-free early exit: check subscription mask without mutex.
-  if (mySubscribedRefKindsMask.load(std::memory_order_acquire) == 0
-      || theModifiedRefKindsMask == 0)
+  if (mySubscribedRefKindsMask.load(std::memory_order_acquire) == 0 || theModifiedRefKindsMask == 0)
   {
     return;
   }

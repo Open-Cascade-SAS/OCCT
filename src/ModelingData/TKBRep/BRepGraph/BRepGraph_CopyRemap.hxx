@@ -80,8 +80,8 @@ public:
   [[nodiscard]] const ItemMap& Items() const noexcept { return *myItemRemap; }
 
   //! Return the target item for a source item, or an invalid item if not copied.
-  [[nodiscard]] Standard_EXPORT BRepGraph_ItemId TargetItem(
-    const BRepGraph_ItemId theSourceItem) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_ItemId
+    TargetItem(const BRepGraph_ItemId theSourceItem) const;
 
   //! Return the target item for a source item, or an invalid item id.
   [[nodiscard]] Standard_EXPORT BRepGraph_ItemId
@@ -103,11 +103,11 @@ public:
     TargetUIDFromSource(const BRepGraph_ItemId theSourceItem) const;
 
 private:
-  const BRepGraph* mySourceGraph  = nullptr;
-  BRepGraph*       myTargetGraph  = nullptr;
-  const ItemMap*   myItemRemap    = nullptr;
-  Mode             myMode         = Mode::Copy;
-  MappingKind      myMappingKind  = MappingKind::Explicit;
+  const BRepGraph* mySourceGraph = nullptr;
+  BRepGraph*       myTargetGraph = nullptr;
+  const ItemMap*   myItemRemap   = nullptr;
+  Mode             myMode        = Mode::Copy;
+  MappingKind      myMappingKind = MappingKind::Explicit;
 };
 
 #endif // _BRepGraph_CopyRemap_HeaderFile

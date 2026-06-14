@@ -129,8 +129,7 @@ void BRepGraphInc_Reconstruct::Cache::Bind(const BRepGraph_NodeId theNode,
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&               theGraph,
-                                             const BRepGraph_NodeId theNode)
+TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph& theGraph, const BRepGraph_NodeId theNode)
 {
   Cache aCache;
   return Node(theGraph, theNode, aCache);
@@ -138,9 +137,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&               theGraph,
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&               theGraph,
-                                             const BRepGraph_NodeId theNode,
-                                             Cache&                 theCache)
+TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&             theGraph,
+                                            const BRepGraph_NodeId theNode,
+                                            Cache&                 theCache)
 {
   if (!theNode.IsValid())
   {
@@ -177,8 +176,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&               theGraph,
       const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(BRepGraph_EdgeId(theNode));
       TopoDS_Edge                  aNewEdge;
 
-      bool anIsDegenerated = false;
-      bool anIsClosed      = false;
+      bool                        anIsDegenerated = false;
+      bool                        anIsClosed      = false;
       [[maybe_unused]] const bool isEdgeStateComputed =
         BRepGraph_CacheDerivedState::ComputeEdgeProperties(theGraph,
                                                            BRepGraph_EdgeId(theNode),
@@ -224,7 +223,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&               theGraph,
 
       // SameRange/SameParameter are per-CoEdge properties.
       // Set edge-level flags: true only if ALL coedges agree.
-      auto aCache = theGraph.CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
+      auto aCache         = theGraph.CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
       bool aSameRange     = true;
       bool aSameParameter = true;
       const BRepGraphInc::EdgeRelations& anEdgeRel =
@@ -461,7 +460,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&               theGraph,
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(BRepGraph&               theGraph,
+TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(BRepGraph&             theGraph,
                                                      const BRepGraph_FaceId theFaceId,
                                                      Cache&                 theCache)
 {
@@ -536,11 +535,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(BRepGraph&               th
     const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(theEdgeId);
     TopoDS_Edge                  aNewEdge;
 
-    bool anIsDegenerated = false;
-    bool anIsClosed      = false;
+    bool                        anIsDegenerated = false;
+    bool                        anIsClosed      = false;
     [[maybe_unused]] const bool isEdgeStateComputed =
-      BRepGraph_CacheDerivedState::ComputeEdgeProperties(theGraph, theEdgeId,
-                                                         anIsDegenerated, anIsClosed);
+      BRepGraph_CacheDerivedState::ComputeEdgeProperties(theGraph,
+                                                         theEdgeId,
+                                                         anIsDegenerated,
+                                                         anIsClosed);
 
     if (anIsDegenerated)
     {
@@ -570,7 +571,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(BRepGraph&               th
     // SameRange/SameParameter are per-CoEdge properties.
     // Set edge-level flags: true only if ALL coedges agree.
     {
-      auto aCache = theGraph.CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
+      auto aCache         = theGraph.CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
       bool aSameRange     = true;
       bool aSameParameter = true;
       const BRepGraphInc::EdgeRelations& anEdgeRel = aStorage.EdgeRelations(theEdgeId);

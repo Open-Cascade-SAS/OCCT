@@ -75,9 +75,8 @@ public:
   template <typename T>
   [[nodiscard]] occ::handle<T> Ensure()
   {
-    return occ::down_cast<T>(ensureLayer(T::GetID(), []() -> occ::handle<BRepGraph_Layer> {
-      return new T();
-    }));
+    return occ::down_cast<T>(
+      ensureLayer(T::GetID(), []() -> occ::handle<BRepGraph_Layer> { return new T(); }));
   }
 
   //! Return current slot for a GUID.
@@ -142,7 +141,7 @@ public:
   //! @param[in] theTargetGraph target graph to receive layer data
   //! @param[in] theMappingKind identity or explicit mapping
   //! @param[in] theMode        Copy or Compact semantics
-  Standard_EXPORT void CopyLayersTo(BRepGraph&                   theTargetGraph,
+  Standard_EXPORT void CopyLayersTo(BRepGraph&                       theTargetGraph,
                                     BRepGraph_CopyRemap::MappingKind theMappingKind,
                                     BRepGraph_CopyRemap::Mode        theMode) const;
 
@@ -192,7 +191,7 @@ private:
   //! Uses double-checked locking: shared lock for fast path (layer exists),
   //! exclusive lock only for creation (rare, first-call only).
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> ensureLayer(
-    const Standard_GUID&                                theGUID,
+    const Standard_GUID&                                 theGUID,
     const std::function<occ::handle<BRepGraph_Layer>()>& theFactory);
 
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> layerAt(uint32_t theSlot) const;

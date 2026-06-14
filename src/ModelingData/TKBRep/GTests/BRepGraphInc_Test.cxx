@@ -493,11 +493,13 @@ TEST(BRepGraphIncTest, Box_Relations_EdgesToFaces)
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     // Skip degenerate edges (e.g. sphere poles with no 3D curve).
-    bool anIsDegenerated = false;
-    bool anIsClosed      = false;
+    bool                        anIsDegenerated = false;
+    bool                        anIsClosed      = false;
     [[maybe_unused]] const bool isEdgeStateComputed =
-      BRepGraph_CacheDerivedState::ComputeEdgeProperties(aGraph, anEdgeId,
-                                                         anIsDegenerated, anIsClosed);
+      BRepGraph_CacheDerivedState::ComputeEdgeProperties(aGraph,
+                                                         anEdgeId,
+                                                         anIsDegenerated,
+                                                         anIsClosed);
     if (anIsDegenerated)
     {
       continue;
@@ -690,12 +692,14 @@ TEST(BRepGraphIncTest, Sphere_DegenerateEdges_Preserved)
   const uint32_t aNbEdges         = aGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef&           anEdge = aGraph.Topo().Edges().Definition(anEdgeId);
-    bool anIsDegenerated = false;
-    bool anIsClosed      = false;
-    [[maybe_unused]] const bool isEdgeStateComputed =
-      BRepGraph_CacheDerivedState::ComputeEdgeProperties(aGraph, anEdgeId,
-                                                         anIsDegenerated, anIsClosed);
+    const BRepGraphInc::EdgeDef& anEdge          = aGraph.Topo().Edges().Definition(anEdgeId);
+    bool                         anIsDegenerated = false;
+    bool                         anIsClosed      = false;
+    [[maybe_unused]] const bool  isEdgeStateComputed =
+      BRepGraph_CacheDerivedState::ComputeEdgeProperties(aGraph,
+                                                         anEdgeId,
+                                                         anIsDegenerated,
+                                                         anIsClosed);
     if (anIsDegenerated)
     {
       ++aDegenerateCount;

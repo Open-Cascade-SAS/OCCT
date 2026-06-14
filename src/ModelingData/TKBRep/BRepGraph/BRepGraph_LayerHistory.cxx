@@ -605,7 +605,7 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
            anIt.More();
            anIt.Next())
       {
-        BRepGraph_NodeId        aTargetNode;
+        BRepGraph_NodeId       aTargetNode;
         const BRepGraph_ItemId aTargetOriginal = theCopy.TargetItem(BRepGraph_ItemId(anIt.Key()));
         if (aTargetOriginal.IsNode())
         {

@@ -1070,8 +1070,8 @@ BRepGraph_ProductId ensureProduct(GraphCopyContext& theCtx, BRepGraph_ProductId 
 
 //! Build counts for identity copy, adjusting representation counts for drop policies.
 static BRepGraphInc_Load::Counts countsForIdentityCopy(const BRepGraphInc_Storage& theSrc,
-                                                       GeomPolicy                 theGeomPol,
-                                                       MeshPolicy                 theMeshPol)
+                                                       GeomPolicy                  theGeomPol,
+                                                       MeshPolicy                  theMeshPol)
 {
   BRepGraphInc_Load::Counts aCounts = theSrc.Counts();
   if (theGeomPol == GeomPolicy::Drop)
@@ -1187,8 +1187,7 @@ static void copyTopologyDefinitionsIdentity(const BRepGraphInc_Storage& theSrc,
 //=================================================================================================
 
 //! Copy all reference stores slot-for-slot from source to destination.
-static void copyReferencesIdentity(const BRepGraphInc_Storage& theSrc,
-                                   BRepGraphInc_Storage&       theDst)
+static void copyReferencesIdentity(const BRepGraphInc_Storage& theSrc, BRepGraphInc_Storage& theDst)
 {
   for (BRepGraph_ShellRefId anId(0); anId.IsValid(theSrc.NbShellRefs()); ++anId)
   {
@@ -1274,8 +1273,7 @@ static void copyRepresentationsIdentity(const BRepGraphInc_Storage& theSrc,
   }
 
   // Face triangulations.
-  for (BRepGraph_FaceTriangulationRepId anId(0);
-       anId.IsValid(theSrc.NbFaceTriangulations());
+  for (BRepGraph_FaceTriangulationRepId anId(0); anId.IsValid(theSrc.NbFaceTriangulations());
        ++anId)
   {
     BRepGraphInc::FaceTriangulationRep& aDst = theDst.ChangeFaceTriangulationRep(anId);
@@ -1321,8 +1319,7 @@ static void copyRepresentationsIdentity(const BRepGraphInc_Storage& theSrc,
   }
 
   // Coedge polygon-on-triangulation.
-  for (BRepGraph_CoEdgePolygonOnTriRepId anId(0);
-       anId.IsValid(theSrc.NbCoEdgePolygonsOnTri());
+  for (BRepGraph_CoEdgePolygonOnTriRepId anId(0); anId.IsValid(theSrc.NbCoEdgePolygonsOnTri());
        ++anId)
   {
     BRepGraphInc::CoEdgePolygonOnTriRep& aDst = theDst.ChangeCoEdgePolygonOnTriRep(anId);
@@ -1358,28 +1355,28 @@ static void copyUIDAndGraphStateIdentity(const BRepGraphInc_Storage& theSrc,
                                          BRepGraphInc_Storage&       theDst)
 {
   constexpr BRepGraph_NodeId::Kind aNodeKinds[] = {BRepGraph_NodeId::Kind::Vertex,
-                                                    BRepGraph_NodeId::Kind::Edge,
-                                                    BRepGraph_NodeId::Kind::CoEdge,
-                                                    BRepGraph_NodeId::Kind::Wire,
-                                                    BRepGraph_NodeId::Kind::Face,
-                                                    BRepGraph_NodeId::Kind::Shell,
-                                                    BRepGraph_NodeId::Kind::Solid,
-                                                    BRepGraph_NodeId::Kind::Compound,
-                                                    BRepGraph_NodeId::Kind::CompSolid,
-                                                    BRepGraph_NodeId::Kind::Product,
-                                                    BRepGraph_NodeId::Kind::Occurrence};
+                                                   BRepGraph_NodeId::Kind::Edge,
+                                                   BRepGraph_NodeId::Kind::CoEdge,
+                                                   BRepGraph_NodeId::Kind::Wire,
+                                                   BRepGraph_NodeId::Kind::Face,
+                                                   BRepGraph_NodeId::Kind::Shell,
+                                                   BRepGraph_NodeId::Kind::Solid,
+                                                   BRepGraph_NodeId::Kind::Compound,
+                                                   BRepGraph_NodeId::Kind::CompSolid,
+                                                   BRepGraph_NodeId::Kind::Product,
+                                                   BRepGraph_NodeId::Kind::Occurrence};
   for (const auto aKind : aNodeKinds)
   {
     theDst.SetNextNodeUIDCounter(aKind, theSrc.NextNodeUIDCounter(aKind));
   }
 
   constexpr BRepGraph_RefId::Kind aRefKinds[] = {BRepGraph_RefId::Kind::Shell,
-                                                  BRepGraph_RefId::Kind::Face,
-                                                  BRepGraph_RefId::Kind::Wire,
-                                                  BRepGraph_RefId::Kind::Vertex,
-                                                  BRepGraph_RefId::Kind::Solid,
-                                                  BRepGraph_RefId::Kind::Child,
-                                                  BRepGraph_RefId::Kind::Occurrence};
+                                                 BRepGraph_RefId::Kind::Face,
+                                                 BRepGraph_RefId::Kind::Wire,
+                                                 BRepGraph_RefId::Kind::Vertex,
+                                                 BRepGraph_RefId::Kind::Solid,
+                                                 BRepGraph_RefId::Kind::Child,
+                                                 BRepGraph_RefId::Kind::Occurrence};
   for (const auto aKind : aRefKinds)
   {
     theDst.SetNextRefUIDCounter(aKind, theSrc.NextRefUIDCounter(aKind));
@@ -1434,15 +1431,14 @@ static bool copyFullGraphIdentity(const BRepGraphInc_Storage& aSrc,
                                               BRepGraph_CopyRemap::Mode::Copy);
   if (theCachePolicy == BRepGraph_Copy::CachePolicy::CopyFresh)
   {
-    theSourceGraph.CacheRegistry().CopyFreshCachesTo(
-      theTargetGraph,
-      BRepGraph_CopyRemap::MappingKind::Identity,
-      BRepGraph_CopyRemap::Mode::Copy);
+    theSourceGraph.CacheRegistry().CopyFreshCachesTo(theTargetGraph,
+                                                     BRepGraph_CopyRemap::MappingKind::Identity,
+                                                     BRepGraph_CopyRemap::Mode::Copy);
   }
   return true;
 }
 
-}
+} // namespace
 
 //=================================================================================================
 
