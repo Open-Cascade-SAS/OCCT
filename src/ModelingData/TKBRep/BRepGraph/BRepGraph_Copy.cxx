@@ -1087,110 +1087,88 @@ static void copyRepresentationsIdentity(const BRepGraphInc_Storage& theSrc,
                                         GeomPolicy                  theGeomPol,
                                         MeshPolicy                  theMeshPol)
 {
-  // Face surfaces.
-  for (BRepGraph_FaceSurfaceRepId anId(0); anId.IsValid(theSrc.NbFaceSurfaces()); ++anId)
+  if (theGeomPol != GeomPolicy::Drop)
   {
-    BRepGraphInc::FaceSurfaceRep& aDst = theDst.ChangeFaceSurfaceRep(anId);
-    aDst                               = theSrc.FaceSurfaceRep(anId);
-    if (theGeomPol == GeomPolicy::Copy && !aDst.Surface.IsNull())
+    // Face surfaces.
+    for (BRepGraph_FaceSurfaceRepId anId(0); anId.IsValid(theSrc.NbFaceSurfaces()); ++anId)
     {
-      aDst.Surface = occ::down_cast<Geom_Surface>(aDst.Surface->Copy());
+      BRepGraphInc::FaceSurfaceRep& aDst = theDst.ChangeFaceSurfaceRep(anId);
+      aDst                               = theSrc.FaceSurfaceRep(anId);
+      if (theGeomPol == GeomPolicy::Copy && !aDst.Surface.IsNull())
+      {
+        aDst.Surface = occ::down_cast<Geom_Surface>(aDst.Surface->Copy());
+      }
     }
-    else if (theGeomPol == GeomPolicy::Drop)
+
+    // Edge 3D curves.
+    for (BRepGraph_EdgeCurve3DRepId anId(0); anId.IsValid(theSrc.NbEdgeCurves3D()); ++anId)
     {
-      aDst.Surface = occ::handle<Geom_Surface>();
+      BRepGraphInc::EdgeCurve3DRep& aDst = theDst.ChangeEdgeCurve3DRep(anId);
+      aDst                               = theSrc.EdgeCurve3DRep(anId);
+      if (theGeomPol == GeomPolicy::Copy && !aDst.Curve.IsNull())
+      {
+        aDst.Curve = occ::down_cast<Geom_Curve>(aDst.Curve->Copy());
+      }
+    }
+
+    // Coedge 2D curves.
+    for (BRepGraph_CoEdgeCurve2DRepId anId(0); anId.IsValid(theSrc.NbCoEdgeCurves2D()); ++anId)
+    {
+      BRepGraphInc::CoEdgeCurve2DRep& aDst = theDst.ChangeCoEdgeCurve2DRep(anId);
+      aDst                                 = theSrc.CoEdgeCurve2DRep(anId);
+      if (theGeomPol == GeomPolicy::Copy && !aDst.Curve.IsNull())
+      {
+        aDst.Curve = occ::down_cast<Geom2d_Curve>(aDst.Curve->Copy());
+      }
     }
   }
 
-  // Edge 3D curves.
-  for (BRepGraph_EdgeCurve3DRepId anId(0); anId.IsValid(theSrc.NbEdgeCurves3D()); ++anId)
+  if (theMeshPol != MeshPolicy::Drop)
   {
-    BRepGraphInc::EdgeCurve3DRep& aDst = theDst.ChangeEdgeCurve3DRep(anId);
-    aDst                               = theSrc.EdgeCurve3DRep(anId);
-    if (theGeomPol == GeomPolicy::Copy && !aDst.Curve.IsNull())
+    // Face triangulations.
+    for (BRepGraph_FaceTriangulationRepId anId(0); anId.IsValid(theSrc.NbFaceTriangulations());
+         ++anId)
     {
-      aDst.Curve = occ::down_cast<Geom_Curve>(aDst.Curve->Copy());
+      BRepGraphInc::FaceTriangulationRep& aDst = theDst.ChangeFaceTriangulationRep(anId);
+      aDst                                     = theSrc.FaceTriangulationRep(anId);
+      if (theMeshPol == MeshPolicy::Copy && !aDst.Triangulation.IsNull())
+      {
+        aDst.Triangulation = aDst.Triangulation->Copy();
+      }
     }
-    else if (theGeomPol == GeomPolicy::Drop)
-    {
-      aDst.Curve = occ::handle<Geom_Curve>();
-    }
-  }
 
-  // Coedge 2D curves.
-  for (BRepGraph_CoEdgeCurve2DRepId anId(0); anId.IsValid(theSrc.NbCoEdgeCurves2D()); ++anId)
-  {
-    BRepGraphInc::CoEdgeCurve2DRep& aDst = theDst.ChangeCoEdgeCurve2DRep(anId);
-    aDst                                 = theSrc.CoEdgeCurve2DRep(anId);
-    if (theGeomPol == GeomPolicy::Copy && !aDst.Curve.IsNull())
+    // Edge 3D polygons.
+    for (BRepGraph_EdgePolygon3DRepId anId(0); anId.IsValid(theSrc.NbEdgePolygons3D()); ++anId)
     {
-      aDst.Curve = occ::down_cast<Geom2d_Curve>(aDst.Curve->Copy());
+      BRepGraphInc::EdgePolygon3DRep& aDst = theDst.ChangeEdgePolygon3DRep(anId);
+      aDst                                 = theSrc.EdgePolygon3DRep(anId);
+      if (theMeshPol == MeshPolicy::Copy && !aDst.Polygon.IsNull())
+      {
+        aDst.Polygon = aDst.Polygon->Copy();
+      }
     }
-    else if (theGeomPol == GeomPolicy::Drop)
-    {
-      aDst.Curve = occ::handle<Geom2d_Curve>();
-    }
-  }
 
-  // Face triangulations.
-  for (BRepGraph_FaceTriangulationRepId anId(0); anId.IsValid(theSrc.NbFaceTriangulations());
-       ++anId)
-  {
-    BRepGraphInc::FaceTriangulationRep& aDst = theDst.ChangeFaceTriangulationRep(anId);
-    aDst                                     = theSrc.FaceTriangulationRep(anId);
-    if (theMeshPol == MeshPolicy::Copy && !aDst.Triangulation.IsNull())
+    // Coedge 2D polygons.
+    for (BRepGraph_CoEdgePolygon2DRepId anId(0); anId.IsValid(theSrc.NbCoEdgePolygons2D()); ++anId)
     {
-      aDst.Triangulation = aDst.Triangulation->Copy();
+      BRepGraphInc::CoEdgePolygon2DRep& aDst = theDst.ChangeCoEdgePolygon2DRep(anId);
+      aDst                                   = theSrc.CoEdgePolygon2DRep(anId);
+      if (theMeshPol == MeshPolicy::Copy && !aDst.Polygon.IsNull())
+      {
+        aDst.Polygon = aDst.Polygon->Copy();
+      }
     }
-    else if (theMeshPol == MeshPolicy::Drop)
-    {
-      aDst.Triangulation = occ::handle<Poly_Triangulation>();
-    }
-  }
 
-  // Edge 3D polygons.
-  for (BRepGraph_EdgePolygon3DRepId anId(0); anId.IsValid(theSrc.NbEdgePolygons3D()); ++anId)
-  {
-    BRepGraphInc::EdgePolygon3DRep& aDst = theDst.ChangeEdgePolygon3DRep(anId);
-    aDst                                 = theSrc.EdgePolygon3DRep(anId);
-    if (theMeshPol == MeshPolicy::Copy && !aDst.Polygon.IsNull())
+    // Coedge polygon-on-triangulation.
+    for (BRepGraph_CoEdgePolygonOnTriRepId anId(0); anId.IsValid(theSrc.NbCoEdgePolygonsOnTri());
+         ++anId)
     {
-      aDst.Polygon = aDst.Polygon->Copy();
-    }
-    else if (theMeshPol == MeshPolicy::Drop)
-    {
-      aDst.Polygon = occ::handle<Poly_Polygon3D>();
-    }
-  }
-
-  // Coedge 2D polygons.
-  for (BRepGraph_CoEdgePolygon2DRepId anId(0); anId.IsValid(theSrc.NbCoEdgePolygons2D()); ++anId)
-  {
-    BRepGraphInc::CoEdgePolygon2DRep& aDst = theDst.ChangeCoEdgePolygon2DRep(anId);
-    aDst                                   = theSrc.CoEdgePolygon2DRep(anId);
-    if (theMeshPol == MeshPolicy::Copy && !aDst.Polygon.IsNull())
-    {
-      aDst.Polygon = aDst.Polygon->Copy();
-    }
-    else if (theMeshPol == MeshPolicy::Drop)
-    {
-      aDst.Polygon = occ::handle<Poly_Polygon2D>();
-    }
-  }
-
-  // Coedge polygon-on-triangulation.
-  for (BRepGraph_CoEdgePolygonOnTriRepId anId(0); anId.IsValid(theSrc.NbCoEdgePolygonsOnTri());
-       ++anId)
-  {
-    BRepGraphInc::CoEdgePolygonOnTriRep& aDst = theDst.ChangeCoEdgePolygonOnTriRep(anId);
-    aDst                                      = theSrc.CoEdgePolygonOnTriRep(anId);
-    if (theMeshPol == MeshPolicy::Copy && !aDst.Polygon.IsNull())
-    {
-      aDst.Polygon = aDst.Polygon->Copy();
-    }
-    else if (theMeshPol == MeshPolicy::Drop)
-    {
-      aDst.Polygon = occ::handle<Poly_PolygonOnTriangulation>();
+      BRepGraphInc::CoEdgePolygonOnTriRep& aDst = theDst.ChangeCoEdgePolygonOnTriRep(anId);
+      aDst                                      = theSrc.CoEdgePolygonOnTriRep(anId);
+      if (theMeshPol == MeshPolicy::Copy && !aDst.Polygon.IsNull())
+      {
+        aDst.Polygon = aDst.Polygon->Copy();
+      }
     }
   }
 }
