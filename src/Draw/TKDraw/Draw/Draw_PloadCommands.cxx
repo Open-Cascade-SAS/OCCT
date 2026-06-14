@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <Draw_Interpretor.hxx>
+#include <Draw_Failure.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Draw.hxx>
@@ -203,6 +204,8 @@ static int Pload(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
   resolveKeys(aMap, aResMgr);
 
   const int aMapExtent = aMap.Extent();
+  int       aNbLoaded  = 0;
+  int       aNbSkipped = 0;
   for (int aResIter = 1; aResIter <= aMapExtent; ++aResIter)
   {
     const TCollection_AsciiString& aResource = aMap.FindKey(aResIter);
@@ -213,6 +216,7 @@ static int Pload(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
     if (!aResMgr->Find(aResource, aValue))
     {
       Message::SendWarning() << "Pload : Resource = " << aResource << " is not found";
+      ++aNbSkipped;
       continue;
     }
 
@@ -220,7 +224,18 @@ static int Pload(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
     std::cout << "Value ==> " << aValue << std::endl;
 #endif
 
-    Draw::Load(theDI, aResource, aPluginFileName, aPluginDir, aPluginDir2, false);
+    try
+    {
+      Draw::Load(theDI, aResource, aPluginFileName, aPluginDir, aPluginDir2, false);
+    }
+    catch (const Draw_Failure& theFailure)
+    {
+      Message::SendWarning() << "Pload : Cannot load plugin " << aResource << ": "
+                             << theFailure.what();
+      ++aNbSkipped;
+      continue;
+    }
+    ++aNbLoaded;
 
     // Load TclScript
     const TCollection_AsciiString aTclScriptDir = OSD_Environment("CSF_DrawPluginTclDir").Value();
@@ -242,6 +257,16 @@ static int Pload(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 #endif
       theDI.EvalFile(aTclScriptFileNameDefaults.ToCString());
     }
+  }
+  if (aNbSkipped > 0)
+  {
+    Message::SendWarning() << "Pload : Loaded " << aNbLoaded << " plugin(s), skipped " << aNbSkipped
+                           << " plugin(s)";
+  }
+  if (aNbLoaded == 0 && aNbSkipped > 0)
+  {
+    Message::SendFail() << "Pload : No plugins loaded";
+    return 1;
   }
   return 0;
 }
