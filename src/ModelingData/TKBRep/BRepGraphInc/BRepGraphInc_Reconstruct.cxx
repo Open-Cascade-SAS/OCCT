@@ -16,6 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <BRepGraph_CacheDerivedState.hxx>
+#include <BRepGraph_CacheRegistry.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_LayerTopoSupplement.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -176,14 +177,15 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
       const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(BRepGraph_EdgeId(theNode));
       TopoDS_Edge                  aNewEdge;
 
-      BRepGraph_CacheDerivedState::EdgeEntry anEdgeEntry;
-      [[maybe_unused]] const bool            isEdgeStateComputed =
-        BRepGraph_CacheDerivedState::ComputeEdgeStatus(theGraph,
-                                                       BRepGraph_EdgeId(theNode),
-                                                       anEdgeEntry);
+      bool anIsDegenerated = false;
+      bool anIsClosed      = false;
+      [[maybe_unused]] const bool isEdgeStateComputed =
+        BRepGraph_CacheDerivedState::ComputeEdgeProperties(theGraph,
+                                                           BRepGraph_EdgeId(theNode),
+                                                           anIsDegenerated,
+                                                           anIsClosed);
 
-      if (anEdgeEntry.Status
-          == BRepGraph_CacheDerivedState::EdgeGeometryStatus::DegenerateOnSurface)
+      if (anIsDegenerated)
       {
         aBB.MakeEdge(aNewEdge);
         aBB.Degenerated(aNewEdge, true);
@@ -219,8 +221,31 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
         aParamLast                               = aUse.ParamLast;
       }
       aBB.Range(aNewEdge, aParamFirst, aParamLast);
-      aBB.SameParameter(aNewEdge, anEdgeEntry.SameParameter);
-      aBB.SameRange(aNewEdge, anEdgeEntry.SameRange);
+
+      // SameRange/SameParameter are per-CoEdge properties.
+      // Set edge-level flags: true only if ALL coedges agree.
+      auto aCache =
+        const_cast<BRepGraph&>(theGraph).CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
+      bool aSameRange     = true;
+      bool aSameParameter = true;
+      const BRepGraphInc::EdgeRelations& anEdgeRel =
+        aStorage.EdgeRelations(BRepGraph_EdgeId(theNode));
+      for (const BRepGraph_CoEdgeId& aCoEdgeId : anEdgeRel.CoEdgeIds)
+      {
+        if (aCoEdgeId.IsValid(aStorage.NbCoEdges()) && !aStorage.IsRemoved(aCoEdgeId))
+        {
+          if (!aCache->SameRange(aCoEdgeId))
+          {
+            aSameRange = false;
+          }
+          if (!aCache->SameParameter(aCoEdgeId))
+          {
+            aSameParameter = false;
+          }
+        }
+      }
+      aBB.SameParameter(aNewEdge, aSameParameter);
+      aBB.SameRange(aNewEdge, aSameRange);
 
       if (anEdge.StartVertexRefId.IsValid())
       {
@@ -254,7 +279,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
           aBB.UpdateEdge(aNewEdge, aPolygon3D, TopLoc_Location());
         }
       }
-      if (anEdgeEntry.IsClosed)
+      if (anIsClosed)
       {
         aNewEdge.Closed(true);
       }
@@ -326,11 +351,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
           aBB.Add(aNewShell, aFace);
         }
       }
-      BRepGraph_CacheDerivedState::ShellEntry aShellEntry;
-      if (BRepGraph_CacheDerivedState::ComputeShellStatus(theGraph,
-                                                          BRepGraph_ShellId(theNode),
-                                                          aShellEntry)
-          && aShellEntry.Status == BRepGraph_CacheDerivedState::ShellClosureStatus::Closed)
+      if (BRepGraph_CacheDerivedState::ComputeShellIsClosed(theGraph, BRepGraph_ShellId(theNode)))
       {
         aNewShell.Closed(true);
       }
@@ -516,11 +537,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraph&       theG
     const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(theEdgeId);
     TopoDS_Edge                  aNewEdge;
 
-    BRepGraph_CacheDerivedState::EdgeEntry anEdgeEntry;
-    [[maybe_unused]] const bool            isEdgeStateComputed =
-      BRepGraph_CacheDerivedState::ComputeEdgeStatus(theGraph, theEdgeId, anEdgeEntry);
+    bool anIsDegenerated = false;
+    bool anIsClosed      = false;
+    [[maybe_unused]] const bool isEdgeStateComputed =
+      BRepGraph_CacheDerivedState::ComputeEdgeProperties(theGraph, theEdgeId,
+                                                         anIsDegenerated, anIsClosed);
 
-    if (anEdgeEntry.Status == BRepGraph_CacheDerivedState::EdgeGeometryStatus::DegenerateOnSurface)
+    if (anIsDegenerated)
     {
       aBB.MakeEdge(aNewEdge);
       aBB.Degenerated(aNewEdge, true);
@@ -544,8 +567,32 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraph&       theG
     {
       aBB.MakeEdge(aNewEdge);
     }
-    aBB.SameParameter(aNewEdge, anEdgeEntry.SameParameter);
-    aBB.SameRange(aNewEdge, anEdgeEntry.SameRange);
+
+    // SameRange/SameParameter are per-CoEdge properties.
+    // Set edge-level flags: true only if ALL coedges agree.
+    {
+      auto aCache =
+        const_cast<BRepGraph&>(theGraph).CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
+      bool aSameRange     = true;
+      bool aSameParameter = true;
+      const BRepGraphInc::EdgeRelations& anEdgeRel = aStorage.EdgeRelations(theEdgeId);
+      for (const BRepGraph_CoEdgeId& aCoEdgeId : anEdgeRel.CoEdgeIds)
+      {
+        if (aCoEdgeId.IsValid(aStorage.NbCoEdges()) && !aStorage.IsRemoved(aCoEdgeId))
+        {
+          if (!aCache->SameRange(aCoEdgeId))
+          {
+            aSameRange = false;
+          }
+          if (!aCache->SameParameter(aCoEdgeId))
+          {
+            aSameParameter = false;
+          }
+        }
+      }
+      aBB.SameParameter(aNewEdge, aSameParameter);
+      aBB.SameRange(aNewEdge, aSameRange);
+    }
 
     // Vertices (also cached).
     const auto aGetOrBuildVertex = [&](const BRepGraph_VertexId theVtxId) -> TopoDS_Shape {
@@ -600,7 +647,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraph&       theG
       }
     }
 
-    if (anEdgeEntry.IsClosed)
+    if (anIsClosed)
     {
       aNewEdge.Closed(true);
     }
@@ -740,8 +787,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraph&       theG
 
       if (!aPC1.IsNull() && !aPC2.IsNull())
       {
-        gp_Pnt2d aUV1 = aPC1->Value(aPCFirst);
-        gp_Pnt2d aUV2 = aPC1->Value(aPCLast);
+        gp_Pnt2d aUV1 = aPC1->EvalD0(aPCFirst);
+        gp_Pnt2d aUV2 = aPC1->EvalD0(aPCLast);
         aBB.UpdateEdge(anEdge,
                        aPC1,
                        aPC2,
@@ -754,8 +801,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraph&       theG
       }
       else if (!aPC1.IsNull())
       {
-        gp_Pnt2d aUV1 = aPC1->Value(aPCFirst);
-        gp_Pnt2d aUV2 = aPC1->Value(aPCLast);
+        gp_Pnt2d aUV1 = aPC1->EvalD0(aPCFirst);
+        gp_Pnt2d aUV2 = aPC1->EvalD0(aPCLast);
         aBB.UpdateEdge(anEdge,
                        aPC1,
                        aFaceSurface,

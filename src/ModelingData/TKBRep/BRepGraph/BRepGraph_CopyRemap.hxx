@@ -40,12 +40,26 @@ public:
     Compact = 1  //!< In-place compaction: layers migrate into the same (rebuilt) graph.
   };
 
+  //! Distinguishes explicit item map vs. identity mapping.
+  enum class MappingKind : std::uint8_t
+  {
+    Explicit = 0, //!< Use theItemRemap for source->target resolution.
+    Identity = 1  //!< Source and target ids are identical (full identity copy).
+  };
+
   using ItemMap = NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId>;
 
   BRepGraph_CopyRemap(const BRepGraph& theSourceGraph,
                       BRepGraph&       theTargetGraph,
                       const ItemMap&   theItemRemap,
                       const Mode       theMode) noexcept;
+
+  //! Identity-mapping constructor for full identity copy into an empty target.
+  //! Source item ids are returned directly as target item ids after validation.
+  BRepGraph_CopyRemap(const BRepGraph& theSourceGraph,
+                      BRepGraph&       theTargetGraph,
+                      MappingKind      theMappingKind,
+                      Mode             theMode) noexcept;
 
   //! Migration mode of this context.
   [[nodiscard]] Mode CopyMode() const noexcept { return myMode; }
@@ -65,8 +79,8 @@ public:
   //! Source item id -> target item id map for copied definitions, refs, and reps.
   [[nodiscard]] const ItemMap& Items() const noexcept { return *myItemRemap; }
 
-  //! Return the target item for a source item, or null if the source item was not copied.
-  [[nodiscard]] Standard_EXPORT const BRepGraph_ItemId* TargetItem(
+  //! Return the target item for a source item, or an invalid item if not copied.
+  [[nodiscard]] Standard_EXPORT BRepGraph_ItemId TargetItem(
     const BRepGraph_ItemId theSourceItem) const;
 
   //! Return the target item for a source item, or an invalid item id.
@@ -89,10 +103,11 @@ public:
     TargetUIDFromSource(const BRepGraph_ItemId theSourceItem) const;
 
 private:
-  const BRepGraph* mySourceGraph = nullptr;
-  BRepGraph*       myTargetGraph = nullptr;
-  const ItemMap*   myItemRemap   = nullptr;
-  Mode             myMode        = Mode::Copy;
+  const BRepGraph* mySourceGraph  = nullptr;
+  BRepGraph*       myTargetGraph  = nullptr;
+  const ItemMap*   myItemRemap    = nullptr;
+  Mode             myMode         = Mode::Copy;
+  MappingKind      myMappingKind  = MappingKind::Explicit;
 };
 
 #endif // _BRepGraph_CopyRemap_HeaderFile

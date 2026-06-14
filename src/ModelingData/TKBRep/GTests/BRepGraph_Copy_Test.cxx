@@ -61,6 +61,32 @@
 namespace
 {
 
+bool edgeSameParameter(const BRepGraph& theGraph, BRepGraph_EdgeId theEdge)
+{
+  const auto& aRel = theGraph.Topo().Edges().Relations(theEdge);
+  for (const auto& aCoEdgeId : aRel.CoEdgeIds)
+  {
+    if (!BRepGraph_Tool::CoEdge::SameParameter(theGraph, aCoEdgeId))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool edgeSameRange(const BRepGraph& theGraph, BRepGraph_EdgeId theEdge)
+{
+  const auto& aRel = theGraph.Topo().Edges().Relations(theEdge);
+  for (const auto& aCoEdgeId : aRel.CoEdgeIds)
+  {
+    if (!BRepGraph_Tool::CoEdge::SameRange(theGraph, aCoEdgeId))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 class CopyTestCacheService : public BRepGraph_Cache
 {
 public:
@@ -940,9 +966,9 @@ TEST(BRepGraph_CopyTest, CopyBox_SameParameter_Preserved)
   const uint32_t aNbEdges = aCopyGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aCopyGraph, anEdgeId))
+    EXPECT_TRUE(edgeSameParameter(aCopyGraph, anEdgeId))
       << "Copied edge " << anEdgeId.Index << " lost SameParameter flag";
-    EXPECT_TRUE(BRepGraph_Tool::Edge::SameRange(aCopyGraph, anEdgeId))
+    EXPECT_TRUE(edgeSameRange(aCopyGraph, anEdgeId))
       << "Copied edge " << anEdgeId.Index << " lost SameRange flag";
   }
 }

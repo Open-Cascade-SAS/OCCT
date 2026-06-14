@@ -58,6 +58,32 @@
 namespace
 {
 
+bool edgeSameParameter(const BRepGraph& theGraph, BRepGraph_EdgeId theEdge)
+{
+  const auto& aRel = theGraph.Topo().Edges().Relations(theEdge);
+  for (const auto& aCoEdgeId : aRel.CoEdgeIds)
+  {
+    if (!BRepGraph_Tool::CoEdge::SameParameter(theGraph, aCoEdgeId))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool edgeSameRange(const BRepGraph& theGraph, BRepGraph_EdgeId theEdge)
+{
+  const auto& aRel = theGraph.Topo().Edges().Relations(theEdge);
+  for (const auto& aCoEdgeId : aRel.CoEdgeIds)
+  {
+    if (!BRepGraph_Tool::CoEdge::SameRange(theGraph, aCoEdgeId))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 static int componentKey(const BRepGraph_NodeId theNode)
 {
   return theNode.Index * BRepGraph_NodeId::THE_KIND_COUNT + static_cast<int>(theNode.NodeKind);
@@ -768,7 +794,7 @@ TEST(BRepGraph_GeometryTest, Box_EdgeDef_SameParameter_IsSet)
   // Box edges are well-formed; SameParameter should be true for all.
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeIt.CurrentId()))
+    EXPECT_TRUE(edgeSameParameter(aGraph, anEdgeIt.CurrentId()))
       << "Edge def " << anEdgeIt.CurrentId().Index << " has SameParameter=false";
   }
 }
@@ -784,7 +810,7 @@ TEST(BRepGraph_GeometryTest, Box_EdgeDef_SameRange_IsSet)
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::SameRange(aGraph, anEdgeIt.CurrentId()))
+    EXPECT_TRUE(edgeSameRange(aGraph, anEdgeIt.CurrentId()))
       << "Edge def " << anEdgeIt.CurrentId().Index << " has SameRange=false";
   }
 }
@@ -817,14 +843,14 @@ TEST(BRepGraph_GeometryTest, DerivedStateCache_LazyAndFreshAfterPCurveRangeMutat
   ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
 
-  ASSERT_TRUE(BRepGraph_Tool::Edge::SameRange(aGraph, anEdgeId));
+  ASSERT_TRUE(edgeSameRange(aGraph, anEdgeId));
   EXPECT_FALSE(aGraph.CacheRegistry().Find<BRepGraph_CacheDerivedState>().IsNull());
 
   const std::pair<double, double> anEdgeRange = BRepGraph_Tool::Edge::Range(aGraph, anEdgeId);
   aGraph.Editor().CoEdges().SetParamRange(aCoEdgeId, anEdgeRange.first + 1.0, anEdgeRange.second);
 
-  EXPECT_FALSE(BRepGraph_Tool::Edge::SameRange(aGraph, anEdgeId));
-  EXPECT_FALSE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeId));
+  EXPECT_FALSE(edgeSameRange(aGraph, anEdgeId));
+  EXPECT_FALSE(edgeSameParameter(aGraph, anEdgeId));
 }
 
 // ============================================================

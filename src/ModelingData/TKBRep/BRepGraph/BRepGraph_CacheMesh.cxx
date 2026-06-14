@@ -51,12 +51,12 @@ IdT remappedNode(const BRepGraph_CopyRemap& theCopy, const IdT theId)
   {
     return IdT();
   }
-  const BRepGraph_ItemId* aTarget = theCopy.TargetItem(BRepGraph_ItemId(theId));
-  if (aTarget == nullptr || !aTarget->IsNode())
+  const BRepGraph_ItemId aTarget = theCopy.TargetItem(BRepGraph_ItemId(theId));
+  if (!aTarget.IsNode())
   {
     return IdT();
   }
-  return IdT::FromNodeId(aTarget->NodeId());
+  return IdT::FromNodeId(aTarget.NodeId());
 }
 
 void appendPolygonsOnTri(

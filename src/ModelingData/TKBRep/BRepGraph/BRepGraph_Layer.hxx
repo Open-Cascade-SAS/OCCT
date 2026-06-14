@@ -209,12 +209,12 @@ protected:
     {
       return BRepGraph_NodeId::Typed<TheKind>();
     }
-    const BRepGraph_ItemId* aMapped = theCopy.TargetItem(BRepGraph_ItemId(theId));
-    if (aMapped == nullptr || !aMapped->IsNode())
+    const BRepGraph_ItemId aMapped = theCopy.TargetItem(BRepGraph_ItemId(theId));
+    if (!aMapped.IsNode())
     {
       return BRepGraph_NodeId::Typed<TheKind>();
     }
-    return BRepGraph_NodeId::Typed<TheKind>::FromNodeId(aMapped->NodeId());
+    return BRepGraph_NodeId::Typed<TheKind>::FromNodeId(aMapped.NodeId());
   }
 
   template <BRepGraph_RefId::Kind TheKind>
@@ -226,12 +226,12 @@ protected:
     {
       return BRepGraph_RefId::Typed<TheKind>();
     }
-    const BRepGraph_ItemId* aMapped = theCopy.TargetItem(BRepGraph_ItemId(theId));
-    if (aMapped == nullptr || !aMapped->IsReference())
+    const BRepGraph_ItemId aMapped = theCopy.TargetItem(BRepGraph_ItemId(theId));
+    if (!aMapped.IsReference())
     {
       return BRepGraph_RefId::Typed<TheKind>();
     }
-    return BRepGraph_RefId::Typed<TheKind>::FromRefId(aMapped->RefId());
+    return BRepGraph_RefId::Typed<TheKind>::FromRefId(aMapped.RefId());
   }
 
   //! Called after the layer is attached to a graph registry.

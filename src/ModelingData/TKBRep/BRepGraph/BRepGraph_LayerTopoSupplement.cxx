@@ -327,13 +327,13 @@ void BRepGraph_LayerTopoSupplement::CopyTo(const BRepGraph_CopyRemap& theCopy) c
   }
   for (const Entry& anEntry : aSourceEntries)
   {
-    const BRepGraph_ItemId* aTargetItem = theCopy.TargetItem(BRepGraph_ItemId(anEntry.BaseOwner));
-    if (aTargetItem == nullptr || !aTargetItem->IsNode())
+    const BRepGraph_ItemId aTargetItem = theCopy.TargetItem(BRepGraph_ItemId(anEntry.BaseOwner));
+    if (!aTargetItem.IsNode())
     {
       continue;
     }
 
-    const BRepGraph_NodeId aTargetOwner = aTargetItem->NodeId();
+    const BRepGraph_NodeId aTargetOwner = aTargetItem.NodeId();
     if (!aTargetOwner.IsValid())
     {
       continue;

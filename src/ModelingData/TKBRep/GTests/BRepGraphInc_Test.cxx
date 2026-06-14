@@ -493,10 +493,12 @@ TEST(BRepGraphIncTest, Box_Relations_EdgesToFaces)
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     // Skip degenerate edges (e.g. sphere poles with no 3D curve).
-    BRepGraph_CacheDerivedState::EdgeEntry anEdgeState;
-    [[maybe_unused]] const bool            isEdgeStateComputed =
-      BRepGraph_CacheDerivedState::ComputeEdgeStatus(aGraph, anEdgeId, anEdgeState);
-    if (anEdgeState.Status == BRepGraph_CacheDerivedState::EdgeGeometryStatus::DegenerateOnSurface)
+    bool anIsDegenerated = false;
+    bool anIsClosed      = false;
+    [[maybe_unused]] const bool isEdgeStateComputed =
+      BRepGraph_CacheDerivedState::ComputeEdgeProperties(aGraph, anEdgeId,
+                                                         anIsDegenerated, anIsClosed);
+    if (anIsDegenerated)
     {
       continue;
     }
@@ -689,10 +691,12 @@ TEST(BRepGraphIncTest, Sphere_DegenerateEdges_Preserved)
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const BRepGraphInc::EdgeDef&           anEdge = aGraph.Topo().Edges().Definition(anEdgeId);
-    BRepGraph_CacheDerivedState::EdgeEntry anEdgeState;
-    [[maybe_unused]] const bool            isEdgeStateComputed =
-      BRepGraph_CacheDerivedState::ComputeEdgeStatus(aGraph, anEdgeId, anEdgeState);
-    if (anEdgeState.Status == BRepGraph_CacheDerivedState::EdgeGeometryStatus::DegenerateOnSurface)
+    bool anIsDegenerated = false;
+    bool anIsClosed      = false;
+    [[maybe_unused]] const bool isEdgeStateComputed =
+      BRepGraph_CacheDerivedState::ComputeEdgeProperties(aGraph, anEdgeId,
+                                                         anIsDegenerated, anIsClosed);
+    if (anIsDegenerated)
     {
       ++aDegenerateCount;
       EXPECT_FALSE(anEdge.Curve3DRepId.IsValid())

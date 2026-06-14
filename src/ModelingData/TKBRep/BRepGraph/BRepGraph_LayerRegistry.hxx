@@ -23,8 +23,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_GUID.hxx>
 
+#include <functional>
 #include <mutex>
 #include <shared_mutex>
+#include <atomic>
 
 //! @brief Dense GUID-keyed runtime registry of graph layers.
 //!
@@ -69,17 +71,13 @@ public:
   }
 
   //! Return an existing layer or create and register a default one.
+  //! Template convenience wrapper: extracts GUID and calls ensureLayer.
   template <typename T>
   [[nodiscard]] occ::handle<T> Ensure()
   {
-    std::unique_lock<std::shared_mutex> aLock(myMutex);
-    occ::handle<T>                      aLayer = occ::down_cast<T>(findLayerLocked(T::GetID()));
-    if (aLayer.IsNull())
-    {
-      aLayer = new T();
-      registerLayerLocked(aLayer);
-    }
-    return aLayer;
+    return occ::down_cast<T>(ensureLayer(T::GetID(), []() -> occ::handle<BRepGraph_Layer> {
+      return new T();
+    }));
   }
 
   //! Return current slot for a GUID.
@@ -99,15 +97,13 @@ public:
   //! True if any registered layer subscribes to node modification events.
   [[nodiscard]] bool HasModificationSubscribers() const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-    return mySubscribedKindsMask != 0;
+    return mySubscribedKindsMask.load(std::memory_order_acquire) != 0;
   }
 
   //! Bitwise OR of all registered layer node subscription masks.
   [[nodiscard]] int SubscribedKindsMask() const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-    return mySubscribedKindsMask;
+    return static_cast<int>(mySubscribedKindsMask.load(std::memory_order_acquire));
   }
 
   //! Dispatch OnNodeRemoved to all registered layers.
@@ -141,18 +137,25 @@ public:
     const NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId>& theItemRemap,
     const BRepGraph_CopyRemap::Mode                                    theMode) const;
 
+  //! Ask every registered source layer to copy itself using identity mapping.
+  //! Source item ids are the same as target item ids (full identity copy).
+  //! @param[in] theTargetGraph target graph to receive layer data
+  //! @param[in] theMappingKind identity or explicit mapping
+  //! @param[in] theMode        Copy or Compact semantics
+  Standard_EXPORT void CopyLayersTo(BRepGraph&                   theTargetGraph,
+                                    BRepGraph_CopyRemap::MappingKind theMappingKind,
+                                    BRepGraph_CopyRemap::Mode        theMode) const;
+
   //! True if any registered layer subscribes to reference modification events.
   [[nodiscard]] bool HasRefModificationSubscribers() const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-    return mySubscribedRefKindsMask != 0;
+    return mySubscribedRefKindsMask.load(std::memory_order_acquire) != 0;
   }
 
   //! Bitwise OR of all registered layer reference subscription masks.
   [[nodiscard]] int SubscribedRefKindsMask() const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-    return mySubscribedRefKindsMask;
+    return static_cast<int>(mySubscribedRefKindsMask.load(std::memory_order_acquire));
   }
 
   //! Dispatch OnRefRemoved to all registered layers (unconditional - not filtered).
@@ -185,6 +188,13 @@ private:
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> findLayerLocked(
     const Standard_GUID& theGUID) const;
 
+  //! Return an existing layer or create and register a default one.
+  //! Uses double-checked locking: shared lock for fast path (layer exists),
+  //! exclusive lock only for creation (rare, first-call only).
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> ensureLayer(
+    const Standard_GUID&                                theGUID,
+    const std::function<occ::handle<BRepGraph_Layer>()>& theFactory);
+
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> layerAt(uint32_t theSlot) const;
 
   Standard_EXPORT uint32_t registerLayerLocked(const occ::handle<BRepGraph_Layer>& theLayer);
@@ -195,9 +205,9 @@ private:
 private:
   NCollection_LinearVector<occ::handle<BRepGraph_Layer>> myLayers;
   NCollection_DataMap<Standard_GUID, uint32_t>           myGuidToSlot;
-  uint32_t                                               mySubscribedKindsMask    = 0;
-  uint32_t                                               mySubscribedRefKindsMask = 0;
-  BRepGraph*                                             myGraph                  = nullptr;
+  std::atomic<uint32_t>                                  mySubscribedKindsMask{0};
+  std::atomic<uint32_t>                                  mySubscribedRefKindsMask{0};
+  BRepGraph*                                             myGraph = nullptr;
   mutable std::shared_mutex                              myMutex;
 };
 

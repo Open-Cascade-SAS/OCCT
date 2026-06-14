@@ -1289,6 +1289,10 @@ public:
     }
   }
 
+  //! Copy TShape-to-NodeId and Original shape bindings from another storage.
+  //! Used by identity copy to preserve shape reconstruction bindings.
+  Standard_EXPORT void CopyShapeBindingsFrom(const BRepGraphInc_Storage& theSource);
+
   //! Return the generation-validated node-to-shape reconstruction cache.
   [[nodiscard]] const NCollection_FlatDataMap<BRepGraph_NodeId, CachedShape>& CurrentShapes() const
   {
@@ -1334,6 +1338,12 @@ public:
   //! @param theCounts trusted active per-section counts.
   Standard_EXPORT void SetActiveCounts(const BRepGraphInc_Load::Counts& theCounts);
 
+  //! Build a Counts struct from current allocated slot counts.
+  [[nodiscard]] Standard_EXPORT BRepGraphInc_Load::Counts Counts() const;
+
+  //! Build a Counts struct from current active (non-removed) counts.
+  [[nodiscard]] Standard_EXPORT BRepGraphInc_Load::Counts ActiveCounts() const;
+
   //! Recount active-slot counters from current `IsRemoved` flags without rebuilding indexes.
   Standard_EXPORT void RecountActiveCounts();
 
@@ -1344,6 +1354,10 @@ public:
 
   //! Rebuild relation maps after a trusted load already restored active counts.
   Standard_EXPORT void RebuildDerivedRelationsPreservingActiveCounts();
+
+  //! Bulk-copy all RemovedFlags bit-planes from theSource.
+  //! Source must have been loaded with the same entity counts (identity copy path).
+  Standard_EXPORT void CopyRemovedFlagsFrom(const BRepGraphInc_Storage& theSource);
 
   //! Debug: verify relation-table consistency against entity/reference endpoints.
   //! @return true if all relations are consistent
@@ -1392,6 +1406,10 @@ public:
 
   //! Lazily rebuild the reference UID reverse index if it is stale.
   Standard_EXPORT void EnsureRefUIDReverseIndex() const;
+
+  //! Copy all forward/reverse relation vectors directly from theSource.
+  //! Used by identity copy to avoid the clear+rebuild cycle.
+  Standard_EXPORT void CopyDerivedRelationsFrom(const BRepGraphInc_Storage& theSource);
 
 private:
   friend class BRepGraphInc_Populate;
@@ -1868,8 +1886,8 @@ private:
   mutable std::shared_mutex                                          myUIDToNodeIdMutex;
   mutable NCollection_FlatDataMap<BRepGraph_RefUID, BRepGraph_RefId> myRefUIDToRefId;
   mutable std::shared_mutex                                          myRefUIDToRefIdMutex;
-  mutable bool                                                       myUIDToNodeIdDirty   = false;
-  mutable bool                                                       myRefUIDToRefIdDirty = false;
+  mutable std::atomic<bool>                                          myUIDToNodeIdDirty{false};
+  mutable std::atomic<bool>                                          myRefUIDToRefIdDirty{false};
 
   //! Bindings from reconstructed / source OCCT shapes back to backend ids.
   NCollection_FlatDataMap<const TopoDS_TShape*, BRepGraph_NodeId> myTShapeToNodeId;

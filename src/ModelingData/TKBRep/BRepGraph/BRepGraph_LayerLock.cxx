@@ -456,23 +456,23 @@ void BRepGraph_LayerLock::CopyTo(const BRepGraph_CopyRemap& theCopy) const
   // Copy node root entries.
   for (OwnerMap::Iterator anIt(myNodeOwners); anIt.More(); anIt.Next())
   {
-    const BRepGraph_ItemId* aTargetItem = theCopy.TargetItem(anIt.Key());
-    if (aTargetItem == nullptr || !aTargetItem->IsValid())
+    const BRepGraph_ItemId aTargetItem = theCopy.TargetItem(anIt.Key());
+    if (!aTargetItem.IsValid())
     {
       continue;
     }
-    hasCopied = aTarget->SetOwner(*aTargetItem, anIt.Value(), false) || hasCopied;
+    hasCopied = aTarget->SetOwner(aTargetItem, anIt.Value(), false) || hasCopied;
   }
 
   // Copy ref root entries.
   for (OwnerMap::Iterator anIt(myRefOwners); anIt.More(); anIt.Next())
   {
-    const BRepGraph_ItemId* aTargetItem = theCopy.TargetItem(anIt.Key());
-    if (aTargetItem == nullptr || !aTargetItem->IsValid())
+    const BRepGraph_ItemId aTargetItem = theCopy.TargetItem(anIt.Key());
+    if (!aTargetItem.IsValid())
     {
       continue;
     }
-    hasCopied = aTarget->SetOwner(*aTargetItem, anIt.Value(), false) || hasCopied;
+    hasCopied = aTarget->SetOwner(aTargetItem, anIt.Value(), false) || hasCopied;
   }
 
   if (hasCopied)

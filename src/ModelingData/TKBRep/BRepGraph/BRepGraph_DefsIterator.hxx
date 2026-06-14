@@ -368,24 +368,52 @@ public:
   void Next()
   {
     ++myIndex;
+    // Fast-path: check if the very next element is already valid.
+    if (myRefIds != nullptr && myIndex < myLength)
+    {
+      const RefId aRefId = myRefIds->Value(static_cast<size_t>(myIndex));
+      if (aRefId.IsValid(myNbRefs) && !aRefId.IsRemoved(myGraph))
+      {
+        if constexpr (TraitsT::THE_IS_DIRECT)
+        {
+          myCurrentChild = ChildId(aRefId);
+          return;
+        }
+        else
+        {
+          const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
+          const ChildId aChildId = TraitsT::ChildIdOf(myGraph, aRef);
+          if constexpr (std::is_same_v<ChildId, BRepGraph_NodeId>)
+          {
+            if (myGraph.Topo().Gen().IsActive(aChildId))
+            {
+              myCurrentChild = aChildId;
+              return;
+            }
+          }
+          else if (aChildId.IsValid(myNbChildren) && !aChildId.IsRemoved(myGraph))
+          {
+            myCurrentChild = aChildId;
+            return;
+          }
+        }
+      }
+    }
+    // Slow-path: full scan for next valid element.
     skipRemoved();
   }
 
   [[nodiscard]] ChildId CurrentId() const
   {
-    const RefId                       aRefId = myRefIds->Value(static_cast<size_t>(myIndex));
-    const typename TraitsT::RefEntry& aRef   = TraitsT::Ref(myGraph, aRefId);
-    if constexpr (TraitsT::THE_IS_DIRECT)
-    {
-      return aRefId;
-    }
-    else
-    {
-      return TraitsT::ChildIdOf(myGraph, aRef);
-    }
+    Standard_ASSERT_VOID(More(), "DefsOfParent::CurrentId() called on exhausted iterator");
+    return myCurrentChild;
   }
 
-  [[nodiscard]] const ChildDef& Current() const { return TraitsT::Child(myGraph, CurrentId()); }
+  [[nodiscard]] const ChildDef& Current() const
+  {
+    Standard_ASSERT_VOID(More(), "DefsOfParent::Current() called on exhausted iterator");
+    return TraitsT::Child(myGraph, CurrentId());
+  }
 
   //! Returns the reference/coedge entry that carries the current child relation.
   [[nodiscard]] RefId CurrentRefId() const
@@ -428,11 +456,13 @@ private:
         {
           if (myGraph.Topo().Gen().IsActive(aChildId))
           {
+            myCurrentChild = aChildId;
             return;
           }
         }
         else if (aChildId.IsValid(myNbChildren) && !aChildId.IsRemoved(myGraph))
         {
+          myCurrentChild = aChildId;
           return;
         }
       }
@@ -441,11 +471,12 @@ private:
   }
 
   const BRepGraph&                       myGraph;
-  const NCollection_LinearVector<RefId>* myRefIds     = nullptr;
-  uint32_t                               myIndex      = 0;
-  uint32_t                               myLength     = 0;
-  uint32_t                               myNbRefs     = 0;
-  uint32_t                               myNbChildren = 0;
+  const NCollection_LinearVector<RefId>* myRefIds       = nullptr;
+  ChildId                                myCurrentChild{};
+  uint32_t                               myIndex        = 0;
+  uint32_t                               myLength       = 0;
+  uint32_t                               myNbRefs       = 0;
+  uint32_t                               myNbChildren   = 0;
 };
 
 //! @brief Direct active boundary vertex children of an edge.
@@ -482,11 +513,13 @@ public:
 
   [[nodiscard]] ChildId CurrentId() const
   {
+    Standard_ASSERT_VOID(More(), "DefsVertexOfEdge::CurrentId() called on exhausted iterator");
     return myGraph.Refs().Vertices().Entry(currentRefId()).ChildVertexId;
   }
 
   [[nodiscard]] const ChildDef& Current() const
   {
+    Standard_ASSERT_VOID(More(), "DefsVertexOfEdge::Current() called on exhausted iterator");
     return myGraph.Topo().Vertices().Definition(CurrentId());
   }
 

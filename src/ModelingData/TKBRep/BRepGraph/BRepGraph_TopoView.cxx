@@ -22,6 +22,7 @@
 #include <BRepGraphInc_Storage.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom2d_Curve.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -148,12 +149,63 @@ const BRepGraphInc::EdgeRelations& BRepGraph::TopoView::EdgeOps::Relations(
 
 uint32_t BRepGraph::TopoView::EdgeOps::NbFaces(const BRepGraph_EdgeId theEdge) const
 {
-  uint32_t aCount = 0;
-  for (BRepGraph_FacesOfEdge aFaceIt(*myGraph, theEdge); aFaceIt.More(); aFaceIt.Next())
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theEdge.IsValid(aStorage.NbEdges()) || aStorage.IsRemoved(theEdge)
+      || aStorage.NbActiveFaces() == 0)
   {
-    ++aCount;
+    return 0;
   }
-  return aCount;
+
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
+    aStorage.EdgeRelations(theEdge).CoEdgeIds;
+  const size_t aNbCoEdges = aCoEdges.Size();
+  if (aNbCoEdges == 0)
+  {
+    return 0;
+  }
+
+  // Inline buffer covers edges with up to 32 coedges without heap allocation.
+  // Seam edges (2 coedges, 1 face) and typical manifold edges (2 coedges, 2 faces)
+  // are the overwhelmingly common cases.
+  NCollection_LocalArray<BRepGraph_FaceId, 32> aSeenBuf(32);
+  uint32_t                                     aNbSeen = 0;
+
+  for (size_t aIdx = 0; aIdx < aNbCoEdges; ++aIdx)
+  {
+    const BRepGraph_CoEdgeId aCoEdgeId = aCoEdges.Value(aIdx);
+    if (!aCoEdgeId.IsValid(aStorage.NbCoEdges()) || aStorage.IsRemoved(aCoEdgeId))
+    {
+      continue;
+    }
+
+    const BRepGraph_FaceId aFace = aStorage.CoEdge(aCoEdgeId).FaceId;
+    if (!aFace.IsValid(aStorage.NbFaces()) || aStorage.IsRemoved(aFace))
+    {
+      continue;
+    }
+
+    // Linear scan over the small seen set (typically 1-2 entries).
+    bool aFound = false;
+    for (uint32_t aJ = 0; aJ < aNbSeen; ++aJ)
+    {
+      if (aSeenBuf[aJ] == aFace)
+      {
+        aFound = true;
+        break;
+      }
+    }
+    if (aFound)
+    {
+      continue;
+    }
+    if (aNbSeen >= aSeenBuf.Size())
+    {
+      aSeenBuf.Reallocate(static_cast<size_t>(aSeenBuf.Size() * 1.5));
+    }
+    aSeenBuf[aNbSeen++] = aFace;
+  }
+
+  return aNbSeen;
 }
 
 //=================================================================================================

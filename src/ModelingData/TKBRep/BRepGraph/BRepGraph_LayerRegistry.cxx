@@ -32,11 +32,13 @@ BRepGraph_LayerRegistry::BRepGraph_LayerRegistry(BRepGraph_LayerRegistry&& theOt
   std::unique_lock<std::shared_mutex> aLock(theOther.myMutex);
   myLayers                          = std::move(theOther.myLayers);
   myGuidToSlot                      = std::move(theOther.myGuidToSlot);
-  mySubscribedKindsMask             = theOther.mySubscribedKindsMask;
-  mySubscribedRefKindsMask          = theOther.mySubscribedRefKindsMask;
+  mySubscribedKindsMask.store(
+    theOther.mySubscribedKindsMask.load(std::memory_order_relaxed), std::memory_order_relaxed);
+  mySubscribedRefKindsMask.store(
+    theOther.mySubscribedRefKindsMask.load(std::memory_order_relaxed), std::memory_order_relaxed);
   myGraph                           = theOther.myGraph;
-  theOther.mySubscribedKindsMask    = 0;
-  theOther.mySubscribedRefKindsMask = 0;
+  theOther.mySubscribedKindsMask.store(0, std::memory_order_relaxed);
+  theOther.mySubscribedRefKindsMask.store(0, std::memory_order_relaxed);
   theOther.myGraph                  = nullptr;
 }
 
@@ -54,11 +56,13 @@ BRepGraph_LayerRegistry& BRepGraph_LayerRegistry::operator=(
     detachAllLocked();
     myLayers                          = std::move(theOther.myLayers);
     myGuidToSlot                      = std::move(theOther.myGuidToSlot);
-    mySubscribedKindsMask             = theOther.mySubscribedKindsMask;
-    mySubscribedRefKindsMask          = theOther.mySubscribedRefKindsMask;
+    mySubscribedKindsMask.store(
+      theOther.mySubscribedKindsMask.load(std::memory_order_relaxed), std::memory_order_relaxed);
+    mySubscribedRefKindsMask.store(
+      theOther.mySubscribedRefKindsMask.load(std::memory_order_relaxed), std::memory_order_relaxed);
     myGraph                           = theOther.myGraph;
-    theOther.mySubscribedKindsMask    = 0;
-    theOther.mySubscribedRefKindsMask = 0;
+    theOther.mySubscribedKindsMask.store(0, std::memory_order_relaxed);
+    theOther.mySubscribedRefKindsMask.store(0, std::memory_order_relaxed);
     theOther.myGraph                  = nullptr;
   }
   return *this;
@@ -100,8 +104,12 @@ uint32_t BRepGraph_LayerRegistry::registerLayerLocked(const occ::handle<BRepGrap
   theLayer->attachGraph(myGraph);
   myLayers.Append(theLayer);
   myGuidToSlot.Bind(aGUID, aNewSlot);
-  mySubscribedKindsMask |= theLayer->SubscribedKinds();
-  mySubscribedRefKindsMask |= theLayer->SubscribedRefKinds();
+  mySubscribedKindsMask.store(
+    mySubscribedKindsMask.load(std::memory_order_relaxed) | theLayer->SubscribedKinds(),
+    std::memory_order_relaxed);
+  mySubscribedRefKindsMask.store(
+    mySubscribedRefKindsMask.load(std::memory_order_relaxed) | theLayer->SubscribedRefKinds(),
+    std::memory_order_relaxed);
   return aNewSlot;
 }
 
@@ -175,6 +183,35 @@ occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::findLayerLocked(
   const uint32_t* aSlot = myGuidToSlot.Seek(theGUID);
   return aSlot != nullptr ? myLayers.Value(static_cast<size_t>(*aSlot))
                           : occ::handle<BRepGraph_Layer>();
+}
+
+//=================================================================================================
+
+occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::ensureLayer(
+  const Standard_GUID&                                theGUID,
+  const std::function<occ::handle<BRepGraph_Layer>()>& theFactory)
+{
+  // Fast path: shared lock for read-only lookup.
+  {
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    occ::handle<BRepGraph_Layer> aLayer = findLayerLocked(theGUID);
+    if (!aLayer.IsNull())
+    {
+      return aLayer;
+    }
+  }
+
+  // Slow path: exclusive lock for creation.
+  {
+    std::unique_lock<std::shared_mutex> aLock(myMutex);
+    occ::handle<BRepGraph_Layer> aLayer = findLayerLocked(theGUID);
+    if (aLayer.IsNull())
+    {
+      aLayer = theFactory();
+      registerLayerLocked(aLayer);
+    }
+    return aLayer;
+  }
 }
 
 //=================================================================================================
@@ -270,12 +307,10 @@ void BRepGraph_LayerRegistry::DispatchOnNodeReplaced(const BRepGraph_NodeId theO
 
 void BRepGraph_LayerRegistry::DispatchNodeModified(const BRepGraph_NodeId theNode) noexcept
 {
+  // Lock-free early exit: check subscription mask without mutex.
+  if (mySubscribedKindsMask.load(std::memory_order_acquire) == 0)
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-    if (mySubscribedKindsMask == 0)
-    {
-      return;
-    }
+    return;
   }
 
   const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
@@ -321,12 +356,10 @@ void BRepGraph_LayerRegistry::DispatchNodesModified(
   const NCollection_Array1<BRepGraph_NodeId>& theModifiedNodes,
   const int                                   theModifiedKindsMask) noexcept
 {
+  // Lock-free early exit: check subscription mask without mutex.
+  if (mySubscribedKindsMask.load(std::memory_order_acquire) == 0 || theModifiedKindsMask == 0)
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-    if (mySubscribedKindsMask == 0 || theModifiedKindsMask == 0)
-    {
-      return;
-    }
+    return;
   }
 
   for (uint32_t aSlot = 0;; ++aSlot)
@@ -369,8 +402,8 @@ void BRepGraph_LayerRegistry::CopyLayersTo(
     aSelf.detachAllLocked();
     aSelf.myLayers.Clear();
     aSelf.myGuidToSlot.Clear();
-    aSelf.mySubscribedKindsMask    = 0;
-    aSelf.mySubscribedRefKindsMask = 0;
+    aSelf.mySubscribedKindsMask.store(0, std::memory_order_relaxed);
+    aSelf.mySubscribedRefKindsMask.store(0, std::memory_order_relaxed);
     aLock.unlock();
 
     // Call CopyTo on each old (now detached) layer.
@@ -399,6 +432,31 @@ void BRepGraph_LayerRegistry::CopyLayersTo(
       }
       aLayer->CopyTo(aCopy);
     }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::CopyLayersTo(
+  BRepGraph&                        theTargetGraph,
+  BRepGraph_CopyRemap::MappingKind  theMappingKind,
+  BRepGraph_CopyRemap::Mode         theMode) const
+{
+  BRepGraph* aSourceGraph = nullptr;
+  {
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    aSourceGraph = myGraph;
+  }
+
+  const BRepGraph_CopyRemap aCopy(*aSourceGraph, theTargetGraph, theMappingKind, theMode);
+  for (uint32_t aSlot = 0;; ++aSlot)
+  {
+    occ::handle<BRepGraph_Layer> aLayer = layerAt(aSlot);
+    if (aLayer.IsNull())
+    {
+      return;
+    }
+    aLayer->CopyTo(aCopy);
   }
 }
 
@@ -451,12 +509,10 @@ void BRepGraph_LayerRegistry::DispatchOnRefRemoved(const BRepGraph_RefId theRef)
 
 void BRepGraph_LayerRegistry::DispatchRefModified(const BRepGraph_RefId theRef) noexcept
 {
+  // Lock-free early exit: check subscription mask without mutex.
+  if (mySubscribedRefKindsMask.load(std::memory_order_acquire) == 0)
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-    if (mySubscribedRefKindsMask == 0)
-    {
-      return;
-    }
+    return;
   }
 
   const int aRefKindBit = BRepGraph_Layer::RefKindBit(theRef.RefKind);
@@ -480,12 +536,11 @@ void BRepGraph_LayerRegistry::DispatchRefsModified(
   const NCollection_Array1<BRepGraph_RefId>& theModifiedRefs,
   const int                                  theModifiedRefKindsMask) noexcept
 {
+  // Lock-free early exit: check subscription mask without mutex.
+  if (mySubscribedRefKindsMask.load(std::memory_order_acquire) == 0
+      || theModifiedRefKindsMask == 0)
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-    if (mySubscribedRefKindsMask == 0 || theModifiedRefKindsMask == 0)
-    {
-      return;
-    }
+    return;
   }
 
   for (uint32_t aSlot = 0;; ++aSlot)
@@ -519,11 +574,13 @@ void BRepGraph_LayerRegistry::detachAllLocked() noexcept
 
 void BRepGraph_LayerRegistry::recomputeSubscribedKindsMask()
 {
-  mySubscribedKindsMask    = 0;
-  mySubscribedRefKindsMask = 0;
+  uint32_t aKindsMask    = 0;
+  uint32_t aRefKindsMask = 0;
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    mySubscribedKindsMask |= aLayer->SubscribedKinds();
-    mySubscribedRefKindsMask |= aLayer->SubscribedRefKinds();
+    aKindsMask |= aLayer->SubscribedKinds();
+    aRefKindsMask |= aLayer->SubscribedRefKinds();
   }
+  mySubscribedKindsMask.store(aKindsMask, std::memory_order_relaxed);
+  mySubscribedRefKindsMask.store(aRefKindsMask, std::memory_order_relaxed);
 }

@@ -430,8 +430,8 @@ void BRepGraph_LayerDeferred::CopyTo(const BRepGraph_CopyRemap& theCopy) const
   for (NCollection_DataMap<BRepGraph_ItemId, Entry>::Iterator anIt(myEntries); anIt.More();
        anIt.Next())
   {
-    const BRepGraph_ItemId* aTargetItem = theCopy.TargetItem(anIt.Key());
-    if (aTargetItem == nullptr || !aTargetItem->IsValid())
+    const BRepGraph_ItemId aTargetItem = theCopy.TargetItem(anIt.Key());
+    if (!aTargetItem.IsValid())
     {
       continue;
     }
@@ -443,7 +443,7 @@ void BRepGraph_LayerDeferred::CopyTo(const BRepGraph_CopyRemap& theCopy) const
     {
       aRepresentations[aRepresentationIdx] = anEntry.Representations.Value(aRepresentationIdx);
     }
-    aTarget->RegisterDeferredRepresentationsDirect(*aTargetItem,
+    aTarget->RegisterDeferredRepresentationsDirect(aTargetItem,
                                                    anEntry.Provider,
                                                    anEntry.SourceKey,
                                                    aRepresentations,

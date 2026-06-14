@@ -22,6 +22,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_GUID.hxx>
 
+#include <functional>
 #include <mutex>
 #include <shared_mutex>
 
@@ -83,17 +84,13 @@ public:
   }
 
   //! Return an existing cache service or create and register a default one.
+  //! Template convenience wrapper: extracts GUID and calls ensureCache.
   template <typename T>
   [[nodiscard]] occ::handle<T> Ensure()
   {
-    std::unique_lock<std::shared_mutex> aLock(myMutex);
-    occ::handle<T>                      aCache = occ::down_cast<T>(findCacheLocked(T::GetID()));
-    if (aCache.IsNull())
-    {
-      aCache = new T();
-      registerCacheLocked(aCache);
-    }
-    return aCache;
+    return occ::down_cast<T>(ensureCache(T::GetID(), []() -> occ::handle<BRepGraph_Cache> {
+      return new T();
+    }));
   }
 
   //! Return current graph-local slot for a GUID.
@@ -133,6 +130,11 @@ public:
     const NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId>& theItemRemap,
     const BRepGraph_CopyRemap::Mode                                    theMode) const;
 
+  //! Ask registered cache services to copy fresh data using identity mapping.
+  Standard_EXPORT void CopyFreshCachesTo(BRepGraph&                      theTargetGraph,
+                                         BRepGraph_CopyRemap::MappingKind theMappingKind,
+                                         BRepGraph_CopyRemap::Mode        theMode) const;
+
   //! Unregister all cache services.
   Standard_EXPORT void Clear() noexcept;
 
@@ -148,6 +150,13 @@ private:
 
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> findCacheLocked(
     const Standard_GUID& theGUID) const;
+
+  //! Return an existing cache service or create and register a default one.
+  //! Uses double-checked locking: shared lock for fast path (cache exists),
+  //! exclusive lock only for creation (rare, first-call only).
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> ensureCache(
+    const Standard_GUID&                                 theGUID,
+    const std::function<occ::handle<BRepGraph_Cache>()>& theFactory);
 
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> cacheAt(uint32_t theSlot) const;
 

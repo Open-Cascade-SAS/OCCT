@@ -172,10 +172,10 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                 theBoundary,
   const bool isUClosed = isFullPeriod(theSurface, true, theUMin, theUMax, aPeriodTol);
   const bool isVClosed = isFullPeriod(theSurface, false, theVMin, theVMax, aPeriodTol);
 
-  size_t aV00 = addSurfaceVertex(theBoundary, theSurface->Value(theUMin, theVMin), aTol);
-  size_t aV10 = addSurfaceVertex(theBoundary, theSurface->Value(theUMax, theVMin), aTol);
-  size_t aV11 = addSurfaceVertex(theBoundary, theSurface->Value(theUMax, theVMax), aTol);
-  size_t aV01 = addSurfaceVertex(theBoundary, theSurface->Value(theUMin, theVMax), aTol);
+  size_t aV00 = addSurfaceVertex(theBoundary, theSurface->EvalD0(theUMin, theVMin), aTol);
+  size_t aV10 = addSurfaceVertex(theBoundary, theSurface->EvalD0(theUMax, theVMin), aTol);
+  size_t aV11 = addSurfaceVertex(theBoundary, theSurface->EvalD0(theUMax, theVMax), aTol);
+  size_t aV01 = addSurfaceVertex(theBoundary, theSurface->EvalD0(theUMin, theVMax), aTol);
 
   if (isUClosed)
   {

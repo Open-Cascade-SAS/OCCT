@@ -126,10 +126,6 @@ public:
     [[nodiscard]] Standard_EXPORT static double Tolerance(const BRepGraph&       theGraph,
                                                           const BRepGraph_EdgeId theEdge);
 
-    //! Returns the tolerance of the edge referenced by the coedge.
-    [[nodiscard]] Standard_EXPORT static double Tolerance(const BRepGraph&         theGraph,
-                                                          const BRepGraph_CoEdgeId theCoEdge);
-
     //! Returns true if the edge is degenerate, derived from current geometry.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
@@ -137,44 +133,12 @@ public:
     [[nodiscard]] Standard_EXPORT static bool Degenerated(const BRepGraph&       theGraph,
                                                           const BRepGraph_EdgeId theEdge);
 
-    //! Returns true if the edge referenced by the coedge is degenerate.
-    [[nodiscard]] Standard_EXPORT static bool Degenerated(const BRepGraph&         theGraph,
-                                                          const BRepGraph_CoEdgeId theCoEdge);
-
-    //! Returns true if all PCurves are reparametrized to the same range as the 3D curve.
-    //! This is a derived geometry check, not a stored flag.
-    //! @param[in] theGraph source graph
-    //! @param[in] theEdge  typed edge definition identifier
-    //! @return true if same parameter
-    [[nodiscard]] Standard_EXPORT static bool SameParameter(const BRepGraph&       theGraph,
-                                                            const BRepGraph_EdgeId theEdge);
-
-    //! Returns SameParameter for the edge referenced by the coedge.
-    [[nodiscard]] Standard_EXPORT static bool SameParameter(const BRepGraph&         theGraph,
-                                                            const BRepGraph_CoEdgeId theCoEdge);
-
-    //! Returns true if PCurve parameter range equals the 3D curve range.
-    //! This is a derived check, not a stored flag.
-    //! @param[in] theGraph source graph
-    //! @param[in] theEdge  typed edge definition identifier
-    //! @return true if same range
-    [[nodiscard]] Standard_EXPORT static bool SameRange(const BRepGraph&       theGraph,
-                                                        const BRepGraph_EdgeId theEdge);
-
-    //! Returns SameRange for the edge referenced by the coedge.
-    [[nodiscard]] Standard_EXPORT static bool SameRange(const BRepGraph&         theGraph,
-                                                        const BRepGraph_CoEdgeId theCoEdge);
-
     //! Returns true if the edge forms a topological loop, derived from vertex topology.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return true if closed
     [[nodiscard]] Standard_EXPORT static bool IsClosed(const BRepGraph&       theGraph,
                                                        const BRepGraph_EdgeId theEdge);
-
-    //! Returns the closed flag for the edge referenced by the coedge.
-    [[nodiscard]] Standard_EXPORT static bool IsClosed(const BRepGraph&         theGraph,
-                                                       const BRepGraph_CoEdgeId theCoEdge);
 
     //! Returns the 3D curve parameter range as (first, last).
     //! @param[in] theGraph source graph
@@ -184,11 +148,6 @@ public:
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
 
-    //! Returns the 3D curve parameter range for the edge referenced by the coedge.
-    [[nodiscard]] Standard_EXPORT static std::pair<double, double> Range(
-      const BRepGraph&         theGraph,
-      const BRepGraph_CoEdgeId theCoEdge);
-
     //! Returns the start vertex reference id directly.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
@@ -196,11 +155,6 @@ public:
     [[nodiscard]] Standard_EXPORT static BRepGraph_VertexRefId StartVertexId(
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
-
-    //! Returns the coedge start vertex reference id, respecting coedge orientation.
-    [[nodiscard]] Standard_EXPORT static BRepGraph_VertexRefId StartVertexId(
-      const BRepGraph&         theGraph,
-      const BRepGraph_CoEdgeId theCoEdge);
 
     //! Returns the end vertex reference id directly.
     //! @param[in] theGraph source graph
@@ -210,21 +164,12 @@ public:
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
 
-    //! Returns the coedge end vertex reference id, respecting coedge orientation.
-    [[nodiscard]] Standard_EXPORT static BRepGraph_VertexRefId EndVertexId(
-      const BRepGraph&         theGraph,
-      const BRepGraph_CoEdgeId theCoEdge);
-
     //! Returns true if the edge has a 3D curve representation.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return true if edge has a 3D curve
     [[nodiscard]] Standard_EXPORT static bool HasCurve(const BRepGraph&       theGraph,
                                                        const BRepGraph_EdgeId theEdge);
-
-    //! Returns true if the edge referenced by the coedge has a 3D curve.
-    [[nodiscard]] Standard_EXPORT static bool HasCurve(const BRepGraph&         theGraph,
-                                                       const BRepGraph_CoEdgeId theCoEdge);
 
     //! Returns the raw 3D curve handle (definition frame, no copy).
     //! @param[in] theGraph source graph
@@ -233,11 +178,6 @@ public:
     [[nodiscard]] Standard_EXPORT static const occ::handle<Geom_Curve>& Curve(
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
-
-    //! Returns the raw 3D curve handle for the edge referenced by the coedge.
-    [[nodiscard]] Standard_EXPORT static const occ::handle<Geom_Curve>& Curve(
-      const BRepGraph&         theGraph,
-      const BRepGraph_CoEdgeId theCoEdge);
 
     //! Returns the transformed 3D curve handle via CoEdgeUsage (applies Location, may copy).
     //! @param[in] theGraph source graph
@@ -253,11 +193,6 @@ public:
     [[nodiscard]] Standard_EXPORT static GeomAdaptor_TransformedCurve CurveAdaptor(
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
-
-    //! Returns the 3D curve adaptor for the edge referenced by the coedge.
-    [[nodiscard]] Standard_EXPORT static GeomAdaptor_TransformedCurve CurveAdaptor(
-      const BRepGraph&         theGraph,
-      const BRepGraph_CoEdgeId theCoEdge);
 
     //! Returns the 3D curve adaptor via CoEdgeUsage (applies edge-in-wire Location in Trsf).
     //! Falls back to CurveOnSurface when no 3D curve exists.
@@ -333,10 +268,6 @@ public:
     [[nodiscard]] Standard_EXPORT static uint32_t NbFaces(const BRepGraph&       theGraph,
                                                           const BRepGraph_EdgeId theEdge);
 
-    //! Returns the number of faces referencing the edge referenced by the coedge.
-    [[nodiscard]] Standard_EXPORT static uint32_t NbFaces(const BRepGraph&         theGraph,
-                                                          const BRepGraph_CoEdgeId theCoEdge);
-
     //! Returns true if the edge is shared by exactly two faces (manifold).
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
@@ -344,20 +275,12 @@ public:
     [[nodiscard]] Standard_EXPORT static bool IsManifold(const BRepGraph&       theGraph,
                                                          const BRepGraph_EdgeId theEdge);
 
-    //! Returns true if the edge referenced by the coedge is manifold.
-    [[nodiscard]] Standard_EXPORT static bool IsManifold(const BRepGraph&         theGraph,
-                                                         const BRepGraph_CoEdgeId theCoEdge);
-
     //! Returns true if the edge belongs to exactly one face (boundary / free edge).
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return true if boundary
     [[nodiscard]] Standard_EXPORT static bool IsBoundary(const BRepGraph&       theGraph,
                                                          const BRepGraph_EdgeId theEdge);
-
-    //! Returns true if the edge referenced by the coedge is boundary.
-    [[nodiscard]] Standard_EXPORT static bool IsBoundary(const BRepGraph&         theGraph,
-                                                         const BRepGraph_CoEdgeId theCoEdge);
 
     //! Returns true if the edge is a seam on the given face.
     //! @param[in] theGraph source graph
@@ -432,6 +355,20 @@ public:
     //! @param[in] theCoEdge typed coedge definition identifier
     //! @return true if PCurve exists
     [[nodiscard]] Standard_EXPORT static bool HasPCurve(const BRepGraph&         theGraph,
+                                                        const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns true if the coedge's PCurve parameter matches the 3D curve.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @return true if same parameter
+    [[nodiscard]] Standard_EXPORT static bool SameParameter(const BRepGraph&         theGraph,
+                                                            const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns true if the coedge's PCurve range equals the 3D curve range.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @return true if same range
+    [[nodiscard]] Standard_EXPORT static bool SameRange(const BRepGraph&         theGraph,
                                                         const BRepGraph_CoEdgeId theCoEdge);
 
     //! Returns the raw PCurve handle by coedge identifier (no Location - UV space).

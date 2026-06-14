@@ -274,76 +274,30 @@ double BRepGraph_Tool::Edge::Tolerance(const BRepGraph& theGraph, const BRepGrap
 
 bool BRepGraph_Tool::Edge::Degenerated(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
-  BRepGraph_CacheDerivedState::EdgeEntry anEntry;
-  return derivedStateCache(theGraph)->GetEdgeStatus(theEdge, anEntry)
-         && anEntry.Status == BRepGraph_CacheDerivedState::EdgeGeometryStatus::DegenerateOnSurface;
+  return derivedStateCache(theGraph)->IsDegenerated(theEdge);
 }
 
 //=================================================================================================
 
-double BRepGraph_Tool::Edge::Tolerance(const BRepGraph&         theGraph,
+bool BRepGraph_Tool::CoEdge::SameParameter(const BRepGraph&         theGraph,
+                                           const BRepGraph_CoEdgeId theCoEdge)
+{
+  return derivedStateCache(theGraph)->SameParameter(theCoEdge);
+}
+
+//=================================================================================================
+
+bool BRepGraph_Tool::CoEdge::SameRange(const BRepGraph&         theGraph,
                                        const BRepGraph_CoEdgeId theCoEdge)
 {
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() ? Tolerance(theGraph, anEdge) : 0.0;
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::Edge::Degenerated(const BRepGraph&         theGraph,
-                                       const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() && Degenerated(theGraph, anEdge);
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::Edge::SameParameter(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
-{
-  BRepGraph_CacheDerivedState::EdgeEntry anEntry;
-  return derivedStateCache(theGraph)->GetEdgeStatus(theEdge, anEntry) && anEntry.SameParameter;
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::Edge::SameParameter(const BRepGraph&         theGraph,
-                                         const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() && SameParameter(theGraph, anEdge);
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::Edge::SameRange(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
-{
-  BRepGraph_CacheDerivedState::EdgeEntry anEntry;
-  return derivedStateCache(theGraph)->GetEdgeStatus(theEdge, anEntry) && anEntry.SameRange;
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::Edge::SameRange(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() && SameRange(theGraph, anEdge);
+  return derivedStateCache(theGraph)->SameRange(theCoEdge);
 }
 
 //=================================================================================================
 
 bool BRepGraph_Tool::Edge::IsClosed(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
-  BRepGraph_CacheDerivedState::EdgeEntry anEntry;
-  return derivedStateCache(theGraph)->GetEdgeStatus(theEdge, anEntry) && anEntry.IsClosed;
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::Edge::IsClosed(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() && IsClosed(theGraph, anEdge);
+  return derivedStateCache(theGraph)->IsClosed(theEdge);
 }
 
 //=================================================================================================
@@ -362,15 +316,6 @@ std::pair<double, double> BRepGraph_Tool::Edge::Range(const BRepGraph&       the
     aLast                                    = aUse.ParamLast;
   }
   return {aFirst, aLast};
-}
-
-//=================================================================================================
-
-std::pair<double, double> BRepGraph_Tool::Edge::Range(const BRepGraph&         theGraph,
-                                                      const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() ? Range(theGraph, anEdge) : std::pair<double, double>{0.0, 0.0};
 }
 
 //=================================================================================================
@@ -395,42 +340,6 @@ BRepGraph_VertexRefId BRepGraph_Tool::Edge::EndVertexId(const BRepGraph&       t
                                                         const BRepGraph_EdgeId theEdge)
 {
   return theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId;
-}
-
-//=================================================================================================
-
-BRepGraph_VertexRefId BRepGraph_Tool::Edge::StartVertexId(const BRepGraph&         theGraph,
-                                                          const BRepGraph_CoEdgeId theCoEdge)
-{
-  if (!theCoEdge.IsValid() || theCoEdge.IsRemoved(theGraph))
-  {
-    return BRepGraph_VertexRefId();
-  }
-  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
-  return aCoEdge.Orientation == TopAbs_REVERSED ? EndVertexId(theGraph, aCoEdge.ChildEdgeId)
-                                                : StartVertexId(theGraph, aCoEdge.ChildEdgeId);
-}
-
-//=================================================================================================
-
-BRepGraph_VertexRefId BRepGraph_Tool::Edge::EndVertexId(const BRepGraph&         theGraph,
-                                                        const BRepGraph_CoEdgeId theCoEdge)
-{
-  if (!theCoEdge.IsValid() || theCoEdge.IsRemoved(theGraph))
-  {
-    return BRepGraph_VertexRefId();
-  }
-  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
-  return aCoEdge.Orientation == TopAbs_REVERSED ? StartVertexId(theGraph, aCoEdge.ChildEdgeId)
-                                                : EndVertexId(theGraph, aCoEdge.ChildEdgeId);
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::Edge::HasCurve(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() && HasCurve(theGraph, anEdge);
 }
 
 //=================================================================================================
@@ -527,24 +436,6 @@ const occ::handle<Geom_Curve>& BRepGraph_Tool::Edge::Curve(const BRepGraph&     
     return THE_NULL_CURVE;
   }
   return theGraph.incStorage().EdgeCurve3DRep(aRepId).Curve;
-}
-
-//=================================================================================================
-
-const occ::handle<Geom_Curve>& BRepGraph_Tool::Edge::Curve(const BRepGraph&         theGraph,
-                                                           const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() ? Curve(theGraph, anEdge) : THE_NULL_CURVE;
-}
-
-//=================================================================================================
-
-GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(const BRepGraph&         theGraph,
-                                                                const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() ? CurveAdaptor(theGraph, anEdge) : GeomAdaptor_TransformedCurve();
 }
 
 //=================================================================================================
@@ -671,15 +562,6 @@ uint32_t BRepGraph_Tool::Edge::NbFaces(const BRepGraph& theGraph, const BRepGrap
 
 //=================================================================================================
 
-uint32_t BRepGraph_Tool::Edge::NbFaces(const BRepGraph&         theGraph,
-                                       const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() ? NbFaces(theGraph, anEdge) : 0;
-}
-
-//=================================================================================================
-
 bool BRepGraph_Tool::Edge::IsManifold(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   return NbFaces(theGraph, theEdge) == 2;
@@ -687,25 +569,9 @@ bool BRepGraph_Tool::Edge::IsManifold(const BRepGraph& theGraph, const BRepGraph
 
 //=================================================================================================
 
-bool BRepGraph_Tool::Edge::IsManifold(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() && IsManifold(theGraph, anEdge);
-}
-
-//=================================================================================================
-
 bool BRepGraph_Tool::Edge::IsBoundary(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   return NbFaces(theGraph, theEdge) == 1;
-}
-
-//=================================================================================================
-
-bool BRepGraph_Tool::Edge::IsBoundary(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
-{
-  const BRepGraph_EdgeId anEdge = edgeOf(theGraph, theCoEdge);
-  return anEdge.IsValid() && IsBoundary(theGraph, anEdge);
 }
 
 //=================================================================================================
@@ -905,7 +771,7 @@ std::pair<gp_Pnt2d, gp_Pnt2d> BRepGraph_Tool::CoEdge::UVPoints(const BRepGraph& 
   {
     return {gp_Pnt2d(), gp_Pnt2d()};
   }
-  return {aCurve->Value(aPCUse.ParamFirst), aCurve->Value(aPCUse.ParamLast)};
+  return {aCurve->EvalD0(aPCUse.ParamFirst), aCurve->EvalD0(aPCUse.ParamLast)};
 }
 
 //=================================================================================================
@@ -1448,9 +1314,7 @@ BRepGraph_Tool::ShellUsage BRepGraph_Tool::Shell::Usage(const BRepGraph&        
 
 bool BRepGraph_Tool::Shell::IsClosed(const BRepGraph& theGraph, const BRepGraph_ShellId theShell)
 {
-  BRepGraph_CacheDerivedState::ShellEntry anEntry;
-  return derivedStateCache(theGraph)->GetShellStatus(theShell, anEntry)
-         && anEntry.Status == BRepGraph_CacheDerivedState::ShellClosureStatus::Closed;
+  return derivedStateCache(theGraph)->IsShellClosed(theShell);
 }
 
 //=================================================================================================

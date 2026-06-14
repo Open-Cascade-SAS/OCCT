@@ -452,8 +452,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
            anIt.More();
            anIt.Next())
       {
-        const BRepGraph_ItemId* aNewOriginalItem = theCopy.TargetItem(BRepGraph_ItemId(anIt.Key()));
-        if (aNewOriginalItem == nullptr || !aNewOriginalItem->IsNode())
+        const BRepGraph_ItemId aNewOriginalItem = theCopy.TargetItem(BRepGraph_ItemId(anIt.Key()));
+        if (!aNewOriginalItem.IsNode())
         {
           continue;
         }
@@ -461,13 +461,13 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
         NCollection_LinearVector<BRepGraph_NodeId> aNewImages(THE_HISTORY_FILTERED_BLOCK_SIZE);
         for (const BRepGraph_NodeId& anOldImage : anIt.Value())
         {
-          const BRepGraph_ItemId* aNewImageItem = theCopy.TargetItem(BRepGraph_ItemId(anOldImage));
-          if (aNewImageItem != nullptr && aNewImageItem->IsNode())
+          const BRepGraph_ItemId aNewImageItem = theCopy.TargetItem(BRepGraph_ItemId(anOldImage));
+          if (aNewImageItem.IsNode())
           {
-            appendUniqueNode(aNewImages, aNewImageItem->NodeId());
+            appendUniqueNode(aNewImages, aNewImageItem.NodeId());
           }
         }
-        aNewRecord.Mapping.Bind(aNewOriginalItem->NodeId(), std::move(aNewImages));
+        aNewRecord.Mapping.Bind(aNewOriginalItem.NodeId(), std::move(aNewImages));
       }
 
       if (!aNewRecord.Mapping.IsEmpty() || !aNewRecord.UidMapping.IsEmpty()
@@ -497,8 +497,8 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
                          const BRepGraph_ItemId                            theSourceOriginal,
                          const BRepGraph_ItemUID&                          theDurableOriginalUID,
                          const NCollection_LinearVector<BRepGraph_ItemId>& theSourceImages) {
-    const BRepGraph_ItemId* aTargetOriginal = theCopy.TargetItem(theSourceOriginal);
-    if (aTargetOriginal == nullptr || !aTargetOriginal->IsValid())
+    const BRepGraph_ItemId aTargetOriginal = theCopy.TargetItem(theSourceOriginal);
+    if (!aTargetOriginal.IsValid())
     {
       if (theKind == BRepGraph_LayerHistory::Kind::Deleted)
       {
@@ -523,24 +523,24 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
 
     NCollection_LinearVector<BRepGraph_ItemUID> aTargetImageUIDs(THE_HISTORY_FILTERED_BLOCK_SIZE);
     NCollection_LinearVector<BRepGraph_NodeId>  aTargetImageNodes(THE_HISTORY_FILTERED_BLOCK_SIZE);
-    bool                                        areAllItemsNodes = aTargetOriginal->IsNode();
+    bool                                        areAllItemsNodes = aTargetOriginal.IsNode();
     for (const BRepGraph_ItemId& aSourceImage : theSourceImages)
     {
-      const BRepGraph_ItemId* aTargetImage = theCopy.TargetItem(aSourceImage);
-      if (aTargetImage == nullptr || !aTargetImage->IsValid())
+      const BRepGraph_ItemId aTargetImage = theCopy.TargetItem(aSourceImage);
+      if (!aTargetImage.IsValid())
       {
         continue;
       }
 
-      const BRepGraph_ItemUID aTargetUID = theCopy.TargetUID(*aTargetImage);
+      const BRepGraph_ItemUID aTargetUID = theCopy.TargetUID(aTargetImage);
       if (aTargetUID.IsValid())
       {
         appendUniqueItemUid(aTargetImageUIDs, aTargetUID);
       }
 
-      if (areAllItemsNodes && aTargetImage->IsNode())
+      if (areAllItemsNodes && aTargetImage.IsNode())
       {
-        appendUniqueNode(aTargetImageNodes, aTargetImage->NodeId());
+        appendUniqueNode(aTargetImageNodes, aTargetImage.NodeId());
       }
       else
       {
@@ -550,10 +550,10 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
 
     if (theKind == BRepGraph_LayerHistory::Kind::Deleted)
     {
-      if (aTargetOriginal->IsNode())
+      if (aTargetOriginal.IsNode())
       {
         NCollection_LinearVector<BRepGraph_NodeId> aDeleted(THE_HISTORY_REPLACEMENT_BLOCK_SIZE);
-        aDeleted.Append(aTargetOriginal->NodeId());
+        aDeleted.Append(aTargetOriginal.NodeId());
         aTarget->RecordDeleted(theOperationName, aDeleted.ToArray1());
       }
       if (theDurableOriginalUID.IsValid())
@@ -573,13 +573,13 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
     if (areAllItemsNodes)
     {
       aTarget->Record(theOperationName,
-                      aTargetOriginal->NodeId(),
+                      aTargetOriginal.NodeId(),
                       aTargetImageNodes.ToArray1(),
                       theKind);
       return;
     }
 
-    const BRepGraph_ItemUID aTargetOriginalUID = theCopy.TargetUID(*aTargetOriginal);
+    const BRepGraph_ItemUID aTargetOriginalUID = theCopy.TargetUID(aTargetOriginal);
     if (aTargetOriginalUID.IsValid())
     {
       aTarget->RecordItemUid(theOperationName,
@@ -606,10 +606,10 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
            anIt.Next())
       {
         BRepGraph_NodeId        aTargetNode;
-        const BRepGraph_ItemId* aTargetOriginal = theCopy.TargetItem(BRepGraph_ItemId(anIt.Key()));
-        if (aTargetOriginal != nullptr && aTargetOriginal->IsNode())
+        const BRepGraph_ItemId aTargetOriginal = theCopy.TargetItem(BRepGraph_ItemId(anIt.Key()));
+        if (aTargetOriginal.IsNode())
         {
-          aTargetNode = aTargetOriginal->NodeId();
+          aTargetNode = aTargetOriginal.NodeId();
         }
         else if (theCopy.TargetGraphConst().Topo().Gen().TopoEntity(anIt.Key()) != nullptr)
         {
@@ -623,10 +623,10 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
         NCollection_LinearVector<BRepGraph_NodeId> aTargetImages(THE_HISTORY_FILTERED_BLOCK_SIZE);
         for (const BRepGraph_NodeId& aNode : anIt.Value())
         {
-          const BRepGraph_ItemId* aTargetImage = theCopy.TargetItem(BRepGraph_ItemId(aNode));
-          if (aTargetImage != nullptr && aTargetImage->IsNode())
+          const BRepGraph_ItemId aTargetImage = theCopy.TargetItem(BRepGraph_ItemId(aNode));
+          if (aTargetImage.IsNode())
           {
-            appendUniqueNode(aTargetImages, aTargetImage->NodeId());
+            appendUniqueNode(aTargetImages, aTargetImage.NodeId());
           }
         }
         aNewRecord.Mapping.Bind(aTargetNode, std::move(aTargetImages));
@@ -702,11 +702,11 @@ void BRepGraph_LayerHistory::CopyTo(const BRepGraph_CopyRemap& theCopy) const
           if (aSourceImage.IsValid())
           {
             aSourceImages.Append(aSourceImage);
-            const BRepGraph_ItemId* aTargetImage = theCopy.TargetItem(aSourceImage);
-            if (aTargetImage != nullptr && aTargetImage->IsNode())
+            const BRepGraph_ItemId aTargetImage = theCopy.TargetItem(aSourceImage);
+            if (aTargetImage.IsNode())
             {
               const BRepGraph_UID aTargetUID =
-                theCopy.TargetGraphConst().UIDs().Of(aTargetImage->NodeId());
+                theCopy.TargetGraphConst().UIDs().Of(aTargetImage.NodeId());
               if (aTargetUID.IsValid())
               {
                 appendUniqueUid(aTargetImageUIDs, aTargetUID);

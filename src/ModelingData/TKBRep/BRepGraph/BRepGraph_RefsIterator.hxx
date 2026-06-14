@@ -431,10 +431,39 @@ public:
   void Next()
   {
     ++myIndex;
+    // Fast-path: check if the very next element is already valid.
+    if (myRefIds != nullptr && myIndex < myLength)
+    {
+      const RefId aRefId = myRefIds->Value(static_cast<size_t>(myIndex));
+      if (aRefId.IsValid(myNbRefs) && !aRefId.IsRemoved(myGraph))
+      {
+        if constexpr (TraitsT::THE_IS_DIRECT)
+        {
+          return;
+        }
+        else
+        {
+          const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, aRefId);
+          const auto aChildId = TraitsT::ChildIdOf(myGraph, aRef);
+          if constexpr (std::is_same_v<ChildId, BRepGraph_NodeId>)
+          {
+            if (myGraph.Topo().Gen().IsActive(aChildId)) return;
+          }
+          else if (aChildId.IsValid(myNbChildren) && !aChildId.IsRemoved(myGraph))
+          {
+            return;
+          }
+        }
+      }
+    }
     skipRemoved();
   }
 
-  [[nodiscard]] RefId CurrentId() const { return myRefIds->Value(static_cast<size_t>(myIndex)); }
+  [[nodiscard]] RefId CurrentId() const
+  {
+    Standard_ASSERT_VOID(More(), "RefsOfParent::CurrentId() called on exhausted iterator");
+    return myRefIds->Value(static_cast<size_t>(myIndex));
+  }
 
   [[nodiscard]] uint32_t Index() const { return myIndex; }
 

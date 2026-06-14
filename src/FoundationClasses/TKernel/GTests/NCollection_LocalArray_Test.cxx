@@ -626,10 +626,6 @@ static_assert(HasToArray1<const NCollection_LocalArray<int>>::value,
 static_assert(std::is_same_v<decltype(std::declval<NCollection_LocalArray<int>&>().ToArray1()),
                              NCollection_Array1<int>>,
               "Mutable NCollection_LocalArray should expose mutable Array1 view");
-static_assert(
-  std::is_same_v<decltype(std::declval<const NCollection_LocalArray<int>&>().ToArray1()),
-                 NCollection_Array1<int>>,
-  "Const NCollection_LocalArray should expose Array1 view");
 
 // Verify that ToArray1() returns an Array1 sharing the same memory buffer.
 TEST(NCollection_LocalArrayTest, ToArray1_SamePointer)

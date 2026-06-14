@@ -25,15 +25,42 @@ BRepGraph_CopyRemap::BRepGraph_CopyRemap(const BRepGraph& theSourceGraph,
     : mySourceGraph(&theSourceGraph),
       myTargetGraph(&theTargetGraph),
       myItemRemap(&theItemRemap),
-      myMode(theMode)
+      myMode(theMode),
+      myMappingKind(MappingKind::Explicit)
 {
 }
 
 //=================================================================================================
 
-const BRepGraph_ItemId* BRepGraph_CopyRemap::TargetItem(const BRepGraph_ItemId theSourceItem) const
+BRepGraph_CopyRemap::BRepGraph_CopyRemap(const BRepGraph&                       theSourceGraph,
+                                         BRepGraph&                             theTargetGraph,
+                                         const BRepGraph_CopyRemap::MappingKind theMappingKind,
+                                         const BRepGraph_CopyRemap::Mode        theMode) noexcept
+    : mySourceGraph(&theSourceGraph),
+      myTargetGraph(&theTargetGraph),
+      myItemRemap(nullptr),
+      myMode(theMode),
+      myMappingKind(theMappingKind)
 {
-  return theSourceItem.IsValid() ? myItemRemap->Seek(theSourceItem) : nullptr;
+}
+
+//=================================================================================================
+
+BRepGraph_ItemId BRepGraph_CopyRemap::TargetItem(const BRepGraph_ItemId theSourceItem) const
+{
+  if (!theSourceItem.IsValid())
+  {
+    return BRepGraph_ItemId();
+  }
+
+  if (myMappingKind == MappingKind::Identity)
+  {
+    // In identity mode, the source item id IS the target item id.
+    return theSourceItem;
+  }
+
+  const BRepGraph_ItemId* aFound = myItemRemap->Seek(theSourceItem);
+  return aFound != nullptr ? *aFound : BRepGraph_ItemId();
 }
 
 //=================================================================================================
@@ -41,16 +68,14 @@ const BRepGraph_ItemId* BRepGraph_CopyRemap::TargetItem(const BRepGraph_ItemId t
 BRepGraph_ItemId BRepGraph_CopyRemap::TargetItemOrInvalid(
   const BRepGraph_ItemId theSourceItem) const
 {
-  const BRepGraph_ItemId* aTarget = TargetItem(theSourceItem);
-  return aTarget != nullptr ? *aTarget : BRepGraph_ItemId();
+  return TargetItem(theSourceItem);
 }
 
 //=================================================================================================
 
 bool BRepGraph_CopyRemap::HasTargetItem(const BRepGraph_ItemId theSourceItem) const
 {
-  const BRepGraph_ItemId* aTarget = TargetItem(theSourceItem);
-  return aTarget != nullptr && aTarget->IsValid();
+  return TargetItem(theSourceItem).IsValid();
 }
 
 //=================================================================================================

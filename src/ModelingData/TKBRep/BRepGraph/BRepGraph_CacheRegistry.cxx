@@ -126,6 +126,36 @@ occ::handle<BRepGraph_Cache> BRepGraph_CacheRegistry::FindCache(const Standard_G
 
 //=================================================================================================
 
+occ::handle<BRepGraph_Cache> BRepGraph_CacheRegistry::ensureCache(
+  const Standard_GUID&                                 theGUID,
+  const std::function<occ::handle<BRepGraph_Cache>()>& theFactory)
+{
+  // Fast path: shared lock for read-only lookup.
+  {
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    occ::handle<BRepGraph_Cache> aCache = findCacheLocked(theGUID);
+    if (!aCache.IsNull())
+    {
+      return aCache;
+    }
+  }
+
+  // Slow path: exclusive lock for creation.
+  {
+    std::unique_lock<std::shared_mutex> aLock(myMutex);
+    // Re-check after acquiring exclusive lock (another thread may have created it).
+    occ::handle<BRepGraph_Cache> aCache = findCacheLocked(theGUID);
+    if (aCache.IsNull())
+    {
+      aCache = theFactory();
+      registerCacheLocked(aCache);
+    }
+    return aCache;
+  }
+}
+
+//=================================================================================================
+
 bool BRepGraph_CacheRegistry::FindSlot(const Standard_GUID& theGUID, uint32_t& theSlot) const
 {
   std::shared_lock<std::shared_mutex> aLock(myMutex);
@@ -215,6 +245,35 @@ void BRepGraph_CacheRegistry::CopyFreshCachesTo(
   }
 
   const BRepGraph_CopyRemap aCopy(*aSourceGraph, theTargetGraph, theItemRemap, theMode);
+  for (uint32_t aSlot = 0;; ++aSlot)
+  {
+    occ::handle<BRepGraph_Cache> aCache = cacheAt(aSlot);
+    if (aCache.IsNull())
+    {
+      return;
+    }
+    aCache->CopyFreshTo(aCopy);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_CacheRegistry::CopyFreshCachesTo(
+  BRepGraph&                        theTargetGraph,
+  BRepGraph_CopyRemap::MappingKind  theMappingKind,
+  BRepGraph_CopyRemap::Mode         theMode) const
+{
+  BRepGraph* aSourceGraph = nullptr;
+  {
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    aSourceGraph = myGraph;
+  }
+  if (aSourceGraph == nullptr)
+  {
+    return;
+  }
+
+  const BRepGraph_CopyRemap aCopy(*aSourceGraph, theTargetGraph, theMappingKind, theMode);
   for (uint32_t aSlot = 0;; ++aSlot)
   {
     occ::handle<BRepGraph_Cache> aCache = cacheAt(aSlot);
