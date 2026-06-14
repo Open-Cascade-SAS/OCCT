@@ -18,28 +18,37 @@
 #include <GProp_GProps.hxx>
 #include <NCollection_Array1.hxx>
 #include <OSD_Parallel.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <gtest/gtest.h>
 
 #include <atomic>
 #include <cmath>
-#include <cstdio>
+#include <sstream>
+#include <string>
 
 namespace
 {
 
-TCollection_AsciiString BrepPath()
-{
-  return TCollection_AsciiString("/tmp/occt_brep_parallel_test.brep");
-}
-
-void WriteBoxBrep(const TCollection_AsciiString& thePath)
+// Write a box to a BRep string once, to be reused by all threads.
+std::string MakeBoxBrepString()
 {
   BRepPrimAPI_MakeBox aBox(10.0, 20.0, 30.0);
-  ASSERT_FALSE(aBox.Shape().IsNull());
-  ASSERT_TRUE(BRepTools::Write(aBox.Shape(), thePath.ToCString()));
+  EXPECT_FALSE(aBox.Shape().IsNull());
+
+  std::ostringstream anOss;
+  BRepTools::Write(aBox.Shape(), anOss);
+  EXPECT_FALSE(anOss.str().empty());
+  return anOss.str();
+}
+
+// Read a shape from a BRep buffer. Each call uses its own stream.
+bool ReadFromBuffer(const std::string& theData, TopoDS_Shape& theShape)
+{
+  std::istringstream anIss(theData);
+  BRep_Builder       aBuilder;
+  BRepTools::Read(theShape, anIss, aBuilder);
+  return !theShape.IsNull();
 }
 
 } // namespace
@@ -50,13 +59,11 @@ void WriteBoxBrep(const TCollection_AsciiString& thePath)
 // files when read concurrently.
 TEST(BRepTools_Test, ParallelRead_IdenticalMass)
 {
-  const TCollection_AsciiString aPath = BrepPath();
-  WriteBoxBrep(aPath);
+  const std::string aBrepData = MakeBoxBrepString();
 
   // Single-threaded reference
   TopoDS_Shape aRefShape;
-  BRep_Builder aRefBuilder;
-  ASSERT_TRUE(BRepTools::Read(aRefShape, aPath.ToCString(), aRefBuilder));
+  ASSERT_TRUE(ReadFromBuffer(aBrepData, aRefShape));
   GProp_GProps aRefProps;
   BRepGProp::VolumeProperties(aRefShape, aRefProps);
   const double aRefMass = std::abs(aRefProps.Mass());
@@ -67,19 +74,15 @@ TEST(BRepTools_Test, ParallelRead_IdenticalMass)
   NCollection_Array1<TopoDS_Shape> aShapes(0, aNbReads - 1);
   std::atomic<int>                 aFailCount{0};
 
-  OSD_Parallel::For(
-    0,
-    aNbReads,
-    [&](int theIndex) {
-      BRep_Builder aBuilder;
-      TopoDS_Shape aShape;
-      if (!BRepTools::Read(aShape, aPath.ToCString(), aBuilder) || aShape.IsNull())
-      {
-        aFailCount.fetch_add(1, std::memory_order_relaxed);
-        return;
-      }
-      aShapes(theIndex) = aShape;
-    });
+  OSD_Parallel::For(0, aNbReads, [&](int theIndex) {
+    TopoDS_Shape aShape;
+    if (!ReadFromBuffer(aBrepData, aShape))
+    {
+      aFailCount.fetch_add(1, std::memory_order_relaxed);
+      return;
+    }
+    aShapes(theIndex) = aShape;
+  });
 
   EXPECT_EQ(aFailCount.load(), 0) << "Some parallel reads failed";
 
@@ -93,45 +96,37 @@ TEST(BRepTools_Test, ParallelRead_IdenticalMass)
     EXPECT_NEAR(aMass, aRefMass, aEps)
       << "Shape " << i << " mass " << aMass << " != reference " << aRefMass;
   }
-
-  std::remove(aPath.ToCString());
 }
 
 // Repeated parallel runs to catch intermittent failures.
 TEST(BRepTools_Test, ParallelRead_RepeatedRuns)
 {
-  const TCollection_AsciiString aPath = BrepPath();
-  WriteBoxBrep(aPath);
+  const std::string aBrepData = MakeBoxBrepString();
 
   TopoDS_Shape aRefShape;
-  BRep_Builder aRefBuilder;
-  ASSERT_TRUE(BRepTools::Read(aRefShape, aPath.ToCString(), aRefBuilder));
+  ASSERT_TRUE(ReadFromBuffer(aBrepData, aRefShape));
   GProp_GProps aRefProps;
   BRepGProp::VolumeProperties(aRefShape, aRefProps);
   const double aRefMass = std::abs(aRefProps.Mass());
 
-  constexpr int aNbReads = 100;
-  constexpr int aNbRuns  = 5;
-  constexpr double aEps  = 1.0e-6;
+  constexpr int    aNbReads = 100;
+  constexpr int    aNbRuns  = 5;
+  constexpr double aEps     = 1.0e-6;
 
   for (int aRun = 0; aRun < aNbRuns; ++aRun)
   {
     NCollection_Array1<TopoDS_Shape> aShapes(0, aNbReads - 1);
     std::atomic<int>                 aFailCount{0};
 
-    OSD_Parallel::For(
-      0,
-      aNbReads,
-      [&](int theIndex) {
-        BRep_Builder aBuilder;
-        TopoDS_Shape aShape;
-        if (!BRepTools::Read(aShape, aPath.ToCString(), aBuilder) || aShape.IsNull())
-        {
-          aFailCount.fetch_add(1, std::memory_order_relaxed);
-          return;
-        }
-        aShapes(theIndex) = aShape;
-      });
+    OSD_Parallel::For(0, aNbReads, [&](int theIndex) {
+      TopoDS_Shape aShape;
+      if (!ReadFromBuffer(aBrepData, aShape))
+      {
+        aFailCount.fetch_add(1, std::memory_order_relaxed);
+        return;
+      }
+      aShapes(theIndex) = aShape;
+    });
 
     EXPECT_EQ(aFailCount.load(), 0) << "Run " << aRun << ": some reads failed";
 
@@ -141,10 +136,7 @@ TEST(BRepTools_Test, ParallelRead_RepeatedRuns)
       GProp_GProps aProps;
       BRepGProp::VolumeProperties(aShapes(i), aProps);
       const double aMass = std::abs(aProps.Mass());
-      EXPECT_NEAR(aMass, aRefMass, aEps)
-        << "Run " << aRun << ", shape " << i << " mass mismatch";
+      EXPECT_NEAR(aMass, aRefMass, aEps) << "Run " << aRun << ", shape " << i << " mass mismatch";
     }
   }
-
-  std::remove(aPath.ToCString());
 }

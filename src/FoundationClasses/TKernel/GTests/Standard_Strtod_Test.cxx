@@ -25,29 +25,29 @@ namespace
 
 struct TestCase
 {
-  const char*  Input;
-  double       Expected;
+  const char* Input;
+  double      Expected;
 };
 
 // A representative set of numeric strings that exercise different code paths
 // inside Strtod: simple integers, fractions, exponents, large/small values,
 // and edge cases that trigger the Bigint memory pool (Balloc/Bfree).
 static const TestCase THE_TEST_CASES[] = {
-  {"0.0",                   0.0},
-  {"1.0",                   1.0},
-  {"3.141592653589793",     3.141592653589793},
-  {"-273.15",              -273.15},
-  {"1e10",                  1e10},
-  {"1.23456789e-15",        1.23456789e-15},
-  {"123456789.987654321",   123456789.987654321},
-  {"1.0e20",                1.0e20},
-  {"1.0e-20",               1.0e-20},
-  {"9.999999999999999e300",  9.999999999999999e300},
-  {"5e-324",                5e-324},
+  {"0.0", 0.0},
+  {"1.0", 1.0},
+  {"3.141592653589793", 3.141592653589793},
+  {"-273.15", -273.15},
+  {"1e10", 1e10},
+  {"1.23456789e-15", 1.23456789e-15},
+  {"123456789.987654321", 123456789.987654321},
+  {"1.0e20", 1.0e20},
+  {"1.0e-20", 1.0e-20},
+  {"9.999999999999999e300", 9.999999999999999e300},
+  {"5e-324", 5e-324},
   {"2.2250738585072014e-308", 2.2250738585072014e-308},
-  {"17976931348623157.0",    17976931348623157.0},
-  {"0.000001",              0.000001},
-  {"999999999999999.0",     999999999999999.0},
+  {"17976931348623157.0", 17976931348623157.0},
+  {"0.000001", 0.000001},
+  {"999999999999999.0", 999999999999999.0},
 };
 
 static const int THE_NB_CASES = sizeof(THE_TEST_CASES) / sizeof(THE_TEST_CASES[0]);
@@ -61,7 +61,8 @@ TEST(Standard_StrtodTest, SingleThread_Correctness)
   {
     char*  anEnd = nullptr;
     double aVal  = Strtod(THE_TEST_CASES[i].Input, &anEnd);
-    EXPECT_TRUE(anEnd != THE_TEST_CASES[i].Input) << "No digits parsed for: " << THE_TEST_CASES[i].Input;
+    EXPECT_TRUE(anEnd != THE_TEST_CASES[i].Input)
+      << "No digits parsed for: " << THE_TEST_CASES[i].Input;
     EXPECT_DOUBLE_EQ(aVal, THE_TEST_CASES[i].Expected)
       << "Mismatch for input: " << THE_TEST_CASES[i].Input;
   }
@@ -85,14 +86,11 @@ TEST(Standard_StrtodTest, Parallel_ConsistentResults)
   // (values with many significant digits exercise Balloc paths).
   const char* aTestInput = "3.14159265358979323846264338327950288419716939937510";
 
-  OSD_Parallel::For(
-    0,
-    aNbThreads,
-    [&](int theIndex) {
-      char*  anEnd = nullptr;
-      double aVal  = Strtod(aTestInput, &anEnd);
-      aResults(theIndex) = aVal;
-    });
+  OSD_Parallel::For(0, aNbThreads, [&](int theIndex) {
+    char*  anEnd       = nullptr;
+    double aVal        = Strtod(aTestInput, &anEnd);
+    aResults(theIndex) = aVal;
+  });
 
   // All results must be identical to the single-threaded reference.
   char*  aRefEnd = nullptr;
@@ -108,9 +106,9 @@ TEST(Standard_StrtodTest, Parallel_ConsistentResults)
 // Run many iterations to increase the chance of detecting intermittent races.
 TEST(Standard_StrtodTest, Parallel_RepeatedRuns)
 {
-  constexpr int aNbThreads  = 100;
-  constexpr int aNbRuns     = 10;
-  const char*   aTestInput  = "2.71828182845904523536028747135266249775724709369995";
+  constexpr int aNbThreads = 100;
+  constexpr int aNbRuns    = 10;
+  const char*   aTestInput = "2.71828182845904523536028747135266249775724709369995";
 
   char*  aRefEnd = nullptr;
   double aRef    = Strtod(aTestInput, &aRefEnd);
@@ -119,19 +117,15 @@ TEST(Standard_StrtodTest, Parallel_RepeatedRuns)
   {
     NCollection_Array1<double> aResults(0, aNbThreads - 1);
 
-    OSD_Parallel::For(
-      0,
-      aNbThreads,
-      [&](int theIndex) {
-        char*  anEnd = nullptr;
-        double aVal  = Strtod(aTestInput, &anEnd);
-        aResults(theIndex) = aVal;
-      });
+    OSD_Parallel::For(0, aNbThreads, [&](int theIndex) {
+      char*  anEnd       = nullptr;
+      double aVal        = Strtod(aTestInput, &anEnd);
+      aResults(theIndex) = aVal;
+    });
 
     for (int i = 0; i < aNbThreads; ++i)
     {
-      EXPECT_DOUBLE_EQ(aResults(i), aRef)
-        << "Run " << aRun << ", thread " << i << " mismatch";
+      EXPECT_DOUBLE_EQ(aResults(i), aRef) << "Run " << aRun << ", thread " << i << " mismatch";
     }
   }
 }
@@ -153,13 +147,10 @@ TEST(Standard_StrtodTest, Parallel_ManyDistinctInputs)
   }
 
   // Now compute in parallel.
-  OSD_Parallel::For(
-    0,
-    aNbThreads,
-    [&](int theIndex) {
-      const char* anInput = THE_TEST_CASES[theIndex % THE_NB_CASES].Input;
-      aResults(theIndex)  = Strtod(anInput, nullptr);
-    });
+  OSD_Parallel::For(0, aNbThreads, [&](int theIndex) {
+    const char* anInput = THE_TEST_CASES[theIndex % THE_NB_CASES].Input;
+    aResults(theIndex)  = Strtod(anInput, nullptr);
+  });
 
   for (int i = 0; i < aNbThreads; ++i)
   {
