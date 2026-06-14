@@ -294,7 +294,8 @@ extern "C"
     #define PRIVATE_MEM 2304
   #endif
   #define PRIVATE_mem ((PRIVATE_MEM + sizeof(double) - 1) / sizeof(double))
-static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
+static thread_local double  private_mem[PRIVATE_mem] = {};
+static thread_local double* pmem_next                = private_mem;
 #endif
 
 #undef IEEE_Arith
@@ -1145,7 +1146,7 @@ typedef struct ThInfo
   Bigint* P5s;
 } ThInfo;
 
-static ThInfo TI0;
+static thread_local ThInfo TI0;
 
 #ifdef MULTIPLE_THREADS
 static ThInfo* TI1;
