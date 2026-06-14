@@ -80,13 +80,6 @@ bool wireUVBounds(const BRepGraph&       theGraph,
   return true;
 }
 
-BRepGraph_EdgeId edgeOf(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
-{
-  return theCoEdge.IsValid() && !theCoEdge.IsRemoved(theGraph)
-           ? theGraph.Topo().CoEdges().Definition(theCoEdge).ChildEdgeId
-           : BRepGraph_EdgeId();
-}
-
 BRepGraph_FaceId faceOf(const BRepGraph& theGraph, const BRepGraph_FaceRefId theFaceRef)
 {
   if (!theFaceRef.IsValid() || theGraph.Refs().Gen().IsRemoved(theFaceRef))

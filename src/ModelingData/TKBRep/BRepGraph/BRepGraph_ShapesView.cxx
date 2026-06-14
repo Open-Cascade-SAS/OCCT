@@ -40,7 +40,7 @@ namespace
 {
 struct BRepGraph_ReconstructionContext
 {
-  const BRepGraph*                         Graph   = nullptr;
+  BRepGraph*                               Graph   = nullptr;
   const BRepGraphInc_Storage*              Storage = nullptr;
   BRepGraphInc_Reconstruct::Cache          Cache;
   NCollection_FlatMap<BRepGraph_ProductId> ActiveProducts;
@@ -677,7 +677,7 @@ static TopoDS_Shape reconstructShape(BRepGraph_ReconstructionContext& theContext
 }
 
 static BRepGraph_ReconstructionContext makeReconstructionContext(
-  const BRepGraph&            theGraph,
+  BRepGraph&                  theGraph,
   const BRepGraphInc_Storage& theStorage)
 {
   BRepGraph_ReconstructionContext aContext;

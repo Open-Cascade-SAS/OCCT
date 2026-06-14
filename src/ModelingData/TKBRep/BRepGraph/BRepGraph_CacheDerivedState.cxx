@@ -172,7 +172,6 @@ bool isCoEdgeSameRange(const BRepGraph&         theGraph,
 
 bool isCoEdgeSameParameter(const BRepGraph&                 theGraph,
                            const BRepGraph_CoEdgeId         theCoEdge,
-                           const BRepGraph_EdgeId           theEdge,
                            const BRepGraphInc::EdgeDef&     theEdgeDef,
                            const occ::handle<Geom_Curve>&   theCurve3D,
                            const std::pair<double, double>& theEdgeRange)
@@ -471,8 +470,7 @@ void BRepGraph_CacheDerivedState::computeSameParameter(const BRepGraph&      the
     if (theEntry.SameRange())
     {
       const std::pair<double, double> aRange = BRepGraph_Tool::Edge::Range(theGraph, anEdge);
-      theEntry.SetSameParameter(
-        isCoEdgeSameParameter(theGraph, theCoEdge, anEdge, aDef, aCurve3D, aRange));
+      theEntry.SetSameParameter(isCoEdgeSameParameter(theGraph, theCoEdge, aDef, aCurve3D, aRange));
     }
     else
     {
