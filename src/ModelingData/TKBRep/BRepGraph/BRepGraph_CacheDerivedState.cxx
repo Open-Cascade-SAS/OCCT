@@ -600,12 +600,11 @@ bool BRepGraph_CacheDerivedState::ensureCoEdgeSameRangeEntry(
       const uint8_t aNewBits      = aMyComputed & ~aStoredPacked;
       if (aNewBits != 0)
       {
-        const uint8_t aValueMask = CoEdgeSameRangeEntry::FlagSameRange
-                                   | CoEdgeSameRangeEntry::FlagSameParameter;
-        const uint8_t aMerged = (aStoredPacked & ~(aNewBits << 2))
-                                | (aMyPacked & (aNewBits << 2));
-        aStored.Packed.store(aMerged, std::memory_order_relaxed);
-        aStored.Packed.fetch_or(aNewBits, std::memory_order_release);
+        // Merge value bits (shifted by 2 from computed) and computed bits into a single store.
+        const uint8_t aMerged = (aStoredPacked & ~((aNewBits << 2) | aNewBits))
+                                | (aMyPacked & (aNewBits << 2))
+                                | aNewBits;
+        aStored.Packed.store(aMerged, std::memory_order_release);
       }
     }
     else
@@ -917,7 +916,16 @@ bool BRepGraph_CacheDerivedState::IsShellClosed(BRepGraph_ShellId theShell)
   std::lock_guard aLock(myMutex);
   ensureSize(myShellEntries, theShell.Index);
   ShellEntry& aStored = myShellEntries.ChangeValue(static_cast<size_t>(theShell.Index));
-  aStored.BindOwnGen(*this, theShell);
+  if (aStored.Status.load(std::memory_order_acquire) != ShellEntry::ClosureStatus::Invalid
+      && aStored.IsFreshOwn(*this, theShell))
+  {
+    return aStored.Status.load(std::memory_order_acquire) == ShellEntry::ClosureStatus::Closed;
+  }
+  if (!aStored.BindOwnGen(*this, theShell))
+  {
+    aStored.Reset();
+    return false;
+  }
   aStored.Status.store(aStatus, std::memory_order_release);
   return aStatus == ShellEntry::ClosureStatus::Closed;
 }
@@ -937,6 +945,10 @@ void BRepGraph_CacheDerivedState::SetWireIsClosed(BRepGraph_WireId theWire, bool
   std::lock_guard aLock(myMutex);
   ensureSize(myWireEntries, theWire.Index);
   WireEntry& aStored = myWireEntries.ChangeValue(static_cast<size_t>(theWire.Index));
-  aStored.BindOwnGen(*this, theWire);
+  if (!aStored.BindOwnGen(*this, theWire))
+  {
+    aStored.Reset();
+    return;
+  }
   aStored.SetClosed(theClosed);
 }

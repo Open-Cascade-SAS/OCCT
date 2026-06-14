@@ -129,8 +129,8 @@ void BRepGraphInc_Reconstruct::Cache::Bind(const BRepGraph_NodeId theNode,
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
-                                            const BRepGraph_NodeId theNode)
+TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&               theGraph,
+                                             const BRepGraph_NodeId theNode)
 {
   Cache aCache;
   return Node(theGraph, theNode, aCache);
@@ -138,9 +138,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
-                                            const BRepGraph_NodeId theNode,
-                                            Cache&                 theCache)
+TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&               theGraph,
+                                             const BRepGraph_NodeId theNode,
+                                             Cache&                 theCache)
 {
   if (!theNode.IsValid())
   {
@@ -224,8 +224,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
 
       // SameRange/SameParameter are per-CoEdge properties.
       // Set edge-level flags: true only if ALL coedges agree.
-      auto aCache =
-        const_cast<BRepGraph&>(theGraph).CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
+      auto aCache = theGraph.CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
       bool aSameRange     = true;
       bool aSameParameter = true;
       const BRepGraphInc::EdgeRelations& anEdgeRel =
@@ -462,7 +461,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraph&       theGraph,
+TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(BRepGraph&               theGraph,
                                                      const BRepGraph_FaceId theFaceId,
                                                      Cache&                 theCache)
 {
@@ -571,8 +570,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraph&       theG
     // SameRange/SameParameter are per-CoEdge properties.
     // Set edge-level flags: true only if ALL coedges agree.
     {
-      auto aCache =
-        const_cast<BRepGraph&>(theGraph).CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
+      auto aCache = theGraph.CacheRegistry().Ensure<BRepGraph_CacheDerivedState>();
       bool aSameRange     = true;
       bool aSameParameter = true;
       const BRepGraphInc::EdgeRelations& anEdgeRel = aStorage.EdgeRelations(theEdgeId);
