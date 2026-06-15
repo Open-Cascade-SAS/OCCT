@@ -11,11 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_LayerTopoSupplement.hxx>
+#include <BRepGraph_ParentExplorer.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -26,6 +29,10 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <gp_Pnt.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
 
 #include <NCollection_LinearVector.hxx>
 
@@ -55,9 +62,28 @@ BRepGraph_EdgeId addSegment(BRepGraph&               theGraph,
                                        1.0,
                                        1.0e-7);
 }
+
+TopoDS_Shell makeReversedFaceShell()
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRep_Builder aBuilder;
+  TopoDS_Shell aShell;
+  aBuilder.MakeShell(aShell);
+
+  for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    TopoDS_Face aFace = TopoDS::Face(anExp.Current());
+    aFace.Orientation(TopAbs_REVERSED);
+    aBuilder.Add(aShell, aFace);
+  }
+
+  return aShell;
+}
 } // namespace
 
-TEST(BRepGraph_WireReverseTest, OrderAndOrientationFlipped)
+TEST(BRepGraph_ReverseTest, Wire_OrderAndOrientationFlipped)
 {
   BRepGraph              aGraph = buildBoxGraph();
   const BRepGraph_WireId aWire(0);
@@ -93,7 +119,7 @@ TEST(BRepGraph_WireReverseTest, OrderAndOrientationFlipped)
   }
 }
 
-TEST(BRepGraph_WireOrderTest, SetCoEdgeOrderCanonicalizesUnorderedPermutation)
+TEST(BRepGraph_ReverseTest, WireOrder_SetCoEdgeOrderCanonicalizesUnorderedPermutation)
 {
   BRepGraph              aGraph = buildBoxGraph();
   const BRepGraph_WireId aWire(0);
@@ -118,7 +144,7 @@ TEST(BRepGraph_WireOrderTest, SetCoEdgeOrderCanonicalizesUnorderedPermutation)
   EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
 }
 
-TEST(BRepGraph_WireOrderTest, CheckCoEdgeOrderReportsCurrentAndReordered)
+TEST(BRepGraph_ReverseTest, WireOrder_CheckCoEdgeOrderReportsCurrentAndReordered)
 {
   BRepGraph              aGraph = buildBoxGraph();
   const BRepGraph_WireId aWire(0);
@@ -151,7 +177,7 @@ TEST(BRepGraph_WireOrderTest, CheckCoEdgeOrderReportsCurrentAndReordered)
             CoEdgeOrderStatus::InvalidWire);
 }
 
-TEST(BRepGraph_WireOrderTest, SetCoEdgeOrderCanonicalizesOpenWirePermutation)
+TEST(BRepGraph_ReverseTest, WireOrder_SetCoEdgeOrderCanonicalizesOpenWirePermutation)
 {
   BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
@@ -183,7 +209,7 @@ TEST(BRepGraph_WireOrderTest, SetCoEdgeOrderCanonicalizesOpenWirePermutation)
   EXPECT_TRUE(aGraph.Editor().ValidateMutationBoundary());
 }
 
-TEST(BRepGraph_WireOrderTest, CheckAppendCoEdgeReportsReadyAndAlreadyContained)
+TEST(BRepGraph_ReverseTest, WireOrder_CheckAppendCoEdgeReportsReadyAndAlreadyContained)
 {
   BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
@@ -207,7 +233,7 @@ TEST(BRepGraph_WireOrderTest, CheckAppendCoEdgeReportsReadyAndAlreadyContained)
             CoEdgeOrderStatus::AlreadyContained);
 }
 
-TEST(BRepGraph_WireOrderTest, CheckReplaceEdgeReportsReadyAndDisconnected)
+TEST(BRepGraph_ReverseTest, WireOrder_CheckReplaceEdgeReportsReadyAndDisconnected)
 {
   BRepGraph                aGraph;
   const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
@@ -236,7 +262,7 @@ TEST(BRepGraph_WireOrderTest, CheckReplaceEdgeReportsReadyAndDisconnected)
             ReplaceEdgeStatus::Disconnected);
 }
 
-TEST(BRepGraph_WireOrderTest, RemoveInternalCoEdgeFromClosedWireKeepsConnectedOrder)
+TEST(BRepGraph_ReverseTest, WireOrder_RemoveInternalCoEdgeFromClosedWireKeepsConnectedOrder)
 {
   BRepGraph              aGraph = buildBoxGraph();
   const BRepGraph_WireId aWire(0);
@@ -255,7 +281,7 @@ TEST(BRepGraph_WireOrderTest, RemoveInternalCoEdgeFromClosedWireKeepsConnectedOr
   EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
 }
 
-TEST(BRepGraph_EdgeReverseTest, StartEndVertexRefsSwapped)
+TEST(BRepGraph_ReverseTest, Edge_StartEndVertexRefsSwapped)
 {
   BRepGraph              aGraph = buildBoxGraph();
   const BRepGraph_EdgeId anEdge(0);
@@ -274,7 +300,7 @@ TEST(BRepGraph_EdgeReverseTest, StartEndVertexRefsSwapped)
   EXPECT_EQ(aGraph.Topo().Edges().Definition(anEdge).EndVertexRefId, aStartBefore);
 }
 
-TEST(BRepGraph_EdgeReverseTest, RoundTripRestoresOriginal)
+TEST(BRepGraph_ReverseTest, Edge_RoundTripRestoresOriginal)
 {
   BRepGraph              aGraph = buildBoxGraph();
   const BRepGraph_EdgeId anEdge(0);
@@ -290,7 +316,7 @@ TEST(BRepGraph_EdgeReverseTest, RoundTripRestoresOriginal)
   EXPECT_EQ(aGraph.Topo().Edges().Definition(anEdge).EndVertexRefId, aEnd);
 }
 
-TEST(BRepGraph_LayerTopoSupplementTest, AddVertexToFaceGoesToSupplementLayer)
+TEST(BRepGraph_ReverseTest, LayerTopoSupplement_AddVertexToFaceGoesToSupplementLayer)
 {
   BRepGraph              aGraph = buildBoxGraph();
   const BRepGraph_FaceId aFaceId(0);
@@ -314,7 +340,7 @@ TEST(BRepGraph_LayerTopoSupplementTest, AddVertexToFaceGoesToSupplementLayer)
   // Skip removal test since no attachments exist.
 }
 
-TEST(BRepGraph_LayerTopoSupplementTest, ShellStartsWithoutSupplementAttachments)
+TEST(BRepGraph_ReverseTest, LayerTopoSupplement_ShellStartsWithoutSupplementAttachments)
 {
   BRepGraph aGraph = buildBoxGraph();
   ASSERT_GE(aGraph.Topo().Shells().Nb(), 1);
@@ -330,7 +356,7 @@ TEST(BRepGraph_LayerTopoSupplementTest, ShellStartsWithoutSupplementAttachments)
   }
 }
 
-TEST(BRepGraph_RelationsTest, SupplementLayerClearedOnGraphClear)
+TEST(BRepGraph_ReverseTest, Relations_SupplementLayerClearedOnGraphClear)
 {
   BRepGraph aGraph = buildBoxGraph();
   ASSERT_GE(aGraph.Topo().Shells().Nb(), 1);
@@ -356,4 +382,85 @@ TEST(BRepGraph_RelationsTest, SupplementLayerClearedOnGraphClear)
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
   ASSERT_FALSE(aLayerAfter.IsNull());
   EXPECT_EQ(aLayerAfter->AttachedTo(BRepGraph_NodeId(aFaceId)).Size(), 0u);
+}
+
+TEST(BRepGraph_ReverseTest, ReversedShell_GraphStoresFaceRefOrientation)
+{
+  const TopoDS_Shell aShell = makeReversedFaceShell();
+
+  BRepGraph                           aGraph;
+  const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aShell);
+  ASSERT_TRUE(aResult.IsOk());
+
+  ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6u);
+
+  const NCollection_LinearVector<BRepGraph_FaceRefId>& aFaceRefs =
+    aGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start());
+  ASSERT_EQ(aFaceRefs.Size(), 6u);
+
+  for (const BRepGraph_FaceRefId& aFaceRefId : aFaceRefs)
+  {
+    const BRepGraphInc::FaceRef& aFaceRef = aGraph.Refs().Faces().Entry(aFaceRefId);
+    EXPECT_EQ(aFaceRef.Orientation, TopAbs_REVERSED)
+      << "Face " << aFaceRef.ChildFaceId.Index << " should have REVERSED orientation";
+  }
+}
+
+TEST(BRepGraph_ReverseTest, ReversedShell_ParentExplorerReportsShell)
+{
+  const TopoDS_Shell aShell = makeReversedFaceShell();
+
+  BRepGraph                           aGraph;
+  const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aShell);
+  ASSERT_TRUE(aResult.IsOk());
+
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(6u); ++aFaceId)
+  {
+    BRepGraph_ParentExplorer anExp(aGraph,
+                                   aFaceId,
+                                   BRepGraph_ParentExplorer::TraversalMode::DirectParents);
+    ASSERT_TRUE(anExp.More()) << "Face " << aFaceId.Index << " should have a parent shell";
+    EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_ShellId::Start()));
+    EXPECT_EQ(anExp.LeafOrientation(), TopAbs_REVERSED);
+  }
+}
+
+TEST(BRepGraph_ReverseTest, ReversedShell_ReconstructPreservesOrientation)
+{
+  const TopoDS_Shell aShell = makeReversedFaceShell();
+
+  BRepGraph aGraph;
+  const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aShell);
+  ASSERT_TRUE(aResult.IsOk());
+
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(6u); ++aFaceId)
+  {
+    TopoDS_Shape aReconShape = aGraph.Shapes().Reconstruct(aFaceId);
+    ASSERT_FALSE(aReconShape.IsNull());
+    ASSERT_EQ(aReconShape.ShapeType(), TopAbs_FACE);
+  }
+}
+
+TEST(BRepGraph_ReverseTest, ReversedShell_ReconstructShellPreservesFaceOrientations)
+{
+  const TopoDS_Shell aShell = makeReversedFaceShell();
+
+  BRepGraph                           aGraph;
+  const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aShell);
+  ASSERT_TRUE(aResult.IsOk());
+
+  TopoDS_Shape aReconShell =
+    aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, 0));
+  ASSERT_FALSE(aReconShell.IsNull());
+  ASSERT_EQ(aReconShell.ShapeType(), TopAbs_SHELL);
+
+  int aFaceCount = 0;
+  for (TopExp_Explorer anExp(aReconShell, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
+    EXPECT_EQ(aFace.Orientation(), TopAbs_REVERSED);
+    ++aFaceCount;
+  }
+
+  EXPECT_EQ(aFaceCount, 6);
 }
