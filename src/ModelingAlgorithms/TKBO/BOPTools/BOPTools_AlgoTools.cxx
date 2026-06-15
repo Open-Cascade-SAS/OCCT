@@ -1072,6 +1072,14 @@ bool BOPTools_AlgoTools::GetFaceOff(const TopoDS_Edge&                        th
       {
         aAngle = aTwoPI;
       }
+      else
+      {
+        // Near-zero angle between different faces (coplanar due to near-degenerate geometry,
+        // e.g. very thin box creating nearly-coincident intersection curves).
+        // Treat as maximum angle (2*PI) to prevent incorrect selection of a coplanar
+        // continuation face over a proper closing face.
+        aAngle = aTwoPI;
+      }
     }
     //
     if (std::abs(aAngle) < anAngleCriteria || std::abs(aAngle - aAngleMin) < anAngleCriteria)
