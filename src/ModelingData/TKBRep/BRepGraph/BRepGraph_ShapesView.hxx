@@ -32,8 +32,9 @@ class TCollection_AsciiString;
 //! for repeated access. Topology nodes are delegated to the incidence-table
 //! reconstruction backend, while Product / Occurrence nodes are assembled at
 //! the facade level using product-local roots and occurrence placement chains.
-//! Provides lookup from original construction-time shapes back to their graph
-//! NodeIds via TShape pointer comparison. Shape() is the stable cached public
+//! Provides lookup from construction-time shapes back to their graph NodeIds
+//! using OCCT shape identity (TShape + Location, orientation ignored).
+//! Shape() is the stable cached public
 //! route for repeated access; Reconstruct() forces a fresh rebuild with the
 //! same node-kind semantics and bypasses the persistent reconstructed-shape cache.
 //! Add() and Compact() clear the persistent reconstructed-shape cache.
@@ -203,7 +204,7 @@ public:
   Standard_EXPORT void ClearCached(const BRepGraph_RefId theRef);
 
   //! Look up the definition NodeId for a shape from graph construction input.
-  //! Uses TShape pointer comparison (same semantics as IsSame()).
+  //! Uses OCCT IsSame() semantics (TShape + Location, orientation ignored).
   //! Synthetic Product / Occurrence reconstructions are not given dedicated
   //! TShape bindings, so lookup is only guaranteed for construction-time topology.
   //! Programmatically created Editor().Add*() nodes can still be located by
@@ -213,7 +214,7 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId FindNode(const TopoDS_Shape& theShape) const;
 
   //! Check if a shape is known to the graph (was part of construction input).
-  //! Uses TShape pointer comparison (same semantics as IsSame()).
+  //! Uses OCCT IsSame() semantics (TShape + Location, orientation ignored).
   //! Synthetic Product / Occurrence reconstructions are not given dedicated
   //! TShape bindings, so this is only guaranteed for construction-time topology.
   //! Programmatically created Editor().Add*() nodes can still be located by
@@ -253,6 +254,13 @@ private:
     const BRepGraph&                                                              theGraph,
     const TopoDS_Shape&                                                           theShape,
     NCollection_DataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>& theMap);
+
+  //! Bind source shape keys to nodes populated from a location-stripped input shape.
+  //! This keeps ShapesView::FindNode() usable with the original TopoDS subshapes
+  //! when root placement is stored on a Product occurrence or Compound child ref.
+  static void bindSourceShapeAliases(BRepGraph&          theGraph,
+                                     const TopoDS_Shape& theSourceShape,
+                                     const TopoDS_Shape& thePopulatedShape);
 
   static BRepGraph_NodeId detectTopologyRoot(const BRepGraph&       theGraph,
                                              const TopAbs_ShapeEnum theShapeType,

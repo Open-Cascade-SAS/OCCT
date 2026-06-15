@@ -47,7 +47,6 @@ public:
   //! Options controlling population.
   struct Options
   {
-    Options() = default;
   };
 
   //! Build backend incidence storage from a TopoDS_Shape.
@@ -81,7 +80,8 @@ public:
   //! Extend existing backend storage with additional shapes (no clear).
   //! Preserves the full shape hierarchy: Solid/Shell/Compound/CompSolid nodes
   //! are created alongside Face/Edge/Vertex nodes. Shapes already present in
-  //! the storage (same TShape pointer) are deduplicated and not re-added.
+  //! the storage with the same definition identity (TShape + Location, orientation ignored)
+  //! are deduplicated and not re-added.
   //! @param[in,out] theGraph    graph whose storage to extend
   //! @param[in]     theShape    shape to append
   //! @param[in]     theParallel if true, face-level extraction runs in parallel

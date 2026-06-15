@@ -64,6 +64,24 @@ static bool isCoreParityOrientation(const TopAbs_Orientation theOrientation)
   return theOrientation == TopAbs_FORWARD || theOrientation == TopAbs_REVERSED;
 }
 
+static TopoDS_Shape shapeWithoutOwnLocation(const TopoDS_Shape& theShape)
+{
+  TopoDS_Shape aShape = theShape;
+  aShape.Location(TopLoc_Location());
+  return aShape;
+}
+
+static bool shouldStoreRootLocationInRef(const BRepGraph::ShapesView::Options& theOptions,
+                                         const BRepGraph_NodeId&               theParent)
+{
+  if (theParent.IsValid())
+  {
+    return theParent.NodeKind == BRepGraph_NodeId::Kind::Product
+           || theParent.NodeKind == BRepGraph_NodeId::Kind::Compound;
+  }
+  return theOptions.CreateAutoProduct;
+}
+
 static ShapeParentRoute classifyShapeToParent(const TopAbs_ShapeEnum   theShapeType,
                                               const TopAbs_Orientation theOrientation,
                                               const BRepGraph_NodeId&  theParent)
@@ -129,7 +147,6 @@ static uint64_t attachSupplementToParent(BRepGraph&             theGraph,
                                          const BRepGraph_NodeId theParent)
 {
   TopoDS_Shape aSuppShape = theShape;
-  aSuppShape.Orientation(theShape.Orientation());
   switch (theParent.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Compound:
@@ -495,6 +512,96 @@ void BRepGraph::ShapesView::collectAddedNodes(
   }
 }
 
+static void bindSourceShapeAlias(BRepGraph&              theGraph,
+                                 BRepGraphInc_Storage&   theStorage,
+                                 const TopoDS_Shape&     theSourceShape,
+                                 const TopLoc_Location&  theSourceLocation,
+                                 const TopoDS_Shape&     thePopulatedShape,
+                                 const TopLoc_Location&  theDefinitionLocation)
+{
+  if (theSourceShape.IsNull() || thePopulatedShape.IsNull())
+  {
+    return;
+  }
+
+  TopoDS_Shape aLookup = thePopulatedShape;
+  aLookup.Location(theDefinitionLocation);
+  const BRepGraph_NodeId aNodeId = theGraph.Shapes().FindNode(aLookup);
+  if (!aNodeId.IsValid())
+  {
+    return;
+  }
+
+  theStorage.SetDefinitionShapeBinding(theSourceShape, aNodeId);
+  if (!theSourceShape.Location().IsEqual(theSourceLocation))
+  {
+    TopoDS_Shape aSourceAlias = theSourceShape;
+    aSourceAlias.Location(theSourceLocation);
+    theStorage.SetDefinitionShapeBinding(aSourceAlias, aNodeId);
+  }
+}
+
+static void bindSourceShapeAliasesRecursive(BRepGraph&             theGraph,
+                                            BRepGraphInc_Storage&  theStorage,
+                                            const TopoDS_Shape&    theSourceShape,
+                                            const TopoDS_Shape&    thePopulatedShape,
+                                            const TopLoc_Location& theSourceLocation,
+                                            const TopLoc_Location& theDefinitionLocation)
+{
+  bindSourceShapeAlias(theGraph,
+                       theStorage,
+                       theSourceShape,
+                       theSourceLocation,
+                       thePopulatedShape,
+                       theDefinitionLocation);
+
+  const bool isCompoundParent = thePopulatedShape.ShapeType() == TopAbs_COMPOUND;
+  TopoDS_Iterator aSourceIt(theSourceShape, false, false);
+  TopoDS_Iterator aPopulatedIt(thePopulatedShape, false, false);
+  for (; aSourceIt.More() && aPopulatedIt.More(); aSourceIt.Next(), aPopulatedIt.Next())
+  {
+    const TopoDS_Shape& aSourceChild    = aSourceIt.Value();
+    const TopoDS_Shape& aPopulatedChild = aPopulatedIt.Value();
+    if (aSourceChild.IsNull() || aPopulatedChild.IsNull())
+    {
+      continue;
+    }
+
+    const TopLoc_Location aChildSourceLocation = theSourceLocation * aSourceChild.Location();
+    if (isCompoundParent)
+    {
+      const TopoDS_Shape aChildDefinition = shapeWithoutOwnLocation(aPopulatedChild);
+      bindSourceShapeAliasesRecursive(theGraph,
+                                      theStorage,
+                                      aSourceChild,
+                                      aChildDefinition,
+                                      aChildSourceLocation,
+                                      TopLoc_Location());
+    }
+    else
+    {
+      bindSourceShapeAliasesRecursive(theGraph,
+                                      theStorage,
+                                      aSourceChild,
+                                      aPopulatedChild,
+                                      aChildSourceLocation,
+                                      theDefinitionLocation * aPopulatedChild.Location());
+    }
+  }
+}
+
+void BRepGraph::ShapesView::bindSourceShapeAliases(BRepGraph&          theGraph,
+                                                   const TopoDS_Shape& theSourceShape,
+                                                   const TopoDS_Shape& thePopulatedShape)
+{
+  bindSourceShapeAliasesRecursive(theGraph,
+                                  theGraph.myData->myIncStorage,
+                                  theSourceShape,
+                                  thePopulatedShape,
+                                  theSourceShape.Location(),
+                                  thePopulatedShape.Location());
+}
+
 //=================================================================================================
 
 namespace
@@ -787,10 +894,14 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
   }
 
   const uint32_t anOldCount = snapshotCountForKind(theGraph, theShape.ShapeType());
+  const bool     isRootLocationStoredInRef =
+    shouldStoreRootLocationInRef(theOptions, BRepGraph_NodeId());
+  const TopoDS_Shape aPopulateShape =
+    isRootLocationStoredInRef ? shapeWithoutOwnLocation(theShape) : theShape;
 
   NCollection_LinearVector<BRepGraph_NodeId> aFlatRoots;
   const AddStatus                            aAddStatus =
-    appendImpl(theGraph, theShape, theOptions, theOptions.Flatten ? &aFlatRoots : nullptr);
+    appendImpl(theGraph, aPopulateShape, theOptions, theOptions.Flatten ? &aFlatRoots : nullptr);
 
   aResult.Status = aAddStatus;
 
@@ -801,6 +912,14 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
   else
   {
     aResult.TopologyRoot = detectTopologyRoot(theGraph, theShape.ShapeType(), anOldCount);
+  }
+  if (!aResult.TopologyRoot.IsValid())
+  {
+    aResult.TopologyRoot = FindNode(aPopulateShape);
+  }
+  if (isRootLocationStoredInRef && aResult.TopologyRoot.IsValid())
+  {
+    bindSourceShapeAliases(theGraph, theShape, aPopulateShape);
   }
 
   if (theOptions.CreateAutoProduct && aResult.TopologyRoot.IsValid())
@@ -871,13 +990,16 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
   }
 
   const uint32_t anOldCount = snapshotCountForKind(theGraph, theShape.ShapeType());
+  const bool     isRootLocationStoredInRef = shouldStoreRootLocationInRef(theOptions, theParent);
+  const TopoDS_Shape aPopulateShape =
+    isRootLocationStoredInRef ? shapeWithoutOwnLocation(theShape) : theShape;
 
   Options anInner           = theOptions;
   anInner.CreateAutoProduct = false;
 
   NCollection_LinearVector<BRepGraph_NodeId> aFlatRoots;
   const AddStatus                            aStatus =
-    appendImpl(theGraph, theShape, anInner, anInner.Flatten ? &aFlatRoots : nullptr);
+    appendImpl(theGraph, aPopulateShape, anInner, anInner.Flatten ? &aFlatRoots : nullptr);
 
   if (aStatus == AddStatus::Failed)
   {
@@ -894,7 +1016,15 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
   }
   if (!aResult.TopologyRoot.IsValid())
   {
+    aResult.TopologyRoot = FindNode(aPopulateShape);
+  }
+  if (!aResult.TopologyRoot.IsValid())
+  {
     return aResult;
+  }
+  if (isRootLocationStoredInRef)
+  {
+    bindSourceShapeAliases(theGraph, theShape, aPopulateShape);
   }
 
   if (anInner.TrackAddedNodes)
@@ -939,6 +1069,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
       {
         return aResult;
       }
+      theGraph.Editor().Gen().SetChildRefLocalLocation(aRid, theShape.Location());
       aResult.InsertedRef = aRid;
       aResult.Status      = AddStatus::Success;
       return aResult;
@@ -1040,7 +1171,12 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
   }
   // Fast path: if entity was never mutated, return the original shape.
   const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
-  if (aDef != nullptr && aDef->SubtreeGen == 0)
+  if (aDef == nullptr)
+  {
+    return TopoDS_Shape();
+  }
+  const uint32_t aSubtreeGen = aDef->SubtreeGen;
+  if (aSubtreeGen == 0)
   {
     TopoDS_Shape anOrig = Original(theNode);
     if (!anOrig.IsNull())
@@ -1055,7 +1191,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
       myGraph->myData->myIncStorage.CurrentShapesMutex());
     const BRepGraphInc_Storage::CachedShape* aCached =
       myGraph->myData->myIncStorage.CurrentShapes().Seek(theNode);
-    if (aCached != nullptr && aDef != nullptr && aCached->StoredSubtreeGen == aDef->SubtreeGen)
+    if (aCached != nullptr && aCached->StoredSubtreeGen == aSubtreeGen)
     {
       return aCached->Shape;
     }
@@ -1068,24 +1204,31 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
 
   // Store under exclusive lock with double-check to avoid redundant writes
   // when multiple threads reconstruct the same parent node concurrently.
-  if (!aReconstructed.IsNull() && aDef != nullptr)
+  if (!aReconstructed.IsNull())
   {
     std::unique_lock<std::shared_mutex> aWriteLock(
       myGraph->myData->myIncStorage.CurrentShapesMutex());
-    const BRepGraphInc_Storage::CachedShape* aExisting =
-      myGraph->myData->myIncStorage.CurrentShapes().Seek(theNode);
-    if (aExisting != nullptr && aExisting->StoredSubtreeGen == aDef->SubtreeGen)
+    BRepGraphInc_Storage::CachedShape* aExisting =
+      myGraph->myData->myIncStorage.ChangeCurrentShapes().ChangeSeek(theNode);
+    if (aExisting != nullptr && aExisting->StoredSubtreeGen == aSubtreeGen)
     {
       return aExisting->Shape;
     }
     BRepGraphInc_Storage::CachedShape anEntry;
     anEntry.Shape            = aReconstructed;
-    anEntry.StoredSubtreeGen = aDef->SubtreeGen;
-    myGraph->myData->myIncStorage.ChangeCurrentShapes().Bind(theNode, anEntry);
+    anEntry.StoredSubtreeGen = aSubtreeGen;
+    if (aExisting != nullptr)
+    {
+      *aExisting = anEntry;
+    }
+    else
+    {
+      myGraph->myData->myIncStorage.ChangeCurrentShapes().Bind(theNode, anEntry);
+    }
     if (theNode.NodeKind != BRepGraph_NodeId::Kind::Product
         && theNode.NodeKind != BRepGraph_NodeId::Kind::Occurrence)
     {
-      myGraph->myData->myIncStorage.BindTShapeToNode(aReconstructed.TShape().get(), theNode);
+      myGraph->myData->myIncStorage.SetDefinitionShapeBinding(aReconstructed, theNode);
     }
   }
   return aReconstructed;
@@ -1112,15 +1255,14 @@ TopoDS_Shape BRepGraph::ShapesView::Original(const BRepGraph_NodeId theNode) con
     return TopoDS_Shape();
   }
 
-  const TopoDS_Shape* anOriginal = myGraph->myData->myIncStorage.FindOriginal(theNode);
-  return anOriginal != nullptr ? *anOriginal : TopoDS_Shape();
+  return myGraph->myData->myIncStorage.FindOriginal(theNode);
 }
 
 //=================================================================================================
 
 TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) const
 {
-  if (theRoot.IsRemoved(*myGraph))
+  if (!theRoot.IsValid() || theRoot.IsRemoved(*myGraph))
   {
     return TopoDS_Shape();
   }
@@ -1141,20 +1283,20 @@ BRepGraph_NodeId BRepGraph::ShapesView::FindNode(const TopoDS_Shape& theShape) c
     return BRepGraph_NodeId();
   }
 
-  const BRepGraph_NodeId* aNodeId =
-    myGraph->myData->myIncStorage.FindNodeByTShape(theShape.TShape().get());
-  if (aNodeId != nullptr)
+  const BRepGraph_NodeId aNodeId =
+    myGraph->myData->myIncStorage.FindDefinitionByShape(theShape);
+  if (aNodeId.IsValid())
   {
-    if ((*aNodeId).IsRemoved(*myGraph))
+    if (aNodeId.IsRemoved(*myGraph))
     {
       return BRepGraph_NodeId();
     }
-    const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(*aNodeId);
+    const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(aNodeId);
     if (aDef == nullptr)
     {
       return BRepGraph_NodeId();
     }
-    return *aNodeId;
+    return aNodeId;
   }
   return BRepGraph_NodeId();
 }

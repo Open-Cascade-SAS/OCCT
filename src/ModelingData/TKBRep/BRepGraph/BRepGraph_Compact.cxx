@@ -786,16 +786,29 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     aNewDef.UID                     = anIt.Current().UID;
   }
 
-  // Compounds.
-  NCollection_LinearVector<BRepGraph_NodeId>     aCompChildren(64);
-  NCollection_LinearVector<BRepGraph_ChildRefId> aCompOldChildRefs(64);
+  // Compounds may reference other compounds. Create all compound definitions first so parent
+  // compounds can attach child refs to compound children independently of storage order.
   for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
-    aCompChildren.Clear(false);
-    aCompOldChildRefs.Clear(false);
-
     const BRepGraph_CompoundId anOldCompoundId = anIt.CurrentId();
-    if (aCompoundMap.Seek(anOldCompoundId) == nullptr)
+    const BRepGraph_CompoundId* aExpectedNewId = aCompoundMap.Seek(anOldCompoundId);
+    if (aExpectedNewId == nullptr)
+    {
+      continue;
+    }
+
+    const NCollection_Array1<BRepGraph_NodeId> anEmptyChildren;
+    [[maybe_unused]] const BRepGraph_CompoundId aNewCompoundId =
+      aNewGraph.Editor().Compounds().Add(anEmptyChildren);
+    Standard_ASSERT_RAISE(aNewCompoundId == *aExpectedNewId,
+                          "BRepGraph_Compact: unexpected compound id");
+  }
+
+  for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> anIt(theGraph); anIt.More(); anIt.Next())
+  {
+    const BRepGraph_CompoundId anOldCompoundId = anIt.CurrentId();
+    const BRepGraph_CompoundId* aNewCompoundId = aCompoundMap.Seek(anOldCompoundId);
+    if (aNewCompoundId == nullptr)
     {
       continue;
     }
@@ -807,26 +820,13 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       const BRepGraph_NodeId        aNewChild = remapId(aCR.ChildNodeId);
       if (aNewChild.IsValid())
       {
-        aCompChildren.Append(aNewChild);
-        aCompOldChildRefs.Append(aRefIt.CurrentId());
-      }
-    }
-    const BRepGraph_CompoundId aNewCompoundId =
-      aNewGraph.Editor().Compounds().Add(aCompChildren.ToArray1());
-    if (aNewCompoundId.IsValid())
-    {
-      const NCollection_LinearVector<BRepGraph_ChildRefId>& aNewChildRefs =
-        aNewGraph.Topo().Compounds().Relations(aNewCompoundId).ChildRefIds;
-      for (size_t aRefIdx = 0; aRefIdx < aCompOldChildRefs.Size() && aRefIdx < aNewChildRefs.Size();
-           ++aRefIdx)
-      {
-        const BRepGraphInc::ChildRef& anOldRef =
-          theGraph.Refs().Children().Entry(aCompOldChildRefs.Value(aRefIdx));
-        BRepGraph_MutGuard<BRepGraphInc::ChildRef> aNewRef =
-          aNewGraph.Editor().Gen().MutChildRef(aNewChildRefs.Value(aRefIdx));
-        aNewGraph.Editor().Gen().SetChildRefOrientation(aNewRef, anOldRef.Orientation);
-        aNewGraph.Editor().Gen().SetChildRefLocalLocation(aNewRef, anOldRef.LocalLocation);
-        aChildRefMap.Bind(aCompOldChildRefs.Value(aRefIdx), aNewChildRefs.Value(aRefIdx));
+        const BRepGraph_ChildRefId aNewRefId =
+          aNewGraph.Editor().Compounds().Append(*aNewCompoundId, aNewChild, aCR.Orientation);
+        if (aNewRefId.IsValid())
+        {
+          aNewGraph.Editor().Gen().SetChildRefLocalLocation(aNewRefId, aCR.LocalLocation);
+          aChildRefMap.Bind(aRefIt.CurrentId(), aNewRefId);
+        }
       }
     }
   }
@@ -1258,12 +1258,12 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   BRepGraph_LayerRegistry aSavedLayerRegistry = std::move(theGraph.layerRegistry());
   BRepGraph_CacheRegistry aSavedCacheRegistry = std::move(theGraph.cacheRegistry());
 
-  // Transfer TShape-to-NodeId and NodeId-to-OriginalShape bindings: the rebuilt graph has none.
-  NCollection_LinearVector<std::pair<const TopoDS_TShape*, BRepGraph_NodeId>> aTShapeBindings;
-  NCollection_LinearVector<std::pair<BRepGraph_NodeId, TopoDS_Shape>>         aOriginalBindings;
-  aGraphData->myIncStorage.ForEachTShapeBinding(
-    [&](const TopoDS_TShape* theTShape, const BRepGraph_NodeId& theNodeId) {
-      aTShapeBindings.Append({theTShape, theNodeId});
+  // Transfer shape-to-NodeId and NodeId-to-OriginalShape bindings: the rebuilt graph has none.
+  NCollection_LinearVector<std::pair<TopoDS_Shape, BRepGraph_NodeId>> aShapeBindings;
+  NCollection_LinearVector<std::pair<BRepGraph_NodeId, TopoDS_Shape>> aOriginalBindings;
+  aGraphData->myIncStorage.ForEachShapeBinding(
+    [&](const TopoDS_Shape& theShape, const BRepGraph_NodeId& theNodeId) {
+      aShapeBindings.Append({theShape, theNodeId});
     });
   aGraphData->myIncStorage.ForEachOriginalBinding(
     [&](const BRepGraph_NodeId& theNodeId, const TopoDS_Shape& theShape) {
@@ -1421,14 +1421,14 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     aRemapMap.Bind(anOldId, aNewId);
   }
 
-  // Restore TShape-to-NodeId and NodeId-to-OriginalShape bindings, remapping NodeIds through
+  // Restore shape-to-NodeId and NodeId-to-OriginalShape bindings, remapping NodeIds through
   // aRemapMap. Nodes that were removed (dead, no entry in aRemapMap) are simply dropped.
-  for (const auto& [aTShape, aOldId] : aTShapeBindings)
+  for (const auto& [aShape, aOldId] : aShapeBindings)
   {
     const BRepGraph_NodeId* aNewId = aRemapMap.Seek(aOldId);
     if (aNewId != nullptr)
     {
-      theGraph.incStorage().BindTShapeToNode(aTShape, *aNewId);
+      theGraph.incStorage().SetDefinitionShapeBinding(aShape, *aNewId);
     }
   }
   for (const auto& [aOldId, aShape] : aOriginalBindings)
@@ -1449,8 +1449,6 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     aWireOldCoEdges.Clear(true);
     aFaceNextWires.Clear(true);
     aFaceOldWireRefs.Clear(true);
-    aCompChildren.Clear(true);
-    aCompOldChildRefs.Clear(true);
     aCSSolids.Clear(true);
     aCSOldSolidRefs.Clear(true);
 

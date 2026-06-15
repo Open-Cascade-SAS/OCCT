@@ -18,8 +18,10 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <Bnd_Box.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
@@ -38,6 +40,25 @@ namespace
 static double translationX(const TopoDS_Shape& theShape)
 {
   return theShape.Location().Transformation().TranslationPart().X();
+}
+
+Bnd_Box geometryBounds(const TopoDS_Shape& theShape)
+{
+  Bnd_Box aBox;
+  BRepBndLib::AddOptimal(theShape, aBox, false, false);
+  return aBox;
+}
+
+void expectBoxNear(const Bnd_Box& theActual, const Bnd_Box& theExpected, const double theTol)
+{
+  const Bnd_Box::Limits anActual   = theActual.Get();
+  const Bnd_Box::Limits anExpected = theExpected.Get();
+  EXPECT_NEAR(anActual.Xmin, anExpected.Xmin, theTol);
+  EXPECT_NEAR(anActual.Ymin, anExpected.Ymin, theTol);
+  EXPECT_NEAR(anActual.Zmin, anExpected.Zmin, theTol);
+  EXPECT_NEAR(anActual.Xmax, anExpected.Xmax, theTol);
+  EXPECT_NEAR(anActual.Ymax, anExpected.Ymax, theTol);
+  EXPECT_NEAR(anActual.Zmax, anExpected.Zmax, theTol);
 }
 
 NCollection_LinearVector<BRepGraph_ProductId> collectRootProducts(const BRepGraph& theGraph)
@@ -1231,7 +1252,8 @@ TEST(BRepGraph_AssemblyTest, OccurrenceLocation_AlwaysTerminates)
 TEST(BRepGraph_AssemblyTest, Add_RootProduct_PreservesShapeLocation)
 {
   BRepGraph    aGraph;
-  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  TopoDS_Shape aLocalBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  TopoDS_Shape aBox      = aLocalBox;
   gp_Trsf      aTrsf;
   aTrsf.SetTranslation(gp_Vec(5.0, 6.0, 7.0));
   aBox.Location(TopLoc_Location(aTrsf));
@@ -1241,6 +1263,7 @@ TEST(BRepGraph_AssemblyTest, Add_RootProduct_PreservesShapeLocation)
   ASSERT_TRUE(aResult.Product.IsValid());
   ASSERT_TRUE(aResult.TopologyRoot.IsValid());
   ASSERT_TRUE(aResult.Occurrence.IsValid());
+  EXPECT_EQ(aGraph.Shapes().FindNode(aBox), aResult.TopologyRoot);
 
   ASSERT_EQ(aGraph.RootProductIds().Size(), 1u);
   EXPECT_EQ(aGraph.RootProductIds().Value(0), aResult.Product);
@@ -1248,9 +1271,16 @@ TEST(BRepGraph_AssemblyTest, Add_RootProduct_PreservesShapeLocation)
   const BRepGraph_OccurrenceRefId anOccRefId =
     aGraph.Topo().Products().Relations(aResult.Product).OccurrenceRefIds.Value(0);
   const TopLoc_Location& aLoc = aGraph.Refs().Occurrences().Entry(anOccRefId).LocalLocation;
-  EXPECT_NEAR(aLoc.Transformation().TranslationPart().X(), 5.0, Precision::Confusion());
-  EXPECT_NEAR(aLoc.Transformation().TranslationPart().Y(), 6.0, Precision::Confusion());
-  EXPECT_NEAR(aLoc.Transformation().TranslationPart().Z(), 7.0, Precision::Confusion());
+  EXPECT_TRUE(aLoc.IsEqual(aBox.Location()));
+
+  const TopoDS_Shape aProductShape = aGraph.Shapes().Shape(aResult.Product);
+  ASSERT_FALSE(aProductShape.IsNull());
+  expectBoxNear(geometryBounds(aProductShape), geometryBounds(aBox), 1.0e-7);
+
+  const TopoDS_Shape aTopologyShape = aGraph.Shapes().Shape(aResult.TopologyRoot);
+  ASSERT_FALSE(aTopologyShape.IsNull());
+  EXPECT_TRUE(aTopologyShape.Location().IsIdentity());
+  expectBoxNear(geometryBounds(aTopologyShape), geometryBounds(aLocalBox), 1.0e-7);
 }
 
 TEST(BRepGraph_AssemblyTest, Add_NoAutoProduct_TopologyOnly)
@@ -1308,7 +1338,7 @@ TEST(BRepGraph_AssemblyTest, Add_ProductParent_CreatesChildPartAndOccurrence)
   ASSERT_EQ(aParentRelations.OccurrenceRefIds.Size(), 1u);
   const BRepGraph_OccurrenceRefId anOccRefId = aParentRelations.OccurrenceRefIds.Value(0);
   const TopLoc_Location& aLoc = aGraph.Refs().Occurrences().Entry(anOccRefId).LocalLocation;
-  EXPECT_NEAR(aLoc.Transformation().TranslationPart().X(), 2.0, Precision::Confusion());
+  EXPECT_TRUE(aLoc.IsEqual(aSphere.Location()));
 }
 
 TEST(BRepGraph_AssemblyTest, Add_CompoundParent_AppendsAsChild)

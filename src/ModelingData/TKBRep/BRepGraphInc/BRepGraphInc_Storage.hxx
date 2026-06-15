@@ -35,6 +35,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 
 #include <atomic>
 #include <shared_mutex>
@@ -1220,55 +1221,49 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_RefId
     FindRefIdByUID(const BRepGraph_RefUID& theUID) const;
 
-  //! Returns the node id bound to the given TShape, or nullptr if not bound.
-  [[nodiscard]] const BRepGraph_NodeId* FindNodeByTShape(const TopoDS_TShape* theTShape) const
-  {
-    return myTShapeToNodeId.Seek(theTShape);
-  }
+  //! Returns the node id bound to the given shape definition key, or invalid if not bound.
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+    FindDefinitionByShape(const TopoDS_Shape& theShape) const;
 
-  //! Returns true if the given TShape is bound to a node.
-  [[nodiscard]] bool HasTShapeBinding(const TopoDS_TShape* theTShape) const
-  {
-    return myTShapeToNodeId.IsBound(theTShape);
-  }
+  //! Returns true if the given shape definition key is bound to a node.
+  [[nodiscard]] Standard_EXPORT bool HasShapeBinding(const TopoDS_Shape& theShape) const;
 
-  //! Binds the given TShape to a node id.
-  void BindTShapeToNode(const TopoDS_TShape* theTShape, const BRepGraph_NodeId theNodeId)
-  {
-    myTShapeToNodeId.Bind(theTShape, theNodeId);
-  }
+  //! Set or update the shape-to-node binding. Uses replacement semantics:
+  //! binds if absent, updates if already bound.
+  Standard_EXPORT void SetDefinitionShapeBinding(const TopoDS_Shape&    theShape,
+                                                 const BRepGraph_NodeId theNodeId);
 
-  //! Back-reference to the source `TopoDS_Shape` a node was built from.
-  //! Only populated during Build; absent bindings are a valid state.
+  //! Remove the shape-to-node binding only if it points to the expected node.
+  //! Returns true if the binding was removed.
+  Standard_EXPORT bool RemoveDefinitionShapeBinding(const TopoDS_Shape&    theShape,
+                                                    const BRepGraph_NodeId theExpectedNodeId);
 
-  //! Returns the original shape for the given node id, or nullptr if not bound.
-  [[nodiscard]] const TopoDS_Shape* FindOriginal(const BRepGraph_NodeId theNodeId) const
-  {
-    return myOriginalShapes.Seek(theNodeId);
-  }
+  //! Back-reference to the construction-time `TopoDS_Shape` key a node was built from.
+  //! Only populated during graph construction; absent bindings are a valid state.
+
+  //! Returns the original shape for the given node id, or a null shape if not bound.
+  [[nodiscard]] Standard_EXPORT TopoDS_Shape FindOriginal(
+    const BRepGraph_NodeId theNodeId) const;
 
   //! Returns true if the given node id has an original shape binding.
-  [[nodiscard]] bool HasOriginal(const BRepGraph_NodeId theNodeId) const
-  {
-    return myOriginalShapes.IsBound(theNodeId);
-  }
+  [[nodiscard]] Standard_EXPORT bool HasOriginal(const BRepGraph_NodeId theNodeId) const;
 
-  //! Binds the given node id to its original shape.
-  void BindOriginal(const BRepGraph_NodeId theNodeId, const TopoDS_Shape& theShape)
-  {
-    myOriginalShapes.Bind(theNodeId, theShape);
-  }
+  //! Binds the given node id to its construction-time shape key.
+  Standard_EXPORT void BindOriginal(const BRepGraph_NodeId theNodeId,
+                                    const TopoDS_Shape&    theShape);
 
   //! Removes the original shape binding for the given node id.
-  void UnBindOriginal(const BRepGraph_NodeId theNodeId) { myOriginalShapes.UnBind(theNodeId); }
+  Standard_EXPORT void UnBindOriginal(const BRepGraph_NodeId theNodeId);
 
-  //! Iterate all TShape-to-NodeId bindings, invoking theFunc(TShape*, NodeId) for each entry.
+  //! Iterate all shape-to-NodeId bindings, invoking theFunc(shape, NodeId) for each entry.
   //! Used by Compact to rebuild the map after the rebuild-and-swap.
   template <typename FuncT>
-  void ForEachTShapeBinding(FuncT&& theFunc) const
+  void ForEachShapeBinding(FuncT&& theFunc) const
   {
-    for (NCollection_FlatDataMap<const TopoDS_TShape*, BRepGraph_NodeId>::Iterator anIt(
-           myTShapeToNodeId);
+    std::shared_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
+    for (NCollection_FlatDataMap<TopoDS_Shape,
+                                 BRepGraph_NodeId,
+                                 TopTools_ShapeMapHasher>::Iterator anIt(myShapeToNodeId);
          anIt.More();
          anIt.Next())
     {
@@ -1281,6 +1276,7 @@ public:
   template <typename FuncT>
   void ForEachOriginalBinding(FuncT&& theFunc) const
   {
+    std::shared_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
     for (NCollection_FlatDataMap<BRepGraph_NodeId, TopoDS_Shape>::Iterator anIt(myOriginalShapes);
          anIt.More();
          anIt.Next())
@@ -1289,7 +1285,7 @@ public:
     }
   }
 
-  //! Copy TShape-to-NodeId and Original shape bindings from another storage.
+  //! Copy shape-to-NodeId and Original shape bindings from another storage.
   //! Used by identity copy to preserve shape reconstruction bindings.
   Standard_EXPORT void CopyShapeBindingsFrom(const BRepGraphInc_Storage& theSource);
 
@@ -1890,8 +1886,10 @@ private:
   mutable std::atomic<bool>                                          myRefUIDToRefIdDirty{false};
 
   //! Bindings from reconstructed / source OCCT shapes back to backend ids.
-  NCollection_FlatDataMap<const TopoDS_TShape*, BRepGraph_NodeId> myTShapeToNodeId;
-  NCollection_FlatDataMap<BRepGraph_NodeId, TopoDS_Shape>         myOriginalShapes;
+  NCollection_FlatDataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>
+    myShapeToNodeId;
+  NCollection_FlatDataMap<BRepGraph_NodeId, TopoDS_Shape> myOriginalShapes;
+  mutable std::shared_mutex                              myShapeBindingsMutex;
 
   //! Persistent backend identity state.
   std::atomic<uint32_t> myGeneration{0};

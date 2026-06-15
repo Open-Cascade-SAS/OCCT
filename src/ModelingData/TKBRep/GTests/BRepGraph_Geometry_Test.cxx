@@ -23,6 +23,7 @@
 #include <BRepGraphInc_RepId.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_ParentExplorer.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_MeshView.hxx>
@@ -435,13 +436,19 @@ TEST(BRepGraph_GeometryTest, CompoundWithMovedChild_SharedSolidDef)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes12 = aGraph.Shapes().Add(aCompound);
+  const BRepGraph::ShapesView::Result aBuildRes12 = aGraph.Shapes().Add(aCompound);
+  ASSERT_TRUE(aBuildRes12.IsOk());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  // Moved() preserves TShape, but locations are baked into topology definitions.
-  EXPECT_EQ(aGraph.Topo().Solids().Nb(), 2);
-  // Verify the graph was built successfully.
-  EXPECT_FALSE(aGraph.IsEmpty());
+  // Moved() preserves TShape. The solid definition is shared and the moved
+  // usage keeps its placement on the compound child reference.
+  EXPECT_EQ(aGraph.Topo().Solids().Nb(), 1);
+  const BRepGraph_CompoundId aCompoundId(aBuildRes12.TopologyRoot);
+  const NCollection_LinearVector<BRepGraph_ChildRefId>& aChildRefs =
+    aGraph.Topo().Compounds().Relations(aCompoundId).ChildRefIds;
+  ASSERT_EQ(aChildRefs.Size(), 2u);
+  EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(aChildRefs.Value(0)).IsIdentity());
+  EXPECT_FALSE(aGraph.Refs().Gen().LocalLocation(aChildRefs.Value(1)).IsIdentity());
 }
 
 TEST(BRepGraph_GeometryTest, FaceDef_Triangulation_NullForAnalyticNoCrash)

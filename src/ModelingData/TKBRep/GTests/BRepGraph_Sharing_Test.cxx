@@ -16,6 +16,7 @@
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include "BRepGraph_RefTestTools.hxx"
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Validate.hxx>
@@ -345,14 +346,20 @@ TEST_F(BRepGraph_SharingTest, CompoundWithLocation_MoreUsagesThanDefs)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes4 = aGraph.Shapes().Add(aCompound);
+  const BRepGraph::ShapesView::Result aBuildRes4 = aGraph.Shapes().Add(aCompound);
+  ASSERT_TRUE(aBuildRes4.IsOk());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  // Same TShape with different locations: normal topology definitions are split
-  // because the location is baked into the definitions during Populate.
-  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 12);
-  EXPECT_EQ(aGraph.Topo().Edges().Nb(), 24);
-  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 16);
+  // Same TShape with different compound usages: topology definitions are shared
+  // and usage placement is stored on ChildRef.
+  EXPECT_EQ(aGraph.Topo().Solids().Nb(), 1);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 6);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), 12);
+  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 8);
+  const NCollection_LinearVector<BRepGraph_ChildRefId>& aChildRefs =
+    aGraph.Topo().Compounds().Relations(BRepGraph_CompoundId(aBuildRes4.TopologyRoot)).ChildRefIds;
+  ASSERT_EQ(aChildRefs.Size(), 2u);
+  EXPECT_FALSE(aGraph.Refs().Gen().LocalLocation(aChildRefs.Value(1)).IsIdentity());
 }
 
 TEST_F(BRepGraph_SharingTest, TranslatedCopy_SameTShape_SharedDefs)
@@ -372,13 +379,18 @@ TEST_F(BRepGraph_SharingTest, TranslatedCopy_SameTShape_SharedDefs)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes5 = aGraph.Shapes().Add(aCompound);
+  const BRepGraph::ShapesView::Result aBuildRes5 = aGraph.Shapes().Add(aCompound);
+  ASSERT_TRUE(aBuildRes5.IsOk());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  // Moved() preserves TShape, but locations are baked into topology definitions.
-  EXPECT_EQ(aGraph.Topo().Solids().Nb(), 2);
-
-  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 12);
-  EXPECT_EQ(aGraph.Topo().Edges().Nb(), 24);
-  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 16);
+  // Moved() preserves TShape, so the definition stays shared while the moved
+  // usage is represented by a located compound child reference.
+  EXPECT_EQ(aGraph.Topo().Solids().Nb(), 1);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 6);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), 12);
+  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 8);
+  const NCollection_LinearVector<BRepGraph_ChildRefId>& aChildRefs =
+    aGraph.Topo().Compounds().Relations(BRepGraph_CompoundId(aBuildRes5.TopologyRoot)).ChildRefIds;
+  ASSERT_EQ(aChildRefs.Size(), 2u);
+  EXPECT_FALSE(aGraph.Refs().Gen().LocalLocation(aChildRefs.Value(1)).IsIdentity());
 }

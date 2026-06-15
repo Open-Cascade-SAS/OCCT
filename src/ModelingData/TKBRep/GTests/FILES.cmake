@@ -9,6 +9,7 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_BatchOps_Test.cxx
   BRepGraph_DefsIterator_Test.cxx
   BRepGraphInc_Test.cxx
+  BRepGraphInc_PopulateRegression_Test.cxx
   BRepGraph_ShapesViewImport_Test.cxx
   BRepGraph_NodeId_Test.cxx
   BRepGraph_RefId_Test.cxx

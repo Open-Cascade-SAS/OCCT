@@ -755,7 +755,7 @@ TEST(BRepGraphIncTest, Compound_TranslatedChildren_VolumePreserved)
   EXPECT_EQ(countSubShapes(aRecon, TopAbs_FACE), 12);
 }
 
-TEST(BRepGraphIncTest, Populate_BakesNormalChildLocationsIntoDefinitions)
+TEST(BRepGraphIncTest, Populate_AppliesNormalChildLocationsToDefinitions)
 {
   const TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(1.0, 0.0, 0.0));
 
@@ -798,7 +798,7 @@ TEST(BRepGraphIncTest, Populate_BakesNormalChildLocationsIntoDefinitions)
   EXPECT_EQ(countSubShapes(aRecon, TopAbs_VERTEX), 4);
 }
 
-TEST(BRepGraphIncTest, Populate_BakesStackedNormalLocationsIntoDefinitions)
+TEST(BRepGraphIncTest, Populate_AppliesStackedNormalLocationsToDefinitions)
 {
   gp_Trsf anEdgeTrsf;
   anEdgeTrsf.SetTranslation(gp_Vec(2.0, 0.0, 0.0));
@@ -907,46 +907,6 @@ TEST(BRepGraphIncTest, Populate_BakesStackedNormalLocationsIntoDefinitions)
   EXPECT_NEAR(aMaxY, 15.0, Precision::Confusion());
   EXPECT_NEAR(aMinZ, 5.0, Precision::Confusion());
   EXPECT_NEAR(aMaxZ, 5.0, Precision::Confusion());
-}
-
-TEST(BRepGraphIncTest, Populate_RootCompoundLocationIsPreservedByChildRefs)
-{
-  BRep_Builder    aBuilder;
-  TopoDS_Compound aCompound;
-  aBuilder.MakeCompound(aCompound);
-  aBuilder.Add(aCompound, BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(1.0, 0.0, 0.0)));
-
-  gp_Trsf aTrsf;
-  aTrsf.SetTranslation(gp_Vec(25.0, 0.0, 0.0));
-  const TopLoc_Location aLoc(aTrsf);
-  const TopoDS_Compound aMovedCompound = TopoDS::Compound(aCompound.Moved(aLoc));
-
-  BRepGraph aGraph;
-  ASSERT_NE(BRepGraphInc_Populate::Perform(aGraph, aMovedCompound, false),
-            BRepGraphInc_Populate::BuildStatus::Failed);
-  ASSERT_FALSE(aGraph.IsEmpty());
-
-  ASSERT_EQ(aGraph.Topo().Compounds().Nb(), 1u);
-  const NCollection_LinearVector<BRepGraph_ChildRefId>& aChildRefs =
-    aGraph.Topo().Compounds().Relations(BRepGraph_CompoundId::Start()).ChildRefIds;
-  ASSERT_EQ(aChildRefs.Size(), 1u);
-  const BRepGraph_ChildRefId aChildRef = aChildRefs.Value(0);
-  EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(aChildRef).IsEqual(aLoc));
-
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aGraph, BRepGraph_CompoundId::Start());
-  ASSERT_FALSE(aRecon.IsNull());
-
-  double aMinX = RealLast();
-  double aMaxX = -RealLast();
-  for (TopExp_Explorer anExp(aRecon, TopAbs_VERTEX); anExp.More(); anExp.Next())
-  {
-    const gp_Pnt aPoint = BRep_Tool::Pnt(TopoDS::Vertex(anExp.Current()));
-    aMinX               = std::min(aMinX, aPoint.X());
-    aMaxX               = std::max(aMaxX, aPoint.X());
-  }
-
-  EXPECT_NEAR(aMinX, 25.0, Precision::Confusion());
-  EXPECT_NEAR(aMaxX, 26.0, Precision::Confusion());
 }
 
 TEST(BRepGraphIncTest, Cylinder_RoundTrip_BRepDump)
