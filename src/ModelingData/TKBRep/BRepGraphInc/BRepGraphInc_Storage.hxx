@@ -1242,15 +1242,13 @@ public:
   //! Only populated during graph construction; absent bindings are a valid state.
 
   //! Returns the original shape for the given node id, or a null shape if not bound.
-  [[nodiscard]] Standard_EXPORT TopoDS_Shape FindOriginal(
-    const BRepGraph_NodeId theNodeId) const;
+  [[nodiscard]] Standard_EXPORT TopoDS_Shape FindOriginal(const BRepGraph_NodeId theNodeId) const;
 
   //! Returns true if the given node id has an original shape binding.
   [[nodiscard]] Standard_EXPORT bool HasOriginal(const BRepGraph_NodeId theNodeId) const;
 
   //! Binds the given node id to its construction-time shape key.
-  Standard_EXPORT void BindOriginal(const BRepGraph_NodeId theNodeId,
-                                    const TopoDS_Shape&    theShape);
+  Standard_EXPORT void BindOriginal(const BRepGraph_NodeId theNodeId, const TopoDS_Shape& theShape);
 
   //! Removes the original shape binding for the given node id.
   Standard_EXPORT void UnBindOriginal(const BRepGraph_NodeId theNodeId);
@@ -1261,9 +1259,8 @@ public:
   void ForEachShapeBinding(FuncT&& theFunc) const
   {
     std::shared_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
-    for (NCollection_FlatDataMap<TopoDS_Shape,
-                                 BRepGraph_NodeId,
-                                 TopTools_ShapeMapHasher>::Iterator anIt(myShapeToNodeId);
+    for (NCollection_FlatDataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>::Iterator
+           anIt(myShapeToNodeId);
          anIt.More();
          anIt.Next())
     {
@@ -1886,10 +1883,9 @@ private:
   mutable std::atomic<bool>                                          myRefUIDToRefIdDirty{false};
 
   //! Bindings from reconstructed / source OCCT shapes back to backend ids.
-  NCollection_FlatDataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>
-    myShapeToNodeId;
-  NCollection_FlatDataMap<BRepGraph_NodeId, TopoDS_Shape> myOriginalShapes;
-  mutable std::shared_mutex                              myShapeBindingsMutex;
+  NCollection_FlatDataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> myShapeToNodeId;
+  NCollection_FlatDataMap<BRepGraph_NodeId, TopoDS_Shape>                          myOriginalShapes;
+  mutable std::shared_mutex myShapeBindingsMutex;
 
   //! Persistent backend identity state.
   std::atomic<uint32_t> myGeneration{0};

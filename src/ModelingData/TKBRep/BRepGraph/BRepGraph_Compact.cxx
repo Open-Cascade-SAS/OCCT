@@ -790,14 +790,14 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   // compounds can attach child refs to compound children independently of storage order.
   for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
-    const BRepGraph_CompoundId anOldCompoundId = anIt.CurrentId();
-    const BRepGraph_CompoundId* aExpectedNewId = aCompoundMap.Seek(anOldCompoundId);
+    const BRepGraph_CompoundId  anOldCompoundId = anIt.CurrentId();
+    const BRepGraph_CompoundId* aExpectedNewId  = aCompoundMap.Seek(anOldCompoundId);
     if (aExpectedNewId == nullptr)
     {
       continue;
     }
 
-    const NCollection_Array1<BRepGraph_NodeId> anEmptyChildren;
+    const NCollection_Array1<BRepGraph_NodeId>  anEmptyChildren;
     [[maybe_unused]] const BRepGraph_CompoundId aNewCompoundId =
       aNewGraph.Editor().Compounds().Add(anEmptyChildren);
     Standard_ASSERT_RAISE(aNewCompoundId == *aExpectedNewId,
@@ -806,8 +806,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
   for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
-    const BRepGraph_CompoundId anOldCompoundId = anIt.CurrentId();
-    const BRepGraph_CompoundId* aNewCompoundId = aCompoundMap.Seek(anOldCompoundId);
+    const BRepGraph_CompoundId  anOldCompoundId = anIt.CurrentId();
+    const BRepGraph_CompoundId* aNewCompoundId  = aCompoundMap.Seek(anOldCompoundId);
     if (aNewCompoundId == nullptr)
     {
       continue;

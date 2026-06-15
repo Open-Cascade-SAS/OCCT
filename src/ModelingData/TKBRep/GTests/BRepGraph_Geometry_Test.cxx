@@ -443,7 +443,7 @@ TEST(BRepGraph_GeometryTest, CompoundWithMovedChild_SharedSolidDef)
   // Moved() preserves TShape. The solid definition is shared and the moved
   // usage keeps its placement on the compound child reference.
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), 1);
-  const BRepGraph_CompoundId aCompoundId(aBuildRes12.TopologyRoot);
+  const BRepGraph_CompoundId                            aCompoundId(aBuildRes12.TopologyRoot);
   const NCollection_LinearVector<BRepGraph_ChildRefId>& aChildRefs =
     aGraph.Topo().Compounds().Relations(aCompoundId).ChildRefIds;
   ASSERT_EQ(aChildRefs.Size(), 2u);

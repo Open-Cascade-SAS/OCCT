@@ -99,20 +99,20 @@ TopoDS_Shape firstSubShape(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum 
 
 TopoDS_Face firstFaceOfBox(const double theSize)
 {
-  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(theSize, theSize, theSize).Shape();
+  TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(theSize, theSize, theSize).Shape();
   TopoDS_Shape aFace = firstSubShape(aBox, TopAbs_FACE);
   return TopoDS::Face(aFace);
 }
 
-uint32_t countSourcePolygonOnTriangulation(const TopoDS_Shape&    theShape,
-                                           const bool             theUseFaceLocation,
-                                           bool&                  theHasLocatedTriangulation)
+uint32_t countSourcePolygonOnTriangulation(const TopoDS_Shape& theShape,
+                                           const bool          theUseFaceLocation,
+                                           bool&               theHasLocatedTriangulation)
 {
   uint32_t aCount = 0;
   for (TopExp_Explorer aFaceExp(theShape, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
   {
-    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
-    TopLoc_Location    aTriLoc;
+    const TopoDS_Face&                    aFace = TopoDS::Face(aFaceExp.Current());
+    TopLoc_Location                       aTriLoc;
     const occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aTriLoc);
     if (aTri.IsNull())
     {
@@ -122,7 +122,7 @@ uint32_t countSourcePolygonOnTriangulation(const TopoDS_Shape&    theShape,
 
     for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
     {
-      const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
+      const TopoDS_Edge&    anEdge     = TopoDS::Edge(anEdgeExp.Current());
       const TopLoc_Location aLookupLoc = theUseFaceLocation ? aTriLoc : TopLoc_Location();
       if (!BRep_Tool::PolygonOnTriangulation(anEdge, aTri, aLookupLoc).IsNull())
       {
@@ -151,10 +151,10 @@ TopoDS_Face makeNoWireNaturalSphereFace()
 {
   BRep_Builder aBuilder;
   TopoDS_Face  aFace;
-  aBuilder.MakeFace(aFace,
-                    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
-                                              10.0),
-                    Precision::Confusion());
+  aBuilder.MakeFace(
+    aFace,
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 10.0),
+    Precision::Confusion());
   aBuilder.NaturalRestriction(aFace, true);
   return aFace;
 }
@@ -176,13 +176,12 @@ TopoDS_Compound makeNestedCompound(const TopLoc_Location& theRootLocation,
                                    const TopLoc_Location& theInnerLocation,
                                    const TopLoc_Location& theSolidLocation)
 {
-  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(2.0, 3.0, 4.0).Shape();
+  TopoDS_Shape             aBox = BRepPrimAPI_MakeBox(2.0, 3.0, 4.0).Shape();
   BRepMesh_IncrementalMesh aMesher(aBox, 0.2);
   EXPECT_TRUE(aMesher.IsDone());
 
-  BRep_Builder aBuilder;
-  const TopoDS_Solid aMovedSolid =
-    TopoDS::Solid(TopoDS::Solid(aBox).Moved(theSolidLocation));
+  BRep_Builder       aBuilder;
+  const TopoDS_Solid aMovedSolid = TopoDS::Solid(TopoDS::Solid(aBox).Moved(theSolidLocation));
 
   TopoDS_Compound anInner;
   aBuilder.MakeCompound(anInner);
@@ -198,7 +197,7 @@ TopoDS_Compound makeNestedCompound(const TopLoc_Location& theRootLocation,
 
 TEST(BRepGraphInc_PopulateRegressionTest, LocatedFacePolygonOnTriangulation_IsCaptured)
 {
-  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  TopoDS_Shape             aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
   BRepMesh_IncrementalMesh aMesher(aBox, 0.5);
   ASSERT_TRUE(aMesher.IsDone());
   const TopoDS_Shape aMovedBox = aBox.Moved(translationLocation(5.0, 6.0, 7.0));
@@ -247,12 +246,12 @@ TEST(BRepGraphInc_PopulateRegressionTest, NoWireNaturalSphere_DegenerateBoundary
 
 TEST(BRepGraphInc_PopulateRegressionTest, CompoundReferencesKeepDirectSourceLocationsAtEveryLevel)
 {
-  const TopLoc_Location aRootLoc  = translationLocation(0.0, 0.0, 11.0);
+  const TopLoc_Location aRootLoc   = translationLocation(0.0, 0.0, 11.0);
   const TopLoc_Location anInnerLoc = translationLocation(0.0, 7.0, 0.0);
-  const TopLoc_Location aSolidLoc = translationLocation(5.0, 0.0, 0.0);
+  const TopLoc_Location aSolidLoc  = translationLocation(5.0, 0.0, 0.0);
   const TopoDS_Compound aMovedRoot = makeNestedCompound(aRootLoc, anInnerLoc, aSolidLoc);
 
-  BRepGraph aGraph;
+  BRepGraph                           aGraph;
   const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aMovedRoot);
   ASSERT_TRUE(aResult.IsOk());
   ASSERT_EQ(aResult.TopologyRoot.NodeKind, BRepGraph_NodeId::Kind::Compound);
@@ -265,15 +264,14 @@ TEST(BRepGraphInc_PopulateRegressionTest, CompoundReferencesKeepDirectSourceLoca
     aGraph.Refs().Occurrences().Entry(aProductRelations.OccurrenceRefIds.Value(0));
   EXPECT_TRUE(anOccurrenceRef.LocalLocation.IsEqual(aRootLoc));
 
-  const BRepGraph_CompoundId aRootCompound(aResult.TopologyRoot);
+  const BRepGraph_CompoundId                            aRootCompound(aResult.TopologyRoot);
   const NCollection_LinearVector<BRepGraph_ChildRefId>& aRootRefs =
     aGraph.Topo().Compounds().Relations(aRootCompound).ChildRefIds;
   ASSERT_EQ(aRootRefs.Size(), 1u);
   const BRepGraph_ChildRefId aRootChildRef = aRootRefs.Value(0);
   EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(aRootChildRef).IsEqual(anInnerLoc));
 
-  const BRepGraph_NodeId anInnerNode =
-    aGraph.Refs().Children().Entry(aRootChildRef).ChildNodeId;
+  const BRepGraph_NodeId anInnerNode = aGraph.Refs().Children().Entry(aRootChildRef).ChildNodeId;
   ASSERT_EQ(anInnerNode.NodeKind, BRepGraph_NodeId::Kind::Compound);
   const NCollection_LinearVector<BRepGraph_ChildRefId>& anInnerRefs =
     aGraph.Topo().Compounds().Relations(BRepGraph_CompoundId(anInnerNode)).ChildRefIds;
@@ -293,7 +291,7 @@ TEST(BRepGraphInc_PopulateRegressionTest, ShapeViewFindNode_AcceptsOriginalPlace
   ASSERT_FALSE(anOriginalSolid.IsNull());
   ASSERT_FALSE(anOriginalFace.IsNull());
 
-  BRepGraph aGraph;
+  BRepGraph                           aGraph;
   const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aMovedRoot);
   ASSERT_TRUE(aResult.IsOk());
   ASSERT_TRUE(aResult.TopologyRoot.IsValid());
@@ -327,7 +325,7 @@ TEST(BRepGraphInc_PopulateRegressionTest, Compact_PreservesAssemblyShapeLookupAn
   ASSERT_FALSE(anOriginalSolid.IsNull());
   ASSERT_FALSE(anOriginalFace.IsNull());
 
-  BRepGraph aGraph;
+  BRepGraph                           aGraph;
   const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aMovedRoot);
   ASSERT_TRUE(aResult.IsOk());
   ASSERT_TRUE(aResult.TopologyRoot.IsValid());
@@ -365,8 +363,7 @@ TEST(BRepGraphInc_PopulateRegressionTest, Compact_PreservesAssemblyShapeLookupAn
 
   TopoDS_Shape aRootLocalShape = aMovedRoot;
   aRootLocalShape.Location(TopLoc_Location());
-  const TopoDS_Shape aReconstructedRoot =
-    BRepGraphInc_Reconstruct::Node(aGraph, aRootCompound);
+  const TopoDS_Shape aReconstructedRoot = BRepGraphInc_Reconstruct::Node(aGraph, aRootCompound);
   ASSERT_FALSE(aReconstructedRoot.IsNull());
   {
     SCOPED_TRACE("topology root reconstruction");
@@ -383,14 +380,14 @@ TEST(BRepGraphInc_PopulateRegressionTest, Compact_PreservesAssemblyShapeLookupAn
 
 TEST(BRepGraphInc_PopulateRegressionTest, Append_ReusesSameLocatedDefinitionAcrossCalls)
 {
-  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(2.0, 3.0, 4.0).Shape();
+  const TopoDS_Shape aBox      = BRepPrimAPI_MakeBox(2.0, 3.0, 4.0).Shape();
   const TopoDS_Shape aMovedBox = aBox.Moved(translationLocation(5.0, 0.0, 0.0));
 
   BRepGraph aGraph;
   ASSERT_NE(BRepGraphInc_Populate::Append(aGraph, aMovedBox, false),
             BRepGraphInc_Populate::BuildStatus::Failed);
-  const uint32_t        aNbSolidsAfterFirst = aGraph.Topo().Solids().Nb();
-  const BRepGraph_NodeId aFirstNode         = aGraph.Shapes().FindNode(aMovedBox);
+  const uint32_t         aNbSolidsAfterFirst = aGraph.Topo().Solids().Nb();
+  const BRepGraph_NodeId aFirstNode          = aGraph.Shapes().FindNode(aMovedBox);
   ASSERT_TRUE(aFirstNode.IsValid());
 
   ASSERT_NE(BRepGraphInc_Populate::Append(aGraph, aMovedBox, false),
@@ -407,12 +404,12 @@ TEST(BRepGraphInc_PopulateRegressionTest, Append_ReusesSameLocatedDefinitionAcro
 
 TEST(BRepGraphInc_PopulateRegressionTest, PersistentTriangulationBounds_AgreeWithMovedNodes)
 {
-  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(2.0, 3.0, 4.0).Shape();
+  TopoDS_Shape             aBox = BRepPrimAPI_MakeBox(2.0, 3.0, 4.0).Shape();
   BRepMesh_IncrementalMesh aMesher(aBox, 0.2);
   ASSERT_TRUE(aMesher.IsDone());
   for (TopExp_Explorer aFaceExp(aBox, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
   {
-    TopLoc_Location aTriLoc;
+    TopLoc_Location                 aTriLoc;
     occ::handle<Poly_Triangulation> aTri =
       BRep_Tool::Triangulation(TopoDS::Face(aFaceExp.Current()), aTriLoc);
     if (!aTri.IsNull())
@@ -450,10 +447,9 @@ TEST(BRepGraphInc_PopulateRegressionTest, PersistentTriangulationBounds_AgreeWit
 TEST(BRepGraphInc_PopulateRegressionTest, Perform_ReplacesGraphThroughClearSemantics)
 {
   BRepGraph aGraph;
-  ASSERT_NE(BRepGraphInc_Populate::Perform(aGraph,
-                                           BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape(),
-                                           false),
-            BRepGraphInc_Populate::BuildStatus::Failed);
+  ASSERT_NE(
+    BRepGraphInc_Populate::Perform(aGraph, BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape(), false),
+    BRepGraphInc_Populate::BuildStatus::Failed);
 
   const occ::handle<BRepGraph_LayerTopoSupplement> aLayer =
     aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
@@ -464,15 +460,14 @@ TEST(BRepGraphInc_PopulateRegressionTest, Perform_ReplacesGraphThroughClearSeman
                                   aVertex),
             0u);
 
-  const BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start();
+  const BRepGraph_EdgeId      anEdgeId = BRepGraph_EdgeId::Start();
   occ::handle<Poly_Polygon3D> aPolygon = new Poly_Polygon3D(2, false);
   aGraph.Mesh().Editor().Edges().SetCachedPolygon3D(anEdgeId, aPolygon);
   ASSERT_NE(aGraph.Mesh().Cache().Edges().Entry(anEdgeId), nullptr);
 
-  ASSERT_NE(BRepGraphInc_Populate::Perform(aGraph,
-                                           BRepPrimAPI_MakeBox(2.0, 2.0, 2.0).Shape(),
-                                           false),
-            BRepGraphInc_Populate::BuildStatus::Failed);
+  ASSERT_NE(
+    BRepGraphInc_Populate::Perform(aGraph, BRepPrimAPI_MakeBox(2.0, 2.0, 2.0).Shape(), false),
+    BRepGraphInc_Populate::BuildStatus::Failed);
   EXPECT_TRUE(aLayer->AttachedTo(BRepGraph_NodeId(BRepGraph_SolidId::Start())).IsEmpty());
   EXPECT_EQ(aGraph.Mesh().Cache().Edges().Entry(anEdgeId), nullptr);
 }
@@ -496,8 +491,8 @@ TEST(BRepGraphInc_PopulateRegressionTest, FlattenedTraversal_SkipsInternalExtern
 
   BRepGraph                      aGraph;
   BRepGraph::ShapesView::Options anOptions;
-  anOptions.CreateAutoProduct = false;
-  anOptions.Flatten           = true;
+  anOptions.CreateAutoProduct                 = false;
+  anOptions.Flatten                           = true;
   const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aCompound, anOptions);
   ASSERT_TRUE(aResult.IsOk());
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 1u);

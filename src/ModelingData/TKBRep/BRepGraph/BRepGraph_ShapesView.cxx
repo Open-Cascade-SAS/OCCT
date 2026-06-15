@@ -512,12 +512,12 @@ void BRepGraph::ShapesView::collectAddedNodes(
   }
 }
 
-static void bindSourceShapeAlias(BRepGraph&              theGraph,
-                                 BRepGraphInc_Storage&   theStorage,
-                                 const TopoDS_Shape&     theSourceShape,
-                                 const TopLoc_Location&  theSourceLocation,
-                                 const TopoDS_Shape&     thePopulatedShape,
-                                 const TopLoc_Location&  theDefinitionLocation)
+static void bindSourceShapeAlias(BRepGraph&             theGraph,
+                                 BRepGraphInc_Storage&  theStorage,
+                                 const TopoDS_Shape&    theSourceShape,
+                                 const TopLoc_Location& theSourceLocation,
+                                 const TopoDS_Shape&    thePopulatedShape,
+                                 const TopLoc_Location& theDefinitionLocation)
 {
   if (theSourceShape.IsNull() || thePopulatedShape.IsNull())
   {
@@ -555,7 +555,7 @@ static void bindSourceShapeAliasesRecursive(BRepGraph&             theGraph,
                        thePopulatedShape,
                        theDefinitionLocation);
 
-  const bool isCompoundParent = thePopulatedShape.ShapeType() == TopAbs_COMPOUND;
+  const bool      isCompoundParent = thePopulatedShape.ShapeType() == TopAbs_COMPOUND;
   TopoDS_Iterator aSourceIt(theSourceShape, false, false);
   TopoDS_Iterator aPopulatedIt(thePopulatedShape, false, false);
   for (; aSourceIt.More() && aPopulatedIt.More(); aSourceIt.Next(), aPopulatedIt.Next())
@@ -989,7 +989,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
     return aResult;
   }
 
-  const uint32_t anOldCount = snapshotCountForKind(theGraph, theShape.ShapeType());
+  const uint32_t anOldCount                = snapshotCountForKind(theGraph, theShape.ShapeType());
   const bool     isRootLocationStoredInRef = shouldStoreRootLocationInRef(theOptions, theParent);
   const TopoDS_Shape aPopulateShape =
     isRootLocationStoredInRef ? shapeWithoutOwnLocation(theShape) : theShape;
@@ -1283,8 +1283,7 @@ BRepGraph_NodeId BRepGraph::ShapesView::FindNode(const TopoDS_Shape& theShape) c
     return BRepGraph_NodeId();
   }
 
-  const BRepGraph_NodeId aNodeId =
-    myGraph->myData->myIncStorage.FindDefinitionByShape(theShape);
+  const BRepGraph_NodeId aNodeId = myGraph->myData->myIncStorage.FindDefinitionByShape(theShape);
   if (aNodeId.IsValid())
   {
     if (aNodeId.IsRemoved(*myGraph))

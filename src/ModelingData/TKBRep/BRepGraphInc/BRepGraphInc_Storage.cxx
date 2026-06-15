@@ -2780,14 +2780,12 @@ void BRepGraphInc_Storage::CopyShapeBindingsFrom(const BRepGraphInc_Storage& the
 
   NCollection_LinearVector<std::pair<TopoDS_Shape, BRepGraph_NodeId>> aShapeBindings;
   NCollection_LinearVector<std::pair<BRepGraph_NodeId, TopoDS_Shape>> aOriginalBindings;
-  theSource.ForEachShapeBinding(
-    [&](const TopoDS_Shape& aShape, const BRepGraph_NodeId aNodeId) {
-      aShapeBindings.Append({aShape, aNodeId});
-    });
-  theSource.ForEachOriginalBinding(
-    [&](const BRepGraph_NodeId aNodeId, const TopoDS_Shape& aShape) {
-      aOriginalBindings.Append({aNodeId, aShape});
-    });
+  theSource.ForEachShapeBinding([&](const TopoDS_Shape& aShape, const BRepGraph_NodeId aNodeId) {
+    aShapeBindings.Append({aShape, aNodeId});
+  });
+  theSource.ForEachOriginalBinding([&](const BRepGraph_NodeId aNodeId, const TopoDS_Shape& aShape) {
+    aOriginalBindings.Append({aNodeId, aShape});
+  });
 
   std::unique_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
   myShapeToNodeId.Clear();
@@ -2807,7 +2805,7 @@ void BRepGraphInc_Storage::CopyShapeBindingsFrom(const BRepGraphInc_Storage& the
 BRepGraph_NodeId BRepGraphInc_Storage::FindDefinitionByShape(const TopoDS_Shape& theShape) const
 {
   std::shared_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
-  const BRepGraph_NodeId* aBound = myShapeToNodeId.Seek(theShape);
+  const BRepGraph_NodeId*             aBound = myShapeToNodeId.Seek(theShape);
   if (aBound == nullptr || !aBound->IsValid())
   {
     return BRepGraph_NodeId();
@@ -2846,7 +2844,7 @@ bool BRepGraphInc_Storage::RemoveDefinitionShapeBinding(const TopoDS_Shape&    t
                                                         const BRepGraph_NodeId theExpectedNodeId)
 {
   std::unique_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
-  const BRepGraph_NodeId* aBound = myShapeToNodeId.Seek(theShape);
+  const BRepGraph_NodeId*             aBound = myShapeToNodeId.Seek(theShape);
   if (aBound == nullptr || *aBound != theExpectedNodeId)
   {
     return false;
@@ -2860,7 +2858,7 @@ bool BRepGraphInc_Storage::RemoveDefinitionShapeBinding(const TopoDS_Shape&    t
 TopoDS_Shape BRepGraphInc_Storage::FindOriginal(const BRepGraph_NodeId theNodeId) const
 {
   std::shared_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
-  const TopoDS_Shape* anOriginal = myOriginalShapes.Seek(theNodeId);
+  const TopoDS_Shape*                 anOriginal = myOriginalShapes.Seek(theNodeId);
   return anOriginal != nullptr ? *anOriginal : TopoDS_Shape();
 }
 
