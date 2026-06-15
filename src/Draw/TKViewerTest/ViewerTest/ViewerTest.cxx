@@ -1864,16 +1864,15 @@ struct ViewerTest_AspectsChangeSet
   {
     return ToSetVisibility == 0 && ToSetLineWidth == 0 && ToSetTransparency == 0
            && ToSetAlphaMode == 0 && ToSetFaceCulling == 0 && ToSetColor == 0
-           && ToSetUseVertexColorForBackFaces == 0
-           && ToSetBackFaceColor == 0 && ToSetMaterial == 0 && ToSetShowFreeBoundary == 0
-           && ToSetFreeBoundaryColor == 0 && ToSetFreeBoundaryWidth == 0
-           && ToEnableIsoOnTriangulation == 0 && ToSetFaceBoundaryDraw == 0
-           && ToSetFaceBoundaryUpperContinuity == 0 && ToSetFaceBoundaryColor == 0
-           && ToSetFaceBoundaryWidth == 0 && ToSetTypeOfFaceBoundaryLine == 0
-           && ToSetMaxParamValue == 0 && ToSetSensitivity == 0 && ToSetHatch == 0
-           && ToSetShadingModel == 0 && ToSetInterior == 0 && ToSetDrawSilhouette == 0
-           && ToSetDrawEdges == 0 && ToSetQuadEdges == 0 && ToSetEdgeColor == 0
-           && ToSetEdgeWidth == 0 && ToSetTypeOfEdge == 0;
+           && ToSetUseVertexColorForBackFaces == 0 && ToSetBackFaceColor == 0 && ToSetMaterial == 0
+           && ToSetShowFreeBoundary == 0 && ToSetFreeBoundaryColor == 0
+           && ToSetFreeBoundaryWidth == 0 && ToEnableIsoOnTriangulation == 0
+           && ToSetFaceBoundaryDraw == 0 && ToSetFaceBoundaryUpperContinuity == 0
+           && ToSetFaceBoundaryColor == 0 && ToSetFaceBoundaryWidth == 0
+           && ToSetTypeOfFaceBoundaryLine == 0 && ToSetMaxParamValue == 0 && ToSetSensitivity == 0
+           && ToSetHatch == 0 && ToSetShadingModel == 0 && ToSetInterior == 0
+           && ToSetDrawSilhouette == 0 && ToSetDrawEdges == 0 && ToSetQuadEdges == 0
+           && ToSetEdgeColor == 0 && ToSetEdgeWidth == 0 && ToSetTypeOfEdge == 0;
   }
 
   //! @return true if properties are valid
@@ -3170,28 +3169,28 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     }
     else if (anArg == "-unset")
     {
-      aChangeSet->ToSetVisibility    = 1;
-      aChangeSet->Visibility         = 1;
-      aChangeSet->ToSetLineWidth     = -1;
-      aChangeSet->LineWidth          = 1.0;
-      aChangeSet->ToSetTypeOfLine    = -1;
-      aChangeSet->StippleLinePattern = 0xFFFF;
-      aChangeSet->StippleLineFactor  = 1;
-      aChangeSet->ToSetTypeOfMarker  = -1;
-      aChangeSet->TypeOfMarker       = Aspect_TOM_PLUS;
-      aChangeSet->ToSetMarkerSize    = -1;
-      aChangeSet->MarkerSize         = 1.0;
-      aChangeSet->ToSetTransparency  = -1;
-      aChangeSet->Transparency       = 0.0;
-      aChangeSet->ToSetAlphaMode     = -1;
-      aChangeSet->AlphaMode          = Graphic3d_AlphaMode_BlendAuto;
-      aChangeSet->AlphaCutoff        = 0.5f;
-      aChangeSet->ToSetFaceCulling                 = -1;
-      aChangeSet->FaceCulling                      = Graphic3d_TypeOfBackfacingModel_Auto;
+      aChangeSet->ToSetVisibility                 = 1;
+      aChangeSet->Visibility                      = 1;
+      aChangeSet->ToSetLineWidth                  = -1;
+      aChangeSet->LineWidth                       = 1.0;
+      aChangeSet->ToSetTypeOfLine                 = -1;
+      aChangeSet->StippleLinePattern              = 0xFFFF;
+      aChangeSet->StippleLineFactor               = 1;
+      aChangeSet->ToSetTypeOfMarker               = -1;
+      aChangeSet->TypeOfMarker                    = Aspect_TOM_PLUS;
+      aChangeSet->ToSetMarkerSize                 = -1;
+      aChangeSet->MarkerSize                      = 1.0;
+      aChangeSet->ToSetTransparency               = -1;
+      aChangeSet->Transparency                    = 0.0;
+      aChangeSet->ToSetAlphaMode                  = -1;
+      aChangeSet->AlphaMode                       = Graphic3d_AlphaMode_BlendAuto;
+      aChangeSet->AlphaCutoff                     = 0.5f;
+      aChangeSet->ToSetFaceCulling                = -1;
+      aChangeSet->FaceCulling                     = Graphic3d_TypeOfBackfacingModel_Auto;
       aChangeSet->ToSetUseVertexColorForBackFaces = -1;
       aChangeSet->UseVertexColorForBackFaces      = true;
-      aChangeSet->ToSetColor                       = -1;
-      aChangeSet->Color                            = DEFAULT_COLOR;
+      aChangeSet->ToSetColor                      = -1;
+      aChangeSet->Color                           = DEFAULT_COLOR;
       // aChangeSet->ToSetBackFaceColor = -1; // should be reset by ToSetColor
       // aChangeSet->BackFaceColor = DEFAULT_COLOR;
       aChangeSet->ToSetMaterial              = -1;

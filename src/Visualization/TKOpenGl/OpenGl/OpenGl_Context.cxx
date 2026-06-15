@@ -2381,8 +2381,7 @@ void OpenGl_Context::SetShadingMaterial(
     }
   }
   else if (myMaterial.IsEqual(aMatState.Material()) && toDistinguish == aMatState.ToDistinguish()
-           && toMapTexture == aMatState.ToMapTexture()
-           && anAlphaCutoff == aMatState.AlphaCutoff())
+           && toMapTexture == aMatState.ToMapTexture() && anAlphaCutoff == aMatState.AlphaCutoff())
   {
     return;
   }

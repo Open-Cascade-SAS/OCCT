@@ -1003,7 +1003,7 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
           aTextureSet,
           aShadingModel,
           aCtx->ShaderManager()->MaterialState().HasAlphaCutoff() ? Graphic3d_AlphaMode_Mask
-                                                                   : Graphic3d_AlphaMode_Opaque,
+                                                                  : Graphic3d_AlphaMode_Opaque,
           toDrawInteriorEdges == 1 ? anAspectFace->Aspect()->InteriorStyle() : Aspect_IS_SOLID,
           hasVertColor,
           anAspectFace->Aspect()->ToUseVertexColorForBackFaces(),
@@ -1046,7 +1046,7 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
           && anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_HIDDENLINE
         ? myBounds->Colors
         : nullptr;
-    const NCollection_Vec4<float>& anInteriorColor = theWorkspace->InteriorColor();
+    const NCollection_Vec4<float>& anInteriorColor    = theWorkspace->InteriorColor();
     const NCollection_Vec4<float>& aBackInteriorColor = theWorkspace->BackInteriorColor();
     aCtx->SetColor4fv(anInteriorColor, aBackInteriorColor);
     if (!myIsFillType)

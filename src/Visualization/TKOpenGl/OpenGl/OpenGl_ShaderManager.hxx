@@ -135,12 +135,12 @@ public:
     }
 
     const int                          aBits    = getProgramBits(theTextures,
-                                      theAlphaMode,
-                                      theInteriorStyle,
-                                      theHasVertColor,
-                                      theToUseVertexColorForBackFaces,
-                                      theEnableEnvMap,
-                                      theEnableMeshEdges);
+                                     theAlphaMode,
+                                     theInteriorStyle,
+                                     theHasVertColor,
+                                     theToUseVertexColorForBackFaces,
+                                     theEnableEnvMap,
+                                     theEnableMeshEdges);
     occ::handle<OpenGl_ShaderProgram>& aProgram = getStdProgram(aShadeModelOnFace, aBits);
     return bindProgramWithState(aProgram, aShadeModelOnFace);
   }
@@ -607,11 +607,11 @@ protected:
   //! Define program bits.
   int getProgramBits(const occ::handle<OpenGl_TextureSet>& theTextures,
                      Graphic3d_AlphaMode                   theAlphaMode,
-                      Aspect_InteriorStyle                  theInteriorStyle,
-                      bool                                  theHasVertColor,
-                      bool                                  theToUseVertexColorForBackFaces,
-                      bool                                  theEnableEnvMap,
-                      bool                                  theEnableMeshEdges) const
+                     Aspect_InteriorStyle                  theInteriorStyle,
+                     bool                                  theHasVertColor,
+                     bool                                  theToUseVertexColorForBackFaces,
+                     bool                                  theEnableEnvMap,
+                     bool                                  theEnableMeshEdges) const
   {
     int aBits = 0;
     if (theAlphaMode == Graphic3d_AlphaMode_Mask || theAlphaMode == Graphic3d_AlphaMode_MaskBlend)

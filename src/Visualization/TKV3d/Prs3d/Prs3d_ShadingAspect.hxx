@@ -67,10 +67,7 @@ public:
     const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_FRONT_SIDE) const;
 
   //! Return true if per-vertex color should be applied to back-facing fragments.
-  bool ToUseVertexColorForBackFaces() const
-  {
-    return myAspect->ToUseVertexColorForBackFaces();
-  }
+  bool ToUseVertexColorForBackFaces() const { return myAspect->ToUseVertexColorForBackFaces(); }
 
   //! Set whether per-vertex color should be applied to back-facing fragments.
   void SetUseVertexColorForBackFaces(bool theToUse)

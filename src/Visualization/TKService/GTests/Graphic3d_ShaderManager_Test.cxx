@@ -50,7 +50,7 @@ public:
 };
 
 bool hasShaderSource(const occ::handle<Graphic3d_ShaderProgram>& theProgram,
-                     Graphic3d_TypeOfShaderObject               theType,
+                     Graphic3d_TypeOfShaderObject                theType,
                      const TCollection_AsciiString&              theSnippet)
 {
   for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIter(
@@ -74,9 +74,8 @@ TEST(Graphic3d_ShaderManagerTest, UnlitFrontOnlyVertexColor_UsesBackColor)
 
   const occ::handle<Graphic3d_ShaderProgram> aDefaultProgram =
     aManager.StdProgramUnlit(Graphic3d_ShaderFlags_VertColor);
-  const occ::handle<Graphic3d_ShaderProgram> aFrontOnlyProgram =
-    aManager.StdProgramUnlit(Graphic3d_ShaderFlags_VertColor
-                             | Graphic3d_ShaderFlags_VertColorFrontOnly);
+  const occ::handle<Graphic3d_ShaderProgram> aFrontOnlyProgram = aManager.StdProgramUnlit(
+    Graphic3d_ShaderFlags_VertColor | Graphic3d_ShaderFlags_VertColorFrontOnly);
 
   ASSERT_FALSE(aDefaultProgram.IsNull());
   ASSERT_FALSE(aFrontOnlyProgram.IsNull());
@@ -89,34 +88,31 @@ TEST(Graphic3d_ShaderManagerTest, UnlitFrontOnlyVertexColor_UsesBackColor)
 
 TEST(Graphic3d_ShaderManagerTest, GouraudFrontOnlyVertexColor_UsesSideAwareHelper)
 {
-  Graphic3d_ShaderManagerTestProxy        aManager;
-  occ::handle<Graphic3d_LightSet>         aLights = new Graphic3d_LightSet();
-  const occ::handle<Graphic3d_ShaderProgram> aProgram =
-    aManager.StdProgramGouraud(aLights,
-                               Graphic3d_ShaderFlags_VertColor
-                                 | Graphic3d_ShaderFlags_VertColorFrontOnly);
+  Graphic3d_ShaderManagerTestProxy           aManager;
+  occ::handle<Graphic3d_LightSet>            aLights  = new Graphic3d_LightSet();
+  const occ::handle<Graphic3d_ShaderProgram> aProgram = aManager.StdProgramGouraud(
+    aLights,
+    Graphic3d_ShaderFlags_VertColor | Graphic3d_ShaderFlags_VertColorFrontOnly);
 
   ASSERT_FALSE(aProgram.IsNull());
-  EXPECT_TRUE(hasShaderSource(aProgram,
-                              Graphic3d_TOS_VERTEX,
-                              "theIsFront ? occVertColor : vec4(1.0)"));
-  EXPECT_TRUE(hasShaderSource(aProgram,
-                              Graphic3d_TOS_VERTEX,
-                              "BackColor   = computeLighting (aNormal, aView, aPositionWorld, false)"));
+  EXPECT_TRUE(
+    hasShaderSource(aProgram, Graphic3d_TOS_VERTEX, "theIsFront ? occVertColor : vec4(1.0)"));
+  EXPECT_TRUE(
+    hasShaderSource(aProgram,
+                    Graphic3d_TOS_VERTEX,
+                    "BackColor   = computeLighting (aNormal, aView, aPositionWorld, false)"));
 }
 
 TEST(Graphic3d_ShaderManagerTest, PhongFrontOnlyVertexColor_UsesSideAwareHelper)
 {
-  Graphic3d_ShaderManagerTestProxy        aManager;
-  occ::handle<Graphic3d_LightSet>         aLights = new Graphic3d_LightSet();
-  const occ::handle<Graphic3d_ShaderProgram> aProgram =
-    aManager.StdProgramPhong(aLights,
-                             Graphic3d_ShaderFlags_VertColor
-                               | Graphic3d_ShaderFlags_VertColorFrontOnly);
+  Graphic3d_ShaderManagerTestProxy           aManager;
+  occ::handle<Graphic3d_LightSet>            aLights  = new Graphic3d_LightSet();
+  const occ::handle<Graphic3d_ShaderProgram> aProgram = aManager.StdProgramPhong(
+    aLights,
+    Graphic3d_ShaderFlags_VertColor | Graphic3d_ShaderFlags_VertColorFrontOnly);
 
   ASSERT_FALSE(aProgram.IsNull());
-  EXPECT_TRUE(hasShaderSource(aProgram,
-                              Graphic3d_TOS_FRAGMENT,
-                              "theIsFront ? VertColor : vec4(1.0)"));
+  EXPECT_TRUE(
+    hasShaderSource(aProgram, Graphic3d_TOS_FRAGMENT, "theIsFront ? VertColor : vec4(1.0)"));
   EXPECT_TRUE(hasShaderSource(aProgram, Graphic3d_TOS_FRAGMENT, "getVertColor(theIsFront)"));
 }

@@ -875,12 +875,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
   TCollection_AsciiString              aSrcVert, aSrcVertExtraMain, aSrcVertExtraFunc, aSrcGetAlpha,
     aSrcVertEndMain;
   TCollection_AsciiString aSrcFrag, aSrcFragExtraMain;
-  TCollection_AsciiString aSrcFragGetBaseColor =
-    EOL "vec4 getBaseColor(void) { return occColor; }";
+  TCollection_AsciiString aSrcFragGetBaseColor = EOL "vec4 getBaseColor(void) { return occColor; }";
   TCollection_AsciiString aSrcFragGetBackColor =
     EOL "vec4 getBackColor(void) { return occBackColor; }";
-  TCollection_AsciiString aSrcFragGetColor =
-    EOL "vec4 getColor(void) { return getBaseColor(); }";
+  TCollection_AsciiString aSrcFragGetColor = EOL "vec4 getColor(void) { return getBaseColor(); }";
   TCollection_AsciiString aSrcFragMainGetColor = EOL "  occSetFragColor (getFinalColor());";
   Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
 
@@ -897,9 +895,9 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
                                                               Graphic3d_TOS_FRAGMENT));
       if ((theBits & Graphic3d_ShaderFlags_PointSpriteA) != Graphic3d_ShaderFlags_PointSpriteA)
       {
-        aSrcFragGetBaseColor = EOL
-          "vec4 getBaseColor(void) { return occTexture2D(occSamplerPointSprite, " THE_VEC2_glPointCoord
-          "); }";
+        aSrcFragGetBaseColor =
+          EOL "vec4 getBaseColor(void) { return "
+              "occTexture2D(occSamplerPointSprite, " THE_VEC2_glPointCoord "); }";
       }
       else if ((theBits & Graphic3d_ShaderFlags_TextureRGB) != 0
                && (theBits & Graphic3d_ShaderFlags_VertColor) == 0)
@@ -971,9 +969,9 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
         aProgramSrc->SetTextureSetBits(Graphic3d_TextureSetBits_BaseColor);
         aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
-        aSrcFragGetBaseColor = EOL
-          "vec4 getBaseColor(void) { return occTexture2D(occSamplerBaseColor, TexCoord.st / "
-          "TexCoord.w); }";
+        aSrcFragGetBaseColor =
+          EOL "vec4 getBaseColor(void) { return occTexture2D(occSamplerBaseColor, TexCoord.st / "
+              "TexCoord.w); }";
         aSrcFragGetBackColor = EOL "vec4 getBackColor(void) { return getBaseColor(); }";
       }
     }
@@ -1087,10 +1085,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
              + THE_VERT_gl_Position + aSrcVertEndMain + EOL "}";
 
   TCollection_AsciiString aSrcGeom = prepareGeomMainSrc(aUniforms, aStageInOuts, theBits);
-  aSrcFragGetColor = aSrcFragGetBaseColor + aSrcFragGetBackColor + aSrcFragGetColor
-                     + ((theBits & Graphic3d_ShaderFlags_MeshEdges) != 0
-                          ? THE_FRAG_WIREFRAME_COLOR
-                          : EOL "#define getFinalColor getColor");
+  aSrcFragGetColor =
+    aSrcFragGetBaseColor + aSrcFragGetBackColor + aSrcFragGetColor
+    + ((theBits & Graphic3d_ShaderFlags_MeshEdges) != 0 ? THE_FRAG_WIREFRAME_COLOR
+                                                        : EOL "#define getFinalColor getColor");
 
   aSrcFrag = aSrcFragGetColor + aSrcGetAlpha
              + EOL "void main()" EOL "{" EOL "  if (occFragEarlyReturn()) { return; }"
@@ -1295,7 +1293,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting(
                  "  vec3 aMatSpecular = occMaterial_Specular(theIsFront);" EOL
                  "  vec4 aColor = vec4(Ambient * aMatAmbient + Diffuse * aMatDiffuse.rgb + "
                  "Specular * aMatSpecular, aMatDiffuse.a);"
-            + (theHasVertColor ? EOL "  aColor *= getVertColor(theIsFront);" : "")
+           + (theHasVertColor ? EOL "  aColor *= getVertColor(theIsFront);" : "")
            + (theHasTexColor ? EOL
                 "#if defined(THE_HAS_TEXTURE_COLOR) && defined(FRAGMENT_SHADER)" EOL
                 "  aColor *= occTexture2D(occSamplerBaseColor, TexCoord.st / TexCoord.w);" EOL
@@ -1316,8 +1314,8 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting(
            "                      in vec4 thePoint," EOL
            "                      in bool theIsFront)" EOL "{" EOL
            "  DirectLighting = vec3(0.0);" EOL
-            "  BaseColor           = occMaterialBaseColor(theIsFront, TexCoord.st / TexCoord.w)"
-            + (theHasVertColor ? " * getVertColor(theIsFront)" : "") + ";"
+           "  BaseColor           = occMaterialBaseColor(theIsFront, TexCoord.st / TexCoord.w)"
+           + (theHasVertColor ? " * getVertColor(theIsFront)" : "") + ";"
            + EOL
            "  Emission            = occMaterialEmission(theIsFront, TexCoord.st / TexCoord.w);" EOL
            "  Metallic            = occMaterialMetallic(theIsFront, TexCoord.st / TexCoord.w);" EOL
@@ -1380,7 +1378,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramGoura
       aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("sampler2D occSamplerBaseColor",
                                                               Graphic3d_TOS_VERTEX));
       aSrcVertColor = EOL "vec4 getVertColor(in bool theIsFront) { return occTexture2D "
-                           "(occSamplerBaseColor, occTexCoord.xy); }";
+                          "(occSamplerBaseColor, occTexCoord.xy); }";
     }
   }
   else
