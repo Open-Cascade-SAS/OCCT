@@ -429,7 +429,7 @@ TEST(BRepGraph_ReverseTest, ReversedShell_ReconstructPreservesOrientation)
 {
   const TopoDS_Shell aShell = makeReversedFaceShell();
 
-  BRepGraph aGraph;
+  BRepGraph                           aGraph;
   const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(aShell);
   ASSERT_TRUE(aResult.IsOk());
 
