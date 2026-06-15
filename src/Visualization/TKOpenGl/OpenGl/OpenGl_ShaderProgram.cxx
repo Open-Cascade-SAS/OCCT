@@ -69,6 +69,7 @@ const char* OpenGl_ShaderProgram::PredefinedKeywords[] = {
   "occCommonMaterial",     // OpenGl_OCCT_COMMON_MATERIAL
   "occAlphaCutoff",        // OpenGl_OCCT_ALPHA_CUTOFF
   "occColor",              // OpenGl_OCCT_COLOR
+  "occBackColor",          // OpenGl_OCCT_BACK_COLOR
 
   "occOitOutput",      // OpenGl_OCCT_OIT_OUTPUT
   "occOitDepthFactor", // OpenGl_OCCT_OIT_DEPTH_FACTOR

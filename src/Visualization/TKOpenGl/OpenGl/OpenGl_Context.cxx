@@ -2359,8 +2359,6 @@ void OpenGl_Context::SetShadingMaterial(
     myMaterial.Pbr[1].BaseColor.a() = anAlphaBack;
   }
 
-  // do not update material properties in case of zero reflection mode,
-  // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
   const OpenGl_MaterialState& aMatState     = myShaderManager->MaterialState();
   float                       anAlphaCutoff = (anAspect->AlphaMode() == Graphic3d_AlphaMode_Mask
                          || anAspect->AlphaMode() == Graphic3d_AlphaMode_MaskBlend)
@@ -2383,7 +2381,8 @@ void OpenGl_Context::SetShadingMaterial(
     }
   }
   else if (myMaterial.IsEqual(aMatState.Material()) && toDistinguish == aMatState.ToDistinguish()
-           && toMapTexture == aMatState.ToMapTexture() && anAlphaCutoff == aMatState.AlphaCutoff())
+           && toMapTexture == aMatState.ToMapTexture()
+           && anAlphaCutoff == aMatState.AlphaCutoff())
   {
     return;
   }
@@ -2433,17 +2432,30 @@ bool OpenGl_Context::CheckIsTransparent(
 
 void OpenGl_Context::SetColor4fv(const NCollection_Vec4<float>& theColor)
 {
+  SetColor4fv(theColor, theColor);
+}
+
+//=================================================================================================
+
+void OpenGl_Context::SetColor4fv(const NCollection_Vec4<float>& theFrontColor,
+                                 const NCollection_Vec4<float>& theBackColor)
+{
   if (!myActiveProgram.IsNull())
   {
     if (const OpenGl_ShaderUniformLocation& aLoc =
           myActiveProgram->GetStateLocation(OpenGl_OCCT_COLOR))
     {
-      myActiveProgram->SetUniform(this, aLoc, Vec4FromQuantityColor(theColor));
+      myActiveProgram->SetUniform(this, aLoc, Vec4FromQuantityColor(theFrontColor));
+    }
+    if (const OpenGl_ShaderUniformLocation& aLoc =
+          myActiveProgram->GetStateLocation(OpenGl_OCCT_BACK_COLOR))
+    {
+      myActiveProgram->SetUniform(this, aLoc, Vec4FromQuantityColor(theBackColor));
     }
   }
   else if (core11ffp != nullptr)
   {
-    core11ffp->glColor4fv(theColor.GetData());
+    core11ffp->glColor4fv(theFrontColor.GetData());
   }
 }
 

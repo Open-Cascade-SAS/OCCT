@@ -274,6 +274,7 @@ static const char Shaders_Declarations_glsl[] =
   "#endif\n"
   "\n"
   "uniform               vec4      occColor;              //!< color value (in case of disabled lighting)\n"
+  "uniform               vec4      occBackColor;          //!< back color value (in case of disabled lighting)\n"
   "uniform THE_PREC_ENUM int       occDistinguishingMode; //!< Are front and back faces distinguished?\n"
   "uniform THE_PREC_ENUM int       occTextureEnable;      //!< Is texture enabled?\n"
   "uniform               vec4      occTexTrsf2d[2];       //!< 2D texture transformation parameters\n"

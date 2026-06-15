@@ -32,6 +32,39 @@ TEST(Graphic3d_AspectsTest, ShadingModel_ExplicitUnlit)
   EXPECT_EQ(anAspect->ShadingModel(), Graphic3d_TypeOfShadingModel_Unlit);
 }
 
+// Test: vertex color is applied to back faces by default for backward compatibility.
+TEST(Graphic3d_AspectsTest, VertexColorForBackFaces_Default)
+{
+  occ::handle<Graphic3d_Aspects> anAspect = new Graphic3d_Aspects();
+  EXPECT_TRUE(anAspect->ToUseVertexColorForBackFaces());
+}
+
+// Test: vertex color back-face policy can be changed and participates in aspect equality.
+TEST(Graphic3d_AspectsTest, VertexColorForBackFaces_SetterAndEquality)
+{
+  occ::handle<Graphic3d_Aspects> anAspect1 = new Graphic3d_Aspects();
+  occ::handle<Graphic3d_Aspects> anAspect2 = new Graphic3d_Aspects();
+
+  EXPECT_TRUE(anAspect1->IsEqual(*anAspect2));
+
+  anAspect1->SetUseVertexColorForBackFaces(false);
+  EXPECT_FALSE(anAspect1->ToUseVertexColorForBackFaces());
+  EXPECT_FALSE(anAspect1->IsEqual(*anAspect2));
+
+  anAspect2->SetUseVertexColorForBackFaces(false);
+  EXPECT_TRUE(anAspect1->IsEqual(*anAspect2));
+}
+
+// Test: the flag is inherited by fill-area aspects used for shaded presentations.
+TEST(Graphic3d_AspectsTest, VertexColorForBackFaces_FillAreaAspect)
+{
+  occ::handle<Graphic3d_AspectFillArea3d> anAspect = new Graphic3d_AspectFillArea3d();
+  EXPECT_TRUE(anAspect->ToUseVertexColorForBackFaces());
+
+  anAspect->SetUseVertexColorForBackFaces(false);
+  EXPECT_FALSE(anAspect->ToUseVertexColorForBackFaces());
+}
+
 // Test: shading model is independent of material reflection properties.
 // Regression test: the removed optimization in OpenGl_Aspects implicitly forced UNLIT
 // when material had no reflection properties (all colors BLACK).

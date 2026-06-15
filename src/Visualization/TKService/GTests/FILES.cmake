@@ -7,5 +7,6 @@ set(OCCT_TKService_GTests_FILES
   Graphic3d_Aspects_Test.cxx
   Graphic3d_BndBox_Test.cxx
   Graphic3d_Flipper_Test.cxx
+  Graphic3d_ShaderManager_Test.cxx
   Image_VideoRecorder_Test.cxx
 )

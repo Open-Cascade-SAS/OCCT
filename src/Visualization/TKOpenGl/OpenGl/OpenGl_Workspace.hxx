@@ -121,7 +121,15 @@ public:
   const NCollection_Vec4<float>& InteriorColor() const
   {
     return !myHighlightStyle.IsNull() ? myHighlightStyle->ColorRGBA()
-                                      : myAspectsSet->Aspect()->InteriorColorRGBA();
+                                       : myAspectsSet->Aspect()->InteriorColorRGBA();
+  }
+
+  //! Return back interior color taking into account highlight and distinguish flags.
+  const NCollection_Vec4<float>& BackInteriorColor() const
+  {
+    return !myHighlightStyle.IsNull() ? myHighlightStyle->ColorRGBA()
+           : myAspectsSet->Aspect()->Distinguish() ? myAspectsSet->Aspect()->BackInteriorColorRGBA()
+                                                   : myAspectsSet->Aspect()->InteriorColorRGBA();
   }
 
   //! Return text color taking into account highlight flag.

@@ -1533,8 +1533,13 @@ bool OpenGl_ShaderManager::BindMarkerProgram(
     return bindProgramWithState(theCustomProgram, theShadingModel);
   }
 
-  int aBits =
-    getProgramBits(theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
+  int aBits = getProgramBits(theTextures,
+                             theAlphaMode,
+                             Aspect_IS_SOLID,
+                             theHasVertColor,
+                             true, // markers have no front/back face semantics
+                             false,
+                             false);
   if (!theTextures.IsNull() && theTextures->HasPointSprite())
   {
     aBits |= theTextures->Last()->IsAlpha() ? Graphic3d_ShaderFlags_PointSpriteA

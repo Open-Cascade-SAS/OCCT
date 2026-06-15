@@ -1730,6 +1730,9 @@ struct ViewerTest_AspectsChangeSet
   int                             ToSetFaceCulling;
   Graphic3d_TypeOfBackfacingModel FaceCulling;
 
+  int  ToSetUseVertexColorForBackFaces;
+  bool UseVertexColorForBackFaces;
+
   int                      ToSetMaterial;
   Graphic3d_NameOfMaterial Material;
   TCollection_AsciiString  MatName;
@@ -1813,6 +1816,8 @@ struct ViewerTest_AspectsChangeSet
         AlphaCutoff(0.5f),
         ToSetFaceCulling(0),
         FaceCulling(Graphic3d_TypeOfBackfacingModel_Auto),
+        ToSetUseVertexColorForBackFaces(0),
+        UseVertexColorForBackFaces(true),
         ToSetMaterial(0),
         Material(Graphic3d_NameOfMaterial_DEFAULT),
         ToSetShowFreeBoundary(0),
@@ -1859,6 +1864,7 @@ struct ViewerTest_AspectsChangeSet
   {
     return ToSetVisibility == 0 && ToSetLineWidth == 0 && ToSetTransparency == 0
            && ToSetAlphaMode == 0 && ToSetFaceCulling == 0 && ToSetColor == 0
+           && ToSetUseVertexColorForBackFaces == 0
            && ToSetBackFaceColor == 0 && ToSetMaterial == 0 && ToSetShowFreeBoundary == 0
            && ToSetFreeBoundaryColor == 0 && ToSetFreeBoundaryWidth == 0
            && ToEnableIsoOnTriangulation == 0 && ToSetFaceBoundaryDraw == 0
@@ -2100,6 +2106,14 @@ struct ViewerTest_AspectsChangeSet
       {
         toRecompute = theDrawer->SetupOwnShadingAspect(aDefDrawer) || toRecompute;
         theDrawer->ShadingAspect()->Aspect()->SetFaceCulling(FaceCulling);
+      }
+    }
+    if (ToSetUseVertexColorForBackFaces != 0)
+    {
+      if (ToSetUseVertexColorForBackFaces != -1 || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect(aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->SetUseVertexColorForBackFaces(UseVertexColorForBackFaces);
       }
     }
     if (ToSetHatch != 0)
@@ -2591,6 +2605,37 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
           return 1;
         }
       }
+    }
+    else if (anArg == "-usevertexcolorforbackfaces" || anArg == "-usebackvertexcolor"
+             || anArg == "-usebackfacevertexcolor")
+    {
+      bool toUse = true;
+      if (!Draw::ParseOnOff(anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toUse))
+      {
+        Message::SendFail() << "Error: wrong syntax at " << anArg;
+        return 1;
+      }
+      ++anArgIter;
+      aChangeSet->ToSetUseVertexColorForBackFaces = 1;
+      aChangeSet->UseVertexColorForBackFaces      = toUse;
+    }
+    else if (anArg == "-frontonlyvertexcolor" || anArg == "-frontonlyvertexcolorforbackfaces")
+    {
+      bool toUseFrontOnly = true;
+      if (!Draw::ParseOnOff(anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "",
+                            toUseFrontOnly))
+      {
+        Message::SendFail() << "Error: wrong syntax at " << anArg;
+        return 1;
+      }
+      ++anArgIter;
+      aChangeSet->ToSetUseVertexColorForBackFaces = 1;
+      aChangeSet->UseVertexColorForBackFaces      = !toUseFrontOnly;
+    }
+    else if (anArg == "-unsetusevertexcolorforbackfaces" || anArg == "-unsetbackvertexcolor")
+    {
+      aChangeSet->ToSetUseVertexColorForBackFaces = -1;
+      aChangeSet->UseVertexColorForBackFaces      = true;
     }
     else if (anArg == "-setvis" || anArg == "-setvisibility" || anArg == "-visibility")
     {
@@ -3141,10 +3186,12 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
       aChangeSet->ToSetAlphaMode     = -1;
       aChangeSet->AlphaMode          = Graphic3d_AlphaMode_BlendAuto;
       aChangeSet->AlphaCutoff        = 0.5f;
-      aChangeSet->ToSetFaceCulling   = -1;
-      aChangeSet->FaceCulling        = Graphic3d_TypeOfBackfacingModel_Auto;
-      aChangeSet->ToSetColor         = -1;
-      aChangeSet->Color              = DEFAULT_COLOR;
+      aChangeSet->ToSetFaceCulling                 = -1;
+      aChangeSet->FaceCulling                      = Graphic3d_TypeOfBackfacingModel_Auto;
+      aChangeSet->ToSetUseVertexColorForBackFaces = -1;
+      aChangeSet->UseVertexColorForBackFaces      = true;
+      aChangeSet->ToSetColor                       = -1;
+      aChangeSet->Color                            = DEFAULT_COLOR;
       // aChangeSet->ToSetBackFaceColor = -1; // should be reset by ToSetColor
       // aChangeSet->BackFaceColor = DEFAULT_COLOR;
       aChangeSet->ToSetMaterial              = -1;
@@ -6795,6 +6842,7 @@ vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults] [-subshapes subna
          [-visibility {0|1}]
          [-color {ColorName | R G B}] [-unsetColor]
          [-backfaceColor Color] [-faceCulling {auto|back|front|doublesided}]
+         [-useVertexColorForBackFaces {0|1}] [-unsetUseVertexColorForBackFaces]
          [-material MatName] [-unsetMaterial]
          [-transparency Transp] [-unsetTransparency]
          [-width LineWidth] [-unsetWidth]

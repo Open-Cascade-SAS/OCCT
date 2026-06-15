@@ -39,6 +39,7 @@ Graphic3d_Aspects::Graphic3d_Aspects()
       myTextAngle(0.0f),
       myToSkipFirstEdge(false),
       myToDistinguishMaterials(false),
+      myToUseVertexColorForBackFaces(true),
       myToDrawEdges(false),
       myToDrawSilhouette(false),
       myToMapTexture(false),
@@ -72,6 +73,7 @@ void Graphic3d_Aspects::DumpJson(Standard_OStream& theOStream, int theDepth) con
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToSkipFirstEdge)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToDistinguishMaterials)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToUseVertexColorForBackFaces)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToDrawEdges)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToDrawSilhouette)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFaceCulling)

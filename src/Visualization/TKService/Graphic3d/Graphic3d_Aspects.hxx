@@ -151,6 +151,17 @@ public:
   //! Forbids material distinction between front and back faces.
   void SetDistinguishOff() { myToDistinguishMaterials = false; }
 
+  //! Return true if per-vertex color should be applied to back-facing fragments.
+  //! True by default for backward compatibility.
+  bool ToUseVertexColorForBackFaces() const { return myToUseVertexColorForBackFaces; }
+
+  //! Set whether per-vertex color should be applied to back-facing fragments.
+  //! When disabled, back faces use back material/interior color without vertex color modulation.
+  void SetUseVertexColorForBackFaces(bool theToUse)
+  {
+    myToUseVertexColorForBackFaces = theToUse;
+  }
+
   //! Return shader program.
   const occ::handle<Graphic3d_ShaderProgram>& ShaderProgram() const { return myProgram; }
 
@@ -534,12 +545,13 @@ public:
            && myMarkerScale == theOther.myMarkerScale && myHatchStyle == theOther.myHatchStyle
            && myTextFont == theOther.myTextFont && myPolygonOffset == theOther.myPolygonOffset
            && myTextStyle == theOther.myTextStyle && myTextDisplayType == theOther.myTextDisplayType
-           && myTextFontAspect == theOther.myTextFontAspect && myTextAngle == theOther.myTextAngle
-           && myToSkipFirstEdge == theOther.myToSkipFirstEdge
-           && myToDistinguishMaterials == theOther.myToDistinguishMaterials
-           && myToDrawEdges == theOther.myToDrawEdges
-           && myToDrawSilhouette == theOther.myToDrawSilhouette
-           && myToMapTexture == theOther.myToMapTexture
+            && myTextFontAspect == theOther.myTextFontAspect && myTextAngle == theOther.myTextAngle
+            && myToSkipFirstEdge == theOther.myToSkipFirstEdge
+            && myToDistinguishMaterials == theOther.myToDistinguishMaterials
+            && myToUseVertexColorForBackFaces == theOther.myToUseVertexColorForBackFaces
+            && myToDrawEdges == theOther.myToDrawEdges
+            && myToDrawSilhouette == theOther.myToDrawSilhouette
+            && myToMapTexture == theOther.myToMapTexture
            && myIsTextZoomable == theOther.myIsTextZoomable;
   }
 
@@ -610,6 +622,7 @@ protected:
 
   bool myToSkipFirstEdge;
   bool myToDistinguishMaterials;
+  bool myToUseVertexColorForBackFaces;
   bool myToDrawEdges;
   bool myToDrawSilhouette;
   bool myToMapTexture;
