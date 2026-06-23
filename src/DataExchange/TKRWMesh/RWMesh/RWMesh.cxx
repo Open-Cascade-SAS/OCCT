@@ -21,11 +21,10 @@ namespace
 {
 static TCollection_AsciiString ExtendedToUtf8(const TCollection_ExtendedString& theStr)
 {
-  NCollection_UtfString<char> utf8(
-    reinterpret_cast<const char16_t*>(theStr.ToExtString()));
+  NCollection_UtfString<char> utf8(reinterpret_cast<const char16_t*>(theStr.ToExtString()));
   return TCollection_AsciiString(utf8.ToCString());
 }
-}
+} // namespace
 
 //=================================================================================================
 
