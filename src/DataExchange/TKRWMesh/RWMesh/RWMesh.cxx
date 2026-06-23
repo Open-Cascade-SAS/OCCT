@@ -13,8 +13,19 @@
 
 #include <RWMesh.hxx>
 
+#include <NCollection_UtfString.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_Tool.hxx>
+
+namespace
+{
+static TCollection_AsciiString ExtendedToUtf8(const TCollection_ExtendedString& theStr)
+{
+  NCollection_UtfString<char> utf8(
+    reinterpret_cast<const char16_t*>(theStr.ToExtString()));
+  return TCollection_AsciiString(utf8.ToCString());
+}
+}
 
 //=================================================================================================
 
@@ -22,7 +33,7 @@ TCollection_AsciiString RWMesh::ReadNameAttribute(const TDF_Label& theLabel)
 {
   occ::handle<TDataStd_Name> aNodeName;
   return theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName)
-           ? TCollection_AsciiString(aNodeName->Get())
+           ? ExtendedToUtf8(aNodeName->Get())
            : TCollection_AsciiString();
 }
 
@@ -40,25 +51,25 @@ TCollection_AsciiString RWMesh::FormatName(RWMesh_NameFormat theFormat,
     case RWMesh_NameFormat_Product: {
       occ::handle<TDataStd_Name> aRefNodeName;
       return theRefLabel.FindAttribute(TDataStd_Name::GetID(), aRefNodeName)
-               ? TCollection_AsciiString(aRefNodeName->Get())
+               ? ExtendedToUtf8(aRefNodeName->Get())
                : TCollection_AsciiString();
     }
     case RWMesh_NameFormat_Instance: {
       occ::handle<TDataStd_Name> aNodeName;
       return theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName)
-               ? TCollection_AsciiString(aNodeName->Get())
+               ? ExtendedToUtf8(aNodeName->Get())
                : TCollection_AsciiString();
     }
     case RWMesh_NameFormat_InstanceOrProduct: {
       occ::handle<TDataStd_Name> aNodeName;
       if (theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName) && !aNodeName->Get().IsEmpty())
       {
-        return TCollection_AsciiString(aNodeName->Get());
+        return ExtendedToUtf8(aNodeName->Get());
       }
 
       occ::handle<TDataStd_Name> aRefNodeName;
       return theRefLabel.FindAttribute(TDataStd_Name::GetID(), aRefNodeName)
-               ? TCollection_AsciiString(aRefNodeName->Get())
+               ? ExtendedToUtf8(aRefNodeName->Get())
                : TCollection_AsciiString();
     }
     case RWMesh_NameFormat_ProductOrInstance: {
@@ -66,12 +77,12 @@ TCollection_AsciiString RWMesh::FormatName(RWMesh_NameFormat theFormat,
       if (theRefLabel.FindAttribute(TDataStd_Name::GetID(), aRefNodeName)
           && !aRefNodeName->Get().IsEmpty())
       {
-        return TCollection_AsciiString(aRefNodeName->Get());
+        return ExtendedToUtf8(aRefNodeName->Get());
       }
 
       occ::handle<TDataStd_Name> aNodeName;
       return theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName)
-               ? TCollection_AsciiString(aNodeName->Get())
+               ? ExtendedToUtf8(aNodeName->Get())
                : TCollection_AsciiString();
     }
     case RWMesh_NameFormat_ProductAndInstance: {
