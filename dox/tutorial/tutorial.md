@@ -28,9 +28,9 @@ We first define the bottle specifications as follows:
 
 | Object Parameter | Parameter Name | Parameter Value |
 | :--------------: | :------------: | :-------------: |
-| Bottle height    | MyHeight       |         70mm    |
-| Bottle width     | MyWidth        |         50mm    |
-| Bottle thickness | MyThickness    |         30mm    |
+| Bottle height    | myHeight       |         70mm    |
+| Bottle width     | myWidth        |         50mm    |
+| Bottle thickness | myThickness    |         30mm    |
 
 In addition, we decide that the bottle's profile (base) will be centered on the origin of the global Cartesian coordinate system.
 
@@ -50,7 +50,7 @@ This modeling requires four steps:
 
 To create the bottle's profile, you first create characteristic points with their coordinates as shown below in the (XOY) plane. These points will be the supports that define the geometry of the profile.
 
-@figure{/tutorial/images/tutorial_image003.svg,"",466}
+@figure{/tutorial/images/tutorial_image003.png,"",466}
 
 There are two classes to describe a 3D Cartesian point from its X, Y and Z coordinates in Open CASCADE Technology:
 
@@ -67,11 +67,11 @@ Since all the points you will define are only used to create the profile's curve
 To instantiate a *gp_Pnt* object, just specify the X, Y, and Z coordinates of the points in the global Cartesian coordinate system:
 
 ~~~~{.cpp}
-    gp_Pnt aPnt1(-theWidth / 2., 0, 0);
-    gp_Pnt aPnt2(-theWidth / 2., -theThickness / 4., 0);
-    gp_Pnt aPnt3(0, -theThickness / 2., 0);
-    gp_Pnt aPnt4(theWidth / 2., -theThickness / 4., 0);
-    gp_Pnt aPnt5(theWidth / 2., 0, 0);
+    gp_Pnt aPnt1(-myWidth / 2., 0, 0);
+    gp_Pnt aPnt2(-myWidth / 2., -myThickness / 4., 0);
+    gp_Pnt aPnt3(0, -myThickness / 2., 0);
+    gp_Pnt aPnt4(myWidth / 2., -myThickness / 4., 0);
+    gp_Pnt aPnt5(myWidth / 2., 0, 0);
 ~~~~
 
 Once your objects are instantiated, you can use methods provided by the class to access and modify its data. For example, to get the X coordinate of a point:
