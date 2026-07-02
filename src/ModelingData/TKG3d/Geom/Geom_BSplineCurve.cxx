@@ -1227,7 +1227,7 @@ void Geom_BSplineCurve::PeriodicNormalization(double& theParameter) const
   const double aLast   = myFlatKnots.Value(myFlatKnots.Upper() - myDeg);
   const double aPeriod = aLast - aFirst;
 
-  // Shift by the exact number of full periods in one step — O(1) regardless of distance.
+  // Shift by the exact number of full periods in one step - O(1) regardless of distance.
   const double aNbPeriods = std::floor((theParameter - aFirst) / aPeriod);
   if (aNbPeriods != 0.0)
   {
