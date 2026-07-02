@@ -1216,21 +1216,34 @@ void Geom_BSplineCurve::updateKnots()
 
 //=================================================================================================
 
-void Geom_BSplineCurve::PeriodicNormalization(double& Parameter) const
+void Geom_BSplineCurve::PeriodicNormalization(double& theParameter) const
 {
-  double Period;
-
-  if (myPeriodic)
+  if (!myPeriodic)
   {
-    Period = myFlatKnots.Value(myFlatKnots.Upper() - myDeg) - myFlatKnots.Value(myDeg + 1);
-    while (Parameter > myFlatKnots.Value(myFlatKnots.Upper() - myDeg))
-    {
-      Parameter -= Period;
-    }
-    while (Parameter < myFlatKnots.Value(myDeg + 1))
-    {
-      Parameter += Period;
-    }
+    return;
+  }
+
+  const double aFirst  = myFlatKnots.Value(myDeg + 1);
+  const double aLast   = myFlatKnots.Value(myFlatKnots.Upper() - myDeg);
+  const double aPeriod = aLast - aFirst;
+
+  // Shift by the exact number of full periods in one step — O(1) regardless of distance.
+  const double aNbPeriods = std::floor((theParameter - aFirst) / aPeriod);
+  if (aNbPeriods != 0.0)
+  {
+    theParameter -= aNbPeriods * aPeriod;
+  }
+
+  // One-step correction for floating-point residual overshoot after the bulk shift.
+  if (theParameter > aLast)
+  {
+    const double aNewParam = theParameter - aPeriod;
+    theParameter = aNewParam == theParameter ? std::nextafter(aNewParam, aFirst) : aNewParam;
+  }
+  else if (theParameter < aFirst)
+  {
+    const double aNewParam = theParameter + aPeriod;
+    theParameter = aNewParam == theParameter ? std::nextafter(aNewParam, aLast) : aNewParam;
   }
 }
 
