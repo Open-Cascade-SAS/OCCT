@@ -1223,8 +1223,19 @@ void Geom_BSplineCurve::PeriodicNormalization(double& theParameter) const
     return;
   }
 
-  const double aFirst  = myFlatKnots.Value(myDeg + 1);
-  const double aLast   = myFlatKnots.Value(myFlatKnots.Upper() - myDeg);
+  const double aFirst = myFlatKnots.Value(myDeg + 1);
+  const double aLast  = myFlatKnots.Value(myFlatKnots.Upper() - myDeg);
+
+  // If the parameter is already within the valid range, no adjustment is needed.
+  // Note: Strictly speaking, the parameter should be within [aFirst, aLast), since for
+  // periodic curves first and last parameters represent the same point.
+  // However, we allow the case theParameter == aLast to be valid as well just because
+  // there is already a lot of code that relies on this particular behavior.
+  if (theParameter >= aFirst && theParameter <= aLast)
+  {
+    return;
+  }
+
   const double aPeriod = aLast - aFirst;
 
   // Shift by the exact number of full periods in one step - O(1) regardless of distance.
