@@ -402,12 +402,12 @@ static void connectWiresToWiresImpl(
       {
         if (!aSel.ContWire(i))
         {
-          lwire = i;
-          sewd->Add(TopoDS::Wire(arrwires->Value(lwire)));
-          aSel.LoadList(lwire);
+          sewd->Add(TopoDS::Wire(arrwires->Value(i)));
+          aSel.LoadList(i);
 
           if (sewd->NbEdges() > 0)
           {
+            lwire = i;
             break;
           }
           sewd->Clear();
