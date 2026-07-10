@@ -54,10 +54,10 @@ occ::handle<Geom_BSplineCurve> makeLinearBSpline(const gp_Pnt& theP1, const gp_P
 
 //! Helper: create a quadratic BSpline curve through 3 control points on [0,1].
 occ::handle<Geom_BSplineCurve> makeQuadraticBSpline(const gp_Pnt& theP1,
-                                                     const gp_Pnt& theP2,
-                                                     const gp_Pnt& theP3,
-                                                     const double  theFirstParameter = 0.0,
-                                                     const double  theLastParameter  = 1.0)
+                                                    const gp_Pnt& theP2,
+                                                    const gp_Pnt& theP3,
+                                                    const double  theFirstParameter = 0.0,
+                                                    const double  theLastParameter  = 1.0)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = theP1;
@@ -2512,10 +2512,8 @@ TEST(GeomFill_Gordon, ClosedBSplineProfilesWithInteriorGuides_ProducePeriodicSur
 TEST(GeomFill_Gordon, NetworkSurface_ClosedNetworkWithNonUnitUParameters_ProducesUPeriodicSurface)
 {
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 2);
-  aProfiles(1) =
-    makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), gp_Pnt(0, 0, 0), 2.0, 5.0);
-  aProfiles(2) =
-    makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 1), gp_Pnt(0, 1, 0), 2.0, 5.0);
+  aProfiles(1) = makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), gp_Pnt(0, 0, 0), 2.0, 5.0);
+  aProfiles(2) = makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 1), gp_Pnt(0, 1, 0), 2.0, 5.0);
 
   NCollection_Array1<double> aGuideParameters(1, 2);
   aGuideParameters(1) = 2.0;

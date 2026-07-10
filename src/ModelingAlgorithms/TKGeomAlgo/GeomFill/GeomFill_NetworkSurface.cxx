@@ -895,23 +895,21 @@ occ::handle<Geom_BSplineCurve> makeProfileSeamGuide(
 }
 
 // Completes a closed U-direction interpolation basis at both profile endpoints.
-bool completeClosedGuideSeam(
-  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
-  const NCollection_Array1<double>&                         theProfileParameters,
-  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
-  const NCollection_Array1<double>&                         theGuideParameters,
-  const NCollection_Array2<gp_Pnt>&                         theIntersectionPoints,
-  const NCollection_Array2<double>&                         theIntersectionWeights,
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>>&       theClosedGuides,
-  NCollection_Array1<double>&                               theClosedGuideParameters,
-  NCollection_Array2<gp_Pnt>&                               theClosedIntersectionPoints,
-  NCollection_Array2<double>&                               theClosedIntersectionWeights)
+bool completeClosedGuideSeam(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                             const NCollection_Array1<double>& theProfileParameters,
+                             const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                             const NCollection_Array1<double>& theGuideParameters,
+                             const NCollection_Array2<gp_Pnt>& theIntersectionPoints,
+                             const NCollection_Array2<double>& theIntersectionWeights,
+                             NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theClosedGuides,
+                             NCollection_Array1<double>& theClosedGuideParameters,
+                             NCollection_Array2<gp_Pnt>& theClosedIntersectionPoints,
+                             NCollection_Array2<double>& theClosedIntersectionWeights)
 {
   const double aProfileStart = theProfiles.At(0)->FirstParameter();
   const double aProfileEnd   = theProfiles.At(0)->LastParameter();
-  const bool needsStartSeam =
-    theGuideParameters.First() > aProfileStart + Precision::PConfusion();
-  const bool needsEndSeam = theGuideParameters.Last() < aProfileEnd - Precision::PConfusion();
+  const bool needsStartSeam  = theGuideParameters.First() > aProfileStart + Precision::PConfusion();
+  const bool needsEndSeam    = theGuideParameters.Last() < aProfileEnd - Precision::PConfusion();
   if (!needsStartSeam && !needsEndSeam)
   {
     return true;
@@ -928,9 +926,9 @@ bool completeClosedGuideSeam(
   }
 
   const size_t aGuideOffset = needsStartSeam ? 1 : 0;
-  const size_t aNbGuides = theGuides.Size() + aGuideOffset + (needsEndSeam ? 1 : 0);
-  theClosedGuides = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1,
-                                                                          static_cast<int>(aNbGuides));
+  const size_t aNbGuides    = theGuides.Size() + aGuideOffset + (needsEndSeam ? 1 : 0);
+  theClosedGuides =
+    NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, static_cast<int>(aNbGuides));
   theClosedGuideParameters = NCollection_Array1<double>(1, static_cast<int>(aNbGuides));
   if (needsStartSeam)
   {
@@ -939,7 +937,7 @@ bool completeClosedGuideSeam(
   }
   for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
   {
-    theClosedGuides.ChangeAt(aGuideIdx + aGuideOffset) = theGuides.At(aGuideIdx);
+    theClosedGuides.ChangeAt(aGuideIdx + aGuideOffset)          = theGuides.At(aGuideIdx);
     theClosedGuideParameters.ChangeAt(aGuideIdx + aGuideOffset) = theGuideParameters.At(aGuideIdx);
   }
   if (needsEndSeam)
@@ -948,14 +946,14 @@ bool completeClosedGuideSeam(
     theClosedGuideParameters.ChangeAt(aNbGuides - 1) = aProfileEnd;
   }
 
-  theClosedIntersectionPoints = NCollection_Array2<gp_Pnt>(1,
+  theClosedIntersectionPoints  = NCollection_Array2<gp_Pnt>(1,
+                                                           static_cast<int>(aNbGuides),
+                                                           1,
+                                                           theIntersectionPoints.NbColumns());
+  theClosedIntersectionWeights = NCollection_Array2<double>(1,
                                                             static_cast<int>(aNbGuides),
                                                             1,
-                                                            theIntersectionPoints.NbColumns());
-  theClosedIntersectionWeights = NCollection_Array2<double>(1,
-                                                             static_cast<int>(aNbGuides),
-                                                             1,
-                                                             theIntersectionWeights.NbColumns());
+                                                            theIntersectionWeights.NbColumns());
   if (needsStartSeam)
   {
     for (size_t aProfileIdx = 0;
@@ -964,7 +962,8 @@ bool completeClosedGuideSeam(
     {
       theClosedIntersectionPoints.ChangeAt(0, aProfileIdx) =
         theProfiles.At(aProfileIdx)->Value(theProfiles.At(aProfileIdx)->FirstParameter());
-      theClosedIntersectionWeights.ChangeAt(0, aProfileIdx) = poleWeight(theProfiles.At(aProfileIdx), 1);
+      theClosedIntersectionWeights.ChangeAt(0, aProfileIdx) =
+        poleWeight(theProfiles.At(aProfileIdx), 1);
     }
   }
   for (size_t aGuideIdx = 0; aGuideIdx < static_cast<size_t>(theIntersectionPoints.NbRows());
@@ -1011,10 +1010,11 @@ occ::handle<Geom_BSplineSurface> makeNetworkSurface(
   NCollection_Array1<double>                         aClosedGuideParameters;
   NCollection_Array2<gp_Pnt>                         aClosedIntersectionPoints;
   NCollection_Array2<double>                         aClosedIntersectionWeights;
-  const bool shouldCompleteUSeam =
+  const bool                                         shouldCompleteUSeam =
     theIsUClosed
     && (theGuideParameters.First() > theProfiles.At(0)->FirstParameter() + Precision::PConfusion()
-        || theGuideParameters.Last() < theProfiles.At(0)->LastParameter() - Precision::PConfusion());
+        || theGuideParameters.Last()
+             < theProfiles.At(0)->LastParameter() - Precision::PConfusion());
   if (shouldCompleteUSeam
       && !completeClosedGuideSeam(theProfiles,
                                   theProfileParameters,
@@ -1226,13 +1226,13 @@ void GeomFill_NetworkSurface::Perform()
 
     ResultStatus aSurfaceStatus = ResultStatus::ConstructionFailed;
     mySurface                   = makeNetworkSurface(myProfiles,
-                                                     myGuides,
-                                                     myProfileParameters,
-                                                     myGuideParameters,
-                                                     myIntersectionPoints,
-                                                     myIntersectionWeights,
-                                                     myIsUClosed,
-                                                     aSurfaceStatus);
+                                   myGuides,
+                                   myProfileParameters,
+                                   myGuideParameters,
+                                   myIntersectionPoints,
+                                   myIntersectionWeights,
+                                   myIsUClosed,
+                                   aSurfaceStatus);
     if (mySurface.IsNull())
     {
       myStatus = aSurfaceStatus;

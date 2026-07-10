@@ -167,9 +167,9 @@ NCollection_Array2<gp_Pnt> profileSampleGrid(
 {
   const NCollection_Array1<double> aUParams = unitParameters(theNbUSamples);
   NCollection_Array2<gp_Pnt>       aPoints(1,
-                                           static_cast<int>(theNbUSamples),
-                                           1,
-                                           static_cast<int>(theProfiles.Size()));
+                                     static_cast<int>(theNbUSamples),
+                                     1,
+                                     static_cast<int>(theProfiles.Size()));
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
     const GeomGridEval_Curve         anEvaluator(theProfiles.At(aProfileIdx));
@@ -191,9 +191,9 @@ NCollection_Array2<gp_Pnt> guideSampleGrid(
 {
   const NCollection_Array1<double> aVParams = unitParameters(theNbVSamples);
   NCollection_Array2<gp_Pnt>       aPoints(1,
-                                           static_cast<int>(theGuides.Size()),
-                                           1,
-                                           static_cast<int>(theNbVSamples));
+                                     static_cast<int>(theGuides.Size()),
+                                     1,
+                                     static_cast<int>(theNbVSamples));
   for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
   {
     const GeomGridEval_Curve         anEvaluator(theGuides.At(aGuideIdx));
@@ -229,9 +229,9 @@ occ::handle<Geom_BSplineSurface> approximatePreparedNetwork(
     return nullptr;
   }
   NCollection_Array2<gp_Pnt>       aPoints(1,
-                                           static_cast<int>(aNbUSamples),
-                                           1,
-                                           static_cast<int>(aNbVSamples));
+                                     static_cast<int>(aNbUSamples),
+                                     1,
+                                     static_cast<int>(aNbVSamples));
   const NCollection_Array1<double> aUParams = unitParameters(aNbUSamples);
   const NCollection_Array1<double> aVParams = unitParameters(aNbVSamples);
   const GeomGridEval_Surface       aProfileEvaluator(aProfileSurface);
@@ -246,9 +246,9 @@ occ::handle<Geom_BSplineSurface> approximatePreparedNetwork(
   {
     for (size_t aVIdx = 0; aVIdx < aNbVSamples; ++aVIdx)
     {
-      const gp_XYZ aPoint            = aProfilePoints.At(aUIdx, aVIdx).XYZ()
-                                       + aGuidePoints.At(aUIdx, aVIdx).XYZ()
-                                       - aReferencePoints.At(aUIdx, aVIdx).XYZ();
+      const gp_XYZ aPoint = aProfilePoints.At(aUIdx, aVIdx).XYZ()
+                            + aGuidePoints.At(aUIdx, aVIdx).XYZ()
+                            - aReferencePoints.At(aUIdx, aVIdx).XYZ();
       aPoints.ChangeAt(aUIdx, aVIdx) = gp_Pnt(aPoint);
     }
   }
@@ -280,7 +280,7 @@ void setStatus(GeomFill_Gordon::BuildReport&       theReport,
 
 // Returns whether every profile closes geometrically at its parameter endpoints.
 bool areClosedCurves(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves,
-                     const double                                               theTolerance)
+                     const double                                              theTolerance)
 {
   if (theCurves.IsEmpty())
   {
@@ -371,9 +371,9 @@ double maxCurveDeviation(const occ::handle<Geom_BSplineSurface>& theSurface,
   double                  aMaxDeviation = 0.0;
   const auto              evaluate      = [&](const double theParameter) {
     const double aU = theIsProfile ? surfaceParameter(theSurface, true, theParameter)
-                                   : surfaceParameter(theSurface, true, theFixedParameter);
+                                                     : surfaceParameter(theSurface, true, theFixedParameter);
     const double aV = theIsProfile ? surfaceParameter(theSurface, false, theFixedParameter)
-                                   : surfaceParameter(theSurface, false, theParameter);
+                                                     : surfaceParameter(theSurface, false, theParameter);
     aMaxDeviation =
       std::max(aMaxDeviation, anAdaptor.EvalD0(theParameter).Distance(theSurface->Value(aU, aV)));
   };
@@ -497,7 +497,7 @@ void GeomFill_Gordon::Perform()
     setStatus(myReport, ResultStatus::CompatibilityFailed, BuildStage::NetworkOrdering);
     return;
   }
-  myIsUClosed = myIsUClosed || areClosedCurves(myProfiles, myTolerance);
+  myIsUClosed                           = myIsUClosed || areClosedCurves(myProfiles, myTolerance);
   bool aHasApproximateReparametrization = false;
   if (!aNetwork.EqualizeIntersectionParameters(myApproximationMode
                                                  == ApproximationMode::AllowApproximateFallback,
