@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <BSplCLib.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepTools.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Line.hxx>
@@ -32,8 +30,6 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
-#include <filesystem>
-#include <string>
 
 namespace
 {
@@ -58,8 +54,10 @@ occ::handle<Geom_BSplineCurve> makeLinearBSpline(const gp_Pnt& theP1, const gp_P
 
 //! Helper: create a quadratic BSpline curve through 3 control points on [0,1].
 occ::handle<Geom_BSplineCurve> makeQuadraticBSpline(const gp_Pnt& theP1,
-                                                    const gp_Pnt& theP2,
-                                                    const gp_Pnt& theP3)
+                                                     const gp_Pnt& theP2,
+                                                     const gp_Pnt& theP3,
+                                                     const double  theFirstParameter = 0.0,
+                                                     const double  theLastParameter  = 1.0)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = theP1;
@@ -67,8 +65,8 @@ occ::handle<Geom_BSplineCurve> makeQuadraticBSpline(const gp_Pnt& theP1,
   aPoles(3) = theP3;
 
   NCollection_Array1<double> aKnots(1, 2);
-  aKnots(1) = 0.0;
-  aKnots(2) = 1.0;
+  aKnots(1) = theFirstParameter;
+  aKnots(2) = theLastParameter;
 
   NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 3;
@@ -248,6 +246,37 @@ occ::handle<Geom_BSplineCurve> makePeriodicGuide(const double theX)
   aMults.Init(1);
 
   return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
+}
+
+occ::handle<Geom_BSplineCurve> makeClosedBSplineProfile(const double theY,
+                                                        const double theXRadius,
+                                                        const double theZRadius)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 9);
+  aPoles(1) = gp_Pnt(theXRadius, theY, 0.0);
+  aPoles(2) = gp_Pnt(theXRadius, theY, 0.7 * theZRadius);
+  aPoles(3) = gp_Pnt(0.3 * theXRadius, theY, theZRadius);
+  aPoles(4) = gp_Pnt(-0.7 * theXRadius, theY, 0.8 * theZRadius);
+  aPoles(5) = gp_Pnt(-theXRadius, theY, 0.0);
+  aPoles(6) = gp_Pnt(-0.7 * theXRadius, theY, -0.8 * theZRadius);
+  aPoles(7) = gp_Pnt(0.3 * theXRadius, theY, -theZRadius);
+  aPoles(8) = gp_Pnt(theXRadius, theY, -0.7 * theZRadius);
+  aPoles(9) = gp_Pnt(theXRadius, theY, 0.0);
+
+  NCollection_Array1<double> aKnots(1, 7);
+  for (int aKnotIdx = 1; aKnotIdx <= 7; ++aKnotIdx)
+  {
+    aKnots(aKnotIdx) = static_cast<double>(aKnotIdx - 1) / 6.0;
+  }
+
+  NCollection_Array1<int> aMults(1, 7);
+  aMults(1) = 4;
+  aMults(7) = 4;
+  for (int aKnotIdx = 2; aKnotIdx < 7; ++aKnotIdx)
+  {
+    aMults(aKnotIdx) = 1;
+  }
+  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, false);
 }
 
 occ::handle<Geom_BSplineCurve> makeInterpolatedPeriodicProfile(const double theY,
@@ -2444,4 +2473,77 @@ TEST(GeomFill_Gordon, DenseWavyThreeByNineNetwork_InterpolatesAllInputCurves)
   ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
   EXPECT_FALSE(aGordon.IsApproximate());
   verifyUniformNetworkInterpolation(aGordon.Surface(), aNetwork, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, ClosedBSplineProfilesWithInteriorGuides_ProducePeriodicSurface)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 2);
+  aProfiles(1) = makeClosedBSplineProfile(0.0, 1.0, 1.0);
+  aProfiles(2) = makeClosedBSplineProfile(1.0, 1.15, 0.85);
+  ASSERT_FALSE(occ::down_cast<Geom_BSplineCurve>(aProfiles(1))->IsPeriodic());
+  ASSERT_LE(aProfiles(1)
+              ->Value(aProfiles(1)->FirstParameter())
+              .Distance(aProfiles(1)->Value(aProfiles(1)->LastParameter())),
+            Precision::Confusion());
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 4);
+  NCollection_Array1<double>                  aGuideParameters(1, 4);
+  aGuideParameters(1) = 0.12;
+  aGuideParameters(2) = 0.34;
+  aGuideParameters(3) = 0.59;
+  aGuideParameters(4) = 0.83;
+  for (int aGuideIdx = aGuides.Lower(); aGuideIdx <= aGuides.Upper(); ++aGuideIdx)
+  {
+    const double aParameter = aGuideParameters(aGuideIdx);
+    aGuides(aGuideIdx) =
+      makeLinearBSpline(aProfiles(1)->Value(aParameter), aProfiles(2)->Value(aParameter));
+  }
+
+  GeomFill_Gordon aGordon;
+  aGordon.Init(aProfiles, aGuides, Precision::Confusion());
+  aGordon.Perform();
+  ASSERT_TRUE(aGordon.IsDone()) << static_cast<int>(aGordon.Status());
+  EXPECT_FALSE(aGordon.IsApproximate());
+  EXPECT_TRUE(aGordon.Surface()->IsUPeriodic());
+  EXPECT_LE(aGordon.Report().MaxProfileDeviation, Precision::Confusion());
+  EXPECT_LE(aGordon.Report().MaxGuideDeviation, Precision::Confusion());
+}
+
+TEST(GeomFill_Gordon, NetworkSurface_ClosedNetworkWithNonUnitUParameters_ProducesUPeriodicSurface)
+{
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 2);
+  aProfiles(1) =
+    makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0), gp_Pnt(0, 0, 0), 2.0, 5.0);
+  aProfiles(2) =
+    makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(1, 1, 1), gp_Pnt(0, 1, 0), 2.0, 5.0);
+
+  NCollection_Array1<double> aGuideParameters(1, 2);
+  aGuideParameters(1) = 2.0;
+  aGuideParameters(2) = 3.5;
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 2);
+  for (int aGuideIdx = aGuides.Lower(); aGuideIdx <= aGuides.Upper(); ++aGuideIdx)
+  {
+    const double aParameter = aGuideParameters(aGuideIdx);
+    aGuides(aGuideIdx) =
+      makeLinearBSpline(aProfiles(1)->Value(aParameter), aProfiles(2)->Value(aParameter));
+  }
+
+  NCollection_Array1<double> aProfileParameters(1, 2);
+  aProfileParameters(1) = 0.0;
+  aProfileParameters(2) = 1.0;
+
+  GeomFill_NetworkSurface aNetwork;
+  aNetwork.Init(aProfiles,
+                aGuides,
+                aProfileParameters,
+                aGuideParameters,
+                makeIntersectionGrid(aProfiles, aGuideParameters),
+                makeUnitWeightGrid(aProfiles, aGuideParameters),
+                Precision::Confusion(),
+                true,
+                false);
+  aNetwork.Perform();
+
+  ASSERT_TRUE(aNetwork.IsDone()) << static_cast<int>(aNetwork.Status());
+  EXPECT_TRUE(aNetwork.Surface()->IsUPeriodic());
 }
