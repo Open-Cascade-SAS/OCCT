@@ -159,11 +159,12 @@ TEST(STEPCAFControl_ControllerTest, STEPControlWriter_InitializesMissingShapePro
 }
 
 // Verify that XDE transfer uses STEP writer shape-processing defaults when they are missing.
-TEST(STEPCAFControl_ControllerTest, STEPCAFControlWriter_InitializesMissingShapeProcessingParameters)
+TEST(STEPCAFControl_ControllerTest,
+     STEPCAFControlWriter_InitializesMissingShapeProcessingParameters)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
 
-  occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
+  occ::handle<TDocStd_Document>        aDoc       = new TDocStd_Document("dummy");
   const occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
   aShapeTool->SetShape(aShapeTool->NewShape(), aBox);
 
