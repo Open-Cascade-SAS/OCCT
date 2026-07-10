@@ -403,14 +403,14 @@ occ::handle<Geom_BSplineSurface> makeProfileSkin(
   NCollection_Array2<double> aWeights(1, aBaseProfile->NbPoles(), 1, theProfiles.Length());
   NCollection_Array1<gp_Pnt> aColumn(1, theProfiles.Length());
   NCollection_Array1<double> aColumnWeights(1, theProfiles.Length());
-  NCollection_Array1<int> aContactOrders(1, static_cast<int>(theProfileParameters.Size()));
+  NCollection_Array1<int>    aContactOrders(1, static_cast<int>(theProfileParameters.Size()));
   aContactOrders.Init(0);
 
   for (int aUPoleIdx = 1; aUPoleIdx <= aBaseProfile->NbPoles(); ++aUPoleIdx)
   {
     for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
     {
-      aColumn.ChangeAt(aProfileIdx) = theProfiles.At(aProfileIdx)->Pole(aUPoleIdx);
+      aColumn.ChangeAt(aProfileIdx)        = theProfiles.At(aProfileIdx)->Pole(aUPoleIdx);
       aColumnWeights.ChangeAt(aProfileIdx) = poleWeight(theProfiles.At(aProfileIdx), aUPoleIdx);
     }
     if (!interpolatePoles(theVDegree,
@@ -459,7 +459,7 @@ occ::handle<Geom_BSplineSurface> makeGuideSkin(
   {
     for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
     {
-      aRow.ChangeAt(aGuideIdx) = theGuides.At(aGuideIdx)->Pole(aVPoleIdx);
+      aRow.ChangeAt(aGuideIdx)        = theGuides.At(aGuideIdx)->Pole(aVPoleIdx);
       aRowWeights.ChangeAt(aGuideIdx) = poleWeight(theGuides.At(aGuideIdx), aVPoleIdx);
     }
     if (!interpolatePoles(theUDegree,

@@ -136,8 +136,8 @@ NCollection_Array1<double> unitParameters(const size_t theNbSamples)
   NCollection_Array1<double> aParameters(1, static_cast<int>(theNbSamples));
   for (size_t aSampleIdx = 0; aSampleIdx < theNbSamples; ++aSampleIdx)
   {
-    aParameters.ChangeAt(aSampleIdx) = static_cast<double>(aSampleIdx)
-                                        / static_cast<double>(theNbSamples - 1);
+    aParameters.ChangeAt(aSampleIdx) =
+      static_cast<double>(aSampleIdx) / static_cast<double>(theNbSamples - 1);
   }
   return aParameters;
 }
@@ -146,7 +146,7 @@ NCollection_Array1<double> unitParameters(const size_t theNbSamples)
 
 // Fits a non-exact B-spline surface through a point grid for approximate fallback.
 occ::handle<Geom_BSplineSurface> approximateGrid(const NCollection_Array2<gp_Pnt>& thePoints,
-                                                  const double                      theTolerance)
+                                                 const double                      theTolerance)
 {
   GeomAPI_PointsToBSplineSurface anApprox;
   anApprox.Init(thePoints,
@@ -166,13 +166,13 @@ NCollection_Array2<gp_Pnt> profileSampleGrid(
   const size_t                                              theNbUSamples)
 {
   const NCollection_Array1<double> aUParams = unitParameters(theNbUSamples);
-  NCollection_Array2<gp_Pnt> aPoints(1,
-                                      static_cast<int>(theNbUSamples),
-                                      1,
+  NCollection_Array2<gp_Pnt>       aPoints(1,
+                                     static_cast<int>(theNbUSamples),
+                                     1,
                                      static_cast<int>(theProfiles.Size()));
   for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
   {
-    const GeomGridEval_Curve      anEvaluator(theProfiles.At(aProfileIdx));
+    const GeomGridEval_Curve         anEvaluator(theProfiles.At(aProfileIdx));
     const NCollection_Array1<gp_Pnt> aProfilePoints = anEvaluator.EvaluateGrid(aUParams);
     for (size_t aUIdx = 0; aUIdx < theNbUSamples; ++aUIdx)
     {
@@ -190,13 +190,13 @@ NCollection_Array2<gp_Pnt> guideSampleGrid(
   const size_t                                              theNbVSamples)
 {
   const NCollection_Array1<double> aVParams = unitParameters(theNbVSamples);
-  NCollection_Array2<gp_Pnt> aPoints(1,
-                                      static_cast<int>(theGuides.Size()),
+  NCollection_Array2<gp_Pnt>       aPoints(1,
+                                     static_cast<int>(theGuides.Size()),
                                      1,
                                      static_cast<int>(theNbVSamples));
   for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
   {
-    const GeomGridEval_Curve      anEvaluator(theGuides.At(aGuideIdx));
+    const GeomGridEval_Curve         anEvaluator(theGuides.At(aGuideIdx));
     const NCollection_Array1<gp_Pnt> aGuidePoints = anEvaluator.EvaluateGrid(aVParams);
     for (size_t aVIdx = 0; aVIdx < theNbVSamples; ++aVIdx)
     {
@@ -229,10 +229,10 @@ occ::handle<Geom_BSplineSurface> approximatePreparedNetwork(
     return nullptr;
   }
 
-  NCollection_Array2<gp_Pnt> aPoints(1,
-                                      static_cast<int>(aNbUSamples),
-                                      1,
-                                      static_cast<int>(aNbVSamples));
+  NCollection_Array2<gp_Pnt>       aPoints(1,
+                                     static_cast<int>(aNbUSamples),
+                                     1,
+                                     static_cast<int>(aNbVSamples));
   const NCollection_Array1<double> aUParams = unitParameters(aNbUSamples);
   const NCollection_Array1<double> aVParams = unitParameters(aNbVSamples);
   const GeomGridEval_Surface       aProfileEvaluator(aProfileSurface);
@@ -248,8 +248,8 @@ occ::handle<Geom_BSplineSurface> approximatePreparedNetwork(
     for (size_t aVIdx = 0; aVIdx < aNbVSamples; ++aVIdx)
     {
       const gp_XYZ aPoint = aProfilePoints.At(aUIdx, aVIdx).XYZ()
-                             + aGuidePoints.At(aUIdx, aVIdx).XYZ()
-                             - aReferencePoints.At(aUIdx, aVIdx).XYZ();
+                            + aGuidePoints.At(aUIdx, aVIdx).XYZ()
+                            - aReferencePoints.At(aUIdx, aVIdx).XYZ();
       aPoints.ChangeAt(aUIdx, aVIdx) = gp_Pnt(aPoint);
     }
   }
@@ -340,24 +340,24 @@ double surfaceParameter(const occ::handle<Geom_BSplineSurface>& theSurface,
 
 // Measures the maximum deviation of a curve from its corresponding surface isoparameter.
 double maxCurveDeviation(const occ::handle<Geom_BSplineSurface>& theSurface,
-                         const occ::handle<Geom_BSplineCurve>&  theCurve,
+                         const occ::handle<Geom_BSplineCurve>&   theCurve,
                          const double                            theFixedParameter,
                          const bool                              theIsProfile)
 {
   const GeomAdaptor_Curve anAdaptor(theCurve);
   double                  aMaxDeviation = 0.0;
-  const auto evaluate = [&](const double theParameter) {
+  const auto              evaluate      = [&](const double theParameter) {
     const double aU = theIsProfile ? surfaceParameter(theSurface, true, theParameter)
-                                   : surfaceParameter(theSurface, true, theFixedParameter);
+                                                     : surfaceParameter(theSurface, true, theFixedParameter);
     const double aV = theIsProfile ? surfaceParameter(theSurface, false, theFixedParameter)
-                                   : surfaceParameter(theSurface, false, theParameter);
+                                                     : surfaceParameter(theSurface, false, theParameter);
     aMaxDeviation =
       std::max(aMaxDeviation, anAdaptor.EvalD0(theParameter).Distance(theSurface->Value(aU, aV)));
   };
 
-  const size_t aSamplesPerSpan = static_cast<size_t>(theCurve->Degree())
-                                 + static_cast<size_t>(theIsProfile ? theSurface->UDegree()
-                                                                     : theSurface->VDegree());
+  const size_t aSamplesPerSpan =
+    static_cast<size_t>(theCurve->Degree())
+    + static_cast<size_t>(theIsProfile ? theSurface->UDegree() : theSurface->VDegree());
   for (int aKnotIdx = 1; aKnotIdx < theCurve->NbKnots(); ++aKnotIdx)
   {
     const double aFirst = theCurve->Knot(aKnotIdx);
@@ -389,8 +389,8 @@ double maxProfileDeviation(const occ::handle<Geom_BSplineSurface>&              
   {
     const double aV =
       surfaceParameter(theSurface, false, theProfileParams(static_cast<int>(aProfileIdx) + 1));
-    aMaxDeviation = std::max(aMaxDeviation,
-                             maxCurveDeviation(theSurface, theProfiles.At(aProfileIdx), aV, true));
+    aMaxDeviation =
+      std::max(aMaxDeviation, maxCurveDeviation(theSurface, theProfiles.At(aProfileIdx), aV, true));
   }
   return aMaxDeviation;
 }
@@ -407,8 +407,8 @@ double maxGuideDeviation(const occ::handle<Geom_BSplineSurface>&                
   {
     const double aU =
       surfaceParameter(theSurface, true, theGuideParams(static_cast<int>(aGuideIdx) + 1));
-    aMaxDeviation = std::max(aMaxDeviation,
-                             maxCurveDeviation(theSurface, theGuides.At(aGuideIdx), aU, false));
+    aMaxDeviation =
+      std::max(aMaxDeviation, maxCurveDeviation(theSurface, theGuides.At(aGuideIdx), aU, false));
   }
   return aMaxDeviation;
 }
@@ -520,9 +520,9 @@ void GeomFill_Gordon::Perform()
         && canApproximateAfterExactFailure(anExactStatus))
     {
       mySurface = approximatePreparedNetwork(myProfiles,
-                                              myGuides,
-                                              aNetwork.IntersectionPoints(),
-                                              myTolerance);
+                                             myGuides,
+                                             aNetwork.IntersectionPoints(),
+                                             myTolerance);
       if (!mySurface.IsNull())
       {
         myReport.IsApproximate = true;

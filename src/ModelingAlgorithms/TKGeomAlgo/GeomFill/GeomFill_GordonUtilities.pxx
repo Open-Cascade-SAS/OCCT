@@ -788,8 +788,8 @@ double orderedContactScore(const Contact& theContact,
   if (theHasPreviousGuide)
   {
     // Favor branches with a smooth advance along the current guide.
-    aScore += std::abs((theGuideParam - thePreviousGuideParam)
-                       - (theGuideTarget - thePreviousGuideTarget));
+    aScore +=
+      std::abs((theGuideParam - thePreviousGuideParam) - (theGuideTarget - thePreviousGuideTarget));
   }
   return aScore;
 }
@@ -830,7 +830,8 @@ bool seamTangentMismatch(const occ::handle<Geom_BSplineCurve>& theCurve,
   }
 
   theMismatch =
-    1.0 - std::clamp(aFirstTangent.Dot(aLastTangent) / (aFirstMagnitude * aLastMagnitude), -1.0, 1.0);
+    1.0
+    - std::clamp(aFirstTangent.Dot(aLastTangent) / (aFirstMagnitude * aLastMagnitude), -1.0, 1.0);
   return true;
 }
 
@@ -843,21 +844,21 @@ bool chooseOrderedContact(const ContactSet&                     theContacts,
                           const double                          theProfileTarget,
                           const double                          theGuideTarget,
                           const double                          thePreviousProfileParam,
-                           const double                          thePreviousGuideParam,
-                           const bool                            theHasPreviousProfile,
-                           const bool                            theHasPreviousGuide,
-                           const double                          thePreviousProfileTarget,
-                           const double                          thePreviousGuideTarget,
-                           const double                          theFirstProfileParam,
-                           const double                          theFirstGuideParam,
-                           const bool                            theIsProfileSeam,
-                           const bool                            theIsGuideSeam,
-                           const double                          theTolerance,
-                           Contact&                              theSelected)
+                          const double                          thePreviousGuideParam,
+                          const bool                            theHasPreviousProfile,
+                          const bool                            theHasPreviousGuide,
+                          const double                          thePreviousProfileTarget,
+                          const double                          thePreviousGuideTarget,
+                          const double                          theFirstProfileParam,
+                          const double                          theFirstGuideParam,
+                          const bool                            theIsProfileSeam,
+                          const bool                            theIsGuideSeam,
+                          const double                          theTolerance,
+                          Contact&                              theSelected)
 {
-  const double aParamTol = parameterResolution(0.0, 1.0);
+  const double aParamTol            = parameterResolution(0.0, 1.0);
   double       aBestTangentMismatch = RealLast();
-  double       aBest                 = RealLast();
+  double       aBest                = RealLast();
   for (size_t aCandidateIdx = 0; aCandidateIdx < theContacts.Candidates.Size(); ++aCandidateIdx)
   {
     const Contact& aCandidate = theContacts.Candidates.Value(aCandidateIdx);
@@ -870,20 +871,20 @@ bool chooseOrderedContact(const ContactSet&                     theContacts,
       continue;
     }
 
-    const double aScore = orderedContactScore(aCandidate,
-                                               aProfileParam,
-                                               aGuideParam,
-                                               theProfileTarget,
-                                               theGuideTarget,
-                                               thePreviousProfileParam,
-                                               thePreviousGuideParam,
-                                               thePreviousProfileTarget,
-                                               thePreviousGuideTarget,
-                                               theHasPreviousProfile,
-                                               theHasPreviousGuide,
-                                               theTolerance);
-    double aTangentMismatch = 0.0;
-    bool   hasTangentMatch  = false;
+    const double aScore           = orderedContactScore(aCandidate,
+                                              aProfileParam,
+                                              aGuideParam,
+                                              theProfileTarget,
+                                              theGuideTarget,
+                                              thePreviousProfileParam,
+                                              thePreviousGuideParam,
+                                              thePreviousProfileTarget,
+                                              thePreviousGuideTarget,
+                                              theHasPreviousProfile,
+                                              theHasPreviousGuide,
+                                              theTolerance);
+    double       aTangentMismatch = 0.0;
+    bool         hasTangentMatch  = false;
     if (theIsProfileSeam)
     {
       double aProfileMismatch = 0.0;
@@ -950,10 +951,10 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
   const NCollection_LinearVector<OrderedCurve> aGuideOrder =
     orderedCurves(columnMeans(aProfileParamMatrix));
 
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1,
-                                                                static_cast<int>(theProfiles.Size()));
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1,
-                                                              static_cast<int>(theGuides.Size()));
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(
+    1,
+    static_cast<int>(theProfiles.Size()));
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, static_cast<int>(theGuides.Size()));
   NCollection_Array2<double>                         aProfileParams(theProfileParams.LowerRow(),
                                             theProfileParams.UpperRow(),
                                             theProfileParams.LowerCol(),
@@ -1008,16 +1009,12 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
         aProfileIdx == 0
           ? 0.0
           : aGuideParamResult(static_cast<int>(aProfileIdx), static_cast<int>(aGuideIdx) + 1);
-      const double aPreviousProfileTarget = aGuideIdx < 2
-                                              ? 0.0
-                                              : static_cast<double>(aGuideIdx - 1)
-                                                  / (aGuideOrder.Size() - 1);
-      const double aPreviousGuideTarget = aProfileIdx < 2
-                                            ? 0.0
-                                            : static_cast<double>(aProfileIdx - 1)
-                                                / (aProfileOrder.Size() - 1);
-      const bool isProfileSeam = aGuideIdx + 1 == aGuideOrder.Size();
-      const bool isGuideSeam   = aProfileIdx + 1 == aProfileOrder.Size();
+      const double aPreviousProfileTarget =
+        aGuideIdx < 2 ? 0.0 : static_cast<double>(aGuideIdx - 1) / (aGuideOrder.Size() - 1);
+      const double aPreviousGuideTarget =
+        aProfileIdx < 2 ? 0.0 : static_cast<double>(aProfileIdx - 1) / (aProfileOrder.Size() - 1);
+      const bool   isProfileSeam = aGuideIdx + 1 == aGuideOrder.Size();
+      const bool   isGuideSeam   = aProfileIdx + 1 == aProfileOrder.Size();
       const double aFirstProfileParam =
         isProfileSeam ? aProfileParamResult(static_cast<int>(aProfileIdx) + 1, 1) : 0.0;
       const double aFirstGuideParam =
@@ -1033,16 +1030,16 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
             aProfileTarget,
             aGuideTarget,
             aPreviousProfileParam,
-             aPreviousGuideParam,
-             aGuideIdx != 0,
-             aProfileIdx != 0,
-             aPreviousProfileTarget,
-             aPreviousGuideTarget,
-             aFirstProfileParam,
-             aFirstGuideParam,
-             isProfileSeam,
-             isGuideSeam,
-             theTolerance,
+            aPreviousGuideParam,
+            aGuideIdx != 0,
+            aProfileIdx != 0,
+            aPreviousProfileTarget,
+            aPreviousGuideTarget,
+            aFirstProfileParam,
+            aFirstGuideParam,
+            isProfileSeam,
+            isGuideSeam,
+            theTolerance,
             aContact))
       {
         return false;
@@ -1127,11 +1124,11 @@ public:
     return mySource.Last();
   }
 
-  void Evaluate(const int     theDerivativeRequest,
+  void Evaluate(const int theDerivativeRequest,
                 const double* /*theStartEnd*/,
-                const double  theTargetParameter,
-                double&       theResult,
-                int&          theErrorCode) const override
+                const double theTargetParameter,
+                double&      theResult,
+                int&         theErrorCode) const override
   {
     theErrorCode = 0;
     if (theDerivativeRequest == 0)
@@ -1176,10 +1173,10 @@ bool reparametrizeExactly(const occ::handle<Geom_BSplineCurve>& theCurve,
     return false;
   }
 
-  const int aDegree = theCurve->Degree();
+  const int                        aDegree = theCurve->Degree();
   NCollection_LinearVector<double> aNewKnotValues;
   NCollection_LinearVector<int>    aNewKnotMults;
-  int aConstraintIdx = 1;
+  int                              aConstraintIdx = 1;
   for (size_t aKnotIdx = 0; aKnotIdx < theCurve->Knots().Size(); ++aKnotIdx)
   {
     const double aSourceKnot = theCurve->Knots().At(aKnotIdx);
@@ -1200,7 +1197,7 @@ bool reparametrizeExactly(const occ::handle<Geom_BSplineCurve>& theCurve,
         const double aSourceLast  = theSourceParams(aParamIdx + 1);
         const double aTargetFirst = theTargetParams(aParamIdx);
         const double aTargetLast  = theTargetParams(aParamIdx + 1);
-        aTargetKnot = aTargetFirst
+        aTargetKnot               = aTargetFirst
                       + (aSourceKnot - aSourceFirst) * (aTargetLast - aTargetFirst)
                           / (aSourceLast - aSourceFirst);
         break;
@@ -1221,9 +1218,9 @@ bool reparametrizeExactly(const occ::handle<Geom_BSplineCurve>& theCurve,
     aNewKnotMults.Append(aMultiplicity);
   }
 
-  NCollection_Array1<double> aNewKnots = toOneBasedArrayView(aNewKnotValues);
-  NCollection_Array1<int>    aNewMults = toOneBasedArrayView(aNewKnotMults);
-  const int aNbNewPoles = BSplCLib::NbPoles(aDegree, false, aNewMults);
+  NCollection_Array1<double> aNewKnots   = toOneBasedArrayView(aNewKnotValues);
+  NCollection_Array1<int>    aNewMults   = toOneBasedArrayView(aNewKnotMults);
+  const int                  aNbNewPoles = BSplCLib::NbPoles(aDegree, false, aNewMults);
   NCollection_Array1<double> aSourceFlatKnots(1, theCurve->NbPoles() + aDegree + 1);
   NCollection_Array1<double> aTargetFlatKnots(1, aNbNewPoles + aDegree + 1);
   BSplCLib::KnotSequence(theCurve->Knots(), theCurve->Multiplicities(), aSourceFlatKnots);
@@ -1252,9 +1249,9 @@ bool reparametrizeExactly(const occ::handle<Geom_BSplineCurve>& theCurve,
   NCollection_Array1<double> aHomogeneousPoles(1, 4 * theCurve->NbPoles());
   for (size_t aPoleIdx = 0; aPoleIdx < theCurve->Poles().Size(); ++aPoleIdx)
   {
-    const gp_Pnt& aPole = theCurve->Poles().At(aPoleIdx);
-    const double  aWeight = theCurve->WeightsArray().At(aPoleIdx);
-    const size_t  aHomogeneousIdx = 4 * aPoleIdx;
+    const gp_Pnt& aPole                             = theCurve->Poles().At(aPoleIdx);
+    const double  aWeight                           = theCurve->WeightsArray().At(aPoleIdx);
+    const size_t  aHomogeneousIdx                   = 4 * aPoleIdx;
     aHomogeneousPoles.ChangeAt(aHomogeneousIdx)     = aPole.X() * aWeight;
     aHomogeneousPoles.ChangeAt(aHomogeneousIdx + 1) = aPole.Y() * aWeight;
     aHomogeneousPoles.ChangeAt(aHomogeneousIdx + 2) = aPole.Z() * aWeight;
@@ -1281,14 +1278,14 @@ bool reparametrizeExactly(const occ::handle<Geom_BSplineCurve>& theCurve,
   for (size_t aPoleIdx = 0; aPoleIdx < aNewPoles.Size(); ++aPoleIdx)
   {
     const size_t aHomogeneousIdx = 4 * aPoleIdx;
-    const double aWeight = aNewHomogeneousPoles.At(aHomogeneousIdx + 3);
+    const double aWeight         = aNewHomogeneousPoles.At(aHomogeneousIdx + 3);
     if (aWeight <= gp::Resolution())
     {
       return false;
     }
     aNewPoles.ChangeAt(aPoleIdx).SetCoord(aNewHomogeneousPoles.At(aHomogeneousIdx) / aWeight,
-                                           aNewHomogeneousPoles.At(aHomogeneousIdx + 1) / aWeight,
-                                           aNewHomogeneousPoles.At(aHomogeneousIdx + 2) / aWeight);
+                                          aNewHomogeneousPoles.At(aHomogeneousIdx + 1) / aWeight,
+                                          aNewHomogeneousPoles.At(aHomogeneousIdx + 2) / aWeight);
     aNewWeights.ChangeAt(aPoleIdx) = aWeight;
   }
 
@@ -1394,15 +1391,19 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
   }
 
   occ::handle<Geom_BSplineCurve> anExactCurve;
-  math_Vector aExactSource(1, aNbConstraints);
-  math_Vector aExactTarget(1, aNbConstraints);
+  math_Vector                    aExactSource(1, aNbConstraints);
+  math_Vector                    aExactTarget(1, aNbConstraints);
   for (int aConstraintIdx = 1; aConstraintIdx <= aNbConstraints; ++aConstraintIdx)
   {
     aExactSource(aConstraintIdx) = aSource(aConstraintIdx);
     aExactTarget(aConstraintIdx) = aTarget(aConstraintIdx);
   }
-  if (reparametrizeExactly(
-        theCurve, aExactSource, aExactTarget, aNbConstraints, aLaw, anExactCurve))
+  if (reparametrizeExactly(theCurve,
+                           aExactSource,
+                           aExactTarget,
+                           aNbConstraints,
+                           aLaw,
+                           anExactCurve))
   {
     theCurve = anExactCurve;
     return true;

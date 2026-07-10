@@ -251,7 +251,7 @@ occ::handle<Geom_BSplineCurve> makePeriodicGuide(const double theX)
 }
 
 occ::handle<Geom_BSplineCurve> makeInterpolatedPeriodicProfile(const double theY,
-                                                                const int    theSeamShift)
+                                                               const int    theSeamShift)
 {
   constexpr int    THE_NB_POINTS = 8;
   constexpr double THE_PI        = 3.14159265358979323846;
@@ -352,7 +352,7 @@ void verifyPointOnSurface(const occ::handle<Geom_BSplineSurface>& theSurf,
   EXPECT_LT(aDist, theTol) << "Surface point at (" << theU << ", " << theV << ") = (" << aSurfPt.X()
                            << ", " << aSurfPt.Y() << ", " << aSurfPt.Z()
                            << ") differs from expected (" << theExpected.X() << ", "
-                            << theExpected.Y() << ", " << theExpected.Z() << ") by " << aDist;
+                           << theExpected.Y() << ", " << theExpected.Z() << ") by " << aDist;
 }
 
 using HeightFunction = double (*)(double, double);
@@ -379,11 +379,11 @@ struct AnalyticNetwork
   NCollection_Array1<occ::handle<Geom_Curve>> Profiles;
   NCollection_Array1<occ::handle<Geom_Curve>> Guides;
 
-  AnalyticNetwork(const size_t          theNbProfiles,
-                  const size_t          theNbGuides,
-                  HeightFunction        theHeight,
-                  const gp_XYZ&         theOrigin = gp_XYZ(0.0, 0.0, 0.0),
-                  const double          theScale  = 1.0)
+  AnalyticNetwork(const size_t   theNbProfiles,
+                  const size_t   theNbGuides,
+                  HeightFunction theHeight,
+                  const gp_XYZ&  theOrigin = gp_XYZ(0.0, 0.0, 0.0),
+                  const double   theScale  = 1.0)
       : Profiles(1, static_cast<int>(theNbProfiles)),
         Guides(1, static_cast<int>(theNbGuides))
   {
@@ -397,9 +397,9 @@ struct AnalyticNetwork
       for (size_t aGuideIdx = 0; aGuideIdx < theNbGuides; ++aGuideIdx)
       {
         const double aU = static_cast<double>(aGuideIdx) / static_cast<double>(theNbGuides - 1);
-        aPoints->SetValue(static_cast<int>(aGuideIdx) + 1,
-                          gp_Pnt(theOrigin
-                                 + gp_XYZ(theScale * aU, theScale * aV, theScale * theHeight(aU, aV))));
+        aPoints->SetValue(
+          static_cast<int>(aGuideIdx) + 1,
+          gp_Pnt(theOrigin + gp_XYZ(theScale * aU, theScale * aV, theScale * theHeight(aU, aV))));
         aParams->SetValue(static_cast<int>(aGuideIdx) + 1, aU);
       }
       GeomAPI_Interpolate anInterpolator(aPoints, aParams, false, Precision::Confusion());
@@ -417,9 +417,9 @@ struct AnalyticNetwork
       for (size_t aProfileIdx = 0; aProfileIdx < theNbProfiles; ++aProfileIdx)
       {
         const double aV = static_cast<double>(aProfileIdx) / static_cast<double>(theNbProfiles - 1);
-        aPoints->SetValue(static_cast<int>(aProfileIdx) + 1,
-                          gp_Pnt(theOrigin
-                                 + gp_XYZ(theScale * aU, theScale * aV, theScale * theHeight(aU, aV))));
+        aPoints->SetValue(
+          static_cast<int>(aProfileIdx) + 1,
+          gp_Pnt(theOrigin + gp_XYZ(theScale * aU, theScale * aV, theScale * theHeight(aU, aV))));
         aParams->SetValue(static_cast<int>(aProfileIdx) + 1, aV);
       }
       GeomAPI_Interpolate anInterpolator(aPoints, aParams, false, Precision::Confusion());
@@ -435,26 +435,29 @@ void verifyUniformNetworkInterpolation(const occ::handle<Geom_BSplineSurface>& t
 {
   ASSERT_FALSE(theSurface.IsNull());
   constexpr size_t THE_NB_SAMPLES = 32;
-  const double aUMin = theSurface->UKnot(1);
-  const double aUMax = theSurface->UKnot(theSurface->NbUKnots());
-  const double aVMin = theSurface->VKnot(1);
-  const double aVMax = theSurface->VKnot(theSurface->NbVKnots());
+  const double     aUMin          = theSurface->UKnot(1);
+  const double     aUMax          = theSurface->UKnot(theSurface->NbUKnots());
+  const double     aVMin          = theSurface->VKnot(1);
+  const double     aVMax          = theSurface->VKnot(theSurface->NbVKnots());
   for (size_t aProfileIdx = 0; aProfileIdx < theNetwork.Profiles.Size(); ++aProfileIdx)
   {
-    const double aV = aVMin + static_cast<double>(aProfileIdx)
-                                  / static_cast<double>(theNetwork.Profiles.Size() - 1) * (aVMax - aVMin);
+    const double aV = aVMin
+                      + static_cast<double>(aProfileIdx)
+                          / static_cast<double>(theNetwork.Profiles.Size() - 1) * (aVMax - aVMin);
     for (size_t aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
     {
       const double aParam = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
       const double aU     = aUMin + aParam * (aUMax - aUMin);
-      EXPECT_LE(theSurface->Value(aU, aV).Distance(theNetwork.Profiles.At(aProfileIdx)->Value(aParam)),
-                theTolerance);
+      EXPECT_LE(
+        theSurface->Value(aU, aV).Distance(theNetwork.Profiles.At(aProfileIdx)->Value(aParam)),
+        theTolerance);
     }
   }
   for (size_t aGuideIdx = 0; aGuideIdx < theNetwork.Guides.Size(); ++aGuideIdx)
   {
-    const double aU = aUMin + static_cast<double>(aGuideIdx)
-                                  / static_cast<double>(theNetwork.Guides.Size() - 1) * (aUMax - aUMin);
+    const double aU = aUMin
+                      + static_cast<double>(aGuideIdx)
+                          / static_cast<double>(theNetwork.Guides.Size() - 1) * (aUMax - aUMin);
     for (size_t aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
     {
       const double aParam = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
@@ -676,17 +679,17 @@ TEST(GeomFill_Gordon, NonAffineProfileReparametrization_PreservesProfilesAndGuid
 {
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
   aProfiles(1) = makeCubicInterpBSpline(gp_Pnt(0, 0, 0),
-                                         gp_Pnt(0.25, 0, 0.4),
-                                         gp_Pnt(0.75, 0, -0.3),
-                                         gp_Pnt(1, 0, 0));
+                                        gp_Pnt(0.25, 0, 0.4),
+                                        gp_Pnt(0.75, 0, -0.3),
+                                        gp_Pnt(1, 0, 0));
   aProfiles(2) = makeCubicInterpBSpline(gp_Pnt(0, 0.5, 0),
-                                         gp_Pnt(0.25, 0.5, 0.2),
-                                         gp_Pnt(0.75, 0.5, -0.5),
-                                         gp_Pnt(1, 0.5, 0));
+                                        gp_Pnt(0.25, 0.5, 0.2),
+                                        gp_Pnt(0.75, 0.5, -0.5),
+                                        gp_Pnt(1, 0.5, 0));
   aProfiles(3) = makeCubicInterpBSpline(gp_Pnt(0, 1, 0),
-                                         gp_Pnt(0.25, 1, 0.5),
-                                         gp_Pnt(0.75, 1, -0.2),
-                                         gp_Pnt(1, 1, 0));
+                                        gp_Pnt(0.25, 1, 0.5),
+                                        gp_Pnt(0.75, 1, -0.2),
+                                        gp_Pnt(1, 1, 0));
 
   occ::handle<NCollection_HArray1<gp_Pnt>> aGuidePoints = new NCollection_HArray1<gp_Pnt>(1, 3);
   aGuidePoints->SetValue(1, aProfiles(1)->Value(0.4));
@@ -713,14 +716,13 @@ TEST(GeomFill_Gordon, NonAffineProfileReparametrization_PreservesProfilesAndGuid
   const occ::handle<Geom_BSplineSurface>& aSurface = aGordon.Surface();
   EXPECT_LE(aGordon.Report().MaxProfileDeviation, Precision::Confusion());
   EXPECT_LE(aGordon.Report().MaxGuideDeviation, Precision::Confusion());
-  const double aMiddleProfileV =
-    0.5 * (aSurface->VKnot(1) + aSurface->VKnot(aSurface->NbVKnots()));
+  const double aMiddleProfileV = 0.5 * (aSurface->VKnot(1) + aSurface->VKnot(aSurface->NbVKnots()));
   constexpr int THE_NB_SAMPLES = 32;
   for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
   {
     const double aRatio = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
-    const double aU     = aSurface->UKnot(1)
-                       + aRatio * (aSurface->UKnot(aSurface->NbUKnots()) - aSurface->UKnot(1));
+    const double aU =
+      aSurface->UKnot(1) + aRatio * (aSurface->UKnot(aSurface->NbUKnots()) - aSurface->UKnot(1));
     const double aProfile1Param = aRatio <= 0.5 ? 0.8 * aRatio : 1.2 * aRatio - 0.2;
     const double aProfile3Param = aRatio <= 0.5 ? 1.2 * aRatio : 0.2 + 0.8 * aRatio;
 
@@ -737,8 +739,8 @@ TEST(GeomFill_Gordon, NonAffineProfileReparametrization_PreservesProfilesAndGuid
   for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
   {
     const double aRatio = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
-    const double aV     = aSurface->VKnot(1)
-                       + aRatio * (aSurface->VKnot(aSurface->NbVKnots()) - aSurface->VKnot(1));
+    const double aV =
+      aSurface->VKnot(1) + aRatio * (aSurface->VKnot(aSurface->NbVKnots()) - aSurface->VKnot(1));
     EXPECT_LE(aSurface->Value(aGuideU, aV).Distance(aGuides(2)->Value(aRatio)),
               Precision::Confusion());
   }
@@ -822,17 +824,17 @@ TEST(GeomFill_Gordon, InterpolatedPeriodicProfilesWithAlignedSeams_InterpolateWi
     occ::down_cast<Geom_BSplineCurve>(aProfiles(1));
   const occ::handle<Geom_BSplineCurve> aSecondProfile =
     occ::down_cast<Geom_BSplineCurve>(aProfiles(2));
-  const gp_Pnt aFirstSeam = aFirstProfile->Value(aFirstProfile->FirstParameter());
-  GeomAPI_ProjectPointOnCurve aSeamProjection(
-    gp_Pnt(aFirstSeam.X(), 1.0, aFirstSeam.Z()), aSecondProfile);
+  const gp_Pnt                aFirstSeam = aFirstProfile->Value(aFirstProfile->FirstParameter());
+  GeomAPI_ProjectPointOnCurve aSeamProjection(gp_Pnt(aFirstSeam.X(), 1.0, aFirstSeam.Z()),
+                                              aSecondProfile);
   ASSERT_GT(aSeamProjection.NbPoints(), 0);
   aSecondProfile->SetOrigin(aSeamProjection.LowerDistanceParameter(), Precision::Confusion());
   const double aFirstProfileMiddle =
     0.5 * (aFirstProfile->FirstParameter() + aFirstProfile->LastParameter());
   const double aSecondProfileMiddle =
     0.5 * (aSecondProfile->FirstParameter() + aSecondProfile->LastParameter());
-  const gp_Pnt aSecondSeam = aSecondProfile->Value(aSecondProfile->FirstParameter());
-  const gp_Pnt aFirstMiddle = aFirstProfile->Value(aFirstProfileMiddle);
+  const gp_Pnt aSecondSeam   = aSecondProfile->Value(aSecondProfile->FirstParameter());
+  const gp_Pnt aFirstMiddle  = aFirstProfile->Value(aFirstProfileMiddle);
   const gp_Pnt aSecondMiddle = aSecondProfile->Value(aSecondProfileMiddle);
   ASSERT_LE(aFirstSeam.Distance(gp_Pnt(aSecondSeam.X(), aFirstSeam.Y(), aSecondSeam.Z())),
             Precision::Confusion());
@@ -840,15 +842,12 @@ TEST(GeomFill_Gordon, InterpolatedPeriodicProfilesWithAlignedSeams_InterpolateWi
             Precision::Confusion());
 
   NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
-  aGuides(1) =
-    makeLinearBSpline(aFirstProfile->Value(aFirstProfile->FirstParameter()),
-                      aSecondProfile->Value(aSecondProfile->FirstParameter()));
-  aGuides(2) =
-    makeLinearBSpline(aFirstProfile->Value(aFirstProfileMiddle),
-                      aSecondProfile->Value(aSecondProfileMiddle));
-  aGuides(3) =
-    makeLinearBSpline(aFirstProfile->Value(aFirstProfile->FirstParameter()),
-                      aSecondProfile->Value(aSecondProfile->FirstParameter()));
+  aGuides(1) = makeLinearBSpline(aFirstProfile->Value(aFirstProfile->FirstParameter()),
+                                 aSecondProfile->Value(aSecondProfile->FirstParameter()));
+  aGuides(2) = makeLinearBSpline(aFirstProfile->Value(aFirstProfileMiddle),
+                                 aSecondProfile->Value(aSecondProfileMiddle));
+  aGuides(3) = makeLinearBSpline(aFirstProfile->Value(aFirstProfile->FirstParameter()),
+                                 aSecondProfile->Value(aSecondProfile->FirstParameter()));
 
   GeomFill_Gordon aGordon;
   aGordon.Init(aProfiles, aGuides, Precision::Confusion());
@@ -870,17 +869,17 @@ TEST(GeomFill_Gordon, InterpolatedPeriodicProfilesWithAlignedSeams_InterpolateWi
   for (int aSampleIdx = 0; aSampleIdx <= THE_NB_SAMPLES; ++aSampleIdx)
   {
     const double aRatio = static_cast<double>(aSampleIdx) / THE_NB_SAMPLES;
-    const double aU = aSurface->UKnot(1)
-                      + aRatio * (aSurface->UKnot(aSurface->NbUKnots()) - aSurface->UKnot(1));
-    const double aFirstProfileParam = aFirstProfile->FirstParameter()
-                                      + aRatio * (aFirstProfile->LastParameter()
-                                                  - aFirstProfile->FirstParameter());
-    const double aSecondProfileParam = aSecondProfile->FirstParameter()
-                                       + aRatio * (aSecondProfile->LastParameter()
-                                                   - aSecondProfile->FirstParameter());
-    EXPECT_LE(aSurface->Value(aU, aSurface->VKnot(1))
-                .Distance(aFirstProfile->Value(aFirstProfileParam)),
-              Precision::Confusion());
+    const double aU =
+      aSurface->UKnot(1) + aRatio * (aSurface->UKnot(aSurface->NbUKnots()) - aSurface->UKnot(1));
+    const double aFirstProfileParam =
+      aFirstProfile->FirstParameter()
+      + aRatio * (aFirstProfile->LastParameter() - aFirstProfile->FirstParameter());
+    const double aSecondProfileParam =
+      aSecondProfile->FirstParameter()
+      + aRatio * (aSecondProfile->LastParameter() - aSecondProfile->FirstParameter());
+    EXPECT_LE(
+      aSurface->Value(aU, aSurface->VKnot(1)).Distance(aFirstProfile->Value(aFirstProfileParam)),
+      Precision::Confusion());
     EXPECT_LE(aSurface->Value(aU, aSurface->VKnot(aSurface->NbVKnots()))
                 .Distance(aSecondProfile->Value(aSecondProfileParam)),
               Precision::Confusion());
@@ -2068,10 +2067,8 @@ TEST(GeomFill_Gordon, PolynomialProfilesWithRationalGuidesProducesSurface)
   NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 3);
   aGuides(1) =
     makeRationalQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 0.5, 0), gp_Pnt(0, 1, 0), 0.5);
-  aGuides(2) = makeRationalQuadraticBSpline(gp_Pnt(0.5, 0, 0),
-                                             gp_Pnt(0.5, 0.5, 0),
-                                             gp_Pnt(0.5, 1, 0),
-                                             0.5);
+  aGuides(2) =
+    makeRationalQuadraticBSpline(gp_Pnt(0.5, 0, 0), gp_Pnt(0.5, 0.5, 0), gp_Pnt(0.5, 1, 0), 0.5);
   aGuides(3) =
     makeRationalQuadraticBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 0.5, 0), gp_Pnt(1, 1, 0), 0.5);
 
@@ -2113,21 +2110,21 @@ TEST(GeomFill_Gordon, ApproximateFallbackCanRecoverRationalDegreeOverflow)
   EXPECT_LE(aGordon.Report().MaxApproximationDeviation, 0.001);
   EXPECT_FALSE(aGordon.Surface().IsNull());
 
-  constexpr size_t THE_NB_QUALITY_SAMPLES = 48;
-  const occ::handle<Geom_BSplineSurface>& aSurface = aGordon.Surface();
-  const double aUMin = aSurface->UKnot(1);
-  const double aUMax = aSurface->UKnot(aSurface->NbUKnots());
-  const double aVMin = aSurface->VKnot(1);
-  const double aVMax = aSurface->VKnot(aSurface->NbVKnots());
-  double       aMaxDeviation = 0.0;
+  constexpr size_t                        THE_NB_QUALITY_SAMPLES = 48;
+  const occ::handle<Geom_BSplineSurface>& aSurface               = aGordon.Surface();
+  const double                            aUMin                  = aSurface->UKnot(1);
+  const double                            aUMax         = aSurface->UKnot(aSurface->NbUKnots());
+  const double                            aVMin         = aSurface->VKnot(1);
+  const double                            aVMax         = aSurface->VKnot(aSurface->NbVKnots());
+  double                                  aMaxDeviation = 0.0;
   for (size_t aUIdx = 0; aUIdx <= THE_NB_QUALITY_SAMPLES; ++aUIdx)
   {
     const double aUParam = static_cast<double>(aUIdx) / THE_NB_QUALITY_SAMPLES;
     const double aU      = aUMin + aUParam * (aUMax - aUMin);
     for (size_t aVIdx = 0; aVIdx <= THE_NB_QUALITY_SAMPLES; ++aVIdx)
     {
-      const double aVParam = static_cast<double>(aVIdx) / THE_NB_QUALITY_SAMPLES;
-      const double aV      = aVMin + aVParam * (aVMax - aVMin);
+      const double aVParam       = static_cast<double>(aVIdx) / THE_NB_QUALITY_SAMPLES;
+      const double aV            = aVMin + aVParam * (aVMax - aVMin);
       const gp_Pnt aProfilePoint = aProfiles.At(0)->Value(aUParam);
       const gp_Pnt aGuidePoint   = aGuides.At(0)->Value(aVParam);
       const gp_Pnt anExpectedPoint(aProfilePoint.X(), aGuidePoint.Y(), 0.0);
