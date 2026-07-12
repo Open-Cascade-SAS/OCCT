@@ -144,7 +144,7 @@ TEST(BRepMesh_IncrementalMeshTest, TrimmedCylinder_RespectsUVRangeAndDeflection)
     const gp_Pnt2d aUV2            = aTriangulation->UVNode(aNode2);
     const gp_Pnt2d aUV3            = aTriangulation->UVNode(aNode3);
     const gp_Pnt   anExpectedPoint = aCylinder->Value((aUV1.X() + aUV2.X() + aUV3.X()) / 3.0,
-                                                      (aUV1.Y() + aUV2.Y() + aUV3.Y()) / 3.0);
+                                                    (aUV1.Y() + aUV2.Y() + aUV3.Y()) / 3.0);
     const gp_Pnt   aPoint1         = aTriangulation->Node(aNode1).Transformed(aLocation);
     const gp_Pnt   aPoint2         = aTriangulation->Node(aNode2).Transformed(aLocation);
     const gp_Pnt   aPoint3         = aTriangulation->Node(aNode3).Transformed(aLocation);
