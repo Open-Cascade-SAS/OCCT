@@ -1,4 +1,4 @@
-puts "TODO OCC30286 Linux: Error : The length of result shape is 3025.32"
+puts "TODO OCC30286 Linux: Error : The length of result shape is 3025.4"
 
 puts "==========================================="
 puts "OCC25813: regression in Hidden Line Removal"
