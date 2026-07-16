@@ -34,6 +34,8 @@
 
 #include <BRepLib.hxx>
 
+#include <NCollection_Array1.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_DynamicArray.hxx>
 
 #include <ShapeUpgrade_UnifySameDomain.hxx>
@@ -894,12 +896,101 @@ private: //! @name Fields
 typedef NCollection_DynamicArray<FillGap> VectorOfFillGap;
 
 //=======================================================================
+// class: BOPAlgo_RemoveFeatures::RFGroup
+// purpose: Processes a group of features whose affected solids are
+//          disjoint from the solids of every other group. Features
+//          within a group are removed sequentially, in their original
+//          relative order, since a later feature may depend on the
+//          shape/history state left by an earlier one touching the
+//          same solid(s). Different groups touch disjoint solids and
+//          hold their own private local shape/history, so they never
+//          share mutable state and can safely run in parallel.
+//=======================================================================
+class BOPAlgo_RemoveFeatures::RFGroup
+{
+public:
+  //! Empty constructor
+  RFGroup()
+      : myAlgo(nullptr)
+  {
+  }
+
+  //! Sets the owning algorithm, used to call RemoveFeature/AddWarning/HasHistory.
+  //! These calls remain safe from multiple threads: AddWarning/HasHistory only
+  //! touch the thread-safe Message_Report and a read-only flag, and RemoveFeature
+  //! itself no longer touches any field of the owning algorithm.
+  void SetAlgo(BOPAlgo_RemoveFeatures* theAlgo) { myAlgo = theAlgo; }
+
+  //! Adds a feature to this group, in original relative order.
+  void AddFeature(FillGap& theFG) { myFeatures.Append(&theFG); }
+
+  //! Sets the local starting shape, a compound of only the solids
+  //! belonging to this group, taken from the shape as it was before
+  //! any feature had been removed from it.
+  void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }
+
+  //! Sets the progress range for this group.
+  void SetRange(const Message_ProgressRange& theRange) { myRange = theRange; }
+
+  //! Returns the resulting local shape, the rebuilt solids of this group.
+  const TopoDS_Shape& Shape() const { return myShape; }
+
+  //! Returns the local history collected while processing this group's features.
+  const occ::handle<BRepTools_History>& History() const { return myHistory; }
+
+  //! Performs the sequential removal of this group's features.
+  void Perform()
+  {
+    myHistory = new BRepTools_History();
+
+    const int                            aNbF = myFeatures.Extent();
+    Message_ProgressScope                aPS(myRange, nullptr, aNbF);
+    NCollection_List<FillGap*>::Iterator itF(myFeatures);
+    for (int i = 0; itF.More(); itF.Next(), ++i)
+    {
+      if (!aPS.More())
+      {
+        return;
+      }
+
+      FillGap& aFG = *itF.Value();
+
+      // No need to fill the history for solids if the history is not
+      // requested and the current feature is the last one in this group.
+      bool isSolidsHistoryNeeded = myAlgo->HasHistory() || (i < (aNbF - 1));
+
+      myAlgo->RemoveFeature(aFG.Feature(),
+                            aFG.Solids(),
+                            aFG.FeatureFacesMap(),
+                            aFG.HasAdjacentFaces(),
+                            aFG.Faces(),
+                            aFG.History(),
+                            isSolidsHistoryNeeded,
+                            myShape,
+                            myHistory,
+                            aPS.Next());
+    }
+  }
+
+private:
+  BOPAlgo_RemoveFeatures*        myAlgo;     //!< Owning algorithm
+  NCollection_List<FillGap*>     myFeatures; //!< Features of this group, in original order
+  TopoDS_Shape                   myShape;    //!< Local shape, only this group's solids
+  occ::handle<BRepTools_History> myHistory;  //!< Local history for this group
+  Message_ProgressRange          myRange;    //!< Progress indication
+};
+
+//=======================================================================
 // function: RemoveFeatures
 // purpose: Remove features by filling the gaps by extension of the
 //          adjacent faces
 //=======================================================================
 void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRange)
 {
+  // RFGroup is a private nested type, so this typedef must live inside a
+  // member function instead of at file scope like VectorOfFillGap above.
+  typedef NCollection_DynamicArray<RFGroup> VectorOfRFGroup;
+
   // For each feature:
   // - Find the faces adjacent to the feature;
   // - Extend the adjacent faces;
@@ -959,32 +1050,173 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRang
     myHistory = new BRepTools_History();
   }
 
-  // Remove the features one by one.
-  // It will allow removing the features even if there were
-  // some problems with removal of the previous features.
-  Message_ProgressScope aPSLoop(aPSOuter.Next(), "Removing features one by one", aNbF);
+  // Group the features whose affected solids are disjoint from every other
+  // group's solids, so that different groups can be processed independently,
+  // in parallel if requested. Features sharing a solid within one group stay
+  // strictly sequential, since a later feature may depend on the
+  // shape/history state left behind by an earlier one touching the same
+  // solid. The grouping is a Union-Find over the solids touched by the
+  // features, as already identified by the FillGap step above from the
+  // pristine, not yet processed shape.
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSolidToIndex;
   for (int i = 0; i < aNbF; ++i)
   {
-    if (UserBreak(aPSLoop))
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aSolids = aVFG(i).Solids();
+    const int                                                            aNbS    = aSolids.Extent();
+    for (int j = 1; j <= aNbS; ++j)
     {
-      return;
+      aSolidToIndex.Add(aSolids(j));
     }
-    FillGap& aFG = aVFG(i);
-
-    // No need to fill the history for solids if the history is not
-    // requested and the current feature is the last one.
-    bool isSolidsHistoryNeeded = HasHistory() || (i < (aNbF - 1));
-
-    // Perform removal of the single feature
-    RemoveFeature(aFG.Feature(),
-                  aFG.Solids(),
-                  aFG.FeatureFacesMap(),
-                  aFG.HasAdjacentFaces(),
-                  aFG.Faces(),
-                  aFG.History(),
-                  isSolidsHistoryNeeded,
-                  aPSLoop.Next());
   }
+
+  const int               aNbSolids = (aSolidToIndex.Extent() > 0) ? aSolidToIndex.Extent() : 1;
+  NCollection_Array1<int> aUFParent(1, aNbSolids);
+  for (int i = aUFParent.Lower(); i <= aUFParent.Upper(); ++i)
+  {
+    aUFParent(i) = i;
+  }
+
+  // Iterative Find with path halving.
+  auto findRoot = [&aUFParent](int theIndex) {
+    while (aUFParent(theIndex) != theIndex)
+    {
+      aUFParent(theIndex) = aUFParent(aUFParent(theIndex));
+      theIndex            = aUFParent(theIndex);
+    }
+    return theIndex;
+  };
+
+  // All solids touched by a single feature must end up in the same group,
+  // regardless of whether any other feature also touches them.
+  for (int i = 0; i < aNbF; ++i)
+  {
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aSolids = aVFG(i).Solids();
+    const int                                                            aNbS    = aSolids.Extent();
+    if (aNbS == 0)
+    {
+      continue;
+    }
+    const int aRoot0 = findRoot(aSolidToIndex.FindIndex(aSolids(1)));
+    for (int j = 2; j <= aNbS; ++j)
+    {
+      const int aRootJ = findRoot(aSolidToIndex.FindIndex(aSolids(j)));
+      if (aRootJ != aRoot0)
+      {
+        aUFParent(aRootJ) = aRoot0;
+      }
+    }
+  }
+
+  // Compute the group root for every feature once, path-compressing as we go.
+  NCollection_Array1<int> aFeatureRoot(0, aNbF - 1);
+  for (int i = 0; i < aNbF; ++i)
+  {
+    const int aNbS = aVFG(i).Solids().Extent();
+    // A feature with no identified solids gets its own trivial group.
+    // This should not normally happen, since every feature face belongs
+    // to some solid.
+    aFeatureRoot(i) =
+      (aNbS == 0) ? -(i + 1) : findRoot(aSolidToIndex.FindIndex(aVFG(i).Solids()(1)));
+  }
+
+  // Bucket the features by their group root, preserving relative order.
+  NCollection_DataMap<int, int> aRootToGroup;
+  VectorOfRFGroup               aVGroups;
+  for (int i = 0; i < aNbF; ++i)
+  {
+    const int aRoot     = aFeatureRoot(i);
+    int*      pGroupIdx = aRootToGroup.ChangeSeek(aRoot);
+    int       aGroupIdx;
+    if (pGroupIdx)
+    {
+      aGroupIdx = *pGroupIdx;
+    }
+    else
+    {
+      aGroupIdx = aVGroups.Length();
+      aVGroups.Appended().SetAlgo(this);
+      aRootToGroup.Bind(aRoot, aGroupIdx);
+    }
+    aVGroups(aGroupIdx).AddFeature(aVFG(i));
+  }
+
+  // Build each group's local starting shape, a compound of only the
+  // solids belonging to that group, taken from the current, not yet
+  // processed myShape. Solids untouched by any feature at all are
+  // collected separately and passed through unchanged.
+  const int                           aNbGroups = aVGroups.Length();
+  NCollection_Array1<TopoDS_Compound> aGroupShapes(0, (aNbGroups > 0) ? aNbGroups - 1 : 0);
+  for (int i = 0; i < aNbGroups; ++i)
+  {
+    BRep_Builder().MakeCompound(aGroupShapes(i));
+  }
+
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aSolidToGroup;
+  for (int i = 0; i < aNbF; ++i)
+  {
+    const int aGroupIdx = *aRootToGroup.Seek(aFeatureRoot(i));
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aSolids = aVFG(i).Solids();
+    const int                                                            aNbS    = aSolids.Extent();
+    for (int j = 1; j <= aNbS; ++j)
+    {
+      if (!aSolidToGroup.IsBound(aSolids(j)))
+      {
+        aSolidToGroup.Bind(aSolids(j), aGroupIdx);
+        BRep_Builder().Add(aGroupShapes(aGroupIdx), aSolids(j));
+      }
+    }
+  }
+
+  TopoDS_Compound anUntouchedShape;
+  BRep_Builder().MakeCompound(anUntouchedShape);
+  TopExp_Explorer anExpS(myShape, TopAbs_SOLID);
+  for (; anExpS.More(); anExpS.Next())
+  {
+    if (!aSolidToGroup.IsBound(anExpS.Current()))
+    {
+      BRep_Builder().Add(anUntouchedShape, anExpS.Current());
+    }
+  }
+
+  for (int i = 0; i < aVGroups.Length(); ++i)
+  {
+    aVGroups(i).SetShape(aGroupShapes(i));
+  }
+
+  // Assign progress ranges and remove each group's features, in original
+  // relative order within the group, running different groups in parallel
+  // where possible.
+  Message_ProgressScope aPSLoop(aPSOuter.Next(), "Removing features by group", aVGroups.Length());
+  for (int i = 0; i < aVGroups.Length(); ++i)
+  {
+    aVGroups(i).SetRange(aPSLoop.Next());
+  }
+  BOPTools_Parallel::Perform(myRunParallel, aVGroups);
+  if (UserBreak(aPSOuter))
+  {
+    return;
+  }
+
+  // Merge the results of all the groups, and the solids that were never
+  // touched by any feature, into the final shape and history.
+  TopoDS_Compound aResShape;
+  BRep_Builder().MakeCompound(aResShape);
+  TopExp_Explorer anExpUS(anUntouchedShape, TopAbs_SOLID);
+  for (; anExpUS.More(); anExpUS.Next())
+  {
+    BRep_Builder().Add(aResShape, anExpUS.Current());
+  }
+  for (int i = 0; i < aVGroups.Length(); ++i)
+  {
+    TopExp_Explorer anExpGS(aVGroups(i).Shape(), TopAbs_SOLID);
+    for (; anExpGS.More(); anExpGS.Next())
+    {
+      BRep_Builder().Add(aResShape, anExpGS.Current());
+    }
+    myHistory->Merge(aVGroups(i).History());
+  }
+
+  myShape = aResShape;
 }
 
 //=================================================================================================
@@ -999,6 +1231,8 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
                                    TopTools_ShapeMapHasher>&           theAdjFaces,
   const occ::handle<BRepTools_History>&                                theAdjFacesHistory,
   const bool                                                           theSolidsHistoryNeeded,
+  TopoDS_Shape&                                                        theShape,
+  occ::handle<BRepTools_History>&                                      theHistory,
   const Message_ProgressRange&                                         theRange)
 {
   bool      bFuseShapes = true;
@@ -1049,11 +1283,11 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
   NCollection_List<TopoDS_Shape> anUnTouchedSolids;
 
   // Prepare to the feature removal - fill all necessary containers
-  GetOriginalFaces(myShape,
+  GetOriginalFaces(theShape,
                    theSolids,
                    theFeatureFacesMap,
                    theAdjFaces,
-                   myHistory,
+                   theHistory,
                    aFacesToBeKept,
                    anInternalShapes,
                    aFacesToCheckOri,
@@ -1148,7 +1382,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
       return;
     }
     const TopoDS_Shape&                   aF    = theAdjFaces.FindKey(i);
-    const NCollection_List<TopoDS_Shape>& aLFIm = myHistory->Modified(aF);
+    const NCollection_List<TopoDS_Shape>& aLFIm = theHistory->Modified(aF);
     if (aLFIm.IsEmpty())
     {
       anAdjFacesSplits.Add(aF);
@@ -1222,9 +1456,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
 
   // Update history with:
   // History of adjacent faces reconstruction
-  myHistory->Merge(theAdjFacesHistory);
+  theHistory->Merge(theAdjFacesHistory);
   // History of intersection
-  myHistory->Merge(aMV.History());
+  theHistory->Merge(aMV.History());
 
   if (HasHistory())
   {
@@ -1240,7 +1474,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
     BRepTools_History aRemHist;
     anInternalShapes.Append(aRemovedShapes);
     MakeRemoved(anInternalShapes, aRemHist, aMSRes);
-    myHistory->Merge(aRemHist);
+    theHistory->Merge(aRemHist);
   }
   aPS.Next(3);
   // Fill the history for the solids
@@ -1248,7 +1482,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
   {
     BRepTools_History aSolidsHistory;
     FillSolidsHistory(aSolidsToRebuild, aLSRes, theAdjFaces, aMV, aSolidsHistory);
-    myHistory->Merge(aSolidsHistory);
+    theHistory->Merge(aSolidsHistory);
   }
 
   TopoDS_Compound aCRes;
@@ -1268,7 +1502,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
   }
 
   // Save the result
-  myShape = aCRes;
+  theShape = aCRes;
 }
 
 //=======================================================================
