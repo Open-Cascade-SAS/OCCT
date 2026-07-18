@@ -20,6 +20,12 @@
 #include <Extrema_ExtPC2d.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <math_PSO.hxx>
@@ -46,6 +52,70 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom_Curve>& Curve,
   //
   U           = 0.;
   double aTol = MaxDist * MaxDist;
+
+  // Analytic curve types already have an O(1) closed-form parameter
+  // computation in ElCLib, so use that instead of the iterative
+  // Extrema_ExtPC search below when the curve (or its basis curve, if
+  // trimmed) is a Line, Circle, Ellipse, Hyperbola or Parabola. The
+  // closed-form result is only kept if it lands within the curve's own
+  // range, accounting for periodicity. A trimmed arc whose true closest
+  // point falls outside the trimmed portion still goes through the
+  // generic search below.
+  {
+    occ::handle<Geom_Curve> aBasisCurve = Curve;
+    while (aBasisCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
+      aBasisCurve = occ::down_cast<Geom_TrimmedCurve>(aBasisCurve)->BasisCurve();
+    }
+
+    bool   hasFastU = true;
+    double aFastU   = 0.0;
+    if (aBasisCurve->IsKind(STANDARD_TYPE(Geom_Line)))
+    {
+      aFastU = ElCLib::Parameter(occ::down_cast<Geom_Line>(aBasisCurve)->Lin(), Point);
+    }
+    else if (aBasisCurve->IsKind(STANDARD_TYPE(Geom_Circle)))
+    {
+      aFastU = ElCLib::Parameter(occ::down_cast<Geom_Circle>(aBasisCurve)->Circ(), Point);
+    }
+    else if (aBasisCurve->IsKind(STANDARD_TYPE(Geom_Ellipse)))
+    {
+      aFastU = ElCLib::Parameter(occ::down_cast<Geom_Ellipse>(aBasisCurve)->Elips(), Point);
+    }
+    else if (aBasisCurve->IsKind(STANDARD_TYPE(Geom_Hyperbola)))
+    {
+      aFastU = ElCLib::Parameter(occ::down_cast<Geom_Hyperbola>(aBasisCurve)->Hypr(), Point);
+    }
+    else if (aBasisCurve->IsKind(STANDARD_TYPE(Geom_Parabola)))
+    {
+      aFastU = ElCLib::Parameter(occ::down_cast<Geom_Parabola>(aBasisCurve)->Parab(), Point);
+    }
+    else
+    {
+      hasFastU = false;
+    }
+
+    if (hasFastU)
+    {
+      if (Curve->IsPeriodic())
+      {
+        aFastU = ElCLib::InPeriod(aFastU,
+                                  Curve->FirstParameter(),
+                                  Curve->FirstParameter() + Curve->Period());
+      }
+      if (aFastU >= Curve->FirstParameter() - PARTOLERANCE
+          && aFastU <= Curve->LastParameter() + PARTOLERANCE)
+      {
+        const gp_Pnt aFastP = Curve->Value(aFastU);
+        if (aFastP.SquareDistance(Point) <= aTol)
+        {
+          U = aFastU;
+          return true;
+        }
+        return false;
+      }
+    }
+  }
   //
   GeomAdaptor_Curve aGAC(Curve);
   Extrema_ExtPC     extrema(Point, aGAC);
