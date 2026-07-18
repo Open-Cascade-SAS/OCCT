@@ -1543,18 +1543,42 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
   IMeshData::MapOfIntegerInteger&     theLoopEdges,
   IMeshData::VectorOfInteger&         theVictimNodes)
 {
-  IMeshData::ListOfInteger::Iterator aNeighborsIt = myMeshData->LinksConnectedTo(theZombieNodeId);
+  // Snapshot the neighbor link ids before iterating: the loop body below can,
+  // via killTrianglesOnIntersectingLinks()/killLinkTriangles(), delete
+  // triangles and edges connected to theZombieNodeId, which mutates
+  // myMeshData->LinksConnectedTo(theZombieNodeId), the very list a live
+  // iterator would be walking. Continuing to use such an iterator after the
+  // list is mutated out from under it is undefined behavior. Iterating a
+  // stable copy instead, and skipping entries that have already become
+  // BRepMesh_Deleted by the time we reach them, is safe here specifically
+  // because nothing in this whole kill-cascade calls AddLink(), so no link
+  // id snapshotted here can be recycled for an unrelated edge before we get
+  // to it.
+  IMeshData::VectorOfInteger aNeighborLinkIds;
+  {
+    IMeshData::ListOfInteger::Iterator aLinksIt = myMeshData->LinksConnectedTo(theZombieNodeId);
+    for (; aLinksIt.More(); aLinksIt.Next())
+    {
+      aNeighborLinkIds.Append(aLinksIt.Value());
+    }
+  }
 
   // Try to infect neighbor nodes
+  IMeshData::VectorOfInteger::Iterator aNeighborsIt(aNeighborLinkIds);
   for (; aNeighborsIt.More(); aNeighborsIt.Next())
   {
-    const int& aNeighborLinkId = aNeighborsIt.Value();
+    const int aNeighborLinkId = aNeighborsIt.Value();
     if (theSurvivedLinks.Contains(aNeighborLinkId))
     {
       continue;
     }
 
     const BRepMesh_Edge& aNeighborLink = GetEdge(aNeighborLinkId);
+    if (aNeighborLink.Movability() == BRepMesh_Deleted)
+    {
+      continue;
+    }
+
     if (aNeighborLink.Movability() == BRepMesh_Frontier)
     {
       // Though, if it lies onto the polygon boundary -
@@ -1683,13 +1707,31 @@ void BRepMesh_Delaun::killTrianglesOnIntersectingLinks(
 
   killLinkTriangles(theLinkToCheckId, theLoopEdges);
 
-  IMeshData::ListOfInteger::Iterator aNeighborsIt(myMeshData->LinksConnectedTo(theEndPoint));
+  // See killTrianglesAroundVertex() for why this snapshots the neighbor link
+  // ids before iterating rather than walking a live iterator over
+  // LinksConnectedTo(theEndPoint): the recursive call below can delete edges
+  // connected to theEndPoint via the same cascade, invalidating a live
+  // iterator over that same list.
+  IMeshData::VectorOfInteger aNeighborLinkIds;
+  {
+    IMeshData::ListOfInteger::Iterator aLinksIt = myMeshData->LinksConnectedTo(theEndPoint);
+    for (; aLinksIt.More(); aLinksIt.Next())
+    {
+      aNeighborLinkIds.Append(aLinksIt.Value());
+    }
+  }
 
+  IMeshData::VectorOfInteger::Iterator aNeighborsIt(aNeighborLinkIds);
   for (; aNeighborsIt.More(); aNeighborsIt.Next())
   {
-    const int&           aNeighborLinkId = aNeighborsIt.Value();
+    const int            aNeighborLinkId = aNeighborsIt.Value();
     const BRepMesh_Edge& aNeighborLink   = GetEdge(aNeighborLinkId);
-    int                  anOtherNode     = aNeighborLink.FirstNode();
+    if (aNeighborLink.Movability() == BRepMesh_Deleted)
+    {
+      continue;
+    }
+
+    int anOtherNode = aNeighborLink.FirstNode();
     if (anOtherNode == theEndPoint)
     {
       anOtherNode = aNeighborLink.LastNode();
