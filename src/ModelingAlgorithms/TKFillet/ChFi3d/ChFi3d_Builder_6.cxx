@@ -641,7 +641,8 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
                                const bool                            Reversed)
 {
   // Small control tools.
-  static occ::handle<GeomAdaptor_Curve> checkcurve;
+  // Per-thread reused scratch adaptor.
+  static thread_local occ::handle<GeomAdaptor_Curve> checkcurve;
   if (checkcurve.IsNull())
   {
     checkcurve = new GeomAdaptor_Curve();
