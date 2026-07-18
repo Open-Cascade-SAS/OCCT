@@ -347,6 +347,58 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
   BRep_Builder                   B;
   TopExp_Explorer                exp1, exp2;
   NCollection_List<TopoDS_Shape> theListOfShape;
+
+  // Precompute a 2D parametric bounding box for every wire, the same
+  // pattern IntersectWires() already uses above. IsInside() classifies a
+  // single representative point of wir2 against wir1's region, so if the
+  // two wires' boxes don't overlap, that point can't be inside wir1's
+  // region and the classification test can be skipped. The loop below is
+  // still a pair over every wire, but each pair now costs an O(1) box
+  // check instead of a real classification, which is what actually
+  // matters for a plate with many non-overlapping holes.
+  Geom2dAdaptor_Curve aBoxCurveAdapt;
+  double              aBoxFirst, aBoxLast;
+  DataMapOfShapeBox2d aWireBoxMap;
+  for (exp1.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp1.More(); exp1.Next())
+  {
+    Bnd_Box2d aBoxW;
+    bool      isBoxReliable = true;
+    for (exp2.Init(exp1.Current(), TopAbs_EDGE); exp2.More(); exp2.Next())
+    {
+      const TopoDS_Edge&        anEdge = TopoDS::Edge(exp2.Current());
+      occ::handle<Geom2d_Curve> aPCurve =
+        BRep_Tool::CurveOnSurface(anEdge, TopoDS::Face(myShape), aBoxFirst, aBoxLast);
+      if (aPCurve.IsNull())
+      {
+        continue;
+      }
+      aBoxCurveAdapt.Load(aPCurve);
+      double aF = aBoxFirst, aL = aBoxLast;
+      if (aBoxCurveAdapt.FirstParameter() > aF)
+      {
+        aF            = aBoxCurveAdapt.FirstParameter();
+        isBoxReliable = false;
+      }
+      if (aBoxCurveAdapt.LastParameter() < aL)
+      {
+        aL            = aBoxCurveAdapt.LastParameter();
+        isBoxReliable = false;
+      }
+      Bnd_Box2d aBoxE;
+      BndLib_Add2dCurve::Add(aBoxCurveAdapt, aF, aL, 0., aBoxE);
+      aBoxW.Add(aBoxE);
+    }
+    // IsInside() below picks its representative point using the edge's own
+    // (unclamped) parameter range, not the curve's own definition domain, so
+    // if any edge's trim range had to be clamped to build this box, the box
+    // may not actually contain the point IsInside() would evaluate. Skip the
+    // pre-filter for such a wire rather than risk a wrong answer.
+    if (isBoxReliable)
+    {
+      aWireBoxMap.Bind(exp1.Current(), aBoxW);
+    }
+  }
+
   for (exp1.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp1.More(); exp1.Next())
   {
 
@@ -368,13 +420,36 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
       myMapImb.Bind(wir1.Reversed(), theListOfShape);
     }
 
+    Bnd_Box2d aBox1;
+    bool      hasBox1 =
+      aWireBoxMap.IsBound(exp1.Current()) && !(aBox1 = aWireBoxMap(exp1.Current())).IsVoid();
+
     for (exp2.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp2.More(); exp2.Next())
     {
       const TopoDS_Wire& wir2 = TopoDS::Wire(exp2.Current());
       if (!wir2.IsSame(wir1))
       {
-
-        if (IsInside(wir2, WireBienOriente, FClass2d, newFace))
+        bool      isWire2Inside;
+        Bnd_Box2d aBox2;
+        bool      hasBox2 = hasBox1 && aWireBoxMap.IsBound(exp2.Current())
+                       && !(aBox2 = aWireBoxMap(exp2.Current())).IsVoid();
+        if (hasBox2 && aBox1.IsOut(aBox2))
+        {
+          // wir2's point falls outside wir1's box, so it's outside wir1's
+          // finite bounded region. If WireBienOriente is false, that
+          // finite region is exactly what IsInside() tests for, so the
+          // point is out. If WireBienOriente is true, IsInside() tests
+          // for the infinite complement of that region instead, and a
+          // point outside the finite region is inside the complement, so
+          // IsInside() returns false there too. Either way the answer is
+          // false.
+          isWire2Inside = false;
+        }
+        else
+        {
+          isWire2Inside = IsInside(wir2, WireBienOriente, FClass2d, newFace);
+        }
+        if (isWire2Inside)
         {
           myMapImb(wir1).Append(wir2);
         }
