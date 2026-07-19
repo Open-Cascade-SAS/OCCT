@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC26798"
+puts "========"
+puts ""
+#######################################################################
+# Boolean operations: keep desired cells and boundaries in the result
+#######################################################################
+
+smallview
+
+psphere s1 15
+psphere s2 15
+psphere s3 15
+ttranslate s1 0 0 10
+ttranslate s2 20 0 10
+ttranslate s3 10 0 0
+
+bclearobjects
+bcleartools
+baddobjects s1 s2 s3
+bfillds
+bcbuild r
+
+bcremoveall
+bcadd result s1 0 s3 1
+
+donly result
+fit
+
+checkprops result -s 3701.46
+

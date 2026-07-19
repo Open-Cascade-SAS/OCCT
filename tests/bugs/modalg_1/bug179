@@ -1,0 +1,23 @@
+
+puts "========"
+puts "OCC179"
+puts "========"
+puts ""
+###########################################
+## Bug in meshing of the enclosed face 
+###########################################
+
+restore [locate_data_file OCC179.brep] result
+
+tclean result
+isos result 0
+incmesh result 0.01
+triangles result 
+
+set tri 0
+set nod 0
+
+checktrinfo result -tri 1874 -nod 1861
+checkprops result -s 12229.8 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

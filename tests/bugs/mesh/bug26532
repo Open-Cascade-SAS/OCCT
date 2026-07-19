@@ -1,0 +1,121 @@
+puts "========"
+puts "OCC26532"
+puts "========"
+puts ""
+#######################################################################
+# Meshing of edge with minSize parameter leads to incorrect result
+#######################################################################
+
+proc xyzList {List N A B} {
+   set ResultList {}
+   for {set i 1} {$i <= $N} {incr i} {
+      set tmpList {}
+      set x [lindex $List [expr ($A + 0 + $B*$i) ]]
+      set y [lindex $List [expr ($A + 1 + $B*$i) ]]
+      set z [lindex $List [expr ($A + 2 + $B*$i) ]]
+      #puts "i=$i x=$x y=$y z=$z"
+      lappend tmpList $x
+      lappend tmpList $y
+      lappend tmpList $z
+      lappend ResultList $tmpList
+   }
+   return $ResultList
+}
+
+restore [locate_data_file bug26533_aal2.brep] a
+
+vinit
+vdisplay a
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+# 1
+# with min size
+# => ugly curve
+vclear
+incmesh a 0.3 -min 0.06
+vdisplay a
+vdump ${imagedir}/${casename}_2.png
+
+set log1 [dump a]
+
+regexp {Polygon3D with +([-0-9.+eE]+)} $log1 full Nodes1
+
+set Index1 [lsearch -exact $log1 "Polygon3D"]
+set Index1 [expr ($Index1 + 8)]
+set B 5
+
+set RL1 [xyzList $log1 $Nodes1 $Index1 $B]
+set Length1 [llength $RL1]
+
+# 2
+# without min size
+# => nice curve
+restore [locate_data_file bug26533_aal2.brep] a2
+vdisplay a2
+vclear
+incmesh a2 0.3
+vdisplay a2
+vdump ${imagedir}/${casename}_3.png
+
+set log2 [dump a2]
+
+regexp {Polygon3D with +([-0-9.+eE]+)} $log2 full Nodes2
+
+set Index2 [lsearch -exact $log2 "Polygon3D"]
+set Index2 [expr ($Index2 + 8)]
+
+set RL2 [xyzList $log2 $Nodes2 $Index2 $B]
+set Length2 [llength $RL2]
+
+# 3. Compare coordinates of Polygon3Dare
+
+set Tolerance 1.0e-07
+
+if {$Length1 != $Length2} {
+   puts "Error: Numbers of nodes are not equal"
+} else {
+   puts "OK: Numbers of nodes are equal"
+   set xyzBad 0
+   for {set i 0} {$i < $Length1} {incr i} {
+      set tmpList1 [lindex $RL1 $i]
+      set x1 [lindex $tmpList1 0]
+      set y1 [lindex $tmpList1 1]
+      set z1 [lindex $tmpList1 2]
+      #puts "x1=$x1 y1=$y1 z1=$z1"
+
+      set tmpList2 [lindex $RL2 $i]
+      set x2 [lindex $tmpList2 0]
+      set y2 [lindex $tmpList2 1]
+      set z2 [lindex $tmpList2 2]
+      #puts "x2=$x2 y2=$y2 z2=$z2"
+
+      set xBad 0
+      set yBad 0
+      set zBad 0
+
+      if { [expr abs($x1 - $x2)] > $Tolerance } {
+         set xBad 1
+      }
+      if { [expr abs($y1 - $y2)] > $Tolerance } {
+         set yBad 1
+      }
+      if { [expr abs($z1 - $z2)] > $Tolerance } {
+         set zBad 1
+      }
+      if { $xBad !=0 && $yBad !=0 && $zBad !=0 } {
+         set xyzBad 1
+         set j [expr ($i + 1)] 
+         puts "Following coordinates are not equal:"
+         puts "i=$j x1=$x1 y1=$y1 z1=$z1"
+         puts "i=$j x2=$x2 y2=$y2 z2=$z2"
+         break
+      }
+
+   }
+   if { $xyzBad !=0 } {
+      puts "Error: Coordinates of Polygon3Dare are not equal"
+   } else {
+      puts "OK: Coordinates of Polygon3Dare are equal"
+   }
+}

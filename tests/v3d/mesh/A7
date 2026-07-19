@@ -1,0 +1,11 @@
+meshfromstl m [locate_data_file b.stl]
+meshtext m
+vsetdispmode m 33
+vrotate 0.3 0 0
+vdump $::imagedir/${::casename}_txt.png
+meshvectors m -mode elem -maxlen 10 -color green -arrowpart 0.5 -issipmle 0
+vsetdispmode m 5
+vdump $::imagedir/${::casename}_vct1.png
+meshvectors m -mode nodal -maxlen 20 -color white -issimple 1
+vfit
+vdump $::imagedir/${::casename}_vct2.png

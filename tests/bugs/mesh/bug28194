@@ -1,0 +1,15 @@
+puts "======="
+puts "CR28194"
+puts "======="
+puts ""
+#########################################################
+# BRepMesh - Standard_OutOfRange exception on valid shape
+#########################################################
+
+restore [locate_data_file bug28194.brep] a
+
+incmesh a 0.0005
+
+checktrinfo a -tri -nod
+
+checkview -display a -2d -path ${imagedir}/${test_image}.png

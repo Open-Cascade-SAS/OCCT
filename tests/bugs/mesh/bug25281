@@ -1,0 +1,20 @@
+puts "========="
+puts "CR25281"
+puts "========="
+puts ""
+###############################################
+# BRepMesh_IncrementalMesh does not return
+###############################################
+
+pload XDE
+
+param xstep.cascade.unit M
+stepread [locate_data_file bug25281_tess_infloop_extract.step] a *
+incmesh a_1 0.0002 -parallel
+
+checktrinfo a_1 -tri -nod
+
+vinit
+vdisplay a_1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

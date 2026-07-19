@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC6862"
+puts "============"
+puts ""
+#######################################################################
+# Tool for checking arguments of Boolean Operations
+#######################################################################
+
+set BugNumber OCC6862
+
+# test small edges
+restore [locate_data_file OCC651a.brep] a 
+restore [locate_data_file OCC651b.brep] b 
+
+puts "Checking shapes: bopargcheck a b /FTVEIP ..."
+
+set resstr [bopargcheck a b /FTVEIP]
+
+if {$resstr=="Faulties, that can not be treated by BOP, are detected.\n"} {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,20 @@
+vclear
+vinit View1
+XDisplay -dispMode 1 D
+vaxo
+vfit
+
+vrenderparams -shadingModel PHONG
+vlight -change 0 -intensity 2.5
+vlight -change 1 -intensity 0.3
+vcamera -orthographic
+vdump ${imagedir}/${casename}.png
+vdump ${imagedir}/${casename}_ortho_phong.png
+vcamera -persp
+vdump ${imagedir}/${casename}_persp_phong.png
+
+vrenderparams -shadingModel PBR
+vcamera -orthographic
+vdump ${imagedir}/${casename}_ortho_pbr.png
+vcamera -persp
+vdump ${imagedir}/${casename}_persp_pbr.png

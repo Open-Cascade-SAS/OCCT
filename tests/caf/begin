@@ -1,0 +1,16 @@
+# File : begin
+
+if { [array get Draw_Groups "DF basic commands"] == "" } {
+	pload OCAF
+}
+
+chrono qat start
+# Create a new document and set UndoLimit
+NewDocument D BinOcaf
+
+#NewDocument D
+cpulimit 300
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D

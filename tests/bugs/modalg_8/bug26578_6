@@ -1,0 +1,14 @@
+puts "================================"
+puts "0026578: Modeling Algorithm - Exceptions in offset operation with intersection"
+puts "================================"
+puts ""
+
+restore [locate_data_file bug26578_plate7.brep] s
+
+offsetparameter 1e-7 p i
+offsetload s 60
+offsetperform r
+
+checkshape r
+checknbshapes r -vertex 15 -edge 21 -wire 7 -face 7
+checkview -display r -2d -path ${imagedir}/${test_image}.png

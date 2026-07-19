@@ -1,0 +1,39 @@
+puts "======="
+puts "0029962: Master version of BRepMesh does not respect obvious details despite of specified deflection"
+puts "======="
+puts ""
+
+bsplinesurf s 4 5 0 5 1 1 2 1 3 1 4 5 4 5 0 5 1 1 2 1 3 1 4 5 0 0 0 1 10 0 0 1 20 0 0 1 30 0 0 1 40 0 0 1 50 0 0 1 60 0 0 1 70 0 0 1 0 10 0 1 10 10 999 1 20 10 0 1 30 10 0 1 40 10 0 1 50 10 0 1 60 10 0 1 70 10 0 1 0 20 0 1 10 20 0 1 20 20 0 1 30 20 0 1 40 20 0 1 50 20 0 1 60 20 0 1 70 20 0 1 0 30 0 1 10 30 0 1 20 30 0 1 30 30 0 1 40 30 0 1 50 30 0 1 60 30 0 1 70 30 0 1 0 40 0 1 10 40 0 1 20 40 0 1 30 40 0 1 40 40 0 1 50 40 0 1 60 40 0 1 70 40 0 1 0 50 0 1 10 50 0 1 20 50 0 1 30 50 0 1 40 50 0 1 50 50 0 1 60 50 0 1 70 50 0 1 0 60 0 1 10 60 0 1 20 60 0 1 30 60 0 1 40 60 0 1 50 60 0 1 60 60 999 1 70 60 0 1 0 70 0 1 10 70 0 1 20 70 0 1 30 70 0 1 40 70 0 1 50 70 0 1 60 70 0 1 70 70 0 1
+mkface result s
+
+incmesh result 100
+
+set log1 [tricheck result]
+if { [llength $log1] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
+
+checktrinfo result -tri 344 -nod 175 -defl 48.278808345584679 -tol_abs_defl 1e-6
+
+tclean result
+incmesh result 0.01
+
+set log2 [tricheck result]
+if { [llength $log2] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
+
+checktrinfo result -tri 78200 -nod 39103 -defl 5.8003351598212323 -tol_abs_defl 1e-6
+
+don result
+isos result 0
+triangles result
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

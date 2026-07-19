@@ -1,0 +1,27 @@
+
+puts "========"
+puts "OCC758"
+puts "SAM1613"
+puts "========"
+puts ""
+###################################################
+##It's impossible to cut two little shapes from the big one in the attached file.
+###################################################
+
+restore [locate_data_file OCC758.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+checkshape a_3
+
+bcut res1 a_1 a_2
+
+checkshape res1
+
+bcut result res1 a_3
+
+checkprops result -s 49473.6 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

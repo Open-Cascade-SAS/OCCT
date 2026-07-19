@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC23186: Unable to display Graphic3d_ArrayOfPoints after migrating from OCCT 6.5.2"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vdrawparray a points v 0 0 0 v 0 0 10 v 0 10 10 v 0 10 0
+vfit
+
+checkcolor 321 2 1 1 0
+checkcolor 321 271 1 1 0
+checkcolor 87 137 1 1 0
+checkcolor 87 406 1 1 0
+
+vdump $imagedir/${casename}.png

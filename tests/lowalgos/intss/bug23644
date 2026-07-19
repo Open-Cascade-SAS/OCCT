@@ -1,0 +1,20 @@
+puts "========"
+puts "CR23644"
+puts "========"
+
+##########################################
+## Intersection between coaxial cones produces exception
+##########################################
+
+pcone cn1 10 0 20
+pcone cn2 20 0 20
+explode cn1 f
+explode cn2 f
+copy cn1_1 f1
+copy cn2_1 f2
+
+if [catch {bopcurves f1 f2} BOPLog] {
+   if { [regexp "Tolerance Reached=0\n has no 3d curve" ${BOPLog}] != 1 } {
+      puts "CR23644: Error"
+   }
+} 

@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bm1_sy_fuel.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 3 )  Warnings = 0  ( 2 )  Summary  = 0  ( 5 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 6 )  Summary  = 4  ( 6 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 6  ( 6 )  Face     = 6  ( 6 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 6  ( 6 )  Face     = 6  ( 6 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.01960210989  (  0.01960210989 )  AvgTol   =  0.001506671037  (  0.001506671037 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 19  ( 19 )  N2Labels = 0  ( 0 )   TotalLabels = 22  ( 22 )   NameLabels = 5  ( 5 )   ColorLabels = 11  ( 11 )   LayerLabels = 11  ( 11 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = CHOCOLATE1 LIGHTSEAGREEN TURQUOISE  ( CHOCOLATE1 LIGHTSEAGREEN TURQUOISE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = {}  ( {} )
+
+}

@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC25624: Visualization - selection is incorrect in perspective mode in a specific case"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box a 0.0 0.0 0.0 0.1 0.1 0.1
+box b 0.0 0.0 0.5 0.1 0.1 0.1
+box c 0.0 0.0 1.0 0.1 0.1 0.1
+
+vinit View1
+vautozfit 1
+vclear
+vtop
+vsetdispmode 0
+vcamera -persp
+vdisplay a b c
+vfit
+vselect 210 210
+
+# check if the closest box is selected
+checkcolor 170 10 0.8 0.8 0.8
+
+# check if the farthest box is displayed
+# without any highlighting
+checkcolor 210 184 1 1 0
+
+vdump ${imagedir}/${casename}.png

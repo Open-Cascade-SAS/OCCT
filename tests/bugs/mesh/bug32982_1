@@ -1,0 +1,19 @@
+puts "========="
+puts "OCC32982: Mesh - Meshing the shape takes too long and visualization is bad"
+puts "========="
+puts ""
+
+restore [locate_data_file bug32982.brep] result
+incmesh result 5.58
+
+checktrinfo result -nod 4036 -tri 7450
+
+vinit
+vdefaults -autoTriang 0
+vdisplay result
+vsetdispmode 1
+vfit
+vpan -5 198
+vzoom 150
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

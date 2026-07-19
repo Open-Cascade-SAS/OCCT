@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC23921"
+puts "============"
+puts ""
+#################################################################
+# IGES reader cannot map subshapes colors inside nested assemblies
+#################################################################
+
+pload OCAF
+
+NewDocument D XmlXCAF
+
+ReadIges D [locate_data_file bug23921_case2.igs]
+
+#XShow D
+#
+
+XGetOneShape result D
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

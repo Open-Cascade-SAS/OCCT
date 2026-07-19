@@ -1,0 +1,17 @@
+puts "=========="
+puts "OCC23328"
+puts "=========="
+puts ""
+#######################################################################################
+# Importing VRML files with "scaleOrientation" not possible
+#######################################################################################
+
+set aFile [locate_data_file bug23328_occ23328.vrml]
+set aLog [loadvrml test ${aFile}]
+set aLength [string length ${aLog}]
+
+if { ${aLength} == 0 } {
+  puts "OK: Importing VRML files with scaleOrientation is possible"
+} else {
+  puts "Error: Importing VRML files with scaleOrientation is not possible"
+}

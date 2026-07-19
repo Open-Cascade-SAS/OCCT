@@ -1,0 +1,33 @@
+# save the initial shape to STEP
+stepwrite a S "${imagedir}/${casename}.stp"
+
+# read saved STEP into an OCAF document
+ReadStep D "${imagedir}/${casename}.stp"
+
+# get document model as a single shape
+XGetOneShape S1 D
+
+# check tessellation metrics of the shape restored from STEP
+checktrinfo S1 -face ${nb_faces} -nod ${nb_nodes} -tri ${nb_triangles}
+
+vclear
+vinit View1
+XDisplay -dispMode 1 D -explore
+vaxo
+vfit
+
+vrenderparams -shadingModel PHONG
+vlight -change 0 -intensity 2.5
+vlight -change 1 -intensity 0.3
+vcamera -orthographic
+vdump ${imagedir}/${casename}.png
+
+Close D -silent
+Close D1 -silent
+unset S
+unset S1
+
+# restore reading/writing tessellated STEP geometry default parameters
+param write.step.schema AP214CD
+param read.step.tessellated On
+param write.step.tessellated OnNoBRep

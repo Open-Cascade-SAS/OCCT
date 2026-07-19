@@ -1,0 +1,12 @@
+restore [locate_data_file bug25926_extended.brep] s
+
+settolerance s 1.e-7
+
+set distance 8
+offsetparameter 1.e-7 $calcul $type
+offsetload s $distance
+offsetperform result
+
+checkprops result -v 3.46903e+007
+
+checknbshapes result -shell 1

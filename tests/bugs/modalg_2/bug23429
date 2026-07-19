@@ -1,0 +1,25 @@
+puts "============"
+puts "CR23429"
+puts "============"
+puts ""
+##########################################################################################################
+# BRepFeat_SplitShape algorithm misses some section edges while building result from customer's shape
+##########################################################################################################
+pload QAcommands
+
+restore [locate_data_file OCC23388-Shape1.brep] a
+restore [locate_data_file CR23429-Shape3.brep] b
+
+OCC23429 result a b
+
+checkprops result -s 1107.88
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+
+
+
+

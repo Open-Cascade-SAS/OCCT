@@ -1,0 +1,85 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Plane
+#
+# Testing command:   SetPlane
+# Testing command:   GetPlane
+#
+
+puts "caf001-I1"
+
+set aTokList { :,}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 -1
+set aSetDY1 0
+set aSetDZ1 0
+
+plane aPlane1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aDumpPlane1 [dump aPlane1]
+
+# [llength ${aDumpPlane1}] = 22
+# Format of ${aDumpPlane1}:
+# *********** Dump of aPlane1 *************
+# Plane
+#   Origin :10, 20, 30 
+#   Axis   :-1, 0, 0 
+#   XAxis  :-0, 0, -1 
+#   YAxis  :-0, -1, 0 
+
+set anOriginX_Plane1 [lindex [split [lindex ${aDumpPlane1} 7] ${aTokList}] 1]
+set anOriginY_Plane1 [lindex [split [lindex ${aDumpPlane1} 8] ${aTokList}] 0]
+set anOriginZ_Plane1 [lindex [split [lindex ${aDumpPlane1} 9] ${aTokList}] 0]
+set anAxisDX_Plane1 [lindex [split [lindex ${aDumpPlane1} 11] ${aTokList}] 1]
+set anAxisDY_Plane1 [lindex [split [lindex ${aDumpPlane1} 12] ${aTokList}] 0]
+set anAxisDZ_Plane1 [lindex [split [lindex ${aDumpPlane1} 13] ${aTokList}] 0]
+
+set aLabel 0:2
+SetPlane D ${aLabel} aPlane1
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+GetPlane D ${aLabel} aPlane2
+
+set aDumpPlane2 [dump aPlane2]
+set anOriginX_Plane2 [lindex [split [lindex ${aDumpPlane2} 7] ${aTokList}] 1]
+set anOriginY_Plane2 [lindex [split [lindex ${aDumpPlane2} 8] ${aTokList}] 0]
+set anOriginZ_Plane2 [lindex [split [lindex ${aDumpPlane2} 9] ${aTokList}] 0]
+set anAxisDX_Plane2 [lindex [split [lindex ${aDumpPlane2} 11] ${aTokList}] 1]
+set anAxisDY_Plane2 [lindex [split [lindex ${aDumpPlane2} 12] ${aTokList}] 0]
+set anAxisDZ_Plane2 [lindex [split [lindex ${aDumpPlane2} 13] ${aTokList}] 0]
+
+if { ${anOriginX_Plane1} != ${anOriginX_Plane2} || 
+     ${anOriginY_Plane1} != ${anOriginY_Plane2} || 
+     ${anOriginZ_Plane1} != ${anOriginZ_Plane2} || 
+     ${anAxisDX_Plane1} != ${anAxisDX_Plane2} || 
+     ${anAxisDY_Plane1} != ${anAxisDY_Plane2} || 
+     ${anAxisDZ_Plane1} != ${anAxisDZ_Plane2} } {
+	puts "anOriginX_Plane1=${anOriginX_Plane1} anOriginX_Plane2=${anOriginX_Plane2}"
+	puts "anOriginY_Plane1=${anOriginY_Plane1} anOriginY_Plane2=${anOriginY_Plane2}"
+	puts "anOriginZ_Plane1=${anOriginZ_Plane1} anOriginZ_Plane2=${anOriginZ_Plane2}"
+	puts "anAxisDX_Plane1=${anAxisDX_Plane1} anAxisDX_Plane2=${anAxisDX_Plane2}"
+	puts "anAxisDY_Plane1=${anAxisDY_Plane1} anAxisDY_Plane2=${anAxisDY_Plane2}"
+	puts "anAxisDZ_Plane1=${anAxisDZ_Plane1} anAxisDZ_Plane2=${anAxisDZ_Plane2}"
+	puts "Add TDataStd_Plane attribute: Error"
+	return
+}
+puts "Add TDataStd_Plane attribute: OK"

@@ -1,0 +1,16 @@
+# Original bug : fra60275
+# Date : 19Mai98
+
+restore [locate_data_file CTO904_fra60275a.rle] a
+restore [locate_data_file fra60275b.rle] b
+tcopy  b w
+mkplane f w
+
+prism pp f 0 0 100
+
+bop a pp
+bopsection result
+
+checkprops result -l 539.158
+checksection result
+checkview -display result -2d -otherwise { a pp } -l -path ${imagedir}/${test_image}.png

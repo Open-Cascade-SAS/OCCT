@@ -1,0 +1,17 @@
+# Original bug : ger50084
+# Date : 15 Sept 98
+
+cpulimit 1000
+#increased from default by aki 26.08.04
+
+restore [locate_data_file ger50084_baseX.rle] base
+fsameparameter base
+restore [locate_data_file ger50084_face.rle] wire
+
+## contour est un wire -> on en fait une face
+mkplane cont wire
+
+featprism base cont cont 0 0 1 1 1
+featperform prism result base
+
+checkprops result -s 25327.1

@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename r0801_id.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 187  ( 204 )  Summary  = 187  ( 204 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 1327  ( 1327 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 1327  ( 1327 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.0796871773  (  0.07968717732 )  AvgTol   =  0.0006754901311  (  0.001252692846 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 3707  ( 3707 )  N2Labels = 0  ( 0 )   TotalLabels = 3710  ( 3710 )   NameLabels = 5  ( 5 )   ColorLabels = 3706  ( 3706 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 8  ( 8 )
+COLORS      : Colors   = DARKGREEN DEEPSKYBLUE2 GREEN MAGENTA ORANGE ORANGERED RED YELLOW  ( DARKGREEN DEEPSKYBLUE2 GREEN MAGENTA ORANGE ORANGERED RED YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

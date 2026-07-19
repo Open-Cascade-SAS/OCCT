@@ -1,0 +1,76 @@
+puts "========"
+puts "30760: Modeling Algorithms - Intersection fails in Occt 7.3.0"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30760_shapes.brep] a12
+# copy the shape to use in other operation
+# with different order of arguments
+tcopy a12 a21
+
+explode a12
+bclearobjects
+bcleartools
+baddobjects a12_1
+baddtools a12_2
+bfillds
+
+bbop r12_0 0
+bbop r12_1 1
+bbop r12_2 2
+bbop r12_3 3
+bbop r12_4 4
+bbuild r12_5
+
+explode a21
+bclearobjects
+bcleartools
+baddobjects a21_2
+baddtools a21_1
+bfillds
+
+bbop r21_0 0
+bbop r21_1 1
+bbop r21_3 2; # for different order cut = cut21
+bbop r21_2 3; # for different order cut21 = cut
+bbop r21_4 4
+bbuild r21_5
+
+
+foreach i { 0 1 2 3 4 5} {
+  checkshape r12_$i
+  if {![regexp "OK" [bopcheck r12_$i]]} {
+    puts "Error: r12_$i is self-intersecting shape"
+  }
+
+  checkprops r12_$i -equal r21_$i 
+  checknbshapes r12_$i -ref [nbshapes r21_$i]
+}
+
+foreach i { 0 1 2 3 4 5} {
+  checkshape r21_$i
+  if {![regexp "OK" [bopcheck r21_$i]]} {
+    puts "Error: r21_$i is self-intersecting shape"
+  }
+}
+
+checkprops r12_0 -s 0.0550925 -v 0.000106046
+checknbshapes r12_0 -wire 14 -face 14 -shell 1 -solid 1 -t
+
+checkprops r12_1 -s 0.84475 -v 0.00502274
+checknbshapes r12_1 -wire 34 -face 34 -shell 1 -solid 1 -t
+
+checkprops r12_2 -s 0.765963 -v 0.00366102
+checknbshapes r12_2 -wire 24 -face 24 -shell 1 -solid 1 -t
+
+checkprops r12_3 -s 0.117011 -v 0.00125568
+checknbshapes r12_3 -wire 14 -face 14 -shell 1 -solid 1 -t
+
+checkprops r12_4 -l 1.99738
+checksection r12_4 -r 8
+
+checkprops r12_5 -s 0.99316 -v 0.00512878
+checknbshapes r12_5 -wire 43 -face 43 -shell 3 -solid 3 -t
+
+
+checkview -display r12_5 -2d -path ${imagedir}/${test_image}.png

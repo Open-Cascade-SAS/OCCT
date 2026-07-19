@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename clamp.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 9 )  Summary  = 4  ( 9 )
+CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 2  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 40  ( 40 ) 
+STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 40  ( 40 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.7571410919  (   0.7571410919 )  AvgTol   =    0.0427310412  (   0.04326593742 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 4  ( 4 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 1  ( 1 )   ColorLabels = 4  ( 4 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = BLUE MAGENTA  ( BLUE MAGENTA )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

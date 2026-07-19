@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: transfer failed : entity skipped." 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename CTS18314.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 37 )  Summary  = 0  ( 37 )
+TPSTAT      : Faulties = 0  ( 10 )  Warnings = 308  ( 102 )  Summary  = 308  ( 112 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 2 )   Solids   = 0 ( 2 )
+NBSHAPES    : Solid    = 0  ( 30 )  Shell    = 0  ( 30 )  Face     = 390  ( 390 ) 
+STATSHAPE   : Solid    = 0  ( 30 )  Shell    = 0  ( 30 )  Face     = 390  ( 390 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.03576190045  (  0.03576190009 )  AvgTol   =  8.622070887e-005  (  0.0003710475458 )
+LABELS      : N0Labels = 108  ( 108 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 108  ( 108 )   NameLabels = 108  ( 108 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

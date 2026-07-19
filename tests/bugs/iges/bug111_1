@@ -1,0 +1,14 @@
+puts "========"
+puts "BUC61054"
+puts "OCC111"
+puts "(case 1)"
+puts "========"
+
+igesbrep [locate_data_file OCC111a.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

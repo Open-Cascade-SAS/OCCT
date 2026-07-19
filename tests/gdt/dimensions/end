@@ -1,0 +1,105 @@
+# value
+set value [XGetDimensionValue D 0:1:4:1]
+if { $c_value != 0 && $value != $c_value} {
+ puts "Error: wrong value"
+}
+# type
+set type [XGetDimensionType D 0:1:4:1]
+if { $c_type != 0 && [string compare $type $c_type] != 0} {
+ puts "Error: wrong type"
+}
+# qualifier
+set qualif [XGetDimensionQualifier D 0:1:4:1]
+if { $c_qalif !=  0 && [string compare $qualif $c_qalif] != 0} {
+  puts "Error: wrong qualifier"
+}
+# tolerance class
+set classtol [XGetDimensionClassOfTol D 0:1:4:1]
+if { $c_classtol !=  0 && $classtol != $c_classtol} {
+ puts "Error: wrong class of tolerance"
+}
+# number of decimal digits
+set d [XGetDimensionNbOfDecimalPlaces D 0:1:4:1]
+if { $c_d !=  0 && $d != $c_d} {
+ puts "Error: wrong number of decimal digits"
+}
+# modifiers
+if { $c_modif !=  0 && [string compare $modif $c_modif] != 0} {
+ puts "Error: wrong modifiers"
+}
+# direction
+set dir [XGetDimensionDir D 0:1:4:1]
+if { $c_dir !=  0 && [string compare $dir $c_dir] != 0} {
+ puts "Error: wrong direction"
+}
+#points
+set pnts [XGetDimensionPoints D 0:1:4:1]
+if { $c_pnts !=  0 && [string compare $pnts $c_pnts] != 0} {
+ puts "Error: wrong points"
+}
+# range
+set range [XGetDimensionRange D 0:1:4:1]
+if { $c_range !=  0 && [string compare $range $c_range] != 0} {
+ puts "Error: wrong range"
+}
+# modifiers
+set mod [XGetDimensionModifiers  D 0:1:4:1]
+if { $c_mod !=  0 && [string compare $mod $c_mod] != 0} {
+ puts "Error: wrong modifiers"
+}
+# plus minus tolerance
+set plusminus [XGetDimensionPlusMinusTol D  0:1:4:1]
+if { $c_plusminus !=  0 && [string compare $plusminus $c_plusminus] != 0} {
+ puts "Error: wrong plus minus tolerance"
+}
+# descriptions
+set descriptions [XGetDimensionDescr D 0:1:4:1]
+if {$c_descr != 0} {
+  set ref_list [split $descriptions \n]
+  set cur_list [split $c_descr \n]
+  set nb_ref [llength $ref_list]
+  set nb_cur [llength $cur_list]
+  if {$nb_ref != $nb_cur} {
+    puts "Error: wrong number of descriptions"
+  } else {
+    set isOK 1;
+    for { set i 0 } { $i < $nb_ref } { incr i } {
+      set refstr [lindex $ref_list $i]
+      set curstr [lindex $cur_list $i]    
+      if {[string equal $refstr $curstr] == 0} {
+        set isOK 0 
+      }
+    }
+  }
+  if {$isOK == 0} {
+    puts "Error: wrong descriptions"
+  }
+}
+
+# annotation plane and text position
+if {$c_pos != 0} {
+  set position [XGetGDTPosition D 0:1:4:1]
+  set ref_list [split $position \n]
+  set cur_list [split $c_pos \n]
+  set nb_ref [llength $ref_list]
+  set nb_cur [llength $cur_list]
+  if {$nb_ref != $nb_cur} {
+    puts "Error: wrong position"
+  } else {
+    set isOK 1;
+    for { set i 0 } { $i < $nb_ref } { incr i } {
+      set refstr [lindex $ref_list $i]
+      set curstr [lindex $cur_list $i]
+      puts $refstr
+      puts $curstr
+      if {[string equal $refstr $curstr] == 0} {
+        set isOK 0 
+      }
+    }
+  }
+  if {$isOK == 0} { 
+    puts "Error: wrong position"
+  }
+}
+
+puts "TEST COMPLETED"

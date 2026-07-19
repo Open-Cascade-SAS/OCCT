@@ -1,0 +1,14 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : G5
+## Comment : 
+## ====================================
+
+pcone s 50 0 120 90
+trotate s 0 0 0 0 0 1 270
+explode s E
+mkevol result s
+updatevol s_3 0 10 1 20 2 10
+buildevol
+
+checkprops result -s 11734.1

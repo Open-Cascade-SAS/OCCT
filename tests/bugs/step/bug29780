@@ -1,0 +1,10 @@
+puts "========================"
+puts "0029780 "
+puts "========================"
+
+
+stepread [locate_data_file bug29780.stp] a *
+
+checkshape a_1
+checknbshapes a_1 -shell 1 -face 244
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC24029"
+puts "============"
+puts ""
+############################################################################################
+# Add a flag to bopcheck command to provide possibility to disable Face/Face intersection
+############################################################################################
+
+box b1 10 10 10
+box b2 5 5 5 10 10 10
+compound b1 b2 c
+
+set info1 [bopcheck c]
+set info2 [bopcheck c 4]
+set info3 [bopcheck c 3]
+
+if { [regexp "x35" $info1] != 1 } {
+    puts "Error : bopcheck c works wrong"
+} else {
+    puts "OK: bopcheck c works properly"
+}
+
+if { [regexp "x13" $info2] != 1 || [regexp "x39" $info2] != 1 } {
+    puts "Error : bopcheck c 4 works wrong"
+} else {
+    puts "OK: bopcheck c 4 works properly"
+}
+
+if { [regexp "This shape seems to be OK" $info3] != 1 } {
+    puts "Error : bopcheck c 3 works wrong"
+} else {
+    puts "OK: bopcheck c 3 works properly"
+}

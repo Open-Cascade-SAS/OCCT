@@ -1,0 +1,23 @@
+puts "======="
+puts "0029099"
+puts "======="
+puts ""
+##################################################
+# Extra shapes in result of General Cut (box by ellipsoid)
+##################################################
+
+brestore [locate_data_file bug29099_Box.brep] b1
+brestore [locate_data_file bug29099_Rotation.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -wire 11 -face 10 -shell 3 -solid 3
+checkprops result -s 12651.3 -v 52187.5
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,230 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Aspect_RectangularGrid.hxx>
+
+#include <Standard_NegativeValue.hxx>
+#include <Standard_NullValue.hxx>
+#include <Standard_NumericError.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_RectangularGrid, Aspect_Grid)
+
+Aspect_RectangularGrid::Aspect_RectangularGrid(const double aXStep,
+                                               const double aYStep,
+                                               const double anXOrigin,
+                                               const double anYOrigin,
+                                               const double aFirstAngle,
+                                               const double aSecondAngle,
+                                               const double aRotationAngle)
+    : Aspect_Grid(anXOrigin, anYOrigin, aRotationAngle),
+      myXStep(aXStep),
+      myYStep(aYStep),
+      myFirstAngle(aFirstAngle),
+      mySecondAngle(aSecondAngle),
+      mySizeX(0.0),
+      mySizeY(0.0),
+      myZOffset(0.0)
+
+{
+  Standard_NumericError_Raise_if(!CheckAngle(aFirstAngle, mySecondAngle), "networks are parallel");
+
+  Standard_NegativeValue_Raise_if(aXStep < 0., "invalid x step");
+  Standard_NegativeValue_Raise_if(aYStep < 0., "invalid y step");
+  Standard_NullValue_Raise_if(aXStep == 0., "invalid x step");
+  Standard_NullValue_Raise_if(aYStep == 0., "invalid y step");
+}
+
+void Aspect_RectangularGrid::SetXStep(const double aStep)
+{
+  Standard_NegativeValue_Raise_if(aStep < 0., "invalid x step");
+  Standard_NullValue_Raise_if(aStep == 0., "invalid y step");
+  myXStep = aStep;
+  Init();
+  UpdateDisplay();
+}
+
+void Aspect_RectangularGrid::SetYStep(const double aStep)
+{
+  Standard_NegativeValue_Raise_if(aStep < 0., "invalid x step");
+  Standard_NullValue_Raise_if(aStep == 0., "invalid y step");
+  myYStep = aStep;
+  Init();
+  UpdateDisplay();
+}
+
+void Aspect_RectangularGrid::SetAngle(const double anAngle1, const double anAngle2)
+{
+  Standard_NumericError_Raise_if(!CheckAngle(anAngle1, anAngle2), "axis are parallel");
+  myFirstAngle  = anAngle1;
+  mySecondAngle = anAngle2;
+  Init();
+  UpdateDisplay();
+}
+
+void Aspect_RectangularGrid::SetSizeX(const double theSize)
+{
+  Standard_NegativeValue_Raise_if(theSize < 0.0, "invalid grid size X");
+  if (mySizeX != theSize)
+  {
+    mySizeX = theSize;
+    UpdateDisplay();
+  }
+}
+
+void Aspect_RectangularGrid::SetSizeY(const double theSize)
+{
+  Standard_NegativeValue_Raise_if(theSize < 0.0, "invalid grid size Y");
+  if (mySizeY != theSize)
+  {
+    mySizeY = theSize;
+    UpdateDisplay();
+  }
+}
+
+void Aspect_RectangularGrid::SetZOffset(const double theOffset)
+{
+  if (myZOffset != theOffset)
+  {
+    myZOffset = theOffset;
+    UpdateDisplay();
+  }
+}
+
+void Aspect_RectangularGrid::SetGridValues(const double theXOrigin,
+                                           const double theYOrigin,
+                                           const double theXStep,
+                                           const double theYStep,
+                                           const double theRotationAngle)
+{
+
+  myXOrigin = theXOrigin;
+  myYOrigin = theYOrigin;
+  Standard_NegativeValue_Raise_if(theXStep < 0., "invalid x step");
+  Standard_NullValue_Raise_if(theXStep == 0., "invalid x step");
+  myXStep = theXStep;
+  Standard_NegativeValue_Raise_if(theYStep < 0., "invalid y step");
+  Standard_NullValue_Raise_if(theYStep == 0., "invalid y step");
+  myYStep         = theYStep;
+  myRotationAngle = theRotationAngle;
+  Init();
+  UpdateDisplay();
+}
+
+void Aspect_RectangularGrid::Compute(const double X,
+                                     const double Y,
+                                     double&      gridX,
+                                     double&      gridY) const
+{
+  double D1      = b1 * X - a1 * Y - c1;
+  double D2      = b2 * X - a2 * Y - c2;
+  int    n1      = int(std::abs(D1) / myXStep + 0.5);
+  int    n2      = int(std::abs(D2) / myYStep + 0.5);
+  double offset1 = c1 + double(n1) * std::copysign(myXStep, D1);
+  double offset2 = c2 + double(n2) * std::copysign(myYStep, D2);
+  double Delta   = a1 * b2 - b1 * a2;
+  gridX          = (offset2 * a1 - offset1 * a2) / Delta;
+  gridY          = (offset2 * b1 - offset1 * b2) / Delta;
+}
+
+double Aspect_RectangularGrid::XStep() const
+{
+  return myXStep;
+}
+
+double Aspect_RectangularGrid::YStep() const
+{
+  return myYStep;
+}
+
+double Aspect_RectangularGrid::FirstAngle() const
+{
+  return myFirstAngle;
+}
+
+double Aspect_RectangularGrid::SecondAngle() const
+{
+  return mySecondAngle;
+}
+
+void Aspect_RectangularGrid::Init()
+{
+
+  //+zov Fixing CTS17856
+  //  a1 = Cos (myFirstAngle + RotationAngle() );
+  //  b1 = Sin (myFirstAngle + RotationAngle() );
+  //  c1 = XOrigin() * b1 - YOrigin() * a1;
+  //
+  //  a2 = Cos (mySecondAngle + RotationAngle() + M_PI / 2.);
+  //  b2 = Sin (mySecondAngle + RotationAngle() + M_PI / 2.);
+  //  c2 = XOrigin() * b2 - YOrigin() * a2;
+
+  double angle1 = myFirstAngle + RotationAngle();
+  double angle2 = mySecondAngle + RotationAngle();
+  if (angle1 != 0.)
+  {
+    a1 = -std::sin(angle1);
+    b1 = std::cos(angle1);
+    c1 = XOrigin() * b1 - YOrigin() * a1;
+  }
+  else
+  {
+    a1 = 0.;
+    b1 = 1.;
+    c1 = XOrigin();
+  }
+
+  if (angle2 != 0.)
+  {
+    angle2 += M_PI / 2.;
+    a2 = -std::sin(angle2);
+    b2 = std::cos(angle2);
+    c2 = XOrigin() * b2 - YOrigin() * a2;
+  }
+  else
+  {
+    a2 = -1.;
+    b2 = 0.;
+    c2 = YOrigin();
+  }
+  //-zov
+}
+
+bool Aspect_RectangularGrid::CheckAngle(const double alpha, const double beta) const
+{
+  return (std::abs(std::sin(alpha) * std::cos(beta + M_PI / 2.)
+                   - std::cos(alpha) * std::sin(beta + M_PI / 2.))
+          != 0);
+}
+
+//=================================================================================================
+
+void Aspect_RectangularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Aspect_Grid)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myXStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myYStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFirstAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySecondAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySizeX)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySizeY)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myZOffset)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, a1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, b1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, c1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, a2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, b2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, c2)
+}

@@ -1,0 +1,20 @@
+puts "REQUIRED All: DDocStd_Open : Error"
+
+puts "========"
+puts "OCC27454"
+puts "========"
+puts ""
+###################################################
+## Application hangs while opening a non-OCAF XML file
+###################################################
+
+cpulimit 10
+
+set file [locate_data_file bug27454_test.xml]
+catch {Open $file D -stream} msg
+
+cpulimit
+
+if ![regexp {DDocStd_Open : Error} $msg] {
+  puts "Error: reader did not report an error reading the file of unknown format"
+}

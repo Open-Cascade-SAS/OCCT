@@ -1,0 +1,14 @@
+puts "========"
+puts "CR27700: Visualization - glPolygonMode() used for frame drawing affects label text shading"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+vclear
+vinit View1
+
+OCC27700
+vtop
+vfit
+
+vdump $imagedir/${casename}.png

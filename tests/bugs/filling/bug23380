@@ -1,0 +1,25 @@
+puts "======================================================================================="
+puts "OCC23380: BRepOffsetAPI_MakeFilling fails and leaves boundary faces with high tolerance"
+puts "======================================================================================="
+puts ""
+
+brestore [locate_data_file bug23380.brep] b
+
+explode b
+renamevar b_5 d
+renamevar b_1 f
+renamevar b_4 i
+explode f E
+explode d E
+tolerance f
+donly f_1 d_3 b_2 b_3
+
+filling result 4 0 0  i  f_1 f 1  d_3 d 1  b_2 0  b_3 0
+
+checknbshapes result -face 1 -wire 1 -edge 4 -vertex 4
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 230.} {
+   puts "Error: bad tolerance of result"
+}

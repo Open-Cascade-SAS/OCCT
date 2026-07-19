@@ -1,0 +1,48 @@
+puts "========================"
+puts " OCC470 "
+puts "========================"
+
+restore [locate_data_file OCC470.brep] a 
+
+regexp { +Face +: +Min +([-0-9.+eE]+)} [maxtolerance a] full MinFace1
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a] full MaxFace1
+regexp { +Edge +: +Min +([-0-9.+eE]+)} [maxtolerance a] full MinEdge1
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a] full MaxEdge1
+regexp { +Vertex +: +Min +([-0-9.+eE]+)} [maxtolerance a] full MinVertex1
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a] full MaxVertex1
+
+fixshape result a 1.e-7 0.1
+
+regexp { +Face +: +Min +([-0-9.+eE]+)} [maxtolerance result] full MinFace2
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance result] full MaxFace2
+regexp { +Edge +: +Min +([-0-9.+eE]+)} [maxtolerance result] full MinEdge2
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance result] full MaxEdge2
+regexp { +Vertex +: +Min +([-0-9.+eE]+)} [maxtolerance result] full MinVertex2
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance result] full MaxVertex2
+
+if { $MinFace2 > $MinFace1 } {
+   puts "Error : MinFace Tolerance is increased"
+}
+
+if { $MaxFace2 > $MaxFace1 } {
+   puts "Error : MaxFace Tolerance is increased"
+}
+
+if { $MinEdge2 > $MinEdge1 } {
+   puts "Error : MinEdge Tolerance is increased"
+}
+
+if { $MaxEdge2 > $MaxEdge1 } {
+   puts "Error : MaxEdge Tolerance is increased"
+}
+
+if { $MinVertex2 > $MinVertex1 } {
+   puts "Error : MinVertex Tolerance is increased"
+}
+
+if { $MaxVertex2 > $MaxVertex1 } {
+   puts "Error : MaxVertex Tolerance is increased"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

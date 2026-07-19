@@ -1,0 +1,25 @@
+puts "TODO OCC11111 ALL: Error: Number of triangles"
+puts "TODO OCC11111 ALL: Error: Number of nodes"
+puts "TODO OCC11111 ALL: Error: Maximal deflection"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+
+puts "============"
+puts "OCC21121"
+puts "============"
+puts ""
+#######################################################################
+# Triangulation on face is not built
+#######################################################################
+
+set BugNumber OCC21121
+
+restore [locate_data_file OCC21121.brep] result
+
+tclean result
+
+set Deflection 0.1
+catch {incmesh result ${Deflection} }
+
+checktrinfo result -tri 1555 -nod 1475 -defl 3.5015692105840144e-06 -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
+checkprops result -s 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

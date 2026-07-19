@@ -1,0 +1,19 @@
+puts "=========="
+puts "PRO19854"
+puts "=========="
+puts "Incorrect translation of one entity from STEP file in optimize mode of C30."
+
+stepread [locate_data_file id_turbine-B.stp] a *
+
+checkshape a_1
+checkshape a_1 r
+
+renamevar a_1 result
+
+tpdraw 2637
+
+checkshape tp_2637
+checkshape tp_2637 r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC22900: Problem with shape displaying in shading mode"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION
+vertex v1 0 0 0
+vertex v2 0 0 30
+edge e1 v1 v2
+pcone con1 5 0 10
+ttranslate con1 0 0 30
+compound con1 e1 c1
+don c1
+fit
+vinit View1
+vdisplay c1
+vfit
+vsetcolor c1 RED
+vsetcolor c1 GREEN
+vsetdispmode 1
+vsetcolor c1 RED
+
+checkcolor 204 202 1 0 0
+
+vdump $imagedir/${casename}.png

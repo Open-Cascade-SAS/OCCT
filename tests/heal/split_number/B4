@@ -1,0 +1,12 @@
+restore [locate_data_file HOMAG_004.brep] a
+explode a f
+pcylinder cc 60 30
+explode cc f
+ttranslate cc_1 100 100 0
+bcut b a_4 cc_1
+explode b
+
+DT_SplitByNumber result b_1 100
+
+checknbshapes result -t -face 125
+

@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename pro5101.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 1 )  Summary  = 0  ( 2 )
+TPSTAT      : Faulties = 0  ( 9 )  Warnings = 110  ( 1087 )  Summary  = 110  ( 1096 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 622  ( 312 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 622  ( 622 )   FreeWire = 816  ( 816 ) 
+TOLERANCE   : MaxTol   =   0.6427268663  (     4.45211637 )  AvgTol   =   0.01239718282  (   0.01385833784 )
+LABELS      : N0Labels = 7  ( 7 )  N1Labels = 787  ( 3264 )  N2Labels = 0  ( 0 )   TotalLabels = 794  ( 3271 )   NameLabels = 386  ( 1010 )   ColorLabels = 789  ( 3266 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

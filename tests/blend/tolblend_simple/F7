@@ -1,0 +1,8 @@
+restore [locate_data_file CFI_13_d1ffl.rle] s
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 2*SCALE1 s_2 2*SCALE1 s_12  2*SCALE1 s_5 2*SCALE1 s_3
+explode result Sh
+tcopy result_1 result
+
+checkprops result -s 21814.7

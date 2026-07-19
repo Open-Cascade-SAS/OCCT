@@ -1,0 +1,49 @@
+puts "================"
+puts "OCC25662"
+puts "================"
+puts ""
+#######################################################################
+# Project command produce wrong 2dcurve
+#######################################################################
+
+restore [locate_data_file bug25662_c3d.draw] c3d
+restore [locate_data_file bug25662_surf.draw] surf
+
+project c2d c3d surf
+
+set log [dump c2d]
+
+regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
+puts "Degree=${Degree}"
+puts "Poles=${Poles}"
+puts "KnotsPoles=${KnotsPoles}"
+puts ""
+
+set tol_abs 1.e-4
+set tol_rel 0.01
+set V_i 0
+
+for {set i 1} {${i} <= ${Poles}} {incr i} {
+   set V_i_1 ${V_i}
+   set exp_string " +${i} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
+   regexp ${exp_string} ${log} full U_i V_i
+   #puts "i=${i} U_i=${U_i} V_i=${V_i}"
+   if { ${i} == 1 } {
+      # First pole
+      puts "V_first=${V_i}"
+      set expected_V_first 36.9997986855584
+      checkreal "V_first" ${V_i} ${expected_V_first} ${tol_abs} ${tol_rel}
+   }
+   if { ${i} == ${Poles} } {
+      # Last pole
+      puts "V_last=${V_i}"
+      set expected_V_last 55.0007653583147
+      checkreal "V_last" ${V_i} ${expected_V_last} ${tol_abs} ${tol_rel}
+   }
+   if { ${i} > 1 } {
+      #puts "i=${i} U_i=${U_i} V_i=${V_i} V_i_1=${V_i_1}"
+      if { ${V_i_1} - ${V_i} > ${tol_abs} } {
+         puts "Error: Bad value of V in string: ${i} :${U_i}, ${V_i}"
+      }
+   }
+}

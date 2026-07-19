@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
+
+set ProductMode OFF
+set filename model_214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 3 )  Summary  = 0  ( 4 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 2  ( 3 )  Summary  = 2  ( 3 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 15  ( 0 )  Face     = 15  ( 15 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 15  ( 0 )  Face     = 15  ( 15 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =         1e-007  (    1.0001e-007 )  AvgTol   =          1e-007  (  1.000029825e-007 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 15  ( 15 )  N2Labels = 0  ( 0 )   TotalLabels = 16  ( 16 )   NameLabels = 1  ( 1 )   ColorLabels = 15  ( 15 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = GREEN  ( GREEN )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

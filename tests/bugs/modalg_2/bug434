@@ -1,0 +1,30 @@
+pload QAcommands
+
+puts "================"
+puts "OCC434"
+puts "SAM1296"
+puts "================"
+puts ""
+
+########################################################
+## Exception is raised on NT, SUN in the GeomConvert_CompCurveToBSplineCurve
+########################################################
+
+restore [locate_data_file OCC434.brep] e 
+checkshape e
+explode e e
+
+OCC405 result e_1 e_2
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full num
+
+if { $num == 2 } {
+    puts "OCC434 OK : Result shape is CORRECT !!! "
+} else {
+    puts " Faulty OCC434: Result shape is INcorrect !!! "
+}
+
+checkprops result -l 8.74616 
+checkshape result 
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

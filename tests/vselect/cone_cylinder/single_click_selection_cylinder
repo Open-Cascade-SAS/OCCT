@@ -1,0 +1,39 @@
+puts "================================="
+puts "0032281: Visualization - add Select3D_SensitiveCylinder"
+puts "Tests selection of Select3D_SensitiveCylinder"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+pcylinder cyl 10 20
+vdisplay cyl -dispmode 1
+vfit
+vselect 300 200
+if { ![string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be selected" }
+vselect 300 100
+if { ![string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be selected" }
+vselect 300 300
+if { ![string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be selected" }
+
+vselect 300 25
+if { [string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be unselected" }
+vselect 388 50
+if { [string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be unselected" }
+vselect 424 200
+if { [string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be unselected" }
+
+vselect 300 35
+if { ![string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be selected" }
+vselect 420 95
+if { ![string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be selected" }
+vselect 420 200
+if { ![string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be selected" }
+vtop
+vfit
+vselect 300 200
+if { ![string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be selected" }
+vselect 440 64
+if { ![string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be selected" }
+vselect 446 60
+if { [string match "*Selected*" [vstate cyl]] } { puts "Error: cylinder should be unselected" }

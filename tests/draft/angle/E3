@@ -1,0 +1,11 @@
+#B6----------------------------------------------
+plane p 0 0 0 1 0 0 0 1 0
+pcylinder p p 20 30
+profile pf o 20 4 10 p 1 0 0 0 1 0 l 7 t 0 30 \
+t -7 0  
+revol p2 pf 20 0 0 0 0 1 170
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_3 3 0 0 35 0 0 1
+
+checkprops result -s 7525.77

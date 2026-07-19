@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC8372"
+puts "============"
+puts ""
+######################################################
+# Twisted result of ThruSections operation
+######################################################
+
+set BugNumber OCC8372
+
+restore [locate_data_file OCC8372_1.brep] w1 
+restore [locate_data_file OCC8372_2.brep] w2 
+
+thrusections result 1 1 w1 w2
+
+checkprops result -s 4140.46 
+checkshape result
+
+checknbshapes result -vertex 12 -edge 18 -wire 8 -face 8 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 48
+checkview -display result -2d -path ${imagedir}/${test_image}.png

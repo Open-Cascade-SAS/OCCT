@@ -1,0 +1,41 @@
+#INTERFACE CAF
+# Tree construction attributes
+#
+# Testing attribute: TDF_TagSource
+#
+# Testing command:   NewChild
+# Testing command:   NewTag
+#
+
+puts "caf005-A2"
+
+set aTokList {:}
+
+# Add an attribute to a data framework
+set aLabel1 0:2
+set aName1 Label1
+SetTagger D ${aLabel1}
+SetName D ${aLabel1} ${aName1}
+
+set aLabel2 0:3
+set aName2 Label2
+SetTagger D ${aLabel2}
+SetName D ${aLabel2} ${aName2}
+
+set aChild1 [NewChild D ${aLabel1}]
+
+set aTagNumber 4
+for {set i 1} {${i}<${aTagNumber}} {incr i} {
+	NewTag D ${aLabel2}
+}
+set aChild2 [NewChild D ${aLabel2}]
+
+#  Get a value of the attribute
+set aTag1 [lindex [split ${aChild1} ${aTokList}] 2]
+set aTag2 [lindex [split ${aChild2} ${aTokList}] 2]
+if { ${aTag1}!=1 || ${aTag2}!=${aTagNumber}} {
+	puts "aTag1=${aTag1} aTag2=${aTag2} aTagNumber=${aTagNumber}"
+	puts "Set TDF_TagSource attribute: Error"
+	return
+}
+puts "Set TDF_TagSource attribute: OK"

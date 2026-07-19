@@ -1,0 +1,23 @@
+puts "========================"
+puts " OCC303 "
+puts "(case 2)"
+puts "========================"
+puts ""
+#################################################################
+## Exception while segment operation. 
+#################################################################
+
+restore [locate_data_file OCC303b.brep] sh1
+
+explode sh1 e
+
+mkcurve c1 sh1_1
+trim result c1
+
+if [catch {segment result 23.09944997429109 23.6320483505636} catch_result] {
+    puts "Faulty OCC303 (case 2): function SEGMENT works wrongly"
+} else {
+    puts "OCC303 OK (case 2): function SEGMENT works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

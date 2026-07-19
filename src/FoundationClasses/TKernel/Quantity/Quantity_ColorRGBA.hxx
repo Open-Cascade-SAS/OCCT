@@ -1,0 +1,213 @@
+// Copyright (c) 2016 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Quantity_ColorRGBA_HeaderFile
+#define _Quantity_ColorRGBA_HeaderFile
+
+#include <Quantity_Color.hxx>
+#include <Standard_Assert.hxx>
+
+//! The pair of Quantity_Color and Alpha component (1.0 opaque, 0.0 transparent).
+class Quantity_ColorRGBA
+{
+public:
+  //! Creates a color with the default value.
+  Quantity_ColorRGBA()
+      : myAlpha(1.0f)
+  {
+  }
+
+  //! Creates the color with specified RGB value.
+  constexpr explicit Quantity_ColorRGBA(const Quantity_Color& theRgb)
+      : myRgb(theRgb),
+        myAlpha(1.0f)
+  {
+  }
+
+  //! Creates the color with specified RGBA values.
+  constexpr Quantity_ColorRGBA(const Quantity_Color& theRgb, float theAlpha)
+      : myRgb(theRgb),
+        myAlpha(theAlpha)
+  {
+  }
+
+  //! Creates the color from RGBA vector.
+  explicit Quantity_ColorRGBA(const NCollection_Vec4<float>& theRgba)
+      : myRgb(theRgba.rgb()),
+        myAlpha(theRgba.a())
+  {
+  }
+
+  //! Creates the color from RGBA values.
+  Quantity_ColorRGBA(float theRed, float theGreen, float theBlue, float theAlpha)
+      : myRgb(theRed, theGreen, theBlue, Quantity_TOC_RGB),
+        myAlpha(theAlpha)
+  {
+  }
+
+  //! Assign new values to the color.
+  void SetValues(float theRed, float theGreen, float theBlue, float theAlpha) noexcept
+  {
+    myRgb.SetValues(theRed, theGreen, theBlue, Quantity_TOC_RGB);
+    myAlpha = theAlpha;
+  }
+
+  //! Return RGB color value.
+  constexpr const Quantity_Color& GetRGB() const noexcept { return myRgb; }
+
+  //! Modify RGB color components without affecting alpha value.
+  constexpr Quantity_Color& ChangeRGB() noexcept { return myRgb; }
+
+  //! Assign RGB color components without affecting alpha value.
+  constexpr void SetRGB(const Quantity_Color& theRgb) noexcept { myRgb = theRgb; }
+
+  //! Return alpha value (1.0 means opaque, 0.0 means fully transparent).
+  constexpr float Alpha() const noexcept { return myAlpha; }
+
+  //! Assign the alpha value.
+  constexpr void SetAlpha(const float theAlpha) noexcept { myAlpha = theAlpha; }
+
+  //! Return the color as vector of 4 float elements.
+  operator const NCollection_Vec4<float>&() const noexcept
+  {
+    return *reinterpret_cast<const NCollection_Vec4<float>*>(this);
+  }
+
+  //! Returns true if the distance between colors is greater than Epsilon().
+  bool IsDifferent(const Quantity_ColorRGBA& theOther) const noexcept
+  {
+    return myRgb.IsDifferent(theOther.GetRGB())
+           || std::abs(myAlpha - theOther.myAlpha) > (float)Quantity_Color::Epsilon();
+  }
+
+  //! Returns true if the distance between colors is greater than Epsilon().
+  bool operator!=(const Quantity_ColorRGBA& theOther) const noexcept
+  {
+    return IsDifferent(theOther);
+  }
+
+  //! Two colors are considered to be equal if their distance is no greater than Epsilon().
+  bool IsEqual(const Quantity_ColorRGBA& theOther) const noexcept
+  {
+    return myRgb.IsEqual(theOther.GetRGB())
+           && std::abs(myAlpha - theOther.myAlpha) <= (float)Quantity_Color::Epsilon();
+  }
+
+  //! Two colors are considered to be equal if their distance is no greater than Epsilon().
+  bool operator==(const Quantity_ColorRGBA& theOther) const noexcept { return IsEqual(theOther); }
+
+public:
+  //! Finds color from predefined names.
+  //! For example, the name of the color which corresponds to "BLACK" is Quantity_NOC_BLACK.
+  //! An alpha component is set to 1.0.
+  //! @param theColorNameString the color name
+  //! @param theColor a found color
+  //! @return false if the color name is unknown, or true if the search by color name was successful
+  static bool ColorFromName(const char* const   theColorNameString,
+                            Quantity_ColorRGBA& theColor) noexcept
+  {
+    Quantity_ColorRGBA aColor;
+    if (!Quantity_Color::ColorFromName(theColorNameString, aColor.ChangeRGB()))
+    {
+      return false;
+    }
+    theColor = aColor;
+    return true;
+  }
+
+  //! Parses the string as a hex color (like "#FF0" for short sRGB color, "#FF0F" for short sRGBA
+  //! color,
+  //! "#FFFF00" for RGB color, or "#FFFF00FF" for RGBA color)
+  //! @param theHexColorString the string to be parsed
+  //! @param theColor a color that is a result of parsing
+  //! @param theAlphaComponentIsOff the flag that indicates if a color alpha component is presented
+  //! in the input string (false) or not (true)
+  //! @return true if parsing was successful, or false otherwise
+  Standard_EXPORT static bool ColorFromHex(const char* const   theHexColorString,
+                                           Quantity_ColorRGBA& theColor,
+                                           const bool          theAlphaComponentIsOff = false);
+
+  //! Returns hex sRGBA string in format "#RRGGBBAA".
+  static TCollection_AsciiString ColorToHex(const Quantity_ColorRGBA& theColor,
+                                            const bool theToPrefixHash = true) noexcept
+  {
+    NCollection_Vec4<float> anSRgb = Convert_LinearRGB_To_sRGB((NCollection_Vec4<float>)theColor);
+    NCollection_Vec4<int>   anSRgbInt(anSRgb * 255.0f + NCollection_Vec4<float>(0.5f));
+    char                    aBuff[12];
+    Sprintf(aBuff,
+            theToPrefixHash ? "#%02X%02X%02X%02X" : "%02X%02X%02X%02X",
+            anSRgbInt.r(),
+            anSRgbInt.g(),
+            anSRgbInt.b(),
+            anSRgbInt.a());
+    return aBuff;
+  }
+
+public:
+  //! Convert linear RGB components into sRGB using OpenGL specs formula.
+  static NCollection_Vec4<float> Convert_LinearRGB_To_sRGB(
+    const NCollection_Vec4<float>& theRGB) noexcept
+  {
+    return NCollection_Vec4<float>(Quantity_Color::Convert_LinearRGB_To_sRGB(theRGB.r()),
+                                   Quantity_Color::Convert_LinearRGB_To_sRGB(theRGB.g()),
+                                   Quantity_Color::Convert_LinearRGB_To_sRGB(theRGB.b()),
+                                   theRGB.a());
+  }
+
+  //! Convert sRGB components into linear RGB using OpenGL specs formula.
+  static NCollection_Vec4<float> Convert_sRGB_To_LinearRGB(
+    const NCollection_Vec4<float>& theRGB) noexcept
+  {
+    return NCollection_Vec4<float>(Quantity_Color::Convert_sRGB_To_LinearRGB(theRGB.r()),
+                                   Quantity_Color::Convert_sRGB_To_LinearRGB(theRGB.g()),
+                                   Quantity_Color::Convert_sRGB_To_LinearRGB(theRGB.b()),
+                                   theRGB.a());
+  }
+
+public:
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+
+  //! Inits the content of me from the stream
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
+
+private:
+  static void myTestSize3() { Standard_STATIC_ASSERT(sizeof(float) * 3 == sizeof(Quantity_Color)); }
+
+  static void myTestSize4()
+  {
+    Standard_STATIC_ASSERT(sizeof(float) * 4 == sizeof(Quantity_ColorRGBA));
+  }
+
+private:
+  Quantity_Color myRgb;
+  float          myAlpha;
+};
+
+namespace std
+{
+template <>
+struct hash<Quantity_ColorRGBA>
+{
+  std::size_t operator()(const Quantity_ColorRGBA& theColor) const noexcept
+  {
+    const Quantity_Color& anRGB       = theColor.GetRGB();
+    unsigned char         aByteArr[4] = {static_cast<unsigned char>(100 * theColor.Alpha()),
+                                         static_cast<unsigned char>(255 * anRGB.Red()),
+                                         static_cast<unsigned char>(255 * anRGB.Green()),
+                                         static_cast<unsigned char>(255 * anRGB.Blue())};
+    return opencascade::hashBytes(aByteArr, sizeof(aByteArr));
+  }
+};
+} // namespace std
+#endif // _Quantity_ColorRGBA_HeaderFile

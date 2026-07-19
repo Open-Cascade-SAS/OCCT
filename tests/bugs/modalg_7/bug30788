@@ -1,0 +1,22 @@
+puts "============================================"
+puts "0030788: Modeling Algorithms - BRepAlgoAPI_Defeaturing does not propagate progress indicator to underlying algorithms"
+puts "============================================"
+puts ""
+ 
+proc isTracked { theOutput } {
+  if {![regexp "Progress" $theOutput]} {
+    puts "Error: progress is not tracked"
+  }
+}
+ 
+XProgress +t
+ 
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+compound s_6 s_18 step
+
+# check that progress is tracked for removefeatures operation
+
+set log [removefeatures res s step]
+isTracked $log

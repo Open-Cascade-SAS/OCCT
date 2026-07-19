@@ -1,0 +1,9 @@
+puts "============"
+puts "OCC24989: Visualization - workaround vc12 32-bit compiler optimizer bug resulted in crash in AIS_Axis"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+vtrihedron vtr
+vdump $imagedir/${casename}.png

@@ -1,0 +1,9 @@
+puts "========="
+puts "0024872: Support of emission color in Phong shader and ray-tracing"
+puts "Test emission material within Phong rasterization model"
+puts "========="
+puts ""
+
+source $env(CSF_OCCTResourcePath)/samples/tcl/materials.tcl
+vrenderparams -shadingModel PHONG -msaa 0
+vdump $imagedir/${casename}.png

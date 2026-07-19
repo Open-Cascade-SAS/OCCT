@@ -1,0 +1,18 @@
+puts "================================================================================================="
+puts "0028144: Modeling Data, GeomAdaptor_Curve - regression in comparison of version OCCT654"
+puts "Inner circular edge of the face was shown incomplete or not shown at all in both AXO and V3D viewers"
+puts "================================================================================================="
+
+pload VISUALIZATION
+
+restore [locate_data_file bug28144.brep] a
+
+smallview
+fit
+xwd $imagedir/${casename}_axo.png
+
+vclear
+vinit View1
+vdisplay -dispMode 0 a
+vfit
+vdump $imagedir/${casename}_v3d.png

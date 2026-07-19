@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC26522"
+puts "================"
+puts ""
+#######################################################
+## Exception while copying offset on C0 surface
+#######################################################
+
+restore [locate_data_file bug26522_s.brep] s
+
+set info [checkshape s]
+
+if { [regexp "This shape seems to be valid" ${info}] == 1 } {
+    puts "OK: copying offset on C0 surface is correct"
+} else {
+    puts "Error: copying offset on C0 surface is incorrect"
+}

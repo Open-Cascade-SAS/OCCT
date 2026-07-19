@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC22428"
+puts "================"
+puts ""
+##########################################################################################
+# The shape is valid on Linux but non-valid on Windows. Appendix for SALOME PARTITION_S2
+##########################################################################################
+
+set BugNumber OCC22428
+
+restore [locate_data_file bug22428_f1.brep] result
+set info [ checkshape result ]
+set word1 [string compare [lindex ${info} end] "valid"]
+set word2 [string compare [lindex ${info} end-1] "be"]
+set word3 [string compare [lindex ${info} end-2] "to"]
+set word4 [string compare [lindex ${info} end-3] "seems"]
+set word5 [string compare [lindex ${info} end-4] "shape"]
+set word6 [string compare [lindex ${info} end-5] "This"]
+
+# Resume
+puts ""
+if { ${word1} == 0 && ${word2} == 0 && ${word3} == 0 && ${word4} == 0 && ${word5} == 0 && ${word6} == 0} {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+checkprops result -s 7837.39 
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,51 @@
+#INTERFACE DXF
+puts "============"
+puts "OCC910"
+puts "============"
+puts ""
+#####################################################
+## The problem with sat files depends on problem of BRepTools_WireExplorer
+#####################################################
+
+pload XDE
+
+restore [locate_data_file OCC910.rle] a 
+
+checkshape a
+explode a w
+checkshape a_7
+
+set list1 [expwire a_7]
+regexp {TopoDS_Iterator\(EDGE\)  donne ([-0-9.+eE]+) Edges} $list1 full TopoDS_Iterator1
+regexp {TopExp_Explorer\(EDGE\)  donne ([-0-9.+eE]+) Edges} $list1 full TopExp_Explorer1
+regexp {BRepTools_WireExplorer donne ([-0-9.+eE]+) Edges} $list1 full BRepTools_WireExplorer1
+
+
+set list2 [expwire a_7 a]
+regexp {TopoDS_Iterator\(EDGE\)  donne ([-0-9.+eE]+) Edges} $list1 full TopoDS_Iterator2
+regexp {TopExp_Explorer\(EDGE\)  donne ([-0-9.+eE]+) Edges} $list1 full TopExp_Explorer2
+regexp {BRepTools_WireExplorer donne ([-0-9.+eE]+) Edges} $list1 full BRepTools_WireExplorer2
+
+puts "TopoDS_Iterator1 = ${TopoDS_Iterator1}"
+puts "TopExp_Explorer1 = ${TopExp_Explorer1}"
+puts "BRepTools_WireExplorer1 = ${BRepTools_WireExplorer1}"
+
+puts "TopoDS_Iterator2 = ${TopoDS_Iterator2}"
+puts "TopExp_Explorer2 = ${TopExp_Explorer2}"
+puts "BRepTools_WireExplorer2 = ${BRepTools_WireExplorer2}"
+
+if { ${TopoDS_Iterator1} != ${TopoDS_Iterator2} || \
+     ${TopExp_Explorer1} != ${TopExp_Explorer2} || \
+     ${BRepTools_WireExplorer1} != ${BRepTools_WireExplorer2} } {
+    puts "Faulty OCC910"
+} else {
+    puts "OCC910 OK"
+}
+
+renamevar a_7 result
+
+checkprops result -l 149.816 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

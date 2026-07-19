@@ -1,0 +1,17 @@
+puts "========================"
+puts "OCC23891"
+puts "========================"
+puts ""
+#################################################
+# Function fsameparameter throws an exception
+#################################################
+
+restore [locate_data_file bug23891_fsp9] result
+fit
+if [catch {fsameparameter result} catch_result] {
+    puts "Faulty : function fsameparameter throws an exception"
+} else {
+    puts "OK : function fsameparameter works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

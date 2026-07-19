@@ -1,0 +1,14 @@
+
+puts "========================"
+puts " OCC466 "
+puts "========================"
+puts ""
+
+restore [locate_data_file OCC466.brep] res 
+checkshape res
+
+setflags res locked
+nurbsconvert result res
+
+checkprops result -s 693.577
+checkview -display result -2d -path ${imagedir}/${test_image}.png

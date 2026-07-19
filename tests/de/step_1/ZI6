@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename PRO7071.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1  ( 1 )  Summary  = 1  ( 1 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 15  ( 15 ) 
+STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 15  ( 15 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 1.259252781e-007  ( 1.298605592e-007 )  AvgTol   =  1.021947325e-007  (  1.02527878e-007 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 4  ( 4 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 1  ( 1 )   ColorLabels = 4  ( 4 )   LayerLabels = 4  ( 4 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = DODGERBLUE2 GREEN RED YELLOW  ( DODGERBLUE2 GREEN RED YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 0  ( {  0} )
+
+}

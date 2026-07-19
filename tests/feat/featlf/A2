@@ -1,0 +1,11 @@
+box b 1 1 1 
+nexplode b f
+depouille b b 1 0 0 b_4 3 0.5 0.5 1 1 0 0
+profile pp c 0.3 180 ww
+trotate pp 0 0.15 0 0 1 0 -90
+ttranslate pp 0.3 0.3 0.9
+plane pl 0.3 0.6 1 -1 0 0
+featlf b pp pl 0.3 0 0 -0.2 0 0 1 1
+featperform lf result
+
+checkprops result -s 6.23832

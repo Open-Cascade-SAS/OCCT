@@ -1,0 +1,6 @@
+#old file ofcb19
+
+restore [locate_data_file CHE_bb17.rle] s
+OFFSETSHAPE -0.04 {s_4 s_9 s_3 s_5 s_2 s_7 s_11} $calcul $type
+
+checkprops result -v 0.182288

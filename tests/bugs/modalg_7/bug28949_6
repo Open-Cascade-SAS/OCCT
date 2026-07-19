@@ -1,0 +1,55 @@
+puts "============"
+puts "OCC28949"
+puts "============"
+puts ""
+##############################################################################
+# BRepOffsetAPI_MakePipe Generated() method produces no result for spine edges
+##############################################################################
+
+
+polyline sp 0 0 0 10 0 0 10 0 10 10 10 10 0 10 10 0 10 0 0 0 0
+polyline pr 0 -2 -2 0 2 -2 0 2 2 0 -2 2 0 -2 -2
+
+mksweep sp
+addsweep pr
+buildsweep q -R
+
+explode sp
+
+savehistory sweep_hist
+
+generated r1 sweep_hist sp_1
+generated r2 sweep_hist sp_2
+generated r3 sweep_hist sp_3
+generated r4 sweep_hist sp_4
+generated r5 sweep_hist sp_5
+generated r6 sweep_hist sp_6
+
+checkprops r1 -s 136
+checkprops r2 -s 136
+checkprops r3 -s 136
+checkprops r4 -s 136
+checkprops r5 -s 136
+checkprops r6 -s 136
+
+explode sp v
+
+generated r1 sweep_hist sp_1
+generated r2 sweep_hist sp_2
+generated r3 sweep_hist sp_3
+generated r4 sweep_hist sp_4
+generated r5 sweep_hist sp_5
+generated r6 sweep_hist sp_6
+
+checknbshapes r1 -edge 11 -face 3
+checkprops r1 -s 18.8496
+checknbshapes r2 -edge 11 -face 3
+checkprops r2 -s 18.8496
+checknbshapes r3 -edge 11 -face 3
+checkprops r3 -s 18.8496
+checknbshapes r4 -edge 11 -face 3
+checkprops r4 -s 18.8496
+checknbshapes r5 -edge 11 -face 3
+checkprops r5 -s 18.8496
+checknbshapes r6 -edge 11 -face 3
+checkprops r6 -s 18.8496

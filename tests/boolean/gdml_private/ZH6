@@ -1,0 +1,2 @@
+source [locate_data_file 52160_crash_model-01.prt.1.gdml.tcl]
+

@@ -1,0 +1,96 @@
+puts "============"
+puts "OCC24157"
+puts "============"
+puts ""
+############################################
+# Parallelization of assembly part of BO
+############################################
+
+box b0 10 10 10 
+box b 12 12 12 
+explode b f
+
+#--------------------------
+# 1
+copy b_1 f
+ttranslate f 0 -1 -1
+
+set q1 {}
+for {set i 1} {$i < 5} {incr i} {
+  tcopy f fx_$i 
+  ttranslate fx_$i [expr ($i*2)] 0. 0.    
+  lappend q1 fx_$i 
+}
+eval compound $q1 b1
+donly b0 b1 
+
+#--------------------------
+# 2
+copy b_3 f
+ttranslate f -1 0 -1
+
+set q2 {}
+for {set i 1} {$i < 5} {incr i} {
+  tcopy f fy_$i 
+  ttranslate fy_$i 0. [expr ($i*2)] 0.    
+  lappend q2 fy_$i 
+}
+eval compound $q2 b2
+donly b0 b1 b2
+
+#--------------------------
+# 3
+copy b_5 f
+ttranslate f -1 -1 0
+
+set q3 {}
+for {set i 1} {$i < 5} {incr i} {
+  tcopy f fz_$i 
+  ttranslate fz_$i 0. 0. [expr ($i*2)]
+  lappend q3 fz_$i 
+}
+eval compound $q3 b3
+
+#--------------------------
+# 4
+box bx .2 .2 .2 1.6 1.6 1.6 
+explode bx f
+
+set q4 {}
+for {set i 0} {$i < 5} {incr i} {
+  for {set j 0} {$j < 5} {incr j} {
+    for {set k 0} {$k < 5} {incr k} {
+       for {set m 1} {$m < 6} {incr m} {
+         tcopy bx_${m} sx1_${i}_${j}_${k}_${m}
+         ttranslate sx1_${i}_${j}_${k}_${m} [expr ($i)*2] [expr ($j)*2] [expr ($k)*2]. 
+         lappend q4 sx1_${i}_${j}_${k}_${m}
+       }
+    }
+  }
+}
+eval compound $q4 b4
+
+#--------------------------
+bclearobjects; bcleartools;
+baddobjects b0
+baddcompound b1
+baddcompound b2
+baddcompound b3
+baddcompound b4
+
+bfillds 
+
+regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
+
+if { [regexp {Debug mode} [dversion]] } {
+  set check_time 20
+} else {
+  set check_time 5
+}
+if { $tps_time > $check_time } {
+  puts "Error: low performance"
+} else {
+  puts "OK: high performance"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

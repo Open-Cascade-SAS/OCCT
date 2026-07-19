@@ -1,0 +1,126 @@
+# ============================================================================
+# SINGLE-LEVEL RESTRICTIONS: Only accept what's already tracked in git
+# (These rules apply only at the specified level, deeper levels follow rules below)
+# ============================================================================
+
+# Root level: Ignore everything except tracked items
+/*
+!/.clang-format
+!/.git-blame-ignore-revs
+!/.gitattributes
+!/.gitignore
+!/.tgitconfig
+!/CMakeLists.txt
+!/LICENSE_LGPL_21.txt
+!/OCCT_LGPL_EXCEPTION.txt
+!/README.md
+!/adm/
+!/cmake/
+!/data/
+!/dox/
+!/src/
+!/tests/
+!/.github/
+!/samples/
+
+# data/ level: Ignore everything except tracked subdirectories
+/data/*
+!/data/iges/
+!/data/images/
+!/data/occ/
+!/data/step/
+!/data/stl/
+!/data/vrml/
+
+# src/ level: Ignore everything except tracked items
+/src/*
+!/src/MODULES.cmake
+!/src/ApplicationFramework/
+!/src/DataExchange/
+!/src/Draw/
+!/src/FoundationClasses/
+!/src/ModelingAlgorithms/
+!/src/ModelingData/
+!/src/Visualization/
+!/src/Deprecated/
+
+# ============================================================================
+# DEEPER LEVEL RULES (applied recursively within allowed directories above)
+# ============================================================================
+
+# standard directories for derived files in CASROOT
+/.adm
+/.cache
+/.vscode
+/lin
+/mac
+/wnt
+/doc
+/inc
+/work
+
+# standard names of directories for objects and binaries on Windows
+win32
+win64
+
+# project files and artifacts
+/adm/msvc
+/adm/wnt
+/adm/lin
+/adm/mac
+/adm/make
+*.vcproj*user
+*.vcxproj*user
+*.csproj*user
+*.ncb
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.ipch
+*.aps
+*.DS_Store
+
+# test results
+/results*
+
+# Emacs backup files
+*~
+
+# Generated files
+/*.am
+/*.m4
+/*.ac
+/*.sh
+/codeblocks.bat
+/custom.bat
+/autom4te.cache
+/build_configure
+/configure
+/make
+/config.*
+/Makefile
+/libtool
+/stamp*
+/build*
+/install*
+/tools/build*
+CMakeFiles/
+MakeFile
+cmake_install.cmake
+
+# Coding agents instructions (keep .github/copilot-instructions.md)
+/.CLAUDE.md
+/.AGENT.md
+/.GEMINI.md
+/.COPILOT.md
+/.CURSOR.md
+/.CODEIUM.md
+/.TABNINE.md
+/.CHATGPT.md
+/.BARD.md
+/.PERPLEXITY.md
+/.CONTINUE.md
+/.AIDER.md
+/.WINDSURF.md

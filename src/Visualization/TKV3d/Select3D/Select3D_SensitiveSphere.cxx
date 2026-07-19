@@ -1,0 +1,80 @@
+// Created on: 2021-03-04
+// Created by: Maria KRYLOVA
+// Copyright (c) 2021 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Select3D_SensitiveSphere.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSphere, Select3D_SensitiveEntity)
+
+//=================================================================================================
+
+Select3D_SensitiveSphere::Select3D_SensitiveSphere(
+  const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+  const gp_Pnt&                             theCenter,
+  const double                              theRadius)
+    : Select3D_SensitiveEntity(theOwnerId),
+      myCenter(theCenter),
+      myLastDetectedPoint(RealLast(), RealLast(), RealLast()),
+      myRadius(theRadius)
+{
+}
+
+//=================================================================================================
+
+bool Select3D_SensitiveSphere::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                       SelectBasics_PickResult&             thePickResult)
+{
+  myLastDetectedPoint = gp_Pnt(RealLast(), RealLast(), RealLast());
+  if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
+  {
+    if (!theMgr.IsOverlapAllowed())
+    {
+      bool isInside = true;
+      return theMgr.OverlapsSphere(myCenter, myRadius, &isInside) && isInside;
+    }
+    else
+    {
+      return theMgr.OverlapsSphere(myCenter, myRadius, nullptr);
+    }
+  }
+  if (!theMgr.OverlapsSphere(myCenter, myRadius, thePickResult))
+  {
+    return false;
+  }
+  myLastDetectedPoint = thePickResult.PickedPoint();
+  thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(myCenter));
+  return true;
+}
+
+//=================================================================================================
+
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveSphere::GetConnected()
+{
+  occ::handle<Select3D_SensitiveEntity> aNewEntity =
+    new Select3D_SensitiveSphere(myOwnerId, myCenter, myRadius);
+  return aNewEntity;
+}
+
+//=================================================================================================
+
+Select3D_BndBox3d Select3D_SensitiveSphere::BoundingBox()
+{
+  const NCollection_Vec3<double> aMinPnt = NCollection_Vec3<double>(myCenter.X() - myRadius,
+                                                                    myCenter.Y() - myRadius,
+                                                                    myCenter.Z() - myRadius);
+  const NCollection_Vec3<double> aMaxPnt = NCollection_Vec3<double>(myCenter.X() + myRadius,
+                                                                    myCenter.Y() + myRadius,
+                                                                    myCenter.Z() + myRadius);
+  return Select3D_BndBox3d(aMinPnt, aMaxPnt);
+}

@@ -1,0 +1,13 @@
+puts "================================="
+puts "FUSE of OCC213-2.brep and  OCC213-1.brep"
+puts "Case is duplicate of chl 918 A7, bug OCC213 "
+puts "================================="
+
+restore [locate_data_file OCC213-1.brep] a
+restore [locate_data_file OCC213-2.brep] b
+
+bop b a
+bopfuse result
+
+checkprops result -s 4835.45
+checkview -display result -2d -otherwise { b a } -s -path ${imagedir}/${test_image}.png

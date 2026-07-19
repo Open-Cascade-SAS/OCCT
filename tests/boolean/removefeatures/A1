@@ -1,0 +1,50 @@
+pload XDE
+
+stepread [locate_data_file bug29481_L3.step] s *
+
+copy s_1 s
+explode s f
+
+compound s_6 s_7 feature1
+compound s_2 s_25 s_1 s_4 feature2
+compound s_24 feature3
+compound s_8 feature4
+compound feature1 feature2 feature3 feature4 gap
+
+removefeatures res1 s feature1
+checkshape res1
+checkprops res1 -s 2387.42 -v 1060.96 -deps 1.e-7
+checknbshapes res1 -vertex 66 -edge 99 -wire 35 -face 35 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved feature1 {v e f}
+
+removefeatures res3 s feature1 feature2
+checkshape res3
+checkprops res3 -s 2391.09 -v 1064.4 -deps 1.e-7
+checknbshapes res3 -vertex 60 -edge 90 -wire 32 -face 32 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved feature1 {v e f}
+CheckIsFeatureRemoved feature2 {e f}
+
+removefeatures res4 s feature3
+checkshape res4
+checkprops res4 -s 2387.67 -v 1060.68 -deps 1.e-7
+checknbshapes res4 -vertex 67 -edge 100 -wire 35 -face 35 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved feature3 {v e f}
+
+removefeatures res5 s feature4
+checkshape res5
+checkprops res5 -s 2387.67 -v 1060.68 -deps 1.e-7
+checknbshapes res5 -vertex 67 -edge 100 -wire 35 -face 35 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved feature4 {v e f}
+
+removefeatures res6 s feature3 feature4
+checkshape res6
+checkprops res6 -s 2387.89 -v 1060.71 -deps 1.e-7
+checknbshapes res6 -vertex 65 -edge 97 -wire 34 -face 34 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved feature3 {v e f}
+CheckIsFeatureRemoved feature4 {v e f}
+
+removefeatures res7 s gap
+checkshape res7
+checkprops res7 -s 2392.9 -v 1065.7 -deps 1.e-7
+checknbshapes res7 -vertex 54 -edge 81 -wire 29 -face 29 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved gap {v e f}

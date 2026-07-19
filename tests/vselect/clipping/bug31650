@@ -1,0 +1,26 @@
+puts "============"
+puts "0031650: Visualization - invalid picking of object with local transformation and per-object clipping plane"
+puts "============"
+puts ""
+
+pload XDE MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+box b -28 -11 -35 20 20 42
+vdisplay -dispMode 1 -highMode 1 b
+vsetlocation b 0 0 20
+vfit
+catch {vclipplane -delete p}
+
+# global clipping
+vclipplane p -equation 0 0 -1 -10 -set
+vmoveto 205 205
+if { [vreadpixel 205 320 -name -rgb] != "DARKGOLDENROD" } { puts "Error" }
+
+# local clipping
+vclipplane p -equation 0 0 -1 -10 -set b
+vmoveto 205 205
+if { [vreadpixel 205 320 -name -rgb] != "DARKGOLDENROD" } { puts "Error" }
+
+vdump ${imagedir}/${casename}.png

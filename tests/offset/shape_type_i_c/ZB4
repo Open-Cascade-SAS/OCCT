@@ -1,0 +1,13 @@
+puts "TODO OCC27414 ALL: Error :  is WRONG because number of"
+puts "TODO OCC27414 ALL: Error : The area of result shape is"
+puts "TODO OCC27414 ALL: Error : The volume of result shape is"
+puts "TODO OCC27414 ALL: Error: bsection of the result and s is not equal to zero"
+
+restore [locate_data_file bug26917_M2_trim22.brep] s
+
+OFFSETSHAPE 8 {} $calcul $type
+
+checkprops result -s 69299.9 -v 1.08094e+06 -deps 1.e-3
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 19 -face 19 -shell 1 -solid 1

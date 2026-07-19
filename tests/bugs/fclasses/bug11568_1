@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC11568"
+puts "============"
+puts ""
+#######################################################################
+# UnitsAPI package uses incorrect symbol for minutes: mn instead of min
+#######################################################################
+
+set BugNumber OCC11568
+
+set UnitString "mn"
+set result "Token word : min\n"
+
+if { [unitparsing ${UnitString}] == ${result} } {
+    puts "${BugNumber}: OK"
+} else {
+    puts "${BugNumber}: Faulty"
+}
+

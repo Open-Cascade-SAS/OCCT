@@ -1,0 +1,10 @@
+vclear
+meshfromstl m1 [locate_data_file b.stl]
+meshfromstl m2 [locate_data_file bug24961_m.stl]
+meshfromstl m3 [locate_data_file b2.stl]
+meshfromstl m4 [locate_data_file b3.stl]
+meshcolors m1 elem1 0
+meshcolors m2 elem2 0
+meshcolors m3 nodal 1
+meshcolors m4 nodaltex 1
+vdump $::imagedir/${::casename}.png

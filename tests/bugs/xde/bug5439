@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC5439"
+puts "============"
+puts ""
+######################################################
+# Problems in work of fixshape
+######################################################
+
+restore [locate_data_file OCC5439-1.brep] a
+
+catch { fixshape result a 1.e-7 }
+
+checkprops result -s 13.1825 -eps 0.1
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

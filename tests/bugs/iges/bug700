@@ -1,0 +1,22 @@
+puts "======="
+puts "OCC700"
+puts "======="
+puts ""
+##########################################################
+## The attached file calnnot be read with OCC4.0, while read successfully with OCC3.0
+##########################################################
+
+set filepath [locate_data_file OCC700.igs]
+if [ catch {igesbrep $filepath} res ] {
+    puts "Faulty OCC700"
+} else {
+    set index [lsearch $res Faulty]
+    set index1 [lsearch $res error.]
+    if {$index > -1 || $index1 > -1} {
+	 puts "Faulty OCC700"
+    } else {
+          puts "OCC700 OK"
+    }
+}
+
+

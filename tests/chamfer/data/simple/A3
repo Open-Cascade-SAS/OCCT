@@ -1,0 +1,5 @@
+set chamf_shape test-fillet.brep
+set chamf_edge_face  [list "  31   13" "   8    9" "   5    1" "  19    6" "  42   16"]
+set chamf_dist_angle [list "0.03   60" "0.02   60" "0.05   30" "0.01   60" "0.02   60"]
+set chamf_dist_dist  [list "0.03 0.04" "0.02 0.04" "0.05 0.02" "0.01 0.03" "0.02 0.03"]
+set chamf_equal_dist [list "0.03     " "0.02     " "0.05     " "0.01     " "0.02     "]

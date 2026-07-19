@@ -1,0 +1,11 @@
+#A5----------------------------------------------
+box b1 40 40 15
+profile p o 15 10 5 l 10 c 10 90 l 10 c 5 90 l 10 \
+c 10 90 l 10 c 5 90
+polyline p2 0 0 5 0 0 25
+pipe p p2 p
+bfuse f b1 p
+nexplode f f
+depouille result f 0 0 1 f_12 10 0 0 25 0 0 1
+
+checkprops result -s 6377.54

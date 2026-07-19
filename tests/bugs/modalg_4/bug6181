@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC6181"
+puts "============"
+puts ""
+######################################################
+# Incorrect result of boolean cut
+######################################################
+
+set BugNumber OCC6181
+
+restore [locate_data_file OCC6181_A.brep] s1 
+restore [locate_data_file OCC6181_B.brep] s2 
+
+checkshape s1
+checkshape s2
+
+bcut result s1 s2
+
+checkprops result -s 151691 
+checkshape result
+
+checknbshapes result -vertex 14 -edge 21 -wire 9 -face 9 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 56
+checkview -display result -2d -path ${imagedir}/${test_image}.png

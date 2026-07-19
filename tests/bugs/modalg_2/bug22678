@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC22678"
+puts "============"
+puts ""
+#######################################################################
+# Bad result of the Cut operation.
+#######################################################################
+
+set BugNumber OCC22678
+
+puts "Load first shape ..."
+restore [locate_data_file bug22678_objCut.brep] b1 
+
+puts "Load second shape ..."
+restore [locate_data_file bug22678_toolCut.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopcut result
+puts "Finish boolean operation ..."
+
+checkprops result -s 574348 
+checkshape result
+
+checknbshapes result -vertex 17 -edge 29 -wire 16 -face 15 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 80
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

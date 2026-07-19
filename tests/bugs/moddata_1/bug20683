@@ -1,0 +1,28 @@
+puts "========================"
+puts "OCC20683"
+puts "========================"
+puts ""
+#######################################################################
+# BRepExtrema_ExtCC produces incomplete result.
+#######################################################################
+
+set BugNumber OCC20683
+set RefResult "\"distmini\" command returns:\nd_val d d2 \nOutput is complete."
+
+# finite line is used
+line ll 6834.93 -4100 500 0 0 1
+trim trll ll -1000 -500
+mkedge tree trll
+
+restore [locate_data_file OCC20683_circ1.brep] e1 
+restore [locate_data_file OCC20683_circ2.brep] e2 
+
+set res_list [distmini d e1 e2]
+
+# Resume
+puts ""
+if { [regexp $RefResult $res_list] != 1 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}

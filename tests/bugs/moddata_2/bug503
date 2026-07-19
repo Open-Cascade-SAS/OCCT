@@ -1,0 +1,26 @@
+puts "========="
+puts " OCC503 "
+puts "========="
+puts ""
+###############################
+## Draw hangs up during sprops operation
+###############################
+
+cpulimit 1000
+
+restore [locate_data_file OCC503.brep] result
+
+if [catch {sprops result 0.001 } catch_result] {
+    set mistake 1
+} else {
+    set mistake 0
+}
+
+if { $mistake != 0} {
+    puts "Faulty OCC503 : Draw hangs up during sprops operation "
+} else {
+    puts "OCC503 OK: function SPROPS works without hangs up "
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

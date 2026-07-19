@@ -1,0 +1,8 @@
+box b 3 3 3
+profile p x 1 y 1 x -1 y -1
+explode b f
+
+featprism b p b_5 0 0 1 0 1
+featperform prism result b_6
+
+checkprops result -s 52

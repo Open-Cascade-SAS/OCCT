@@ -1,0 +1,24 @@
+
+puts "========================"
+puts " OCC616"
+puts "========================"
+puts ""
+########################################
+## Function MKOFFSET gives exception for attached face
+########################################
+
+restore [locate_data_file OCC616.brep] a 
+checkshape a
+
+if { [catch {mkoffset result a 5 -2} catch_result] } {
+    puts "Faulty OCC616: function MKOFFSET works with exception"
+} else {
+    renamevar result_1 result
+    checkshape result
+    puts "OCC616 OK: function MKOFFSET works OK"
+}
+
+checkprops result -l 1062.78
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

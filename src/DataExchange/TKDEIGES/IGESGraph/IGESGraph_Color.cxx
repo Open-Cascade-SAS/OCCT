@@ -1,0 +1,78 @@
+// Created by: CKY / Contract Toubro-Larsen
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+
+#include <IGESGraph_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Color, IGESData_ColorEntity)
+
+namespace
+{
+// Precomputed sqrt(3)
+constexpr double SQRT_3 = 1.7320508075688772935;
+} // namespace
+
+IGESGraph_Color::IGESGraph_Color() = default;
+
+// This class inherits from IGESData_ColorEntity
+
+void IGESGraph_Color::Init(const double                                 red,
+                           const double                                 green,
+                           const double                                 blue,
+                           const occ::handle<TCollection_HAsciiString>& aColorName)
+{
+  theRed       = red;
+  theGreen     = green;
+  theBlue      = blue;
+  theColorName = aColorName;
+  InitTypeAndForm(314, 0);
+}
+
+void IGESGraph_Color::RGBIntensity(double& Red, double& Green, double& Blue) const
+{
+  Red   = theRed;
+  Green = theGreen;
+  Blue  = theBlue;
+}
+
+void IGESGraph_Color::CMYIntensity(double& Cyan, double& Magenta, double& Yellow) const
+{
+  Cyan    = 100.0 - theRed;
+  Magenta = 100.0 - theGreen;
+  Yellow  = 100.0 - theBlue;
+}
+
+void IGESGraph_Color::HLSPercentage(double& Hue, double& Lightness, double& Saturation) const
+{
+  Hue        = ((1.0 / (2.0 * M_PI))
+         * (std::atan(((2 * theRed) - theGreen - theBlue) / (SQRT_3 * (theGreen - theBlue)))));
+  Lightness  = ((1.0 / 3.0) * (theRed + theGreen + theBlue));
+  Saturation = (std::sqrt((theRed * theRed) + (theGreen * theGreen) + (theBlue * theBlue)
+                          - (theRed * theGreen) - (theRed * theBlue) - (theBlue * theGreen)));
+}
+
+bool IGESGraph_Color::HasColorName() const
+{
+  return (!theColorName.IsNull());
+}
+
+occ::handle<TCollection_HAsciiString> IGESGraph_Color::ColorName() const
+{
+  return theColorName;
+}

@@ -1,0 +1,65 @@
+// Copyright (c) 2020 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BinMDF_DerivedDriver_HeaderFile
+#define _BinMDF_DerivedDriver_HeaderFile
+
+#include <BinMDF_ADriver.hxx>
+
+//! A universal driver for the attribute that inherits another attribute with
+//! ready to used persistence mechanism implemented (already has a driver to store/retrieve).
+class BinMDF_DerivedDriver : public BinMDF_ADriver
+{
+  DEFINE_STANDARD_RTTIEXT(BinMDF_DerivedDriver, BinMDF_ADriver)
+public:
+  //! Creates a derivative persistence driver for theDerivative attribute by reusage of
+  //! theBaseDriver
+  //! @param theDerivative an instance of the attribute, just created, detached from any label
+  //! @param theBaseDriver a driver of the base attribute, called by Paste methods
+  BinMDF_DerivedDriver(const occ::handle<TDF_Attribute>&  theDerivative,
+                       const occ::handle<BinMDF_ADriver>& theBaseDriver)
+      : BinMDF_ADriver(theBaseDriver->MessageDriver()),
+        myDerivative(theDerivative),
+        myBaseDirver(theBaseDriver)
+  {
+  }
+
+  //! Creates a new instance of the derivative attribute
+  occ::handle<TDF_Attribute> NewEmpty() const override { return myDerivative->NewEmpty(); }
+
+  //! Reuses the base driver to read the base fields
+  bool Paste(const BinObjMgt_Persistent&       theSource,
+             const occ::handle<TDF_Attribute>& theTarget,
+             BinObjMgt_RRelocationTable&       theRelocTable) const override
+  {
+    bool aResult = myBaseDirver->Paste(theSource, theTarget, theRelocTable);
+    // clang-format off
+    theTarget->AfterRetrieval(); // to allow synchronization of the derived attribute with the base content
+    // clang-format on
+    return aResult;
+  }
+
+  //! Reuses the base driver to store the base fields
+  void Paste(const occ::handle<TDF_Attribute>&                        theSource,
+             BinObjMgt_Persistent&                                    theTarget,
+             NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const override
+  {
+    myBaseDirver->Paste(theSource, theTarget, theRelocTable);
+  }
+
+protected:
+  occ::handle<TDF_Attribute>  myDerivative; //!< the derivative attribute that inherits the base
+  occ::handle<BinMDF_ADriver> myBaseDirver; //!< the base attribute driver to be reused here
+};
+
+#endif

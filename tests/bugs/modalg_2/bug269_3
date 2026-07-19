@@ -1,0 +1,19 @@
+
+puts "======== OCC269 ========"
+
+restore [locate_data_file OCC269-3.brep] result
+checkshape result
+isos result 0
+tclean result
+
+#Creating mesh
+incmesh result 0.01
+
+#View the result of mesh
+triangles result
+
+checktrinfo result -tri 2152 -nod 1160
+checkprops result -s 36.4284 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename trj5_pm3-ac-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 20  ( 31 )  Summary  = 20  ( 31 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 49  ( 49 )  Shell    = 49  ( 49 )  Face     = 615  ( 615 ) 
+STATSHAPE   : Solid    = 88  ( 88 )  Shell    = 88  ( 88 )  Face     = 1079  ( 1079 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.007650470101  ( 0.007928962522 )  AvgTol   =  8.845981518e-005  (  8.913715799e-005 )
+LABELS      : N0Labels = 78  ( 78 )  N1Labels = 196  ( 202 )  N2Labels = 0  ( 0 )   TotalLabels = 274  ( 280 )   NameLabels = 178  ( 178 )   ColorLabels = 145  ( 145 )   LayerLabels = 145  ( 151 )
+PROPS       : Centroid = 74  ( 74 )  Volume   = 74  ( 74 )  Area     = 74  ( 74 )
+NCOLORS     : NColors  = 16  ( 16 )
+COLORS      : Colors   = BLUE CYAN DARKGREEN DARKORANGE1 DEEPPINK2 FIREBRICK FIREBRICK1 GREEN LIGHTGOLDENROD1 MAGENTA ORANGE4 PALEGREEN PURPLE RED WHITE YELLOW  ( BLUE CYAN DARKGREEN DARKORANGE1 DEEPPINK2 FIREBRICK FIREBRICK1 GREEN LIGHTGOLDENROD1 MAGENTA ORANGE4 PALEGREEN PURPLE RED WHITE YELLOW )
+NLAYERS     : NLayers  = 10  ( 10 )
+LAYERS      : Layers   = 0 15 18 26 27 9153S07|06 9153S08|07 9153S09|08 GU2_assy|26 TEMP  ( 0 15 18 26 27 9153S07|06 9153S08|07 9153S09|08 GU2_assy|26 TEMP )
+
+}

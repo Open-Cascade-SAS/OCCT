@@ -1,0 +1,13 @@
+#D3---------------------------------------------
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC22803 Linux Windows: Error : The area of result shape is"
+
+plane pt 0 0 0 1 0 0
+ptorus pt pt 9 7
+plane p2 2 2 10 0 0 1
+pcone p2 p2 2 3 15
+bfuse f pt p2
+nexplode f f
+depouille result f 0 0 1 f_4 1 0 0 25 0 0 1
+
+checkprops result -s 2046.52

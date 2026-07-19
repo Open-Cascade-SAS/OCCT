@@ -1,0 +1,43 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Real
+#
+# Testing command:   SetReal
+# Testing command:   GetReal
+#
+
+puts "caf001-B3"
+
+# Add an attribute to a data framework
+set aSetAttr1 100.0
+set aLabel 0:2
+SetReal D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-B3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetAttr3 [GetReal DD ${aLabel}]} aResult]
+if { ${IsDone} != 0 ||
+	${aSetAttr1}!=${aGetAttr3} } {
+	puts ${aResult}
+	puts "aSetAttr1=${aSetAttr1} aGetAttr3=${aGetAttr3}"
+	puts "Get a value of TDataStd_Real attribute from restoring document: Error"
+	return
+}
+puts "Get a value of TDataStd_Real attribute from restoring document: OK"

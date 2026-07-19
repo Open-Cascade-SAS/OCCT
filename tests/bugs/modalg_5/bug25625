@@ -1,0 +1,19 @@
+puts "================"
+puts "OCC25625"
+puts "================"
+puts ""
+####################################
+# Boolean COMMON cannot be built
+####################################
+
+restore [locate_data_file bug25625_shape1_fix.brep] b1
+restore [locate_data_file bug25625_shape2_fix.brep] b2
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s 0.985997 
+checkshape result
+
+checknbshapes result -vertex 10 -edge 11 -wire 2 -face 2 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 26
+checkview -display result -2d -path ${imagedir}/${test_image}.png

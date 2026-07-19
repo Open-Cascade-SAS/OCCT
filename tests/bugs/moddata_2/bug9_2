@@ -1,0 +1,89 @@
+puts "TODO OCC12345 ALL: Faulty OCC9"
+
+puts "================"
+puts "OCC9"
+puts "================"
+puts ""
+
+pload QAcommands
+restore [locate_data_file OCC9-path.draw] d 
+############### checkshape d # is not a topological shape
+restore [locate_data_file OCC9-cur1.draw] b
+############### checkshape b # is not a topological shape
+restore [locate_data_file OCC9-cur2.draw] c
+############### checkshape c # is not a topological shape
+
+## compute radius
+cvalue b 0 x y z
+cvalue b 0 P0
+vertex V [dval x] [dval y] [dval z]
+
+mkedge E d
+distmini dm V E
+
+## make pipe
+set tolerance 0.0001
+OCC9 res d b c [dval dm_val] ${tolerance}
+
+## check parametrization
+
+# puts "Path 0: [dval x] [dval y] [dval z]"
+
+# cvalue b 1 x y z
+# cvalue b 1 P1
+# puts "Path 1: [dval x] [dval y] [dval z]"
+
+# svalue res 0 0 x y z
+# svalue res 0 0 S0
+# puts "Surf 0 0: [dval x] [dval y] [dval z]"
+
+# svalue res 0 1 x y z
+# svalue res 0 1 S1
+# puts "Surf 0 1: [dval x] [dval y] [dval z]"
+
+set n 1
+set sum 0
+for {set i -470} {$i < 240} {incr i 25} {
+#     cvalue d $i "P$n"
+#     svalue res 0 $i "S$n"
+#     puts "donly res P$n S$n"
+    incr n
+    # puts "n = $n i = $i"
+    
+    ####cvalue d $i x y z
+    cvalue b $i x y z
+    svalue res 0 $i xs ys zs
+    set dist [expr sqrt (\
+	    ( [dval x ] - [dval xs ] ) * ( [dval x ] - [dval xs ] )\
+	    + ( [dval y ] - [dval ys ] ) * ( [dval y ] - [dval ys ] )\
+	    + ( [dval z ] - [dval zs ] ) * ( [dval z ] - [dval zs ] )\
+	    ) ]
+    set sum [expr $sum + $dist ]
+    puts "1-st Dist at $i : $dist"
+
+    ####cvalue d $i x y z
+    cvalue c $i x y z
+    ####svalue res 0 $i xs ys zs
+    svalue res 1 $i xs ys zs
+    set dist [expr sqrt (\
+	    ( [dval x ] - [dval xs ] ) * ( [dval x ] - [dval xs ] )\
+	    + ( [dval y ] - [dval ys ] ) * ( [dval y ] - [dval ys ] )\
+	    + ( [dval z ] - [dval zs ] ) * ( [dval z ] - [dval zs ] )\
+	    ) ]
+    set sum [expr $sum + $dist ]
+    puts "2-nd Dist at $i : $dist"
+
+}
+####puts "\n Avg dist on $n intervals: [expr $sum / $n ]"
+set Avg_dist [expr $sum / (2 * $n) ]
+puts "\n Avg dist on $n intervals: ${Avg_dist}"
+
+set check_dist ${tolerance}
+puts "\n check_dist = ${check_dist}"
+if { ${Avg_dist} > ${check_dist} } {
+    puts "\n Faulty OCC9"
+} else {
+    puts "\n OCC9: OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

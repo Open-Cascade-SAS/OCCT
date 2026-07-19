@@ -1,0 +1,12 @@
+restore [locate_data_file bug29481_ANC101.brep] s
+explode s f
+
+removefeatures result s s_83 s_70 s_85
+checkshape result
+checkprops result -s 427464 -v 8.0484e+006 -deps 1.e-7
+checknbshapes result -vertex 128 -edge 193 -wire 113 -face 84 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved s_83 {v e f}
+CheckIsFeatureRemoved s_70 {v e f}
+CheckIsFeatureRemoved s_85 {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

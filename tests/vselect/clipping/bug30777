@@ -1,0 +1,19 @@
+puts "============="
+puts "0030777: Visualization - Incorrect selection/highlighting of clipped objects"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+psphere s 10
+vdisplay -dispMode 1 s
+vfit
+vfront
+vclipplane p1 -set s -equation 0 1 0 0
+set p [vmoveto 200 200]
+vpoint pp {*}$p
+vsetcolor pp RED
+checkpoint p $p {-0.34896 9.99014 0.27411} 0.0001
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,37 @@
+
+puts "================"
+puts "OCC300"
+puts "================"
+puts ""
+#################################################
+## Compsolids have no volume. #2432(SAM1380)
+#################################################
+
+restore [locate_data_file OCC300.brep] result
+
+set che [checkshape result]
+if { [regexp {Faulty} $che] == 1 } {
+    puts "Faulty OCC300: Source shape is invalid. It was detected by Checkshape command"
+    puts "Body of the script was NOT executed"
+} else {
+    puts "OCC300 OK: Source shape is valid"
+
+    set props [vprops result]
+    set list [split ${props}]
+    set listLength [llength ${list}]
+    if { ${listLength} < 5 } {
+	puts "OCC300 - Error : listLength= ${listLength}"
+    }
+
+    regexp {Mass +: +([-0-9.+eE]+)} $props full volume
+    set maxdelta 0.000001
+    if { ${volume} < ${maxdelta} } then {
+	puts "OCC300 - Error "
+    } else {
+	puts "OCC300 - OK"
+    }
+    puts "Volume = ${volume}"
+}
+
+checkprops result -s 750 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

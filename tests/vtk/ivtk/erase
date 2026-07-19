@@ -1,0 +1,18 @@
+puts "============"
+puts "erase: Tests erasing of shapes in the IVtk view"
+puts "============"
+puts ""
+
+pload MODELING VIS
+box b1 1 1 1
+box b2 3 3 3 1 1 1
+ivtkinit
+ivtkdisplay b1 b2 
+ivtkdump $imagedir/${casename}_before.png
+
+ivtkerase b1
+ivtkdump $imagedir/${casename}_oneErased.png
+
+ivtkdisplay b1
+ivtkerase
+ivtkdump $imagedir/${casename}_allErased.png

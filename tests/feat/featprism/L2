@@ -1,0 +1,12 @@
+# Original bug : ger60224
+# Date : 23mar98
+
+restore [locate_data_file CTO900_ger60224-part.rle] base
+restore [locate_data_file ger60224-tool.rle] wire
+
+mkplane cont wire
+
+featprism base cont cont 0 1 0 0 1
+featperform prism result 
+
+checkprops result -s 60037.4

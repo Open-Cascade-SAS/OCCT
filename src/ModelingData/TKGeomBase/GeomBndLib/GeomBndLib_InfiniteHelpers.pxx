@@ -1,0 +1,219 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef GeomBndLib_InfiniteHelpers_HeaderFile
+#define GeomBndLib_InfiniteHelpers_HeaderFile
+
+#include <Bnd_Box.hxx>
+#include <Bnd_Box2d.hxx>
+#include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <Precision.hxx>
+
+//! @file GeomBndLib_InfiniteHelpers.pxx
+//! Template helpers for handling infinite parameters in bounding box computation.
+//! Works with both 3D (gp_Dir/Bnd_Box) and 2D (gp_Dir2d/Bnd_Box2d) types.
+
+namespace GeomBndLib_InfiniteHelpers
+{
+
+//! Open box in the direction of decreasing parameter.
+//! For a line P(t) = Origin + t*V, as t -> -Inf:
+//!   If V.coord > 0, that coordinate -> -Inf, so open min
+//!   If V.coord < 0, that coordinate -> +Inf, so open max
+template <typename DirType, typename BoxType>
+void OpenMin(const DirType& theDir, BoxType& theBox);
+
+//! Open box in the direction of increasing parameter.
+template <typename DirType, typename BoxType>
+void OpenMax(const DirType& theDir, BoxType& theBox);
+
+//! Open box in both directions along the given direction.
+template <typename DirType, typename BoxType>
+void OpenMinMax(const DirType& theDir, BoxType& theBox);
+
+// ============================================================
+// 3D specializations (gp_Dir, Bnd_Box)
+// ============================================================
+
+template <>
+inline void OpenMin<gp_Dir, Bnd_Box>(const gp_Dir& theDir, Bnd_Box& theBox)
+{
+  if (theDir.IsParallel(gp::DX(), Precision::Angular()))
+  {
+    if (theDir.X() > 0.)
+      theBox.OpenXmin();
+    else
+      theBox.OpenXmax();
+  }
+  else if (theDir.IsParallel(gp::DY(), Precision::Angular()))
+  {
+    if (theDir.Y() > 0.)
+      theBox.OpenYmin();
+    else
+      theBox.OpenYmax();
+  }
+  else if (theDir.IsParallel(gp::DZ(), Precision::Angular()))
+  {
+    if (theDir.Z() > 0.)
+      theBox.OpenZmin();
+    else
+      theBox.OpenZmax();
+  }
+  else
+  {
+    theBox.OpenXmin();
+    theBox.OpenYmin();
+    theBox.OpenZmin();
+  }
+}
+
+template <>
+inline void OpenMax<gp_Dir, Bnd_Box>(const gp_Dir& theDir, Bnd_Box& theBox)
+{
+  if (theDir.IsParallel(gp::DX(), Precision::Angular()))
+  {
+    if (theDir.X() > 0.)
+      theBox.OpenXmax();
+    else
+      theBox.OpenXmin();
+  }
+  else if (theDir.IsParallel(gp::DY(), Precision::Angular()))
+  {
+    if (theDir.Y() > 0.)
+      theBox.OpenYmax();
+    else
+      theBox.OpenYmin();
+  }
+  else if (theDir.IsParallel(gp::DZ(), Precision::Angular()))
+  {
+    if (theDir.Z() > 0.)
+      theBox.OpenZmax();
+    else
+      theBox.OpenZmin();
+  }
+  else
+  {
+    theBox.OpenXmax();
+    theBox.OpenYmax();
+    theBox.OpenZmax();
+  }
+}
+
+template <>
+inline void OpenMinMax<gp_Dir, Bnd_Box>(const gp_Dir& theDir, Bnd_Box& theBox)
+{
+  if (theDir.IsParallel(gp::DX(), Precision::Angular()))
+  {
+    theBox.OpenXmax();
+    theBox.OpenXmin();
+  }
+  else if (theDir.IsParallel(gp::DY(), Precision::Angular()))
+  {
+    theBox.OpenYmax();
+    theBox.OpenYmin();
+  }
+  else if (theDir.IsParallel(gp::DZ(), Precision::Angular()))
+  {
+    theBox.OpenZmax();
+    theBox.OpenZmin();
+  }
+  else
+  {
+    theBox.OpenXmin();
+    theBox.OpenYmin();
+    theBox.OpenZmin();
+    theBox.OpenXmax();
+    theBox.OpenYmax();
+    theBox.OpenZmax();
+  }
+}
+
+// ============================================================
+// 2D specializations (gp_Dir2d, Bnd_Box2d)
+// ============================================================
+
+template <>
+inline void OpenMin<gp_Dir2d, Bnd_Box2d>(const gp_Dir2d& theDir, Bnd_Box2d& theBox)
+{
+  if (theDir.IsParallel(gp::DX2d(), Precision::Angular()))
+  {
+    if (theDir.X() > 0.)
+      theBox.OpenXmin();
+    else
+      theBox.OpenXmax();
+  }
+  else if (theDir.IsParallel(gp::DY2d(), Precision::Angular()))
+  {
+    if (theDir.Y() > 0.)
+      theBox.OpenYmin();
+    else
+      theBox.OpenYmax();
+  }
+  else
+  {
+    theBox.OpenXmin();
+    theBox.OpenYmin();
+  }
+}
+
+template <>
+inline void OpenMax<gp_Dir2d, Bnd_Box2d>(const gp_Dir2d& theDir, Bnd_Box2d& theBox)
+{
+  if (theDir.IsParallel(gp::DX2d(), Precision::Angular()))
+  {
+    if (theDir.X() > 0.)
+      theBox.OpenXmax();
+    else
+      theBox.OpenXmin();
+  }
+  else if (theDir.IsParallel(gp::DY2d(), Precision::Angular()))
+  {
+    if (theDir.Y() > 0.)
+      theBox.OpenYmax();
+    else
+      theBox.OpenYmin();
+  }
+  else
+  {
+    theBox.OpenXmax();
+    theBox.OpenYmax();
+  }
+}
+
+template <>
+inline void OpenMinMax<gp_Dir2d, Bnd_Box2d>(const gp_Dir2d& theDir, Bnd_Box2d& theBox)
+{
+  if (theDir.IsParallel(gp::DX2d(), Precision::Angular()))
+  {
+    theBox.OpenXmax();
+    theBox.OpenXmin();
+  }
+  else if (theDir.IsParallel(gp::DY2d(), Precision::Angular()))
+  {
+    theBox.OpenYmax();
+    theBox.OpenYmin();
+  }
+  else
+  {
+    theBox.OpenXmin();
+    theBox.OpenYmin();
+    theBox.OpenXmax();
+    theBox.OpenYmax();
+  }
+}
+
+} // namespace GeomBndLib_InfiniteHelpers
+
+#endif // GeomBndLib_InfiniteHelpers_HeaderFile

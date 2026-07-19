@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC25887"
+puts "========"
+puts ""
+#############################
+# Invalid pipe construction
+#############################
+
+restore [locate_data_file OCC25887_shape.brep] a
+
+smallview
+
+explode a
+
+pipe res a_1 a_2 1
+
+donly res
+fit
+
+set bug_info [checkshape res]
+if {[string compare $bug_info "This shape seems to be valid"] != 0} {
+  puts "ERROR: OCC25887 is reproduced."
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

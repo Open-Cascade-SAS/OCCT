@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC10"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+vinit View1
+box b 10 10 10
+explode b f
+vdisplay b_1
+vfit
+
+set ll 5
+
+OCC10 trihedron1 b_1 ${ll}
+
+vdump $imagedir/${casename}.png

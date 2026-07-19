@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC21460"
+puts "============"
+puts ""
+#######################################################################
+# SIGFPE in BOP on two attached edges
+#######################################################################
+
+set BugNumber OCC21460
+
+puts "Load first shape ..."
+restore [locate_data_file bug21460_aE1.brep] e1 
+
+puts "Load second shape ..."
+restore [locate_data_file bug21460_aE2.brep] e2 
+
+puts "Prepare boolean operation ..."
+bop e1 e2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+set mistake 0
+
+checkprops result -l 448.285 
+checkshape result 
+checksection result
+
+checknbshapes result -vertex 5 -edge 4 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+puts "============"
+puts "0030807: Visualization, TKOpenGl - supporting cubemaps"
+puts "Test vertical 2x3 tiles orientation"
+puts "============"
+puts ""
+
+set aCubeMap_GridV [locate_data_file Circus_CubeMap_GridV.png]
+set aCubeMap_GridV_021345 [locate_data_file Circus_CubeMap_GridV_021345.png]
+
+pload MODELING VISUALIZATION
+vclear
+vinit v -w 512 -h 512
+vcamera -fovy 100
+
+# vertical grid tile orientation
+vbackground -cubemap $aCubeMap_GridV
+foreach {i} { front back top bottom left right } { v$i; vdump $imagedir/${casename}_${i}.png }
+
+# vertical grid tile orientation (disordered)
+vbackground -cubemap $aCubeMap_GridV_021345 -order 0 2 1 3 4 5
+foreach {i} { front back top bottom left right } { v$i; vdump $imagedir/${casename}_021345_${i}.png }

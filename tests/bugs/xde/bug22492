@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC22492"
+puts "============"
+puts ""
+#######################################################################
+# Scaled sphere (Solid with BSplineSurface) is wrongly exported in STEP.
+#######################################################################
+
+set BugNumber OCC22492
+
+restore [locate_data_file bug22492_scale.brep] sc1 
+nbshapes sc1
+
+catch {[file delete $imagedir/${test_image}.step]}
+
+stepwrite 3 sc1 $imagedir/${test_image}.step
+
+stepread $imagedir/${test_image}.step sc2 *
+tpcompound sc2
+renamevar sc2 result
+
+checkprops result -s 271280
+checkshape result
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 10
+checkview -display result -2d -path ${imagedir}/${test_image}.png

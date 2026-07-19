@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC321"
+puts "========"
+puts ''
+##############################################################
+##Crash during importation of IGES file on SUN, on other platforms message
+##  "Syntax error during importation"
+##############################################################
+
+stepread [locate_data_file OCC321.stp] a *
+
+tpcompound a
+checkshape a
+checkshape a r
+
+######################################################################
+catch {exec rm ${imagedir}/OCC321.iges}
+
+brepiges a ${imagedir}/OCC321.iges
+dall
+
+igesbrep ${imagedir}/OCC321.iges b *
+
+tpcompound result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

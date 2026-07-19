@@ -1,0 +1,17 @@
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+	pload TOPTEST
+}
+
+# To prevent loops limit to 5 minutes
+cpulimit 300
+
+dset SCALE 100
+protect SCALE
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}

@@ -1,0 +1,6 @@
+psphere s 15 -90 60 90
+trotate s 0 0 0 0 0 1 90
+
+OFFSETSHAPE -1 {s_4} $calcul $type
+
+checkprops result -v 955.222

@@ -1,0 +1,21 @@
+puts "================"
+puts "OCC25319"
+puts "================"
+puts ""
+########################################################################
+# Bop Common produces strange results with same shapes.
+########################################################################
+
+restore [locate_data_file bug25319_S1.brep] b1
+restore [locate_data_file bug25319_S2.brep] b2
+
+explode b1 so; copy b1_1 b1
+explode b2 so; copy b2_3 b2
+
+bcommon result b1 b2
+
+checkprops result -s 1690.81 
+checkshape result
+
+checknbshapes result -vertex 20 -edge 31 -wire 13 -face 13 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 80
+checkview -display result -2d -path ${imagedir}/${test_image}.png

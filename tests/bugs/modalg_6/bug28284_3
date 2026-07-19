@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC28284"
+puts "========"
+puts ""
+#################################################
+# Avoid classification of sub-shapes of arguments of BOPs relatively solids during Intersection phase
+#################################################
+
+box b1 10 10 10
+
+explode b1 sh
+shape b2 So
+add b1_1 b2
+
+bop b1 b2
+
+bopcommon rcom
+checknbshapes rcom -solid 1
+
+bopfuse rfuse
+checknbshapes rfuse -solid 1
+
+bopcut rcut
+checknbshapes rcut -solid 0
+
+boptuc rtuc
+checknbshapes rcut -solid 0

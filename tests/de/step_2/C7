@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename r0401_sd.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 740 )  Warnings = 0  ( 0 )  Summary  = 0  ( 740 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 4  ( 4 )  Face     = 234  ( 234 ) 
+STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 4  ( 4 )  Face     = 234  ( 234 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 7.686443174e-007  ( 7.686367027e-007 )  AvgTol   =  1.100573628e-007  (  1.1005734e-007 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 385  ( 15 )  N2Labels = 0  ( 0 )   TotalLabels = 390  ( 20 )   NameLabels = 9  ( 9 )   ColorLabels = 384  ( 15 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = FORESTGREEN MATRAGRAY MEDIUMTURQUOISE PALEGREEN1 PURPLE1 RED  ( FORESTGREEN MATRAGRAY MEDIUMTURQUOISE PALEGREEN1 PURPLE1 RED )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

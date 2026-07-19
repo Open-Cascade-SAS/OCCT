@@ -1,0 +1,17 @@
+puts "========="
+puts "OCC24628"
+puts "========="
+puts ""
+#################################################################################
+# Intersection result is unfixed
+#################################################################################
+
+restore [locate_data_file bug24628_shell2.brep] shell
+restore [locate_data_file bug24628_shellcut2.brep] cut
+
+bsection result shell cut
+
+checknbshapes result -vertex 14 -edge 13
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

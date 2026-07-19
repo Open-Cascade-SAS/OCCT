@@ -1,0 +1,59 @@
+
+puts "========"
+puts "OCC262"
+puts "========"
+
+restore [locate_data_file OCC262.brep] a 
+# checkshape a
+
+set tolerance 1e-5
+
+build3d a ${tolerance}
+
+fsameparameter a
+
+explode a E 
+# Verify only a_1 and a_2 eges because a_3 had 3d curve before call of build3d command
+
+set toler1 [maxtolerance a_1]
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $toler1 full MaxEdgeTolerance1
+
+if { [ expr $MaxEdgeTolerance1 > $tolerance ] } { 
+    puts "OCC262 - FAULTY. Tolerance of a_1 is too big" 
+} else { 
+    puts "TOLERANCE OF A_1 - OK"
+}
+
+set toler2 [maxtolerance a_2]
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $toler2 full MaxEdgeTolerance2
+
+if { [ expr $MaxEdgeTolerance2 > $tolerance ] } {
+    puts "OCC262 - FAULTY. Tolerance of a_1 is too big"
+} else { 
+    puts "TOLERANCE OF A_2 - OK" 
+}
+
+
+#set tolerancelist [maxtolerance a]
+
+#set list [split ${tolerancelist} "\n\t"]
+#set listLength [llength ${list}]
+#if { ${listLength} < 9 } then {puts "OCC262 - Error : listLength= ${listLength}"}
+
+#set EdgeList [lindex ${list} 5]
+#set MaxEdgeTolerance [lindex [split ${EdgeList}] [expr [llength [split ${EdgeList}] ] - 2] ]
+
+#set delta [expr abs(${MaxEdgeTolerance} - ${tolerance}) / ${tolerance} * 100]
+
+#set maxdelta 1
+
+#if { ${delta} > ${maxdelta} } then {puts "OCC262 - Error : delta = ${delta}"} else {
+#  puts "OCC262: OK"
+#}
+
+#puts "MaxEdgeTolerance = ${MaxEdgeTolerance}"
+
+renamevar a result
+
+checkprops result -s 449.437
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,124 @@
+#INTERFACE CAF
+# Tree construction attributes
+#
+# Testing attribute: TDataStd_TreeNode
+#
+# Testing command:   ChildNodeValue
+#
+# Testing command:   NewChild
+# Testing command:   AppendNode
+# Testing command:   InitChildNodeIterator
+# Testing command:   ChildNodeMore
+# Testing command:   ChildNodeNext
+#
+
+puts "caf005-L1"
+set QA_DUP 0
+
+# Add an attribute to a data framework
+set aLabel_Root 0:2
+set aName_Root Label_1
+Label D ${aLabel_Root}
+SetName D ${aLabel_Root} ${aName_Root}
+
+set aName1 Label_1_1
+###set aChild1 [NewChild D ${aLabel_Root}]
+set aChild1 0:2:1
+Label D ${aChild1}
+SetName D ${aChild1} ${aName1}
+
+set aName2 Label_1_2
+###set aChild2 [NewChild D ${aLabel_Root}]
+set aChild2 0:2:2
+Label D ${aChild2}
+SetName D ${aChild2} ${aName2}
+
+set aName3 Label_1_1_1
+###set aChild3 [NewChild D ${aLabel_Root}]
+set aChild3 0:2:3
+Label D ${aChild3}
+SetName D ${aChild3} ${aName3}
+
+set aName4 Label_1_1_2
+###set aChild4 [NewChild D ${aLabel_Root}]
+set aChild4 0:2:4
+Label D ${aChild4}
+SetName D ${aChild4} ${aName4}
+
+set aName5 Label_1_1_3
+###set aChild5 [NewChild D ${aLabel_Root}]
+set aChild5 0:2:5
+Label D ${aChild5}
+SetName D ${aChild5} ${aName5}
+
+set aName6 Label_1_2_1
+###set aChild6 [NewChild D ${aLabel_Root}]
+set aChild6 0:2:6
+Label D ${aChild6}
+SetName D ${aChild6} ${aName6}
+
+set aName7 Label_1_2_2
+###set aChild7 [NewChild D ${aLabel_Root}]
+set aChild7 0:2:7
+Label D ${aChild7}
+SetName D ${aChild7} ${aName7}
+
+SetNode D ${aLabel_Root}
+AppendNode D ${aLabel_Root} ${aChild1}
+AppendNode D ${aLabel_Root} ${aChild2}
+AppendNode D ${aChild1} ${aChild3}
+AppendNode D ${aChild1} ${aChild4}
+AppendNode D ${aChild1} ${aChild5}
+AppendNode D ${aChild2} ${aChild6}
+AppendNode D ${aChild2} ${aChild7}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel_Root}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set IsDone [catch {InitChildNodeIterator D ${aLabel_Root} 0} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "ChildNodeValue for InitChildNodeIterator Doc TreeNode AllLevels=0 : Error"
+	return
+}
+set aChildNumber 0
+set aChildNodeList {}
+for {set i 1} {${i}<=10} {incr i} {                                   
+	set aMore [ChildNodeMore]
+	set aMore [lindex ${aMore} 0]
+	if { ${aMore}=="TRUE"} {
+		set aChildNodeValue [ChildNodeValue]
+		set aChildNodeList [concat ${aChildNodeList} ${aChildNodeValue}]
+		ChildNodeNext
+		incr aChildNumber
+	}
+}
+
+if { ${aChildNumber}!=2} {
+	puts "aChildNumber=${aChildNumber}"
+	puts "ChildNodeNext for InitChildNodeIterator Doc TreeNode AllLevels=0 : Error"
+	return
+}
+
+set aFirstChildNode [lindex ${aChildNodeList} 0]
+set aSecondChildNode [lindex ${aChildNodeList} 1]
+if { ${aFirstChildNode}!=${aChild1} ||
+	${aSecondChildNode}!=${aChild2}} {
+	puts "aFirstChildNode=${aFirstChildNode} aChild1=${aChild1}"
+	puts "aSecondChildNode=${aSecondChildNode} aChild2=${aChild2}"
+	puts "ChildNodeValue for InitChildNodeIterator Doc TreeNode AllLevels=0 : Error"
+	return
+}
+puts "ChildNodeValue for InitChildNodeIterator Doc TreeNode AllLevels=0 : OK"

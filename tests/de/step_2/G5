@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL:   Make Geom_Curve \\(3D\\) failed" 
+puts "TODO CR23096 ALL:  At least one edge failed : wire not done" 
+
+
+set filename Inventor_iPartExample.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 30 )  Warnings = 0  ( 0 )  Summary  = 0  ( 30 )
+TPSTAT      : Faulties = 0  ( 188 )  Warnings = 0  ( 96 )  Summary  = 0  ( 284 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 10  ( 44 )  Face     = 783  ( 817 ) 
+STATSHAPE   : Solid    = 8  ( 8 )  Shell    = 10  ( 44 )  Face     = 783  ( 817 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.0003647191536  ( 0.0003647191504 )  AvgTol   =  4.200927064e-005  (  4.190525428e-005 )
+LABELS      : N0Labels = 9  ( 9 )  N1Labels = 11  ( 11 )  N2Labels = 0  ( 0 )   TotalLabels = 20  ( 20 )   NameLabels = 17  ( 17 )   ColorLabels = 10  ( 10 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = GOLDENROD3 GRAY66 SANDYBROWN  ( GOLDENROD3 GRAY66 SANDYBROWN )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

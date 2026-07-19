@@ -1,0 +1,12 @@
+restore [locate_data_file bug29481_window_slots.brep] s
+explode s f
+
+compound s_11 s_10 s_46 s_45 s_47 hole
+
+removefeatures result s hole
+checkshape result
+checkprops result -s 32410 -v 108650 -deps 1.e-7
+checknbshapes result -vertex 104 -edge 156 -wire 54 -face 54 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved hole {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

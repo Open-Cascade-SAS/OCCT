@@ -1,0 +1,29 @@
+puts "============"
+puts "CR26440"
+puts "============"
+puts ""
+##########################################################################################################
+# Invalid shape as a result of solid construction in BRepOffset_MakeOffset
+##########################################################################################################
+
+restore [locate_data_file bug26440_plate.brep] sh1
+
+thickshell result sh1 160
+
+checkprops result -s 2.40831e+07 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 196
+ EDGE      : 308
+ WIRE      : 110
+ FACE      : 110
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 726
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "solid construction"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

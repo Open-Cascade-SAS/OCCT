@@ -1,0 +1,10 @@
+# Test data:
+puts "USER GUID: HA-3623b"
+
+restore [locate_data_file bug28968_HA-3623b-hull.brep] s
+
+set OffsetValue 20.0
+
+# Reference data.
+set ExpectedMass 5.21983e+007
+set ExpectedMaxTol 0.29

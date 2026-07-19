@@ -1,0 +1,11 @@
+## ===========================================
+## Grid    : CCV001
+## Test    : G1
+## Comment : From CV tests serie page 23/24
+## ===========================================
+
+restore [locate_data_file CCV_1_g1_gsj.rle] s
+explode s E
+blend result s 25 s_3
+
+checkprops result -s 62559.3

@@ -1,0 +1,65 @@
+
+! Resource file for data exchange ...
+!
+! For meaning of parameters refer to the end of the file
+
+! ==============================================================================
+!
+
+ToIGES.exec.op: DirectFaces
+
+FromIGES.exec.op : FixShape
+
+FromIGES.FixShape.Tolerance3d			: &Runtime.Tolerance
+FromIGES.FixShape.MaxTolerance3d		: &Runtime.MaxTolerance
+FromIGES.FixShape.MinTolerance3d		: 1.e-7
+FromIGES.FixShape.FixFreeShellMode		: -1
+FromIGES.FixShape.FixFreeFaceMode		: -1
+FromIGES.FixShape.FixFreeWireMode		: -1
+FromIGES.FixShape.FixSameParameterMode		: -1
+
+FromIGES.FixShape.FixSolidMode			: -1
+FromSTEP.FixShape.FixShellOrientationMode	: -1
+FromIGES.FixShape.CreateOpenSolidMode           :  1
+
+FromIGES.FixShape.FixShellMode			: -1
+FromSTEP.FixShape.FixFaceOrientationMode	: -1
+
+FromIGES.FixShape.FixFaceMode			: -1
+FromIGES.FixShape.FixWireMode			: -1
+FromIGES.FixShape.FixOrientationMode		: -1
+FromIGES.FixShape.FixAddNaturalBoundMode	: -1
+FromIGES.FixShape.FixMissingSeamMode		: -1
+FromIGES.FixShape.FixSmallAreaWireMode		: -1
+FromIGES.FixShape.RemoveSmallAreaFaceMode	: -1
+FromIGES.FixShape.FixIntersectingWiresMode	: -1
+FromIGES.FixShape.FixLoopWiresMode              : -1
+FromIGES.FixShape.FixSplitFaceMode              : -1
+FromIGES.FixShape.AutoCorrectPrecisionMode      :  1
+FromIGES.FixShape.ModifyTopologyMode		:  0
+FromIGES.FixShape.ModifyGeometryMode		:  1
+FromIGES.FixShape.ClosedWireMode		:  1
+FromIGES.FixShape.PreferencePCurveMode		:  1
+FromIGES.FixShape.FixReorderMode		: -1
+FromIGES.FixShape.FixSmallMode			: -1
+FromIGES.FixShape.FixConnectedMode		: -1
+FromIGES.FixShape.FixEdgeCurvesMode		: -1
+FromIGES.FixShape.FixDegeneratedMode		: -1
+FromIGES.FixShape.FixLackingMode		: -1
+FromIGES.FixShape.FixSelfIntersectionMode	: -1
+FromIGES.FixShape.RemoveLoopMode                : -1
+FromIGES.FixShape.FixReversed2dMode		: -1
+FromIGES.FixShape.FixRemovePCurveMode		: -1
+FromIGES.FixShape.FixRemoveCurve3dMode		: -1
+FromIGES.FixShape.FixAddPCurveMode		: -1
+FromIGES.FixShape.FixAddCurve3dMode		: -1
+FromIGES.FixShape.FixSeamMode			: -1
+FromIGES.FixShape.FixShiftedMode		: -1
+FromIGES.FixShape.FixEdgeSameParameterMode	:  0
+FromIGES.FixShape.FixNotchedEdgesMode 		: -1
+FromIGES.FixShape.FixSelfIntersectingEdgeMode	: -1
+FromIGES.FixShape.FixIntersectingEdgesMode	: -1
+FromIGES.FixShape.FixNonAdjacentIntersectingEdgesMode : -1
+
+FromIGES.FixShape.FixVertexPositionMode : 0
+FromIGES.FixShape.FixVertexToleranceMode : -1

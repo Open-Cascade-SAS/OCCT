@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj8_pm6-ac-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 35 )  Summary  = 14  ( 35 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 445  ( 445 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 445  ( 445 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.007489276519  ( 0.007492673692 )  AvgTol   =  0.0001042274454  (  0.0001043214493 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 58  ( 58 )  N2Labels = 0  ( 0 )   TotalLabels = 61  ( 61 )   NameLabels = 5  ( 5 )   ColorLabels = 57  ( 57 )   LayerLabels = 57  ( 57 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = PURPLE WHITE  ( PURPLE WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 0  ( 0 )
+
+}

@@ -1,0 +1,15 @@
+puts "TODO OCC23748 ALL: Error : The offset cannot be built."
+puts "TODO OCC23748 ALL: Error: The command cannot be built"
+puts "TODO OCC23748 ALL: Error: Offset is not done."
+puts "TODO OCC24156 MacOS: Error : The length of result shape is"
+puts "TODO OCC24156 MacOS: Error : The resulting shape is WRONG"
+
+restore [locate_data_file offset_wire_001.brep] s
+
+set off_param -$off_param
+
+set length 11.6898
+set nbsh_v 23
+set nbsh_e 23
+set nbsh_w 1
+

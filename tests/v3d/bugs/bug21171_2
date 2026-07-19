@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC21171: Problem with vfit of vertex and edge "
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box result 100 100 100
+explode result e
+
+vinit View1
+vdisplay result_1
+vdisplay result_2
+vfit
+
+# Resume
+puts ""
+puts "2 edges are fit"
+
+vdump $imagedir/${casename}.png

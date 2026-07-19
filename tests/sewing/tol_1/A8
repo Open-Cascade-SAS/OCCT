@@ -1,0 +1,8 @@
+restore [locate_data_file CFE900_cts60gdk.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 1.09999999999996e-007
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

@@ -1,0 +1,15 @@
+restore [locate_data_file bug26917_dom8036.input_art4.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 5
+explode s f
+offsetonface s_6 7
+offsetperform result
+
+checkprops result -v 5530.7
+checkprops result -s 1919.49
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 13 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,348 @@
+// Created on: 1992-06-24
+// Created by: Gilles DEBARBOUILLE
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//=================================================================================================
+
+MAT_TList::MAT_TList()
+{
+  thecurrentindex  = 0;
+  thenumberofitems = 0;
+}
+
+//=================================================================================================
+
+void MAT_TList::First()
+{
+  thecurrentnode  = thefirstnode;
+  thecurrentindex = 1;
+}
+
+//=================================================================================================
+
+void MAT_TList::Last()
+{
+  thecurrentnode  = thelastnode;
+  thecurrentindex = thenumberofitems;
+}
+
+//=================================================================================================
+
+void MAT_TList::Init(const Item& anitem)
+{
+  First();
+  while (More())
+  {
+    if (anitem == thecurrentnode->GetItem())
+      break;
+    Next();
+  }
+}
+
+//=================================================================================================
+
+void MAT_TList::Next()
+{
+  if (!IsEmpty())
+  {
+    thecurrentnode  = thecurrentnode->Next();
+    thecurrentindex = (thecurrentindex % thenumberofitems) + 1;
+  }
+}
+
+//=================================================================================================
+
+void MAT_TList::Previous()
+{
+  if (!IsEmpty())
+  {
+    thecurrentnode  = thecurrentnode->Previous();
+    thecurrentindex = ((thecurrentindex + thenumberofitems - 2) % thenumberofitems) + 1;
+  }
+}
+
+//=================================================================================================
+
+bool MAT_TList::More() const
+{
+  return (!thecurrentnode.IsNull());
+}
+
+//=================================================================================================
+
+Item MAT_TList::Current() const
+{
+  return thecurrentnode->GetItem();
+}
+
+//=================================================================================================
+
+void MAT_TList::Current(const Item& anitem) const
+{
+  thecurrentnode->SetItem(anitem);
+}
+
+//=================================================================================================
+
+Item MAT_TList::FirstItem() const
+{
+  return thefirstnode->GetItem();
+}
+
+//=================================================================================================
+
+Item MAT_TList::LastItem() const
+{
+  return thelastnode->GetItem();
+}
+
+//=================================================================================================
+
+Item MAT_TList::PreviousItem() const
+{
+  return thecurrentnode->Previous()->GetItem();
+}
+
+//=================================================================================================
+
+Item MAT_TList::NextItem() const
+{
+  return thecurrentnode->Next()->GetItem();
+}
+
+//=================================================================================================
+
+Item MAT_TList::Brackets(const int anindex)
+{
+  if (thecurrentindex > anindex)
+  {
+    while (thecurrentindex != anindex)
+    {
+      thecurrentindex--;
+      thecurrentnode = thecurrentnode->Previous();
+    }
+  }
+  else if (thecurrentindex < anindex)
+  {
+    while (thecurrentindex != anindex)
+    {
+      thecurrentindex++;
+      thecurrentnode = thecurrentnode->Next();
+    }
+  }
+  return thecurrentnode->GetItem();
+}
+
+//=================================================================================================
+
+void MAT_TList::Unlink()
+{
+  bool previousisnull = thecurrentnode->Previous().IsNull();
+  bool nextisnull     = thecurrentnode->Next().IsNull();
+
+  if (thecurrentindex)
+  {
+    if (!nextisnull)
+    {
+      thecurrentnode->Next()->Previous(thecurrentnode->Previous());
+    }
+    if (!previousisnull)
+    {
+      thecurrentnode->Previous()->Next(thecurrentnode->Next());
+    }
+
+    if (thecurrentindex == 1)
+    {
+      thefirstnode = thecurrentnode->Next();
+    }
+    else if (thecurrentindex == thenumberofitems)
+    {
+      thelastnode = thecurrentnode->Previous();
+    }
+  }
+  thenumberofitems--;
+  thecurrentindex--;
+}
+
+//=================================================================================================
+
+void MAT_TList::LinkBefore(const Item& anitem)
+{
+  thenumberofitems++;
+  if (thecurrentindex)
+    thecurrentindex++;
+
+  occ::handle<MAT_TListNode> previous;
+
+  occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
+
+  if (!(thecurrentnode->Previous()).IsNull())
+  {
+    previous = thecurrentnode->Previous();
+    previous->Next(node);
+    node->Previous(previous);
+  }
+
+  if (thecurrentindex == 2)
+  {
+    thefirstnode = node;
+  }
+
+  thecurrentnode->Previous(node);
+  node->Next(thecurrentnode);
+}
+
+//=================================================================================================
+
+void MAT_TList::LinkAfter(const Item& anitem)
+{
+  thenumberofitems++;
+  occ::handle<MAT_TListNode> next;
+
+  occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
+
+  if (!(thecurrentnode->Next()).IsNull())
+  {
+    next = thecurrentnode->Next();
+    next->Previous(node);
+    node->Next(next);
+  }
+
+  if (thecurrentindex + 1 == thenumberofitems)
+  {
+    thelastnode = node;
+  }
+
+  thecurrentnode->Next(node);
+  node->Previous(thecurrentnode);
+}
+
+//=================================================================================================
+
+void MAT_TList::FrontAdd(const Item& anitem)
+{
+  thenumberofitems++;
+  if (thecurrentindex)
+    thecurrentindex++;
+
+  occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
+
+  if (!thefirstnode.IsNull())
+  {
+    thefirstnode->Previous(node);
+    node->Next(thefirstnode);
+  }
+  else
+  {
+    thelastnode = node;
+  }
+
+  thefirstnode = node;
+}
+
+//=================================================================================================
+
+void MAT_TList::BackAdd(const Item& anitem)
+{
+  thenumberofitems++;
+  occ::handle<MAT_TListNode> node = new MAT_TListNode(anitem);
+
+  if (!thelastnode.IsNull())
+  {
+    thelastnode->Next(node);
+    node->Previous(thelastnode);
+  }
+  else
+  {
+    thefirstnode = node;
+  }
+
+  thelastnode = node;
+}
+
+//=================================================================================================
+
+void MAT_TList::Permute()
+{
+  occ::handle<MAT_TListNode> previous = thecurrentnode->Previous();
+  occ::handle<MAT_TListNode> current  = thecurrentnode;
+  occ::handle<MAT_TListNode> next     = thecurrentnode->Next();
+  occ::handle<MAT_TListNode> nextnext = next->Next();
+  occ::handle<MAT_TListNode> null;
+
+  if (!previous.IsNull())
+  {
+    previous->Next(next);
+    next->Previous(previous);
+  }
+  else
+  {
+    next->Previous(null);
+  }
+  next->Next(current);
+  current->Previous(next);
+  if (!nextnext.IsNull())
+  {
+    current->Next(nextnext);
+    nextnext->Previous(current);
+  }
+  else
+  {
+    current->Next(null);
+  }
+  if (thefirstnode == current)
+    thefirstnode = next;
+  if (thelastnode == next)
+    thelastnode = current;
+  thecurrentindex++;
+}
+
+//=================================================================================================
+
+void MAT_TList::Loop() const
+{
+  thelastnode->Next(thefirstnode);
+  thefirstnode->Previous(thelastnode);
+}
+
+//=================================================================================================
+
+void MAT_TList::Dump(const int ashift, const int alevel)
+{
+  for (First(); More(); Next())
+    Current()->Dump(ashift, alevel);
+}
+
+//=======================================================================
+// function : ~MAT_TList
+// purpose  :
+//=======================================================================
+
+MAT_TList::~MAT_TList()
+{
+  occ::handle<MAT_TListNode> aNode = thefirstnode;
+  while (!aNode.IsNull())
+  {
+    occ::handle<MAT_TListNode> aNext = aNode->Next();
+    aNode->Next(NULL);
+    aNode->Previous(NULL);
+    aNode = aNext;
+  }
+  thecurrentnode.Nullify();
+  thefirstnode.Nullify();
+  thelastnode.Nullify();
+  thecurrentindex  = 0;
+  thenumberofitems = 0;
+}

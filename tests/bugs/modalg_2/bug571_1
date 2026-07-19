@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC571"
+puts "========"
+puts ""
+##########################
+## Fillet operation fails on given shape
+##########################
+## LIMITATION: Builds fillet with 0.03<=r<=1.2
+##########################
+
+restore [locate_data_file OCC571.brep] a 
+checkshape a
+explode a
+
+if [catch {fillet result a_1 1.2 a_2 } catch_result] {
+    puts "Faulty OCC571 exception (case 1): Fillet operation fails on given shape "
+} else {
+    puts " OCC571 (case 1) OK: Fillet operation was made"
+}
+
+checkprops result -s 21118.1 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

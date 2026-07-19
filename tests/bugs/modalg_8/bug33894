@@ -1,0 +1,21 @@
+puts "========================================================================"
+puts "Bug 33894: unifysamedom crashes on tessellated geometry without surfaces"
+puts "No crash expected"
+puts "========================================================================"
+
+pload XDE MODELING
+
+stepread [locate_data_file gh624_tessellated_tetrahedron_ap242.step] anInputShape *
+
+# Check what kind of shape we get
+checknbshapes anInputShape_1 -t
+
+# Validate shape - will show BRepCheck_NoSurface errors
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_6"
+checkshape anInputShape_1
+
+# Unify shapes. No crash expected.
+unifysamedom aUnified anInputShape_1
+
+# Check result. 
+checknbshapes aUnified -face 4 -shell 1 -solid 1 -shape 6 -t

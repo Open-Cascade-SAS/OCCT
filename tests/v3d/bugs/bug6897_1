@@ -1,0 +1,22 @@
+puts "============"
+puts "0006897: Impossible to change edge line type in 3D View"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+
+box b 1 1 1
+vdisplay -dispMode 1 b
+vfit
+
+vaspects b -setInteriorStyle SOLID
+vdump $imagedir/${casename}_3.png
+
+vaspects b -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeType DASH -setEdgeColor 64FF64
+vdump $imagedir/${casename}_1.png
+
+vaspects b -setInteriorStyle HOLLOW -setDrawEdges 1
+vdump $imagedir/${casename}_2.png

@@ -1,0 +1,32 @@
+puts "================"
+puts "OCC22788"
+puts "================"
+puts ""
+#######################################################################################
+# Exception during closing of document due to corrupted memory.
+######################################################################################
+
+set BugNumber OCC22788
+
+set aFile [locate_data_file OCC22788.cbf]
+
+Open ${aFile} D
+
+GetShape D 0:2 result
+smallview
+fit
+
+set catch_status 0
+if { [catch {Close D} catch_result] } {
+  set catch_status 1
+}
+
+if { ${catch_status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+checkprops result -s 220000
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC23625"
+puts "============"
+puts ""
+######################################################
+# New functionality building reflect lines on a shape
+######################################################
+
+smallview
+
+restore [locate_data_file bug23625_a1.brep] a
+
+front
+fit
+
+reflectlines result a 0 1 0
+
+checkprops result -l 3882.71
+checkshape result
+checksection result
+
+donly result
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

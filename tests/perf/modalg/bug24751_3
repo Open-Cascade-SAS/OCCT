@@ -1,0 +1,35 @@
+puts "========="
+puts "OCC24751"
+puts "========="
+puts ""
+###########################################################
+# Performance improvements in the Edge/Edge intersection algorithm
+###########################################################
+
+pload QAcommands
+
+# enable OBB usage in BOP
+buseobb 1
+
+dchrono h restart
+
+restore [locate_data_file bug24696_cx_e1200_nurbs.brep] cx
+
+###------------------####
+trotate cx 0 0 0 1 1 1 45
+###------------------####
+
+bclearobjects
+bcleartools
+
+set edges [explode cx e]
+set nbe [llength $edges]
+for {set i 1} {$i <= $nbe} {incr i} {baddobjects cx_$i}
+bfillds
+bbuild result
+
+dchrono h stop counter EdgeIntersection
+
+buseobb 0
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

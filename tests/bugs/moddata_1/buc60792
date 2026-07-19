@@ -1,0 +1,10 @@
+puts "========================"
+puts "BUC60792"
+puts "========================"
+
+pload QAcommands
+
+vinit
+BUC60792
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

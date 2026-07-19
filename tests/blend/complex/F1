@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : K3
+## Comment : from id150009
+## ====================================
+
+restore [locate_data_file CFI_id150009.rle] a
+explode a e
+blend result a 10 a_9
+
+checkprops result -s 50544.3

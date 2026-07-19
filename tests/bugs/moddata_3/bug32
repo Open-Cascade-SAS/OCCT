@@ -1,0 +1,37 @@
+puts "================"
+puts "OCC32"
+puts "================"
+puts ""
+#######################################################
+## Standard_ConstructionError in Algo of the BRepFilletAPI_MakeChamfer
+#######################################################
+
+restore [locate_data_file OCC31.brep] sh 
+checkshape sh
+
+explode sh f
+explode sh_1 e
+
+if [catch {chamf res sh sh_6_1 sh_6 A 2 45 sh_6_8 sh_6 A 2 45} inf] {
+    if { [regexp "No suitable edges to chamfer" $inf] != 1 } {
+	puts "OK. Chamfer was not build. But suitable message was given"
+    }
+    renamevar res result
+} else {
+    checkshape res
+    explode res f
+    explode res_1 e
+    #But before chamfer two edges (res_1_4, res_1_5) union should be to make one arc
+    catch {chamf result res res_1_4 res_1 5 5} info
+
+    if { [regexp "No suitable edges to chamfer" $info] != 1 } {
+	puts "Warning. Chamfer was not build. But suitable message was given"
+    } else {
+	checkshape result
+	checkprops result -s 10
+    }
+}
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

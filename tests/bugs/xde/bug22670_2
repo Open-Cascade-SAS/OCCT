@@ -1,0 +1,39 @@
+puts "================"
+puts "OCC22670"
+puts "================"
+puts ""
+#######################################################################################
+# Regression in the method RWStl::WriteAscii
+#######################################################################################
+#
+puts "================"
+puts "OCC22866"
+puts "================"
+puts ""
+#######################################################################################
+# Now it is not possible to mesh a shape in parallel mode during the export in STL
+#######################################################################################
+#
+
+set BugNumber OCC22670
+
+set filepath [locate_data_file OMF6391_box.stl]
+if { [catch { readstl res_mesh $filepath -brep } catch_result] } {
+    puts "Faulty ${BugNumber}: here is reading problem"
+} else {
+    set aFile $imagedir/${test_image}.stl
+    catch {exec rm -f ${aFile}}
+     
+    incmesh res_mesh 0.1   
+
+    set anASCIImode 0
+    writestl res_mesh ${aFile} ${anASCIImode}
+    catch {exec chmod 777 ${aFile}}
+
+    readstl result ${aFile} -brep
+
+    checknbshapes result -vertex 8 -edge 18 -wire 12 -face 12 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 51
+}
+checkprops result -s 600 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

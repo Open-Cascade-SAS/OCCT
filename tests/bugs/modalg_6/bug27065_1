@@ -1,0 +1,53 @@
+puts "============"
+puts "OCC27065"
+puts "============"
+puts ""
+#########################################################################
+## BRepOffsetAPI_MakePipe misses definition of virtual method Generated()
+#########################################################################
+
+restore [locate_data_file bug24840_comp.brep] sh
+explode sh
+renamevar sh_1 path
+renamevar sh_2 base
+
+pipe q path base
+savehistory pipe_hist
+
+explode base
+
+generated r1 pipe_hist base_1
+generated r5 pipe_hist base_5
+generated r11 pipe_hist base_11
+
+
+checknbshapes r1 -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+checknbshapes r5 -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+checknbshapes r11 -vertex 6 -edge 9 -wire 5 -face 5 -shell 1 -solid 1
+
+checkprops r1 -v 0.434835
+checkprops r5 -v 0.0165356
+checkprops r11 -v 4.06042e-005
+
+explode base e
+
+generated r1 pipe_hist base_1
+generated r2 pipe_hist base_2
+generated r4 pipe_hist base_4
+
+checkprops r1 -s 1.83914
+checkprops r2 -s 0.335211
+checkprops r4 -s 1.8982
+
+explode base v
+
+generated r1 pipe_hist base_1
+generated r2 pipe_hist base_2
+generated r11 pipe_hist base_11
+generated r20 pipe_hist base_20
+
+checkprops r1 -l 4.2837
+checkprops r2 -l 4.91201
+checkprops r11 -l 4.13217
+checkprops r20 -l 4.12661 -deps 1.e-7
+

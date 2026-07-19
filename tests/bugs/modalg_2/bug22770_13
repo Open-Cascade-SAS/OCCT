@@ -1,0 +1,38 @@
+puts "TODO OCC24036 ALL: Faulty shapes in variables faulty_1 to faulty_"
+#puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 642 vertices instead of 966"
+#puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 955 edges instead of 1224"
+#puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 3 shells instead of 18"
+#puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 2133 shapes instead of 2741"
+
+puts "================"
+puts "OCC22770"
+puts "================"
+puts ""
+#######################################################################################
+# Improve command sewing in DRAW
+######################################################################################
+
+set BugNumber OCC22770
+
+catch { pload XDE }
+
+# Create a new document and set UndoLimit
+
+# NewDocument D BinXCAF
+# UndoLimit D 100
+
+# Open a transaction
+# NewCommand D
+
+restore [locate_data_file 22770-tramp.brep] a 
+restore [locate_data_file 22770-trans.brep] b 
+sewing result a b +c
+
+checkprops result -s 1.8847e+07 
+checkshape result
+
+checknbshapes result -vertex 964 -edge 1222 -wire 273 -face 259 -shell 18 -solid 0 -compsolid 0 -compound 1 -shape 2737
+checkmaxtol result -ref 0.0451323239933289
+checknbshapes result -shell 18
+checkfreebounds result 926
+checkview -display result -3d -path ${imagedir}/${test_image}.png

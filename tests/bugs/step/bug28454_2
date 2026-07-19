@@ -1,0 +1,78 @@
+puts "================"
+puts "0028454: Data Exchange - Names with Special Characters Cannot Be Read from STEP or IGES Files"
+puts "Target control directives: (\X\), (\S\), (\P*\), (\X0\), (\X2\), (\X4\)"
+puts "================"
+puts ""
+
+pload OCAF
+Close D -silent
+
+# Read File
+ReadStep D [locate_data_file bug28454_directives.stp]
+
+# Checking 
+puts {# STEP string: 'AaBbCc\X2\00C4\X0\\X2\00E4\X0\\X2\00D6\X0\\X2\00F6\X0\\X2\00DC\X0\\X2\00FC\X0\\X2\00DF\X0\*,.-;:_'}
+if { [GetName D 0:1:1:1] != "AaBbCcÄäÖöÜüß*,.-;:_" } {
+  puts "Error:  name has been lost on conversion \X2\ directives"
+}
+puts {# STEP string: '\X2\03C0\X0\'}
+if { [GetName D 0:1:1:2] != "π" } {
+  puts "Error:  name has been lost on conversion \X2\ directive"
+}
+puts {# STEP string: 'Expression: \X2\03B103B2\X0\\\X2\03B3\X0\*\X2\03C0\X0\'}
+if { [GetName D 0:1:1:3] != "Expression: αβ\\X2\\03B3*π" } {
+  puts "Error:  name has been lost on conversion \X2\ directive"
+}
+puts {# STEP string: '\X4\0001F7CA\X0\'}
+# Note hack with conversion to utf-8, needed to get the strings comparison work for Unicode symbols above BMP
+if { [encoding convertto utf-8 [GetName D 0:1:1:4]] !=
+     [encoding convertto utf-8 "🟊"] } {
+  puts "Error:  name has been lost on conversion \X4\ directive"
+}
+puts {# STEP string: 'Star, arrow, faces: \X4\0001F7CA0001f80A0001f6370001f926\X0\ end'}
+# Note hack with conversion to utf-8, needed to get the strings comparison work for Unicode symbols above BMP
+if { [encoding convertto utf-8 [GetName D 0:1:1:5]] !=
+     [encoding convertto utf-8 "Star, arrow, faces: 🟊🠊😷🤦 end"] } {
+  puts "Error:  name has been lost on conversion \X4\ directive"
+}
+puts {# STEP string: '\S\Drger'}
+if { [GetName D 0:1:1:6] != "Ärger" } {
+  puts "Error:  name has been lost on conversion \S\ directive"
+}
+puts {# STEP string: 'h\S\ttel'}
+if { [GetName D 0:1:1:7] != "hôtel" } {
+  puts "Error:  name has been lost on conversion \S\ directive"
+}
+puts {# STEP string: '\PE\\S\*\S\U\S\b'}
+if { [GetName D 0:1:1:8] != "Њет" } {
+  puts "Error:  name has been lost on conversion \PE\ and \S\ directives"
+}
+puts {# STEP string: 'see \X\A7 4.1'}
+if { [GetName D 0:1:1:9] != "see § 4.1" } {
+  puts "Error:  name has been lost on conversion \X\ directive"
+}
+puts {# STEP string: 'line one\X\0Aline two'}
+if { [GetName D 0:1:1:10] != "line one\nline two" } {
+  puts "Error:  name has been lost on conversion \X\ directives"
+}
+puts {# STEP string: 'Expression: \X\B13\X2\03C0\X0\*\X2\03C0\X0\+12'}
+if { [GetName D 0:1:1:11] != "Expression: ±3π*π+12" } {
+  puts "Error:  name has been lost on conversion \X2\ and \X\ directives"
+}
+puts {# STEP string: 'Expression: \X2\03B1\X0\\PC\*\X2\03B2\X0\\S\w\X2\03B3'}
+if { [GetName D 0:1:1:12] != "Expression: α*β÷γ" } {
+  puts "Error:  name has been lost on conversion \X2\,\PC\ and \S\ directives"
+}
+puts {# STEP string: 'T\PE\\S\5C\S\D'}
+if { [GetName D 0:1:1:13] != "TЕCТ" } {
+  puts "Error:  name has been lost on conversion \S\ and \PE\ directives"
+}
+puts {# STEP string: 'A\S\DaBbCc\X2\0C4\X0\'h\S\t\X2\0E4\X0\\X4\0001F7CA\X0\\X\0A\X4\0001F7CA\X0\*,.-;:_\X2\0D6\X0\\PE\\S\5'}
+if { [encoding convertto utf-8 [GetName D 0:1:1:14]] !=
+     [encoding convertto utf-8 "AÄaBbCcÄ'hôä🟊\n🟊*,.-;:_ÖЕ"] } {
+  puts "Error:  name has been lost on conversion \X\,\X2\,\X4\ and \S\ directive"
+}
+puts {# STEP string: '\X2\3B13B23B3\X0\'}
+if { [GetName D 0:1:1:15] != "αβγ" } {
+  puts "Error:  name has been lost on conversion \X2\ directive"
+}

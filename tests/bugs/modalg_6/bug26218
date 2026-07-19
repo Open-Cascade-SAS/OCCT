@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC26218"
+puts "============"
+puts ""
+###############################
+## Wrong result done by General Fuse algorithm
+###############################
+
+restore [locate_data_file bug26218_b11.brep] b1
+restore [locate_data_file bug26218_b21.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddcompound b2
+
+bfillds
+bbuild result
+
+checkprops result -s 2728.77 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 31
+ EDGE      : 52
+ WIRE      : 25
+ FACE      : 25
+ SHELL     : 4
+ SOLID     : 4
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 142
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result done by General Fuse algorithm"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

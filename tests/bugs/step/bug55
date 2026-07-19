@@ -1,0 +1,18 @@
+#puts "TODO bug30075 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========================"
+puts " OCC55 "
+puts "========================"
+########################################
+## After reading from STEP file invalid shape was obtained.
+########################################
+ 
+cpulimit 1000
+
+stepread [locate_data_file OCC55.stp] a *
+
+tpcompound result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

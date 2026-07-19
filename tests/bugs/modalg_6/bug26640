@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC26640"
+puts "========"
+puts ""
+#################################################
+# ShapeFix_Edge::FixAddPCurve problem in OCC 6.8
+#################################################
+
+
+restore [locate_data_file OCC26640-bf.brep] a 
+fixshape aa a
+
+pcurve aa
+
+v2d
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC25908"
+puts "============"
+puts ""
+###############################
+## BSpline (U2 < U1) in HLRBRep_HLRToShape
+###############################
+
+restore [locate_data_file bug25908_hlr-bspline-clone2-tcl-h1.brep] h1
+
+hprj h1_proj 0 0 0 0 1 0 0 0 1
+houtl h1_outl h1
+hfill h1_outl h1_proj 0
+hload h1_outl
+hsetprj h1_proj
+hupdate
+hhide
+hres2d
+compound vl v1l vnl vol vil result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 109
+ EDGE      : 55
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 165
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "HLRToShape"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,50 @@
+// Created on: 2009-12-30
+// Created by: Alexander GRIGORIEV
+// Copyright (c) 2009-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <NCollection_HeapAllocator.hxx>
+#include <Standard_OutOfMemory.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(NCollection_HeapAllocator, NCollection_BaseAllocator)
+
+//=================================================================================================
+
+void* NCollection_HeapAllocator::Allocate(const size_t theSize)
+{
+  // the size is rounded up to word size.
+  const size_t aRoundSize = (theSize + 3) & ~0x3;
+  void*        aResult    = malloc(aRoundSize);
+  if (aResult == nullptr)
+  {
+    char aBuffer[96];
+    Sprintf(aBuffer, "Failed to allocate %" PRIuPTR " bytes in global dynamic heap", theSize);
+    throw Standard_OutOfMemory(aBuffer);
+  }
+  return aResult;
+}
+
+//=================================================================================================
+
+void NCollection_HeapAllocator::Free(void* anAddress)
+{
+  free(anAddress);
+}
+
+//=================================================================================================
+
+const occ::handle<NCollection_HeapAllocator>& NCollection_HeapAllocator::GlobalHeapAllocator()
+{
+  static occ::handle<NCollection_HeapAllocator> pAllocator = new NCollection_HeapAllocator;
+  return pAllocator;
+}

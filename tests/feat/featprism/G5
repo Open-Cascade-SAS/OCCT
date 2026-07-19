@@ -1,0 +1,14 @@
+box b1 3 3 3
+profile p1 x 1 y 1 x -1 y -1
+ttranslate p1 1 1 0
+
+featprism b1 p1 p1 0 0 1 1 1
+featperformval prism r1 5
+
+profile p2 x 0.5 y 0.5 x -0.5 y -0.5 
+ttranslate p2 1.25 1.25 0
+
+featprism r1 p2 p2 0 0 1 1 1
+featperformval prism result 7
+
+checkprops result -s 66

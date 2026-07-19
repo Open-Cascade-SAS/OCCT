@@ -1,0 +1,16 @@
+puts "================================================="
+puts "0032569: Modeling Algorithm - Section not found"
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug32569.brep] s
+explode s
+
+bop s_1 s_2
+bopsection result
+
+checknbshapes result -vertex 2 -edge 1
+
+checkmaxtol result -min_tol 4.5e-4
+
+checkprops result -l 5.5227

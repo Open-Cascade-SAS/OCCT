@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC23652: Non zoomable text with alignment slides away when zooming view"
+puts "========"
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vtrihedron tri
+vdrawtext text0 Default     -pos 0.0 0.0 0.0 -color WHITE -halign left  -valign bottom -angle 0 -zoom 1 -height 20 -aspect regular -font SansFont
+vdrawtext text1 Right_Align -pos 0.0 0.0 0.0 -color WHITE -halign right -valign bottom -angle 0 -zoom 1 -height 20 -aspect regular -font SansFont
+
+set proj_X   0.57735025882720947
+set proj_Y   -0.57735025882720947
+set proj_Z   0.57735025882720947
+set up_X     -0.40824827551841736
+set up_Y     0.40824827551841736
+set up_Z     0.81649655103683472
+vviewparams -scale 3.1783114563761763 -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at 0 0 0
+
+checkcolor 210 204 0.6 0.6 0.6
+
+vdump ${imagedir}/${casename}.png

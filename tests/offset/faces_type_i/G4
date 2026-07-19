@@ -1,0 +1,5 @@
+psphere s 15 -90 60
+
+OFFSETSHAPE -1 {s_2} $calcul $type
+
+checkprops result -v 2505.07

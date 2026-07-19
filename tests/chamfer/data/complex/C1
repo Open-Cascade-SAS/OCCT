@@ -1,0 +1,10 @@
+set chamf_shape CCH_001_qhff.rle
+set chamf_edge_face  [list "   4     6" "    7     6" "  10     6" "   12     6" "   3     1" "    6     2" "   9     3" "   11     4"]
+set chamf_dist_angle [list "0.01    30" "0.008    30" "0.01    60" "0.015    60" "0.01    30" "0.008    30" "0.01    60" "0.008    60"]
+set chamf_dist_dist  [list "0.01 0.006" "0.008 0.006" "0.01 0.012" "0.015 0.012" "0.01 0.006" "0.008 0.006" "0.01 0.012" "0.008 0.012"]
+set chamf_equal_dist [list "0.01      " "0.008      " "0.01      " "0.015      " "0.01      " "0.008      " "0.01      " "0.008      "]
+if { [string compare $command chamf] == 0 } {
+  if { [string compare $group equal_dist] != 0 } {
+    puts "TODO OCC22909 All: compute of chamfer failed"
+  }
+}

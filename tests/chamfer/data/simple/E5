@@ -1,0 +1,5 @@
+set chamf_shape CCH_testchet.rle
+set chamf_edge_face  [list "  5   2"]
+set chamf_dist_angle [list "0.1  60"]
+set chamf_dist_dist  [list "0.1 0.2"]
+set chamf_equal_dist [list "0.1    "]

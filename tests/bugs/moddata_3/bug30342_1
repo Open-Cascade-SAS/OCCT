@@ -1,0 +1,17 @@
+puts "=========="
+puts "0030342: Modeling Data - Successively trimming surface in both directions lose the first trim"
+puts "=========="
+puts ""
+
+cylinder c1 10
+
+trim c3 c1 0 3.14 0 50
+set expected [dump c3]
+
+trimu c2 c1 0 3.14
+trimv c3 c2 0 50
+
+set result [dump c3]
+if { [string compare $expected $result] != 0 } {
+  puts "Error: invalid result"
+}

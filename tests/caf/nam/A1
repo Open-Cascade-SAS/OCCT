@@ -1,0 +1,100 @@
+set Test "TNaming_Builder test"
+set IsDone 1
+set TestError ""
+
+if {[catch {set TestLab}] == 1} {
+	NewDocument D
+	set TestLab 0:1
+}
+
+#################### PRIMITIVE EVOLUTION ####################
+box b 100 200 300
+explode b E
+if {[catch {BuildNamedShape D $TestLab:1 PRIMITIVE b}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build solid as primitive"
+}
+if {[catch {BuildNamedShape D [set TestLab]:1:1 PRIMITIVE b_1}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build edge as alone primitive"
+}
+if {[catch {BuildNamedShape D [set TestLab]:1:1 PRIMITIVE b_1 b_2 b_3}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build several edges as primitive over the old one"
+}
+if {[catch {BuildNamedShape D [set TestLab]:1:2 PRIMITIVE b_4 b_5 b_6}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build several edges as primitive"
+}
+
+#################### GENERATED EVOLUTION ####################
+box b2 200 300 400
+explode b2 F
+if {[catch {BuildNamedShape D $TestLab:2 GENERATED b b2}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build solid as generation"
+}
+if {[catch {BuildNamedShape D [set TestLab]:2:1 GENERATED b_1 b2_1}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build face as alone generation"
+}
+if {[catch {BuildNamedShape D [set TestLab]:2:2 GENERATED b_2 b2_2 b_2 b2_3 b_3 b2_4}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build face as generation n:m"
+}
+if {[catch {BuildNamedShape D [set TestLab]:2:1 GENERATED b_3 b2_1 b_3 b2_3 b_4 b2_4}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build face as generation n:m to the exists named shape"
+}
+
+#################### MODIFY EVOLUTION ####################
+box b3 300 400 500
+explode b3 F
+if {[catch {BuildNamedShape D $TestLab:3 MODIFY b2 b3}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build solid as modification"
+}
+if {[catch {BuildNamedShape D [set TestLab]:3:1 MODIFY b2_1 b3_1}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build face as alone modification"
+}
+if {[catch {BuildNamedShape D [set TestLab]:3:2 MODIFY b2_5 b3_2 b2_2 b3_3 b2_3 b3_4}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build face as modification n:m"
+}
+if {[catch {BuildNamedShape D [set TestLab]:3:1 MODIFY b2_3 b3_1 b_3 b3_3 b2_4 b3_4}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build face as modification n:m to the exists named shape"
+}
+
+#################### DELETE EVOLUTION ####################
+if {[catch {BuildNamedShape D $TestLab:4:1 DELETE b3_1}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't delete face"
+}
+if {[catch {BuildNamedShape D $TestLab:4:1 DELETE b3_1 b3_4}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't delete faces at the same label"
+}
+
+#################### REPLACE EVOLUTION DELETED: TEST REPLACED BY MODIFY ####################
+box b4 100 100 100 300 400 500
+explode b4 F
+if {[catch {BuildNamedShape D [set TestLab]:5 MODIFY b3 b4}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build solid as replace"
+}
+if {[catch {BuildNamedShape D [set TestLab]:5:1 MODIFY b3_2 b4_2 b3_3 b4_3}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build faces as replace 2:2"
+}
+
+#################### SELECTED ####################
+if {[catch {BuildNamedShape D [set TestLab]:6 SELECTED b4 b4}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build solid selection"
+}
+if {[catch {BuildNamedShape D [set TestLab]:6:1 SELECTED b4_2 b4_2 b2_5 b2_5}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # Can't build faces selection"
+}

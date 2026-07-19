@@ -1,0 +1,211 @@
+// Created on: 2002-10-18
+// Created by: Michael SAZONOV
+// Copyright (c) 2002-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef NCollection_UBTreeFiller_HeaderFile
+#define NCollection_UBTreeFiller_HeaderFile
+
+#include <NCollection_UBTree.hxx>
+#include <NCollection_DynamicArray.hxx>
+
+#include <random>
+
+/**
+ * This class is used to fill an UBTree in a random order.
+ * The quality of a tree is much better (from the point of view of
+ * the search time) if objects are added to it in a random order to
+ * avoid adding a chain of neerby objects one following each other.
+ *
+ * This class collects objects to be added, and then add them to the tree
+ * in a random order.
+ */
+template <class TheObjType, class TheBndType>
+class NCollection_UBTreeFiller
+{
+public:
+  // ---------- PUBLIC TYPES ----------
+
+  //! Structure of pair (object, bnd box)
+  struct ObjBnd
+  {
+    TheObjType myObj;
+    TheBndType myBnd;
+
+    ObjBnd(const TheObjType& theObj, const TheBndType& theBnd)
+        : myObj(theObj),
+          myBnd(theBnd)
+    {
+    }
+
+    ObjBnd()
+        : myObj(TheObjType()),
+          myBnd(TheBndType())
+    {
+    }
+  };
+
+  //! UBTree algorithm
+  typedef NCollection_UBTree<TheObjType, TheBndType> UBTree;
+  typedef typename UBTree::TreeNode                  UBTreeNode;
+
+  // ---------- PUBLIC METHODS ----------
+
+  /**
+   * Constructor.
+   * @param theTree
+   *   Tree instance that is to be filled.
+   * @param theAlloc
+   *   Allocator for the Filler data.
+   * @param isFullRandom
+   *   Takes effect when the number of items is large (order of 50,000). When
+   *   it is True, the code uses the maximal randomization allowing a better
+   *   balanced tree. If False, the randomization/tree balance are worse but
+   *   the tree filling is faster due to better utilisation of CPU L1/L2 cache.
+   */
+  NCollection_UBTreeFiller (UBTree& theTree,
+                            const occ::handle<NCollection_BaseAllocator>& theAlloc=nullptr,
+                            const bool isFullRandom = true)
+    : myTree(theTree), mySeqPtr(256, theAlloc),
+      myRandGen (5489u /* == std::mt19937::default_seed, not defined in older environments, e.g, on Debian 6.0 with GCC 4.4.5 */),
+      myIsFullRandom (isFullRandom)
+  {
+  }
+
+  //! Adds a pair (theObj, theBnd) to my sequence
+  void Add(const TheObjType& theObj, const TheBndType& theBnd)
+  {
+    mySeqPtr.Append(ObjBnd(theObj, theBnd));
+  }
+
+  /**
+   * Fills the tree with the objects from my sequence. This method clears
+   * the internal buffer of added items making sure that no item would be added
+   * twice.
+   * @return
+   *   the number of objects added to the tree.
+   */
+  int Fill();
+
+  /**
+   * Remove all data from Filler, partculary if the Tree no more needed
+   * so the destructor of this Filler should not populate the useless Tree.
+   */
+  void Reset() { mySeqPtr.Clear(); }
+
+  /**
+   * Check the filled tree for the total number of items and the balance
+   * outputting these results to std::ostream.
+   * @return
+   *   the tree size (the same value is returned by method Fill()).
+   */
+  int CheckTree(Standard_OStream& theStream);
+
+  /**
+   * Destructor. Fills the tree with accumulated items if they have not been
+   * passed by a previous call of method Fill().
+   */
+  ~NCollection_UBTreeFiller()
+  {
+    if (mySeqPtr.Length() > 0)
+#ifdef OCCT_DEBUG_UBTREE
+      std::cout << "~NCollection_UBTreeFiller: " << Fill() << " objects added to the tree"
+                << std::endl;
+#else
+      Fill();
+#endif
+  }
+
+private:
+  // Explicitly delete assignment operator
+  NCollection_UBTreeFiller& operator=(const NCollection_UBTreeFiller&) = delete;
+
+  static double checkNode(const UBTreeNode& theNode, const int theLength, int& theNumber);
+
+private:
+  // ---------- PRIVATE FIELDS ----------
+
+  UBTree&                          myTree;
+  NCollection_DynamicArray<ObjBnd> mySeqPtr;
+  std::mt19937                     myRandGen; //!< random number generator
+  bool                             myIsFullRandom;
+};
+
+//=================================================================================================
+
+template <class TheObjType, class TheBndType>
+int NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
+{
+  int i, nbAdd = mySeqPtr.Length();
+  // Fisher-Yates randomization
+  if (myIsFullRandom)
+  {
+    for (i = nbAdd; i > 0; i--)
+    {
+      const int     ind     = static_cast<int>(static_cast<unsigned int>(myRandGen()) % i);
+      const ObjBnd& aObjBnd = mySeqPtr(ind);
+      myTree.Add(aObjBnd.myObj, aObjBnd.myBnd);
+      mySeqPtr(ind) = mySeqPtr(i - 1);
+    }
+  }
+  else
+  {
+    for (i = nbAdd; i > 0; i--)
+    {
+      const int     ind     = i - static_cast<int>(static_cast<unsigned int>(myRandGen()) % i) - 1;
+      const ObjBnd& aObjBnd = mySeqPtr(ind);
+      myTree.Add(aObjBnd.myObj, aObjBnd.myBnd);
+      mySeqPtr(ind) = mySeqPtr(i - 1);
+    }
+  }
+  mySeqPtr.Clear();
+  return nbAdd;
+}
+
+//=================================================================================================
+
+template <class TheObjType, class TheBndType>
+int NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(Standard_OStream& theStream)
+{
+  int          aNumber(0);
+  const double aLen  = checkNode(myTree.Root(), 0, aNumber);
+  const double num   = (double)aNumber;
+  const double aLen1 = sqrt(aLen / num);
+  const double aLen0 = log(num) / log(2.);
+  char         buf[128];
+  Sprintf(buf, "Checking UBTree:%8d leaves, balance =%7.2f", aNumber, aLen1 / aLen0);
+  theStream << buf << std::endl;
+  return aNumber;
+}
+
+//=================================================================================================
+
+template <class TheObjType, class TheBndType>
+double NCollection_UBTreeFiller<TheObjType, TheBndType>::checkNode(
+  const typename NCollection_UBTree<TheObjType, TheBndType>::TreeNode& theNode,
+  const int                                                            theLength,
+  int&                                                                 theNumber)
+{
+  double aLength;
+  if (!theNode.IsLeaf())
+    aLength = (checkNode(theNode.Child(0), theLength + 1, theNumber)
+               + checkNode(theNode.Child(1), theLength + 1, theNumber));
+  else
+  {
+    theNumber++;
+    aLength = theLength * theLength;
+  }
+  return aLength;
+}
+
+#endif

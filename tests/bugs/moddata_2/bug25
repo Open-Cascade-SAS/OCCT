@@ -1,0 +1,32 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "================"
+puts "OCC25"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC25-1.brep] sh1 
+
+set che [checkshape sh1]
+
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC25 (case 1): Checkshape says that the wire on face has bad orientation, but it is not truth"
+} else {
+    puts "OCC25 OK (case 1): Checkshape works properly"
+}
+
+# ================================================
+restore [locate_data_file OCC25-2.brep] sh2
+
+set che [checkshape sh2]
+
+if { [regexp {BRepCheck_BadOrientationOfSubshape} $che] && [regexp {BRepCheck_UnorientableShape} $che]} {
+    puts " OCC25 (case 2) OK: Checkshape works properly"
+} else {
+    puts "Faulty OCC25 (case 2): Checkshape works wrongly"
+}
+
+compound sh1 sh2 result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

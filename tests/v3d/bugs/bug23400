@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC23400: Triangulation of thin ring contains gap"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug23400_thinring.brep] a
+vinit View1
+vsetdispmode 1
+vdisplay a
+vtop
+vfit
+
+vdump $imagedir/${casename}.png

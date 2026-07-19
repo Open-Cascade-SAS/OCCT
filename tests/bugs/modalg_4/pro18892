@@ -1,0 +1,34 @@
+puts "=========="
+puts "PRO18892"
+puts "=========="
+# Version de test: K4O, PATCH LEVEL:
+#   GEOMETRY-M4-6A : 3 
+#   GEOMLITE-M4-6A : 1 
+#   TOPOLOGY-M4-6A : 2 
+
+restore [locate_data_file pro18892.rle] a 
+checkshape a
+
+explode a
+bsection result a_1 a_2
+explode result
+
+mkcurve c result_1
+cvalue c 1 X Y Z 
+vertex v X Y Z
+explode a e
+
+distmini d v a_8
+
+set tol [ maxtolerance a_8 ]
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol full MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol full MaxVertexTolerance
+regexp {([-0-9.+eE]+)$} [dump d_val] full d
+
+if { [expr $d > $MaxEdgeTolerance] || [expr $d > $MaxVertexTolerance] } {
+    puts "Faulty : Result is BAD. Distance is more than MaxTolerance"
+}
+
+checkprops result -l 6.46299 
+checkshape result 
+checksection result

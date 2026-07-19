@@ -1,0 +1,14 @@
+puts "======="
+puts "OCC725"
+puts "======="
+puts ""
+#############################################################
+## Storing all free vertices of STEP into one SHAPE_DEFINITION_REPRESENTATION
+#############################################################
+
+stepread [locate_data_file OCC725.stp] a *
+
+tpcompound result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

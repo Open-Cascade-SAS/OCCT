@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC630"
+puts "================"
+puts ""
+########################################################
+## DRAW hangs up at the  attempt to restore solid previously saved in STEP format
+########################################################
+
+restore [locate_data_file OCC630.brep] a1
+checkshape a1
+
+######################################################################
+file delete ${imagedir}/solid.stp
+stepwrite a a1 ${imagedir}/solid.stp
+
+dall
+
+if [catch {stepread ${imagedir}/solid.stp a2 * } res] {
+    puts "Faulty OCC630: here is reading problem"
+} else {
+    tpcompound result
+    checkshape result
+    
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+}

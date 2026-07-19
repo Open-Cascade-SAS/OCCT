@@ -1,0 +1,7 @@
+polyline profile 0 -31.415926 4.934802 20 -31.415926 4.934802
+parabola w 10 0 0 1 0 0 50
+mkedge w w -pi*20. pi*20.
+wire w w
+pipe result w profile
+
+checkprops result -s 2670.02

@@ -1,0 +1,7 @@
+if { [string compare $command "ShapeConvertRev"] == 0 } {
+   puts "TODO OCC23127 All: Error : The resulting shape is not correct"
+   set test_identity 1
+}
+restore [locate_data_file topo107-t.brep] a
+
+

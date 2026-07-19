@@ -1,0 +1,24 @@
+pload MODELING OCAF XDE
+
+# check writing shape to FSD archive (old persistence) and reading its back
+proc check_fsd {shape driver {mesher brepmesh}} {
+  # check base shape
+  uplevel #0 checkshape $shape
+
+  # write shape to a file
+  uplevel fsdwrite $shape ${::imagedir}/${::test_image}.$driver ${driver}
+
+  # restore shape from a file
+  uplevel fsdread ${::imagedir}/${::test_image}.$driver result
+
+  # check result shape
+  uplevel checkshape result
+
+  # check the number of subshapes
+  uplevel checknbshapes result -ref \[nbshapes $shape\]
+
+  # check properties
+  uplevel checkprops result -l -equal $shape
+  uplevel checkprops result -s -equal $shape
+  uplevel checkprops result -v -equal $shape
+}

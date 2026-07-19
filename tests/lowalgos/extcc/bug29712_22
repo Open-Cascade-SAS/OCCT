@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Curves c1 and c2 are concentric circles.
+# However, they are bounded (trimmed) curves
+# and are shifted relatively to each other.
+
+circle c1 0 0 0 0 0 1 100
+circle c2 0 0 0 0 0 1 50
+trim c1 c1 0 3
+trim c2 c2 -3.1 -1.1
+
+extrema c1 c2
+
+if { ![isdraw ext_1 ] } {
+  puts "Error in Extrema-algorithm"
+} else {
+  puts "Extrema-algorithm works properly"
+}
+
+renamevar ext_1 e1
+extrema c2 c1
+
+if { ![isdraw ext_1 ] } {
+  puts "Error in Extrema-algorithm"
+} else {
+  puts "Extrema-algorithm works properly"
+}

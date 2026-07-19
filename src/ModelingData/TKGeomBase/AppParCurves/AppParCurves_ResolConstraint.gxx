@@ -1,0 +1,948 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// lpa, le 11/09/91
+
+// Approximation of a constrained set of points (MultiLine) with an
+// approximate solution (MultiCurve). The algorithm used is the
+// Uzawa algorithm from the mathematical package.
+
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+
+#include <math_Vector.hxx>
+#include <math_Matrix.hxx>
+#include <AppParCurves_Constraint.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <AppParCurves.hxx>
+#include <Standard_DimensionError.hxx>
+#include <math_Uzawa.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+
+AppParCurves_ResolConstraint::AppParCurves_ResolConstraint(
+  const MultiLine&                                                       SSP,
+  AppParCurves_MultiCurve&                                               SCurv,
+  const int                                                              FirstPoint,
+  const int                                                              LastPoint,
+  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+  const math_Matrix&                                                     Bern,
+  const math_Matrix&                                                     DerivativeBern,
+  const double                                                           Tolerance)
+    : Cont(1,
+           NbConstraints(SSP, FirstPoint, LastPoint, TheConstraints),
+           1,
+           NbColumns(SSP, SCurv.NbPoles() - 1),
+           0.0),
+      DeCont(1,
+             NbConstraints(SSP, FirstPoint, LastPoint, TheConstraints),
+             1,
+             NbColumns(SSP, SCurv.NbPoles() - 1),
+             0.0),
+      Secont(1, NbConstraints(SSP, FirstPoint, LastPoint, TheConstraints), 0.0),
+      CTCinv(1,
+             NbConstraints(SSP, FirstPoint, LastPoint, TheConstraints),
+             1,
+             NbConstraints(SSP, FirstPoint, LastPoint, TheConstraints)),
+      Vardua(1, NbConstraints(SSP, FirstPoint, LastPoint, TheConstraints)),
+      IPas(1, LastPoint - FirstPoint + 1),
+      ITan(1, LastPoint - FirstPoint + 1),
+      ICurv(1, LastPoint - FirstPoint + 1)
+{
+  int                           i, j, k, NbCu = SCurv.NbCurves();
+  int                           Npt;
+  int                           Inc3, IncSec, IncCol, IP = 0, CCol;
+  int                           myindex, Def = SCurv.NbPoles() - 1;
+  int                           nb3d, nb2d, Npol = Def + 1, Npol2 = 2 * Npol;
+  double                        T1 = 0., T2 = 0., T3, Tmax, Daij;
+  gp_Vec                        V;
+  gp_Vec2d                      V2d;
+  gp_Pnt                        Poi;
+  gp_Pnt2d                      Poi2d;
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint FC = AppParCurves_NoConstraint, LC = AppParCurves_NoConstraint, Cons;
+
+  // Boucle de calcul du nombre de points de passage afin de dimensionner
+  // les matrices.
+  IncPass = 0;
+  IncTan  = 0;
+  IncCurv = 0;
+  for (i = TheConstraints->Lower(); i <= TheConstraints->Upper(); i++)
+  {
+    mycouple = TheConstraints->Value(i);
+    myindex  = mycouple.Index();
+    Cons     = mycouple.Constraint();
+    if (myindex == FirstPoint)
+      FC = Cons;
+    if (myindex == LastPoint)
+      LC = Cons;
+    if (Cons >= 1)
+    {
+      IncPass++; // IncPass = nbre de points de passage.
+      IPas(IncPass) = myindex;
+    }
+    if (Cons >= 2)
+    {
+      IncTan++; // IncTan= nbre de points de tangence.
+      ITan(IncTan) = myindex;
+    }
+    if (Cons == 3)
+    {
+      IncCurv++; // IncCurv = nbre de pts de courbure.
+      ICurv(IncCurv) = myindex;
+    }
+  }
+
+  if (IncPass == 0)
+  {
+    Done = true;
+    return;
+  }
+
+  nb3d       = ToolLine::NbP3d(SSP);
+  nb2d       = ToolLine::NbP2d(SSP);
+  int mynb3d = nb3d, mynb2d = nb2d;
+  if (nb3d == 0)
+    mynb3d = 1;
+  if (nb2d == 0)
+    mynb2d = 1;
+  CCol = nb3d * 3 + nb2d * 2;
+
+  // Declaration et initialisation des matrices et vecteurs de contraintes:
+  math_Matrix             ContInit(1, IncPass, 1, Npol);
+  math_Vector             Start(1, CCol * Npol);
+  NCollection_Array2<int> Ibont(1, NbCu, 1, IncTan);
+
+  // Filling Cont for the passing points:
+  // =================================================
+  for (i = 1; i <= IncPass; i++)
+  { // Cette partie ne depend que de Bernstein
+    Npt = IPas(i);
+    for (j = 1; j <= Npol; j++)
+    {
+      ContInit(i, j) = Bern(Npt, j);
+    }
+  }
+  for (i = 1; i <= CCol; i++)
+  {
+    Cont.Set(IncPass * (i - 1) + 1, IncPass * i, Npol * (i - 1) + 1, Npol * i, ContInit);
+  }
+
+  // Retrieval of starting vectors for Uzawa. This vector represents the
+  // poles of SCurv.
+  // Filling of secont and resolution.
+
+  NCollection_Array1<gp_Vec>   tabV(1, mynb3d);
+  NCollection_Array1<gp_Vec2d> tabV2d(1, mynb2d);
+  NCollection_Array1<gp_Pnt>   tabP(1, mynb3d);
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, mynb2d);
+
+  Inc3   = CCol * IncPass + 1;
+  IncCol = 0;
+  IncSec = 0;
+  for (k = 1; k <= NbCu; k++)
+  {
+    if (k <= nb3d)
+    {
+      for (i = 1; i <= IncTan; i++)
+      {
+        Npt = ITan(i);
+        // choix du maximum de tangence pour exprimer la colinearite:
+        ToolLine::Tangency(SSP, Npt, tabV);
+        V = tabV(k);
+        V.Coord(T1, T2, T3);
+        Tmax        = std::abs(T1);
+        Ibont(k, i) = 1;
+        if (std::abs(T2) > Tmax)
+        {
+          Tmax        = std::abs(T2);
+          Ibont(k, i) = 2;
+        }
+        if (std::abs(T3) > Tmax)
+        {
+          Tmax        = std::abs(T3);
+          Ibont(k, i) = 3;
+        }
+        if (Ibont(k, i) == 3)
+        {
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                               = DerivativeBern(Npt, j);
+            Cont(Inc3, j + Npol + IncCol)      = Daij * T3 / Tmax;
+            Cont(Inc3, j + Npol2 + IncCol)     = -Daij * T2 / Tmax;
+            Cont(Inc3 + 1, j + IncCol)         = Daij * T3 / Tmax;
+            Cont(Inc3 + 1, j + Npol2 + IncCol) = -Daij * T1 / Tmax;
+          }
+        }
+        else if (Ibont(k, i) == 1)
+        {
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                              = DerivativeBern(Npt, j);
+            Cont(Inc3, j + IncCol)            = Daij * T3 / Tmax;
+            Cont(Inc3, j + Npol2 + IncCol)    = -Daij * T1 / Tmax;
+            Cont(Inc3 + 1, j + IncCol)        = Daij * T2 / Tmax;
+            Cont(Inc3 + 1, j + Npol + IncCol) = -Daij * T1 / Tmax;
+          }
+        }
+        else if (Ibont(k, i) == 2)
+        {
+          for (j = 1; j <= Def + 1; j++)
+          {
+            Daij                              = DerivativeBern(Npt, j);
+            Cont(Inc3, j + Npol + IncCol)     = Daij * T3 / Tmax;
+            Cont(Inc3, j + Npol2 + IncCol)    = -Daij * T2 / Tmax;
+            Cont(Inc3 + 1, j + IncCol)        = Daij * T2 / Tmax;
+            Cont(Inc3 + 1, j + Npol + IncCol) = -Daij * T1 / Tmax;
+          }
+        }
+        Inc3 = Inc3 + 2;
+      }
+
+      // Remplissage du second membre:
+      for (i = 1; i <= IncPass; i++)
+      {
+        ToolLine::Value(SSP, IPas(i), tabP);
+        Poi                              = tabP(k);
+        Secont(i + IncSec)               = Poi.X();
+        Secont(i + IncPass + IncSec)     = Poi.Y();
+        Secont(i + 2 * IncPass + IncSec) = Poi.Z();
+      }
+      IncSec = IncSec + 3 * IncPass;
+
+      // Vecteur de depart:
+      for (j = 1; j <= Npol; j++)
+      {
+        Poi                       = SCurv.Value(j).Point(k);
+        Start(j + IncCol)         = Poi.X();
+        Start(j + Npol + IncCol)  = Poi.Y();
+        Start(j + Npol2 + IncCol) = Poi.Z();
+      }
+      IncCol = IncCol + 3 * Npol;
+    }
+
+    else
+    {
+      for (i = 1; i <= IncTan; i++)
+      {
+        Npt = ITan(i);
+        ToolLine::Tangency(SSP, Npt, tabV2d);
+        V2d         = tabV2d(k - nb3d);
+        T1          = V2d.X();
+        T2          = V2d.Y();
+        Tmax        = std::abs(T1);
+        Ibont(k, i) = 1;
+        if (std::abs(T2) > Tmax)
+        {
+          Tmax        = std::abs(T2);
+          Ibont(k, i) = 2;
+        }
+        for (j = 1; j <= Npol; j++)
+        {
+          Daij                          = DerivativeBern(Npt, j);
+          Cont(Inc3, j + IncCol)        = Daij * T2;
+          Cont(Inc3, j + Npol + IncCol) = -Daij * T1;
+        }
+        Inc3 = Inc3 + 1;
+      }
+
+      // Remplissage du second membre:
+      for (i = 1; i <= IncPass; i++)
+      {
+        ToolLine::Value(SSP, IPas(i), tabP2d);
+        Poi2d                        = tabP2d(i - nb3d);
+        Secont(i + IncSec)           = Poi2d.X();
+        Secont(i + IncPass + IncSec) = Poi2d.Y();
+      }
+      IncSec = IncSec + 2 * IncPass;
+
+      // Remplissage du vecteur de depart:
+      for (j = 1; j <= Npol; j++)
+      {
+        Poi2d                    = SCurv.Value(j).Point2d(k);
+        Start(j + IncCol)        = Poi2d.X();
+        Start(j + Npol + IncCol) = Poi2d.Y();
+      }
+      IncCol = IncCol + Npol2;
+    }
+  }
+
+  // Equations exprimant le meme rapport de tangence sur chaque courbe:
+  // On prend les coordonnees les plus significatives.
+
+  --Inc3;
+  for (i = 1; i <= IncTan; ++i)
+  {
+    IncCol = 0;
+    Npt    = ITan(i);
+    for (k = 1; k <= NbCu - 1; ++k)
+    {
+      ++Inc3;
+      // Initialize first relation variable (T1)
+      int addIndex_1 = 0, aVal = Ibont(k, i);
+      switch (aVal)
+      {
+        case 1: // T1 ~ T1x
+        {
+          if (k <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k);
+            T1 = V.X();
+            IP = 3 * Npol;
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k - nb3d);
+            T1  = V2d.X();
+            IP  = 2 * Npol;
+          }
+          addIndex_1 = 0;
+          break;
+        }
+        case 2: // T1 ~ T1y
+        {
+          if (k <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k);
+            IP = 3 * Npol;
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k - nb3d);
+            T1  = V2d.Y();
+            IP  = 2 * Npol;
+          }
+          addIndex_1 = Npol;
+          break;
+        }
+        case 3: // T1 ~ T1z
+        {
+          ToolLine::Tangency(SSP, Npt, tabV);
+          V          = tabV(k);
+          T1         = V.Z();
+          IP         = 3 * Npol;
+          addIndex_1 = 2 * Npol;
+          break;
+        }
+      }
+      // Initialize second relation variable (T2)
+      int addIndex_2 = 0, aNextVal = Ibont(k + 1, i);
+      switch (aNextVal)
+      {
+        case 1: // T2 ~ T2x
+        {
+          if ((k + 1) <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k + 1);
+            T2 = V.X();
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k + 1 - nb3d);
+            T2  = V2d.X();
+          }
+          addIndex_2 = 0;
+          break;
+        }
+        case 2: // T2 ~ T2y
+        {
+          if ((k + 1) <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k + 1);
+            T2 = V.Y();
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k + 1 - nb3d);
+            T2  = V2d.Y();
+          }
+          addIndex_2 = Npol;
+          break;
+        }
+        case 3: // T2 ~ T2z
+        {
+          ToolLine::Tangency(SSP, Npt, tabV);
+          V          = tabV(k + 1);
+          T2         = V.Z();
+          addIndex_2 = 2 * Npol;
+          break;
+        }
+      }
+
+      // Relations between T1 and T2:
+      for (j = 1; j <= Npol; j++)
+      {
+        Daij                                     = DerivativeBern(Npt, j);
+        Cont(Inc3, j + IncCol + addIndex_1)      = Daij * T2;
+        Cont(Inc3, j + IP + IncCol + addIndex_2) = -Daij * T1;
+      }
+      IncCol += IP;
+    }
+  }
+
+  // Equations concernant la courbure:
+
+  /*  Inc3 = Inc3 +1;
+    IncCol = 0;
+    for (k = 1; k <= NbCu; k++) {
+      for (i = 1; i <= IncCurv; i++) {
+        Npt = ICurv(i);
+        AppDef_MultiPointConstraint MP = SSP.Value(Npt);
+        DDA = SecondDerivativeBern(Parameters(Npt));
+        if (SSP.Value(1).Dimension(k) == 3) {
+      C1 = MP.Curv(k).X();
+      C2 = MP.Curv(k).Y();
+      C3 = MP.Curv(k).Z();
+      for (j = 1; j <= Npol; j++) {
+        Daij = DerivativeBern(Npt, j);
+        D2Aij = DDA(j);
+        Cont(Inc3, j + IncCol) = D2Aij;
+        Cont(Inc3, j + Npol2 + IncCol) = -C2*Daij;
+        Cont(Inc3, j + Npol + IncCol) = C3*Daij;
+
+        Cont(Inc3+1, j + Npol + IncCol) = D2Aij;
+        Cont(Inc3+1, j +IncCol) = -C3*Daij;
+        Cont(Inc3+1, j + Npol2 + IncCol) = C1*Daij;
+
+        Cont(Inc3+2, j + Npol2+IncCol) = D2Aij;
+        Cont(Inc3+2, j + Npol+IncCol) = -C1*Daij;
+        Cont(Inc3+2, j + IncCol) = C2*Daij;
+      }
+      Inc3 = Inc3 + 3;
+        }
+        else {        // Dimension 2:
+      C1 = MP.Curv2d(k).X();
+      C2 = MP.Curv2d(k).Y();
+      for (j = 1; j <= Npol; j++) {
+        Daij = DerivativeBern(Npt, j);
+        D2Aij = DDA(j);
+        Cont(Inc3, j + IncCol) = D2Aij*C1;
+        Cont(Inc3+1, j + Npol + IncCol) = D2Aij*C2;
+      }
+      Inc3 = Inc3 + 2;
+        }
+      }
+    }
+
+  */
+  // Resolution par Uzawa:
+
+  math_Uzawa UzaResol(Cont, Secont, Start, Tolerance);
+  if (!(UzaResol.IsDone()))
+  {
+    Done = false;
+    return;
+  }
+  CTCinv = UzaResol.InverseCont();
+  UzaResol.Duale(Vardua);
+  for (i = 1; i <= CTCinv.RowNumber(); i++)
+  {
+    for (j = i; j <= CTCinv.RowNumber(); j++)
+    {
+      CTCinv(i, j) = CTCinv(j, i);
+    }
+  }
+  Done = true;
+  math_Vector VecPoles(1, CCol * Npol);
+  VecPoles = UzaResol.Value();
+
+  int polinit = 1, polfin = Npol;
+  if (FC >= 1)
+    polinit = 2;
+  if (LC >= 1)
+    polfin = Npol - 1;
+
+  for (i = polinit; i <= polfin; i++)
+  {
+    IncCol = 0;
+    AppParCurves_MultiPoint MPol(nb3d, nb2d);
+    for (k = 1; k <= NbCu; k++)
+    {
+      if (k <= nb3d)
+      {
+        gp_Pnt Pol(VecPoles(IncCol + i),
+                   VecPoles(IncCol + Npol + i),
+                   VecPoles(IncCol + 2 * Npol + i));
+        MPol.SetPoint(k, Pol);
+        IncCol = IncCol + 3 * Npol;
+      }
+      else
+      {
+        gp_Pnt2d Pol2d(VecPoles(IncCol + i), VecPoles(IncCol + Npol + i));
+        MPol.SetPoint2d(k, Pol2d);
+        IncCol = IncCol + 2 * Npol;
+      }
+    }
+    SCurv.SetValue(i, MPol);
+  }
+}
+
+bool AppParCurves_ResolConstraint::IsDone() const
+{
+  return Done;
+}
+
+int AppParCurves_ResolConstraint::NbConstraints(
+  const MultiLine& SSP,
+  const int,
+  const int,
+  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints) const
+{
+  // Boucle de calcul du nombre de points de passage afin de dimensionner
+  // les matrices.
+  int                     aIncPass, aIncTan, aIncCurv, aCCol;
+  int                     i;
+  AppParCurves_Constraint Cons;
+
+  aIncPass = 0;
+  aIncTan  = 0;
+  aIncCurv = 0;
+
+  for (i = TheConstraints->Lower(); i <= TheConstraints->Upper(); i++)
+  {
+    Cons = (TheConstraints->Value(i)).Constraint();
+    if (Cons >= 1)
+    {
+      aIncPass++; // IncPass = nbre de points de passage.
+    }
+    if (Cons >= 2)
+    {
+      aIncTan++; // IncTan= nbre de points de tangence.
+    }
+    if (Cons == 3)
+    {
+      aIncCurv++; // IncCurv = nbre de pts de courbure.
+    }
+  }
+  int nb3d = ToolLine::NbP3d(SSP);
+  int nb2d = ToolLine::NbP2d(SSP);
+  aCCol    = nb3d * 3 + nb2d * 2;
+
+  return aCCol * aIncPass + aIncTan * (aCCol - 1) + 3 * aIncCurv;
+}
+
+int AppParCurves_ResolConstraint::NbColumns(const MultiLine& SSP, const int Deg) const
+{
+  int nb3d = ToolLine::NbP3d(SSP);
+  int nb2d = ToolLine::NbP2d(SSP);
+  int CCol = nb3d * 3 + nb2d * 2;
+
+  return CCol * (Deg + 1);
+}
+
+const math_Matrix& AppParCurves_ResolConstraint::ConstraintMatrix() const
+{
+  return Cont;
+}
+
+const math_Matrix& AppParCurves_ResolConstraint::InverseMatrix() const
+{
+  return CTCinv;
+}
+
+const math_Vector& AppParCurves_ResolConstraint::Duale() const
+{
+  return Vardua;
+}
+
+const math_Matrix& AppParCurves_ResolConstraint::ConstraintDerivative(const MultiLine&   SSP,
+                                                                      const math_Vector& Parameters,
+                                                                      const int          Deg,
+                                                                      const math_Matrix& DA)
+{
+  int    i, j, k, nb2d, nb3d, CCol, Inc3, IncCol, Npt;
+  int    Npol, Npol2, NbCu = ToolLine::NbP3d(SSP) + ToolLine::NbP2d(SSP);
+  int    IP;
+  double Daij;
+  Npol  = Deg + 1;
+  Npol2 = 2 * Npol;
+  NCollection_Array2<int> Ibont(1, NbCu, 1, IncTan);
+  math_Matrix             DeCInit(1, IncPass, 1, Npol);
+  math_Vector             DDA(1, Npol);
+  gp_Vec                  V;
+  gp_Vec2d                V2d;
+  double                  T1, T2, T3, Tmax, DDaij;
+  //  int FirstP = IPas(1);
+  nb3d       = ToolLine::NbP3d(SSP);
+  nb2d       = ToolLine::NbP2d(SSP);
+  int mynb3d = nb3d, mynb2d = nb2d;
+  if (nb3d == 0)
+    mynb3d = 1;
+  if (nb2d == 0)
+    mynb2d = 1;
+  CCol = nb3d * 3 + nb2d * 2;
+
+  NCollection_Array1<gp_Vec>   tabV(1, mynb3d);
+  NCollection_Array1<gp_Vec2d> tabV2d(1, mynb2d);
+  NCollection_Array1<gp_Pnt>   tabP(1, mynb3d);
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, mynb2d);
+
+  for (i = 1; i <= DeCont.RowNumber(); i++)
+    for (j = 1; j <= DeCont.ColNumber(); j++)
+      DeCont(i, j) = 0.0;
+
+  //  Remplissage de DK pour les points de passages:
+
+  for (i = 1; i <= IncPass; i++)
+  {
+    Npt = IPas(i);
+    for (j = 1; j <= Npol; j++)
+      DeCInit(i, j) = DA(Npt, j);
+  }
+  for (i = 1; i <= CCol; i++)
+  {
+    DeCont.Set(IncPass * (i - 1) + 1, IncPass * i, Npol * (i - 1) + 1, Npol * i, DeCInit);
+  }
+
+  // Pour les points de tangence:
+
+  Inc3   = CCol * IncPass + 1;
+  IncCol = 0;
+
+  for (k = 1; k <= NbCu; k++)
+  {
+    if (k <= nb3d)
+    {
+      for (i = 1; i <= IncTan; i++)
+      {
+        Npt = ITan(i);
+        //	MultiPoint MPoint = ToolLine::Value(SSP, Npt);
+        // choix du maximum de tangence pour exprimer la colinearite:
+        ToolLine::Tangency(SSP, Npt, tabV);
+        V = tabV(k);
+        V.Coord(T1, T2, T3);
+        Tmax        = std::abs(T1);
+        Ibont(k, i) = 1;
+        if (std::abs(T2) > Tmax)
+        {
+          Tmax        = std::abs(T2);
+          Ibont(k, i) = 2;
+        }
+        if (std::abs(T3) > Tmax)
+        {
+          Tmax        = std::abs(T3);
+          Ibont(k, i) = 3;
+        }
+        AppParCurves::SecondDerivativeBernstein(Parameters(Npt), DDA);
+        if (Ibont(k, i) == 3)
+        {
+          for (j = 1; j <= Npol; j++)
+          {
+            DDaij                                = DDA(j);
+            DeCont(Inc3, j + Npol + IncCol)      = DDaij * T3 / Tmax;
+            DeCont(Inc3, j + Npol2 + IncCol)     = -DDaij * T2 / Tmax;
+            DeCont(Inc3 + 1, j + IncCol)         = DDaij * T3 / Tmax;
+            DeCont(Inc3 + 1, j + Npol2 + IncCol) = -DDaij * T1 / Tmax;
+          }
+        }
+        else if (Ibont(k, i) == 1)
+        {
+          for (j = 1; j <= Npol; j++)
+          {
+            DDaij                               = DDA(j);
+            DeCont(Inc3, j + IncCol)            = DDaij * T3 / Tmax;
+            DeCont(Inc3, j + Npol2 + IncCol)    = -DDaij * T1 / Tmax;
+            DeCont(Inc3 + 1, j + IncCol)        = DDaij * T2 / Tmax;
+            DeCont(Inc3 + 1, j + Npol + IncCol) = -DDaij * T1 / Tmax;
+          }
+        }
+        else if (Ibont(k, i) == 2)
+        {
+          for (j = 1; j <= Npol; j++)
+          {
+            DDaij                               = DDA(j);
+            DeCont(Inc3, j + Npol + IncCol)     = DDaij * T3 / Tmax;
+            DeCont(Inc3, j + Npol2 + IncCol)    = -DDaij * T2 / Tmax;
+            DeCont(Inc3 + 1, j + IncCol)        = DDaij * T2 / Tmax;
+            DeCont(Inc3 + 1, j + Npol + IncCol) = -DDaij * T1 / Tmax;
+          }
+        }
+        Inc3 = Inc3 + 2;
+      }
+      IncCol = IncCol + 3 * Npol;
+    }
+    else
+    {
+      for (i = 1; i <= IncTan; i++)
+      {
+        Npt = ITan(i);
+        AppParCurves::SecondDerivativeBernstein(Parameters(Npt), DDA);
+        ToolLine::Tangency(SSP, Npt, tabV2d);
+        V2d = tabV2d(k);
+        V2d.Coord(T1, T2);
+        Tmax        = std::abs(T1);
+        Ibont(k, i) = 1;
+        if (std::abs(T2) > Tmax)
+        {
+          Tmax        = std::abs(T2);
+          Ibont(k, i) = 2;
+        }
+        for (j = 1; j <= Npol; j++)
+        {
+          DDaij                           = DDA(j);
+          DeCont(Inc3, j + IncCol)        = DDaij * T2;
+          DeCont(Inc3, j + Npol + IncCol) = -DDaij * T1;
+        }
+        Inc3 = Inc3 + 1;
+      }
+    }
+  }
+
+  // Equations exprimant le meme rapport de tangence sur chaque courbe:
+  // On prend les coordonnees les plus significatives.
+
+  Inc3 = Inc3 - 1;
+  for (i = 1; i <= IncTan; i++)
+  {
+    IncCol = 0;
+    Npt    = ITan(i);
+    AppParCurves::SecondDerivativeBernstein(Parameters(Npt), DDA);
+    //    MultiPoint MP = ToolLine::Value(SSP, Npt);
+    for (k = 1; k <= NbCu - 1; k++)
+    {
+      Inc3 = Inc3 + 1;
+      if (Ibont(k, i) == 1)
+      {
+        if (k <= nb3d)
+        {
+          ToolLine::Tangency(SSP, Npt, tabV);
+          V  = tabV(k);
+          T1 = V.X();
+          IP = 3 * Npol;
+        }
+        else
+        {
+          ToolLine::Tangency(SSP, Npt, tabV2d);
+          V2d = tabV2d(k);
+          T1  = V2d.X();
+          IP  = 2 * Npol;
+        }
+        if (Ibont(k + 1, i) == 1)
+        { // Relations entre T1x et T2x:
+          if ((k + 1) <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k + 1);
+            T2 = V.X();
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k + 1);
+            T2  = V2d.X();
+          }
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                        = DDA(j);
+            Cont(Inc3, j + IncCol)      = Daij * T2;
+            Cont(Inc3, j + IP + IncCol) = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+        else if (Ibont(k + 1, i) == 2)
+        { // Relations entre T1x et T2y:
+          if ((k + 1) <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k + 1);
+            T2 = V.Y();
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k + 1);
+            T2  = V2d.Y();
+          }
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                               = DDA(j);
+            Cont(Inc3, j + IncCol)             = Daij * T2;
+            Cont(Inc3, j + IP + Npol + IncCol) = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+        else if (Ibont(k + 1, i) == 3)
+        { // Relations entre T1x et T2z:
+          ToolLine::Tangency(SSP, Npt, tabV);
+          V  = tabV(k + 1);
+          T2 = V.Z();
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                                   = DDA(j);
+            Cont(Inc3, j + IncCol)                 = Daij * T2;
+            Cont(Inc3, j + IP + 2 * Npol + IncCol) = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+      }
+      else if (Ibont(k, i) == 2)
+      {
+        if (k <= nb3d)
+        {
+          ToolLine::Tangency(SSP, Npt, tabV);
+          V  = tabV(k);
+          T1 = V.Y();
+          IP = 3 * Npol;
+        }
+        else
+        {
+          ToolLine::Tangency(SSP, Npt, tabV2d);
+          V2d = tabV2d(k);
+          T1  = V2d.Y();
+          IP  = 2 * Npol;
+        }
+        if (Ibont(k + 1, i) == 1)
+        { // Relations entre T1y et T2x:
+          if ((k + 1) <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k + 1);
+            T2 = V.X();
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k + 1);
+            T2  = V2d.X();
+          }
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                          = DDA(j);
+            Cont(Inc3, j + Npol + IncCol) = Daij * T2;
+            Cont(Inc3, j + IP + IncCol)   = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+        else if (Ibont(k + 1, i) == 2)
+        { // Relations entre T1y et T2y:
+          if ((k + 1) <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k + 1);
+            T2 = V.Y();
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k + 1);
+            T2  = V2d.Y();
+          }
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                               = DDA(j);
+            Cont(Inc3, j + Npol + IncCol)      = Daij * T2;
+            Cont(Inc3, j + IP + Npol + IncCol) = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+        else if (Ibont(k + 1, i) == 3)
+        { // Relations entre T1y et T2z:
+          ToolLine::Tangency(SSP, Npt, tabV);
+          V  = tabV(k + 1);
+          T2 = V.Z();
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                                   = DDA(j);
+            Cont(Inc3, j + Npol + IncCol)          = Daij * T2;
+            Cont(Inc3, j + IP + 2 * Npol + IncCol) = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+      }
+
+      else
+      {
+        ToolLine::Tangency(SSP, Npt, tabV);
+        V  = tabV(k);
+        T1 = V.Z();
+        IP = 3 * Npol;
+        if (Ibont(k + 1, i) == 1)
+        { // Relations entre T1z et T2x:
+          if ((k + 1) <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k + 1);
+            T2 = V.X();
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k + 1);
+            T2  = V2d.X();
+          }
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                              = DDA(j);
+            Cont(Inc3, j + 2 * Npol + IncCol) = Daij * T2;
+            Cont(Inc3, j + IP + IncCol)       = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+
+        else if (Ibont(k + 1, i) == 2)
+        { // Relations entre T1z et T2y:
+          if ((k + 1) <= nb3d)
+          {
+            ToolLine::Tangency(SSP, Npt, tabV);
+            V  = tabV(k + 1);
+            T2 = V.Y();
+          }
+          else
+          {
+            ToolLine::Tangency(SSP, Npt, tabV2d);
+            V2d = tabV2d(k + 1);
+            T2  = V2d.Y();
+          }
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                               = DDA(j);
+            Cont(Inc3, j + 2 * Npol + IncCol)  = Daij * T2;
+            Cont(Inc3, j + IP + Npol + IncCol) = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+
+        else if (Ibont(k + 1, i) == 3)
+        { // Relations entre T1z et T2z:
+          ToolLine::Tangency(SSP, Npt, tabV);
+          V  = tabV(k + 1);
+          T2 = V.Z();
+          for (j = 1; j <= Npol; j++)
+          {
+            Daij                                   = DDA(j);
+            Cont(Inc3, j + 2 * Npol + IncCol)      = Daij * T2;
+            Cont(Inc3, j + IP + 2 * Npol + IncCol) = -Daij * T1;
+          }
+          IncCol = IncCol + IP;
+        }
+      }
+    }
+  }
+
+  return DeCont;
+}

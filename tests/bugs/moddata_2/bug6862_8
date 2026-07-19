@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC6862"
+puts "============"
+puts ""
+#######################################################################
+# Tool for checking arguments of Boolean Operations
+#######################################################################
+
+set BugNumber OCC6862
+
+# test possibility to merge vertices
+box b1 10 20 10
+box b2 20 10 10
+explode b1 e
+explode b2 e
+tcopy b2_10 ee2
+compound b2_10 ee2 comp
+donly b1_10 comp
+
+set resstr [bopargcheck b1_10 comp -O /RFTEIP]
+
+if {$resstr=="Faulties, that can not be treated by BOP, are detected.\n"} {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

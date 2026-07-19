@@ -1,0 +1,7 @@
+set bcheck [bopcheck result]
+puts $bcheck
+if {![regexp {This shape seems to be OK.} $bcheck]} {
+   puts "Error: bopcheck failed"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,16 @@
+#pro16252
+puts "PRO16252"
+puts "Fuse"
+puts ""
+
+restore [locate_data_file pro16252a.brep] a
+restore [locate_data_file pro16252b.brep] b
+
+fsameparameter b
+maxtolerance a
+maxtolerance b
+
+bfuse result a b
+
+checkprops result -s 121182
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

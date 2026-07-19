@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC28485"
+puts "========"
+puts ""
+##################################################################################
+# Fuse of two shapes using gluing and non-destructive options gives invalid result
+##################################################################################
+
+box b1 10 10 10
+box b2 10 2 2 6 6 6
+nurbsconvert b1 b1
+nurbsconvert b2 b2
+
+bnondestructive 1
+brunparallel 1
+bfuzzyvalue 0
+bglue 1
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 1
+
+checkshape result
+checknbshapes result -vertex 16 -edge 24 -wire 12 -face 11 -shell 1 -solid 1
+checkprops result -s 744 -v 1216

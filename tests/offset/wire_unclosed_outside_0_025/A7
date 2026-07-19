@@ -1,0 +1,8 @@
+puts "TODO OCC23068 ALL: Error : big tolerance of shape result"
+restore [locate_data_file offset_wire_024.brep] s
+
+set length 42.8997
+set nbsh_v 44
+set nbsh_e 44
+set nbsh_w 1
+

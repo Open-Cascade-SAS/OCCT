@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC23698"
+puts "========"
+puts ""
+##############################################
+# BRepBuilderAPI_Copy creates invalid copy
+##############################################
+
+restore [locate_data_file case_1_solid.brep] a
+restore [locate_data_file case_1_wire3.brep] b
+bcommon result b a
+tcopy result r
+
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full anEdge
+if { ${anEdge} == 0 } {
+  puts "Error: Common operation is wrong"
+}
+
+regexp {Mass +: +([-0-9.+eE]+)} [lprops r] full aCopyEdge
+if { ${anEdge} != ${aCopyEdge} } {
+  puts "Error: Copy is wrong"
+} else {
+  puts "OK: Copy is correct"
+}

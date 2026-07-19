@@ -1,0 +1,30 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
+
+puts "======="
+puts "OCC530"
+puts "======="
+puts ""
+####################################
+## Draw hangs up during performing bfuse operation
+####################################
+
+cpulimit 1000
+
+restore [locate_data_file OCC530_1.brep] c1 
+checkshape c1
+
+restore [locate_data_file OCC530_2.brep] c2 
+checkshape c2
+
+if { [catch { bfuse result c1 c2 } catch_result] } {
+    puts "Faulty OCC530 : function BFUSE works wrongly"
+} else {
+    puts "OCC530 OK: function BFUSE works properly"
+}
+
+checkprops result -s 0 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

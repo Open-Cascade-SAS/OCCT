@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC22981"
+puts "============"
+puts ""
+#########################################################################
+# BRepOffsetAPI_ThruSections fails to build a surface from closed wires
+#########################################################################
+
+restore [locate_data_file bug22981_Turb1.brep] t
+explode t
+
+thrusections result 0 0 t_1 t_2
+thrusections result 0 0 t_2 t_3 t_4 t_5 t_6 t_7 t_8 t_9 t_10 t_11
+
+checkprops result -s 6234.87
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

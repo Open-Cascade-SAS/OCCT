@@ -1,0 +1,44 @@
+puts "============"
+puts "CR24569: Test for conversion of sensitives by AIS_InteractiveContext::Update"
+puts "============"
+puts ""
+
+set aV "Driver1/Viewer1/View1"
+vinit name=$aV l=32 t=32 w=400 h=400
+vactivate $aV
+vclear
+
+vpoint p1 0 0 0
+vpoint p2 1 0 0
+vpoint p3 0 1 0
+
+vplane pl1 p1 p2 p3 0
+vfit
+
+vmoveto 200 256
+checkcolor 395 200 0 1 1
+
+if { $stat != 1 } {
+  puts "Error : Selection of AIS_Plane does not work initially!"
+}
+
+puts "Testing of plane sensitivity update:"
+
+vchangeplane pl1 x=-150 y=150 z=0 sx=10 sy=10
+vupdate pl1
+vzrange 230.36270740666069 409.91874112463427
+vmoveto 200 240
+checkcolor 199 23 0 1 0
+
+if { $stat != 1 } {
+  puts "Error : Sensitive entity of AIS_Plane is not updated!"
+}
+
+vmoveto 200 28
+checkcolor 199 23 0 1 1
+
+if { $stat != 1 } {
+  puts "Error : Sensitive entity of AIS_Plane is incorrect after update!"
+}
+
+vdump ${imagedir}/${casename}.png

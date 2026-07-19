@@ -1,0 +1,16 @@
+# Edge 1
+circle c1 50 0 0 0 0 1 50
+mkedge e1 c1 0 3.14159265358979323846
+
+# Edge 2
+line l2 0 0 0 -1 0 0
+mkedge e2 l2 0 100
+
+# Make wire
+wire w e1 e2
+
+# Fillet (analytical)
+fillet2d result w 10
+
+checkprops result -l 253.58
+

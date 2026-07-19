@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC118"
+puts "========"
+########################################################
+## The Cone part of final fuse shape becomes invisible
+########################################################
+
+restore [locate_data_file OCC118-1.brep] a 
+checkshape a
+restore [locate_data_file OCC118-2.brep] b 
+checkshape b
+
+bop a b
+bopfuse result a b
+
+checkprops result -s 4844.63 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

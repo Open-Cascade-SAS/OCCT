@@ -1,0 +1,16 @@
+#I5----------------------------------------------
+polyline p 0 0 5  0 0 0  20 0 0  20 0 5  
+beziercurve bc 4  20 0 5  15 0 6  5 0 4  0 0 5
+mkedge bc bc
+wire p p bc
+mkplane p p
+prism pr p 0 20 0
+#profile pf o 7 7 0 l 4 c 3 90 l 4 d -1 0 l 7
+profile pf o 7 7 0 l 7 d 0 1 l 7 d -1 0 l 7
+polyline pl 0 0 0 0 0 15
+pipe p pl pf
+bfuse f pr p
+nexplode f f
+depouille result f 0 0 1 f_10 3 0 0 14 0 0 1
+
+checkprops result -s 1510.45

@@ -1,0 +1,70 @@
+# check write / read set of shapes with names to FSD archive and reading its back
+
+# create 7 shapes
+box b1 10 20 30
+box b2 100 0 0 20 30 40
+box b3 200 0 0 30 40 50
+box b4 300 0 0 40 50 60
+box b5 400 0 0 50 60 70
+box b6 500 0 0 60 70 80
+box b7 600 0 0 70 80 90
+
+# calculate mass of each shape and keep to 'wb%' variable
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b1] full wb1
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b2] full wb2
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b3] full wb3
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b4] full wb4
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b5] full wb5
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b6] full wb6
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b7] full wb7
+
+# remove old file if exist
+catch {file delete ${imagedir}/test29402.cmp}
+
+# write set of shapes to the file
+fsdwrite b1 b2 b3 b4 b5 b6 b7 ${imagedir}/test29402.cmp cmp
+
+# unset variables
+unset b1 b2 b3 b4 b5 b6 b7
+
+# read back the file
+fsdread ${imagedir}/test29402.cmp restore_with_names
+
+# calculate mass of each shape and keep to 'rb%' variable
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b1] full rb1
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b2] full rb2
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b3] full rb3
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b4] full rb4
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b5] full rb5
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b6] full rb6
+regexp {Mass +: +([-0-9.+eE]+)} [vprops b7] full rb7
+
+# compare mass property of old and new shapes
+set NumBad 0
+if { $wb1 != $rb1 } {
+    puts " Faulty : incorrect shape $b1"; incr NumBad
+} 
+if { $wb2 != $rb2 } {
+    puts " Faulty : incorrect shape $b2"; incr NumBad
+}  
+if { $wb3 != $rb3 } {
+    puts " Faulty : incorrect shape $b3"; incr NumBad
+} 
+if { $wb4 != $rb4 } {
+    puts " Faulty : incorrect shape $b4"; incr NumBad
+}
+if { $wb5 != $rb5 } {
+    puts " Faulty : incorrect shape $b5"; incr NumBad
+}
+if { $wb6 != $rb6 } {
+    puts " Faulty : incorrect shape $b6"; incr NumBad
+}
+if { $wb7 != $rb7 } {
+    puts " Faulty : incorrect shape $b7"; incr NumBad
+} 
+if { $NumBad == 0} {
+    puts " BUG29402 OK : All shapes kept properly"
+} else {
+    puts " Faulty : Found $NumBad bad shapes"
+}
+

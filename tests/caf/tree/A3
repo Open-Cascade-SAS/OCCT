@@ -1,0 +1,50 @@
+#INTERFACE CAF
+# Tree construction attributes
+#
+# Testing attribute: TDF_TagSource
+#
+# Testing command:   NewChild
+#
+
+puts "caf005-A3"
+
+# Add an attribute to a data framework
+set aLabel1 0:2
+set aName1 Label1
+Label D ${aLabel1}
+SetName D ${aLabel1} ${aName1}
+
+set aName11 Label11
+set aChild1 [NewChild D ${aLabel1}]
+###
+set aChild1 0:2:1
+###
+SetName D ${aChild1} ${aName11}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf005-A3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetName1 [GetName DD ${aChild1}]} aResult]
+if { ${IsDone} != 0 ||
+	${aName11}!=${aGetName1} } {
+	puts "aName11=${aName11} aGetName1=${aGetName1}"
+	puts ${aResult}
+	puts "Get a value of TDF_TagSource attribute from restoring document: Error"
+	return
+}
+puts "Get a value of TDF_TagSource attribute from restoring document: OK"

@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC772"
+puts "SAM1643"
+puts "========"
+puts ""
+######################################
+## Impossible to make a common of the shapes attached.
+######################################
+
+restore [locate_data_file OCC772_fix.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+bcommon result a_1 a_2
+
+checkprops result -s 10190.7 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

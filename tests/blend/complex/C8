@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : H1
+## Comment : from pro9523
+## ====================================
+
+restore [locate_data_file CFI_pro9523.rle] a
+nexplode a e
+blend result a 2.5 a_4
+
+checkprops result -s 2160.65

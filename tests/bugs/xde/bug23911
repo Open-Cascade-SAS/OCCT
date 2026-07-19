@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC23911"
+puts "============"
+puts ""
+#######################################################################
+# Invalid output of command Xdump
+#######################################################################
+
+XNewDoc D
+box b 1 1 1
+ttranslate b 1 0 0
+XAddShape D b
+
+set Log [Xdump D]
+
+set status 0
+
+if {[llength ${Log}] < 1} {
+   puts "Error: Invalid output of command Xdump"
+   set status 1
+}
+
+if { [regexp "INSTANCE" ${Log}] != 1 } {
+   puts "Error: Invalid output of command Xdump"
+   set status 1
+}
+
+if { [regexp "SOLID" ${Log}] != 1 } {
+   puts "Error: Invalid output of command Xdump"
+   set status 1
+}
+
+if { ${status} == 0 } {
+   puts "OK: Good output of command Xdump"
+}

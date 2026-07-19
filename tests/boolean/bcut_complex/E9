@@ -1,0 +1,9 @@
+# Original bug : pro6066
+# Date : 11mar98
+
+restore [locate_data_file CTO900_pro6066-part.rle] part
+restore [locate_data_file CTO900_pro6066-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 570249
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

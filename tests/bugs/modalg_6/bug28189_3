@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC28189"
+puts "========"
+puts ""
+#################################################
+# Result of Boolean operation is non-manifold wire
+#################################################
+
+box b1 10 10 10
+box b2 10 10 10
+eval compound [explode b1 w] b1
+eval compound [explode b1 w] b2
+bfuse result b1 b2
+
+checknbshapes result -wire 6

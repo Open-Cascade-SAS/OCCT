@@ -1,0 +1,8 @@
+set TheFileName shading_137.brep
+if { [string compare ${command} "shading"] == 0 && [string compare ${group} "standard"] == 0 } {
+   puts ""
+   puts "CR25132"
+   puts "san (developer) 2014-08-26 16:59"
+   puts "The shaded representation looks strange because it is treated as a closed solid by visualization (back faces of the triangles are not drawn)."
+   puts ""
+}

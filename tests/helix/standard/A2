@@ -1,0 +1,71 @@
+puts "============"
+puts "OCCGH648"
+puts "============"
+puts ""
+#######################################################################
+#    pure cylindrical helix: helix, D1 = 100, 1 part, pitche = 20, PFi=1
+#######################################################################
+
+set BugNumber OCCGH648
+
+set np 1
+set D1 100
+
+set H1 100
+
+set P1 20
+
+set PF1 1
+
+set mistake 0
+set result ""
+if [catch { set info_result [helix result ${np} ${D1} ${H1} ${P1} ${PF1}]} ] {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : approximation algorithm is broken"
+  set mistake 1
+} elseif { [regexp {ErrorStatus} ${info_result}] } {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : helix is broken"
+  set mistake 1
+}
+
+if { ${mistake} == 0 } {
+    set d 5
+    set x [expr $D1/2]
+    set y 0
+    set z 0
+    set dx 0
+    set dy 1
+    set dz 0
+      
+    circle c $x $y $z $dx $dy $dz $d
+    mkedge e c
+    wire s2 e
+                    
+    renamevar result s1
+  puts "${info_result}"
+  set status 0
+  set good_square 49555.4
+    set good_volume 123370
+    
+    set good_vertex 6
+    set good_edge 11
+    set good_wire 7
+    set good_face 7
+    set good_shell 1
+    set good_solid 1
+    set good_compsolid 0
+    set good_compound 0
+    set good_shape 33
+}
+
+# Resume
+puts ""
+if { ${mistake} != 0 } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+CheckSweep
+set 2dviewer 0

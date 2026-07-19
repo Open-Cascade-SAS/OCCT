@@ -1,0 +1,41 @@
+puts "================"
+puts "OCC23830"
+puts "================"
+puts ""
+#######################################################################
+# BRepExtrema_DistShapeShape does not find intersection of face with edge
+#######################################################################
+
+restore [locate_data_file bug23830_face.brep] s
+mksurface s s
+
+set Indices {1 2 6 7 11 16 21 36 41 42}
+
+foreach i ${Indices} {
+  restore [locate_data_file bug23830_circle$i.brep] c_$i
+  mkcurve c_$i c_$i
+  extrema c_$i s
+  if { [isdraw ext_1] } {
+    mkedge e ext_1
+    regexp {Mass +: +([-0-9.+eE]+)} [lprops e] full l
+    if {$l > 2.5e-12} {
+      puts "Error: invalid result"
+    }
+    renamevar ext_1 r_$i
+  }
+}
+
+smallview
+l
+l
+l
+l
+l
+l
+l
+l
+erase
+display s
+foreach i ${Indices} { if {[isdraw r_$i]} {display r_$i} }
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

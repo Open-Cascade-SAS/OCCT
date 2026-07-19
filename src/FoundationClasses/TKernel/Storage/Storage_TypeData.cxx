@@ -1,0 +1,167 @@
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_ErrorHandler.hxx>
+#include <Storage_TypeData.hxx>
+#include <Storage_BaseDriver.hxx>
+#include <Storage_StreamTypeMismatchError.hxx>
+#include <TCollection_AsciiString.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Storage_TypeData, Standard_Transient)
+
+Storage_TypeData::Storage_TypeData()
+    : myErrorStatus(Storage_VSOk)
+{
+}
+
+bool Storage_TypeData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
+{
+  // Check driver open mode
+  if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
+  {
+    myErrorStatus    = Storage_VSModeError;
+    myErrorStatusExt = "OpenMode";
+    return false;
+  }
+
+  // Read type section
+  myErrorStatus = theDriver->BeginReadTypeSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "BeginReadTypeSection";
+    return false;
+  }
+
+  int                     aTypeNum;
+  TCollection_AsciiString aTypeName;
+
+  int len = theDriver->TypeSectionSize();
+  for (int i = 1; i <= len; i++)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      theDriver->ReadTypeInformations(aTypeNum, aTypeName);
+    }
+    catch (const Storage_StreamTypeMismatchError&)
+    {
+      myErrorStatus    = Storage_VSTypeMismatch;
+      myErrorStatusExt = "ReadTypeInformations";
+      return false;
+    }
+
+    myPt.Add(aTypeName, aTypeNum);
+  }
+
+  myErrorStatus = theDriver->EndReadTypeSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "EndReadTypeSection";
+    return false;
+  }
+
+  return true;
+}
+
+int Storage_TypeData::NumberOfTypes() const
+{
+  return myPt.Extent();
+}
+
+bool Storage_TypeData::IsType(const TCollection_AsciiString& aName) const
+{
+  return myPt.Contains(aName);
+}
+
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> Storage_TypeData::Types() const
+{
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> r =
+    new NCollection_HSequence<TCollection_AsciiString>;
+  int i;
+
+  for (i = 1; i <= myPt.Extent(); i++)
+  {
+    r->Append(myPt.FindKey(i));
+  }
+
+  return r;
+}
+
+void Storage_TypeData::AddType(const TCollection_AsciiString& aName, const int aTypeNum)
+{
+  myPt.Add(aName, aTypeNum);
+}
+
+TCollection_AsciiString Storage_TypeData::Type(const int aTypeNum) const
+{
+  TCollection_AsciiString r;
+
+  if (aTypeNum <= myPt.Extent() && aTypeNum > 0)
+  {
+    r = myPt.FindKey(aTypeNum);
+  }
+  else
+  {
+    throw Standard_NoSuchObject("Storage_TypeData::Type - aTypeNum not in range");
+  }
+
+  return r;
+}
+
+int Storage_TypeData::Type(const TCollection_AsciiString& aTypeName) const
+{
+  int r = 0;
+
+  if (myPt.Contains(aTypeName))
+  {
+    r = myPt.FindFromKey(aTypeName);
+  }
+  else
+  {
+    throw Standard_NoSuchObject("Storage_TypeData::Type - aTypeName not found");
+  }
+
+  return r;
+}
+
+void Storage_TypeData::Clear()
+{
+  myPt.Clear();
+}
+
+Storage_Error Storage_TypeData::ErrorStatus() const
+{
+  return myErrorStatus;
+}
+
+void Storage_TypeData::SetErrorStatus(const Storage_Error anError)
+{
+  myErrorStatus = anError;
+}
+
+void Storage_TypeData::ClearErrorStatus()
+{
+  myErrorStatus = Storage_VSOk;
+  myErrorStatusExt.Clear();
+}
+
+TCollection_AsciiString Storage_TypeData::ErrorStatusExtension() const
+{
+  return myErrorStatusExt;
+}
+
+void Storage_TypeData::SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt)
+{
+  myErrorStatusExt = anErrorExt;
+}

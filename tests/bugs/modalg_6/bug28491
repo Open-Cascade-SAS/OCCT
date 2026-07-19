@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC28491"
+puts "========"
+puts ""
+##########################################
+## Incomplete section curve
+##########################################
+
+set GoodLength 4.617
+
+restore [locate_data_file bug28491_H0.brep] h0
+restore [locate_data_file bug28491_Prism.brep] s1
+explode h0 f
+
+bsection r1 h0_57 s1
+bsection result h0_57 s1 -n2d2
+
+checkprops r1 -l $GoodLength
+checkprops result -l $GoodLength
+
+smallview
+don h0_57
+fit
+display result s1
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

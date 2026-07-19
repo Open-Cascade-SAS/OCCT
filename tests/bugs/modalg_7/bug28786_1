@@ -1,0 +1,15 @@
+puts "REQUIRED All: Boolean operation of the given type is not allowed on the given inputs"
+
+puts "========"
+puts "OCC28786"
+puts "========"
+puts ""
+########################################
+# Refactoring of the Warning/Error reporting system of Boolean Operations Algorithm
+########################################
+
+restore [locate_data_file OCC100_sp.brep] a
+restore [locate_data_file OCC100_cyl.brep] b
+
+# incompatible shapes for fuse operation
+bfuse r a b

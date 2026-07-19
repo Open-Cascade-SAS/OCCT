@@ -1,0 +1,21 @@
+
+puts "========================"
+puts "BUC60585"
+puts "========================"
+
+restore [locate_data_file buc60585a.brep] s
+checkshape s
+plane ps 2036.25  -97.5  -1460.499755859375 0.0  -0.75103523489975432  -0.66026212668838646 1.0 0.0 0.0
+mkface fs ps
+
+bsection result s fs
+
+checkprops result -l 117.81 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+##      set num [lindex [checksection res] 4]
+#     if { $num != 0 } {
+#      puts " Faulty : Result shape is Unclosed !!! "
+#      }

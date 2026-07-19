@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC28150"
+puts "========"
+puts ""
+#####################################################
+# Exception is raised during Boolean operation
+#####################################################
+
+restore [locate_data_file bug28150_ef.brep] b
+explode b
+mkcurve c b_1
+mksurface s b_2
+project c2d c s
+
+checklength c2d -l  2.6097941390190726e-006
+
+v2d
+display c2d
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

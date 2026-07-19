@@ -1,0 +1,53 @@
+set Test "TNaming_Translator test"
+set IsDone 1
+set TestError ""
+
+if {[catch {set TestLab}] == 1} {
+	NewDocument D
+	set TestLab 0:1
+}
+
+#################### make box and it's copy ####################
+box b 12 13 14
+set cb [CopyShape b]
+
+explode b F
+if {[llength [explode $cb F]] != 6} {
+	set IsDone 0
+	set TestError "$TestError # Copy of box has bad number of faces"
+}
+
+if {[IsSameShapes b $cb]==1} {
+	set IsDone 0
+	set TestError "$TestError # Box and it's copy are same"
+}
+for {set i 1} {$i <= 6} {incr i} {
+  set comp 0
+  for {set j 1} {$j <= 6} {incr j} {
+    if {[IsSameShapes b_$i [set cb]_$j]==1} {
+	set IsDone 0
+	set TestError "$TestError # Subface of copy of box [set cb]_$j] and face b_$i are same"
+    }
+    if {[CenterOfShape b_$i] == [CenterOfShape [set cb]_$j]} {incr comp}
+  }
+  if {$comp != 1} {
+	set IsDone 0
+	set TestError "$TestError # face b_$i has no twin in the copy subshapes set"
+  }
+}
+
+#################### translation testing ####################
+if {[CenterOfShape b] != [CenterOfShape $cb]} {
+	set IsDone 0
+	set TestError "$TestError # shapes has different location"
+}
+ttranslate b 50 40 30
+if {[CenterOfShape b] == [CenterOfShape $cb]} {
+	set IsDone 0
+	set TestError "$TestError # shapes has same location after retranslation"
+}
+set cb [CopyShape b]
+if {[CenterOfShape b] != [CenterOfShape $cb]} {
+	set IsDone 0
+	set TestError "$TestError # shapes has different location after retranslation"
+}

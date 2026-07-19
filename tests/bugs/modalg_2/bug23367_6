@@ -1,0 +1,24 @@
+puts "============"
+puts "CR23367"
+puts "============"
+puts ""
+##########################################################################################################
+# New functionality restoring the middle path of pipe-like shape
+##########################################################################################################
+
+restore [locate_data_file bug23367_pipe1.brep] a
+explode a e
+wire w1 a_2
+wire w2 a_6
+donly a w1 w2
+fit
+middlepath result a w1 w2
+
+checkprops result -l 1386.13 
+checkshape result 
+checksection result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

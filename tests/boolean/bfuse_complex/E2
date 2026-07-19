@@ -1,0 +1,11 @@
+# Original bug : cts60005
+# Date : 19mar98
+
+restore [locate_data_file cts60005a.rle] a
+fsameparameter a
+restore [locate_data_file CTO900_cts60005b.rle] b
+
+bfuse result a b
+
+checkprops result -s 10558.1
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

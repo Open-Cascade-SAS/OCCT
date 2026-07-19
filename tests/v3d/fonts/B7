@@ -1,0 +1,36 @@
+puts "============"
+puts "0030663: Visualization - synthesize italic style for a font having no italic style"
+puts "============"
+puts ""
+pload MODELING VISUALIZATION
+
+set THE_TEXT "The quick brown fox\njumps over the lazy dog!"
+set THE_FONT_NAME SansFont
+set THE_FONT_SIZES {12 18 24}
+
+# register font having only Regular style
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vtop
+
+dtracelevel trace
+vfont -verbose 1
+
+set aLine 0
+set aLineId 0
+foreach aSize $THE_FONT_SIZES {
+  set aText "\[$aSize\] $THE_TEXT"
+
+  vpoint aPnt_$aSize 0.0 $aLine 0.0
+  vdrawtext "Line_$aLineId" $aText -pos 0.0 $aLine 0.0 -color CYAN -halign left -valign top -angle 000 -zoom 1 -height $aSize -aspect bolditalic -font $THE_FONT_NAME
+
+  text2brep aBText_$aSize $aText -font $THE_FONT_NAME -height $aSize -aspect bolditalic -composite off -pos 0.0 $aLine 0.0 -valign topfirstline
+  vdisplay -dispMode 1 aBText_$aSize
+  set aLine [expr $aLine - 4.0 * $aSize]
+  set aLineId [expr $aLineId + 1]
+}
+
+vfit
+vglinfo
+vdump $imagedir/${casename}.png

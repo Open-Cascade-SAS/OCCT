@@ -1,0 +1,125 @@
+set mist 0
+if { [info exists command] && [string compare $command "mkoffset"] == 0 } {
+    regexp {Mass +: +([-0-9.+eE]+)} [lprops s] full sm
+    regexp {Tolerance +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=[-0-9.+eE]+} [tolerance s] full MaxTol_s AvgTol_s
+    puts "Length of shape a is equal to $sm"
+    set theOff [expr $sm * $off_param ]
+    puts [format "Considered Offset value is %s " $theOff]
+    if { ![catch { mkoffset result s 1 $theOff } catch_res] } {
+        renamevar result_1 result
+        if { ![catch { set chsh [checkshape result] } catch_chsh] } {
+            puts $chsh
+        } else {
+            puts "Error : $catch_chsh"
+            set mist 1
+        }
+    } 
+    checkprops result -l ${length}
+}
+
+if { [isdraw result] && $mist == 0} {
+    if { [info exists command] && [string compare $command "mkoffset"] == 0 } {
+        regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full m
+        set vertex_list [explode result v]
+        set ll_v [llength $vertex_list]
+        set edge_list [explode result e]
+        set ll_e [llength $edge_list]
+
+        set wire_list [explode result w]
+        if { [string compare $wire_list ""] == 0} {
+            set wire_list result
+        }
+        set ll_w [llength $wire_list]
+
+        if { $ll_v == 0 } {
+            if { $theOff < 0 } {
+                puts [format "Warning : The resulting shape is an empty COMPOUND"]
+            } else {
+                puts [format "Error : The resulting shape is an empty COMPOUND"]
+            }
+            puts [whatis result]
+            puts [checksection result]
+        } else {
+            puts [format "The resulting shape contains %s wires" $ll_w]
+            foreach wire $wire_list {
+                puts "Info for $wire:"
+                regexp {Tolerance +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=[-0-9.+eE]+} [tolerance $wire] full MaxTol_res AvgTol_res
+                if { $MaxTol_res > $MaxTol_s } {
+                    puts "Error : big tolerance of shape $wire"
+                }
+                regexp {nb +alone +Vertices +: +([-0-9.+eE]+)} [checksection $wire] full num
+                if { $num != 0 } {
+                    puts [format "Error : $wire is NOT a closed wire"]
+                }
+                mkplane res_plane $wire
+                set chsh_res_plane [checkshape res_plane]
+                if { [regexp {Faulty +shapes +in +variables +faulty_([-0-9.+eE]+) +to +faulty_([-0-9.+eE]+)} $chsh_res_plane full from_faulty to_faulty ] } {
+                    puts "Shape $wire has self-intersection"
+                }
+            }
+        }
+
+        # check for number of vertexes
+        if { [info exists nbsh_v ] } {
+            if { ($ll_v != $nbsh_v) || ($nbsh_v == 0 && $ll_v != 0) } {
+                puts "Error : The resulting shape is WRONG because it must contain $nbsh_v vertexes instead of $ll_v"
+            } else {
+                puts "The resulting shape contains $ll_v vertexes"
+            }
+        }
+        # check for number of edges
+        if { [info exists nbsh_e ] } {
+            if { ($ll_e != $nbsh_e) || ($nbsh_e == 0 && $ll_e != 0) } {
+                puts "Error : The resulting shape is WRONG because it must contain $nbsh_e edges instead of $ll_e"
+            } else {
+                puts "The resulting shape contains $ll_e edges"
+            }
+        }
+        # check for number of wires
+        if { [info exists nbsh_w ] } {
+            if { ($ll_w != $nbsh_w) || ($nbsh_w == 0 && $ll_w != 0) } {
+                puts "Error : The resulting shape is WRONG because it must contain $nbsh_w wires instead of $ll_w"
+            } else {
+                puts "The resulting shape contains $ll_w wires"
+            }
+        }
+    } elseif {[info exists command] && [string compare $command "withintersect"] == 0} {
+        regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+        checkshape result
+    } else {
+        #check if result is valid
+        puts [checkshape result]
+
+        regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full m
+
+        #check of face's area value
+        foreach ResultFace [ explode result f ]  {
+            regexp {Mass +: +([-0-9.+eE]+)} [sprops $ResultFace] full fmass
+            if { $fmass < 0 } {
+                puts "Error : The area of face $ResultFace of the resulting shape is negative."
+            }
+        }
+        #check for bsection
+        if { [info exists GlobFaces] && [llength $GlobFaces] == 0 } {
+            puts [ bsection re result s ]
+            if { [ isdraw re ] } {
+                regexp {Mass +: +([-0-9.+eE]+)} [lprops $re] full remass 
+                if { $remass != 0 } {
+                    puts "Error: bsection of the result and s is not equal to zero."
+                }
+            }
+        }
+    }
+    if { $m > 0 } {
+      if {[info exists result_unif]} {
+        checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
+      } else {
+        checkview -display result -2d -path ${imagedir}/${test_image}.png
+      }
+    }
+} else {
+    puts "Error : The offset cannot be built."
+}
+
+# to end a test script
+puts "TEST COMPLETED"

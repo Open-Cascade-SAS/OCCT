@@ -1,0 +1,29 @@
+puts "============"
+puts "CR24133: Development of improvement of dimensions implementation - Angle dimension"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vpoint angle1P1 0 0 0
+vpoint angle1P2 50 50 50
+vpoint angle1P3 50 50 100
+vdimension dim1 -angle -shapes angle1P1 angle1P2 angle1P3 -font SansFont
+vfit
+vmoveto 249 206
+checkcolor 249 200 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of angle dimension with 2d text is wrong." }
+
+vinit Viewer2/View2
+vpoint angle2P1 0 0 0
+vpoint angle2P2 50 50 50
+vpoint angle2P3 50 50 100
+vdimension dim2 -angle -text 3d -shapes angle2P1 angle2P2 angle2P3 -font SansFont
+vfit
+vmoveto 263 251
+checkcolor 335 319 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of angle dimension with 3d text is wrong." }
+
+vdump $imagedir/${casename}.png

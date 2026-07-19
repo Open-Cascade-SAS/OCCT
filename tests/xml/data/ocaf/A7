@@ -1,0 +1,49 @@
+set aTestName "caf001-G3"
+puts ${aTestName}
+
+set aTokList { :,}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+point aPoint1 ${aSetX1} ${aSetY1} ${aSetZ1}
+
+set aDumpPoint1 [dump aPoint1]
+
+regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} ${aDumpPoint1} full X_Point1 Y_Point1 Z_Point1
+
+set aLabel 0:2
+SetPoint D ${aLabel} aPoint1
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetAttr3 [GetPoint DD ${aLabel}]} aResult]
+if { ${IsDone} != 0 } {
+	puts "Error : Get a value of TDataStd_Point attribute from restoring document"
+} else {
+    GetPoint DD ${aLabel} aPoint5
+
+    set aDumpPoint5 [dump aPoint5]
+    regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} ${aDumpPoint5} full X_Point5 Y_Point5 Z_Point5
+
+    if { ${X_Point1} != ${X_Point5} || 
+     ${Y_Point1} != ${Y_Point5} || 
+     ${Z_Point1} != ${Z_Point5} } {
+	puts "X_Point1=${X_Point1} X_Point5=${X_Point5}"
+	puts "Y_Point1=${Y_Point1} Y_Point5=${Y_Point5}"
+	puts "Z_Point1=${Z_Point1} Z_Point5=${Z_Point5}"
+	puts "Error : Get a value of TDataStd_Point attribute from restoring document"
+    }
+}

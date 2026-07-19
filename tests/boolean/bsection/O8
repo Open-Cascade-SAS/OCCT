@@ -1,0 +1,7 @@
+restore [locate_data_file CIN900_cts21hlq.rle] a
+restore [locate_data_file CIN900_cts21hlr.rle] b
+bsection result a b
+
+checkprops result -l 79.1327
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

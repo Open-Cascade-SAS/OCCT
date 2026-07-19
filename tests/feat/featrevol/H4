@@ -1,0 +1,9 @@
+box b1 200 200 200 
+box b2 150 100 100 100 100 200 
+bfuse boite b1 b2
+nexplode boite f
+profile cont S boite_3 F 75 50 X 50 Y 100 X -50
+featrevol boite cont boite_3 200 0 200 0 1 0 1 1
+featperformval revol result 70
+
+checkprops result -s 329344

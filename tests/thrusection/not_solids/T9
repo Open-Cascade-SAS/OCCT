@@ -1,0 +1,5 @@
+restore [locate_data_file C7] w1
+restore [locate_data_file C12] w2
+ttranslate w2 0 0 40
+thrusections result 0 0 w1 w2
+checkprops result -s 1314

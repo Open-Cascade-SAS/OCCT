@@ -1,0 +1,5 @@
+hyperbola hyper 0 0 0 0 0 1 2 1
+trim hyper hyper -1 1
+convert result hyper
+checklength result -l 3.3078924645283738
+checkview -display result -2d -path ${imagedir}/${test_image}.png

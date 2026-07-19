@@ -1,0 +1,23 @@
+
+puts "========"
+puts "OCC175"
+puts "========"
+puts ""
+###########################################
+## ABug of a symmetry on this specific attached BREP shape.
+###########################################
+
+restore [locate_data_file OCC175.brep] result 
+checkshape result
+
+regexp {SHAPE +: +([-0-9.+eE]+)} [nbshapes result] full col1
+
+tmirror result 0 0 0 0 1 0
+
+regexp {SHAPE +: +([-0-9.+eE]+)} [nbshapes result] full col2
+if { $col1 != $col2} {
+   puts  "Error : Command mirror does NOT work properly. "
+}
+
+checkprops result -s 13091.3
+checkview -display result -2d -path ${imagedir}/${test_image}.png

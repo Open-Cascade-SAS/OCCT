@@ -1,0 +1,19 @@
+puts "================"
+puts "BUC61037"
+puts "OCC108"
+puts "================"
+puts ""
+#####################################################################
+## BRepTools::AddUVBounds for the planar face bounded by a circle returns too small bounding box.
+#####################################################################
+
+restore [locate_data_file bug61037.brep] sh1
+checkshape sh1
+
+bounding sh1 -dump -shape result
+checkprops result -v 5.78576e-005 -s 0.042162
+
+smallview
+don sh1 result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

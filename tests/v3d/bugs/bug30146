@@ -1,0 +1,18 @@
+puts "============="
+puts "0030146: Visualization - e x c e p t i o n during attempt to display Edge without geometry"
+puts "============="
+
+pload MODELING VISUALIZATION
+
+restore [locate_data_file CTO904_cts20176a.rle] a
+incmesh a 0.1
+tclean -geom a
+
+vclear
+vinit View1
+vviewparams -scale 3.69 -proj 0.30 0.94 0.14 -up -0.46 0.013 0.88 -at 103.9 -59.94 -27.08
+vdisplay -dispMode 0 a
+vdump ${imagedir}/${casename}_wireframe.png
+
+vdisplay -dispMode 1 a
+vdump ${imagedir}/${casename}_shaded.png

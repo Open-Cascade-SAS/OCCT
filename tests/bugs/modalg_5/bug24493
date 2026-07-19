@@ -1,0 +1,32 @@
+puts "========="
+puts "OCC24493"
+puts "========="
+puts ""
+###########################################################
+# Partition algorithm produces not valid shape(splt of 10 faces)
+###########################################################
+
+restore [locate_data_file bug24493_Faces_0.brep] s0
+restore [locate_data_file bug24493_Faces_1.brep] s1
+restore [locate_data_file bug24493_Faces_2.brep] s2
+restore [locate_data_file bug24493_Faces_3.brep] s3
+restore [locate_data_file bug24493_Faces_4.brep] s4
+restore [locate_data_file bug24493_Faces_5.brep] s5
+restore [locate_data_file bug24493_Faces_6.brep] s6
+restore [locate_data_file bug24493_Faces_7.brep] s7
+restore [locate_data_file bug24493_Faces_8.brep] s8
+restore [locate_data_file bug24493_Faces_9.brep] s9
+
+bclearobjects
+bcleartools
+baddobjects s0 s1 s2 s3 s4 s5 s6 s7 s8 s9
+
+bfillds
+
+bbuild result
+
+checkprops result -s 3.44726e+06 
+checkshape result
+
+checknbshapes result -vertex 41 -edge 53 -wire 23 -face 18 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 136
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename 919-004-T03-04-CP-VL.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 310  ( 2179 )  Summary  = 310  ( 2181 )
+CHECKSHAPE  : Wires    = 0  ( 3 )  Faces    = 0  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1457  ( 1455 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1457  ( 1455 )   FreeWire = 516  ( 540 ) 
+TOLERANCE   : MaxTol   =   0.3053256329  (   0.4653265763 )  AvgTol   =  0.0008083596177  (    0.0008564004 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 2121  ( 11722 )  N2Labels = 0  ( 0 )   TotalLabels = 2126  ( 11727 )   NameLabels = 1614  ( 2894 )   ColorLabels = 2121  ( 11726 )   LayerLabels = 1609  ( 11726 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = TURQUOISE WHITE  ( TURQUOISE WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}

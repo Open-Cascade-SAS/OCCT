@@ -1,0 +1,16 @@
+# Original bug : pro14942
+# Date : 26Aout98
+
+
+restore [locate_data_file CTO904_pro14942a.rle] a 
+restore [locate_data_file pro14942b.rle] b
+
+bcut result a b
+
+checkshape result
+
+checkprops result -s 192941
+
+checknbshapes result  -face 43  -shell 1 -solid 1
+
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,10 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+# The number of identified faults in this model is unstable,
+# but it's not a parallelization problem
+
+puts "=========="
+puts "0027814: Parallelize BRepCheck_Analyzer"
+puts "=========="
+puts ""
+
+CheckPerform [locate_data_file bug28871_50056.brep]

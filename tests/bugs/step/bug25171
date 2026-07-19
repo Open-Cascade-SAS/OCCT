@@ -1,0 +1,15 @@
+puts "========================"
+puts "0025171: STEP Lexer - the strings with quote sign inside can't be properly lexed"
+puts "========================"
+
+# Read file
+stepread [locate_data_file bug25171.stp] res *
+
+# Checking
+set state [data c]
+if { [regexp "6425 Entities, of which 65 Root" $state] != 1 } {
+   puts "Error : wrong count of transferred roots"
+}
+
+checknbshapes res_1 -face 53 -shell 5 -solid 5
+checkshape res_1 f

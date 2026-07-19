@@ -1,0 +1,18 @@
+
+puts "================"
+puts "OCC122"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC122.brep] sh 
+explode sh
+
+checkshape sh_1
+checkshape sh_2
+
+bfuse result sh_1 sh_2
+
+checkprops result -s 172790 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

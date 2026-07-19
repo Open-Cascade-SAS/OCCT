@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC23933"
+puts "============"
+puts ""
+######################################################
+# Self intersection reported after Fuse operation
+######################################################
+
+restore [locate_data_file bug23933_a.brep] a
+restore [locate_data_file bug23933_b.brep] b
+
+checkshape a
+checkshape b
+bopargcheck a b -F
+
+if { [catch {bfuse result a b} catch_result] } {
+    puts "Faulty OCC697"
+}
+
+checkshape result
+bopargcheck result
+
+checkprops result -s 246487 
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC12635"
+puts "============"
+puts ""
+#######################################################################
+# Bugs in projector algorithm
+#######################################################################
+
+set BugNumber OCC12635
+
+restore [locate_data_file OCC12635_s1.draw] s1
+restore [locate_data_file OCC12635_c1.draw] c1
+
+set BugStatus 0
+if [catch { project result c1 s1 } ] {
+    set BugStatus 1
+}
+
+# Resume
+puts ""
+if { ${BugStatus} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

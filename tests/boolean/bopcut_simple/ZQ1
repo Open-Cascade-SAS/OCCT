@@ -1,0 +1,40 @@
+puts "============"
+puts "CR23431"
+puts "============"
+puts ""
+###################################################################################
+# BOP Cut produces invalid shape
+###################################################################################
+
+plane pl1
+mkface face_1 pl1 -100 100 -100 100
+
+circle c1 0 0 0 20
+circle c2 0 0 0 30
+
+mkedge e1 c1
+wire w1 e1
+mkface d1 pl1 w1
+
+mkedge e2 c2
+wire w2 e2
+mkface d2 pl1 w2
+
+bop d2 d1
+bopcut D_coupe_1
+
+bop D_coupe_1 d1
+bopfuse Union_1
+
+bop face_1 Union_1
+bopcut result
+
+checkprops result -s 37172.6
+checkview -display result -2d -otherwise { face_1 Union_1 } -s -path ${imagedir}/${test_image}.png
+
+
+
+
+
+
+

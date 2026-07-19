@@ -1,0 +1,13 @@
+puts "============"
+puts "selection_mode: Tests selection modes changing in the IVtk view"
+puts "============"
+puts ""
+
+pload MODELING VIS
+box b 1 1 1
+ivtkinit
+ivtkdisplay b
+ivtksetselmode 2 1
+ivtkselect 86 117
+
+ivtkdump $imagedir/${casename}.png

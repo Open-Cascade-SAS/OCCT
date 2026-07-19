@@ -1,0 +1,21 @@
+set chamf_shape 8_J1.draw
+set chamf_edge_face  [list "  3    2" "   9    2"]
+set chamf_dist_angle [list "0.1   60" "0.06   60"]
+set chamf_dist_dist  [list "0.1 0.08" "0.12 0.08"]
+set chamf_equal_dist [list "0.1     " "0.2      "]
+if { [string compare $command chamf] == 0 } {
+  if {[string compare $group dist_angle] == 0 || [string compare $group equal_dist] == 0} {
+    puts "TODO OCC22909 All: compute of chamfer failed"
+  }
+} else {
+  if {[string compare $group dist_angle] == 0} {
+    puts "TODO OCC22909 MacOS: compute of chamfer failed"
+  }
+  if {[string compare $group dist_dist] == 0} {
+    puts "TODO OCC22909 MacOS: compute of chamfer failed"
+  }
+  if {[string compare $group equal_dist] == 0} {
+    puts "TODO OCC22909 ALL:Faulty shapes in variables faulty_1 to faulty_"
+    puts "TODO OCC22909 MacOS: compute of chamfer failed"
+  }
+}

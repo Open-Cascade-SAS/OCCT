@@ -1,0 +1,11 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : D1
+## Comment : 
+## ====================================
+
+pcylinder s 50 100 270
+explode s E
+blend result s 10 s_9
+
+checkprops result -s 44956.6

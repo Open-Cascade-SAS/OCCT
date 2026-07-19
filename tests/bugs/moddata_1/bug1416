@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC1416"
+puts "============"
+puts ""
+######################################################
+# Shading mode doesn't work on a face of the model
+######################################################
+
+restore [locate_data_file OCC1416.brep] result
+
+# Clean mesh
+isos result 0
+tclean result
+
+#Creating mesh
+incmesh result 0.01
+
+#View the result of mesh
+triangles result
+
+checktrinfo result -tri -nod
+checkprops result -s 863.938
+checkview -display result -3d -path ${imagedir}/${test_image}.png

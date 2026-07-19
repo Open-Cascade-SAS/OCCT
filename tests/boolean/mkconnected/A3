@@ -1,0 +1,30 @@
+restore [locate_data_file bug29692_s26.brep] s
+
+# rebuild the compound ensuring that each material is valid
+compound materials
+
+foreach c [explode s] {
+  set ss [explode $c]
+  if {[llength $ss] > 1} {
+    eval makeconnected r $ss
+    add r materials
+  } else {
+    add $ss materials
+  }
+}
+
+eval makeconnected connected [explode materials]
+
+checkshape connected
+if {![regexp "OK" [bopcheck connected]]} {
+  puts "Error: Unable to make connected"
+}
+checknbshapes connected -vertex 44 -edge 80 -wire 49 -face 47 -shell 9 -solid 9 -t
+checkprops connected -s 1.11312e+007 -v 3.0528e+008
+
+cmakeperiodic result -x 2400 -y 240
+
+checkshape result
+# no new splits expected
+checknbshapes result -ref [nbshapes connected -t] -t
+checkprops result -equal connected

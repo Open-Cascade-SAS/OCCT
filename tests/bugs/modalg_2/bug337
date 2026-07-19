@@ -1,0 +1,38 @@
+
+puts "================"
+puts "OCC337"
+puts "================"
+puts ""
+############################################
+## It's impossible to fuse two solids in the file attached.
+############################################
+
+restore [locate_data_file OCC337_clone1.brep] a 
+explode a
+
+set che [checkshape a_1]
+
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC337 (shape 1): Source shape is invalid. It was detected by Checkshape command"
+    puts "Body of the script was NOT executed"
+    renamevar a_1 result
+} else {
+    puts "OCC337 OK (shape 1): Source shape is valid"
+    set che [checkshape a_2]
+    if { [regexp {Faulty} $che ] == 1 } {
+	puts "Faulty OCC337 (shape 2): Source shape is invalid. It was detected by Checkshape command"
+	puts "Body of the script was NOT executed"
+	renamevar a_2 result
+    } else {
+	puts "OCC337 OK (shape 2): Source shape is valid"
+	bfuse result a_1 a_2
+    }
+}
+
+checkprops result -s 35009.9 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+

@@ -1,0 +1,9 @@
+#E4----------------------------------------------
+ptorus pt 25 24 90
+profile pf o 15 15 10 l 5 c 5 90 l 5 d -1 0 l 10
+prism p pf 0 0 40
+bfuse f pt p
+nexplode f f
+depouille result f 0 0 1 f_7 5 0 0 50 0 0 1
+
+checkprops result -s 10629.3

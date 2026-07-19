@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC26010"
+puts "============"
+puts ""
+#######################################################################
+# [OCCT 6.8.0 regression] BRepFeat_SplitShape returns invalid shapes
+#######################################################################
+
+restore [locate_data_file bug26010_splitnoproblem671.brep] s
+
+explode s
+whatis s_1
+whatis s_2
+
+settolerance s_1 1e-5
+
+splitshape result s s_2 s_1
+
+whatis result
+
+set result_length [ llength [explode result] ]
+if { ${result_length} != 3} {
+   puts "Error: shape number is wrong"
+}
+
+checkshape result_1
+checkshape result_2
+checkshape result_3
+
+vinit
+vdisplay result_1
+vdisplay result_2
+vdisplay result_3
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

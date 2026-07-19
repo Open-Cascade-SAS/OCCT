@@ -1,0 +1,17 @@
+puts "============================================================================================="
+puts "0032088: Modeling Algorithms - Empty result of offset operation in mode \"Complete\" join type \"Intersection\""
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32088_input.brep] s
+
+offsetparameter 1e-7 c i r
+offsetload s 8
+offsetperform result
+
+checkprops result -s 3.35577e+06 -v 5.12413e+07
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 755 -face 755 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

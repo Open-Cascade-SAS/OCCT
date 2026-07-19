@@ -1,0 +1,15 @@
+pload QAcommands
+
+puts "# ==================================================================="
+puts "# 0022586: ShapeFix_FixSmallFace mistakenly removes a non-small pipe-like face with a seam edge"
+puts "# ==================================================================="
+puts ""
+
+set BugNumber OCC22586
+
+restore [locate_data_file OCC22586.brep] shape 
+
+fixsmallfaces result shape 1.e-7
+
+checkprops result -s 10975
+checkview -display result -3d -path ${imagedir}/${test_image}.png

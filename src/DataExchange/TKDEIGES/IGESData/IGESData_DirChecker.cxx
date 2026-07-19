@@ -1,0 +1,454 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IGESData_ColorEntity.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <Interface_Check.hxx>
+#include <Message_Msg.hxx>
+
+#include <cstdio>
+
+//  For Correct :
+// MGE 23/07/98
+// Each criterion is inhibited by default
+//=================================================================================================
+
+IGESData_DirChecker::IGESData_DirChecker()
+{
+  thetype = theform1 = theform2 = 0;
+  thestructure = thelinefont = thelineweig = thecolor = IGESData_ErrorRef;
+  thegraphier                                         = -100; // do not test GraphicsIgnored
+  theblankst = thesubordst = theuseflag = thehierst = -100;   // do not test
+}
+
+//=================================================================================================
+
+IGESData_DirChecker::IGESData_DirChecker(const int atype)
+{
+  thetype      = atype;
+  theform1     = 0;
+  theform2     = -1; // form test inhibited
+  thestructure = thelinefont = thelineweig = thecolor = IGESData_ErrorRef;
+  thegraphier                                         = -100; // do not test GraphicsIgnored
+  theblankst = thesubordst = theuseflag = thehierst = -100;   // do not test
+}
+
+//=================================================================================================
+
+IGESData_DirChecker::IGESData_DirChecker(const int atype, const int aform)
+{
+  thetype  = atype;
+  theform1 = theform2 = aform; // form : required value
+  thestructure = thelinefont = thelineweig = thecolor = IGESData_ErrorRef;
+  thegraphier                                         = -100; // do not test GraphicsIgnored
+  theblankst = thesubordst = theuseflag = thehierst = -100;   // do not test
+}
+
+//=================================================================================================
+
+IGESData_DirChecker::IGESData_DirChecker(const int atype, const int aform1, const int aform2)
+{
+  thetype      = atype;
+  theform1     = aform1;
+  theform2     = aform2; // form : [...]
+  thestructure = thelinefont = thelineweig = thecolor = IGESData_ErrorRef;
+  thegraphier                                         = -100; // do not test GraphicsIgnored
+  theblankst = thesubordst = theuseflag = thehierst = -100;   // do not test
+}
+
+//=================================================================================================
+
+bool IGESData_DirChecker::IsSet() const
+{
+  return isitset;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::SetDefault()
+{
+  Structure(IGESData_DefVoid);
+} // Default option
+
+//=================================================================================================
+
+void IGESData_DirChecker::Structure(const IGESData_DefType crit)
+{
+  isitset      = true;
+  thestructure = crit;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::LineFont(const IGESData_DefType crit)
+{
+  isitset     = true;
+  thelinefont = crit;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::LineWeight(const IGESData_DefType crit)
+{
+  isitset     = true;
+  thelineweig = crit;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::Color(const IGESData_DefType crit)
+{
+  isitset  = true;
+  thecolor = crit;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::GraphicsIgnored(const int hierarchy)
+{
+  isitset     = true;
+  thegraphier = hierarchy;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::BlankStatusIgnored()
+{
+  isitset    = true;
+  theblankst = -10;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::BlankStatusRequired(const int val)
+{
+  isitset    = true;
+  theblankst = val;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::SubordinateStatusIgnored()
+{
+  isitset     = true;
+  thesubordst = -10;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::SubordinateStatusRequired(const int val)
+{
+  isitset     = true;
+  thesubordst = val;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::UseFlagIgnored()
+{
+  isitset    = true;
+  theuseflag = -10;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::UseFlagRequired(const int val)
+{
+  isitset    = true;
+  theuseflag = val;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::HierarchyStatusIgnored()
+{
+  isitset   = true;
+  thehierst = -10;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::HierarchyStatusRequired(const int val)
+{
+  isitset   = true;
+  thehierst = val;
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::Check(occ::handle<Interface_Check>&           ach,
+                                const occ::handle<IGESData_IGESEntity>& ent) const
+{
+  // MGE 23/07/98
+  // =====================================
+  // Message_Msg Msg58 ("XSTEP_58");
+  // Message_Msg Msg59 ("XSTEP_59");
+  // Message_Msg Msg60 ("XSTEP_60");
+  // Message_Msg Msg65 ("XSTEP_65");
+  // Message_Msg Msg66 ("XSTEP_66");
+  // Message_Msg Msg67 ("XSTEP_67");
+  // Message_Msg Msg68 ("XSTEP_68");
+  // Message_Msg Msg69 ("XSTEP_69");
+  // Message_Msg Msg70 ("XSTEP_70");
+  // Message_Msg Msg71 ("XSTEP_71");
+  // =====================================
+
+  if (thetype != 0)
+  {
+    // Sending of message : Entity Type Number field is incorrect.
+    if (ent->TypeNumber() != thetype)
+    {
+      Message_Msg Msg58("XSTEP_58");
+      ach->SendFail(Msg58);
+    }
+
+    // Sending of message : Form Number field is incorrect.
+    if (theform1 <= theform2)
+    {
+      if (ent->FormNumber() < theform1 || ent->FormNumber() > theform2)
+      {
+        Message_Msg Msg71("XSTEP_71");
+        ach->SendFail(Msg71);
+      }
+    }
+  }
+
+  // Sending of message : Structure field is undefined.
+  if (thestructure == IGESData_DefReference && !ent->HasStructure())
+  {
+    Message_Msg Msg59("XSTEP_59");
+    ach->SendFail(Msg59);
+  }
+
+  if (thegraphier == -1 || thegraphier == ent->HierarchyStatus())
+  {
+  }
+  else
+  {
+    IGESData_DefType df = ent->DefLineFont();
+
+    // Sending of message : Line Font Pattern field is incorrect
+    if (df == IGESData_ErrorVal || df == IGESData_ErrorRef)
+    {
+      Message_Msg Msg60("XSTEP_60");
+      ach->SendFail(Msg60);
+    }
+    else if (thelinefont == IGESData_DefValue && df != IGESData_DefValue)
+    {
+      Message_Msg Msg60("XSTEP_60");
+      ach->SendWarning(Msg60);
+    }
+
+    int         dlw = ent->LineWeightNumber();
+    Message_Msg Msg69("XSTEP_69");
+    // Sending of message : Line Weight Number is undefined.
+    if (thelineweig == IGESData_DefValue && dlw == 0)
+    {
+      //      Message_Msg Msg69 ("XSTEP_69");
+      ach->SendWarning(Msg69);
+    }
+
+    df = ent->DefColor();
+
+    // Sending of message : Color Number field is incorrect.
+    if (df == IGESData_ErrorVal || df == IGESData_ErrorRef)
+    {
+      //      Message_Msg Msg69 ("XSTEP_69");
+      ach->SendFail(Msg69);
+    }
+    else if (thecolor == IGESData_DefValue && df != IGESData_DefValue)
+    {
+      //      Message_Msg Msg69 ("XSTEP_69");
+      ach->SendWarning(Msg69);
+    }
+  }
+
+  int st = ent->BlankStatus();
+
+  // Sending of message : Blank Status field is incorrect.
+  if (st < 0 || st > 1)
+  {
+    Message_Msg Msg65("XSTEP_65");
+    ach->SendFail(Msg65);
+  }
+
+  st = ent->SubordinateStatus();
+
+  // Sending of message : Subordinate Entity Switch field is incorrect.
+  if (st < 0 || st > 3)
+  {
+    Message_Msg Msg66("XSTEP_66");
+    ach->SendFail(Msg66);
+  }
+
+  st = ent->UseFlag();
+
+  // Send of message : Entity Use Flag is incorrect.
+  if (st < 0 || st > 5)
+  {
+    Message_Msg Msg67("XSTEP_67");
+    ach->SendFail(Msg67);
+  }
+
+  st = ent->HierarchyStatus();
+
+  // Sending of message : Hierarchy field is incorrect.
+  if (st < 0 || st > 2)
+  {
+    Message_Msg Msg68("XSTEP_68");
+    ach->SendFail(Msg68);
+  }
+}
+
+//=================================================================================================
+
+void IGESData_DirChecker::CheckTypeAndForm(occ::handle<Interface_Check>&           ach,
+                                           const occ::handle<IGESData_IGESEntity>& ent) const
+{
+  // CKY 30 NOV 2001 : This method is called for immediate check on reading
+  //   But an entity which can be read has ben already recognized.
+  //   To produce a FAIL here is interpreted as "FAIL ON LOADING", which is
+  //   not true (the entity has been recognized then properly loaded)
+  //  Consequence (among other) : the entity is not explored by graph of dep.s
+  //   so numerous "false roots" are detected
+  //  Alternative to switch Fail to Warning here, should be to withdraw the calls
+  //   to that method by all the "ReadOwn" methods, but it's heavier
+  // ANYWAY, the full Check method produces a Fail if Type/Form is not in scope,
+  //   so it is well interpreted as "Syntactic error"
+
+  // MGE 23/07/98
+  // =====================================
+  //  Message_Msg Msg58 ("XSTEP_58");
+  //  Message_Msg Msg71 ("XSTEP_71");
+  // =====================================
+  // char mess[80]; //szv#4:S4163:12Mar99 unused
+  if (thetype != 0)
+  {
+    if (ent->TypeNumber() != thetype)
+    {
+      Message_Msg Msg58("XSTEP_58");
+      ach->SendWarning(Msg58);
+    }
+
+    if (theform1 <= theform2)
+    {
+      if (ent->FormNumber() < theform1 || ent->FormNumber() > theform2)
+      {
+        Message_Msg Msg71("XSTEP_71");
+        ach->SendWarning(Msg71);
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+bool IGESData_DirChecker::Correct(const occ::handle<IGESData_IGESEntity>& ent) const
+{
+  bool done = false;
+  int  type = ent->TypeNumber();
+  int  form = ent->FormNumber();
+  if (thetype != 0)
+  {
+    if (theform1 >= 0 && theform1 == theform2 && theform1 != form)
+    {
+      ent->InitTypeAndForm(thetype, theform1);
+      done = true;
+    }
+    else if (thetype != type)
+    {
+      ent->InitTypeAndForm(thetype, form);
+      done = true;
+    }
+  }
+
+  occ::handle<IGESData_IGESEntity> structure; // by default Null
+  if (thestructure != IGESData_DefVoid)
+  {
+    structure = ent->Structure();
+  }
+  occ::handle<IGESData_ViewKindEntity>     nulview;
+  occ::handle<IGESData_LineFontEntity>     nulfont;
+  occ::handle<IGESData_LevelListEntity>    nulevel;
+  occ::handle<IGESData_ColorEntity>        nulcolor;
+  occ::handle<IGESData_LabelDisplayEntity> label; // by default Null
+  if (thegraphier != -1)
+  {
+    label = ent->LabelDisplay();
+  }
+  int linew = 0;
+  if (thegraphier != -1 && thelineweig != IGESData_DefVoid)
+  {
+    linew = ent->LineWeightNumber();
+  }
+
+  if (thegraphier == -1 || (ent->RankLineFont() != 0 && thelinefont == IGESData_DefVoid))
+  {
+    ent->InitLineFont(nulfont);
+    done = true;
+  }
+  if (thegraphier == -1 || (ent->RankColor() != 0 && thecolor == IGESData_DefVoid))
+  {
+    ent->InitColor(nulcolor);
+    done = true;
+  }
+  if (thegraphier == -1 && (!ent->View().IsNull() || ent->Level() != 0))
+  {
+    ent->InitView(nulview);
+    ent->InitLevel(nulevel);
+    done = true;
+  }
+  if ((thegraphier == -1 && (!ent->LabelDisplay().IsNull() || ent->LineWeightNumber() != 0))
+      || (ent->HasStructure() && thestructure == IGESData_DefVoid)) // combines :
+  {
+    ent->InitMisc(structure, label, linew);
+    done = true;
+  }
+
+  bool force = false;
+  int  stb   = ent->BlankStatus();
+  int  sts   = ent->SubordinateStatus();
+  int  stu   = ent->UseFlag();
+  int  sth   = ent->HierarchyStatus();
+  if (theblankst >= 0 && theblankst != stb)
+  {
+    force = true;
+    stb   = theblankst;
+  }
+  if (thesubordst >= 0 && thesubordst != sts)
+  {
+    force = true;
+    sts   = thesubordst;
+  }
+  if (theuseflag >= 0 && theuseflag != stu)
+  {
+    force = true;
+    stu   = theuseflag;
+  }
+  if (thehierst >= 0 && thehierst != sth)
+  {
+    force = true;
+    sth   = thehierst;
+  }
+  if (force)
+  {
+    ent->InitStatus(stb, sts, stu, sth);
+    done = true;
+  }
+  return done;
+}

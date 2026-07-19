@@ -1,0 +1,51 @@
+puts "================"
+puts "0027059"
+puts "================"
+puts ""
+##############################################################
+# Point->Curve Projection/Extrema fails.
+# (No extrema found)
+##############################################################
+
+set absTol 1.0e-6
+set relTol 0.001
+set exp_x 12.700000
+set exp_y 16.8949999999593
+set exp_z  0.534684851975074
+
+restore [locate_data_file bug27059.brep] aC
+explode aC
+mkcurve curve aC_2
+
+# case 1: Curve
+# existence check
+set info1 [proj curve 12.699999 16.8949999999593 0.534684851975074]
+
+if {![regexp {ext_1} $info1]} {
+  puts "Error: No extrema found in case 1"
+}
+# length check
+checklength ext_1 -l 1.0e-6
+
+# case 2: Curve
+# existence check
+set info2 [proj curve 12.700001 16.8949999999593 0.534684851975074]
+
+if {![regexp {ext_1} $info2]} {
+  puts "Error: No extrema found in case 2"
+}
+# length check
+checklength ext_1 -l 1.0e-6
+
+#case 3: Point
+# existence check
+set info3 [proj curve 12.700000 16.8949999999593 0.534684851975074]
+if {![regexp {ext_1} $info3]} {
+  puts "Error: No extrema found in case 3"
+}
+# point coords check
+set case3Info [dump ext_1]
+regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} $case3Info full x y z
+checkreal "case 3 coord X" $x $exp_x $absTol $relTol
+checkreal "case 3 coord Y" $y $exp_y $absTol $relTol
+checkreal "case 3 coord Z" $z $exp_z $absTol $relTol

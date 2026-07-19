@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC22725"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_ThruSections algorithm produces twisted surface on some wires
+#######################################################################
+
+set BugNumber OCC22725
+
+restore [locate_data_file OCC22725-ruled_arc9.brep] a 
+restore [locate_data_file OCC22725-ruled_bsc9.brep] b 
+
+wire w1 a
+wire w2 b
+
+set issolid 0
+set isruled 1
+
+if { [catch { thrusections result ${issolid} ${isruled} w1 w2 } catch_result] } {
+   puts "Faulty ${BugNumber} : thrusections is wrong"
+}
+
+checkprops result -s 11010.6 
+checkshape result
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 8
+checkview -display result -3d -path ${imagedir}/${test_image}.png

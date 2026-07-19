@@ -1,0 +1,32 @@
+puts "========================"
+puts " CR24375 "
+puts "========================"
+puts ""
+##################################################################
+## Exception in IntAna on touching circles
+##################################################################
+
+circle c1 10 0 100
+circle c2 10.00000000000001 0 100
+
+set info1 [2dintanalytical c1 c2]
+
+set str1 "Intersection point 1 : +\(\[-0-9.+eE\]+\) +\(\[-0-9.+eE\]+\)\n"
+set str2 "parameter on the fist: +\(\[-0-9.+eE\]+\) parameter on the second: +\(\[-0-9.+eE\]+\)\n"
+set str3 "Intersection point 2 : +\(\[-0-9.+eE\]+\) +\(\[-0-9.+eE\]+\)\n"
+set str4 "parameter on the fist: +\(\[-0-9.+eE\]+\) parameter on the second: +\(\[-0-9.+eE\]+\)\n"
+
+regexp "${str1}${str2}${str3}${str4}" ${info1} full ip1_1 ip1_2 p1_1 p1_2 ip2_1 ip2_2 p2_1 p2_2
+
+set tol_abs_length 1.0e-07
+set tol_rel_length 0.01
+
+set expected_p1_1 1.5707963267948966
+set expected_p1_2 1.5707963267948968
+set expected_p2_1 4.7123889803846897
+set expected_p2_2 4.7123889803846897
+
+checkreal "Parameter p1_1" ${p1_1} ${expected_p1_1} ${tol_abs_length} ${tol_rel_length}
+checkreal "Parameter p1_2" ${p1_2} ${expected_p1_2} ${tol_abs_length} ${tol_rel_length}
+checkreal "Parameter p2_1" ${p2_1} ${expected_p2_1} ${tol_abs_length} ${tol_rel_length}
+checkreal "Parameter p2_2" ${p2_2} ${expected_p2_2} ${tol_abs_length} ${tol_rel_length}

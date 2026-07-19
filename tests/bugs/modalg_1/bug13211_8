@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC13211"
+puts "============"
+puts ""
+#######################################################################
+# Wrong treatment of conical faces in BOP algorithm
+#######################################################################
+
+restore [locate_data_file OCC13209_s1.brep] s1
+restore [locate_data_file OCC13209_s2.brep] s2
+
+bop s1 s2
+bopcommon result
+
+checkprops result -s 2990.42 
+checkshape result
+checknbshapes result -vertex 13 -edge 23 -wire 10 -face 10 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 59
+checkview -display result -2d -path ${imagedir}/${test_image}.png

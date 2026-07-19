@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC25597"
+puts "============"
+puts ""
+######################################################
+# Invalid curve on surface in the result of General Fuse operation
+######################################################
+
+restore [locate_data_file bug25597_c1ext.brep] b1
+restore [locate_data_file bug25597_c2ext.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds -s
+bbuild r
+
+set info [bopargcheck r]
+
+if { [regexp "to be valid for BOP" ${info}] == 1 } {
+    puts "OK : Created curve is correct"
+} else {
+    puts "Error : Created curve is not correct"
+}

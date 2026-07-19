@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC25841"
+puts "========"
+puts ""
+#############################
+# Incorrect edge displaying
+#############################
+
+restore [locate_data_file OCC25841_Curve_2.brep] a
+vinit
+vclear
+vright
+vdisplay a
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

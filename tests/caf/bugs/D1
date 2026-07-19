@@ -1,0 +1,236 @@
+#INTERFACE CAF
+puts "================"
+puts "bug0023850: Speed-up storage of OCAF document in XML file format"
+puts "================"
+puts ""
+######################################################
+# Speed-up storage of OCAF document in XML file format
+######################################################
+
+# Create an OCAF document. Use XML as a test storage schema.
+NewDocument DOC XmlOcaf
+
+# Set a long byte array of many-many values. Here it is an array of 10 values.
+SetByteArray DOC 0:1 0 1 10 1 2 3 4 5 6 7 8 9 10
+
+# Set a list of tree nodes.
+SetNode DOC 0:1
+SetNode DOC 0:1:1
+SetNode DOC 0:1:2
+SetNode DOC 0:1:3
+SetNode DOC 0:1:4
+SetNode DOC 0:1:5
+SetNode DOC 0:1:6
+SetNode DOC 0:1:7
+SetNode DOC 0:1:8
+AppendNode DOC 0:1 0:1:1
+AppendNode DOC 0:1 0:1:2
+AppendNode DOC 0:1 0:1:3
+AppendNode DOC 0:1 0:1:4
+AppendNode DOC 0:1 0:1:5
+AppendNode DOC 0:1 0:1:6
+AppendNode DOC 0:1 0:1:7
+AppendNode DOC 0:1 0:1:8
+
+# Set an array of integer values.
+SetIntArray DOC 0:1 0 1 5 111 222 333 444 555
+
+# Set an array of double values (one of them contains 17 digits!)
+SetRealArray DOC 0:1 0 1 5 1.12345678987654321 2.2 3.3 4.4 5.5
+
+# Set a packed map of integer values.
+SetIntPackedMap DOC 0:1 0 1 10 100 1000 10000
+
+# Set an array of boolean values.
+SetBooleanArray DOC 0:1 1 5 0 0 0 1 1
+
+# Set a list of integer values.
+SetIntegerList DOC 0:1 1971 1972 1973 1974 1975
+
+# Set a list of boolean values.
+SetBooleanList DOC 0:1 1 0 0 0 1
+
+# Set a list of double values.
+SetRealList DOC 0:1 0.98765432123456789e+21 0.98765432123456789e+22 0.98765432123456789e+23
+                          
+set aFile ${imagedir}/bug23850_test.xml
+# Save the document on disk.
+SaveAs DOC ${aFile}
+Close DOC
+
+# Open the document.
+Open ${aFile} DOC
+
+# Get byte array and check its values.
+set bytearray [GetByteArray DOC 0:1]
+set bytearray1  [lindex ${bytearray} 0]
+set bytearray2  [lindex ${bytearray} 1]
+set bytearray3  [lindex ${bytearray} 2]
+set bytearray4  [lindex ${bytearray} 3]
+set bytearray5  [lindex ${bytearray} 4]
+set bytearray6  [lindex ${bytearray} 5]
+set bytearray7  [lindex ${bytearray} 6]
+set bytearray8  [lindex ${bytearray} 7]
+set bytearray9  [lindex ${bytearray} 8]
+set bytearray10 [lindex ${bytearray} 9]
+if { ${bytearray1} != 1 ||  
+     ${bytearray2} != 2 ||
+     ${bytearray3} != 3 ||
+     ${bytearray4} != 4 ||
+     ${bytearray5} != 5 ||
+     ${bytearray6} != 6 ||
+     ${bytearray7} != 7 ||
+     ${bytearray8} != 8 ||
+     ${bytearray9} != 9 ||
+     ${bytearray10} != 10 } {
+    puts "ByteArray failed..."
+} else {
+    puts "ByteArray      is OK"
+}
+
+# Check tree nodes.
+set nodes [ChildNodeIterate DOC 0:1 1]
+set node1  [lindex ${nodes} 0]
+set node2  [lindex ${nodes} 1]
+set node3  [lindex ${nodes} 2]
+set node4  [lindex ${nodes} 3]
+set node5  [lindex ${nodes} 4]
+set node6  [lindex ${nodes} 5]
+set node7  [lindex ${nodes} 6]
+set node8  [lindex ${nodes} 7]
+if { ${node1} != "0:1:1" ||  
+     ${node2} != "0:1:2" ||
+     ${node3} != "0:1:3" ||
+     ${node4} != "0:1:4" ||
+     ${node5} != "0:1:5" ||
+     ${node6} != "0:1:6" ||
+     ${node7} != "0:1:7" ||
+     ${node8} != "0:1:8" } {
+    puts "TreeNode failed..."
+} else {
+    puts "TreeNode       is OK"
+}
+                            
+# Check array of integer values.
+set intarray [GetIntArray DOC 0:1]
+set intarray1  [lindex ${intarray} 0]
+set intarray2  [lindex ${intarray} 1]
+set intarray3  [lindex ${intarray} 2]
+set intarray4  [lindex ${intarray} 3]
+set intarray5  [lindex ${intarray} 4]
+if { ${intarray1} != 111 ||  
+     ${intarray2} != 222 ||
+     ${intarray3} != 333 ||
+     ${intarray4} != 444 ||
+     ${intarray5} != 555 } {
+    puts "IntegerArray failed..."
+} else {
+    puts "IntegerArray   is OK"
+}
+                         
+# Check array of double values.
+# Warning!: It seems TCL uses 16 digits for manipulation with a double values...
+set realarray [GetRealArray DOC 0:1]
+set realarray1  [lindex ${realarray} 0]
+set realarray2  [lindex ${realarray} 1]
+set realarray3  [lindex ${realarray} 2]
+set realarray4  [lindex ${realarray} 3]
+set realarray5  [lindex ${realarray} 4]
+if { ${realarray1} != 1.12345678987654321 ||  
+     ${realarray2} != 2.2 ||
+     ${realarray3} != 3.3 ||
+     ${realarray4} != 4.4 ||
+     ${realarray5} != 5.5 } {
+    puts "RealArray failed..."
+} else {
+    puts "RealArray      is OK"
+}
+
+# Check packed map of integer values.
+set packedintmap [GetIntPackedMap DOC 0:1]
+set nb [llength ${packedintmap}]
+if { ${nb} != 5 } {
+    puts "IntPackedMap failed..."
+}
+set contains1 [lsearch ${packedintmap} 1]
+set contains2 [lsearch ${packedintmap} 10]
+set contains3 [lsearch ${packedintmap} 100]
+set contains4 [lsearch ${packedintmap} 1000]
+set contains5 [lsearch ${packedintmap} 10000]
+if { ${contains1} == -1 ||
+     ${contains2} == -1 ||
+     ${contains3} == -1 ||
+     ${contains4} == -1 ||
+     ${contains5} == -1 } {
+    puts "Failed..."
+} else {
+    puts "IntPackedMap   is OK"
+}
+
+# Get boolean array and check its values.
+set boolarray [GetBooleanArray DOC 0:1]
+set boolarray1  [lindex ${boolarray} 0]
+set boolarray2  [lindex ${boolarray} 1]
+set boolarray3  [lindex ${boolarray} 2]
+set boolarray4  [lindex ${boolarray} 3]
+set boolarray5  [lindex ${boolarray} 4]
+if { ${boolarray1} != 0 ||  
+     ${boolarray2} != 0 ||
+     ${boolarray3} != 0 ||
+     ${boolarray4} != 1 ||
+     ${boolarray5} != 1 } {
+    puts "BoolArray failed..."
+} else {
+    puts "BoolArray      is OK"
+}
+
+# Get boolean list and check its values.
+set boollist [GetBooleanList DOC 0:1]
+set boollist1  [lindex ${boollist} 0]
+set boollist2  [lindex ${boollist} 1]
+set boollist3  [lindex ${boollist} 2]
+set boollist4  [lindex ${boollist} 3]
+set boollist5  [lindex ${boollist} 4]
+if { ${boollist1} != 1 ||  
+     ${boollist2} != 0 ||
+     ${boollist3} != 0 ||
+     ${boollist4} != 0 ||
+     ${boollist5} != 1 } {
+    puts "BoolList failed..."
+} else {
+    puts "BoolList       is OK"
+}
+
+# Get integer list and check its values.
+set intlist [GetIntegerList DOC 0:1]
+set intlist1  [lindex ${intlist} 0]
+set intlist2  [lindex ${intlist} 1]
+set intlist3  [lindex ${intlist} 2]
+set intlist4  [lindex ${intlist} 3]
+set intlist5  [lindex ${intlist} 4]
+if { ${intlist1} != 1971 ||  
+     ${intlist2} != 1972 ||
+     ${intlist3} != 1973 ||
+     ${intlist4} != 1974 ||
+     ${intlist5} != 1975 } {
+    puts "IntList failed..."
+} else {
+    puts "IntList        is OK"
+}
+
+# Get double list and check its values.
+set reallist [GetRealList DOC 0:1]
+set reallist1  [lindex ${reallist} 0]
+set reallist2  [lindex ${reallist} 1]
+set reallist3  [lindex ${reallist} 2]
+if { ${reallist1} != 0.98765432123456789e+21 ||  
+     ${reallist2} != 0.98765432123456789e+22 ||
+     ${reallist3} != 0.98765432123456789e+23 } {
+    puts "RealList failed..."
+} else {
+    puts "RealList       is OK"
+}
+
+Close DOC
+file delete test.xml
+puts "bug0023850: OK"

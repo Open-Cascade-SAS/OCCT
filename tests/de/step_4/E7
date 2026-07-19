@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj12_pm10-ac-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 57  ( 98 )  Summary  = 57  ( 98 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 20  ( 20 )  Shell    = 20  ( 20 )  Face     = 1441  ( 1441 ) 
+STATSHAPE   : Solid    = 40  ( 40 )  Shell    = 40  ( 40 )  Face     = 2036  ( 2036 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.004932484407  ( 0.004932484407 )  AvgTol   =  2.754941134e-005  (  2.774184638e-005 )
+LABELS      : N0Labels = 41  ( 41 )  N1Labels = 50  ( 50 )  N2Labels = 0  ( 0 )   TotalLabels = 91  ( 91 )   NameLabels = 91  ( 91 )   ColorLabels = 20  ( 20 )   LayerLabels = 20  ( 20 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 15  ( 15 )
+COLORS      : Colors   = CYAN4 DARKOLIVEGREEN1 DARKSLATEGRAY1 GAINSBORO LIGHTSLATEBLUE MATRAGRAY MEDIUMSPRINGGREEN PURPLE PURPLE SKYBLUE1 SKYBLUE1 SPRINGGREEN2 SPRINGGREEN4 STEELBLUE VIOLET  ( CYAN4 DARKOLIVEGREEN1 DARKSLATEGRAY1 GAINSBORO LIGHTSLATEBLUE MATRAGRAY MEDIUMSPRINGGREEN PURPLE PURPLE SKYBLUE1 SKYBLUE1 SPRINGGREEN2 SPRINGGREEN4 STEELBLUE VIOLET )
+NLAYERS     : NLayers  = 17  ( 17 )
+LAYERS      : Layers   = 072498_01A|MODEL 072498_01B|MODEL 082399_02|Model 082399_03|MODEL 082399_04A|MODEL 082399_04B|MODEL 082399_05|MODEL 082399_06|MODEL 082399_07|MODEL 082499_03|MODEL 082599_02|Model 082599_03A|Model 082599_03B|Model 082699_01|MODEL {LE Diode|Model} {Optics Housing|MODEL} Phototransistor|Model  ( 072498_01A|MODEL 072498_01B|MODEL 082399_02|Model 082399_03|MODEL 082399_04A|MODEL 082399_04B|MODEL 082399_05|MODEL 082399_06|MODEL 082399_07|MODEL 082499_03|MODEL 082599_02|Model 082599_03A|Model 082599_03B|Model 082699_01|MODEL {LE Diode|Model} {Optics Housing|MODEL} Phototransistor|Model )
+
+}

@@ -1,0 +1,25 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename UKI60107-6.igs
+
+set ref_data {
+DATA        : Faulties = 1  ( 0 )  Warnings = 0  ( 239 )  Summary  = 1  ( 239 )
+TPSTAT      : Faulties = 2  ( 0 )  Warnings = 15  ( 318 )  Summary  = 17  ( 318 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 79  ( 79 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 79  ( 79 )   FreeWire = 79  ( 230 ) 
+TOLERANCE   : MaxTol   =  0.06847151261  (   0.8635005927 )  AvgTol   =  0.001341967636  (  0.003542904808 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 358  ( 1049 )  N2Labels = 0  ( 0 )   TotalLabels = 359  ( 1050 )   NameLabels = 288  ( 434 )   ColorLabels = 358  ( 1049 )   LayerLabels = 283  ( 1039 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 7 )
+COLORS      : Colors   = DODGERBLUE2 GRAY80 GREEN MAGENTA3 TURQUOISE2 WHITE  ( DODGERBLUE2 GRAY80 GREEN MAGENTA3 TURQUOISE2 WHITE YELLOW3 )
+NLAYERS     : NLayers  = 8  ( 10 )
+LAYERS      : Layers   = 1 10 13 16 19 31 4 5  ( 1 10 13 16 19 191 210 31 4 5 )
+
+}

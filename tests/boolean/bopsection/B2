@@ -1,0 +1,12 @@
+# Original bug : cts17786 
+# Date : 25Mai98
+
+restore [locate_data_file cts17786a.rle] a
+restore [locate_data_file CTO904_cts17786b.rle] b
+
+bop a b
+bopsection result
+
+checkprops result -l 0.0976741
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

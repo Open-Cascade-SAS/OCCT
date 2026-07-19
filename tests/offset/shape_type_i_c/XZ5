@@ -1,0 +1,27 @@
+puts "TODO CR27414 ALL: Error: operation with offset value 9 has failed"
+puts "TODO CR27414 ALL: Operations with following offset values have failed: 9"
+
+puts "============================================================================================="
+puts "0032333: Modeling Algorithms - Empty(wrong) result of offset operation in mode \"Complete\" join type \"Intersection\""
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32333_172_trim2.brep] s
+
+set ref_values { { 82542.8 820795       18 18 } \
+                 { 82089.5 903148       19 19 } \
+                 { 86737.5 987555       19 19 } \
+                 { 91176.7 1.07665e+06  15 15 } \
+                 { 95898.3 1.17018e+06  15 15 } \
+                 { 100690  1.26847e+06  15 15 } \
+                 { 105551  1.37158e+06  15 15 } \
+                 { 110483  1.47959e+06  15 15 } \
+                 { 98501.1 1.58422e+06  5  5  } \
+                 { 102414  1.68468e+06  5  5  } }
+
+perform_offset_increasing s 1 10 1 $ref_values
+
+copy r5 result
+copy r5_unif result_unif
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

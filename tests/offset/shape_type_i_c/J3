@@ -1,0 +1,18 @@
+restore [locate_data_file bug25926_input_slanted.brep] s
+
+set distance 22
+offsetparameter 1.e-7 $calcul $type
+offsetload s $distance
+explode s f
+# s_1 s_6 s_8 s_10 s_12 s_14
+offsetonface s_1 0
+offsetonface s_6 0
+offsetonface s_8 0
+offsetonface s_10 0
+offsetonface s_12 0
+offsetonface s_14 0
+offsetperform result
+
+checkprops result -v 3.0278e+007
+
+checknbshapes result -shell 1

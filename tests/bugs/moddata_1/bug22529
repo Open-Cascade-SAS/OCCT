@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC22529"
+puts "========"
+puts ""
+###########################################################
+# FitALL works incorrectly for small flat shapes
+###########################################################
+
+set BugNumber OCC22529
+
+restore [locate_data_file OCC22529.brep] result
+
+vinit
+vdisplay result
+vfit
+
+checkprops result -l 0.04 
+checksection result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

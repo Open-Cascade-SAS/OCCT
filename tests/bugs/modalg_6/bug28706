@@ -1,0 +1,32 @@
+puts "================"
+puts "OCC28706"
+puts "================"
+puts ""
+#######################################################################
+#  Incomplete result of section operation between attached shapes
+#######################################################################
+
+dsetsignal 1
+
+# Before the fix, section curve was incomplete
+
+restore [locate_data_file bug28706_ar_shape.brep] s1
+restore [locate_data_file bug28706_Prism.brep] s2
+
+bsection result s1 s2
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+
+if { $nbv != 0 } { 
+  puts "Error : Section is incorrect" 
+} else {
+  puts "Section is correct" 
+}
+
+checkprops result -l 6.16832
+
+smallview
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

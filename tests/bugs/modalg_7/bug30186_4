@@ -1,0 +1,52 @@
+puts "============"
+puts "OCC30186"
+puts "============"
+puts ""
+##############################################################################
+# BRepOffsetAPI_MakePipe Generated() method produces no result for spine edges
+##############################################################################
+
+restore [locate_data_file OCC25887_shape.brep] a
+explode a
+renamevar a_1 path
+renamevar a_2 base
+
+pipe q path base
+savehistory pipe_hist
+
+explode base
+
+generated r1 pipe_hist base_1
+checknbshapes r1 -vertex 6 -edge 10 -wire 8 -face 6 -shell 1 -solid 1
+checkprops r1 -v 0.689148
+
+explode base e
+
+generated r1 pipe_hist base_1
+generated r2 pipe_hist base_2
+checknbshapes r1 -vertex 3 -edge 5 -wire 2 -face 2
+checknbshapes r2 -vertex 3 -edge 5 -wire 2 -face 2
+checkprops r1 -s 35.3469
+checkprops r2 -s 33.5796
+
+explode base v
+
+generated r1 pipe_hist base_1
+generated r2 pipe_hist base_2
+checkprops r1 -l 14.0641
+checkprops r2 -l 14.0641
+
+explode path
+
+generated r1 pipe_hist path_1
+generated r2 pipe_hist path_2
+checknbshapes r1 -vertex 4 -edge 6 -wire 2 -face 2
+checknbshapes r2 -vertex 4 -edge 6 -wire 2 -face 2
+checkprops r1 -s 35.9763
+checkprops r2 -s 32.9503
+
+explode path v
+
+generated r2 pipe_hist path_2
+checknbshapes r2 -vertex 2 -edge 2
+checkprops r2 -l 4.90088

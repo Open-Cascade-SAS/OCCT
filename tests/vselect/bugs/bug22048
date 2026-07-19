@@ -1,0 +1,22 @@
+puts "========"
+puts "0022048: Visualization, AIS_InteractiveContext - single object selection should always clear multiple selection"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1  0  0  0 10 10 10
+box b2 20 20 20 30 30 30
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 b1 b2
+vfit
+vselprops selHighlight -dispMode -1
+vselect 0 0 400 400 -xor
+if { [vreadpixel  50 300 rgb name] != "GRAY73"        } { puts "Error: b1 should be selected."}
+if { [vreadpixel 300 200 rgb name] != "GRAY73"        } { puts "Error: b2 should be selected."}
+vselect 200 200
+if { [vreadpixel  50 300 rgb name] != "DARKGOLDENROD" } { puts "Error: b1 should not be selected."}
+if { [vreadpixel 300 200 rgb name] != "GRAY73"        } { puts "Error: b2 should be selected."}
+
+vdump $imagedir/${casename}.png

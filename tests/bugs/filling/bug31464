@@ -1,0 +1,58 @@
+puts "============================================================================================="
+puts "OCC31464: BRepOffsetAPI_MakeFilling algorithm increases tolerances of vertices in input edges"
+puts "============================================================================================="
+puts ""
+
+brestore [locate_data_file bug31464.brep] a
+
+set tol [checkmaxtol a]
+
+explode a f
+explode a_1 e
+
+filling result 3 0 1  a_1_1 0 a_1_2 0 a_1_4 0  0.0785398166 0.0196349541 a_1 1
+savehistory hh
+
+set tol2 [checkmaxtol a]
+
+if { ${tol} != ${tol2}} {
+   puts "Error: tolerance of input shape changed"
+}
+
+generated e2 hh a_1_2
+
+explode a_1_3
+generated vv hh a_1_3_1
+
+distmini distvv a_1_3_1 vv
+if {[dval distvv_val] > 0.} {
+  puts "Error: generated vertex is wrong"
+}
+
+mkcurve oldc a_1_2
+mkcurve newc e2
+set log [xdistcc oldc newc -3.92699082e-14 0.0392699082 10]
+
+regexp {Max Distance = +([-0-9.+eE]+)} ${log} full dist
+
+if { [dval dist] != 0. } {
+  puts "Error: generated edge is wrong"
+}
+
+smallview
+donly result e2 vv
+fit
+
+checkshape result
+
+checknbshapes result -face 1 -wire 1 -edge 3 -vertex 3
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.0007} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -s 0.00190371
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

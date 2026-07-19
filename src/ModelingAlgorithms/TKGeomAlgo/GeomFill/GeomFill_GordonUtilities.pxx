@@ -1,0 +1,1419 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomFill_GordonUtilities_HeaderFile
+#define _GeomFill_GordonUtilities_HeaderFile
+
+namespace GordonUtilities
+{
+
+//! Result of resolving one profile/guide contact.
+struct Contact
+{
+  bool   IsValid      = false;
+  double ProfileParam = 0.0;
+  double GuideParam   = 0.0;
+  double Gap          = RealLast();
+};
+
+//! Stores all admissible contacts for one profile/guide pair.
+struct ContactSet
+{
+  NCollection_LinearVector<Contact> Candidates;
+};
+
+namespace
+{
+
+//! Returns a stable cubic degree when the OCCT degree limit allows it.
+int interpolationDegree()
+{
+  return std::min(3, Geom_BSplineCurve::MaxDegree());
+}
+
+//! Returns a parameter comparison tolerance scaled by the interval length.
+double parameterResolution(const double theFirst, const double theLast)
+{
+  return Precision::PIntersection(std::max(std::abs(theLast - theFirst), 1.0));
+}
+
+//! Returns a network tolerance converted to the given parameter range.
+double boundaryParameterResolution(const double theFirst,
+                                   const double theLast,
+                                   const double theTolerance)
+{
+  const double aRange = std::max(std::abs(theLast - theFirst), 1.0);
+  return Precision::Parametric(std::max(theTolerance, Precision::Approximation())) * aRange;
+}
+
+//! Appends a clamped parameter candidate.
+void appendUnitParameter(NCollection_LinearVector<double>& theParameters, const double theParameter)
+{
+  theParameters.Append(std::max(0.0, std::min(1.0, theParameter)));
+}
+
+//! Sorts and removes duplicate parameters in-place.
+void compactParameters(NCollection_LinearVector<double>& theParameters)
+{
+  if (theParameters.IsEmpty())
+  {
+    return;
+  }
+
+  std::sort(theParameters.begin(), theParameters.end());
+  const double aTol      = parameterResolution(0.0, 1.0);
+  size_t       aWriteIdx = 0;
+  for (size_t aReadIdx = 1; aReadIdx < theParameters.Size(); ++aReadIdx)
+  {
+    if (std::abs(theParameters.Value(aReadIdx) - theParameters.Value(aWriteIdx)) > aTol)
+    {
+      ++aWriteIdx;
+      theParameters.ChangeValue(aWriteIdx) = theParameters.Value(aReadIdx);
+    }
+  }
+
+  while (theParameters.Size() > aWriteIdx + 1)
+  {
+    theParameters.EraseLast();
+  }
+}
+
+//! Adds midpoint samples in the widest intervals until the requested count is reached.
+void addIntervalMidpoints(NCollection_LinearVector<double>& theParameters, const size_t theMinSize)
+{
+  compactParameters(theParameters);
+  while (theParameters.Size() < theMinSize && theParameters.Size() > 1)
+  {
+    size_t aSplitIdx = 0;
+    double aMaxGap   = -1.0;
+    for (size_t aParamIdx = 1; aParamIdx < theParameters.Size(); ++aParamIdx)
+    {
+      const double aGap = theParameters.Value(aParamIdx) - theParameters.Value(aParamIdx - 1);
+      if (aGap > aMaxGap)
+      {
+        aSplitIdx = aParamIdx;
+        aMaxGap   = aGap;
+      }
+    }
+    if (aMaxGap <= parameterResolution(0.0, 1.0))
+    {
+      return;
+    }
+
+    appendUnitParameter(theParameters,
+                        0.5
+                          * (theParameters.Value(aSplitIdx - 1) + theParameters.Value(aSplitIdx)));
+    compactParameters(theParameters);
+  }
+}
+
+//! Wraps a linear vector into a 1-based Array1 view without copying its storage.
+template <typename T>
+NCollection_Array1<T> toOneBasedArrayView(NCollection_LinearVector<T>& theValues)
+{
+  return NCollection_Array1<T>(theValues.ChangeValue(0), 1, static_cast<int>(theValues.Size()));
+}
+
+//! Wraps a parameter table into a math matrix without copying its storage.
+math_Matrix toMatrix(NCollection_Array2<double>& theParams)
+{
+  return math_Matrix(&theParams.ChangeFirst(),
+                     1,
+                     static_cast<int>(theParams.ColLength()),
+                     1,
+                     static_cast<int>(theParams.RowLength()));
+}
+
+//! Expands a periodic B-spline period into explicit non-periodic storage.
+bool exposePeriod(occ::handle<Geom_BSplineCurve>& theCurve)
+{
+  if (!theCurve->IsPeriodic())
+  {
+    return true;
+  }
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    const double aFirst = theCurve->FirstParameter();
+    const double aLast  = theCurve->LastParameter();
+    if (aLast <= aFirst + Precision::PConfusion())
+    {
+      return false;
+    }
+
+    theCurve->Segment(aFirst, aLast, Precision::PConfusion());
+    if (theCurve->IsPeriodic())
+    {
+      theCurve->SetNotPeriodic();
+    }
+  }
+  catch (Standard_Failure const&)
+  {
+    return false;
+  }
+  return !theCurve->IsPeriodic();
+}
+
+//! Normalizes an input curve family to explicit non-periodic B-splines on [0, 1].
+bool makeUnitCurves(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves)
+{
+  for (size_t aCurveIdx = 0; aCurveIdx < theCurves.Size(); ++aCurveIdx)
+  {
+    occ::handle<Geom_BSplineCurve>& aCurve = theCurves.ChangeAt(aCurveIdx);
+    if (aCurve.IsNull() || !exposePeriod(aCurve))
+    {
+      return false;
+    }
+
+    NCollection_Array1<double> aKnots(aCurve->Knots());
+    BSplCLib::Reparametrize(0.0, 1.0, aKnots);
+    aCurve->SetKnots(aKnots);
+  }
+  return true;
+}
+
+//! Index and rank pair for ordering curves.
+struct OrderedCurve
+{
+  size_t Index = 0;
+  double Rank  = 0.0;
+};
+
+//! Returns average values of matrix columns.
+math_Vector columnMeans(const math_Matrix& theParams)
+{
+  const math_Vector aOnes(theParams.LowerRow(), theParams.UpperRow(), 1.0);
+  math_Vector       aSums = theParams.Transposed() * aOnes;
+  aSums /= static_cast<double>(theParams.RowNumber());
+  return aSums;
+}
+
+//! Returns average values of matrix rows.
+math_Vector rowMeans(const math_Matrix& theParams)
+{
+  const math_Vector aOnes(theParams.LowerCol(), theParams.UpperCol(), 1.0);
+  math_Vector       aSums = theParams * aOnes;
+  aSums /= static_cast<double>(theParams.ColNumber());
+  return aSums;
+}
+
+//! Appends a unique contact candidate if the corresponding curve points match.
+void appendContact(const occ::handle<Geom_BSplineCurve>& theProfile,
+                   const occ::handle<Geom_BSplineCurve>& theGuide,
+                   const double                          theProfileParam,
+                   const double                          theGuideParam,
+                   const double                          theTolerance,
+                   ContactSet&                           theContacts)
+{
+  const GeomAdaptor_Curve aProfileAdaptor(theProfile);
+  const GeomAdaptor_Curve aGuideAdaptor(theGuide);
+  const gp_Pnt            aProfilePoint = aProfileAdaptor.EvalD0(theProfileParam);
+  const gp_Pnt            aGuidePoint   = aGuideAdaptor.EvalD0(theGuideParam);
+  const double            aGap          = aProfilePoint.Distance(aGuidePoint);
+  if (aGap > theTolerance)
+  {
+    return;
+  }
+
+  const double aProfileTol =
+    parameterResolution(theProfile->FirstParameter(), theProfile->LastParameter());
+  const double aGuideTol =
+    parameterResolution(theGuide->FirstParameter(), theGuide->LastParameter());
+  for (size_t aContactIdx = 0; aContactIdx < theContacts.Candidates.Size(); ++aContactIdx)
+  {
+    const Contact& aContact = theContacts.Candidates.Value(aContactIdx);
+    if (std::abs(aContact.ProfileParam - theProfileParam) <= aProfileTol
+        && std::abs(aContact.GuideParam - theGuideParam) <= aGuideTol)
+    {
+      return;
+    }
+  }
+
+  theContacts.Candidates.Append({true, theProfileParam, theGuideParam, aGap});
+}
+
+//! Converts two close extrema points to an exact curve-parameter contact.
+void appendExtremaContact(const occ::handle<Geom_BSplineCurve>& theProfile,
+                          const occ::handle<Geom_BSplineCurve>& theGuide,
+                          const gp_Pnt&                         theProfilePoint,
+                          const gp_Pnt&                         theGuidePoint,
+                          const double                          theTolerance,
+                          ContactSet&                           theContacts)
+{
+  if (theProfilePoint.Distance(theGuidePoint) > theTolerance)
+  {
+    return;
+  }
+
+  gp_Pnt aSharedPoint;
+  aSharedPoint.ChangeCoord() = (theProfilePoint.XYZ() + theGuidePoint.XYZ()) * 0.5;
+
+  double aProfileParam = 0.0;
+  double aGuideParam   = 0.0;
+  if (GeomLib_Tool::Parameter(theProfile, aSharedPoint, theTolerance, aProfileParam)
+      && GeomLib_Tool::Parameter(theGuide, aSharedPoint, theTolerance, aGuideParam))
+  {
+    appendContact(theProfile, theGuide, aProfileParam, aGuideParam, theTolerance, theContacts);
+  }
+}
+
+//! Adds endpoint contacts; these are important for opening closed seams.
+void appendBoundaryContacts(const occ::handle<Geom_BSplineCurve>& theProfile,
+                            const occ::handle<Geom_BSplineCurve>& theGuide,
+                            const double                          theTolerance,
+                            ContactSet&                           theContacts)
+{
+  const double aProfileBounds[2] = {theProfile->FirstParameter(), theProfile->LastParameter()};
+  const double aGuideBounds[2]   = {theGuide->FirstParameter(), theGuide->LastParameter()};
+  const GeomAdaptor_Curve aProfileAdaptor(theProfile);
+  const GeomAdaptor_Curve aGuideAdaptor(theGuide);
+  for (const double aProfileParam : aProfileBounds)
+  {
+    double aGuideParam = 0.0;
+    if (GeomLib_Tool::Parameter(theGuide,
+                                aProfileAdaptor.EvalD0(aProfileParam),
+                                theTolerance,
+                                aGuideParam))
+    {
+      appendContact(theProfile, theGuide, aProfileParam, aGuideParam, theTolerance, theContacts);
+    }
+  }
+  for (const double aGuideParam : aGuideBounds)
+  {
+    double aProfileParam = 0.0;
+    if (GeomLib_Tool::Parameter(theProfile,
+                                aGuideAdaptor.EvalD0(aGuideParam),
+                                theTolerance,
+                                aProfileParam))
+    {
+      appendContact(theProfile, theGuide, aProfileParam, aGuideParam, theTolerance, theContacts);
+    }
+  }
+}
+
+bool appendLinearSegmentContact(const occ::handle<Geom_BSplineCurve>& theProfile,
+                                const occ::handle<Geom_BSplineCurve>& theGuide,
+                                const double                          theTolerance,
+                                ContactSet&                           theContacts)
+{
+  if (theProfile->Degree() != 1 || theGuide->Degree() != 1 || theProfile->NbPoles() != 2
+      || theGuide->NbPoles() != 2)
+  {
+    return false;
+  }
+
+  const double aProfileFirst = theProfile->FirstParameter();
+  const double aProfileLast  = theProfile->LastParameter();
+  const double aGuideFirst   = theGuide->FirstParameter();
+  const double aGuideLast    = theGuide->LastParameter();
+  if (aProfileLast <= aProfileFirst + Precision::PConfusion()
+      || aGuideLast <= aGuideFirst + Precision::PConfusion())
+  {
+    return true;
+  }
+
+  const GeomAdaptor_Curve aProfileAdaptor(theProfile);
+  const GeomAdaptor_Curve aGuideAdaptor(theGuide);
+  const gp_Pnt            aP0 = aProfileAdaptor.EvalD0(aProfileFirst);
+  const gp_Pnt            aP1 = aProfileAdaptor.EvalD0(aProfileLast);
+  const gp_Pnt            aQ0 = aGuideAdaptor.EvalD0(aGuideFirst);
+  const gp_Pnt            aQ1 = aGuideAdaptor.EvalD0(aGuideLast);
+
+  const gp_XYZ aU = aP1.XYZ() - aP0.XYZ();
+  const gp_XYZ aV = aQ1.XYZ() - aQ0.XYZ();
+  const gp_XYZ aW = aP0.XYZ() - aQ0.XYZ();
+  const double aA = aU.SquareModulus();
+  const double aB = aU.Dot(aV);
+  const double aC = aV.SquareModulus();
+  const double aD = aU.Dot(aW);
+  const double aE = aV.Dot(aW);
+  if (aA <= gp::Resolution() || aC <= gp::Resolution())
+  {
+    return true;
+  }
+
+  const double aDenom = aA * aC - aB * aB;
+  if (std::abs(aDenom) <= gp::Resolution())
+  {
+    return false;
+  }
+
+  double aS = 0.0;
+  double aT = 0.0;
+  aS        = std::clamp((aB * aE - aC * aD) / aDenom, 0.0, 1.0);
+  aT        = (aB * aS + aE) / aC;
+  if (aT < 0.0)
+  {
+    aT = 0.0;
+    aS = std::clamp(-aD / aA, 0.0, 1.0);
+  }
+  else if (aT > 1.0)
+  {
+    aT = 1.0;
+    aS = std::clamp((aB - aD) / aA, 0.0, 1.0);
+  }
+
+  appendContact(theProfile,
+                theGuide,
+                aProfileFirst + aS * (aProfileLast - aProfileFirst),
+                aGuideFirst + aT * (aGuideLast - aGuideFirst),
+                theTolerance,
+                theContacts);
+  return true;
+}
+
+//! Returns all close contacts detected for one profile/guide pair.
+ContactSet collectContacts(const occ::handle<Geom_BSplineCurve>& theProfile,
+                           const occ::handle<Geom_BSplineCurve>& theGuide,
+                           const double                          theTolerance)
+{
+  ContactSet aContacts;
+  if (appendLinearSegmentContact(theProfile, theGuide, theTolerance, aContacts))
+  {
+    return aContacts;
+  }
+
+  GeomAPI_ExtremaCurveCurve anExtrema(theProfile, theGuide);
+  for (int anExtIdx = 1; anExtIdx <= anExtrema.NbExtrema(); ++anExtIdx)
+  {
+    gp_Pnt aProfilePoint;
+    gp_Pnt aGuidePoint;
+    anExtrema.Points(anExtIdx, aProfilePoint, aGuidePoint);
+    appendExtremaContact(theProfile, theGuide, aProfilePoint, aGuidePoint, theTolerance, aContacts);
+  }
+
+  gp_Pnt aProfilePoint;
+  gp_Pnt aGuidePoint;
+  if (anExtrema.TotalNearestPoints(aProfilePoint, aGuidePoint))
+  {
+    appendExtremaContact(theProfile, theGuide, aProfilePoint, aGuidePoint, theTolerance, aContacts);
+  }
+
+  appendBoundaryContacts(theProfile, theGuide, theTolerance, aContacts);
+  std::sort(aContacts.Candidates.begin(),
+            aContacts.Candidates.end(),
+            [](const Contact& theLeft, const Contact& theRight) {
+              if (theLeft.Gap != theRight.Gap)
+              {
+                return theLeft.Gap < theRight.Gap;
+              }
+              if (theLeft.ProfileParam != theRight.ProfileParam)
+              {
+                return theLeft.ProfileParam < theRight.ProfileParam;
+              }
+              return theLeft.GuideParam < theRight.GuideParam;
+            });
+  return aContacts;
+}
+
+//! Returns the flat index of a profile/guide pair.
+size_t contactIndex(const size_t theProfileIdx, const size_t theGuideIdx, const size_t theNbGuides)
+{
+  return theProfileIdx * theNbGuides + theGuideIdx;
+}
+
+//! Stores the lowest-gap contact for the initial ordering estimate.
+bool chooseNearestContacts(const NCollection_LinearVector<ContactSet>& theContacts,
+                           const size_t                                theNbProfiles,
+                           const size_t                                theNbGuides,
+                           NCollection_Array2<double>&                 theProfileParams,
+                           NCollection_Array2<double>&                 theGuideParams)
+{
+  for (size_t aProfileIdx = 0; aProfileIdx < theNbProfiles; ++aProfileIdx)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < theNbGuides; ++aGuideIdx)
+    {
+      const ContactSet& aSet = theContacts.Value(contactIndex(aProfileIdx, aGuideIdx, theNbGuides));
+      if (aSet.Candidates.IsEmpty())
+      {
+        return false;
+      }
+      const Contact& aContact                           = aSet.Candidates.First();
+      theProfileParams.ChangeAt(aProfileIdx, aGuideIdx) = aContact.ProfileParam;
+      theGuideParams.ChangeAt(aProfileIdx, aGuideIdx)   = aContact.GuideParam;
+    }
+  }
+  return true;
+}
+
+//! Returns the largest best-contact gap in a complete contact table.
+double maxNearestContactGap(const NCollection_LinearVector<ContactSet>& theContacts)
+{
+  double aMaxGap = 0.0;
+  for (size_t aSetIdx = 0; aSetIdx < theContacts.Size(); ++aSetIdx)
+  {
+    const ContactSet& aSet = theContacts.Value(aSetIdx);
+    if (!aSet.Candidates.IsEmpty())
+    {
+      aMaxGap = std::max(aMaxGap, aSet.Candidates.First().Gap);
+    }
+  }
+  return aMaxGap;
+}
+
+//! Builds all profile/guide contacts.
+bool fillContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                      const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                      NCollection_Array2<double>&                               theProfileParams,
+                      NCollection_Array2<double>&                               theGuideParams,
+                      NCollection_LinearVector<ContactSet>&                     theContactSets,
+                      const double                                              theTolerance,
+                      const bool                                                theToUseParallel)
+{
+  const int aNbProfiles = theProfiles.Length();
+  const int aNbGuides   = theGuides.Length();
+  const int aNbPairs    = aNbProfiles * aNbGuides;
+
+  theContactSets.Clear();
+  for (int aPairIdx = 0; aPairIdx < aNbPairs; ++aPairIdx)
+  {
+    theContactSets.Append(ContactSet());
+  }
+
+  std::atomic<bool> isDone{true};
+  OSD_Parallel::For(
+    0,
+    aNbPairs,
+    [&](const int thePairIdx) {
+      if (!isDone.load(std::memory_order_relaxed))
+      {
+        return;
+      }
+
+      const size_t aProfileIdx = static_cast<size_t>(thePairIdx / aNbGuides);
+      const size_t aGuideIdx   = static_cast<size_t>(thePairIdx % aNbGuides);
+      ContactSet&  aContactSet = theContactSets.ChangeValue(
+        contactIndex(aProfileIdx, aGuideIdx, static_cast<size_t>(aNbGuides)));
+      aContactSet =
+        collectContacts(theProfiles.At(aProfileIdx), theGuides.At(aGuideIdx), theTolerance);
+      if (aContactSet.Candidates.IsEmpty())
+      {
+        isDone.store(false, std::memory_order_relaxed);
+      }
+    },
+    !theToUseParallel);
+
+  return isDone.load(std::memory_order_relaxed)
+         && chooseNearestContacts(theContactSets,
+                                  static_cast<size_t>(aNbProfiles),
+                                  static_cast<size_t>(aNbGuides),
+                                  theProfileParams,
+                                  theGuideParams);
+}
+
+//! Snaps one parameter value to the curve boundary when it is close enough.
+double snappedParameter(const occ::handle<Geom_BSplineCurve>& theCurve,
+                        const double                          theParameter,
+                        const double                          theTolerance)
+{
+  const double aFirst = theCurve->FirstParameter();
+  const double aLast  = theCurve->LastParameter();
+  const double aTol   = boundaryParameterResolution(aFirst, aLast, theTolerance);
+  if (std::abs(theParameter - aFirst) < aTol)
+  {
+    return aFirst;
+  }
+  if (std::abs(theParameter - aLast) < aTol)
+  {
+    return aLast;
+  }
+  return theParameter;
+}
+
+//! Normalizes intersections after ordering and returns detected closed directions.
+bool normalizeContactTable(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                           const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                           NCollection_Array2<double>& theProfileParams,
+                           NCollection_Array2<double>& theGuideParams,
+                           const double                theTolerance,
+                           bool&                       theIsUClosed,
+                           bool&                       theIsVClosed)
+{
+  const double aTol = std::max(theTolerance, Precision::Confusion());
+
+  // Boundary snaps are done before validation so closed seams use exact end parameters.
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+    {
+      theProfileParams.ChangeAt(aProfileIdx, aGuideIdx) =
+        snappedParameter(theProfiles.At(aProfileIdx),
+                         theProfileParams.At(aProfileIdx, aGuideIdx),
+                         theTolerance);
+      theGuideParams.ChangeAt(aProfileIdx, aGuideIdx) =
+        snappedParameter(theGuides.At(aGuideIdx),
+                         theGuideParams.At(aProfileIdx, aGuideIdx),
+                         theTolerance);
+    }
+  }
+
+  double       aUGap        = 0.0;
+  double       aVGap        = 0.0;
+  const size_t aLastProfile = theProfiles.Size() - 1;
+  const size_t aLastGuide   = theGuides.Size() - 1;
+
+  // One pass validates all contacts and measures only the two possible seam gaps.
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
+    for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+    {
+      const GeomAdaptor_Curve aGuideAdaptor(theGuides.At(aGuideIdx));
+      const gp_Pnt            aProfilePoint =
+        aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aGuideIdx));
+      const gp_Pnt aGuidePoint = aGuideAdaptor.EvalD0(theGuideParams.At(aProfileIdx, aGuideIdx));
+      if (aProfilePoint.Distance(aGuidePoint) > aTol)
+      {
+        return false;
+      }
+      if (aGuideIdx == 0 || aGuideIdx == aLastGuide)
+      {
+        const gp_Pnt aOppositePoint =
+          aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aLastGuide - aGuideIdx));
+        aUGap = std::max(aUGap, aProfilePoint.Distance(aOppositePoint));
+      }
+      if (aProfileIdx == 0 || aProfileIdx == aLastProfile)
+      {
+        const gp_Pnt aOppositePoint =
+          aGuideAdaptor.EvalD0(theGuideParams.At(aLastProfile - aProfileIdx, aGuideIdx));
+        aVGap = std::max(aVGap, aGuidePoint.Distance(aOppositePoint));
+      }
+    }
+  }
+
+  theIsUClosed = aUGap <= aTol;
+  theIsVClosed = aVGap <= aTol;
+  if (theIsUClosed)
+  {
+    for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+    {
+      theProfileParams.ChangeAt(aProfileIdx, 0) = theProfiles.At(aProfileIdx)->FirstParameter();
+      theProfileParams.ChangeAt(aProfileIdx, aLastGuide) =
+        theProfiles.At(aProfileIdx)->LastParameter();
+    }
+  }
+  if (theIsVClosed)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+    {
+      theGuideParams.ChangeAt(0, aGuideIdx)            = theGuides.At(aGuideIdx)->FirstParameter();
+      theGuideParams.ChangeAt(aLastProfile, aGuideIdx) = theGuides.At(aGuideIdx)->LastParameter();
+    }
+  }
+  return true;
+}
+
+//! Orders curves by their mean position in the opposite parameter family.
+NCollection_LinearVector<OrderedCurve> orderedCurves(const math_Vector& theRanks)
+{
+  NCollection_LinearVector<OrderedCurve> anOrder;
+  for (int aRankIdx = theRanks.Lower(); aRankIdx <= theRanks.Upper(); ++aRankIdx)
+  {
+    anOrder.Append({static_cast<size_t>(aRankIdx - theRanks.Lower()), theRanks(aRankIdx)});
+  }
+
+  std::sort(anOrder.begin(),
+            anOrder.end(),
+            [](const OrderedCurve& theLeft, const OrderedCurve& theRight) {
+              return theLeft.Rank < theRight.Rank;
+            });
+  const double aTol = parameterResolution(0.0, 1.0);
+  if (anOrder.Size() > 2 && std::abs(anOrder.Value(0).Rank - anOrder.Value(1).Rank) <= aTol)
+  {
+    NCollection_LinearVector<OrderedCurve> anOpenedOrder;
+    anOpenedOrder.Append(anOrder.Value(0));
+    for (size_t anOrderIdx = 2; anOrderIdx < anOrder.Size(); ++anOrderIdx)
+    {
+      anOpenedOrder.Append(anOrder.Value(anOrderIdx));
+    }
+    anOpenedOrder.Append(anOrder.Value(1));
+    return anOpenedOrder;
+  }
+  if (anOrder.Size() > 2
+      && std::abs(anOrder.Last().Rank - anOrder.Value(anOrder.Size() - 2).Rank) <= aTol)
+  {
+    NCollection_LinearVector<OrderedCurve> anOpenedOrder;
+    anOpenedOrder.Append(anOrder.Value(anOrder.Size() - 2));
+    for (size_t anOrderIdx = 0; anOrderIdx + 2 < anOrder.Size(); ++anOrderIdx)
+    {
+      anOpenedOrder.Append(anOrder.Value(anOrderIdx));
+    }
+    anOpenedOrder.Append(anOrder.Last());
+    return anOpenedOrder;
+  }
+  return anOrder;
+}
+
+//! Checks that every row and column advances in its own curve parameter direction.
+bool isMonotoneLayout(const math_Matrix& theProfileParams, const math_Matrix& theGuideParams)
+{
+  const double aTol = parameterResolution(0.0, 1.0);
+
+  // Ambiguous or folded grids are rejected instead of being repaired heuristically.
+  for (int aRow = theProfileParams.LowerRow(); aRow <= theProfileParams.UpperRow(); ++aRow)
+  {
+    for (int aCol = theProfileParams.LowerCol() + 1; aCol <= theProfileParams.UpperCol(); ++aCol)
+    {
+      if (theProfileParams(aRow, aCol) <= theProfileParams(aRow, aCol - 1) + aTol)
+      {
+        return false;
+      }
+    }
+  }
+
+  for (int aCol = theGuideParams.LowerCol(); aCol <= theGuideParams.UpperCol(); ++aCol)
+  {
+    for (int aRow = theGuideParams.LowerRow() + 1; aRow <= theGuideParams.UpperRow(); ++aRow)
+    {
+      if (theGuideParams(aRow, aCol) <= theGuideParams(aRow - 1, aCol) + aTol)
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+//! Opens duplicated seam contacts to exact boundary parameters before monotone validation.
+void openClosedBoundaryCandidates(
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+  NCollection_Array2<double>&                               theProfileParams,
+  NCollection_Array2<double>&                               theGuideParams,
+  const double                                              theTolerance)
+{
+  const double aTol        = std::max(theTolerance, Precision::Confusion());
+  const size_t aLastGuide  = theGuides.Size() - 1;
+  const size_t aLastProf   = theProfiles.Size() - 1;
+  bool         isURepeated = true;
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
+    const gp_Pnt            aFirst = aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, 0));
+    const gp_Pnt aLast = aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aLastGuide));
+    if (aFirst.Distance(aLast) > aTol)
+    {
+      isURepeated = false;
+      break;
+    }
+  }
+  if (isURepeated)
+  {
+    for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+    {
+      theProfileParams.ChangeAt(aProfileIdx, 0) = theProfiles.At(aProfileIdx)->FirstParameter();
+      theProfileParams.ChangeAt(aProfileIdx, aLastGuide) =
+        theProfiles.At(aProfileIdx)->LastParameter();
+    }
+  }
+
+  bool isVRepeated = true;
+  for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+  {
+    const GeomAdaptor_Curve aGuideAdaptor(theGuides.At(aGuideIdx));
+    const gp_Pnt            aFirst = aGuideAdaptor.EvalD0(theGuideParams.At(0, aGuideIdx));
+    const gp_Pnt            aLast  = aGuideAdaptor.EvalD0(theGuideParams.At(aLastProf, aGuideIdx));
+    if (aFirst.Distance(aLast) > aTol)
+    {
+      isVRepeated = false;
+      break;
+    }
+  }
+  if (isVRepeated)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+    {
+      theGuideParams.ChangeAt(0, aGuideIdx)         = theGuides.At(aGuideIdx)->FirstParameter();
+      theGuideParams.ChangeAt(aLastProf, aGuideIdx) = theGuides.At(aGuideIdx)->LastParameter();
+    }
+  }
+}
+
+//! Returns a curve handle oriented as requested.
+occ::handle<Geom_BSplineCurve> orientedCurve(const occ::handle<Geom_BSplineCurve>& theCurve,
+                                             const bool                            theIsForward)
+{
+  occ::handle<Geom_BSplineCurve> aCurve = occ::down_cast<Geom_BSplineCurve>(theCurve->Copy());
+  if (!theIsForward)
+  {
+    aCurve->Reverse();
+  }
+  return aCurve;
+}
+
+//! Returns a parameter in the destination curve orientation.
+double orientedParameter(const occ::handle<Geom_BSplineCurve>& theCurve,
+                         const double                          theParameter,
+                         const bool                            theIsForward)
+{
+  return theIsForward ? theParameter
+                      : theCurve->FirstParameter() + theCurve->LastParameter() - theParameter;
+}
+
+//! Scores an oriented contact against the expected grid position.
+double orderedContactScore(const Contact& theContact,
+                           const double   theProfileParam,
+                           const double   theGuideParam,
+                           const double   theProfileTarget,
+                           const double   theGuideTarget,
+                           const double   theTolerance)
+{
+  return theContact.Gap / std::max(theTolerance, Precision::Confusion())
+         + std::abs(theProfileParam - theProfileTarget) + std::abs(theGuideParam - theGuideTarget);
+}
+
+//! Selects one contact compatible with already selected row/column predecessors.
+bool chooseOrderedContact(const ContactSet&                     theContacts,
+                          const occ::handle<Geom_BSplineCurve>& theProfile,
+                          const occ::handle<Geom_BSplineCurve>& theGuide,
+                          const bool                            theProfileForward,
+                          const bool                            theGuideForward,
+                          const double                          theProfileTarget,
+                          const double                          theGuideTarget,
+                          const double                          thePreviousProfileParam,
+                          const double                          thePreviousGuideParam,
+                          const bool                            theHasPreviousProfile,
+                          const bool                            theHasPreviousGuide,
+                          const double                          theTolerance,
+                          Contact&                              theSelected)
+{
+  const double aParamTol = parameterResolution(0.0, 1.0);
+  double       aBest     = RealLast();
+  for (size_t aCandidateIdx = 0; aCandidateIdx < theContacts.Candidates.Size(); ++aCandidateIdx)
+  {
+    const Contact& aCandidate = theContacts.Candidates.Value(aCandidateIdx);
+    const double   aProfileParam =
+      orientedParameter(theProfile, aCandidate.ProfileParam, theProfileForward);
+    const double aGuideParam = orientedParameter(theGuide, aCandidate.GuideParam, theGuideForward);
+    if ((theHasPreviousProfile && aProfileParam <= thePreviousProfileParam + aParamTol)
+        || (theHasPreviousGuide && aGuideParam <= thePreviousGuideParam + aParamTol))
+    {
+      continue;
+    }
+
+    const double aScore = orderedContactScore(aCandidate,
+                                              aProfileParam,
+                                              aGuideParam,
+                                              theProfileTarget,
+                                              theGuideTarget,
+                                              theTolerance);
+    if (aScore < aBest)
+    {
+      aBest                    = aScore;
+      theSelected              = aCandidate;
+      theSelected.ProfileParam = aProfileParam;
+      theSelected.GuideParam   = aGuideParam;
+    }
+  }
+  return theSelected.IsValid;
+}
+
+//! Reorders curves and contact matrices into a consistent network layout.
+bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                    NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                    NCollection_Array2<double>&                         theProfileParams,
+                    NCollection_Array2<double>&                         theGuideParams,
+                    const NCollection_LinearVector<ContactSet>&         theContactSets,
+                    const double                                        theTolerance)
+{
+  if (theProfiles.Size() < 2 || theGuides.Size() < 2)
+  {
+    return false;
+  }
+
+  math_Matrix aProfileParamMatrix = toMatrix(theProfileParams);
+  math_Matrix aGuideParamMatrix   = toMatrix(theGuideParams);
+
+  const NCollection_LinearVector<OrderedCurve> aProfileOrder =
+    orderedCurves(rowMeans(aGuideParamMatrix));
+  const NCollection_LinearVector<OrderedCurve> aGuideOrder =
+    orderedCurves(columnMeans(aProfileParamMatrix));
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(theProfiles.Lower(),
+                                                               theProfiles.Upper());
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(theGuides.Lower(), theGuides.Upper());
+  NCollection_Array2<double>                         aProfileParams(theProfileParams.LowerRow(),
+                                            theProfileParams.UpperRow(),
+                                            theProfileParams.LowerCol(),
+                                            theProfileParams.UpperCol());
+  NCollection_Array2<double>                         aGuideParams(theGuideParams.LowerRow(),
+                                          theGuideParams.UpperRow(),
+                                          theGuideParams.LowerCol(),
+                                          theGuideParams.UpperCol());
+  math_Matrix                                        aProfileParamResult = toMatrix(aProfileParams);
+  math_Matrix                                        aGuideParamResult   = toMatrix(aGuideParams);
+
+  NCollection_LinearVector<bool> aProfileForward;
+  for (size_t aProfileIdx = 0; aProfileIdx < aProfileOrder.Size(); ++aProfileIdx)
+  {
+    const size_t aSrcProfileIdx = aProfileOrder.Value(aProfileIdx).Index;
+    const bool   isForward      = aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
+                                               static_cast<int>(aGuideOrder.First().Index) + 1)
+                           <= aProfileParamMatrix(static_cast<int>(aSrcProfileIdx) + 1,
+                                                  static_cast<int>(aGuideOrder.Last().Index) + 1);
+    aProfiles.ChangeAt(aProfileIdx) = orientedCurve(theProfiles.At(aSrcProfileIdx), isForward);
+    aProfileForward.Append(isForward);
+  }
+
+  NCollection_LinearVector<bool> aGuideForward;
+  for (size_t aGuideIdx = 0; aGuideIdx < aGuideOrder.Size(); ++aGuideIdx)
+  {
+    const size_t aSrcGuideIdx = aGuideOrder.Value(aGuideIdx).Index;
+    const bool   isForward    = aGuideParamMatrix(static_cast<int>(aProfileOrder.First().Index) + 1,
+                                             static_cast<int>(aSrcGuideIdx) + 1)
+                           <= aGuideParamMatrix(static_cast<int>(aProfileOrder.Last().Index) + 1,
+                                                static_cast<int>(aSrcGuideIdx) + 1);
+    aGuides.ChangeAt(aGuideIdx) = orientedCurve(theGuides.At(aSrcGuideIdx), isForward);
+    aGuideForward.Append(isForward);
+  }
+
+  for (size_t aProfileIdx = 0; aProfileIdx < aProfileOrder.Size(); ++aProfileIdx)
+  {
+    const size_t aSrcProfileIdx = aProfileOrder.Value(aProfileIdx).Index;
+    for (size_t aGuideIdx = 0; aGuideIdx < aGuideOrder.Size(); ++aGuideIdx)
+    {
+      const size_t aSrcGuideIdx = aGuideOrder.Value(aGuideIdx).Index;
+      const double aProfileTarget =
+        aGuideOrder.Size() == 1 ? 0.0 : static_cast<double>(aGuideIdx) / (aGuideOrder.Size() - 1);
+      const double aGuideTarget = aProfileOrder.Size() == 1
+                                    ? 0.0
+                                    : static_cast<double>(aProfileIdx) / (aProfileOrder.Size() - 1);
+      const double aPreviousProfileParam =
+        aGuideIdx == 0
+          ? 0.0
+          : aProfileParamResult(static_cast<int>(aProfileIdx) + 1, static_cast<int>(aGuideIdx));
+      const double aPreviousGuideParam =
+        aProfileIdx == 0
+          ? 0.0
+          : aGuideParamResult(static_cast<int>(aProfileIdx), static_cast<int>(aGuideIdx) + 1);
+
+      Contact aContact;
+      if (!chooseOrderedContact(
+            theContactSets.Value(contactIndex(aSrcProfileIdx, aSrcGuideIdx, theGuides.Size())),
+            theProfiles.At(aSrcProfileIdx),
+            theGuides.At(aSrcGuideIdx),
+            aProfileForward.Value(aProfileIdx),
+            aGuideForward.Value(aGuideIdx),
+            aProfileTarget,
+            aGuideTarget,
+            aPreviousProfileParam,
+            aPreviousGuideParam,
+            aGuideIdx != 0,
+            aProfileIdx != 0,
+            theTolerance,
+            aContact))
+      {
+        return false;
+      }
+
+      aProfileParamResult(static_cast<int>(aProfileIdx) + 1, static_cast<int>(aGuideIdx) + 1) =
+        aContact.ProfileParam;
+      aGuideParamResult(static_cast<int>(aProfileIdx) + 1, static_cast<int>(aGuideIdx) + 1) =
+        aContact.GuideParam;
+    }
+  }
+
+  openClosedBoundaryCandidates(aProfiles, aGuides, aProfileParams, aGuideParams, theTolerance);
+
+  if (!isMonotoneLayout(aProfileParamResult, aGuideParamResult))
+  {
+    return false;
+  }
+
+  theProfiles      = aProfiles;
+  theGuides        = aGuides;
+  theProfileParams = aProfileParams;
+  theGuideParams   = aGuideParams;
+  return true;
+}
+
+//! Monotone scalar map converting target parameters back to the source curve.
+class ScalarLaw
+{
+public:
+  //! Stores a strictly increasing piecewise-linear parameter map.
+  bool Init(const math_Vector& theSource, const math_Vector& theTarget, const int theNbValues)
+  {
+    if (theNbValues < 2)
+    {
+      return false;
+    }
+
+    mySource.Clear();
+    myTarget.Clear();
+    for (int aParamIdx = 1; aParamIdx <= theNbValues; ++aParamIdx)
+    {
+      if (!mySource.IsEmpty()
+          && (theSource(aParamIdx) <= mySource.Last() + Precision::PConfusion()
+              || theTarget(aParamIdx) <= myTarget.Last() + Precision::PConfusion()))
+      {
+        return false;
+      }
+      mySource.Append(theSource(aParamIdx));
+      myTarget.Append(theTarget(aParamIdx));
+    }
+    return true;
+  }
+
+  //! Evaluates the map by linear interpolation and clamps to source bounds.
+  double Value(const double theTargetParameter) const
+  {
+    if (mySource.IsEmpty())
+    {
+      return 0.0;
+    }
+    if (theTargetParameter <= myTarget.First())
+    {
+      return mySource.First();
+    }
+    if (theTargetParameter >= myTarget.Last())
+    {
+      return mySource.Last();
+    }
+
+    for (size_t aParamIdx = 1; aParamIdx < myTarget.Size(); ++aParamIdx)
+    {
+      if (theTargetParameter <= myTarget.Value(aParamIdx))
+      {
+        const double aT0     = myTarget.Value(aParamIdx - 1);
+        const double aT1     = myTarget.Value(aParamIdx);
+        const double aWeight = (theTargetParameter - aT0) / (aT1 - aT0);
+        return mySource.Value(aParamIdx - 1)
+               + aWeight * (mySource.Value(aParamIdx) - mySource.Value(aParamIdx - 1));
+      }
+    }
+    return mySource.Last();
+  }
+
+private:
+  NCollection_LinearVector<double> mySource;
+  NCollection_LinearVector<double> myTarget;
+};
+
+//! Appends a monotone source/target pair.
+void pushConstraint(math_Vector& theSource,
+                    math_Vector& theTarget,
+                    int&         theNbConstraints,
+                    const double theSourceParam,
+                    const double theTargetParam,
+                    const double theSourceTol,
+                    const double theTargetTol)
+{
+  if (theNbConstraints > 0
+      && (std::abs(theSourceParam - theSource(theNbConstraints)) <= theSourceTol
+          || std::abs(theTargetParam - theTarget(theNbConstraints)) <= theTargetTol))
+  {
+    return;
+  }
+
+  ++theNbConstraints;
+  theSource(theNbConstraints) = theSourceParam;
+  theTarget(theNbConstraints) = std::max(0.0, std::min(1.0, theTargetParam));
+}
+
+//! Builds target-space samples from constraints and deterministic interval subdivision.
+NCollection_LinearVector<double> samplingParameters(const math_Vector& theTargets,
+                                                    const size_t       theNbSourcePoles)
+{
+  NCollection_LinearVector<double> aSamples;
+  appendUnitParameter(aSamples, 0.0);
+  appendUnitParameter(aSamples, 1.0);
+  for (int aParamIdx = theTargets.Lower(); aParamIdx <= theTargets.Upper(); ++aParamIdx)
+  {
+    appendUnitParameter(aSamples, theTargets(aParamIdx));
+  }
+
+  compactParameters(aSamples);
+
+  // The rebuilt curve is parameter-driven; extra samples are deterministic.
+  addIntervalMidpoints(
+    aSamples,
+    std::max(static_cast<size_t>(interpolationDegree() + 1),
+             std::max(theNbSourcePoles * 2, static_cast<size_t>(theTargets.Length()) + 2)));
+  return aSamples;
+}
+
+//! Rebuilds one curve through target-parameter samples.
+bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
+                  const math_Vector&              theSourceParams,
+                  const math_Vector&              theTargetParams,
+                  const bool                      theAllowApproximateRational,
+                  bool&                           theDidApproximate,
+                  double&                         theMaxDeviation)
+{
+  if (theCurve->IsRational())
+  {
+    if (!theAllowApproximateRational)
+    {
+      return false;
+    }
+    theDidApproximate = true;
+  }
+
+  math_Vector  aSource(1, theSourceParams.Length() + 2);
+  math_Vector  aTarget(1, theTargetParams.Length() + 2);
+  int          aNbConstraints = 0;
+  const double aSourceTol =
+    parameterResolution(theCurve->FirstParameter(), theCurve->LastParameter());
+  const double aTargetTol = parameterResolution(0.0, 1.0);
+
+  pushConstraint(aSource,
+                 aTarget,
+                 aNbConstraints,
+                 theCurve->FirstParameter(),
+                 0.0,
+                 aSourceTol,
+                 aTargetTol);
+  for (int aParamIdx = theSourceParams.Lower(); aParamIdx <= theSourceParams.Upper(); ++aParamIdx)
+  {
+    const double aSourceParam = theSourceParams(aParamIdx);
+    const double aTargetParam = theTargetParams(aParamIdx);
+    if (std::abs(aSourceParam - theCurve->FirstParameter()) <= aSourceTol
+        || std::abs(aSourceParam - theCurve->LastParameter()) <= aSourceTol
+        || std::abs(aTargetParam) <= aTargetTol || std::abs(aTargetParam - 1.0) <= aTargetTol)
+    {
+      continue;
+    }
+    pushConstraint(aSource,
+                   aTarget,
+                   aNbConstraints,
+                   aSourceParam,
+                   aTargetParam,
+                   aSourceTol,
+                   aTargetTol);
+  }
+  pushConstraint(aSource,
+                 aTarget,
+                 aNbConstraints,
+                 theCurve->LastParameter(),
+                 1.0,
+                 aSourceTol,
+                 aTargetTol);
+
+  ScalarLaw aLaw;
+  if (!aLaw.Init(aSource, aTarget, aNbConstraints))
+  {
+    return false;
+  }
+
+  const GeomAdaptor_Curve          aCurveAdaptor(theCurve);
+  NCollection_LinearVector<double> aSamples =
+    samplingParameters(theTargetParams, static_cast<size_t>(theCurve->NbPoles()));
+  NCollection_LinearVector<gp_Pnt> aPoints;
+  NCollection_LinearVector<double> aParameters;
+  for (size_t aSampleIdx = 0; aSampleIdx < aSamples.Size(); ++aSampleIdx)
+  {
+    const double aTargetParam = aSamples.Value(aSampleIdx);
+    const gp_Pnt aPoint       = aCurveAdaptor.EvalD0(aLaw.Value(aTargetParam));
+    if (!aPoints.IsEmpty() && aPoint.Distance(aPoints.Last()) <= Precision::Confusion())
+    {
+      continue;
+    }
+
+    aPoints.Append(aPoint);
+    aParameters.Append(aTargetParam);
+  }
+
+  const int aNbPoints = static_cast<int>(aPoints.Size());
+  if (aNbPoints < interpolationDegree())
+  {
+    return false;
+  }
+
+  NCollection_Array1<gp_Pnt> aPointArray = toOneBasedArrayView(aPoints);
+  NCollection_Array1<double> aParamArray = toOneBasedArrayView(aParameters);
+
+  GeomLib_Interpolate anInterpolator(interpolationDegree(), aNbPoints, aPointArray, aParamArray);
+  if (!anInterpolator.IsDone())
+  {
+    return false;
+  }
+
+  theCurve = anInterpolator.Curve();
+  if (theCurve.IsNull())
+  {
+    return false;
+  }
+
+  const GeomAdaptor_Curve aNewCurveAdaptor(theCurve);
+  for (size_t aSampleIdx = 0; aSampleIdx < aSamples.Size(); ++aSampleIdx)
+  {
+    const double aTargetParam = aSamples.Value(aSampleIdx);
+    const gp_Pnt aSourcePoint = aCurveAdaptor.EvalD0(aLaw.Value(aTargetParam));
+    const gp_Pnt aNewPoint    = aNewCurveAdaptor.EvalD0(aTargetParam);
+    theMaxDeviation           = std::max(theMaxDeviation, aSourcePoint.Distance(aNewPoint));
+  }
+  return !theCurve.IsNull();
+}
+
+//! Reconstructs curves so all intersections share averaged parameters.
+bool equalizeParameters(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                        NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                        NCollection_Array2<double>&                         theProfileParams,
+                        NCollection_Array2<double>&                         theGuideParams,
+                        const bool theAllowApproximateRational,
+                        bool&      theDidApproximate,
+                        double&    theMaxDeviation)
+{
+  math_Matrix aProfileParams = toMatrix(theProfileParams);
+  math_Matrix aGuideParams   = toMatrix(theGuideParams);
+
+  math_Vector aProfileTargets = columnMeans(aProfileParams);
+  math_Vector aGuideTargets   = rowMeans(aGuideParams);
+
+  math_Vector anOldProfileParams(1, static_cast<int>(theGuides.Size()));
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    const int aProfileRow     = static_cast<int>(aProfileIdx) + 1;
+    bool      isAlreadyTarget = true;
+    for (int aCol = anOldProfileParams.Lower(); aCol <= anOldProfileParams.Upper(); ++aCol)
+    {
+      anOldProfileParams(aCol) = aProfileParams(aProfileRow, aCol);
+      isAlreadyTarget =
+        isAlreadyTarget
+        && std::abs(anOldProfileParams(aCol) - aProfileTargets(aCol)) <= Precision::PConfusion();
+    }
+    if (isAlreadyTarget)
+    {
+      continue;
+    }
+    if (!rebuildCurve(theProfiles.ChangeAt(aProfileIdx),
+                      anOldProfileParams,
+                      aProfileTargets,
+                      theAllowApproximateRational,
+                      theDidApproximate,
+                      theMaxDeviation))
+    {
+      return false;
+    }
+    for (int aCol = aProfileTargets.Lower(); aCol <= aProfileTargets.Upper(); ++aCol)
+    {
+      aProfileParams(aProfileRow, aCol) = aProfileTargets(aCol);
+    }
+  }
+
+  math_Vector anOldGuideParams(1, static_cast<int>(theProfiles.Size()));
+  for (size_t aGuideIdx = 0; aGuideIdx < theGuides.Size(); ++aGuideIdx)
+  {
+    const int aGuideCol       = static_cast<int>(aGuideIdx) + 1;
+    bool      isAlreadyTarget = true;
+    for (int aRow = anOldGuideParams.Lower(); aRow <= anOldGuideParams.Upper(); ++aRow)
+    {
+      anOldGuideParams(aRow) = aGuideParams(aRow, aGuideCol);
+      isAlreadyTarget =
+        isAlreadyTarget
+        && std::abs(anOldGuideParams(aRow) - aGuideTargets(aRow)) <= Precision::PConfusion();
+    }
+    if (isAlreadyTarget)
+    {
+      continue;
+    }
+    if (!rebuildCurve(theGuides.ChangeAt(aGuideIdx),
+                      anOldGuideParams,
+                      aGuideTargets,
+                      theAllowApproximateRational,
+                      theDidApproximate,
+                      theMaxDeviation))
+    {
+      return false;
+    }
+    for (int aRow = aGuideTargets.Lower(); aRow <= aGuideTargets.Upper(); ++aRow)
+    {
+      aGuideParams(aRow, aGuideCol) = aGuideTargets(aRow);
+    }
+  }
+  return true;
+}
+
+//! Evaluates the validated profile parameters into a guide/profile point grid.
+NCollection_Array2<gp_Pnt> contactPointGrid(
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+  const NCollection_Array2<double>&                         theProfileParams)
+{
+  NCollection_Array2<gp_Pnt> aPoints(1,
+                                     theProfileParams.RowLength(),
+                                     1,
+                                     theProfileParams.ColLength());
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    const GeomAdaptor_Curve aProfileAdaptor(theProfiles.At(aProfileIdx));
+    for (size_t aGuideIdx = 0; aGuideIdx < static_cast<size_t>(theProfileParams.RowLength());
+         ++aGuideIdx)
+    {
+      aPoints(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
+        aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aGuideIdx));
+    }
+  }
+  return aPoints;
+}
+
+//! Evaluates the denominator of a rational B-spline curve at a contact parameter.
+double curveWeightAt(const occ::handle<Geom_BSplineCurve>& theCurve, const double theParameter)
+{
+  if (!theCurve->IsRational())
+  {
+    return 1.0;
+  }
+
+  int    anExtrapMode[2] = {theCurve->Degree(), theCurve->Degree()};
+  gp_Pnt aPoint;
+  double aWeight = 1.0;
+  BSplCLib::Eval(theParameter,
+                 theCurve->IsPeriodic(),
+                 false,
+                 anExtrapMode[0],
+                 theCurve->Degree(),
+                 theCurve->KnotSequence(),
+                 theCurve->Poles(),
+                 theCurve->WeightsArray(),
+                 aPoint,
+                 aWeight);
+  return aWeight;
+}
+
+//! Evaluates rational contact weights in guide/profile grid order.
+NCollection_Array2<double> contactWeightGrid(
+  const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+  const NCollection_Array2<double>&                         theProfileParams)
+{
+  NCollection_Array2<double> aWeights(1,
+                                      theProfileParams.RowLength(),
+                                      1,
+                                      theProfileParams.ColLength());
+  for (size_t aProfileIdx = 0; aProfileIdx < theProfiles.Size(); ++aProfileIdx)
+  {
+    for (size_t aGuideIdx = 0; aGuideIdx < static_cast<size_t>(theProfileParams.RowLength());
+         ++aGuideIdx)
+    {
+      aWeights(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
+        curveWeightAt(theProfiles.At(aProfileIdx), theProfileParams.At(aProfileIdx, aGuideIdx));
+    }
+  }
+  return aWeights;
+}
+
+} // namespace
+
+//! Performs the preparatory network operations required before Gordon surface construction.
+class NetworkPreparation
+{
+public:
+  //! Stores references to the network data owned by GeomFill_Gordon.
+  NetworkPreparation(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfiles,
+                     NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
+                     NCollection_Array2<double>&                         theProfileParams,
+                     NCollection_Array2<double>&                         theGuideParams,
+                     const double                                        theTolerance,
+                     const bool                                          theToUseParallel)
+      : myProfiles(theProfiles),
+        myGuides(theGuides),
+        myProfileParams(theProfileParams),
+        myGuideParams(theGuideParams),
+        myTolerance(theTolerance),
+        myToUseParallel(theToUseParallel)
+  {
+  }
+
+  //! Converts all curves to explicit unit-domain B-splines.
+  bool ConvertCurvesToUnitInterval()
+  {
+    return makeUnitCurves(myProfiles) && makeUnitCurves(myGuides);
+  }
+
+  //! Computes the profile/guide intersection parameter tables.
+  bool FillIntersectionParameters()
+  {
+    const bool isDone = fillContactTable(myProfiles,
+                                         myGuides,
+                                         myProfileParams,
+                                         myGuideParams,
+                                         myContactSets,
+                                         myTolerance,
+                                         myToUseParallel);
+    myMaxContactGap   = isDone ? maxNearestContactGap(myContactSets) : 0.0;
+    return isDone;
+  }
+
+  //! Reorders and orients the curve network.
+  bool ReorderNetwork()
+  {
+    return reorderNetwork(myProfiles,
+                          myGuides,
+                          myProfileParams,
+                          myGuideParams,
+                          myContactSets,
+                          myTolerance);
+  }
+
+  //! Snaps, validates, and detects closed directions in the intersection table.
+  bool NormalizeIntersectionParameters(bool& theIsUClosed, bool& theIsVClosed)
+  {
+    return normalizeContactTable(myProfiles,
+                                 myGuides,
+                                 myProfileParams,
+                                 myGuideParams,
+                                 myTolerance,
+                                 theIsUClosed,
+                                 theIsVClosed);
+  }
+
+  //! Rebuilds curves to shared averaged network parameters.
+  //! Rational curves are rebuilt only when approximate fallback is allowed.
+  bool EqualizeIntersectionParameters(const bool theAllowApproximateRational,
+                                      bool&      theDidApproximate)
+  {
+    myMaxReparametrizationDeviation = 0.0;
+    return equalizeParameters(myProfiles,
+                              myGuides,
+                              myProfileParams,
+                              myGuideParams,
+                              theAllowApproximateRational,
+                              theDidApproximate,
+                              myMaxReparametrizationDeviation);
+  }
+
+  //! Returns the largest best-contact gap found during contact discovery.
+  double MaxContactGap() const { return myMaxContactGap; }
+
+  //! Returns the largest measured curve rebuild deviation.
+  double MaxReparametrizationDeviation() const { return myMaxReparametrizationDeviation; }
+
+  //! Returns the validated contact points in guide/profile grid order.
+  NCollection_Array2<gp_Pnt> IntersectionPoints() const
+  {
+    return contactPointGrid(myProfiles, myProfileParams);
+  }
+
+  //! Returns rational contact weights in guide/profile grid order.
+  NCollection_Array2<double> IntersectionWeights() const
+  {
+    return contactWeightGrid(myProfiles, myProfileParams);
+  }
+
+private:
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>>& myProfiles;
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>>& myGuides;
+  NCollection_Array2<double>&                         myProfileParams;
+  NCollection_Array2<double>&                         myGuideParams;
+  NCollection_LinearVector<ContactSet>                myContactSets;
+  double                                              myTolerance;
+  double                                              myMaxContactGap                 = 0.0;
+  double                                              myMaxReparametrizationDeviation = 0.0;
+  bool                                                myToUseParallel;
+};
+
+} // namespace GordonUtilities
+
+#endif // _GeomFill_GordonUtilities_HeaderFile

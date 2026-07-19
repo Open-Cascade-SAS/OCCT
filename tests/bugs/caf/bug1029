@@ -1,0 +1,96 @@
+puts "================"
+puts "OCC1029"
+puts "================"
+puts ""
+#
+# Note:   Numerical control of setting transparency
+#
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+NewCommand D
+
+# Create two boxis
+box aBox1 100 200 300
+set aLabel1 0:2
+SetShape D ${aLabel1} aBox1
+
+box aBox2 50 50 0 100 200 300
+set aLabel2 0:3
+SetShape D ${aLabel2} aBox2
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel1} NS
+AISSet D ${aLabel2} NS
+
+# Set shading mode
+vsetdispmode 1
+
+# Set a color of the second shape
+AISColor D ${aLabel2} GREEN
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel1}
+AISDisplay D ${aLabel2}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a transparency of the second shape 
+set SetTransparency 0.9
+OCC1029_AISTransparency D ${aLabel2} ${SetTransparency}
+
+set list [OCC1029_AISTransparency D ${aLabel2}]
+set Transparency1 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1029_AISTransparency D ${aLabel2}]
+set Transparency2 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1029_AISTransparency D ${aLabel2}]
+set Transparency3 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Check the transparency
+puts "Transparency1 = ${Transparency1}"
+puts "Transparency2 = ${Transparency2}"
+puts "Transparency3 = ${Transparency3}"
+
+set status 0
+if { ${Transparency1} != ${SetTransparency} } {
+	puts "OCC1029_Transparency command: Error (case 1)"
+	set status 1
+}
+
+if { ${Transparency2} != 0. } {
+	puts "OCC1029_Transparency command: Error (case 2)"
+	set status 1
+}
+
+if { ${Transparency3} != ${SetTransparency} } {
+	puts "OCC1029_Transparency command: Error (case 3)"
+	set status 1
+}
+
+if { ${status} == 0} {
+	puts "OCC1029_Transparency command: OK"
+}
+

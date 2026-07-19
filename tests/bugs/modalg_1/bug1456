@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC1456"
+puts "============"
+puts ""
+######################################################
+# Impossible to build mixed type fillets
+######################################################
+
+restore [locate_data_file OCC1456.brep] a 
+
+checkshape a
+
+##############################################
+explode a w
+explode a_4 e
+mkevol result a
+updatevol a_4_1 0 5 0.5 20 1 5
+updatevol a_4_2 0 5
+updatevol a_4_3 0 5
+updatevol a_4_4 0 5 0.5 20 1 5
+updatevol a_4_5 0 5 0.5 20 1 5
+updatevol a_4_6 0 5
+updatevol a_4_7 0 5 0.5 20 1 5
+updatevol a_4_8 0 5
+
+if { [catch { buildevol } catch_result] } {
+    puts "Faulty OCC1456 (case 2)"
+}
+
+vinit
+vdisplay result
+vsetdispmode 0
+vfit
+
+checkprops result -s 3.21455e+06 
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

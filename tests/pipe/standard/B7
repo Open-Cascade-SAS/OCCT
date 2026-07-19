@@ -1,0 +1,10 @@
+ellipse profile 0 0 0 0 1 1 10 5
+mkedge profile profile
+wire profile profile
+mkplane profile profile
+bsplinecurve w 2 3 0 3 1 1 2 3 0 0 0 2 100 100 100 1 100 0 0 1 -10 -10 -10 2
+mkedge w w
+wire w w
+pipe result w profile
+
+checkprops result -s 14092.7

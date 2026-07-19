@@ -1,0 +1,39 @@
+# Source files for DrawTrSurf package
+set(OCCT_DrawTrSurf_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_DrawTrSurf_FILES
+  DrawTrSurf.cxx
+  DrawTrSurf.hxx
+  DrawTrSurf_BezierCurve.cxx
+  DrawTrSurf_BezierCurve.hxx
+  DrawTrSurf_BezierCurve2d.cxx
+  DrawTrSurf_BezierCurve2d.hxx
+  DrawTrSurf_BezierSurface.cxx
+  DrawTrSurf_BezierSurface.hxx
+  DrawTrSurf_BSplineCurve.cxx
+  DrawTrSurf_BSplineCurve.hxx
+  DrawTrSurf_BSplineCurve2d.cxx
+  DrawTrSurf_BSplineCurve2d.hxx
+  DrawTrSurf_BSplineSurface.cxx
+  DrawTrSurf_BSplineSurface.hxx
+  DrawTrSurf_Curve.cxx
+  DrawTrSurf_Curve.hxx
+  DrawTrSurf_Curve2d.cxx
+  DrawTrSurf_Curve2d.hxx
+  DrawTrSurf_Debug.cxx
+  DrawTrSurf_Drawable.cxx
+  DrawTrSurf_Drawable.hxx
+  DrawTrSurf_Params.hxx
+  DrawTrSurf_Point.cxx
+  DrawTrSurf_Point.hxx
+  DrawTrSurf_Polygon2D.cxx
+  DrawTrSurf_Polygon2D.hxx
+  DrawTrSurf_Polygon3D.cxx
+  DrawTrSurf_Polygon3D.hxx
+  DrawTrSurf_Surface.cxx
+  DrawTrSurf_Surface.hxx
+  DrawTrSurf_Triangulation.cxx
+  DrawTrSurf_Triangulation.hxx
+  DrawTrSurf_Triangulation2D.cxx
+  DrawTrSurf_Triangulation2D.hxx
+)

@@ -1,0 +1,11 @@
+puts "==========="
+puts "BUC60894"
+puts "==========="
+
+cpulimit 1000
+
+igesbrep [locate_data_file buc60894.igs] a xst-transferrable-roots
+
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

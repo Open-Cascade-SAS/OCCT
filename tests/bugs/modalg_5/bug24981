@@ -1,0 +1,24 @@
+puts "========="
+puts "OCC24981"
+puts "========="
+puts ""
+###########################################################
+# IntTools_FaceFace enters to infinite loop on the attached case
+###########################################################
+
+restore [locate_data_file bug24981_shapes.brep] a
+restore [locate_data_file bug24981_tools.brep] b
+
+explode a So
+explode b So
+
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools b_1 b_2 b_3 b_4 b_5 b_6 b_7 b_8 b_9 b_10 b_11 b_12 b_13 b_14 b_15 b_16 b_17 b_18 b_19 b_20 b_21 b_22 b_23 b_24 b_25
+
+bfillds
+bbuild result
+
+checknbshapes result -vertex 122 -edge 220 -wire 243 -face 195 -shell 75 -solid 75 -compsolid 0 -compound 1 -shape 931
+checkview -display result -2d -path ${imagedir}/${test_image}.png

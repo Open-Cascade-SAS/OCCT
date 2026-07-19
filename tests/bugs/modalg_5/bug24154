@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC24154"
+puts "============"
+puts ""
+######################################################
+# Wrong result of CUT operation
+######################################################
+
+restore [locate_data_file bug24154_t.brep] b1
+restore [locate_data_file bug24154_b.brep] b2
+
+bop b1 b2
+bopcut result
+
+checkprops result -s 2.68434e+06 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 18 -edge 27 -wire 11 -face 11 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 70
+checkview -display result -2d -path ${imagedir}/${test_image}.png

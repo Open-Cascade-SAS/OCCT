@@ -1,0 +1,14 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : D1
+## Comment : from original bug PRO4541
+## ====================================
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+
+restore [locate_data_file CCH_blendhdr.rle] s
+tscale s 0 0 0 1000
+explode s e
+blend myResult s 6 s_5
+blend result myResult 6 s_8
+
+checkprops result -s 0

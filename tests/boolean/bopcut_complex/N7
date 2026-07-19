@@ -1,0 +1,17 @@
+box b 10 10 10
+
+box c 4 4 4 
+ttranslate c 0 0 6
+
+bfuse rr b c
+
+restore [locate_data_file C1_rr_8.brep] C1_rr_8
+prism p1 C1_rr_8 0 0 -4
+
+explode rr so
+
+bop rr_1 p1
+bopcut result
+
+checkprops result -s 600
+checkview -display result -2d -otherwise { rr_1 p1 } -s -path ${imagedir}/${test_image}.png

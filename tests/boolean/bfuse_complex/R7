@@ -1,0 +1,15 @@
+#pro16261
+puts "PRO16261"
+puts "Fuse"
+puts ""
+
+restore [locate_data_file pro16261-1.brep] s
+restore [locate_data_file pro16261-2.brep] t
+
+maxtolerance s
+#face tangente
+
+bfuse result s t
+
+checkprops result -s 100110
+checkview -display result -2d -otherwise { s t } -s -path ${imagedir}/${test_image}.png

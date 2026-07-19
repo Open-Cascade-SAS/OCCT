@@ -1,0 +1,25 @@
+puts "==========="
+puts "OCC15570"
+puts "==========="
+
+set BugNumber OCC15570
+
+######################################################
+# Incorrect handling of Unicode strings
+######################################################
+
+pload XDE
+
+igesbrep [locate_data_file OCC15570.igs] a *
+tpcompound result
+
+bounding result -save xmin ymin zmin xmax ymax zmax -nodraw
+
+checkreal "xmin" [dval xmin] -22.500000100000001 0 0.001
+checkreal "ymin" [dval ymin] -88.366946209482094 0 0.001
+checkreal "zmin" [dval zmin] -1.0000002775557561e-07 0 0.001
+checkreal "xmax" [dval xmax] 22.500000100000001 0 0.001
+checkreal "ymax" [dval ymax] 22.776076069021901 0 0.001
+checkreal "zmax" [dval zmax] 86.12676222997429 0 0.001
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

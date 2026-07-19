@@ -1,0 +1,17 @@
+puts "==========="
+puts "OCC23771"
+puts "==========="
+
+#########################################################
+# Writing offset-based surface of revolution to IGES
+#########################################################
+
+pload QAcommands
+
+test_offset
+brepiges f2 ${imagedir}/f2.igs
+igesread ${imagedir}/f2.igs result *
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

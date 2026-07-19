@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC25237"
+puts "================"
+puts ""
+####################################
+# Wrong result of COMMON operation
+####################################
+
+restore [locate_data_file bug25237_b26.brep] e1
+restore [locate_data_file bug25237_b5.brep] e2
+
+bop e1 e2
+bopcommon result
+
+checknbshapes result -vertex 2 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 4

@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC28773"
+puts "========"
+puts ""
+#################################################
+# BRepAlgoAPI_Cut invalid result
+#################################################
+
+restore [locate_data_file bug28773_1.brep] b1
+restore [locate_data_file bug28773_2.brep] b2
+
+bop b1 b2
+bopcut res
+checkshape res
+
+checkshape res
+checknbshapes res -solid 1
+checkprops res -s 0.101938 -v 0.000203073
+
+checkview -display res -2d -path ${imagedir}/${test_image}.png

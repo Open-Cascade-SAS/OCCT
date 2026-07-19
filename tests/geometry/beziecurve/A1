@@ -1,0 +1,4 @@
+beziercurve result  3  -2 0 1 0 1 2 2 0 1
+insertpole result 2  1 2 4
+repeat 4 {pd}
+checklength result -l 5.8766403018804851

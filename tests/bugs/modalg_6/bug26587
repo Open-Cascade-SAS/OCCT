@@ -1,0 +1,19 @@
+puts "REQUIRED All: ERROR. Degenerated normal on input data"
+puts "========"
+puts "OCC26587"
+puts "========"
+puts ""
+#######################################################
+#  Infinite calculations of BRepOffset_MakeOffset
+#######################################################
+
+smallview
+
+restore [locate_data_file bug26587_plate.brep] plate
+
+offsetparameter 1e-7 p i
+offsetload plate 50
+offsetperform r
+
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

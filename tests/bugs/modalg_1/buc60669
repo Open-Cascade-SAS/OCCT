@@ -1,0 +1,21 @@
+puts "=================="
+puts "BUC60669"
+puts "=================="
+puts ""
+#############################################################
+## An exception was caught OSD_SIGBUS: SIGBUS 'bus error' detected.** 
+## Exception ** OSD_SIGBUS: SIGBUS 'bus error' detected. 
+#############################################################
+
+restore [locate_data_file buc60669a.brep] shell1 
+checkshape shell1
+restore [locate_data_file buc60669b.brep] shell2
+checkshape shell2
+
+bsection result shell1 shell2
+
+#checksection res
+checkprops result -l 104.754 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

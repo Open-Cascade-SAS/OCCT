@@ -1,0 +1,42 @@
+puts "==========="
+puts "OCC25701"
+puts "==========="
+puts ""
+######################################################
+# Problem with the symmetry of fillet on two perpendicular cylinders
+######################################################
+
+restore [locate_data_file bug25701_rx.brep] rx
+
+explode rx e
+smallview
+donly rx rx_2 rx_5
+compound rx_2 rx_5 q
+
+fillet x rx 2.5 q
+explode x e
+donly x x_9
+fit
+
+mkcurve cx_9 x_9
+
+set log [dump cx_9]
+
+regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
+puts "Degree=${Degree}"
+puts "Poles=${Poles}"
+puts "KnotsPoles=${KnotsPoles}"
+puts ""
+
+set tol_abs 1.e-11
+set tol_rel 0.01
+set expected_V 0.
+
+for {set i 1} {${i} <= ${Poles}} {incr i} {
+   set exp_string " +${i} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
+   regexp ${exp_string} ${log} full U_i V_i
+   puts "i=${i} U_i=${U_i} V_i=${V_i}"
+   checkreal "V_$i" ${V_i} ${expected_V} ${tol_abs} ${tol_rel}
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

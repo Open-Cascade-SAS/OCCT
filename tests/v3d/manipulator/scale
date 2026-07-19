@@ -1,0 +1,63 @@
+puts "================================="
+puts "AIS_Manipulator - scale an object"
+puts "================================="
+
+pload MODELING VISUALIZATION
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+
+# -------------------------------------
+# create manipulated and helper objects
+# -------------------------------------
+
+pcylinder c1_1  5 10
+pcylinder c1_2  3 10
+pcylinder c2 10 20
+ttranslate c1_1 100 0 20
+ttranslate c1_2 100 0 20
+trotate c1_2 100 0 25 0 1 0 90
+trotate c1_2 100 0 25 0 0 1 10
+ttranslate c2 100 0 0
+
+compound c1_1 c1_2 c1
+
+# ------------------------------------
+# display manipulated objects (test 1)
+# ------------------------------------
+
+vdisplay c1
+vdisplay c2
+vsetdispmode 1
+vaxo
+vfit
+
+# ------------------
+# attach manipulator
+# ------------------
+
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
+
+# --------------------------
+# test highlight and detection
+# --------------------------
+
+set mouse_pick {229 141}
+
+vmoveto {*}$mouse_pick
+vdump $anImage1
+
+# -------------------------
+# test scaling of an object
+# -------------------------
+
+set mouse_pick {229 141}
+set mouse_drag {210 129}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vdump $anImage2

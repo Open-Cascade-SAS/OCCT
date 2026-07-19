@@ -1,0 +1,41 @@
+puts "===================================="
+puts "0033165: Data exchange - Instance name is not saved during writing step file"
+puts "===================================="
+puts ""
+
+pload OCAF XDEDRAW STEP
+
+box b 1 1 1
+reset b
+copy b b1
+
+# set valid location with identity matrix
+reset b1
+
+ttranslate b 1 1 1
+
+compound b1 b c
+XNewDoc d
+XAddShape d c 1
+
+set label1 "0:1:1:1:1"
+set label2 "0:1:1:1:2"
+set name1 "name1"
+set name2 "name2"
+
+SetName d $label1 $name1
+SetName d $label2 $name2
+
+set file $imagedir/${test_image}.stp
+WriteStep d $file
+ReadStep d1 $file
+
+if { [GetName d1 $label1] != $name1 } {
+  puts "Error: The name is missed"
+}
+
+if { [GetName d1 $label2] != $name2 } {
+  puts "Error: The name is missed"
+}
+
+file delete -force ${file}

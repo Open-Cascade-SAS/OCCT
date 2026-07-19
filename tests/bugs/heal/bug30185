@@ -1,0 +1,16 @@
+puts "============"
+puts "0030185: Unify same domain algorithm corrupts the initial shape"
+puts "============"
+puts ""
+
+restore [locate_data_file bug30185.brep] s
+
+unifysamedom r s +b
+checkshape r
+checknbshapes r -vertex 50 -edge 71 -face 21
+checkmaxtol r -min_tol 2.49130e-03
+checkmaxtol s -min_tol 2.49130e-03
+
+checkview -display r -2d -path ${imagedir}/${test_image}.png
+
+

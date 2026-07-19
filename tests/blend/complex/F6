@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : K7
+## Comment : from cts21020
+## ====================================
+puts "TODO OCC22817 All: Faulty shapes in variables faulty_1 to faulty_"
+restore [locate_data_file CFI_cts21020.rle] a
+explode a e
+blend result a 0.05 a_8 0.05 a_10 0.05 a_9 0.05 a_5 0.05 a_3 0.05 a_1
+
+checkprops result -s 285.094

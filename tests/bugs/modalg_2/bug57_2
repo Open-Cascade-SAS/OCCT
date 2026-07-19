@@ -1,0 +1,16 @@
+
+puts "================"
+puts "BUC60974 "
+puts " OCC57"
+puts "================"
+puts ""
+
+restore [locate_data_file BUC60974.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+bfuse result a_2 a_1
+checkprops result -s 191388 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,43 @@
+puts "========"
+puts "0030953: Data Exchange - implement export of mesh data into glTF 2.0 format"
+puts "Test case exporting glTF model into glTF file."
+puts "========"
+
+Close D1 -silent
+XNewDoc D1
+XSetLengthUnit D1 cm
+ReadGltf D1 [locate_data_file bug30691_DamagedHelmet.gltf] -nocreatedoc
+XGetOneShape s1 D1
+set aLProps1 [uplevel #0 sprops $s1]
+
+set aTmpGltfBase "${imagedir}/${casename}_tmp"
+set aTmpGltf "${aTmpGltfBase}.gltf"
+lappend occ_tmp_files $aTmpGltf
+lappend occ_tmp_files "${aTmpGltfBase}.bin"
+lappend occ_tmp_files "${aTmpGltfBase}_textures"
+
+WriteGltf D1 "$aTmpGltf"
+
+Close D -silent
+XNewDoc D
+XSetLengthUnit D cm
+ReadGltf D "$aTmpGltf" -nocreatedoc
+
+XGetOneShape s D
+set aLProps2 [uplevel #0 sprops $s]
+checknbshapes s -face 1 -compound 0
+checktrinfo s -tri 15452 -nod 14556
+regexp {Mass\s:\s*([0-9\.]+)} $aLProps1 dummy anArea1
+regexp {Mass\s:\s*([0-9\.]+)} $aLProps2 dummy anArea2
+if {abs($anArea1 - $anArea2) > 1e-8 * $anArea1} {
+  puts "Error: invalid area $anArea1 instead of $anArea2"
+}
+
+set THE_REF_DUMP {
+INSTANCE FACE 0:1:1:1 (refers to 0:1:1:2) "node_damagedHelmet_-6514"
+PART FACE 0:1:1:2 "mesh_helmet_LP_13930damagedHelmet"
+
+Free Shapes: 1
+INSTANCE FACE  0:1:1:1 (refers to 0:1:1:2) "node_damagedHelmet_-6514"
+}
+checkXDump D $THE_REF_DUMP

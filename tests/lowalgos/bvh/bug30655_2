@@ -1,0 +1,16 @@
+puts "======="
+puts "0030655: Modeling Data - Provide interfaces for selection of the elements from BVH tree"
+puts "======="
+puts ""
+
+pload QAcommands
+
+box b1 10 10 10
+box b2 20 0 0 10 10 10
+
+incmesh b1 0.1
+incmesh b2 0.1
+
+regexp {Distance ([-0-9.+eE]*)} [QABVH_PairDistance b1 b2] full dist
+
+checkreal "Distance" $dist 10 0 1.e-2

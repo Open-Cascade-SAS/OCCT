@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC26064"
+puts "========"
+puts ""
+###########################################################
+# distmini of two edges locks up
+###########################################################
+
+pload MODELING
+restore [locate_data_file dist1-s1.brep] s1
+restore [locate_data_file dist1-s2.brep] s2
+distmini d s1 s2

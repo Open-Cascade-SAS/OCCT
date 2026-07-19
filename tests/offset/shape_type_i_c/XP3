@@ -1,0 +1,12 @@
+restore [locate_data_file bug29188_offset.input.fail_2.brep] s
+
+offsetparameter 1.e-7 c i r
+offsetload s 4
+offsetperform result
+
+checkprops result -s 3.59077e+006 -v 1.01607e+008
+
+unifysamedom result_unif result
+checknbshapes result_unif -vertex 760 -edge 1140 -wire 382 -face 382 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

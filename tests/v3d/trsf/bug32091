@@ -1,0 +1,32 @@
+puts "============"
+puts "CR32091: Visualization - possibility to redefine Graphic3d_TransformPers"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+vinit
+vclear
+
+vtrihedron t1
+box b1 500 500 500
+vdisplay b1 -dispmode 1
+
+vpoint p1 0 0 0
+vpoint p2 1 0 0
+vpoint p3 0 1 0
+
+vplane pl1 p1 p2 p3 0
+vfit
+
+vchangeplane pl1 sx=100 sy=100 minsize=100
+vupdate pl1
+vfit
+vdump ${imagedir}/${casename}_0.png
+
+vzoom 8
+vpan 1100 600
+vdump ${imagedir}/${casename}_1.png
+
+vfit
+vzoom 0.2
+vdump ${imagedir}/${casename}_2.png

@@ -1,0 +1,170 @@
+// Created on: 1993-11-18
+// Created by: Isabelle GRIGNON
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <TopoDS.hxx>
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::SetTypeOfConcavity(const ChFiDS_TypeOfConcavity theType)
+{
+  myTypeOfConcavity = theType;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::SetFirstStatus(const ChFiDS_State S)
+{
+  firstState = S;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::SetLastStatus(const ChFiDS_State S)
+{
+  lastState = S;
+}
+
+//=================================================================================================
+
+inline ChFiDS_TypeOfConcavity ChFiDS_Spine::GetTypeOfConcavity() const
+{
+  return myTypeOfConcavity;
+}
+
+//=================================================================================================
+
+inline ChFiDS_State ChFiDS_Spine::FirstStatus() const
+{
+  return firstState;
+}
+
+//=================================================================================================
+
+inline ChFiDS_State ChFiDS_Spine::LastStatus() const
+{
+  return lastState;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::SetStatus(const ChFiDS_State S, const bool IsFirst)
+{
+  if (IsFirst)
+    firstState = S;
+  else
+    lastState = S;
+}
+
+//=================================================================================================
+
+inline ChFiDS_State ChFiDS_Spine::Status(const bool IsFirst) const
+{
+  if (IsFirst)
+    return firstState;
+  else
+    return lastState;
+}
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::SetTangencyExtremity(const bool IsTangency, const bool IsFirst)
+{
+  if (IsFirst)
+    firstistgt = IsTangency;
+  else
+    lastistgt = IsTangency;
+}
+
+//=================================================================================================
+
+inline bool ChFiDS_Spine::IsTangencyExtremity(const bool IsFirst) const
+{
+  if (IsFirst)
+    return firstistgt;
+  else
+    return lastistgt;
+}
+
+//=================================================================================================
+
+inline int ChFiDS_Spine::NbEdges() const
+{
+  return spine.Length();
+}
+
+//=================================================================================================
+
+inline const TopoDS_Edge& ChFiDS_Spine::Edges(const int I) const
+{
+  return TopoDS::Edge(spine.Value(I));
+}
+
+//=================================================================================================
+
+inline const TopoDS_Edge& ChFiDS_Spine::OffsetEdges(const int I) const
+{
+  return TopoDS::Edge(offsetspine.Value(I));
+}
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::SetEdges(const TopoDS_Edge& E)
+{
+  spine.Append(E);
+}
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::SetOffsetEdges(const TopoDS_Edge& E)
+{
+  offsetspine.Append(E);
+}
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::PutInFirst(const TopoDS_Edge& E)
+{
+  spine.InsertBefore(1, E);
+}
+
+//=================================================================================================
+
+inline void ChFiDS_Spine::PutInFirstOffset(const TopoDS_Edge& E)
+{
+  offsetspine.InsertBefore(1, E);
+}
+
+//=================================================================================================
+
+inline int ChFiDS_Spine::CurrentIndexOfElementarySpine() const
+{
+  return indexofcurve;
+}
+
+//=================================================================================================
+
+inline ChFiDS_ChamfMode ChFiDS_Spine::Mode() const
+{
+
+  return myMode;
+}
+
+//=================================================================================================
+
+inline double ChFiDS_Spine::GetTolesp() const
+{
+  return tolesp;
+}

@@ -1,0 +1,9 @@
+parabola profile 10 -115.064945 75.458923 0 1 -1 50
+mkedge profile profile -pi*20. pi*20.
+wire profile profile
+hyperbola w 10 0 -50 1 0 0 50 50
+mkedge w w -pi/2. pi/2.
+wire w w
+pipe result w profile
+
+checkprops result -s 38722.8

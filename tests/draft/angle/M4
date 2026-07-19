@@ -1,0 +1,11 @@
+# Original bug : pro16449
+# Date : 18 Dec 98
+
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_"
+
+restore [locate_data_file CFE903_pro16gha.rle] base
+
+explode base face
+
+depouille result base 0 0 -1 base_1  1 115.16843 -2.03233999999999 -119.85872 0 0 1
+checkprops result -s 10170.4

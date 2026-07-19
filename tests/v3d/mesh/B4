@@ -1,0 +1,8 @@
+vclear
+mesh3delem m
+vrotate 1.5 0 0
+vrotate 0 0.5 0
+vselmode m 1 1
+vselect 0 0 300 200
+meshshowsel m
+vdump $::imagedir/${::casename}.png

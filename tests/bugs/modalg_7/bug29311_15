@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+set px 1
+set py 2
+set pz 3
+
+vertex vv $px $py $pz
+set log [bounding vv -obb -dump]
+
+if {![regexp {Center: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $log full xc yc zc]} {
+  puts "Error in Dump."
+}
+
+checkreal "XC" $xc $px 1.0e-7 0.0
+checkreal "YC" $yc $py 1.0e-7 0.0
+checkreal "ZC" $zc $pz 1.0e-7 0.0

@@ -1,0 +1,23 @@
+#box b -30 -30 -30 60 60 30
+#ptorus f 35 10 90 180
+#explode b F
+#explode f F
+#glue s f b f_2 b_6
+#trotate s 0 0 0 1 1 0 -40
+#trotate s 0 0 0 0 0 1 -10
+
+#pcylinder c 10 10
+#trotate c 0 0 0 1 0 0 90
+#ttranslate c 0 -30 -15 
+#explode c F
+#explode s F
+#glue s c s c_3 s_2
+
+restore [locate_data_file CFI_6_e56fha.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+mkevol result s
+updatevol s_7 0 4*SCALE2 1 8*SCALE2 2 5*SCALE2
+buildevol
+
+checkprops result -s 19572.1

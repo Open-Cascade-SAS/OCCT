@@ -1,0 +1,42 @@
+puts "==========="
+puts "0026149: Visualization - depth buffer should not be written within Z-layers without Graphic3d_ZLayerDepthWrite flag"
+puts "Check that objects drawn in Graphic3d_ZLayerId_BotOSD layer do not overlap objects in Graphic3d_ZLayerId_Default layer."
+puts "==========="
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+vinit View1
+vclear
+vaxo
+
+text2brep tcc "Center" -font SansFont -height 30
+vdisplay  tcc -2d center -underlay
+polyline  lcc -50 -50 0 -50 50 0 50 50 0 50 0 0 0 -50 0 -50 -50 0
+vdisplay  lcc -2d center -underlay
+
+text2brep tbl "Bottom-Left" -font SansFont -height 30
+vdisplay  tbl -2d bottomLeft 5 5 -underlay
+polyline  lbl 0 0 0 0 100 0 100 100 0 100 50 0 50 0 0 0 0 0
+vdisplay  lbl -2d bottomLeft 3 3 -underlay
+
+text2brep ttl "Top-Left" -font SansFont -height 30 -pos -27 0 0
+vdisplay  ttl -2d topLeft 30 30 -underlay
+polyline  ltl 0 -100 0 0 0 0 100 0 0 100 -50 0 50 -100 0 0 -100 0
+vdisplay  ltl -2d topLeft  3  3 -underlay
+
+text2brep ttr "Top-Right" -font SansFont -height 30 -pos -100 0 0
+vdisplay  ttr -2d topRight 30 30 -underlay
+polyline  ltr -100 -100 0 -100 0 0 0 0 0 0 -50 0 -50 -100 0 -100 -100 0
+vdisplay  ltr -2d topRight  3  3 -underlay
+
+text2brep tbr "Bottom-Right" -font SansFont -height 30 -pos -165 0 0
+vdisplay  tbr -2d bottomRight 5 5 -underlay
+polyline  lbr -100 0 0 -100 100 0 0 100 0 0 50 0 -50 0 0 -100 0 0
+vdisplay  lbr -2d bottomRight 3 3 -underlay
+
+box b 1 2 3
+vdisplay b
+vfit
+vsetdispmode b 1
+
+vdump ${imagedir}/${casename}.png

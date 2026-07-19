@@ -1,0 +1,30 @@
+
+puts "============"
+puts "BUC60788"
+puts "case 1"
+puts "============"
+
+#restore Intersection_Shell1_Case1.brep S1
+#restore Intersection_Shell2_Case1.brep S2
+
+restore [locate_data_file buc60788a.brep] S1 
+checkshape S1
+restore [locate_data_file buc60788b.brep] S2
+checkshape S2
+
+bsection result S1 S2
+
+set nb_info [nbshapes result]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full err
+regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full err1
+
+if { $err != 4 && $err1 != 3} {
+    puts "Faulty :  result (res) is incorrect"
+} else {
+    puts "BUC60788 - OK"
+}
+
+checkprops result -l 750 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

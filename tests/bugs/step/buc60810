@@ -1,0 +1,13 @@
+puts "==========="
+puts "BUC60810"
+puts "==========="
+
+#################################################
+## Reading file sample.stp crashes. 
+#################################################
+
+stepread [locate_data_file BUC60810.stp] a *
+
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

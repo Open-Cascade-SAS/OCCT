@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC22978"
+puts "============"
+puts ""
+#######################################################################
+# Shading for a pipe shape is wrong
+#######################################################################
+
+restore [locate_data_file bug22978_1.brep] c1
+restore [locate_data_file bug22978_2.brep] c2
+
+pipe result c1 c2
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkprops result -s 493480 
+checkshape result
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

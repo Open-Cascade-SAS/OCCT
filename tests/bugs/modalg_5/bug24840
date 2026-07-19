@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC24840"
+puts "============"
+puts ""
+#######################################################################
+# Exception in BRepOffsetAPI_MakePipe
+#######################################################################
+
+restore [locate_data_file bug24840_comp.brep] c
+explode c
+
+pipe result c_1 c_2 1
+checkshape result
+
+checknbshapes result -vertex 56 -edge 130 -wire 99 -face 99 -shell 24 -solid 24 -compsolid 1 -compound 0 -shape 433
+checkview -display result -2d -path ${imagedir}/${test_image}.png

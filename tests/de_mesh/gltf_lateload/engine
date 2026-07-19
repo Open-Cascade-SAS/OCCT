@@ -1,0 +1,23 @@
+puts "========"
+puts "0032086: Visualization - support deferred data loading"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_2CylinderEngine.glb] -skiplateloading 1
+XGetOneShape s D
+checktrinfo s -tri 0 -nod 0
+
+vclear
+vinit View1
+XDisplay D -explore -dispMode 1 -outdisplist prsList
+vfit
+
+vdump ${imagedir}/${casename}_empty.png
+
+trlateload s -load
+checktrinfo s -face 115 -tri 121496 -nod 84657
+vdisplay {*}$prsList -redisplay -noecho
+vfit
+
+trinfo s -lods
+
+vdump ${imagedir}/${casename}_loaded.png

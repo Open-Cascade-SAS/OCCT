@@ -1,0 +1,24 @@
+puts "GER60861"
+puts "Section"
+puts ""
+restore [locate_data_file CTO909_object.brep] a
+restore [locate_data_file CTO909_tool_4.brep] b
+
+explode a sh
+explode b sh
+
+bop a_1 b_1
+bopsection result
+
+# JML expects that the result of the cut will contain some
+# of the face(s) of the tool doing the cut
+# He wants to be able to sort the faces of the result and
+# keep the ones of interest for Styler.
+# In the above script the final result is very good but
+# it is the final result and does not contain faces of 
+# the tool b.
+
+
+checkprops result -l 74.2717
+checksection result
+checkview -display result -2d -otherwise { a_1 b_1 } -l -path ${imagedir}/${test_image}.png

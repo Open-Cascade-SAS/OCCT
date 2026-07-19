@@ -1,0 +1,54 @@
+puts "================"
+puts "OCC23051"
+puts "================"
+puts ""
+######################################################################################
+# Bug in BRepExtrema_DistShapeShape (through BRepExtrema_DistanceSS0
+######################################################################################
+
+set BugNumber OCC23051
+
+# create edges and find minimal distance
+plane p 0 0 0 0 0 1
+mkface f p -10 10 -10 10
+vertex v 0 0 1
+distmini r f v
+
+# get start and end vertices -- these should be solutions on f and v
+set sol [explode r v]
+
+set status1 0
+# check distances in correct order
+distmini d1 [lindex $sol 0] f
+distmini d2 [lindex $sol 1] v
+set d1 [dval d1_val]
+set d2 [dval d2_val]
+
+puts "Distances from solutions to relevant objects: $d1, $d2"
+if { $d1 > 1e-7 || $d2 > 1e-7 } {
+    puts "Error: distances are non-zero!"
+    set status1 1
+}
+
+set status2 0
+# check distances in swapped order
+distmini d1 [lindex $sol 0] v
+distmini d2 [lindex $sol 1] f
+set d1 [dval d1_val]
+set d2 [dval d2_val]
+
+puts "Distances from solutions to swapped objects: $d1, $d2"
+if { $d1 < 0.1 || $d2 < 0.1 } {
+    puts "Error: swapped distances are zero, i.e. solutions are swapped!"
+    set status2 1
+}
+
+# Resume
+puts ""
+if { ${status1} != 0 && ${status2} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+

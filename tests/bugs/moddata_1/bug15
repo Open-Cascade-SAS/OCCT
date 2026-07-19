@@ -1,0 +1,18 @@
+
+puts "================"
+puts "OCC15"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC15.brep] result
+
+checkshape result
+
+vinit
+tclean result
+vdisplay result
+vsetdispmode result 1
+vfit
+
+checktrinfo result -tri 1317 -nod 756
+checkview -display result -2d -path ${imagedir}/${test_image}.png

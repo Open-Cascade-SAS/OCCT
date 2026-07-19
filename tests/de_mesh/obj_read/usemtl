@@ -1,0 +1,55 @@
+puts "========"
+puts "0031274: Data Exchange - RWObj_Reader ignores usemtl with empty name"
+puts "========"
+
+set material_mtl {newmtl Red
+Kd 1.0 0.0 0.0
+newmtl Green
+Kd 0.0 1.0 0.0
+newmtl Blue
+Kd 0.0 0.0 1.0}
+
+set ml_obj {
+mtllib usemtl_material.mtl
+v 0 0 0
+v 2 0 0
+v 2 1 0
+v 1 2 0
+v 0 1 0
+v 0 0 2
+v 2 0 2
+v 2 1 2
+v 1 2 2
+v 0 1 2
+g Red
+usemtl Red
+f 5 4 3 2 1
+g Gren
+usemtl Green
+f 7 8 9 10 6
+g Blue
+usemtl Blue
+f 10 9 4 5
+g Gray
+usemtl
+f 9 8 3 4
+f 6 10 5 1
+f 2 3 8 7
+f 1 2 7 6}
+
+set fd [open ${imagedir}/${casename}_material.mtl w]
+fconfigure $fd -translation lf
+puts $fd $material_mtl
+close $fd
+
+set fd [open ${imagedir}/${casename}.obj w]
+fconfigure $fd -translation lf
+puts $fd $ml_obj
+close $fd
+
+ReadObj D ${imagedir}/${casename}.obj
+XGetOneShape s D
+
+explode s
+set md [XGetVisMaterial D s_4]
+if { [string trimright $md] != "EMPTY" } { puts "Error: EMPTY material is expected for last group" }

@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename CTS17804.igs
+
+set ref_data {
+DATA        : Faulties = 1  ( 0 )  Warnings = 0  ( 450 )  Summary  = 1  ( 450 )
+TPSTAT      : Faulties = 2  ( 0 )  Warnings = 38  ( 280 )  Summary  = 40  ( 280 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 218  ( 218 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 218  ( 218 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.07760384877  (  0.07760384877 )  AvgTol   =  0.001773555527  (  0.001789794199 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 230  ( 1434 )  N2Labels = 0  ( 0 )   TotalLabels = 231  ( 1435 )   NameLabels = 231  ( 369 )   ColorLabels = 230  ( 1434 )   LayerLabels = 230  ( 1434 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = YELLOW  ( YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 20  ( 20 )
+
+}

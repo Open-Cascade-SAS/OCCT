@@ -1,0 +1,29 @@
+puts "TODO OCC11111 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+
+puts "================"
+puts "OCC397"
+puts "================"
+puts ""
+#######################################################################################
+# One face from IGES is not shaded 
+######################################################################################
+
+set BugNumber OCC8370
+
+catch { pload XDE }
+
+igesread [locate_data_file Amino_komatsu.igs] result *
+
+checkprops result -s 25310.8 
+checkshape result
+
+checknbshapes result -vertex 5060 -edge 5105 -wire 416 -face 399 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10981
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

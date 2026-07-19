@@ -1,0 +1,7 @@
+polyline profile 0 0 0 10 10 0
+circle w 0 20 0 1 0 0 20
+mkedge w w
+wire w w
+pipe result w profile
+
+checkprops result -s 1332.86

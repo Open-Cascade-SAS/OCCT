@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC23912"
+puts "============"
+puts ""
+###################################################################################################################
+# TDataStd_ExtStringArray::Value() returns a copy of TCollection_ExtededString, but it might return a reference
+###################################################################################################################
+
+NewDocument D
+SetExtStringArray D 0:1 0 1 5 "A" "B" "C" "D" "E"
+set info [GetExtStringArray D 0:1]
+
+if { [regexp "A B C D E" $info] != 1 } {
+    puts "Error : function returns wrong value"
+} else {
+    puts "OK : function works properly"
+}
+
+
+
+
+
+
+

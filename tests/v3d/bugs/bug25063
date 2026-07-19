@@ -1,0 +1,12 @@
+puts "==========="
+puts "OCC25063: Visualization - 2D objects are not displayed at some camera positions"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vtop
+vline 1 -90 -90 130 90 90 130
+vfit
+
+vdump ${imagedir}/${casename}.png

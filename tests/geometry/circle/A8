@@ -1,0 +1,5 @@
+circle cer 0 0 0  0 0 1  1
+trim cer cer 0 2*pi
+convert result cer qa
+checklength result -l 6.2831853071795827
+checkview -display result -2d -path ${imagedir}/${test_image}.png

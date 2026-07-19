@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename r61pe.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 64  ( 56 )  Summary  = 64  ( 56 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 6  ( 6 )  Shell    = 6  ( 6 )  Face     = 461  ( 461 ) 
+STATSHAPE   : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 593  ( 593 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.003189265597  (  0.01213090647 )  AvgTol   =  8.562727978e-005  (  0.0003980194696 )
+LABELS      : N0Labels = 7  ( 7 )  N1Labels = 9  ( 9 )  N2Labels = 0  ( 0 )   TotalLabels = 16  ( 16 )   NameLabels = 16  ( 16 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

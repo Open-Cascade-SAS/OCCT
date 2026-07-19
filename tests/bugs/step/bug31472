@@ -1,0 +1,13 @@
+puts "===================================="
+puts "0031472: Translation of the STEP entity Constructive Geometry Representation containing one representation"
+puts "===================================="
+
+puts "Read STEP file containing GEOMETRIC_REPRESENTATION_CONTEXT and check"
+puts "that it has been translated"
+
+dall
+param read.step.constructivegeom.relationship 1
+stepread [locate_data_file 98508_2.stp] a *
+
+checknbshapes a_1 -face 68 -wire 72 -compound 3
+checkshape a_1 f

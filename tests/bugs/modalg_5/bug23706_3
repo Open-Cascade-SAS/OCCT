@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC23706"
+puts "============"
+puts ""
+#########################################################################
+# Cannot project point on curve
+#########################################################################
+
+restore [locate_data_file bug23706_c2.draw] c
+mkedge e1 c
+wire w e1
+polyline pl 3.9 4.9 5 4 5.1 5 4.1 3.9 5 3.9 4.9 5
+mkplane pl pl
+pipe result w pl
+don result
+fit
+checkshape result
+
+checkprops result -s 1.67216

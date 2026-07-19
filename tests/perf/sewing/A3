@@ -1,0 +1,23 @@
+restore [locate_data_file Cover_VXmodel.brep] a
+
+dchrono ch restart
+puts [fastsewing result -tol 1.5e-4 a]
+dchrono ch stop counter fastsewing
+
+donly result
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 844
+ EDGE      : 1592
+ WIRE      : 749
+ FACE      : 749
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 3936
+"
+
+checknbshapes result -ref "${nbshapes_expected}" -t -m "Partition of 2 shapes"

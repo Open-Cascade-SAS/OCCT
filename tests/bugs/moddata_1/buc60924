@@ -1,0 +1,21 @@
+
+puts "========"
+puts "BUC60924"
+puts "========"
+puts ""
+
+##################################################
+## ShapeAnalysisStd_Curve::IsPlanar works incorrectly with a conic curve.
+################################################## 
+
+pload QAcommands
+
+ellipse el 0 0 1 20 10
+
+set result1 [BUC60924 el 0 0 1]
+
+if {${result1} != "The curve is planar !\n"} {
+    puts "BUC60924: Error"
+} else {
+    puts "BUC60924: OK"
+}

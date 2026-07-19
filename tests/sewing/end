@@ -1,0 +1,7 @@
+if { [isdraw result] } {
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error : The sewing cannot be built."
+}
+
+puts "TEST COMPLETED"

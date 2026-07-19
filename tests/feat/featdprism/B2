@@ -1,0 +1,10 @@
+restore [locate_data_file cylindre.rle] cyl
+restore [locate_data_file contour.rle] cont
+mkplane cont cont
+nexplode cyl F
+
+ttranslate cont 0 0 -100
+featdprism cyl cont cont -10 0 1
+featperform dprism result
+
+checkprops result -s 83382.4

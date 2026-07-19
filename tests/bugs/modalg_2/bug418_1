@@ -1,0 +1,23 @@
+
+puts "========================"
+puts " OCC418 "
+puts "CTS20370"
+puts "(case 1)"
+puts "========================"
+puts ""
+
+restore [locate_data_file CTO904_cts20370-part.rle] part 
+checkshape part
+
+restore [locate_data_file cts20370-tool.rle] tool 
+checkshape tool
+
+bsection sec part tool
+checkshape -top sec
+
+bcut result part tool
+checkshape -top result
+
+checkprops result -s 273365. 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

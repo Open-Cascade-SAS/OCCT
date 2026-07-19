@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename buc40130.igs
+
+# set min as local length unit
+set lengthunit_start "min"
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 38  ( 54 )  Summary  = 38  ( 54 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3312  ( 3312 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3312  ( 3312 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.9957815729  (    12.75113485 )  AvgTol   =    0.1129308837  (    0.1590338739 )
+LABELS      : N0Labels = 3312  ( 3312 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 3312  ( 3312 )   NameLabels = 3312  ( 3312 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

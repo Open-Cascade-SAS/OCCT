@@ -1,0 +1,6 @@
+ptorus s 20 5 0 160 90
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 1*SCALE1 s_8 1*SCALE1 s_4 1*SCALE1 s_3
+
+checkprops result -s 121712

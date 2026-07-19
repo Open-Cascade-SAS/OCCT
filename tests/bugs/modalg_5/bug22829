@@ -1,0 +1,20 @@
+puts "=========="
+puts "OCC22829"
+puts "=========="
+puts ""
+###############################################
+# Incorrect result of boolean Fuse operation
+###############################################
+
+restore [locate_data_file bug22829_Solid_3.brep] a
+checkshape a
+
+restore [locate_data_file bug22829_Solid_7.brep] b
+checkshape b
+
+bop a b
+bopfuse result
+
+checkprops result -s 420.355 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

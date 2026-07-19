@@ -1,0 +1,90 @@
+box b1 10 10 5
+box b2 0 0 5 10 10 1
+box b3 0 0 6 3 3 4
+polyline p 3 0 6 3 3 6 0 3 6 0 4 6 4 4 6 4 0 6 3 0 6
+mkplane f p
+prism b4 f  0 0 4
+box b5 0 9 6 4 1 4
+box b6 9 9 6 1 1 4
+box b7 9 0 6 1 3 4
+
+# make the solids connected
+makeconnected c b1 b2 b3 b4 b5 b6 b7
+
+checkshape c
+checknbshapes c -vertex 46 -edge 79 -wire 41 -face 41 -shell 7 -solid 7 -t
+checkprops c -s 888 -v 696
+
+savehistory h
+
+explode b6 f
+modified f h b6_4
+
+cmaterialson pos + f
+if {![regexp "equal shapes" [compare pos b6]]} {
+  puts "Error: incorrect material associations"
+}
+
+if {![regexp "No materials on this side." [cmaterialson neg - f]]} {
+  puts "Error: incorrect material associations"
+}
+
+# make the connected shape periodic
+cmakeperiodic cp -x 10 -y 10
+checkshape cp
+checknbshapes cp -vertex 49 -edge 83 -wire 42 -face 42 -shell 7 -solid 7 -t
+checkprops cp -s 888 -v 696
+
+# get modifications of the fifth solid
+savehistory h
+
+modified m5 h b5
+checknbshapes m5 -vertex 10 -edge 15 -wire 7 -face 7 -shell 1 -solid 1 -t
+checkprops m5 -s 48 -v 16
+
+
+# repeat shape
+crepeatshape res1 -x -1 -y -1 -x 1 -y 1
+
+checknbshapes res1 -vertex 496 -edge 947 -wire 564 -face 564 -shell 112 -solid 112 -t
+checkprops res1 -s 14208 -v 11136
+
+
+savehistory h
+modified f h b6_4
+
+cmaterialson pos + f
+cmaterialson neg - f
+
+if {![regexp "equal shapes" [compare pos b6]]} {
+  puts "Error: incorrect material associations"
+}
+
+if {![regexp "equal shapes" [compare neg b7]]} {
+  puts "Error: incorrect material associations"
+}
+
+
+# make the connected shape periodic with period grater than the unit cell
+cmakeperiodic cp -x 12 -trim -1 -y 12 -trim -1
+
+checknbshapes cp -ref [nbshapes c] -t
+checkprops cp -equal c
+
+crepeatshape res2 -x -1 -y -1 -x 1 -y 1
+
+checknbshapes res2 -vertex 736 -edge 1264 -wire 656 -face 656 -shell 112 -solid 112 -t
+checkprops res2 -s 14208 -v 11136
+
+savehistory h
+
+modified f h b6_4
+
+cmaterialson pos + f
+if {![regexp "equal shapes" [compare pos b6]]} {
+  puts "Error: incorrect material associations"
+}
+
+if {![regexp "No materials on this side." [cmaterialson neg - f]]} {
+  puts "Error: incorrect material associations"
+}

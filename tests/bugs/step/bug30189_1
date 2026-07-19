@@ -1,0 +1,45 @@
+########################################
+# Wrong export to STEP of located root.
+########################################
+
+pload OCAF
+
+XOpen [locate_data_file bug30189.xbf] D
+WriteStep D $imagedir/${casename}.stp
+ReadStep DD $imagedir/${casename}.stp
+
+# Check location
+XGetOneShape res DD
+set props [lprops res]
+
+if {[lindex $props 9]  != "90"} {
+  puts "Error: wrong location on shape."
+}
+if {[lindex $props 12] != "75"} {
+  puts "Error: wrong location on shape."
+}
+if {[lindex $props 15] != "60"} {
+  puts "Error: wrong location on shape."
+}
+
+# Check structure
+set top_level [XGetTopLevelShapes DD]
+if {$top_level != "0:1:1:1 0:1:1:2 0:1:1:3 0:1:1:4 "} {
+  puts "Error: wrong structure of document."
+}
+set nb [XNbComponents DD 0:1:1:1]
+if {$nb != "1"} {
+  puts "Error: wrong structure of document."
+}
+set nb [XNbComponents DD 0:1:1:2]
+if {$nb != "3"} {
+  puts "Error: wrong structure of document."
+}  
+
+# Check colors
+if {[XGetShapeColor DD 0:1:1:3 surf] != "RED"}            { puts "Error: wrong color." }
+if {[XGetShapeColor DD 0:1:1:4 surf] != "DARKGOLDENROD1"} { puts "Error: wrong color." }
+
+Close D
+Close DD
+file delete $imagedir/${casename}.stp

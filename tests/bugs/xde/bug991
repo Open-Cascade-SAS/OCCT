@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC991"
+puts "================"
+puts ""
+
+puts ""
+puts "TEST COMPLETED" 
+puts ""
+
+exit
+
+set status 0
+
+if { ${status} == 0 } {
+  puts "OCC991: Error"
+} else {
+  puts "OCC991: OK"
+}

@@ -1,0 +1,29 @@
+puts "==========="
+puts "  BUC60898"
+puts "==========="
+puts ""
+
+pload XDE
+
+set filepath [locate_data_file BUC60898.igs]
+if [catch { igesbrep $filepath a *} result] { 
+    puts "Faulty BUC60898: here is reading problem"
+} else {
+    puts "BUC60898 OK"
+    tpcompound a
+
+    if [catch {sewing result 1e-7 a } catch_result] {
+	puts "Faulty  BUC60898: function SEWING gives except"
+    } else {
+	puts " BUC60898 OK: function SEWING works without except"
+    }
+
+    checkmaxtol result -ref 0.077930308575156593
+    checknbshapes result -shell 4
+    checkfreebounds result 1725
+
+    checkprops result -s 798.266
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+}
+
+

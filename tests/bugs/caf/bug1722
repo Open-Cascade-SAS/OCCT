@@ -1,0 +1,98 @@
+puts "================"
+puts "OCC1722"
+puts "================"
+puts ""
+#######################################################################################
+# Wrong behaviour of the method CommitCommand of class TDocStd_MultiTransactionManager
+#######################################################################################
+
+proc OCC1722_Check_real_attribute {IsGood doc label good_real case} {
+  global ${doc}
+  # Check real attribute
+  set percent_max 0.1
+  if [catch { set real [GetReal ${doc} ${label}] } message] {
+    set IsGood 0
+    puts "OCC1722 Error (case ${case})"
+  } else {
+    set real_percent [expr abs(${real} - ${good_real}) / double(${good_real}) * 100.]
+    if {${real_percent} > ${percent_max}} {
+       puts "good_real = ${good_real}"
+       puts "real = ${real}"
+       puts "real_percent = ${real_percent}"
+       puts "OCC1722 Error (case ${case}-2)"
+    }
+  }
+  return ${IsGood}
+}
+
+
+set IsGood 1
+set Case 0
+set aLabel 0:1:1
+set aReal1 1.1
+set aReal2 2.1
+
+
+NewDocument doc1
+mtmCreate 4
+
+mtmAdd doc1
+
+SetReal doc1 ${aLabel} ${aReal1}
+set IsGood [OCC1722_Check_real_attribute ${IsGood} ${doc1} ${aLabel} ${aReal1} [incr Case]]
+
+OpenCommand doc1
+SetReal doc1 ${aLabel} ${aReal2}
+set IsGood [OCC1722_Check_real_attribute ${IsGood} ${doc1} ${aLabel} ${aReal2} [incr Case]]
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There is one document ( "3095112" ) in the manager 
+# Nested transaction mode is off
+#  
+# 
+# ***     End     ***
+################################################################################
+set index1 [lsearch -exact ${list} "Undo:"]
+
+# Check dump
+set case [incr Case]
+if { ${index1} != -1 } {
+  set IsGood 0
+  puts "OCC1722 Error (case ${case})"
+}
+
+mtmCommit Transaction1
+
+set list [mtmDump]
+################################################################################
+# *** Dump of MTM ***
+# There is one document ( "3095112" ) in the manager 
+# Nested transaction mode is off
+#  
+#  Undo: 	Transaction1 - 1 documents  ( "3095112" )   < Last action
+# 
+# ***     End     ***
+################################################################################
+set index2 [lsearch -exact ${list} "Undo:"]
+
+# Check dump
+set case [incr Case]
+if { ${index2} == -1 } {
+  set IsGood 0
+  puts "OCC1722 Error (case ${case})"
+}
+
+Undo doc1
+set IsGood [OCC1722_Check_real_attribute ${IsGood} ${doc1} ${aLabel} ${aReal1} [incr Case]]
+
+Redo doc1
+set IsGood [OCC1722_Check_real_attribute ${IsGood} ${doc1} ${aLabel} ${aReal2} [incr Case]]
+
+
+if { ${IsGood} == 1 } {
+  puts "OCC1722 OK"
+} else {
+  puts "OCC1722 Error"
+}

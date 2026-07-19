@@ -1,0 +1,18 @@
+puts "=========="
+puts "OCC24879"
+puts "=========="
+puts ""
+############################################
+# Wrong result of General Fuse operation
+############################################
+
+restore [locate_data_file bug24879_c.brep] c
+
+bclearobjects
+bcleartools
+baddcompound c
+bfillds -s
+bbuild result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

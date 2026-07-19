@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC20391"
+puts "============"
+puts ""
+#######################################################################
+# Shape deforming via 3 scale factors raises error.Appendix for IPAL20387
+#######################################################################
+
+set BugNumber OCC20391
+
+restore [locate_data_file bug19811_VanneMP_supports_tiges_V3.brep] a 
+
+if [catch {deform result a 2 2 2}] {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+checkprops result -s 2.71197e+07
+checkview -display result -2d -path ${imagedir}/${test_image}.png

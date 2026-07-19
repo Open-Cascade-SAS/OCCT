@@ -1,0 +1,17 @@
+puts "======="
+puts "0031853: Mesh - holes in triangulation with large linear deflection"
+puts "======="
+puts ""
+
+pload MODELING XDE VISUALIZATION
+
+testreadstep [locate_data_file bug31853_WR16-30.step] result
+
+incmesh result 1 -a 6
+checktrinfo result -tri 142834 -nod 72496
+
+vinit View1
+vdefaults -autoTriang 0
+vdisplay -dispMode 1 result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

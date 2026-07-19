@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC28385"
+puts "========"
+puts ""
+#################################################
+# Improve drawing isolines (DBRep_IsoBuilder algorithm)
+#################################################
+
+
+binrestore [locate_data_file bug28385_de_iges_1_J9_faces.bin] a
+
+smallview
+isos a 2
+repeat 9 u
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

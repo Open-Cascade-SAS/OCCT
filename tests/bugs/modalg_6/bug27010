@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC27010"
+puts "============"
+puts ""
+############################################################################
+# Wrong classification of the point relatively the solid
+############################################################################
+
+restore [locate_data_file bug27002_Compartment.brep] s
+point p1 103.740000000001 2e-014 24.3498644581774
+point p2 110.740000000001 2e-014 24.3498644581774
+
+set cls1 [bclassify s p1]
+if { [regexp {IN} $cls1] } {
+    puts "Error : Wrong result1 obtained by solid classifier algorithm"
+} else {
+    puts "OK : Good result1 obtained by solid classifier algorithm"
+}
+
+set cls2 [bclassify s p2]
+if { [regexp {IN} $cls2] } {
+    puts "Error : Wrong result2 obtained by solid classifier algorithm"
+} else {
+    puts "OK : Good result2 obtained by solid classifier algorithm"
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

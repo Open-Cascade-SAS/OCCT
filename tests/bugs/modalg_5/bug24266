@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC24266"
+puts "============"
+puts ""
+######################################################
+# Wrong result obtained by 'bopargcheck'
+######################################################
+
+restore [locate_data_file bug24266_qx.brep] result
+
+set info [bopargcheck result]
+
+if { [regexp "Faulties, that can not be treated by BOP, are detected" ${info}] == 1 } {
+    puts "Error : Wrong result"
+} else {
+    puts "OK : Good result"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

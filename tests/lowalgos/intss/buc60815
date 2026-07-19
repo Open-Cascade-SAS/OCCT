@@ -1,0 +1,22 @@
+puts "TODO OCC12345 ALL: Faulty BUC60815: NO EXCEPTION."
+puts "=========="
+puts "BUC60815"
+puts "=========="
+
+plane p1 1 0 0
+plane p2 0 0 0 1 0 0
+trim p1 p1 -50 50 -50 50
+trim p2 p2 -75 75 -75 75 
+intersect r2 p1 p2
+extsurf e1 r2 10 10 10
+extsurf e3 r2 10 10 10
+
+if [catch { intersect result e1 e3 } catch_result] {
+    puts "Faulty BUC60815: NO EXCEPTION."
+    puts "INTERSECTION BETWEEN TWO SURFACES LYING ON THE SAME PLANE UNDEFINED"
+} else {
+    puts "BUC60815 OK: suitable except"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

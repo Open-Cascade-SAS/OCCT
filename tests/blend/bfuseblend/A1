@@ -1,0 +1,9 @@
+box b -15 -15 -15 30 30 15
+pcylinder s 10 15
+ttranslate s 0 0 -0.01
+tscale b 0 0 0 SCALE1
+tscale s 0 0 0 SCALE1
+explode s E
+bfuseblend result s b 1*SCALE1
+ 
+checkprops result -s 451533

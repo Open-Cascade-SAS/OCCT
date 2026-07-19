@@ -1,0 +1,11 @@
+puts "REQUIRED ALL: Algorithm has failed"
+
+puts "========================"
+puts "0033306: Modeling Algorithm - Crash in TrimEdge() method"
+puts "========================"
+puts ""
+
+restore [locate_data_file bug33306_1.brep] w1
+restore [locate_data_file bug33306_2.brep] w2
+
+thrusections res 0 0 w1 w2 

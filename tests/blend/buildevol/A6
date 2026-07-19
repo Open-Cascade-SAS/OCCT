@@ -1,0 +1,13 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : D2
+## Comment : 
+## ====================================
+
+pcylinder s 50 100 270
+explode s E
+mkevol result s
+updatevol s_9 0 10 1 20 2 10
+buildevol
+
+checkprops result -s 44716.1

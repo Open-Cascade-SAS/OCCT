@@ -1,0 +1,8 @@
+set TypeOfFile "igs"
+
+set AddToDocument "ASSEMBLY_C_L"
+
+set CompareDocumentsMode "FACES VOLUME COLORS LAYERS"
+
+
+

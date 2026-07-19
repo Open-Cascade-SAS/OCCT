@@ -1,0 +1,13 @@
+puts "=========================="
+puts "BUC60659: There was E x c e p t i o n after vsetshading command"
+puts "=========================="
+puts ""
+
+pload MODELING VISUALIZATION
+box a 10 30 50 
+vinit View1
+vdisplay a
+vfit
+vsetshading a 
+
+vdump $imagedir/${casename}.png

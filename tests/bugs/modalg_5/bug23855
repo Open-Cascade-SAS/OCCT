@@ -1,0 +1,21 @@
+puts "========="
+puts "OCC23855"
+puts "========="
+puts ""
+###########################################################
+# Old BOPs fail on Win7 64bit when using TBB
+###########################################################
+
+psphere s1 10
+psphere s2 10
+bcommon result s1 s2
+
+explode result so
+
+checkshape result
+
+checknbshapes result_1 -ref [nbshapes s1]
+checknbshapes result_1 -ref [nbshapes s2]
+
+checkprops result_1 -equal s1
+checkprops result_1 -equal s2

@@ -1,0 +1,20 @@
+puts "=========="
+puts "OCC24519"
+puts "=========="
+puts ""
+####################################################################
+# 0024519: Intersection of a cylinder and a plane does not return
+####################################################################
+
+restore [locate_data_file bug24519_cylinder.brep] cy
+restore [locate_data_file bug24519_plane.brep] pl
+
+bsection r cy pl
+set exp [explode r]
+
+if { $exp != "r_1" } {
+  puts "Error: First intersection is not returned"
+}
+
+checksection r -r 2
+checkprops r -l 3.83537

@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC23031"
+puts "========"
+puts ""
+###########################################################
+# Empty result for the extrema between a circle and a line.
+###########################################################
+
+set BugNumber OCC23031
+
+
+restore [locate_data_file OCC23031-b1.brep] b1 
+restore [locate_data_file OCC23031-b2.brep] b2 
+
+mkcurve c1 b1
+mkcurve c2 b2
+
+set extrema_res [extrema c1 c2]
+set extrema_length [llength ${extrema_res} ]
+
+if {${extrema_length} != 1 } {
+   puts "${BugNumber}: Faulty"
+} else {
+   puts "${BugNumber}: OK"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

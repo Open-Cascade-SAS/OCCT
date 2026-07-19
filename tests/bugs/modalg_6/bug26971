@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC26971"
+puts "============"
+puts ""
+###############################
+## First test case for Set-45
+###############################
+
+restore [locate_data_file bug26971_Face.brep] b1
+restore [locate_data_file bug26971_Compartment.brep] b2
+
+ttranslate b1 0 -0.05997969281015891 -0.0130076110171253
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 0
+
+checkprops result -s 0.0639006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,19 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========================"
+puts " OCC366 "
+puts "========================"
+puts ""
+##################################################
+## Checkshape says that face is valid but it includes selfintersecting wire
+##################################################
+
+restore [locate_data_file buc61006.brep] result
+
+set che [checkshape result]
+
+if { [regexp "Faulty" $che] != 1 } {
+   puts "Error : Checkshape command works wrongly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

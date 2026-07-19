@@ -1,0 +1,4 @@
+circle result 70 0 1 0 30
+2drotate result 0 0 90
+checklength result -l 188.49555921538757
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

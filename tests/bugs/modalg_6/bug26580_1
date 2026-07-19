@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC26580"
+puts "========"
+puts ""
+####################################################
+# BRepProj_Projection does not provide any results
+####################################################
+
+smallview
+
+restore [locate_data_file bug26775_a.brep] plate
+restore [locate_data_file bug26580-marker-1.brep] marker
+
+prj result marker plate 0 0 -1
+checkshape result_1
+
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

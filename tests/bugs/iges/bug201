@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC201"
+puts "========"
+puts ""
+#########################################################
+## Incorrect face (with wrong boundary) is imported from the file ps1002-v5.igs.
+#########################################################
+
+igesbrep [locate_data_file OCC201.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

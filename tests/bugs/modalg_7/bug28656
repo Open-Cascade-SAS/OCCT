@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC28656"
+puts "========"
+puts ""
+#####################################
+## 3d offset modifies the input shape
+#####################################
+
+pcylinder s 5 15
+
+setflags s locked
+
+explode s f
+
+offsetparameter 1e-7 c i
+offsetload s 1 s_2
+
+catch {offsetperform result}
+
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png

@@ -1,0 +1,51 @@
+puts "============"
+puts "OCC25354"
+puts "============"
+puts ""
+#######################################################################
+# Intersection operation
+#######################################################################
+
+#Case 49
+
+box b 100 100 100
+explode b f
+
+set aLF {}
+set N 10
+
+for {set i 1} {$i < $N} {incr i} {
+  tcopy b_1 f1_${i}
+  ttranslate f1_${i} [expr $i * 10]  0.  0.
+  lappend aLF f1_${i}
+}
+
+for {set i 1} {$i < $N} {incr i} {
+  tcopy b_3 f3_${i}
+  ttranslate f3_${i} 0. [expr $i * 10]  0. 
+  lappend aLF f3_${i}
+}
+
+for {set i 1} {$i < $N} {incr i} {
+  tcopy b_5 f5_${i}
+  ttranslate f5_${i} 0. 0. [expr $i * 10]  
+  lappend aLF f5_${i}
+}
+#
+set N 11
+for {set i 1} {$i < $N} {incr i} {
+  psphere s_${i} [expr $i * 5]
+  ttranslate s_${i} 50 50 50
+  lappend aLF s_${i}
+}
+
+eval compound $aLF q
+
+bclearobjects
+bcleartools
+baddcompound q
+bfillds -t
+bbop result 4 -t
+
+checknbshapes result -vertex 2781 -edge 7332 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10114
+checkview -display result -2d -path ${imagedir}/${test_image}.png

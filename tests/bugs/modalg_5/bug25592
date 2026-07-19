@@ -1,0 +1,50 @@
+puts "============"
+puts "OCC25592"
+puts "============"
+puts ""
+######################################################
+# Bad result of Fillet operation
+######################################################
+
+restore [locate_data_file bug25592_tshape.brep] t
+explode t e
+shape c c
+add t_4 c
+add t_6 c
+fillet r t 30 c
+explode r f
+
+set info1 [bopargcheck r_2 #f]
+if { [regexp "to be valid for BOP" ${info1}] == 1 } {
+    puts "1. OK : Good result of Fillet operation\n"
+} else {
+    puts "1. Error : Bad result of Fillet operation\n"
+}
+
+set info2 [bopargcheck r_1 #f]
+if { [regexp "to be valid for BOP" ${info2}] == 1 } {
+    puts "2. OK : Good result of Fillet operation\n"
+} else {
+    puts "2. Error : Bad result of Fillet operation\n"
+}
+
+set info3 [bopargcheck r_6 #f]
+if { [regexp "to be valid for BOP" ${info3}] == 1 } {
+    puts "3. OK : Good result of Fillet operation\n"
+} else {
+    puts "3. Error : Bad result of Fillet operation\n"
+}
+
+set info4 [bopargcheck r_7 #f]
+if { [regexp "to be valid for BOP" ${info4}] == 1 } {
+    puts "4. OK : Good result of Fillet operation\n"
+} else {
+    puts "4. Error : Bad result of Fillet operation\n"
+}
+
+set info5 [bopargcheck r_9 #f]
+if { [regexp "to be valid for BOP" ${info5}] == 1 } {
+    puts "5. OK : Good result of Fillet operation\n"
+} else {
+    puts "5. Error : Bad result of Fillet operation\n"
+}

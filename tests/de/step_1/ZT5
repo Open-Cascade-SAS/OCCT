@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj6_c1-pe-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 19 )  Warnings = 0  ( 0 )  Summary  = 0  ( 19 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 4 )  Summary  = 0  ( 4 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 2  ( 2 )  Face     = 7  ( 7 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 2  ( 2 )  Face     = 7  ( 7 )   FreeWire = 0  ( 3 ) 
+TOLERANCE   : MaxTol   =         1e-007  ( 1.001604854e-007 )  AvgTol   =          1e-007  (  1.000067289e-007 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 8  ( 8 )  N2Labels = 0  ( 0 )   TotalLabels = 12  ( 12 )   NameLabels = 7  ( 7 )   ColorLabels = 7  ( 7 )   LayerLabels = 3  ( 3 )
+PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 2  ( 2 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = DODGERBLUE2 RED WHITE YELLOW  ( DODGERBLUE2 RED WHITE YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 03___PRT_ALL_CURVES  ( 03___PRT_ALL_CURVES )
+
+}

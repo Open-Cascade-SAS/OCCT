@@ -1,0 +1,16 @@
+# File : begin
+
+proc changeconf {value conf} {
+  set res ""
+  foreach iter [split $conf \n] {
+    if {![regexp {!.*} $iter]} {
+      if {[regexp {(provider.*:)} $iter scope]} {
+        append res "$scope $value \t\n" 
+      }
+      if {[regexp {(global.*:)} $iter scope]} {
+        append res "$iter\n" 
+      }
+    }
+  }
+  return $res
+}

@@ -1,0 +1,47 @@
+puts "============"
+puts "BUC60882"
+puts "============"
+puts ""
+#######################################################################
+## The edge is corrupted after applying command "fsameparameter": tolerance is increased up to 1e+50
+#######################################################################
+
+pload XDE
+
+restore [locate_data_file BUC60882_samepar.brep] result
+
+set che [checkshape result]
+
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Warning BUC60882: Source shape is NOT correct. It was detected by Checkshape command"
+} else {
+    puts "BUC60882 OK: Source shape is valid"
+}
+
+puts "*** Before : "
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTol
+
+puts "MaxTolerance = $MaxTol"
+if { $MaxTol > 1 } {
+    puts "Warning : Tolerance of Source edge is more then 1.0"
+} else {
+    puts " Tolerance of source edge is less then 1.0"
+}
+
+fsameparameter result 1e-5
+
+puts "*** After : "
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTol_1
+
+puts "MaxTolerance = $MaxTol_1"
+if { $MaxTol_1 > $MaxTol } {
+    puts [format "Faulty BUC60882 : Tolerance of Result edge increased and it is equal to %s" $MaxTol_1]
+} else {
+    puts " BUC60882 OK: Tolerance of Result edge is less or equal to tolerance of Sourse edge."
+}
+
+checkprops result -l 1768.53 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

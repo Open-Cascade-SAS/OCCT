@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC29"
+puts "========"
+puts ""
+
+stepread [locate_data_file OCC29.stp] a *
+
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

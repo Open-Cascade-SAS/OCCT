@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC24620"
+puts "============"
+puts ""
+#######################################################################
+# BOPAlgo_CheckerSI returns interferences that are not sub-shapes of the source shape
+#######################################################################
+
+vertex v1 0 0 0
+vertex v2 10 0 0
+vertex v3 4 -5 0
+vertex v4 4 5 0
+edge e1 v1 v2
+edge e2 v3 v4
+compound e1 e2 b1
+
+bopcheck b1
+
+compound x0 x1 b1 result
+
+checknbshapes result -vertex 4 -edge 2 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 2 -shape 8
+checkview -display result -2d -path ${imagedir}/${test_image}.png

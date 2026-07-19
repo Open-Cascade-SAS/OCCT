@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC27781"
+puts "========"
+puts ""
+#############################################
+# Exception in ShapeFix_Shape algorithm with option FixSmallAreaWireMode
+#############################################
+
+restore [locate_data_file bug27781_face_with_small_wires.brep] a
+
+fixshape result a +s
+
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,14 @@
+cylinder surf 1 
+trimv surf surf -1 1 
+convert surf surf
+mkface f surf
+getanasurf asurf f cyl  1.e-7
+if {[isdraw asurf]} {
+  set log [dump asurf]
+  if { [regexp {CylindricalSurface} $log ] != 1 } {
+     puts "Error: surface is not a cylindrical surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+

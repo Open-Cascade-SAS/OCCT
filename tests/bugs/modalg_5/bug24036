@@ -1,0 +1,21 @@
+puts "========================"
+puts "OCC24036"
+puts "========================" 
+puts ""
+#######################################################################
+# Regression: sewing is not correct
+# (OCC 6.6.0 regression) BRepBuilderAPI_Sewing returns wrong result
+#######################################################################
+
+pload XSDRAW
+
+restore [locate_data_file bug24036_data.brep] v
+explode v
+sewing result 0.00001 v_1 v_2
+
+checkshape result
+checkmaxtol result -ref 1.0000002593655894e-007 -source {v_1 v_2} -min_tol 1.e-4
+checknbshapes result -shell 1
+checkfreebounds result 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

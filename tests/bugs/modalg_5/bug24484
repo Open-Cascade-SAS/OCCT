@@ -1,0 +1,35 @@
+puts "==========="
+puts "OCC24484"
+puts "==========="
+puts ""
+#########################################################
+# sprops gives incorrect matrix of inertia and moments
+#########################################################
+
+set IX_ch 2.66667e+08
+set IY_ch 1.33333e+08
+set IZ_ch 1.33333e+08
+set iner_ch1 1.33333e+08
+set iner_ch2 2.66667e+08
+set iner_ch3 1.33333e+08
+restore [locate_data_file bug24484_Face_2.brep] result
+set info [sprops result]
+
+regexp {IX += +([-0-9.+eE]+)} $info full IX
+regexp {IY += +([-0-9.+eE]+)} $info full IY
+regexp {IZ += +([-0-9.+eE]+)} $info full IZ
+regexp -all {Matrix of Inertia :[\t\n]*[\s\t]*([-0-9.+eE]+)[\s\t]*[-0-9.+eE]+[\s\t]*[-0-9.+eE]+[\t\n]*[\s\t]*[-0-9.+eE]+[\s\t]*([-0-9.+eE]+)[\s\t]*[-0-9.+eE]+[\t\n]*[\s\t]*[-0-9.+eE]+[\s\t]*[-0-9.+eE]+[\s\t]*([-0-9.+eE]+)} $info full iner1 iner2 iner3
+
+if { $IX != $IX_ch || $IY != $IY_ch || $IZ != $IZ_ch } {
+    puts "Error : Moments are incorrect"
+} else {
+    puts "OK : Moments are correct"
+}
+
+if { $iner1 != $iner_ch1 || $iner2 != $iner_ch2 || $iner3 != $iner_ch3 } {
+    puts "Error : Matrix of Inertia is incorrect"
+} else {
+    puts "OK : Matrix of Inertia is correct"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

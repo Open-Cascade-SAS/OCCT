@@ -1,0 +1,19 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========"
+puts "OCC28600"
+puts "========"
+puts ""
+########################################################################################################
+# Bad performance of the checkshape command
+########################################################################################################
+
+pload ALL
+
+# Read shape.
+testreadstep [locate_data_file bug28600.stp] s1
+
+# Measure performance metrics.
+chrono s reset; chrono s start;
+checkshape s1
+chrono s stop counter checkshape; chrono s show;
+

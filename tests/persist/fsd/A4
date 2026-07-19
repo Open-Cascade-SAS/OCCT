@@ -1,0 +1,8 @@
+cylinder c 5 8 0 3
+trim c c 0 2*pi -1 1
+rotate c 5 5 5 0 1 0 90
+mkface base c
+
+check_fsd base bin
+check_fsd base cmp
+check_fsd base gen

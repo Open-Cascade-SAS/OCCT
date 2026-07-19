@@ -1,0 +1,57 @@
+puts "============"
+puts "OCC24157"
+puts "============"
+puts ""
+############################################
+# Parallelization of assembly part of BO
+############################################
+
+box b1 100 100 100
+set cx {}
+psphere sp 1.
+explode sp f
+copy sp_1 sp
+
+set ds 2.5
+set dS 10.
+set aNbGroups 4
+
+for {set N 0} {$N < ${aNbGroups}} {incr N} {
+  for {set K 0} {$K < ${aNbGroups}} {incr K} {
+    for {set M 0} {$M < ${aNbGroups}} {incr M} {
+      for {set n 0} {$n < 3} {incr n} {
+        for {set k 0} {$k < 3} {incr k} {
+          for {set m 0} {$m < 3} {incr m} {
+            tcopy sp   sp_${N}_${K}_${M}_${n}_${k}_${m}
+            ttranslate sp_${N}_${K}_${M}_${n}_${k}_${m} 2.5 2.5 2.5	
+            ttranslate sp_${N}_${K}_${M}_${n}_${k}_${m} [expr $k*${ds}] [expr $m*${ds}] [expr $n*${ds}]
+	    ttranslate sp_${N}_${K}_${M}_${n}_${k}_${m} [expr $M*${dS}] [expr $K*${dS}] [expr $N*${dS}] 
+            lappend cx sp_${N}_${K}_${M}_${n}_${k}_${m}
+          }
+        }
+      }
+    }
+  }
+}
+eval compound $cx b2 
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddcompound b2
+bfillds
+
+regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
+
+if { [regexp {Debug mode} [dversion]] } {
+  set check_time 200
+} else {
+  set check_time 135
+}
+if { $tps_time > $check_time } {
+  puts "Error: low performance"
+} else {
+  puts "OK: high performance"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

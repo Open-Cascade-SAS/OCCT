@@ -1,0 +1,49 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+set NbIters 101
+set step [expr 360.0/($NbIters-1) ]
+
+restore [locate_data_file bug29237_no_overlap.rhs.brep] a
+
+# Create AABB for a and put it into "r1" variable
+#   Draw[]> bounding a -shape r1
+# The volume of one AABB is
+#   Draw[]> vprops r1 1.0e-12 -full
+#   32736000.184203226
+set Vexp 32736000.184203226
+
+set VMax 0
+set MaxIteration 0
+
+for {set i 1} { $i <= $NbIters} { incr i } {
+  bounding a -obb -shape rr$i
+  
+  regexp {Mass +: +([-0-9.+eE]+)} [vprops rr$i 1.0e-12 -full] full Vreal
+  
+  if { $Vreal > $VMax } {
+    set VMax $Vreal
+    set MaxIteration $i
+    copy a amax
+  }
+  
+  if { $i != $NbIters } { trotate a 283 162 317 2 7 9 $step }
+}
+
+set aDeltaMax [ expr 100.0*abs($VMax/$Vexp - 1.0) ]
+
+puts "Delta of computation not greater than $aDeltaMax %. Maximal delta is achieved in $MaxIteration iteration. See \"amax\" shape."
+
+if { $aDeltaMax > 30 } {
+  puts "Error: The obtained OBB(s) is not precise."
+}
+
+axo
+donly amax rr${MaxIteration}
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

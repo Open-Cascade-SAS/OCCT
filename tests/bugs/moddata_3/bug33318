@@ -1,0 +1,27 @@
+puts "==========================================================="
+puts "0033318: Data Exchange - Modifying the BRep flag after exporting the shape"
+puts "==========================================================="
+
+pload XDE
+
+set filepath [locate_data_file bug28620.brep]
+set f1 [open $filepath "r"]
+set string1 [read $f1]
+close $f1
+
+set conf {provider.BREP.OCC.write.binary : 0}
+
+set aTmpFile ${imagedir}/tmpfile1.brep
+readfile sh1 $filepath
+writefile sh1 $aTmpFile -conf $conf
+
+set f2 [open $aTmpFile "r"]
+set string2 [read $f2]
+close $f2
+
+set newstr [string trim $string2]
+if { [string first $newstr [string trim $string1]] == -1 } {
+  puts "Error: strings is not equal"
+}
+
+file delete -force $aTmpFile

@@ -1,0 +1,42 @@
+pload QAcommands
+
+puts "========"
+puts "OCC566"
+puts "========"
+puts ""
+###############################################
+##BRepBndLib::AddClose builds box larger than BRepBndLib::Add
+###############################################
+
+restore [locate_data_file OCC566.brep] a 
+
+bounding a -save v1_x v1_y v1_z v2_x v2_y v2_z -dump -shape result
+set err2 [OCC566 a]
+
+regexp { *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+)} $err2 full v3_x v3_y v3_z v4_x v4_y v4_z
+
+vertex v1 v1_x v1_y v1_z
+vertex v2 v2_x v2_y v2_z
+
+vertex v3 $v3_x $v3_y $v3_z
+vertex v4 $v4_x $v4_y $v4_z
+
+distmini d1 v1 v2
+distmini d2 v3 v4
+
+regexp {([-0-9.+eE]+)$} [dump d1_val] full dis1
+puts $dis1
+regexp {([-0-9.+eE]+)$} [dump d2_val] full dis2
+puts $dis2
+
+set err [expr 1.*abs((($dis1 - $dis2) / $dis2) * 100)]
+puts ""
+puts [format "Different is %s percents" $err]
+
+if {$err > 1.0} {
+    puts " Faulty OCC566: BRepBndLib::AddClose builds box larger than BRepBndLib::Add - this should not be so!"
+} else {
+    puts " OCC566 OK"
+}
+
+checkview -display a -with result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,37 @@
+puts "========"
+puts "0033183: Data Exchange - Lose texture after saving XBF file"
+puts "Checking saving of textures for the previous version"
+puts "========"
+
+pload OCAF
+
+Close D -silent
+XOpen [locate_data_file bug33183.xml] D
+
+set ref {
+Label:                  0:1:10:3
+Name:                   boat1
+AlphaMode:              BlendAuto
+AlphaCutOff:            0.5
+IsDoubleSided:          Auto
+Common.Ambient:         0.21404099464416504 0.21404099464416504 0.21404099464416504
+Common.Diffuse:         0.21404099464416504 0.21404099464416504 0.21404099464416504
+Common.DiffuseTexture:  texture://C:/Work/Projects/OpenCASCADE/testfiles/ship_boat.jpg
+Common.Specular:        0 0 0
+Common.Emissive:        0 0 0
+Common.Shininess:       0.0099999997764825821
+Common.Transparency:    0
+}
+
+set data [XGetVisMaterial D 0:1:10:3]
+
+for {set i 1} {$i <= 12} {incr i} {
+  set data_str [lindex $data $i-1]
+  set ref_str  [lindex $ref  $i-1]
+  if { $data_str != $ref_str } {
+     puts "Error: Data is not equal"
+     break
+  }
+}
+
+Close D

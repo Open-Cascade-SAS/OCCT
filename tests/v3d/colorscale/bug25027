@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC25027: Visualization - 2D layer viewport is updated incorrectly on resize"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b 1 2 3
+vinit View1 w=1024 h=512
+vsetdispmode 1
+vdisplay b
+vfit
+vcolorscale cs -range 10 20 100 -font 16 -textpos right -xy 0 0
+vmoveto 512 250
+
+vdump ${imagedir}/${casename}.png

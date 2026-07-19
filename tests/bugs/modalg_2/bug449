@@ -1,0 +1,20 @@
+
+puts "========================"
+puts " OCC449 "
+puts "========================"
+puts ""
+#######################
+## Invalid cut result
+#######################
+
+restore [locate_data_file OCC449a.brep] b1 
+checkshape b1
+
+restore [locate_data_file OCC449b.brep] b2
+checkshape b2
+
+bcut result b1 b2
+
+checkprops result -s 43401.5 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,16 @@
+restore [locate_data_file a102] a
+restore [locate_data_file b136] b
+
+# fix the second shape
+fixshape b b
+# revert the tolerance
+settolerance b 0.003
+
+bop a b
+bopfuse result
+
+checkshape result
+checknbshapes result -vertex 16 -edge 28 -wire 13 -face 13 -shell 1 -solid 1
+checkprops result -s 20777.6 -v 173396
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

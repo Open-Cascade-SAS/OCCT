@@ -1,0 +1,23 @@
+puts "========================"
+puts "OCC663"
+puts "========================"
+#### Wrong translation of faces on SurfaceOfRevolution
+puts ""
+
+igesbrep [locate_data_file D44-11325-6.igs] a 2860
+
+set x 62.5015115293408
+set y -56.0926450759605
+set z -44.3
+vertex v $x $y $z
+
+distmini d a_1 v
+
+set MinDistList [dump d_val]
+set MinDist [lindex $MinDistList end]
+
+if {$MinDist > 1e-7} {
+    puts "Faulty OCC663"
+} else {
+    puts "OCC663 OK"
+}

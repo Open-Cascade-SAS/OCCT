@@ -1,0 +1,9 @@
+#E3----------------------------------------------
+profile p t 5 -5 c 5 90 t 5 5 t 0 5 t -5 5 c 5 90 t -5 -5
+prism p p 0 0 12
+nexplode p f
+depouille result p 0 0 1 p_1 1 0 0 0 0 0 1 \
+p_4 4 0 0 0 0 0 1 \
+p_7 7 0 0 0 0 0 1
+
+checkprops result -s 1005.01

@@ -1,0 +1,18 @@
+puts "========================"
+puts " OCC613"
+puts "(case 1)"
+puts "========================"
+puts ""
+#############################################
+## Meshing algo cannot create mesh for faces with internal edges
+#############################################
+
+restore [locate_data_file OCC613a.brep] result
+
+tclean result
+isos result 0
+incmesh result .1
+triangles result
+
+checktrinfo result -tri -nod
+checkview -display result -3d -path ${imagedir}/${test_image}.png

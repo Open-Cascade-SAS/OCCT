@@ -1,0 +1,24 @@
+puts "========"
+puts "0026269: Modeling Data - Analytical extrema does not take into account trimmed input data"
+puts "========"
+puts ""
+
+#case 2
+circle c1 0 0 0 10
+circle c2 0 0 0 5
+trim c1 c1 0 1
+trim c2 c2 3 4
+
+set res_extrema [extrema c1 c2]
+
+if { [regexp "Infinite number of extremas" $res_extrema] == 0} {
+  if {[llength $res_extrema] != 1} {
+    puts "Error : expected 1 extrema, but found [llength $res_extrema]"
+  }
+} else {
+  puts "Error : Infinite number of extremas is found"
+}
+
+smallview  +X+Y
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

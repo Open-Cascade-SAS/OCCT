@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC25175"
+puts "============"
+puts ""
+###########################################################################
+# BRepBuilderAPI_Sewing can crash if an edge without 3D curve is presented
+###########################################################################
+
+pload XSDRAW IGES
+
+igesread [locate_data_file bug25175_3.igs] a *
+
+sewing result 0.1 a
+
+checkmaxtol result -ref 0.21794517334615857 
+checknbshapes result -shell 1
+checkfreebounds result 0
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

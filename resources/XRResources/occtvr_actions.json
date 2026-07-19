@@ -1,0 +1,225 @@
+{
+  "actions": [
+    {
+      "name": "/actions/generic_head/in/headset_on_head",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/generic_left/in/pose_base",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/generic_right/in/pose_base",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/generic_left/in/pose_front",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/generic_right/in/pose_front",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/generic_left/in/pose_handgrip",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/generic_right/in/pose_handgrip",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/generic_left/in/pose_tip",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/generic_right/in/pose_tip",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/generic_left/out/haptic",
+      "type": "vibration"
+    },
+    {
+      "name": "/actions/generic_right/out/haptic",
+      "type": "vibration"
+    },
+    {
+      "name": "/actions/generic_left/in/appmenu_click",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_right/in/appmenu_click",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_left/in/sysmenu_click",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/generic_right/in/sysmenu_click",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/generic_left/in/trigger_click",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_right/in/trigger_click",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_left/in/trigger_pull",
+      "type": "vector1"
+    },
+    {
+      "name": "/actions/generic_right/in/trigger_pull",
+      "type": "vector1"
+    },
+    {
+      "name": "/actions/generic_left/in/grip_click",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_right/in/grip_click",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_left/in/trackpad_position",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/generic_right/in/trackpad_position",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/generic_left/in/trackpad_touch",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_right/in/trackpad_touch",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_left/in/trackpad_click",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_right/in/trackpad_click",
+      "type": "boolean"
+    },
+	{
+      "name": "/actions/generic_left/in/thumbstick_position",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/generic_right/in/thumbstick_position",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/generic_left/in/thumbstick_touch",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_right/in/thumbstick_touch",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_left/in/thumbstick_click",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/generic_right/in/thumbstick_click",
+      "type": "boolean"
+    }
+  ],
+  "action_sets": [
+    {
+      "name": "/actions/generic_head",
+      "usage": "single"
+    },
+    {
+      "name": "/actions/generic_left",
+      "usage": "leftright"
+    },
+    {
+      "name": "/actions/generic_right",
+      "usage": "leftright"
+    }
+  ],
+  "default_bindings": [
+    {
+      "controller_type": "vive_controller",
+      "binding_url": "occtvr_bindings_vive_controller.json"
+    },
+    {
+      "controller_type": "generic",
+      "binding_url": "occtvr_bindings_generic.json"
+    },
+    {
+      "controller_type": "holographic_controller",
+      "binding_url": "occtvr_bindings_holographic_hmd.json"
+    },
+    {
+      "controller_type": "indexhmd",
+      "binding_url": "occtvr_bindings_index_hmd.json"
+    },
+    {
+      "controller_type": "rift",
+      "binding_url": "occtvr_bindings_rift.json"
+    },
+    {
+      "controller_type": "vive",
+      "binding_url": "occtvr_bindings_vive.json"
+    },
+    {
+      "controller_type": "vive_cosmos",
+      "binding_url": "occtvr_bindings_vive_cosmos.json"
+    },
+    {
+      "controller_type": "vive_pro",
+      "binding_url": "occtvr_bindings_vive_pro.json"
+    }
+  ],
+  "localization": [
+    {
+      "language_tag": "en_US",
+      "/actions/generic_head/in/headset_on_head":      "Headset is on head",
+      "/actions/generic_left/in/appmenu_click":        "Left app menu",
+      "/actions/generic_left/in/sysmenu_click":        "Left system menu",
+      "/actions/generic_left/in/trigger_click":        "Left trigger click",
+      "/actions/generic_left/in/trigger_pull":         "Left trigger squeeze",
+      "/actions/generic_left/in/grip_click":           "Left hand full grip",
+      "/actions/generic_left/in/pose_base":            "Left hand base",
+      "/actions/generic_left/in/pose_front":           "Left hand front",
+      "/actions/generic_left/in/pose_handgrip":        "Left handgrip pose",
+      "/actions/generic_left/in/pose_tip":             "Left forefinger tip",
+      "/actions/generic_left/in/trackpad_position":    "Left trackpad position",
+      "/actions/generic_left/in/trackpad_touch":       "Left trackpad touch",
+      "/actions/generic_left/in/trackpad_click":       "Left trackpad click",
+      "/actions/generic_left/in/thumbstick_position":  "Left thumbstick position",
+      "/actions/generic_left/in/thumbstick_touch":     "Left thumbstick touch",
+      "/actions/generic_left/in/thumbstick_click":     "Left thumbstick click",
+      "/actions/generic_left/out/haptic":              "Left hand haptic",
+      "/actions/generic_right/in/appmenu_click":       "Right app menu",
+      "/actions/generic_right/in/sysmenu_click":       "Right system menu",
+      "/actions/generic_right/in/trigger_click":       "Right trigger click",
+      "/actions/generic_right/in/trigger_pull":        "Right trigger squeeze",
+      "/actions/generic_right/in/grip_click":          "Right hand full grip",
+      "/actions/generic_right/in/pose_base":           "Right hand base",
+      "/actions/generic_right/in/pose_front":          "Right hand front",
+      "/actions/generic_right/in/pose_handgrip":       "Right handgrip pose",
+      "/actions/generic_right/in/pose_tip":            "Right forefinger tip",
+      "/actions/generic_right/in/trackpad_position":   "Right trackpad position",
+      "/actions/generic_right/in/trackpad_touch":      "Right trackpad touch",
+      "/actions/generic_right/in/trackpad_click":      "Right trackpad click",
+      "/actions/generic_right/in/thumbstick_position": "Right thumbstick position",
+      "/actions/generic_right/in/thumbstick_touch":    "Right thumbstick touch",
+      "/actions/generic_right/in/thumbstick_click":    "Right thumbstick click",
+      "/actions/generic_right/out/haptic":             "Right hand haptic"
+    }
+  ]
+}

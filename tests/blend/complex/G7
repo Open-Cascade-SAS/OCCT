@@ -1,0 +1,13 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : M5
+## Comment : from cts21630
+## ====================================
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+
+restore [locate_data_file CFI_cts21630.rle] a
+explode a e
+# this may not be all the fillets
+blend result a 2 s_132 2 s_139 0.5 s_4 0.5 s_144 0.5 s_119 1 s_50
+
+checkprops result -s 0

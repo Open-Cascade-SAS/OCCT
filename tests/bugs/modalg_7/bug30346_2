@@ -1,0 +1,23 @@
+puts "========"
+puts "0030346: Modeling Algorithms - BRepPrimAPI_MakeRevol throws BRepSweep_Translation::MakeEmptyVertex"
+puts "========"
+puts ""
+
+pload MODELING 
+
+sphere s 1
+mkface f1 s 0 2*pi 0.785398163397448 1.5707963267949
+prism r1 f1 0 0 2 
+savehistory h1
+set s1 [dump h1]
+if { !([regexp "0 Deleted" $s1] && [regexp "3 Generated" $s1])} {
+  puts "Error: wrong history h1"
+}
+#
+mkface f2 s 0 5 0.785398163397448 1.5707963267949
+prism r2 f2 0 0 2
+savehistory h2
+set s2 [dump h2]
+if { !([regexp "0 Deleted" $s2] && [regexp "7 Generated" $s2])} {
+  puts "Error: wrong history h2"
+}

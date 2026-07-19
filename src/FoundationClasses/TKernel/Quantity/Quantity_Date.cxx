@@ -1,0 +1,439 @@
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// -------------------------------------------------------------
+// C matra datavision 1993
+// Updated :
+// -------------------------------------------------------------
+
+#include <Quantity_Date.hxx>
+#include <Quantity_DateDefinitionError.hxx>
+#include <Quantity_Period.hxx>
+#include <Standard_OutOfRange.hxx>
+
+#include "Quantity_TimeConstants.pxx"
+
+namespace
+{
+
+static constexpr int month_table[12] = {31,  // January
+                                        28,  // February
+                                        31,  // March
+                                        30,  // April
+                                        31,  // May
+                                        30,  // June
+                                        31,  // July
+                                        31,  // August
+                                        30,  // September
+                                        31,  // October
+                                        30,  // November
+                                        31}; // December
+
+static constexpr int SecondsByYear     = 365 * SECONDS_PER_DAY; // Normal Year
+static constexpr int SecondsByLeapYear = 366 * SECONDS_PER_DAY; // Leap Year
+
+// Returns the number of days in a month for a given year (handles leap years)
+constexpr int getDaysInMonth(const int theMonth, const int theYear) noexcept
+{
+  if (theMonth == 2)
+  {
+    return Quantity_Date::IsLeap(theYear) ? 29 : 28;
+  }
+  return month_table[theMonth - 1];
+}
+} // anonymous namespace
+
+// -----------------------------------------
+// Initialize a date to January,1 1979 00:00
+// -----------------------------------------
+
+Quantity_Date::Quantity_Date()
+    : mySec(0),
+      myUSec(0)
+{
+}
+
+// -----------------------------------------------------------
+// IsValid : Checks the validity of a date
+// This is the complete way month, day, year, ... micro second
+// -----------------------------------------------------------
+
+bool Quantity_Date::IsValid(const int mm,
+                            const int dd,
+                            const int yy,
+                            const int hh,
+                            const int mn,
+                            const int ss,
+                            const int mis,
+                            const int mics)
+{
+
+  if (mm < 1 || mm > 12)
+  {
+    return false;
+  }
+
+  if (yy < 1979)
+  {
+    return false;
+  }
+
+  if (dd < 1 || dd > getDaysInMonth(mm, yy))
+  {
+    return false;
+  }
+
+  if (hh < 0 || hh > 23)
+  {
+    return false;
+  }
+
+  if (mn < 0 || mn > 59)
+  {
+    return false;
+  }
+
+  if (ss < 0 || ss > 59)
+  {
+    return false;
+  }
+
+  if (mis < 0 || mis > 999)
+  {
+    return false;
+  }
+
+  if (mics < 0 || mics > 999)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------
+// Initialize a Date :
+// This is the complete way month, day, year, ... micro second
+// -----------------------------------------------------------
+
+Quantity_Date::Quantity_Date(const int mm,
+                             const int dd,
+                             const int yy,
+                             const int hh,
+                             const int mn,
+                             const int ss,
+                             const int mis,
+                             const int mics)
+    : mySec(0),
+      myUSec(0)
+{
+
+  SetValues(mm, dd, yy, hh, mn, ss, mis, mics);
+}
+
+// ------------------------------------------------------------
+// Set values of a Date :
+// This is the complete way month, day, year, ... micro second
+// ------------------------------------------------------------
+
+void Quantity_Date::SetValues(const int mm,
+                              const int dd,
+                              const int yy,
+                              const int hh,
+                              const int mn,
+                              const int ss,
+                              const int mis,
+                              const int mics)
+{
+
+  int i;
+
+  if (!Quantity_Date::IsValid(mm, dd, yy, hh, mn, ss, mis, mics))
+  {
+    throw Quantity_DateDefinitionError("Quantity_Date::Quantity_Date invalid parameters");
+  }
+
+  mySec  = 0;
+  myUSec = 0;
+  for (i = 1979; i < yy; i++)
+  {
+    if (!Quantity_Date::IsLeap(i))
+    {
+      mySec += SecondsByYear;
+    }
+    else
+    {
+      mySec += SecondsByLeapYear;
+    }
+  }
+
+  for (i = 1; i < mm; i++)
+  {
+    mySec += getDaysInMonth(i, yy) * SECONDS_PER_DAY;
+  }
+
+  mySec += SECONDS_PER_DAY * (dd - 1);
+
+  mySec += SECONDS_PER_HOUR * hh;
+
+  mySec += SECONDS_PER_MINUTE * mn;
+
+  mySec += ss;
+
+  myUSec += mis * USECS_PER_MSEC;
+
+  myUSec += mics;
+}
+
+// ---------------------------------------------
+// Values : Returns the values of a date
+// ~~~~~~
+// ---------------------------------------------
+
+void Quantity_Date::Values(int& mm,
+                           int& dd,
+                           int& yy,
+                           int& hh,
+                           int& mn,
+                           int& ss,
+                           int& mis,
+                           int& mics) const
+{
+
+  int carry;
+
+  for (yy = 1979, carry = mySec;; yy++)
+  {
+    if (!Quantity_Date::IsLeap(yy))
+    {
+      if (carry >= SecondsByYear)
+      {
+        carry -= SecondsByYear;
+      }
+      else
+      {
+        break;
+      }
+    }
+    else
+    {
+      if (carry >= SecondsByLeapYear)
+      {
+        carry -= SecondsByLeapYear;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  for (mm = 1;; mm++)
+  {
+    int i = getDaysInMonth(mm, yy) * SECONDS_PER_DAY;
+    if (carry >= i)
+    {
+      carry -= i;
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  // Extract day within the month
+  // carry holds seconds since the beginning of the current month
+  dd = carry / SECONDS_PER_DAY + 1;    // Convert 0-based to 1-based day
+  carry -= (dd - 1) * SECONDS_PER_DAY; // Remove day component from carry
+
+  extractTimeComponents(carry, hh, mn, ss);
+  extractMillisAndMicros(myUSec, mis, mics);
+}
+
+// ---------------------------------------------------------------------
+// Difference : Subtract a date to a given date; the result is a period
+// ~~~~~~~~~~   of time
+// ---------------------------------------------------------------------
+
+Quantity_Period Quantity_Date::Difference(const Quantity_Date& OtherDate)
+{
+  int i1, i2;
+
+  // Special case: if this date is the epoch (Jan 1, 1979 00:00),
+  // return OtherDate as a period (time elapsed since epoch)
+  if (mySec == 0 && myUSec == 0)
+  {
+    i1 = OtherDate.mySec;
+    i2 = OtherDate.myUSec;
+  }
+  else
+  {
+    i1 = mySec - OtherDate.mySec;
+    i2 = myUSec - OtherDate.myUSec;
+  }
+
+  // Normalize: handle microsecond underflow
+  normalizeSubtractionBorrow(i1, i2);
+
+  // Period is always absolute value, convert negative result
+  if (i1 < 0)
+  {
+    i1 = -i1;
+    if (i2 > 0)
+    {
+      i1--;
+      i2 = USECS_PER_SEC - i2;
+    }
+  }
+
+  Quantity_Period result(i1, i2);
+  return (result);
+}
+
+// ------------------------------------------------------------------
+// Subtract : subtracts a period to a date and returns a date.
+// ~~~~~~~~
+// ------------------------------------------------------------------
+
+Quantity_Date Quantity_Date::Subtract(const Quantity_Period& During)
+{
+
+  int           ss, mics;
+  Quantity_Date result;
+  result.mySec  = mySec;
+  result.myUSec = myUSec;
+  During.Values(ss, mics);
+
+  result.mySec -= ss;
+  result.myUSec -= mics;
+
+  normalizeSubtractionBorrow(result.mySec, result.myUSec);
+
+  if (result.mySec < 0)
+  {
+    throw Quantity_DateDefinitionError(
+      "Quantity_Date::Subtract : The result date is anterior to Jan,1 1979");
+  }
+
+  return (result);
+}
+
+// ----------------------------------------------------------------------
+// Add : Adds a period of time to a date
+// ~~~
+// ----------------------------------------------------------------------
+Quantity_Date Quantity_Date::Add(const Quantity_Period& During)
+{
+
+  Quantity_Date result;
+  During.Values(result.mySec, result.myUSec);
+  result.mySec += mySec;
+  result.myUSec += myUSec;
+  normalizeAdditionOverflow(result.mySec, result.myUSec);
+  return (result);
+}
+
+// ----------------------------------------------------------------------
+// Year : Return the year of a date
+// ~~~~
+// ----------------------------------------------------------------------
+int Quantity_Date::Year()
+{
+  int mm, dd, year, hh, mn, ss, mis, mics;
+  Values(mm, dd, year, hh, mn, ss, mis, mics);
+  return (year);
+}
+
+// ----------------------------------------------------------------------
+// Month : Return the month of a date
+// ~~~~~
+// ----------------------------------------------------------------------
+int Quantity_Date::Month()
+{
+  int mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (mm);
+}
+
+// ----------------------------------------------------------------------
+// Day : Return the day of a date
+// ~~~
+// ----------------------------------------------------------------------
+
+int Quantity_Date::Day()
+{
+  int mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (dd);
+}
+
+// ----------------------------------------------------------------------
+// hour : Return the hour of a date
+// ~~~~
+// ----------------------------------------------------------------------
+
+int Quantity_Date::Hour()
+{
+  int mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (hh);
+}
+
+// ----------------------------------------------------------------------
+// Minute : Return the minute of a date
+// ~~~~~~
+// ----------------------------------------------------------------------
+
+int Quantity_Date::Minute()
+{
+  int mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (mn);
+}
+
+// ----------------------------------------------------------------------
+// Second : Return the second of a date
+// ~~~~~~
+// ----------------------------------------------------------------------
+
+int Quantity_Date::Second()
+{
+  int mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (ss);
+}
+
+// ----------------------------------------------------------------------
+// millisecond : Return the millisecond of a date
+// ~~~~~~~~~~~
+// ----------------------------------------------------------------------
+
+int Quantity_Date::MilliSecond()
+{
+  int mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (mis);
+}
+
+// ----------------------------------------------------------------------
+// Day : Return the day of a date
+// ~~~
+// ----------------------------------------------------------------------
+
+int Quantity_Date::MicroSecond()
+{
+  int mm, dd, yy, hh, mn, ss, mis, mics;
+  Values(mm, dd, yy, hh, mn, ss, mis, mics);
+  return (mics);
+}

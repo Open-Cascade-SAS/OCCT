@@ -1,0 +1,56 @@
+puts "============="
+puts "Drawing mesh as closed object."
+puts "============="
+puts ""
+
+pload XDE VISUALIZATION
+
+set aMeshFile [locate_data_file sh1.stl]
+
+vclear
+vinit View1
+vaxo
+
+meshfromstl  m0 "$aMeshFile"
+vsetdispmode m0 2
+
+vsetlocation -noupdate m0 -100 0 0
+meshfromstl m1 "$aMeshFile"
+meshcolors  m1 elem1 0
+vsetlocation -noupdate m1    0 0 0
+
+meshfromstl m2 "$aMeshFile"
+meshcolors  m2 elem2 0
+vsetlocation -noupdate m2  100 0 0
+
+meshfromstl m3 "$aMeshFile"
+meshcolors  m3 nodal 1
+vsetlocation -noupdate m3    0 0 100
+
+meshfromstl m4 "$aMeshFile"
+meshcolors  m4 nodaltex 1
+vsetlocation -noupdate m4  100 0 100
+vfit
+
+vclipplane create p
+vclipplane change p equation 0 1 0 0
+vclipplane change p capping on
+vclipplane change p capping color 0.9 0.9 0.9
+vclipplane set    p view Driver1/Viewer1/View1
+
+for {set i 0} {$i < 5} {incr i} { meshclosed m$i 0 }
+vdump ${imagedir}/${casename}_open.png
+
+for {set i 0} {$i < 5} {incr i} { meshclosed m$i 1 }
+set aColor0 [vreadpixel 125 200 rgb name]
+set aColor1 [vreadpixel 225 300 rgb name]
+set aColor2 [vreadpixel 325 325 rgb name]
+set aColor3 [vreadpixel 225 150 rgb name]
+set aColor4 [vreadpixel 325 200 rgb name]
+
+# note that aColor2 is not expected to be capped
+if { "$aColor0" != "GRAY72" || "$aColor1" != "GRAY72" || "$aColor2" == "GRAY72" || "$aColor3" != "GRAY72" || "$aColor4" != "GRAY72" } {
+  puts "Error: capping color does not match"
+}
+
+vdump ${imagedir}/${casename}_closed.png

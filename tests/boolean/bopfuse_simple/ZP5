@@ -1,0 +1,17 @@
+box b 10 10 10 
+box c 4 4 4
+ttranslate c 2 2 2
+
+bop b c
+bopcut r
+explode r sh
+orientation r_2 R
+emptycopy b1 b
+add r_2 b1
+explode r so
+
+bop r_1 b1
+bopfuse result
+
+checkprops result -s 600
+checkview -display result -2d -otherwise { r_1 b1 } -s -path ${imagedir}/${test_image}.png

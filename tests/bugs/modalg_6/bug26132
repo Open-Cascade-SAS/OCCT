@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC26132"
+puts "============"
+puts ""
+######################################################
+# Invalid result of boolean operation
+######################################################
+
+restore [locate_data_file bug26132_shape.brep] c
+
+explode c
+
+bcommon result c_1 c_2
+
+set square 947.358
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 6
+ EDGE      : 11
+ WIRE      : 8
+ FACE      : 8
+ SHELL     : 2
+ SOLID     : 2
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 38
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Boolean operations common"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

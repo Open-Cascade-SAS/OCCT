@@ -1,0 +1,10 @@
+#C2----------------------------------------------
+plane p 0 0 0 1 0 0 0 -.5 1
+psphere p p 20 
+plane p2 0 0 15 0 0 1 0 -1 0
+pcylinder p2 p2 7 15
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_2 12 0 0 30 0 0 1
+
+checkprops result -s 5536.07

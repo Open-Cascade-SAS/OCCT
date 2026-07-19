@@ -1,0 +1,56 @@
+puts "============"
+puts "OCC2755"
+puts "============"
+puts ""
+######################################################
+# Boolean Bug in OCC5.0 with the shape having a ellipse curve
+######################################################
+
+restore [locate_data_file OCC2755.brep] a 
+
+checkshape a
+
+explode a f
+mksurface gs a_1
+set list [proj gs 0 10 50]
+set list [lmatch $list ext_*]
+set ll 4
+
+set good_Parameter1List [list 0 0 0 0]
+set good_Parameter2List [list 40.4616826479819 211.944716681974 64.3186164305428 81.0582330575794]
+set good_OriginXList [list 0 0 0 0]
+set good_OriginYList [list 10 10 10 10]
+set good_OriginZList [list 50 50 50 50]
+set good_AxisXList [list -0.0300865818651084 -0.941236271764613 0.534306660761684 0.998573938898137]
+set good_AxisYList [list 0.999547296325529 -0.337748842654791 -0.845290714645381 0.0533862206328518]
+set good_AxisZList [list 0 0 0 0]
+
+if {[llength ${list}] != ${ll}} {
+    puts "Faulty OCC2755"
+} else {
+    set IsGood 1
+    for {set i 0} {$i < ${ll}} {incr i} {
+        set dump_list [dump [lindex ${list} $i]]
+        regexp { *Parameters *: *([-0-9.+eE]+) *([-0-9.+eE]+)} $dump_list full Parameter1 Parameter2
+        regexp { *Origin *:([-0-9.+eE]+), *([-0-9.+eE]+), *([-0-9.+eE]+)} $dump_list full OriginX OriginY OriginZ
+        regexp { *Axis *:([-0-9.+eE]+), *([-0-9.+eE]+), *([-0-9.+eE]+)} $dump_list full AxisX AxisY AxisZ
+
+        set good_Parameter1 [lindex ${good_Parameter1List} $i]
+        set good_Parameter2 [lindex ${good_Parameter2List} $i]
+        set good_OriginX [lindex ${good_OriginXList} $i]
+        set good_OriginY [lindex ${good_OriginYList} $i]
+        set good_OriginZ [lindex ${good_OriginZList} $i]
+        set good_AxisX [lindex ${good_AxisXList} $i]
+        set good_AxisY [lindex ${good_AxisYList} $i]
+        set good_AxisZ [lindex ${good_AxisZList} $i]
+
+        checkreal "Parameter1 / case 3 / $i" ${Parameter1} ${good_Parameter1} 0 0.001
+        checkreal "Parameter2 / case 3 / $i" ${Parameter2} ${good_Parameter2} 0 0.001
+        checkreal "OriginX / case 3 / $i" ${OriginX} ${good_OriginX} 0 0.001
+        checkreal "OriginY / case 3 / $i" ${OriginY} ${good_OriginY} 0 0.001
+        checkreal "OriginZ / case 3 / $i" ${OriginZ} ${good_OriginZ} 0 0.001
+        checkreal "AxisX / case 3 / $i" ${AxisX} ${good_AxisX} 0 0.001
+        checkreal "AxisY / case 3 / $i" ${AxisY} ${good_AxisY} 0 0.001
+        checkreal "AxisZ / case 3 / $i" ${AxisZ} ${good_AxisZ} 0 0.001
+    }
+}

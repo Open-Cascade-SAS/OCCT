@@ -1,0 +1,12 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : E1
+## Comment : 
+## ====================================
+
+pcone s 90 40 150 90
+trotate s 0 0 0 0 0 1 90
+explode s E
+blend result s 10 s_9
+
+checkprops result -s 42575.3

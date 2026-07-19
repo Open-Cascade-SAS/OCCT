@@ -1,0 +1,153 @@
+// Created on: 1993-03-04
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_DomainError.hxx>
+
+inline void Contap_Point::SetValue(const gp_Pnt& Pt, const double U, const double V)
+{
+  pt         = Pt;
+  uparam     = U;
+  vparam     = V;
+  onarc      = false;
+  isvtx      = false;
+  ismult     = false;
+  myInternal = false;
+}
+
+inline void Contap_Point::SetParameter(const double Para)
+{
+
+  paraline = Para;
+}
+
+inline void Contap_Point::SetVertex(const occ::handle<Adaptor3d_HVertex>& V)
+{
+
+  isvtx = true;
+  vtx   = V;
+}
+
+inline void Contap_Point::SetArc(const occ::handle<Adaptor2d_Curve2d>& A,
+                                 const double                          Param,
+                                 const IntSurf_Transition&             TLine,
+                                 const IntSurf_Transition&             TArc)
+{
+
+  onarc   = true;
+  arc     = A;
+  prmarc  = Param;
+  traline = TLine;
+  traarc  = TArc;
+}
+
+inline void Contap_Point::SetMultiple()
+{
+  ismult = true;
+}
+
+inline void Contap_Point::SetInternal()
+{
+  myInternal = true;
+}
+
+inline bool Contap_Point::IsMultiple() const
+{
+  return ismult;
+}
+
+inline bool Contap_Point::IsInternal() const
+{
+  return myInternal;
+}
+
+inline const gp_Pnt& Contap_Point::Value() const
+{
+
+  return pt;
+}
+
+inline double Contap_Point::ParameterOnLine() const
+{
+
+  return paraline;
+}
+
+inline void Contap_Point::Parameters(double& U1, double& V1) const
+{
+
+  U1 = uparam;
+  V1 = vparam;
+}
+
+inline bool Contap_Point::IsOnArc() const
+{
+  return onarc;
+}
+
+inline const occ::handle<Adaptor2d_Curve2d>& Contap_Point::Arc() const
+{
+
+  if (!onarc)
+  {
+    throw Standard_DomainError();
+  }
+  return arc;
+}
+
+inline const IntSurf_Transition& Contap_Point::TransitionOnLine() const
+{
+
+  if (!onarc)
+  {
+    throw Standard_DomainError();
+  }
+  return traline;
+}
+
+inline const IntSurf_Transition& Contap_Point::TransitionOnArc() const
+{
+
+  if (!onarc)
+  {
+    throw Standard_DomainError();
+  }
+  return traarc;
+}
+
+inline double Contap_Point::ParameterOnArc() const
+{
+
+  if (!onarc)
+  {
+    throw Standard_DomainError();
+  }
+  return prmarc;
+}
+
+inline bool Contap_Point::IsVertex() const
+{
+  return isvtx;
+}
+
+inline const occ::handle<Adaptor3d_HVertex>& Contap_Point::Vertex() const
+{
+
+  if (!isvtx)
+  {
+    throw Standard_DomainError();
+  }
+  return vtx;
+}

@@ -1,0 +1,16 @@
+
+puts "================"
+puts "OCC126"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC126-1.brep] sh1 
+checkshape sh1
+
+restore [locate_data_file OCC126-2.brep] sh2
+checkshape sh2
+
+compound sh1 sh2 result
+
+checkprops result -s 560.774
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC766"
+puts "========"
+puts ""
+###############################
+## Can not project the 3-D point on the ellipse
+###############################
+
+restore [locate_data_file OCC766.draw] c 
+
+set result [proj c 30 3.944304526105059e-31 20.0]
+
+set ll [llength $result]
+
+if {$ll > 0} {
+  puts "OCC770 OK"
+} else {
+  puts "Faulty OCC770"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

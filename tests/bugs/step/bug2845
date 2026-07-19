@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC2845"
+puts "========"
+puts ""
+####################################################
+## Regression of work of selections for STEP translator.
+####################################################
+
+set BugNumber OCC2845
+set filepath [locate_data_file extref.stp]
+if [catch { stepread $filepath a * } res] {
+    puts "Faulty ${BugNumber} : here is reading problem"
+} else {
+    tpcompound result
+    set info [listtypes xst-transferrable-roots]
+    if {$info == ""} {
+        puts "Faulty ${BugNumber}"
+    } else {
+	puts "OK ${BugNumber}"
+    }
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

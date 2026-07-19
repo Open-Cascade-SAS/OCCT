@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC205"
+puts "OCC348"
+puts "BUC61003"
+puts "========"
+######################################
+## puts "Crash on importing STEP file"
+## CS_EXHAUST.stp
+######################################
+
+vinit
+stepread [locate_data_file BUC61003-2.stp] a *
+
+tpcompound result
+checkshape result
+
+vdisplay result
+vsetdispmode 1
+vfit
+
+checktrinfo result -tri -nod
+checkview -display result -2d -path ${imagedir}/${test_image}.png

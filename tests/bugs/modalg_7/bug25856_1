@@ -1,0 +1,22 @@
+puts "TODO OCC25856 ALL: Faulty shapes in variables faulty_1 to"
+
+puts "============"
+puts "OCC25856"
+puts "============"
+puts ""
+#############################################################################################
+# BRepOffsetAPI_ThruSections returns an invalid shape if one wire contains degenerated edges
+#############################################################################################
+
+restore [locate_data_file bug25856_threeWires.brep] t
+
+explode t
+
+thrusections -N r 0 0 t_1 t_2
+checkshape r
+
+fixshape rr r
+checkshape rr
+
+checkview -display r  -2d -path ${imagedir}/${test_image}_1.png
+checkview -display rr -2d -path ${imagedir}/${test_image}_2.png

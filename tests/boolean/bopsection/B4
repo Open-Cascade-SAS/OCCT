@@ -1,0 +1,12 @@
+# Original bug : pro9481
+# Date : 19Mai98
+
+restore [locate_data_file pro9481a.rle] a
+restore [locate_data_file pro9481b.rle] b
+
+bop a b
+bopsection result
+
+checkprops result -l 900.779
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

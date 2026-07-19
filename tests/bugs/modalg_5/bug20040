@@ -1,0 +1,18 @@
+puts "=========="
+puts "OCC20040"
+puts "=========="
+puts ""
+###############################################
+# Incorrect result of thrusections operation
+###############################################
+
+restore [locate_data_file bug20040_profile.brep] w1
+checkshape w1
+
+copy w1 w2
+ttranslate w2 0 0 1
+
+thrusections -N result 0 0 w1 w2
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

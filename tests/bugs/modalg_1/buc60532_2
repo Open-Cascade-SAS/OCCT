@@ -1,0 +1,51 @@
+puts "=========="
+puts "BUC60532"
+puts "=========="
+
+restore [locate_data_file buc60532a.brep] p 
+checkshape p
+
+restore [locate_data_file buc60532b.brep] t1
+checkshape t1
+
+restore [locate_data_file buc60532c.brep] t2
+checkshape t2
+
+# create halfspace
+#vertex v 20 20 0
+halfspace h1 t1 20 20 0
+halfspace h2 t2 20 20 0
+
+# first cut
+bcut res1 p h1
+
+explode res1 e
+mkcurve cu11 res1_1
+mkcurve cu12 res1_2
+mkcurve cu13 res1_3
+mkcurve cu14 res1_4
+mkcurve cu15 res1_5
+
+checkshape res1
+puts [computetolerance res1]
+
+# second cut
+bcut res2 res1 h2
+tcopy res2 res
+checkshape res2
+
+explode res2 e
+mkcurve cu21 res2_1
+mkcurve cu22 res2_2
+mkcurve cu23 res2_3
+mkcurve cu24 res2_4
+
+explode res2 face
+
+puts [computetolerance res2]
+
+renamevar res2 result
+
+checkprops result -s 78.8852
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

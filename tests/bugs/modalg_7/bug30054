@@ -1,0 +1,19 @@
+puts "================================================="
+puts "0030054: BRepOffset_MakeOffset fails to build joints in intersection mode"
+puts "================================================="
+puts ""
+puts "TODO OCC33166 ALL: Faulty shapes"
+restore [locate_data_file bug30054.brep] a
+
+thickshell result a 1 i
+
+checkshape result
+
+checknbshapes result -vertex 16 -edge 28 -wire 14 -face 14 -t
+checkprops result -s 1361.56
+
+vdisplay result
+vsetdispmode 1
+vviewparams -scale 33.8198 -proj -0.185982 0.955207 0.230198 -up 0.223301 -0.187064 0.956631 -at 0.279032 2.94652 11.8154
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

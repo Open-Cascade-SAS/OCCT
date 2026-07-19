@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC23631"
+puts "========"
+puts ""
+###########################################
+## Infinite memory consumption in BRepMesh
+###########################################
+
+set BugNumber 23631
+
+restore [locate_data_file OCC396_f2903.brep] result
+
+incmesh result 0.01
+triangles result 
+
+checktrinfo result -tri 75 -nod 68
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

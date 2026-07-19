@@ -1,0 +1,34 @@
+puts "============"
+puts "0031440: Visualization - Impossible to make common behaviour for multi-selection in viewer"
+puts "============"
+puts ""
+
+vinit View1
+vpoint radP1 0 0 0
+vpoint radP2 50 50 0
+vpoint radP3 100 0 0
+vcircle circle radP1 radP2 radP3 1
+vfit
+
+vselect 50 300 150 300 150 100 50 100
+if {[vreadpixel 120 200 rgb name] != "DARKGOLDENROD"} { puts "ERROR: the circle is selected with no overlap mode activated" }
+vselect 0 0
+
+vselect 50 300 360 300 360 100 50 100
+if {[vreadpixel 120 200 rgb name] != "GRAY73"} { puts "ERROR: the circle is not selected" }
+vselect 0 0
+vclear
+
+box b 0 0 0 1 1 1
+vdisplay b 
+vfit
+vselmode b 2 1
+vviewparams -scale 500
+
+vdrawparray line polylines v 10 9 0 v 400 9 0 v 400 209 0 v 200 109 0 v 10 209 0 v 10 9 0
+vdisplay line -2d
+vsetcolor line red
+
+vselect 10 400 400 400 400 200 200 300 10 200
+
+vdump ${imagedir}/${casename}.png

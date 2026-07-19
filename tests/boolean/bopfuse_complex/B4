@@ -1,0 +1,18 @@
+restore [locate_data_file OCC100_sp.brep] a
+restore [locate_data_file OCC100_cyl.brep] b
+
+bclearobjects
+bcleartools
+baddobjects a b
+bfillds
+bcbuild rx
+
+# Use Cells Builder algorithm to Fuse Shell to Solid
+bcadd result b 1 -m 1 -u
+bcadd result a 1 b 0
+bcmakecontainers result
+
+checknbshapes result -solid 1 -shell 2 -face 8
+checkprops result -s 3411.98 -v 13511.3
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

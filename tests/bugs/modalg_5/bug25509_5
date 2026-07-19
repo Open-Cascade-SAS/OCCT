@@ -1,0 +1,27 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_1"
+puts "============"
+puts "OCC25509"
+puts "============"
+puts ""
+######################################################
+# Wrong shape considered as valid by checkshape
+######################################################
+
+# 05
+# Two vertices FORWARD of the solid that is out of the growth
+# 
+box b1 10 10 10 
+
+explode b1 
+
+vertex v1 11 11 0 
+vertex v2 11 11 11 
+
+shape result so
+add b1_1 result
+add v1 result
+add v2 result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

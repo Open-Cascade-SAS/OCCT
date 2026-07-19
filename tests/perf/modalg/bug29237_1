@@ -1,0 +1,50 @@
+puts "======="
+puts "0029237"
+puts "======="
+puts ""
+##################################################
+# Improve performance of Boolean Operations
+##################################################
+
+brestore [locate_data_file bug29237_tc_43.1_lhs.brep] a
+brestore [locate_data_file bug29237_tc_43.1_rhs.brep] b
+
+bglue 1
+bcheckinverted 0
+setfillhistory 0
+
+bclearobjects
+bcleartools
+baddobjects a
+baddtools b
+
+# start chronometer
+dchrono cpu restart
+bfillds
+
+bcbuild r
+
+# build the result of cut
+bcremoveall
+bcadd rcut a 1 b 0
+
+# build the result of common
+bcremoveall
+bcadd rcommon a 1 b 1
+
+# stop chronometer
+dchrono cpu stop counter OCC29237
+
+# restore default options
+boptions -default
+setfillhistory 1
+
+# check the result of CUT
+checkshape rcut
+checknbshapes rcut -vertex 1200 -edge 2040 -wire 842 -face 842 -shell 1 -solid 1 -t -m "CUT"
+checkprops rcut -s 3.4136e+006 -v 2.9712e+007
+
+# check the result of COMMON
+checkshape rcommon
+checknbshapes rcommon -vertex 1176 -edge 1764 -wire 882 -face 882 -shell 147 -solid 147 -t -m "COMMON"
+checkprops rcommon -s 2.13392e+006 -v 1.6448e+007

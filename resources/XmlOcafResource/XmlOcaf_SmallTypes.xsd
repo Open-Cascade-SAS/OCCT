@@ -1,0 +1,217 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+	elementFormDefault="qualified">
+
+<annotation>
+  <documentation xml:lang="en">
+    Copyright (c) 2001-2014 OPEN CASCADE SAS
+
+    This file is part of Open CASCADE Technology software library.
+
+    This library is free software; you can redistribute it and/or modify it under
+    the terms of the GNU Lesser General Public License version 2.1 as published
+    by the Free Software Foundation, with special exception defined in the file
+    OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+    distribution for complete text of the license and disclaimer of any warranty.
+
+    Alternatively, this file may be used under the terms of Open CASCADE
+    commercial license or contractual agreement.
+
+    Open Cascade Application Framework: Definition of basic types
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_SmallTypes.xsd
+  </documentation>
+</annotation>
+
+<!-- DEFINITIONS OF SIMPLE BASIC TYPES -->
+
+<simpleType name="ListOfInteger">
+  <list itemType="int"/>
+</simpleType>
+
+<simpleType name="ListOfReal">
+  <list itemType="double"/>
+</simpleType>
+
+<simpleType name="ListOf3Real">
+  <restriction base="ocaf:ListOfReal">
+    <length value="3"/>
+  </restriction>
+</simpleType>
+
+<simpleType name="GuidType">
+  <restriction base="string">
+    <length value="36"/>
+    <pattern value="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"/>
+  </restriction>
+</simpleType>
+
+<simpleType name="XPathLabel">
+  <restriction base="string">
+    <pattern value='/document/label(/label\[@tag=\"[1-9][0-9]*\"\])*'/>
+  </restriction>
+</simpleType>
+
+<!-- DEFINITIONS OF BASIC TYPES FOR OCAF ATTRIBUTES -->
+
+<complexType name="AbsStringAttributeType">
+  <simpleContent>
+    <extension base="string">
+      <attribute name="id" type="positiveInteger" use="required"/>
+    </extension>
+  </simpleContent>
+</complexType>
+
+<complexType name="AbsIntegerAttributeType">
+  <simpleContent>
+    <extension base="int">
+      <attribute name="id" type="positiveInteger" use="required"/>
+    </extension>
+  </simpleContent>
+</complexType>
+
+<complexType name="AbsRealAttributeType">
+  <simpleContent>
+    <extension base="double">
+      <attribute name="id" type="positiveInteger" use="required"/>
+    </extension>
+  </simpleContent>
+</complexType>
+
+<complexType name="AbsListIntegerAttributeType">
+  <simpleContent>
+    <extension base="ocaf:ListOfInteger">
+      <attribute name="id" type="positiveInteger" use="required"/>
+    </extension>
+  </simpleContent>
+</complexType>
+
+<complexType name="AbsListRealAttributeType">
+  <simpleContent>
+    <extension base="ocaf:ListOfReal">
+      <attribute name="id" type="positiveInteger" use="required"/>
+    </extension>
+  </simpleContent>
+</complexType>
+
+<complexType name="AbsXPathLabelType">
+  <simpleContent>
+    <extension base="ocaf:XPathLabel">
+      <attribute name="id" type="positiveInteger" use="required"/>
+    </extension>
+  </simpleContent>
+</complexType>
+
+<complexType name="AbsList3RealAttributeType">
+  <simpleContent>
+    <extension base="ocaf:ListOf3Real">
+      <attribute name="id" type="positiveInteger" use="required"/>
+    </extension>
+  </simpleContent>
+</complexType>
+
+<!-- DECLARATIONS OF ABSTRACT XML ELEMENTS FOR OCAF ATTRIBUTES -->
+
+<element name="AbstractStringAtt" type="ocaf:AbsStringAttributeType" abstract="true">
+  <annotation>
+    <documentation>
+      Abstract type corresponding to TDF_Attribute with String content
+    </documentation>
+  </annotation>
+</element>
+
+<element name="AbstractIntegerAtt" type="ocaf:AbsIntegerAttributeType" abstract="true">
+  <annotation>
+    <documentation>
+      Abstract type corresponding to TDF_Attribute with Integer content
+    </documentation>
+  </annotation>
+</element>
+
+<element name="AbstractRealAtt" type="ocaf:AbsRealAttributeType" abstract="true">
+  <annotation>
+    <documentation>
+      Abstract type corresponding to TDF_Attribute with Real content
+    </documentation>
+  </annotation>
+</element>
+
+<element name="AbstractListIntegerAtt"
+	 type="ocaf:AbsListIntegerAttributeType" abstract="true">
+  <annotation>
+    <documentation>
+      Abstract type corresponding to TDF_Attribute with List-Of-Integer content
+    </documentation>
+  </annotation>
+</element>
+
+<element name="AbstractListRealAtt"
+	 type="ocaf:AbsListRealAttributeType" abstract="true">
+  <annotation>
+    <documentation>
+      Abstract type corresponding to TDF_Attribute with List-Of-Real content
+    </documentation>
+  </annotation>
+</element>
+
+<element name="AbstractXPathLabel" type="ocaf:AbsXPathLabelType" abstract="true">
+  <annotation>
+    <documentation>
+      Abstract type representing XPath reference to OCAF label
+    </documentation>
+  </annotation>
+</element>
+
+<element name="AbstractList3RealAtt"
+	 type="ocaf:AbsList3RealAttributeType" abstract="true">
+  <annotation>
+    <documentation>
+      Abstract type corresponding to TDF_Attribute with List-Of-3-Real content
+    </documentation>
+  </annotation>
+</element>
+
+<!-- DECLARATION OF ABSTRACT XML ELEMENT FOR OCAF ATTRIBUTES WITH NO SIMPLE CONTENT -->
+
+<complexType name="AbstractAttributeType">
+  <complexContent>
+    <restriction base="anyType">
+      <attribute name="id" type="positiveInteger" use="required"/>
+    </restriction>
+  </complexContent>
+</complexType>
+
+<element name="AbstractAttribute" type="ocaf:AbstractAttributeType" abstract="true">
+  <annotation>
+    <documentation>
+      Abstract type corresponding to TDF_Attribute (the ancestor of all OCAF Attributes)
+    </documentation>
+  </annotation>
+</element>
+
+<!--  ELEMENT **LOCATION** -->
+
+<complexType name="Location">
+  <sequence>
+    <element name="datum" minOccurs="0">
+      <complexType>
+        <attribute name="id" type="positiveInteger" use="required"/>
+        <attribute name="trsf" use="required">
+          <simpleType>
+            <restriction base="ocaf:ListOfReal">
+              <length value="14"/>
+            </restriction>
+          </simpleType>
+        </attribute>
+      </complexType>
+    </element>
+    <element name="location" type="ocaf:Location" minOccurs="0"/>
+  </sequence>
+  <attribute name="power" type="positiveInteger" use="required"/>
+  <attribute name="datum" type="positiveInteger" use="required"/>
+</complexType>
+
+<element name="location" type="ocaf:Location"/>
+
+</schema>

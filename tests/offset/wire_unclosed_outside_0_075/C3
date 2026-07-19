@@ -1,0 +1,12 @@
+puts "TODO OCC23068 ALL: Error : The offset cannot be built."
+puts "TODO OCC23068 ALL: Error: The command cannot be built"
+#puts "TODO OCC23068 ALL: An exception was caught"
+puts "TODO OCC23068 ALL: Error: Offset is not done."
+
+restore [locate_data_file offset_wire_074.brep] s
+
+set length 0
+set nbsh_v 0
+set nbsh_e 0
+set nbsh_w 0
+

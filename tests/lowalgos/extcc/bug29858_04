@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC29858"
+puts "========"
+puts ""
+#################################################
+# Regression in GeomAPI_ExtremaCurveCurve
+#################################################
+
+# Read input
+restore [locate_data_file bug29858_04_e1.brep] e1
+restore [locate_data_file bug29858_04_e2.brep] e2
+
+# Extract geometry from topology
+mkcurve c1 e1
+mkcurve c2 e2
+
+# Run extrema
+set info [extrema c1 c2]
+
+# Amount Check
+if { [llength $info] != 2 } {
+   puts "Error: Invalid extrema number in extrema output"
+}
+
+# Check result
+checklength ext_1 -l 2.2204460492503131e-16 -eps 0.01
+checklength ext_2 -l 9.693032344962995e-16  -eps 0.01

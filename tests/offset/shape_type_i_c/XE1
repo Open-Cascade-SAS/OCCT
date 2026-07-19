@@ -1,0 +1,25 @@
+puts "TODO CR27414 ALL: Error : The area of result shape is"
+puts "TODO CR27414 ALL: Error : The volume of result shape is"
+puts "TODO CR27414 ALL: Error :  is WRONG because number of FACE entities in shape"
+
+restore [locate_data_file bug26917_rm084_dom8810_3.input.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 105.8
+
+set faces [explode s f]
+foreach f $faces {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found && abs($z - 1) < 1.e-7} {
+    offsetonface $f 100
+  }
+}
+offsetperform result
+
+checkprops result -v 0 -s 0
+
+unifysamedom result_unif result
+checknbshapes result_unif -shell 1 -face 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

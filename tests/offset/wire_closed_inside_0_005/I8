@@ -1,0 +1,12 @@
+puts "TODO OCC24156 MacOS: Error : The resulting shape is WRONG"
+
+restore [locate_data_file offset_wire_103.brep] s
+
+set length 316.751
+set nbsh_v 43
+set nbsh_e 43
+set nbsh_w 1
+
+
+
+

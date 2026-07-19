@@ -1,0 +1,8 @@
+restore [locate_data_file OCC100_sp.brep] a
+restore [locate_data_file OCC100_cyl.brep] b
+
+bop a b
+bopcut result a b
+
+checkprops result -s 2130.22
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

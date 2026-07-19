@@ -1,0 +1,6 @@
+box s 100 100 100
+explode s f
+
+offsetshape result s -10 s_1
+
+checkprops result -v 424000

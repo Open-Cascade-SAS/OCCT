@@ -1,0 +1,12 @@
+puts "CTS21801"
+puts "fuse"
+puts ""
+
+pcylinder c1 20 100
+pcylinder c2 20 100
+ttranslate c2 0 0 50
+
+bfuse result c1 c2
+
+checkprops result -s 21362.8
+checkview -display result -2d -otherwise { c1 c2 } -s -path ${imagedir}/${test_image}.png

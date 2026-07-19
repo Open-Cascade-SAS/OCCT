@@ -1,0 +1,12 @@
+puts "================"
+puts "OCC17126: Visualisation in 3d viewer in Draw hangs up"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug17126_ff_1285_viz.brep] a
+
+vinit View1
+vdisplay a
+vfit
+vdump $imagedir/${casename}.png

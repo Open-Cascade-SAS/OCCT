@@ -1,0 +1,31 @@
+puts "========================================"
+puts "0031578: BOP: wrong result in Debug mode"
+puts "========================================"
+puts ""
+
+restore [locate_data_file bug31578_a.brep] a
+restore [locate_data_file bug31578_b.brep] b
+
+bclearobjects
+bcleartools
+baddobjects a
+baddtools   b
+
+bfillds
+
+bbuild r
+checkshape r
+
+set tolres [checkmaxtol r]
+
+if { ${tolres} > 7.e-7} {
+   puts "Error: bad tolerance of result"
+}
+
+checknbshapes r -solid 3 -shell 3 -face 21 -wire 21 -edge 36 -vertex 19
+
+bbop r_1 1
+
+checkshape r_1
+checknbshapes r_1 -solid 1 -shell 1 -face 18 -wire 18
+checkprops r_1 -s 0.035795 -v 6.60461e-05

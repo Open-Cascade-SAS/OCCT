@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC6805"
+puts "============"
+puts ""
+######################################################
+# Operation BSplineRestriction produced shape with null pcurves
+######################################################
+
+set BugNumber OCC6805
+
+restore [locate_data_file OCC6805.brep] s1
+checkshape s1
+
+DT_ApplySeq result s1 ${imagedir}/OCC6805.res
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

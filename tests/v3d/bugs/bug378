@@ -1,0 +1,15 @@
+puts "========================"
+puts "BUC61058: Regression on KAS:dev:ros. Draw hangs after try to load 6381.brep shape to 3D Viewer. Case : cgg/004/S2"
+puts " OCC378 "
+puts "========================"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC378.brep] result
+
+tclean result
+vinit View1
+if [catch {vdisplay result } res] { puts "Error : function VDISPLAY works wrongly" }
+
+vfit
+vdump $imagedir/${casename}.png

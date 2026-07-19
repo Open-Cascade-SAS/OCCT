@@ -1,0 +1,20 @@
+puts "======="
+puts "OCC28113: BOPAlgo_Builder produces invalid shape"
+puts "======="
+puts ""
+
+
+restore [locate_data_file bug28113_shapes_2.brep] s
+explode s
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2
+bfillds
+bsplit result
+
+checkshape result
+checknbshapes result -wire 33 -face 33 -shell 3 -solid 3
+checkprops result -s 26451 -v 107642
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

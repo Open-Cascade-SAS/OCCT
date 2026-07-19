@@ -1,0 +1,45 @@
+
+puts "============"
+puts "BUC60848"
+puts "============"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file BUC60848.brep] a 
+checkshape a
+
+tcopy a res
+
+set Flag 0
+
+set Res [ catch { BUC60848 a } ]
+if { $Res != 0 } {
+    invert a
+    set Flag 1
+    puts ""
+}
+
+if { $Flag == 1 } {
+    set Res [ catch { BUC60848 a } ]
+    if { $Res != 0 } {
+        set Flag 2
+    }
+    puts ""
+}
+
+if { $Flag == 2 } {
+    puts "TEST FINISHED. RESULT IS BAD. Faulty"
+    puts ""
+}
+
+if { $Flag == 1 } {
+    puts "TEST FINISHED. RESULT IS OK. SHAPE HAS BEEN INVERTED."
+    puts ""
+}
+
+if { $Flag == 0 } {
+    puts "TEST FINISHED. RESULT IS OK."
+    puts ""
+}
+

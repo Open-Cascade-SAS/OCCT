@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC25334"
+puts "========"
+puts ""
+##########################################################################################################
+# BRepOffsetAPI_MakeOffset algofithm crashes on some customer's shape when option of open result is used
+##########################################################################################################
+
+restore [locate_data_file bug25334_faceProlongationCrash1.brep] a
+
+smallview
+
+explode a e
+wire ww a_3 a_4
+
+donly ww
+
+openoffset res ww 1 -10
+renamevar res_1 result
+
+vori ww 
+vori result
+
+fit
+
+checkprops result -l 558.479 
+checkshape result 
+checksection result
+
+checknbshapes result -vertex 4 -edge 3 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 8
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

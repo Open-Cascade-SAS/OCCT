@@ -1,0 +1,29 @@
+puts "========="
+puts "BUC60587"
+puts "========="
+puts ""
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+restore [locate_data_file buc60587a.brep] result
+checkshape result
+tclean result
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+vselect 180 180
+vsetcolor result CYAN3
+
+set x_coord 120
+set y_coord 180
+
+#checkcolor $x_coord $y_coord 0.7 1 0.9
+checkcolor $x_coord $y_coord 0 0.90980392694473267 0.90980392694473267
+
+if { $stat != 1 } {
+   puts "Error : Model has NOT CYAN colour."
+}
+
+vdump $imagedir/${casename}.png

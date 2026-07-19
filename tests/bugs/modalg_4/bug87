@@ -1,0 +1,33 @@
+puts "TODO OCC12345 ALL: Faulty : Now w1,w2 have bspline curves as basic !!!"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
+
+puts "========================"
+puts " BUC60958 "
+puts " OCC87 "
+puts "========================"
+
+puts "Restoring the wires :"
+restore [locate_data_file OCC86a.brep] w1 
+checkshape w1
+restore [locate_data_file OCC86b.brep] w2
+checkshape w2
+
+set first1 [dump w1]
+set second1 [dump w2]
+
+# puts "Do Thrusection by following command: thrusections res 0 0 w1 w2 "
+
+thrusections result 0 0 w1 w2
+
+set first2 [dump w1]
+set second2 [dump w2]
+
+if {$first1 != $first2 || $second1 != $second2} {
+    puts "Faulty : Now w1,w2 have bspline curves as basic !!!"
+} else {
+    puts "Correct result: Wires have circle curves as basic"
+}
+
+checkprops result -s 0 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

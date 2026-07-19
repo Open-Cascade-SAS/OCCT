@@ -1,0 +1,31 @@
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of "
+puts "============"
+puts "OCC15850"
+puts "============"
+puts ""
+#######################################################################
+# Regression in BOP - wrong results for simple shapes with Bspline geometry
+#######################################################################
+
+set BugNumber OCC15850
+
+restore [locate_data_file OCC15850_bb.brep] bb
+restore [locate_data_file OCC15850_bc.brep] bc
+
+bop bb bc
+bopsection result
+
+checkprops result -l 37.6991 
+checkshape result
+checksection result
+checknbshapes result -vertex 4 -edge 4 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 9
+regexp {nb alone Vertices +: +([-0-9.+eE]+)} [checksection result] full Vertices
+set good_Vertices 0
+if { ${Vertices} != ${good_Vertices} } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

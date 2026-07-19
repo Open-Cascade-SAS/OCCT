@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC27108"
+puts "========"
+puts ""
+#################################################################
+# GCPnt_TangentialDeflection does not respect linear deflection
+#################################################################
+
+set bug27108_requested_deflection 0.03
+
+restore [locate_data_file bug27108_Left.brep] a
+
+explode a e
+mkcurve c a_1
+set bug_info [crvtpoints result c $bug27108_requested_deflection 20*pi/180]
+
+smallview
+donly c result
+fit
+
+set bug27108_reached_deflection [lindex $bug_info 6]
+
+if { $bug27108_reached_deflection > $bug27108_requested_deflection} {
+  puts "ERROR: OCC27108 is reproduced. Requested deflection is less than reached."
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

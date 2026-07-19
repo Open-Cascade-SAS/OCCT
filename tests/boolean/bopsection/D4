@@ -1,0 +1,18 @@
+## fra60812
+#
+restore [locate_data_file CTO909_Bug3_Tr_obj.rle] a
+restore [locate_data_file Bug3_Tr_outil.rle] b
+
+fsameparameter a
+
+#pkv f
+updatetolerance a 1
+updatetolerance b 1
+#pkv t
+
+bop a b
+bopsection result
+
+checkprops result -l 523.479
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

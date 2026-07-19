@@ -1,0 +1,13 @@
+#F3----------------------------------------------
+polyline p 2 0 0 15 0 0 15 0 20 2 0 20 2 0 0 
+profile p p 0 -1 0 1 0 0 f 2 0 l 15 t 0 20 t -5 0 \
+t 0 -18 t -5 0 t 0 18 t -5 0
+revol p p 0 0 0 0 0 1 180
+nexplode p e
+blend p p 2 p_8 2 p_24
+nexplode p f
+depouille result p 0 0 1 p_2 2 0 0 0 0 0 1 \
+p_12 3 0 0 0 0 0 1 \
+p_3 1 0 0 0 0 0 1
+
+checkprops result -s 3349.7

@@ -1,0 +1,26 @@
+puts "========"
+puts "0032507: Visualization, TKOpenGl - topmost text disappears with Graphic3d_RTM_DEPTH_PEELING_OIT enabled"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+
+box b 1 2 3
+vdisplay b -dispMode 1
+vaspects b -transparency 0.5
+vfit
+
+vlight   headlight -display
+vdisplay headlight -2d bottomright 120 50
+vlight   amblight  -display
+vdisplay amblight  -2d bottomright  50 50
+
+vrenderparams -perfCounters triangles
+
+vdump $imagedir/${casename}_1.png
+
+vrenderparams -oit peel
+
+vdump $imagedir/${casename}_2.png

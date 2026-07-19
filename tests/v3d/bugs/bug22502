@@ -1,0 +1,26 @@
+puts "TODO OCC11111 ALL: Error: Number of triangles"
+puts "TODO OCC11111 ALL: Error: Number of nodes"
+puts "TODO OCC11111 ALL: Error: Maximal deflection"
+
+puts "============"
+puts "OCC22502: Triangulation cannot be built on valid face"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+restore [locate_data_file OCC22502-bug601_noshading.brep] result
+checkshape result
+tolerance result
+tclean result
+
+set Deflection 0.001
+incmesh result ${Deflection}
+checktrinfo result -tri 170 -nod 172 -defl 0.00061201255663038154 -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
+
+vinit View1
+vdisplay result
+vfit
+vsetdispmode 1
+
+vdump $imagedir/${casename}.png

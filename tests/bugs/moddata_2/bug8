@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC8"
+puts "================"
+puts ""
+###################################################
+## BRepTools_WireExplorere gives not all edges from a wire
+###################################################
+
+pload XDE
+restore [locate_data_file OCC8.brep] result
+
+checkshape result
+
+explode result w
+set info [expwire result_1 sh]
+
+if { [regexp "BRepTools_WireExplorer donne 16 Edges" $info] != 1 } {
+   puts "Error : BRepTools_WireExplorer gives WRONG number of edges."
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

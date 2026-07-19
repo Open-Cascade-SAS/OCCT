@@ -1,0 +1,65 @@
+puts "========"
+puts "Test custom uniform variables: -vec2, -vec3, -vec4, -mat3, -mat4"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# draw a box
+box b 1 2 3
+vclear
+vclose ALL
+vinit View1
+vsetdispmode 1
+vaxo
+vdisplay b
+vfit
+vrotate 0.2 0.0 0.0
+
+set aGlslVer "#version 110"
+if { [vdriver -default] == "TKOpenGles" } { set aGlslVer "#version 300 es" }
+
+# vertex shader applying a mat4 uniform transform and passing a vec4 color to fragment
+set aShaderVert "
+uniform mat4  uModelTrsf;
+uniform mat3  uNormTrsf;
+uniform vec4  uColor;
+uniform vec3  uLightDir;
+uniform vec2  uScale;
+THE_SHADER_OUT vec4  vColor;
+THE_SHADER_OUT vec3  vNormal;
+void main() {
+  vec4 aPos = uModelTrsf * occVertex;
+  aPos.xy  *= uScale;
+  vNormal   = normalize(uNormTrsf * occNormal.xyz);
+  vColor    = uColor;
+  gl_Position = occProjectionMatrix * occWorldViewMatrix * aPos;
+}"
+
+# fragment shader using the passed color and simple diffuse lighting
+set aShaderFrag "
+uniform vec3 uLightDir;
+THE_SHADER_IN vec4 vColor;
+THE_SHADER_IN vec3 vNormal;
+void main() {
+  float aNdotL = max(dot(normalize(vNormal), normalize(uLightDir)), 0.2);
+  occSetFragColor(vec4(vColor.rgb * aNdotL, vColor.a));
+}"
+
+# identity mat4 (row-major: 1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1)
+# identity mat3 (row-major: 1 0 0  0 1 0  0 0 1)
+vshaderprog b -vert $aShaderVert -frag $aShaderFrag -header "$aGlslVer" \
+  -mat4  uModelTrsf 1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1 \
+  -mat3  uNormTrsf  1 0 0  0 1 0  0 0 1 \
+  -vec4  uColor     0.2 0.6 1.0 1.0 \
+  -vec3  uLightDir  0.0 0.0 1.0 \
+  -vec2  uScale     1.0 1.0
+vdump $::imagedir/${::casename}_identity.png
+
+# apply a non-identity mat4 (translation by 0.5 in X)
+vshaderprog b -vert $aShaderVert -frag $aShaderFrag -header "$aGlslVer" \
+  -mat4  uModelTrsf 1 0 0 0.5  0 1 0 0  0 0 1 0  0 0 0 1 \
+  -mat3  uNormTrsf  1 0 0  0 1 0  0 0 1 \
+  -vec4  uColor     1.0 0.4 0.2 1.0 \
+  -vec3  uLightDir  1.0 1.0 1.0 \
+  -vec2  uScale     0.8 0.8
+vdump $::imagedir/${::casename}_translated.png

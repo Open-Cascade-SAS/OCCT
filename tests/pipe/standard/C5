@@ -1,0 +1,9 @@
+hyperbola profile 0 -110 -90 0 1 1 15 15
+mkedge profile profile -pi/2. pi/2.
+wire profile profile
+bsplinecurve w 2 3 0 3 1 1 2 3 0 0 0 2 1000 1000 1000 1 1000 0 0 1 -100 -100 -100 2
+mkedge w w
+wire w w
+pipe result w profile
+
+checkprops result -s 156102

@@ -1,0 +1,55 @@
+// Created on: 1995-12-07
+// Created by: Jean Yves LEBEY
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _TopOpeBRep_PointClassifier_HeaderFile
+#define _TopOpeBRep_PointClassifier_HeaderFile
+
+#include <BRepAdaptor_Surface.hxx>
+#include <TopoDS_Shape.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopAbs_State.hxx>
+
+class BRepTopAdaptor_TopolTool;
+class TopoDS_Face;
+class gp_Pnt2d;
+
+class TopOpeBRep_PointClassifier
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  Standard_EXPORT TopOpeBRep_PointClassifier();
+
+  Standard_EXPORT void Init();
+
+  Standard_EXPORT void Load(const TopoDS_Face& F);
+
+  //! compute position of point <P> regarding with the face <F>.
+  Standard_EXPORT TopAbs_State Classify(const TopoDS_Face& F, const gp_Pnt2d& P, const double Tol);
+
+  Standard_EXPORT TopAbs_State State() const;
+
+private:
+  occ::handle<BRepTopAdaptor_TopolTool> myTopolTool;
+  occ::handle<BRepAdaptor_Surface>      myHSurface;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<BRepTopAdaptor_TopolTool>, TopTools_ShapeMapHasher>
+               myTopolToolMap;
+  TopAbs_State myState;
+};
+
+#endif // _TopOpeBRep_PointClassifier_HeaderFile

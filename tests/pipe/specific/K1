@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC1477"
+puts "============"
+puts ""
+######################################################
+# Problems in MakePipeShell
+# (case 17)
+# test4.tcl
+######################################################
+
+polyline s1 0 0 0 10 0 0 10 0 10 10 10 10 0 10 10 0 10 0 0 0 0
+
+polyline s2 0 -2 -2 0 2 -2 0 2 2 0 -2 2 0 -2 -2
+
+puts "###############################################################################"
+puts "# (case /-CF/-/-R/)"
+puts "###############################################################################"
+
+checkshape s1
+checkshape s2
+
+mksweep s1
+
+setsweep -CF
+addsweep s2
+if [catch { buildsweep result -R} res] {
+  puts "Faulty OCC1477: buildsweep is wrong"
+}
+
+checkprops result -s 929.097 -v 939.398
+
+checknbshapes result -vertex 48 -edge 90 -wire 42 -face 42 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 223

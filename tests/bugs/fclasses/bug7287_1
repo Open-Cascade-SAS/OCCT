@@ -1,0 +1,34 @@
+puts "TODO ?СК33225 Linux: Checking trend failed "
+puts "TODO ?OCC7287 Linux: Tcl Exception: Memory leak detected"
+puts "TODO ?OCC7287 Linux: TEST INCOMPLETE"
+puts "TODO ?OCC7287 MacOS: Tcl Exception: Memory leak detected"
+puts "TODO ?OCC7287 MacOS: TEST INCOMPLETE"
+
+puts "============"
+puts "OCC7287"
+puts "============"
+puts ""
+######################################################
+# Problem of Memory Leak
+######################################################
+
+#
+# Result is Null shape
+#
+
+set BugNumber OCC7287
+
+set NCycles 10
+box b1 100 100 100
+box b2 50 50 50
+bop b1 b2
+bopcut r
+
+set listmem {}
+for {set i 1} {${i} <= ${NCycles}} {incr i } {
+    bop b1 b2
+    bopcut r
+
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 10 "Memory leak detected"
+}

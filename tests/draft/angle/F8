@@ -1,0 +1,10 @@
+#E2----------------------------------------------
+plane pt 0 0 0 1 0 0
+ptorus pt pt 25 24
+plane p 0 0 40 0 0 1 1 -1 0
+pcylinder p p 10 40
+bfuse f pt p
+nexplode f f
+depouille result f 0 0 1 f_3 5 0 0 80 0 0 1
+
+checkprops result -s 25894.6

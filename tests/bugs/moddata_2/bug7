@@ -1,0 +1,24 @@
+
+puts "================"
+puts "OCC7"
+puts "================"
+puts ""
+#########################################################
+## Extrema_ExtPElS throw the exception "gp_VectorWithNullMagnitude". 
+#########################################################
+
+ptorus tor 3 1
+explode tor f
+vertex vv 0 3 0
+
+distmini result vv tor_1
+set info [dump result]
+
+if { [regexp "TShape # 1 : EDGE" $info] != 1 
+   || [regexp "TShape # 2 : VERTEX" $info] != 1
+   || [regexp "TShape # 3 : VERTEX" $info] != 1 } {
+   puts "Error : Result is incorrect"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

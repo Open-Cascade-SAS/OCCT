@@ -1,0 +1,20 @@
+puts "============="
+puts "0030906: Visualization, SelectMgr_ViewerSelector - Object clipping planes overrides View clipping plane for next objects"
+puts "============="
+
+pload MODELING VISUALIZATION
+box b1 1 1 0 1 2 3
+box b2 3 0 0 1 2 3
+vclear
+vinit View1
+vdisplay -dispMode 1 -highMode 1 b1 b2
+vfit
+vzbufftrihedron
+vpoint p0 0 0 0
+vclipplane c1 -equation 0 1 0  1 -setOverrideGlobal b1
+vclipplane c2 -equation 0 1 0 -1 -set
+vmoveto 200 200
+if { [vreadpixel 250 200 -rgb -name] != "DARKGOLDENROD" } { puts "Error: selection of clipped object" }
+if { [vreadpixel 150 200 -rgb -name] != "CYAN2"         } { puts "Error: object is not selected" }
+
+vdump ${imagedir}/${casename}.png

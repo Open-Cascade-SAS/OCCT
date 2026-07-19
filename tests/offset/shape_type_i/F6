@@ -1,0 +1,11 @@
+puts "TODO OCC23068 ALL: result is not a topological shape"
+puts "TODO OCC23068 ALL: Error: The command cannot be built"
+puts "TODO OCC23068 ALL: TEST INCOMPLETE"
+
+cpulimit 500
+
+pcone s 9 4 15 270
+
+OFFSETSHAPE 1 {} $calcul $type
+
+checkprops result -v 0

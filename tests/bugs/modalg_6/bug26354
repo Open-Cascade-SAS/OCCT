@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC26354"
+puts "========"
+puts ""
+###################################################
+# Invalid result of General Fuse on wire and face
+###################################################
+
+smallview
+
+restore [locate_data_file OCC26356-f.brep] body
+restore [locate_data_file OCC26356-w.brep] contour
+
+bclearobjects
+bcleartools
+baddobjects contour body
+bapibuild result
+donly result
+fit
+
+checkshape result
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

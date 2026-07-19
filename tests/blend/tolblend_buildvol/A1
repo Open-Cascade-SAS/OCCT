@@ -1,0 +1,13 @@
+box s 0 0 0 100 100 100
+tscale  s 0 0 0 SCALE1 
+explode s E
+mkevol result s
+updatevol s_5 0 10*SCALE1 1 20*SCALE1 2 0*SCALE1
+buildevol
+ 
+checkprops result -s 1.48513e+06
+
+
+
+
+

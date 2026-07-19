@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC8228"
+puts "============"
+puts ""
+######################################################
+# exception is raised during the vprops in DRAW on the attached shape
+######################################################
+
+set BugNumber OCC8228
+
+catch {pload XDE}
+catch {pload OCAF}
+
+# Create a new document and set UndoLimit
+
+NewDocument D BinXCAF
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+ReadStep D [locate_data_file OCC8228.stp]
+XGetOneShape result D 
+
+checkprops result -s 1.46159e+06 
+checkshape result
+
+checknbshapes result -vertex 1296 -edge 2041 -wire 826 -face 761 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 4926
+checkview -display result -2d -path ${imagedir}/${test_image}.png

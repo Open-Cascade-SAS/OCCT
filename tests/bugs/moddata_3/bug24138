@@ -1,0 +1,53 @@
+puts "================"
+puts "OCC24138"
+puts "================"
+puts ""
+#######################################################################
+# Exception during projection of the point on the face
+#######################################################################
+
+ellipse w 0 0 0 10 5
+mkedge w w
+wire w w
+mkplane w w
+prism s w 2 0 30
+explode s f
+copy s_1 f
+point p 0.753071156928785 4.98580193823337 0
+
+set proj_fp [projponf f p -t]
+regexp {proj dist = ([-0-9.+eE]+)} ${proj_fp} full dist
+regexp {uvproj = ([-0-9.+eE]+) ([-0-9.+eE]+)} ${proj_fp} full uproj vproj
+regexp {pproj = ([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)} ${proj_fp} full proj1 proj2
+
+puts "dist=${dist}"
+puts "uproj=${uproj}"
+puts "vproj=${vproj}"
+puts "proj1=${proj1}"
+puts "proj2=${proj2}"
+
+set CMP_TOL [checkmaxtol f]
+
+puts "CMP_TOL=${CMP_TOL}"
+
+set good_dist 9.16061678111512e-10
+set good_uproj 1.4954178490327235
+set good_vproj -2.3095450102606156e-12
+set good_proj1 0.75307115689421944
+set good_proj2 4.9858019373179632
+
+if { [expr abs(${dist} - ${good_dist}) ] > ${CMP_TOL} } {
+   puts "Error: invalid dist"
+}
+if { [expr abs(${uproj} - ${good_uproj}) ] > ${CMP_TOL} } {
+   puts "Error: invalid uproj"
+}
+if { [expr abs(${vproj} - ${good_vproj}) ] > ${CMP_TOL} } {
+   puts "Error: invalid vproj"
+}
+if { [expr abs(${proj1} - ${good_proj1}) ] > ${CMP_TOL} } {
+   puts "Error: invalid proj1"
+}
+if { [expr abs(${proj2} - ${good_proj2}) ] > ${CMP_TOL} } {
+   puts "Error: invalid proj2"
+}

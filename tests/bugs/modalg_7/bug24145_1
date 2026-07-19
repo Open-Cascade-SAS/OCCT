@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC24145"
+puts "========"
+puts ""
+####################################################################################
+# OCCT fails to project a wire onto BSplineSurface using BRepAlgo_NormalProjection
+####################################################################################
+
+restore [locate_data_file bug24145_face.brep] f
+restore [locate_data_file bug24145_wire1.brep] w
+
+nproject result w f
+
+checkshape result
+checknbshapes result -vertex 1 -edge 1 -compound 1 -shape 3
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

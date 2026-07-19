@@ -1,0 +1,38 @@
+puts "========"
+puts "OCC165"
+puts "========"
+
+restore [locate_data_file OCC165-2.brep] f 
+checkshape f
+
+if [catch {mkoffset res1 f 3 10 } result] {
+  puts "Faulty OCC165 (case 1) : function MKOFFSET works wrongly"
+} else {
+  puts "OCC165 OK (case 1): function MKOFFSET works properly"
+  mkplane pl1_1 res1_1 
+  checkshape pl1_1
+  mkplane pl1_2 res1_2 
+  checkshape pl1_2
+  mkplane pl1_3 res1_3 
+  checkshape pl1_3
+}
+
+if [catch {mkoffset res2 f 3 -10 } result] {
+  puts "Faulty OCC165 (case 2) : function MKOFFSET works wrongly"
+} else {
+  puts "OCC165 OK (case 2): function MKOFFSET works properly"
+  mkplane pl2_1 res2_1 
+  checkshape pl2_1
+  mkplane pl2_2 res2_2 
+  checkshape pl2_2
+  mkplane pl2_3 res2_3 
+  checkshape pl2_3
+}
+
+compound f res1_1 res1_2 res1_3 res2_1 res2_2 res2_3 res
+checkprops res1_1 -l 462.832
+checkprops res1_2 -l 525.664
+checkprops res1_3 -l 588.496
+checkprops res2_1 -l 320
+checkprops res2_2 -l 240
+checkprops res2_3 -l 160

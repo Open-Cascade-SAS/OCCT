@@ -1,0 +1,26 @@
+puts "========"
+puts "0032607: Modeling Algorithms - BOPAlgo_BOP returns incomplete result"
+puts "========"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug32607.brep] s
+explode s 
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves s_1 s_2 -2d] full Toler NbCurv
+
+checkreal Tolerance $Toler 0.0011727990276470168 1.0e-7 0.0
+if {$NbCurv != 1} {
+  puts "Error: Please check NbCurves for intersector"
+} else {
+  checklength c_1 -l 14.469397997508448
+  QACheckBends c_1
+}
+
+smallview 
+don c_*
+fit
+disp s_1 s_2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

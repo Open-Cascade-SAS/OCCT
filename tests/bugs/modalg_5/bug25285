@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC25285"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result of General Fuse operation for an edge and a face.
+#######################################################################
+
+restore [locate_data_file bug25285_qefx.brep] qefx
+
+explode qefx
+copy qefx_1 e
+copy qefx_2 f
+
+bclearobjects
+bcleartools
+baddobjects f e
+
+bfillds
+bbuild result
+
+checkprops result -s 8.83493 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 4 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 11
+checkview -display result -3d -path ${imagedir}/${test_image}.png

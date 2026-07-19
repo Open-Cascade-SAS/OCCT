@@ -1,0 +1,38 @@
+puts "========"
+puts "0032612: Data Exchange, RWGltf_CafReader - lost hierarchy of two nested compounds"
+puts "========"
+
+set aTmpGltf "${imagedir}/${casename}_tmp.glb"
+
+box b 1 2 3
+incmesh b 0.1
+compound b c
+compound c cc
+
+Close *
+XNewDoc D1
+XAddShape D1 cc
+SetName D1 [XFindShape D1 b]    "box"
+SetName D1 [XFindShape D1 c]    "comp1"
+SetName D1 [XFindShape D1 c]:1  "box_inst"
+SetName D1 [XFindShape D1 cc]   "comp2"
+SetName D1 [XFindShape D1 cc]:1 "comp1_inst"
+
+#XSave D1 "test.xbf"
+WriteGltf D1 "$aTmpGltf"
+
+ReadGltf D "$aTmpGltf"
+XGetOneShape s D
+checknbshapes s -face 6 -compound 3
+
+set THE_REF_DUMP {
+ASSEMBLY COMPOUND 0:1:1:1 "comp2"
+	INSTANCE COMPOUND 0:1:1:1:1 (refers to 0:1:1:2) "comp1_inst"
+ASSEMBLY COMPOUND 0:1:1:2 "comp1_inst"
+	INSTANCE COMPOUND 0:1:1:2:1 (refers to 0:1:1:3) "box_inst"
+PART COMPOUND 0:1:1:3 "box"
+
+Free Shapes: 1
+ASSEMBLY COMPOUND  0:1:1:1 "comp2"
+}
+checkXDump D $THE_REF_DUMP

@@ -1,0 +1,14 @@
+if { [string compare $command "shading"] != 0 } {
+  puts "TODO OCC30056 All: Meshing statuses: Failure UnorientedWire"
+}
+
+set TheFileName shading_wrongshape_015.brep
+set bug_withouttri "OCC22687"
+if { [string compare $command "shading"] == 0 } {
+   set bug_freenodes "OCC23105"
+   set nbfreenodes(ALL) 3
+} else {
+   set bug_freenodes "OCC23105"
+   set nbfreenodes(ALL) 11
+}
+set nbwithouttri(All) 3

@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC24463"
+puts "============"
+puts ""
+####################################
+# BRepAlgo_Section::Build hangs
+####################################
+
+restore [locate_data_file bug24463_TK0000000000480_109.brep] a
+plane p 0 7000 0 0 -1 0 0 0 -1
+mkface f p
+
+bsection r a f
+
+checkprops r -l 61.6434
+checksection r -r 2

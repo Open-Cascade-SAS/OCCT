@@ -1,0 +1,51 @@
+puts "============"
+puts "0026719: Visualization - cannot pick zoom persistent object"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+vinit View1
+vsetdispmode 1
+
+restore [locate_data_file face1.brep] f
+vdisplay f
+box b1 25 25 25
+vdisplay b1 -trsfPers zoom -trsfPersPos 0 0 0
+
+vviewparams -scale 588.7 -proj 0.69 -0.64 -0.38
+vviewparams -up -0.16 -0.32 0.93 -at -0.47 -0.042 0.4
+vviewparams -eye 0.7 -1.14 -0.17
+
+# move cursor to the box and check if is highlighted
+# with dynamic highlight color, check that the face is
+# not highlighted
+vmoveto 280 290
+if {[vreadpixel 297 297 -rgb -name] != "CYAN"}       { puts "ERROR: zoom persistent box is not highlighted dynamically!" }
+if {[vreadpixel 372 210 -rgb -name] != "GOLDENROD3"} { puts "ERROR: the shape behind zoom persistent object was highlighted instead!" }
+vdump ${imagedir}/${casename}_1.png
+
+vmoveto 0 0
+
+vviewparams -scale 689.79 -proj 0.78 0.63 -0.00067
+vviewparams -up -0.13 0.16 -0.98 -at -0.36 -0.016 0.31
+vviewparams -eye 0.96 1.053 0.31
+
+# check if the depth is calculated correctly on border points
+# of the objects
+
+# move to a point on the box and check if it
+# will be highlighted dynamically
+vmoveto 264 135
+
+if {[vreadpixel 275 142 -rgb -name] != "CYAN"}       { puts "ERROR: zoom persistent box is not highlighted dynamically in precision test!" }
+if {[vreadpixel 243 123 -rgb -name] != "BURLYWOOD2"} { puts "ERROR: the shape behind zoom persistent object was highlighted instead in precision test!" }
+vdump ${imagedir}/${casename}_2.png
+vmoveto 0 0
+
+# move to a point on the face and check if it
+# will be highlighted dynamically
+vmoveto 259 135
+if {[vreadpixel 275 142 -rgb -name] != "DARKGOLDENROD"} { puts "ERROR: zoom persistent box is highlighted instead in precision test!" }
+if {[vreadpixel 243 123 -rgb -name] != "CYAN"}          { puts "ERROR: the shape behind zoom persistent object was not highlighted dynamically in precision test!" }
+vdump ${imagedir}/${casename}_3.png

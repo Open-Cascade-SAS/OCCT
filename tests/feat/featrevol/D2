@@ -1,0 +1,11 @@
+box b1 200 200 200 
+box b2 150 100 100 100 100 150 
+bfuse boite b1 b2
+nexplode boite f
+profile cont S boite_3 F 75 50 X 50 Y 100 X -50
+mksurface su boite_13
+mkface fu su
+featrevol boite cont boite_3 200 0 200 0 -1 0 0 1
+featperform revol result fu
+
+checkprops result -s 316405

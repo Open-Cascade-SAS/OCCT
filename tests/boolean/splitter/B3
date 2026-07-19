@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC26874"
+puts "============"
+puts ""
+#######################################################################
+# Implementation of the Partition operator in OCCT
+#######################################################################
+
+# split face by a sphere
+
+plane p 0 0 0 0 0 1
+mkface f p -20 20 -20 20
+
+psphere s 5
+
+bclearobjects
+bcleartools
+baddobjects f
+baddtools s
+bfillds
+bapisplit result
+
+checkshape result
+checknbshapes result -face 2
+checkprops result -s 1600

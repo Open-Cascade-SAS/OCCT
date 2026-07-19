@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC25470"
+puts "==========" 
+puts ""
+####################################################
+# Wrong result of COMMON operation
+####################################################
+
+restore [locate_data_file bug25470_s.brep] b1
+restore [locate_data_file bug25470_t.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds -s
+bbop result 0
+
+checkprops result -s 893.011 
+checkshape result
+
+checknbshapes result -vertex 45 -edge 77 -wire 32 -face 32 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 189
+checkview -display result -2d -path ${imagedir}/${test_image}.png

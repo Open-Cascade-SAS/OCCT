@@ -1,0 +1,45 @@
+puts "TODO OCC7166 ALL: Error :  is WRONG because number of  "
+
+puts "============"
+puts "OCC7166"
+puts "============"
+puts ""
+#######################################################################
+# Improvement of API of ThruSection
+#######################################################################
+
+set BugNumber OCC7166
+
+pbsplinecurve pbc1 3 9 0 1 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 -1 0 0 1 -2 2 0 1 0 1 0 1 2 2 0 1 1 0 0 1 2 -2 0 1 0 -1 0 1 -2 -2 0 1
+mkedge e1 pbc1
+wire w1 e1
+
+#vertex v1 40 0 20
+#vertex v2 40 0 -20
+circle c1 40 0 20  0 0 -1  -1 1 0  0.1
+mkedge ec1 c1
+wire wc1 ec1
+
+circle c2 40 0 -20  0 0 -1  -1 1 0  0.1
+mkedge ec2 c2
+wire wc2 ec2
+
+set issolid 1
+set isruled 1
+#catch {thrusections result ${issolid} ${isruled} v1 w1 v2}
+catch {thrusections result ${issolid} ${isruled} wc1 w1 wc2}
+
+
+checkprops result -s 419.166
+
+
+checknbshapes result -vertex 6 -edge 10 -wire 6 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 30
+
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+

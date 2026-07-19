@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC27384"
+puts "========"
+puts ""
+#################################
+# BRepMesh_IncrementalMesh does not take angular deflection into account for spun/elementary surfaces
+#################################
+
+restore [locate_data_file bug27384_FacetWithLargeLinearDeflection1.brep] result
+
+tclean result
+incmesh result 3 -a 1
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0
+vdisplay result
+vfit
+
+set rel_tol 0.7558889057543047
+set max_rel_tol_diff 0.001
+set area_eps 1
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

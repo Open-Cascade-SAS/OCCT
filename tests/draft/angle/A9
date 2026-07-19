@@ -1,0 +1,6 @@
+#C1-----------------------------------------------------
+pcone p 0 10 20
+explode p f
+depouille result p 1 0 0 p_2 5 0 0 0 1 1 0
+
+checkprops result -s 1024.98

@@ -1,0 +1,29 @@
+plane pl 0 0 0 0 0 1
+mkface fa pl -1 1 -1 1
+
+dset azval 20
+dset dipval 80
+dset radval 0.5
+
+dset az azval*pi/180
+dset dip dipval*pi/180
+dset dx sin(dip)*sin(az)
+dset dy sin(dip)*cos(az)
+dset dz cos(dip)
+
+dset ux cos(az)
+dset uy sin(az)
+dset uz 0
+
+circle circ 0.5 0.5 0 dx dy dz ux uy uz radval
+plane pl2 0.5 0.5 0 dx dy dz
+
+mkedge edg circ
+wire wir edg
+mkface fb pl2 wir
+
+bsection result fa fb
+
+checkprops result -l 1
+checksection result
+checkview -display result -2d -otherwise { fa fb } -l -path ${imagedir}/${test_image}.png

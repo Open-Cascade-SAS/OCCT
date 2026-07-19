@@ -1,0 +1,10 @@
+restore [locate_data_file bug26917_offset_topology.brep] s
+
+OFFSETSHAPE 10 {} $calcul $type
+
+checkprops result -s 4.24638e+006 -v 2.9367e+008
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 100 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

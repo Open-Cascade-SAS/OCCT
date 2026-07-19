@@ -1,0 +1,56 @@
+puts "==============="
+puts "BUC60646"
+puts "==============="
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+set l [igesbrep [locate_data_file BUC60625-1.igs] a xst-transferrable-roots] 
+
+tpcompound res
+checkshape res r
+
+tcopy res result
+
+set start [lindex $l 60]
+set bug_list_numb [ llength $l ]
+set bug_list_elem 0
+
+# Search word sequence:        Nb entities selected : XXXX
+while { $bug_list_elem < $bug_list_numb } {
+    if { [ string compare "Nb" [ lindex $l $bug_list_elem ] ] == 0 && [ string compare "entities" [ lindex $l [ expr { $bug_list_elem + 1 } ] ] ] == 0 && [ string compare "selected" [ lindex $l [ expr { $bug_list_elem + 2 } ] ] ] == 0 && [ string compare ":" [ lindex $l [ expr { $bug_list_elem + 3 } ] ] ] == 0 } {
+	set start [ lindex $l [ expr { $bug_list_elem + 4 } ] ]
+	set bug_list_elem [ expr { $bug_list_numb - 1 } ]
+    }
+    set bug_list_elem [ expr { $bug_list_elem + 1 } ]
+}
+
+# Search word sequence:        Nb Shapes successfully produced : XXXX
+set end [lindex $l 0]
+set bug_list_elem 0
+while { $bug_list_elem < $bug_list_numb } {
+    set word_0 [ lindex $l [ expr { $bug_list_elem + 0 } ] ]
+    set word_1 [ lindex $l [ expr { $bug_list_elem + 1 } ] ]
+    set word_2 [ lindex $l [ expr { $bug_list_elem + 2 } ] ]
+    set word_3 [ lindex $l [ expr { $bug_list_elem + 3 } ] ]
+    set word_4 [ lindex $l [ expr { $bug_list_elem + 4 } ] ]
+    if { [ string compare "Nb" ${word_0} ] == 0 &&
+	[ string compare "Shapes" ${word_1} ] == 0 &&
+	[ string compare "successfully" ${word_2} ] == 0 &&
+	[ string compare "produced" ${word_3} ] == 0 &&
+	[ string compare ":" ${word_4} ] == 0 } {
+	set end [ lindex $l [ expr { $bug_list_elem + 5 } ] ]
+	set bug_list_elem [ expr { $bug_list_numb - 1 } ]
+    }
+    set bug_list_elem [ expr { $bug_list_elem + 1 } ]
+}
+
+if { $start != $end } {
+    puts " Error : The number of visible roots ($start) IS NOT EQUAL Nb Shapes successfully produced ($end)"
+} else {
+    puts " The number of visible roots ($start) IS EQUAL Nb Shapes successfully produced ($end)"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

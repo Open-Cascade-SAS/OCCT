@@ -1,0 +1,15 @@
+# Original bug : pro16290
+# Date : 12 Nov 98
+
+restore [locate_data_file CFE900_pro16gdq.rle] base
+restore [locate_data_file pro16290_face.rle] cont
+
+explode base face
+copy base_7 funtil
+copy base_7 skface
+
+# protrusion + gluer + Until in shape
+featrevol base cont skface -54.0405883789062 -16.3985233306885 100 0 1 0 1 1
+featperform revol result funtil
+
+checkprops result -s 130748

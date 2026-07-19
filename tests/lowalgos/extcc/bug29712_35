@@ -1,0 +1,68 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Curves c1 and c2 are concentric circles.
+# However, they are bounded (trimmed) curves
+# and are shifted relatively to each other.
+
+circle c1 0 0 0 0 0 1 100
+circle c2 0 0 0 0 0 1 50
+trim c1 c1 0 pi
+trim c2 c2 pi 2*pi
+
+smallview
+
+# Case 1
+
+don c1 c2
+
+foreach a [ directory ext_* ] { unset $a }
+extrema c1 c2
+if { [llength [ directory ext_* ] ] != 2 } {
+  puts "Error: Wrong number of solutions (c1 c2)"
+}
+
+fit
+checkview -2d -screenshot -path ${imagedir}/${test_image}_1.png
+
+regexp {The length ext_1 is +([-0-9.+eE]+)} [length ext_1] full l11
+regexp {The length ext_2 is +([-0-9.+eE]+)} [length ext_2] full l12
+
+if { $l11 > $l12} {
+  set tmp1 $l11
+  set l11 $l12
+  set l12 $tmp1
+}
+
+checkreal MinL1 $l11 50.0 1.0e-7 0.0
+checkreal MaxL1 $l12 150.0 1.0e-7 0.0
+
+# Case 2
+
+don c1 c2
+
+foreach a [ directory ext_* ] { unset $a }
+extrema c2 c1
+if { [llength [ directory ext_* ] ] != 2 } {
+  puts "Error: Wrong number of solutions (c2 c1)"
+}
+
+fit
+checkview -2d -screenshot -path ${imagedir}/${test_image}_2.png
+
+regexp {The length ext_1 is +([-0-9.+eE]+)} [length ext_1] full l21
+regexp {The length ext_2 is +([-0-9.+eE]+)} [length ext_2] full l22
+
+if { $l21 > $l22} {
+  set tmp2 $l11
+  set l21 $l22
+  set l22 $tmp2
+}
+
+checkreal MinL2 $l21 50.0 1.0e-7 0.0
+checkreal MaxL2 $l22 150.0 1.0e-7 0.0

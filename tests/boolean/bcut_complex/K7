@@ -1,0 +1,12 @@
+# Original bug : spo0139
+# Date : 19Mai98
+
+restore [locate_data_file spo0139a.rle] a
+restore [locate_data_file spo0139b.rle] b
+
+ttranslate a a 0 -60 0
+prism abox a 0 240 0
+
+bcut result b abox
+checkprops result -s 129086
+checkview -display result -2d -s -otherwise { b abox } -path ${imagedir}/${test_image}.png

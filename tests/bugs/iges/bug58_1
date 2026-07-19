@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC58"
+puts "========"
+puts ""
+puts "Shape is incorrect after translation"
+puts "case 1 (6546a01.igs)"
+puts ""
+
+igesbrep [locate_data_file OCC58a.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

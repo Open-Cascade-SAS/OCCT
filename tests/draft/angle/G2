@@ -1,0 +1,12 @@
+#E6----------------------------------------------
+
+ptorus pt 25 24 90
+profile pr o 20 18 5  p 0 -1 0 1 0 0 l 10 t 0 30 \
+t -7 0  
+revol pr pr 18 18 0 0 0 1 360
+bfuse f pt pr
+nexplode f f
+depouille result f 0 0 1 f_5 3 0 0 35 0 0 1 \
+f_6 3 0 0 35 0 0 1
+
+checkprops result -s 10776.9

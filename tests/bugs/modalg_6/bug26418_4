@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC26418"
+puts "========"
+puts ""
+#################################################################################
+# Unjustified limitation on tolerance of a input shape in BRepOffset_MakeOffset
+#################################################################################
+
+offsetparameter 1e-7 a i
+restore [locate_data_file OCC26418-extracted_Plate310contour.brep] sh
+offsetload sh 15
+offsetperform r

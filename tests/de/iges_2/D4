@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: transfer failed : entity skipped." 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename UKI60878.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 4 )  Summary  = 0  ( 4 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 37  ( 380 )  Summary  = 37  ( 382 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 1 )  Face     = 136  ( 136 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 1 )  Face     = 136  ( 136 )   FreeWire = 169  ( 169 ) 
+TOLERANCE   : MaxTol   =   0.8737801249  (    0.873776131 )  AvgTol   =   0.01396134299  (   0.01396106119 )
+LABELS      : N0Labels = 416  ( 416 )  N1Labels = 171  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 587  ( 416 )   NameLabels = 416  ( 416 )   ColorLabels = 416  ( 416 )   LayerLabels = 247  ( 416 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 5  ( 5 )
+COLORS      : Colors   = CYAN GRAY33 GRAY6 WHITE YELLOW  ( CYAN GRAY33 GRAY6 WHITE YELLOW )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 10 2  ( 10 2 )
+
+}

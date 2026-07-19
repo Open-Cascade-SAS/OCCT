@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC26075"
+puts "========"
+puts ""
+###########################################################################
+# Make Extrema_GenExtCC return IsParallel flag in case of parallel curves
+###########################################################################
+
+restore [locate_data_file dist1-s1.brep] s1
+restore [locate_data_file dist1-s2.brep] s2
+mkcurve c1 s1
+mkcurve c2 s2
+set bug_info [extrema c1 c2]
+
+set bug_info [string range $bug_info [expr {[string first "Infinite" $bug_info]}] [expr {[string first "distance" $bug_info] - 3}]]
+if {$bug_info != "Infinite number of extremas"} {
+  puts "ERROR: OCC26075 is reproduced. Flag IsParallel is not returned."
+}

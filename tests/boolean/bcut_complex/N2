@@ -1,0 +1,9 @@
+# Original bug : pro14630
+# Date : 16July98
+
+restore [locate_data_file pro14630a.rle] a 
+restore [locate_data_file pro14630b.rle] b
+
+bcut result a b
+checkprops result -s 198000
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

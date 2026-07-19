@@ -1,0 +1,6 @@
+pcylinder s 5 10 90
+trotate s 0 0 0 0 0 1 90
+
+OFFSETSHAPE -1 {} $calcul $type
+
+checkprops result -v 45.204

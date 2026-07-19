@@ -1,0 +1,21 @@
+ 
+puts "========================"
+puts " OCC481 "
+puts "========================"
+puts ""
+##########################################
+##Attached shape could not be displayed in the Shading mode.
+##########################################
+
+restore [locate_data_file OCC481.rle] result
+checkshape result
+
+tclean result
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+
+checktrinfo result -tri 74 -nod 76
+checkprops result -s 314.159 
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,42 @@
+
+puts "========================"
+puts "  BUC60706 "
+puts " OCC110 "
+puts "(cases 1-3)"
+puts "========================"
+
+restore [locate_data_file buc60706a.brep] f 
+checkshape f
+
+restore [locate_data_file buc60706b.brep] w
+checkshape w
+pipe t w f
+
+restore [locate_data_file buc60706c.brep] s
+checkshape s
+
+bcut res_1 s t
+checkshape res_1
+
+restore [locate_data_file buc60706d.brep] f 
+checkshape f
+
+restore [locate_data_file buc60706e.brep] w
+checkshape w
+pipe t w f
+
+bcut res_2 res_1 t
+checkshape res_2
+
+restore [locate_data_file buc60706g.brep] f 
+checkshape f
+
+restore [locate_data_file buc60706h.brep] w
+checkshape w
+pipe t w f
+
+bcut result res_2 t
+
+checkprops result -s 865172 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

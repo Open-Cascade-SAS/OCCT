@@ -1,0 +1,169 @@
+// Created on: 1995-01-27
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomInt_WLApprox_HeaderFile
+#define _GeomInt_WLApprox_HeaderFile
+
+#include <Adaptor3d_Surface.hxx>
+#include <NCollection_DynamicArray.hxx>
+#include <GeomInt_TheComputeLineOfWLApprox.hxx>
+#include <GeomInt_TheComputeLineBezierOfWLApprox.hxx>
+#include <Approx_MCurvesToBSpCurve.hxx>
+#include <Approx_ParametrizationType.hxx>
+
+class Adaptor3d_HSurfaceTool;
+class IntSurf_Quadric;
+class IntSurf_QuadricTool;
+class IntPatch_WLine;
+class GeomInt_ThePrmPrmSvSurfacesOfWLApprox;
+class GeomInt_TheInt2SOfThePrmPrmSvSurfacesOfWLApprox;
+class GeomInt_TheImpPrmSvSurfacesOfWLApprox;
+class GeomInt_TheZerImpFuncOfTheImpPrmSvSurfacesOfWLApprox;
+class GeomInt_TheMultiLineOfWLApprox;
+class GeomInt_TheMultiLineToolOfWLApprox;
+class GeomInt_TheComputeLineOfWLApprox;
+class GeomInt_MyBSplGradientOfTheComputeLineOfWLApprox;
+class GeomInt_MyGradientbisOfTheComputeLineOfWLApprox;
+class GeomInt_TheComputeLineBezierOfWLApprox;
+class GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox;
+class AppParCurves_MultiBSpCurve;
+
+class GeomInt_WLApprox
+{
+private:
+  struct Approx_Data
+  {
+    Approx_Data()
+        : myBezierApprox(true),
+          Xo(0.0),
+          Yo(0.0),
+          Zo(0.0),
+          U1o(0.0),
+          V1o(0.0),
+          U2o(0.0),
+          V2o(0.0),
+          ApproxXYZ(true),
+          ApproxU1V1(true),
+          ApproxU2V2(true),
+          indicemin(0),
+          indicemax(0),
+          myNbPntMax(30),
+          parametrization(Approx_ChordLength)
+    {
+    }
+
+    bool                       myBezierApprox;
+    double                     Xo, Yo, Zo, U1o, V1o, U2o, V2o;
+    bool                       ApproxXYZ, ApproxU1V1, ApproxU2V2;
+    int                        indicemin, indicemax, myNbPntMax;
+    Approx_ParametrizationType parametrization;
+  };
+
+public:
+  DEFINE_STANDARD_ALLOC
+
+  Standard_EXPORT GeomInt_WLApprox();
+
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>& Surf1,
+                               const occ::handle<Adaptor3d_Surface>& Surf2,
+                               const occ::handle<IntPatch_WLine>&    aLine,
+                               const bool                            ApproxXYZ  = true,
+                               const bool                            ApproxU1V1 = true,
+                               const bool                            ApproxU2V2 = true,
+                               const int                             indicemin  = 0,
+                               const int                             indicemax  = 0);
+
+  Standard_EXPORT void Perform(const occ::handle<IntPatch_WLine>& aLine,
+                               const bool                         ApproxXYZ  = true,
+                               const bool                         ApproxU1V1 = true,
+                               const bool                         ApproxU2V2 = true,
+                               const int                          indicemin  = 0,
+                               const int                          indicemax  = 0);
+
+  Standard_EXPORT void SetParameters(
+    const double                     Tol3d,
+    const double                     Tol2d,
+    const int                        DegMin,
+    const int                        DegMax,
+    const int                        NbIterMax,
+    const int                        NbPntMax           = 30,
+    const bool                       ApproxWithTangency = true,
+    const Approx_ParametrizationType Parametrization    = Approx_ChordLength);
+  Standard_EXPORT void Perform();
+
+  Standard_EXPORT double TolReached3d() const;
+
+  Standard_EXPORT double TolReached2d() const;
+
+  Standard_EXPORT bool IsDone() const;
+
+  Standard_EXPORT int NbMultiCurves() const;
+
+  Standard_EXPORT const AppParCurves_MultiBSpCurve& Value(const int Index) const;
+
+  Standard_EXPORT static void Parameters(const GeomInt_TheMultiLineOfWLApprox& Line,
+                                         const int                             firstP,
+                                         const int                             lastP,
+                                         const Approx_ParametrizationType      Par,
+                                         math_Vector&                          TheParameters);
+
+private:
+  Standard_EXPORT void Perform(const IntSurf_Quadric&                Surf1,
+                               const occ::handle<Adaptor3d_Surface>& Surf2,
+                               const occ::handle<IntPatch_WLine>&    aLine,
+                               const bool                            ApproxXYZ,
+                               const bool                            ApproxU1V1,
+                               const bool                            ApproxU2V2,
+                               const int                             indicemin,
+                               const int                             indicemax,
+                               const bool                            isTheQuadFirst);
+
+  Standard_EXPORT void UpdateTolReached();
+
+  //! Fill data structure for intersection approximation.
+  Standard_EXPORT void fillData(const occ::handle<IntPatch_WLine>& theLine);
+
+  //! Prepare data structure for further computations.
+  Standard_EXPORT void prepareDS(const bool theApproxXYZ,
+                                 const bool theApproxU1V1,
+                                 const bool theApproxU2V2,
+                                 const int  indicemin,
+                                 const int  indicemax);
+
+  //! Build knot sequence.
+  Standard_EXPORT void buildKnots(const occ::handle<IntPatch_WLine>& theline,
+                                  void* const                        thePtrSVSurf);
+
+  //! Build curve.
+  Standard_EXPORT void buildCurve(const occ::handle<IntPatch_WLine>& theline,
+                                  void* const                        thePtrSVSurf);
+
+  GeomInt_TheComputeLineOfWLApprox       myComputeLine;
+  GeomInt_TheComputeLineBezierOfWLApprox myComputeLineBezier;
+  Approx_MCurvesToBSpCurve               myBezToBSpl;
+  bool                                   myWithTangency;
+  double                                 myTol3d;
+  double                                 myTol2d;
+  int                                    myDegMin;
+  int                                    myDegMax;
+  int                                    myNbIterMax;
+  double                                 myTolReached3d;
+  double                                 myTolReached2d;
+  Approx_Data                            myData;
+  NCollection_DynamicArray<int>          myKnots;
+};
+
+#endif // _GeomInt_WLApprox_HeaderFile

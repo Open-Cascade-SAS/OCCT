@@ -1,0 +1,20 @@
+puts "========================"
+puts "BUC61000: Face is invisible in the shading mode in the 3D View."
+puts " OCC364 "
+puts "========================"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC364.brep] result 
+checkshape result
+
+tclean result
+isos result 0
+vinit View1
+vdisplay result
+vsetdispmode result 1
+vfit
+triangles result
+
+checktrinfo result -tri 96 -nod 96
+vdump $imagedir/${casename}.png

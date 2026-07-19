@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC28119: Blend fails on fused identical but shifted tori"
+puts "========"
+puts ""
+
+# Different result between Debian 7 and Debian 8.
+puts "TODO ?OCC28119 ALL: Error: Cannot find the result of BLEND-operation. The result of BOP operation will be returned."
+puts "TODO ?OCC29910 ALL: exception"
+puts "TODO ?OCC29910 ALL: Exception"
+puts "TODO ?OCC29910 ALL: Error: Exception in bfuseblend operation"
+
+cpulimit 200
+
+# identical secondary radi
+
+ptorus t1 100 10
+ptorus t2 100 10
+ttranslate t2 100 0 0 
+
+if { [ catch { bfuseblend result t1 t2 5 } catch_result ] } {
+  puts "Error: Exception in bfuseblend operation."
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png
+checkview -display result -3d -path ${imagedir}/${test_image}-3d.png

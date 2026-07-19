@@ -1,0 +1,11 @@
+# isolines on infinite cylinder
+# maximum parameter value for a view sets UV limit for isolines on infinite object
+
+cylinder c 0 0 0 0 0 1 10
+mkface f c
+
+vinit
+vdisplay -dispMode 0 f
+vaspects -defaults -setMaxParamValue 10
+visos f 10 4 1
+vfit

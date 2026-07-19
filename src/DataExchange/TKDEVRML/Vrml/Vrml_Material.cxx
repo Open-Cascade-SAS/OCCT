@@ -1,0 +1,266 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_Type.hxx>
+#include <Vrml_Material.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_Material, Standard_Transient)
+
+Vrml_Material::Vrml_Material(const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor,
+                             const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor,
+                             const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor,
+                             const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor,
+                             const occ::handle<NCollection_HArray1<double>>&         aShininess,
+                             const occ::handle<NCollection_HArray1<double>>&         aTransparency)
+{
+  myAmbientColor  = aAmbientColor;
+  myDiffuseColor  = aDiffuseColor;
+  mySpecularColor = aSpecularColor;
+  myEmissiveColor = aEmissiveColor;
+
+  int i;
+  for (i = aShininess->Lower(); i <= aShininess->Upper(); i++)
+  {
+    if (aShininess->Value(i) < 0. || aShininess->Value(i) > 1.)
+    {
+      throw Standard_Failure("The value of aShininess is out of range (0 - 1)");
+    }
+  }
+  myShininess = aShininess;
+
+  for (i = aTransparency->Lower(); i <= aTransparency->Upper(); i++)
+  {
+    if (aTransparency->Value(i) < 0. || aTransparency->Value(i) > 1.)
+    {
+      throw Standard_Failure("The value of aTransparency is out of range (0 - 1)");
+    }
+  }
+  myTransparency = aTransparency;
+}
+
+Vrml_Material::Vrml_Material()
+{
+  myAmbientColor =
+    new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_Color(0.2, 0.2, 0.2, Quantity_TOC_sRGB));
+  myDiffuseColor =
+    new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_Color(0.8, 0.8, 0.8, Quantity_TOC_sRGB));
+  mySpecularColor = new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_NOC_BLACK);
+  myEmissiveColor = new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_NOC_BLACK);
+
+  myShininess    = new NCollection_HArray1<double>(1, 1, 0.2);
+  myTransparency = new NCollection_HArray1<double>(1, 1, 0);
+}
+
+void Vrml_Material::SetAmbientColor(
+  const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor)
+{
+  myAmbientColor = aAmbientColor;
+}
+
+occ::handle<NCollection_HArray1<Quantity_Color>> Vrml_Material::AmbientColor() const
+{
+  return myAmbientColor;
+}
+
+void Vrml_Material::SetDiffuseColor(
+  const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor)
+{
+  myDiffuseColor = aDiffuseColor;
+}
+
+occ::handle<NCollection_HArray1<Quantity_Color>> Vrml_Material::DiffuseColor() const
+{
+  return myDiffuseColor;
+}
+
+void Vrml_Material::SetSpecularColor(
+  const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor)
+{
+  mySpecularColor = aSpecularColor;
+}
+
+occ::handle<NCollection_HArray1<Quantity_Color>> Vrml_Material::SpecularColor() const
+{
+  return mySpecularColor;
+}
+
+void Vrml_Material::SetEmissiveColor(
+  const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor)
+{
+  myEmissiveColor = aEmissiveColor;
+}
+
+occ::handle<NCollection_HArray1<Quantity_Color>> Vrml_Material::EmissiveColor() const
+{
+  return myEmissiveColor;
+}
+
+void Vrml_Material::SetShininess(const occ::handle<NCollection_HArray1<double>>& aShininess)
+{
+  int i;
+  for (i = aShininess->Lower(); i <= aShininess->Upper(); i++)
+  {
+    if (aShininess->Value(i) < 0. || aShininess->Value(i) > 1.)
+    {
+      throw Standard_Failure("The value of aShininess is out of range (0 - 1)");
+    }
+  }
+  myShininess = aShininess;
+}
+
+occ::handle<NCollection_HArray1<double>> Vrml_Material::Shininess() const
+{
+  return myShininess;
+}
+
+void Vrml_Material::SetTransparency(const occ::handle<NCollection_HArray1<double>>& aTransparency)
+{
+  int i;
+  for (i = aTransparency->Lower(); i <= aTransparency->Upper(); i++)
+  {
+    if (aTransparency->Value(i) < 0. || aTransparency->Value(i) > 1.)
+    {
+      throw Standard_Failure("The value of aTransparency is out of range (0 - 1)");
+    }
+  }
+  myTransparency = aTransparency;
+}
+
+occ::handle<NCollection_HArray1<double>> Vrml_Material::Transparency() const
+{
+  return myTransparency;
+}
+
+Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
+{
+  NCollection_Vec3<double> aColor_sRGB;
+  int                      i;
+  anOStream << "Material {\n";
+
+  if (myAmbientColor->Length() != 1
+      || std::abs(myAmbientColor->Value(myAmbientColor->Lower()).Red() - 0.2) > 0.0001
+      || std::abs(myAmbientColor->Value(myAmbientColor->Lower()).Green() - 0.2) > 0.0001
+      || std::abs(myAmbientColor->Value(myAmbientColor->Lower()).Blue() - 0.2) > 0.0001)
+  {
+    anOStream << "    ambientColor [\n\t";
+    for (i = myAmbientColor->Lower(); i <= myAmbientColor->Upper(); i++)
+    {
+      myAmbientColor->Value(i).Values(aColor_sRGB.r(),
+                                      aColor_sRGB.g(),
+                                      aColor_sRGB.b(),
+                                      Quantity_TOC_sRGB);
+      anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
+      if (i < myAmbientColor->Length())
+      {
+        anOStream << ",\n\t"; // ,,,,,,,,,,
+      }
+    }
+    anOStream << " ]\n";
+  }
+
+  if (myDiffuseColor->Length() != 1
+      || std::abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Red() - 0.8) > 0.0001
+      || std::abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Green() - 0.8) > 0.0001
+      || std::abs(myDiffuseColor->Value(myDiffuseColor->Lower()).Blue() - 0.8) > 0.0001)
+  {
+    anOStream << "    diffuseColor [\n\t";
+    for (i = myDiffuseColor->Lower(); i <= myDiffuseColor->Upper(); i++)
+    {
+      myDiffuseColor->Value(i).Values(aColor_sRGB.r(),
+                                      aColor_sRGB.g(),
+                                      aColor_sRGB.b(),
+                                      Quantity_TOC_sRGB);
+      anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
+      if (i < myDiffuseColor->Length())
+      {
+        anOStream << ",\n\t";
+      }
+    }
+    anOStream << " ]\n";
+  }
+
+  if (mySpecularColor->Length() != 1
+      || std::abs(mySpecularColor->Value(mySpecularColor->Lower()).Red() - 0) > 0.0001
+      || std::abs(mySpecularColor->Value(mySpecularColor->Lower()).Green() - 0) > 0.0001
+      || std::abs(mySpecularColor->Value(mySpecularColor->Lower()).Blue() - 0) > 0.0001)
+  {
+    anOStream << "    specularColor [\n\t";
+    for (i = mySpecularColor->Lower(); i <= mySpecularColor->Upper(); i++)
+    {
+      mySpecularColor->Value(i).Values(aColor_sRGB.r(),
+                                       aColor_sRGB.g(),
+                                       aColor_sRGB.b(),
+                                       Quantity_TOC_sRGB);
+      anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
+      if (i < mySpecularColor->Length())
+      {
+        anOStream << ",\n\t";
+      }
+    }
+    anOStream << " ]\n";
+  }
+
+  if (myEmissiveColor->Length() != 1
+      || std::abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Red() - 0) > 0.0001
+      || std::abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Green() - 0) > 0.0001
+      || std::abs(myEmissiveColor->Value(myEmissiveColor->Lower()).Blue() - 0) > 0.0001)
+  {
+    anOStream << "    emissiveColor [\n\t";
+    for (i = myEmissiveColor->Lower(); i <= myEmissiveColor->Upper(); i++)
+    {
+      myEmissiveColor->Value(i).Values(aColor_sRGB.r(),
+                                       aColor_sRGB.g(),
+                                       aColor_sRGB.b(),
+                                       Quantity_TOC_sRGB);
+      anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
+      if (i < myEmissiveColor->Length())
+      {
+        anOStream << ",\n\t";
+      }
+    }
+    anOStream << " ]\n";
+  }
+
+  if (myShininess->Length() != 1
+      || std::abs(myShininess->Value(myShininess->Lower()) - 0.2) > 0.0001)
+  {
+    anOStream << "    shininess\t\t[ ";
+    for (i = myShininess->Lower(); i <= myShininess->Upper(); i++)
+    {
+      anOStream << myShininess->Value(i);
+      if (i < myShininess->Length())
+      {
+        anOStream << ", ";
+      }
+    }
+    anOStream << " ]\n";
+  }
+
+  if (myTransparency->Length() != 1
+      || std::abs(myTransparency->Value(myTransparency->Lower()) - 0) > 0.0001)
+  {
+    anOStream << "    transparency\t[ ";
+    for (i = myTransparency->Lower(); i <= myTransparency->Upper(); i++)
+    {
+      anOStream << myTransparency->Value(i);
+      if (i < myTransparency->Length())
+      {
+        anOStream << ", ";
+      }
+    }
+    anOStream << " ]\n";
+  }
+  anOStream << "}\n";
+
+  return anOStream;
+}

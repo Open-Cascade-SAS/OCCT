@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC28274"
+puts "========"
+puts ""
+######################################################
+# BOPAlgo_MakerVolume fails to create solid
+######################################################
+
+restore [locate_data_file bug28274_tmp.brep] a
+
+bnondestructive 1
+
+set Log [eval mkvolume result [explode a f] ]
+
+checkshape result
+
+if ![regexp "OK" [bopcheck result]] {
+  puts "Error: result has self-interferred shapes"
+}
+
+checknbshapes result -solid 3 -shell 3 -face 11 -wire 11
+checkprops result -s 985.692 -v 741.787
+checkview -display result -2d -path ${imagedir}/${test_image}.png

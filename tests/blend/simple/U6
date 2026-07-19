@@ -1,0 +1,12 @@
+#pcylinder s1 5 12 
+#pcylinder s2 3 15 
+#trotate s2 0 0 0 1 0 0 90
+#ttranslate s2 0 7 7
+#fuse s s1 s2
+
+restore [locate_data_file CFI_6_i12fhh.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 3*SCALE2 s_1
+
+checkprops result -s 599.597

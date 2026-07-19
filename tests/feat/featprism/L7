@@ -1,0 +1,29 @@
+# Original bug : hkg60163
+# Date : 16 Sept 98
+
+puts "*"
+puts "TODO OCC22810 All:Error in featperform"
+puts "TODO OCC22810 All:Error in fsameparameter"
+puts "TODO OCC22810 All:Error : The feat grid cannot be built."
+puts "TODO OCC22810 All: Error: The command cannot be built"
+
+restore [locate_data_file CTO900_hkg60163c.rle] base
+restore [locate_data_file hkg60163_face.rle] cont1
+
+## thickness 2mm
+mkoffset off cont1 1 2
+wire wire off_1
+mkplane cont wire
+
+explode base face
+#base_143 _152 _167 _169 _170 _171 _173 _174
+copy base_167 funtil
+featprism base cont cont 0 0 1 1 1
+if { [catch { featperform prism result base funtil } ] != 0 } {
+  puts "Error in featperform"
+}
+if { [catch { fsameparameter result } ] != 0 } {
+  puts "Error in fsameparameter"
+}
+
+checkprops result -s 0

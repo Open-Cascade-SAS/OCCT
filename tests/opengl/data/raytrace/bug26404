@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC26404: Visualization, Ray Tracing - use solid background color when gradient color is disabled"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vinit View1
+if { [string match "OpenGL ES 2.0*" [vglinfo VERSION]] || [string match "OpenGL ES 3.0*" [vglinfo VERSION]] } {
+  puts "Skipping test case: OpenGL ES 3.2+ is required"
+  return
+}
+
+vclear
+vaxo
+vsetdispmode 1
+vbackground -color GRAY4
+vdisplay b
+vfit
+vraytrace 1
+set bug_info_1 [vreadpixel 50 50 rgb name]
+if {$bug_info_1 != "GRAY4"} {
+  puts "ERROR: OCC26404 is reproduced. Background color is invalid (case #1)."
+}
+vbackground -gradient RED BLUE -gradientMode HORIZONTAL
+vbackground -gradient RED BLUE -gradientMode NONE
+set bug_info_2 [vreadpixel 50 50 rgb name]
+if {$bug_info_2 != "GRAY4"} {
+  puts "ERROR: OCC26404 is reproduced. Background color is invalid (case #2)."
+}

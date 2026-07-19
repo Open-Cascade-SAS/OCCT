@@ -1,0 +1,21 @@
+
+checktrinfo S -face ${nb_faces} -nod ${nb_nodes} -tri ${nb_triangles}
+
+vclear
+vinit View1
+XDisplay -dispMode 1 D -explore
+vaxo
+vfit
+
+vrenderparams -shadingModel PHONG
+vlight -change 0 -intensity 2.5
+vlight -change 1 -intensity 0.3
+vcamera -orthographic
+vdump ${imagedir}/${casename}.png
+
+Close D -silent
+unset S
+
+param write.step.schema AP214CD
+param read.step.tessellated Off
+param write.step.tessellated Off

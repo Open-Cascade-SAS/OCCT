@@ -1,0 +1,23 @@
+puts "=================================================================="
+puts "OCC30940: BRepFilletAPI_MakeFillet algorithm fails on closed shell"
+puts "=================================================================="
+puts ""
+
+brestore [locate_data_file bug30940_compfaces.brep] b
+
+sewing a 0.0001 b
+explode a e
+
+blend result a 0.1 a_1 0.1 a_2 0.1 a_3 0.1 a_4 0.1 a_5 0.1 a_6 0.1 a_7 0.1 a_8 0.1 a_9 0.1 a_10 0.1 a_11 0.1 a_12
+
+checkshape result
+
+checknbshapes result -shell 1 -face 26 -wire 26 -edge 56 -vertex 30
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.001} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 276.831

@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename sabena.igs
+
+set ref_data {
+DATA        : Faulties = 14  ( 0 )  Warnings = 0  ( 0 )  Summary  = 14  ( 0 )
+TPSTAT      : Faulties = 28  ( 16 )  Warnings = 48  ( 3035 )  Summary  = 76  ( 3051 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2639  ( 2634 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2639  ( 2639 )   FreeWire = 1027  ( 1109 ) 
+TOLERANCE   : MaxTol   =  0.05705560511  (  0.05705560511 )  AvgTol   =  0.0002633894999  (  0.0002621190848 )
+LABELS      : N0Labels = 54  ( 54 )  N1Labels = 4920  ( 20380 )  N2Labels = 0  ( 0 )   TotalLabels = 4974  ( 20434 )   NameLabels = 3983  ( 6534 )   ColorLabels = 4920  ( 20432 )   LayerLabels = 6  ( 17 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 8  ( 8 )
+COLORS      : Colors   = BLUE CYAN GREEN GREEN3 MAGENTA RED WHITE YELLOW  ( BLUE CYAN GREEN GREEN3 MAGENTA RED WHITE YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 204  ( 204 )
+
+}

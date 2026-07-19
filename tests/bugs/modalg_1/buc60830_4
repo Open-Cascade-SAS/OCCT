@@ -1,0 +1,22 @@
+puts "============="
+puts "BUC60830"
+puts "BUC60829"
+puts "============="
+
+restore [locate_data_file BUC60830-face2.brep] f
+checkshape f
+
+set che [checkshape f rr]
+if { [regexp {OK} $che] != 1 } {
+    puts "Faulty : mistakes are found in SOURCE  shape by checkshape command"
+    puts "Body of the script was not executed"
+} else {
+    puts "Checking of SOURCE shape by checkshape - OK"
+    mkoffset result f 1 3
+    renamevar result_1 result
+}
+
+checkprops result -l 81.5088 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

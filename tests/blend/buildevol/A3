@@ -1,0 +1,13 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : B5
+## Comment : 
+## ====================================
+
+wedge s 40 100 100 0
+explode s E
+mkevol result s
+updatevol s_5 0 10 1 20 2 10
+buildevol
+
+checkprops result -s 27121

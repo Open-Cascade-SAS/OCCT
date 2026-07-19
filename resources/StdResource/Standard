@@ -1,0 +1,25 @@
+formatlist:MDTV-Standard|XmlOcaf|BinOcaf
+!
+! Default format
+xml.FileFormat: XmlOcaf
+cbf.FileFormat: BinOcaf
+!
+! standard attributes
+!
+MDTV-Standard.Description: Standard Document Version 1.0
+MDTV-Standard.FileExtension: std
+MDTV-Standard.RetrievalPlugin: ad696001-5b34-11d1-b5ba-00a0c9064368
+!
+! XmlOcaf format
+!
+XmlOcaf.Description: Xml Document Version 1.0
+XmlOcaf.FileExtension: xml
+XmlOcaf.StoragePlugin: 03a56820-8269-11d5-aab2-0050044b1af1
+XmlOcaf.RetrievalPlugin: 03a56822-8269-11d5-aab2-0050044b1af1
+!
+! BinOcaf format
+!
+BinOcaf.Description: Bin Ocaf Document Version 1.0
+BinOcaf.FileExtension: cbf
+BinOcaf.StoragePlugin: 03a56835-8269-11d5-aab2-0050044b1af1
+BinOcaf.RetrievalPlugin: 03a56836-8269-11d5-aab2-0050044b1af1

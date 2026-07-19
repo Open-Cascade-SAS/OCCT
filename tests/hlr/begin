@@ -1,0 +1,24 @@
+pload TOPTEST
+pload XDE 
+pload VISUALIZATION
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+cpulimit 1000
+
+set depsilon 1.e-7
+
+proc COMPUTE_HLR {viewname algotype} {
+     uplevel #0 top
+     uplevel #0 clear
+     uplevel #0 vinit View1
+     uplevel #0 vdisplay a
+     uplevel #0 $viewname
+     uplevel #0 vcomputehlr a result -algoType $algotype
+     uplevel #0 fit
+     if { [string compare $algotype "algo"] == 0 } {
+     uplevel #0 build3d result
+     }
+}

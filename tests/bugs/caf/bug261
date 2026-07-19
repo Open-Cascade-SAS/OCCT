@@ -1,0 +1,31 @@
+puts "==========="
+puts "OCC261"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 10
+NewCommand D
+SetReal D 0:1 10
+
+NewCommand D
+SetReal D 0:1 20
+
+NewCommand D
+SetReal D 0:1 30
+
+NewCommand D 
+SetReal D 0:1 40
+
+Undo D
+Undo D
+
+OCC261 D
+
+set Res [UndoLimit D]
+if { [regexp " 0" $Res] != 1 } {
+    puts "OCC261: Error"
+}
+
+

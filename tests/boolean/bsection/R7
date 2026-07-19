@@ -1,0 +1,12 @@
+puts "BUC60092"
+puts "section"
+puts ""
+
+restore [locate_data_file buc60092a.rle] a
+restore [locate_data_file buc60092b.rle] b
+
+bsection result a b
+
+checkprops result -l 162.012
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
+set filename Case.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 268  ( 552 )  Summary  = 268  ( 552 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 208  ( 208 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 208  ( 208 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.7043468651  (   0.7043466394 )  AvgTol   =  0.006003712781  (  0.006001242372 )
+LABELS      : N0Labels = 1  ( 2 )  N1Labels = 239  ( 208 )  N2Labels = 0  ( 0 )   TotalLabels = 240  ( 210 )   NameLabels = 1  ( 2 )   ColorLabels = 239  ( 209 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 2 )
+COLORS      : Colors   = DEEPSKYBLUE1  ( DEEPSKYBLUE1 WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,36 @@
+puts "====================================="
+puts "0029885: Visualization, AIS_Manipulator - Translation is done in wrong direction depending on Camera orientation"
+puts "====================================="
+
+pload MODELING VISUALIZATION
+box b 500 500 1 50 100 150
+vclear
+vinit View1
+vzbufftrihedron
+vcamera -persp
+vaxo
+vdisplay -dispMode 1 b
+vfit
+vmanipulator m -attach b
+vmanipulator m -part 0 2 0
+vmanipulator m -part 1 2 0
+vmanipulator m -part 2 2 0
+vmanipulator m -part 0 3 0
+vmanipulator m -part 1 3 0
+vmanipulator m -part 2 3 0
+vmanipulator m -part 2 1 0
+vselmode m 2 0
+vselmode m 3 0
+
+vmoveto 245 220
+vselect 245 220
+vmanipulator m -startTransform 245 220
+vmanipulator m -transform 340 265
+vmanipulator m -stopTransform
+if {[vreadpixel 370 300 rgb name] == "BLACK" } { puts "Error: wrong translation" }
+
+set aLocFull [vlocation b]
+regexp {Location:\s*([ 0-9.e+-]+)} $aLocFull aLocTmp aLoc
+if { [expr abs([lindex $aLoc 0] - 46)] > 0.1 || [lindex $aLoc 1] != 0  || [lindex $aLoc 2] != 0 } { puts "Error: wrong translation" }
+
+vdump $imagedir/${casename}.png

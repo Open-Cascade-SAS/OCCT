@@ -1,0 +1,53 @@
+restore [locate_data_file bug29692_broken_periodicity.brep] s
+
+# rebuild the compound ensuring that each material is valid
+compound materials
+
+foreach c [explode s] {
+  set ss [explode $c]
+  if {[llength $ss] > 1} {
+    eval makeconnected r $ss
+    add r materials
+  } else {
+    add $ss materials
+  }
+}
+
+eval makeconnected connected [explode materials]
+
+checkshape connected
+if {![regexp "OK" [bopcheck connected]]} {
+  puts "Error: Unable to make connected"
+}
+checknbshapes connected -vertex 252 -edge 464 -wire 257 -face 257 -shell 44 -solid 44 -t
+checkprops connected -s 6.88455e+006 -v 9.48813e+007
+
+cmakeperiodic cp -x 373.352380466498 -y 2262.7416997969599
+
+checkshape cp
+checknbshapes cp -vertex 268 -edge 488 -wire 265 -face 265 -shell 44 -solid 44 -t
+checkprops cp -s 6.88455e+006 -v 9.48813e+007
+
+# repeat shape
+crepeatshape result -x 1 -y 1
+
+checknbshapes result -vertex 811 -edge 1594 -wire 960 -face 960 -shell 176 -solid 176 -t
+checkprops result -s 2.75382e+007 -v 3.79525e+008
+
+savehistory h
+
+explode materials_3 f
+
+generated gf h materials_3_1
+checknbshapes gf -face 4 -t
+
+foreach f [explode gf f] {
+  foreach sign {+ -} {
+    if {![regexp "No materials on this side" [cmaterialson m $sign $f]]} {
+      if {![regexp "equal shapes" [compare m materials_3]]} {
+        puts "Error: Incorrect materials association"
+      }
+    }
+  }
+}
+

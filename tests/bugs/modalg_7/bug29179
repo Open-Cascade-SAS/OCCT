@@ -1,0 +1,50 @@
+puts "========"
+puts "OCC29179"
+puts "========"
+puts ""
+#################################################
+# Result of Boolean common depends on an order of arguments
+#################################################
+
+restore [locate_data_file bug26938.brep] a
+explode a
+
+bcommon res1 a_1 a_2
+
+restore [locate_data_file bug26938.brep] a
+explode a
+
+bcommon res2 a_2 a_1
+
+checkview -display res1 -2d -path ${imagedir}/${test_image}_1.png
+checkview -display res2 -2d -path ${imagedir}/${test_image}_2.png
+
+checkshape res1
+checkshape res2
+
+if {[regexp "Faulties" [bopargcheck res1]]} {
+  puts "Error: bopargcheck has found some faulties in res1"
+}
+
+if {[regexp "Faulties" [bopargcheck res2]]} {
+  puts "Error: bopargcheck has found some faulties in res2"
+}
+
+checkprops res1 -v 4.93528e+008
+checkprops res2 -v 4.93528e+008
+
+set nbshapes_expected "
+Number of shapes in .*
+ VERTEX : 5
+ EDGE : 7
+ WIRE : 4
+ FACE : 4
+ SHELL : 1
+ SOLID : 1
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 23
+"
+
+checknbshapes res1 -ref ${nbshapes_expected} -t -m "1st COMMON"
+checknbshapes res2 -ref ${nbshapes_expected} -t -m "2nd COMMON"

@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC24394: Visualization - implement more general way for rendering of immediate objects"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 0 0 0 1 2 3
+box b2 3 0 0 2 3 1
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+vdisplay b1
+vdisplay -top b1
+vfit
+
+vdump $imagedir/${casename}_with_lines.png

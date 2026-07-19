@@ -1,0 +1,12 @@
+puts "PRO16769"
+puts "Fuse"
+puts ""
+
+restore [locate_data_file CFE900_pro16gff.rle] base
+restore [locate_data_file pro16769b.rle] tool
+
+bfuse result base tool
+fsameparameter result
+
+checkprops result -s 46778.2
+checkview -display result -2d -otherwise { base tool } -s -path ${imagedir}/${test_image}.png

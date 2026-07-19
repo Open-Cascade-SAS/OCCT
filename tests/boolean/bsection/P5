@@ -1,0 +1,8 @@
+restore [locate_data_file CIN902_intcqhmn.rle] m
+explode m f
+# m_1
+bsection result m_1 m_2
+
+checkprops result -l 27.9451
+checksection result
+checkview -display result -2d -otherwise { m_1 m_2 } -l -path ${imagedir}/${test_image}.png

@@ -1,0 +1,28 @@
+puts "========"
+puts "0027383: Modeling - improve handling of regularity on edges"
+puts "========"
+puts ""
+#################################################################
+# Check regularity setting on edges between same-domain faces after fuse
+#################################################################
+
+# fuse of two boxes
+pload MODELING
+box b1 10 10 10
+box b2 5 5 0 10 10 10
+bfuse r b1 b2
+explode r f
+explode r_7 e
+getedgeregularity r_7_4 r_3 r_7 ;# returns C0: regularity is not set at all
+encoderegularity r
+
+if { ! [regexp "CN" [getedgeregularity r_7_4 r_3 r_7]] } {
+  puts "Error: Invalid regularity of the edge, expected CN"
+}
+
+# make image in HLR mode as illustration
+pload VISUALIZATION
+vdisplay r
+vfit
+vhlr on
+vdump ${imagedir}/${test_image}.png

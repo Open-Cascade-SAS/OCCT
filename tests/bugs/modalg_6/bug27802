@@ -1,0 +1,13 @@
+puts "========"
+puts "OCC27802"
+puts "========"
+puts ""
+#################################################
+# Solid classifier raises exception ConstructionError
+#################################################
+
+restore [locate_data_file bug27802_cls_error.brep] a
+
+explode a
+mkpoint p a_2
+bclassify a_1 p

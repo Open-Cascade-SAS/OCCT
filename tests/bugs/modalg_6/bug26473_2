@@ -1,0 +1,18 @@
+puts "=========="
+puts "OCC26473"
+puts "=========="
+puts ""
+################################################
+# Offset API fails to create offset shape
+################################################
+
+box b1 0.0 0.0 0.0 1.0 1.0 1.0
+explode b1 F
+offsetparameter 1e-7 c i
+offsetload b1 0.0
+offsetonface b1_1 1.0
+offsetperform result
+
+checkprops result -s 10 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

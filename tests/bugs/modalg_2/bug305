@@ -1,0 +1,24 @@
+puts "TODO OCC25919 ALL: Error: Offset is not done."
+puts "TODO OCC25919 ALL: Faulty OCC305 : function MKOFFSET works wrongly"
+puts "TODO OCC25919 ALL: Error: The command cannot be built"
+
+puts "========"
+puts "OCC305"
+puts "========"
+puts ""
+###########################################################
+# BRepOffsetAPI_MakeOffset: problem with offsetting a wire
+###########################################################
+
+catch {pload XDE}
+
+restore [locate_data_file OCC305.brep] a 
+checkshape a
+
+if [catch {mkoffset result a 1 0.5 } catch_result] {
+  puts "Faulty OCC305 : function MKOFFSET works wrongly"
+} else {
+  set che [checkshape result]
+}
+checkprops result -s 0 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

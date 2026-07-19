@@ -1,0 +1,28 @@
+
+box b 10 10 10
+explode b
+explode b_1
+
+NewDocument D
+XAddShape D b
+XAddGeomTolerance D b_1_1
+XAddDatum D b_1_2
+XAddDatum D b_1_3
+#0:1:4:1
+#0:1:4:2
+#0:1:4:3
+XSetDatumName D 0:1:4:2 A
+XSetDatumPosition D 0:1:4:2 1
+XSetDatumName D 0:1:4:3 B
+XSetDatumPosition D 0:1:4:3 2
+XAddDatumModifier D 0:1:4:2 10
+XSetDatum D 0:1:4:2 0:1:4:1
+XSetDatum D 0:1:4:3 0:1:4:1
+XSetToleranceValue D 0:1:4:1 0.5
+
+
+set c_dname "A"
+set c_dmod "DistanceVariable"
+set c_val "0.5"
+
+

@@ -1,0 +1,17 @@
+# Original bug : pro7637 (#3 with restore from Designer shape)
+# Date : 16apr97
+
+dset SCALE 100
+
+## restore the Prismed oblong created in Designer K1-2 (size 200 mm)
+restore [locate_data_file CTO900_pro7637c_prism_oblong_dsg.rle] p1
+tscale p1 0 0 0 1*SCALE
+
+## restore the Box created in Designer K1-2 (size 300 mm)
+restore [locate_data_file CTO900_pro7637c_box_dsg.rle] p2
+tscale p2 0 0 0 1*SCALE
+
+bfuse result p2 p1
+
+checkprops result -s 1.85425e+09
+checkview -display result -2d -otherwise { p2 p1 } -s -path ${imagedir}/${test_image}.png

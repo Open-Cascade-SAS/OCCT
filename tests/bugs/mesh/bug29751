@@ -1,0 +1,30 @@
+puts "======="
+puts "0029751: Incremental mesh produces different meshes for windows and linux (debian 8)"
+puts "======="
+puts ""
+
+psphere sp 10
+pcylinder b1 2 10
+ttranslate b1 0 0 -10
+bcut result sp b1
+trotate result 0 0 0 1 0 0 45
+incmesh result 0.1
+
+vclear
+vinit View1
+vaxo
+vdefaults -autoTriang 0
+vdisplay -dispMode 1 result
+vaspects result -setInteriorStyle HOLLOW -setDrawEdges 1
+vfit
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
+
+checktrinfo result -tri 1013 -nod 578 -defl 0.1164052220738387 -tol_abs_defl 1e-6
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

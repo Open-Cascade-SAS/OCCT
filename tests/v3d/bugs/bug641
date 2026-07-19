@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC641 E x c e p t i o n during attemption to display shape ==>SAM1559 (#2901)"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC641.brep] a
+copy a m
+tmirror m 0 0 0 0 1 0
+vinit View1
+vdisplay -dispMode 0 a m
+vfit
+vdump ${imagedir}/${casename}_wf.png
+vdisplay -dispMode 1 a m
+vdump ${imagedir}/${casename}_sh.png

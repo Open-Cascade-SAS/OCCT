@@ -1,0 +1,21 @@
+restore [locate_data_file bug26917_dom-8092.new_with_faces.brep] c
+
+# get the shape
+explode c
+copy c_1 s
+
+offsetparameter 1e-7 c i
+offsetload s 10
+
+foreach f [explode c_2 f] {
+  offsetonface $f 0
+}
+
+offsetperform result
+
+checkprops result -v 6.99928e+007 -s 5.03322e+006
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 613 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC28094"
+puts "============"
+puts ""
+######################################################
+# Shape obtained after DRAW command "splitshape" has unnecessary high tolerance.
+######################################################
+
+smallview
+
+set expected_MaxTolerance 2.e-07
+set tol_abs_MaxTolerance 1.e-06
+set tol_rel_MaxTolerance 1.e-06
+
+psphere a 10 
+plane p2 2 0 0 1 0 0 
+mkface f2 p2 -100 100 -100 100 
+bsection s2 a f2 
+explode a f
+explode s2 e
+splitshape res a_1 a_1 s2_1 a_1 s2_2
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance res] full MaxTolerance
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+clear
+donly res
+fit
+
+xwd ${imagedir}/${test_image}.png

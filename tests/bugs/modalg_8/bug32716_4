@@ -1,0 +1,54 @@
+puts "================================================================="
+puts "0032716: Modeling Algorithms - BRepBuilderAPI_Transform discards triangulation"
+puts "================================================================="
+puts ""
+
+psphere s1 10
+pcylinder s2 8 20
+pcone s3 10 8 5
+ttranslate s1 0 0 25
+ttranslate s3 0 0 -5
+
+baddobjects s1
+baddtools s2 s3
+bfillds
+bbop s fuse
+
+incmesh s 0.1
+tclean -geom s
+
+# reference data
+regexp {([0-9+-.eE]*) faces.* ([0-9+-.eE]*) triangles.* ([0-9+-.eE]*) nodes} [trinfo s] full nbFaces nbTri nbNodes
+
+# scaling
+tscale s 0 0 0  2 -copy -copymesh
+checktrinfo s -face $nbFaces -nod $nbNodes -tri $nbTri
+if {[tricheck s] != ""} {
+  puts "ERROR: Wrong triangulation"
+}
+
+# mirror
+tmirror s 1 0 0  1 1 1 -copy -copymesh
+checktrinfo s -face $nbFaces -nod $nbNodes -tri $nbTri
+if {[tricheck s] != ""} {
+  puts "ERROR: Wrong triangulation"
+}
+
+# translate
+ttranslate s 0 0 10 -copy -copymesh
+checktrinfo s -face $nbFaces -nod $nbNodes -tri $nbTri
+if {[tricheck s] != ""} {
+  puts "ERROR: Wrong triangulation"
+}
+
+# rotate
+trotate s 0 0 0  0 0 1  45  -copy -copymesh
+checktrinfo s -face $nbFaces -nod $nbNodes -tri $nbTri
+if {[tricheck s] != ""} {
+  puts "ERROR: Wrong triangulation"
+}
+
+# display shape
+triangles s
+isos s 0
+checkview -display s -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,11 @@
+# Original bug : buc40054 - fuse
+# Date : 11mar98
+
+box b1 3 3 3 
+box b2 1 1 1 
+ttranslate b2 0 3 0
+
+bfuse result b1 b2
+
+checkprops result -s 58
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

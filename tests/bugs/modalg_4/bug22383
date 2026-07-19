@@ -1,0 +1,46 @@
+puts "============"
+puts "OCC22383"
+puts "============"
+puts ""
+######################################################
+# Four and more points at least on curve
+######################################################
+
+set BugNumber OCC22383
+
+restore [locate_data_file bug21645_Scale1_so1_f3.brep] result
+
+vinit
+tclean result
+incmesh result 0.01
+vdisplay result
+vfit
+
+set good_trip 16
+
+isos result 0
+trinfo result
+puts ""
+set ll [triepoints result]
+set nbpoints [llength $ll]
+puts $nbpoints
+
+## number of discretization points (triepoints command) with fix 
+## must be less than number on clear occ651
+
+set status 0
+if {$nbpoints <= $good_trip} {
+  set status 1
+}
+
+
+if { $status != 0 } {
+  puts "$BugNumber: OK"
+} else {
+  puts "$BugNumber: Faulty"
+}
+
+checkprops result -s 2.04205e-08 
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+

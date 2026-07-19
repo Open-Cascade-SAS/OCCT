@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC26243"
+puts "============"
+puts ""
+######################################################
+# Boolean operations failed on shapes with fillets
+######################################################
+
+restore [locate_data_file bug26243_anc101.brep] _model
+
+tcopy _model _copy
+trotate _copy 155. 100.75 0 0 0 1 90
+
+bcut result _model _copy
+
+checkprops result -s 278545 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 146
+ EDGE      : 226
+ WIRE      : 111
+ FACE      : 97
+ SHELL     : 7
+ SOLID     : 7
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 595
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Boolean operations on shapes with fillets"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

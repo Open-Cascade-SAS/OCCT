@@ -1,0 +1,11 @@
+# Original bug : cts21180
+# Date : 21 Sept 98
+
+restore [locate_data_file CTO900_cts21180c.rle] part
+restore [locate_data_file CTO900_cts21180d.rle] tool
+updatetolerance tool 1
+
+bfuse result part tool
+
+checkprops result -s 671652
+checkview -display result -2d -otherwise { part tool } -s -path ${imagedir}/${test_image}.png

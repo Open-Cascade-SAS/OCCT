@@ -1,0 +1,65 @@
+puts "================"
+puts "OCC25416"
+puts "================"
+puts ""
+#######################################################################
+# Wrong section curve
+#######################################################################
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+puts ""
+puts ""
+
+# bopcurves command
+
+restore [locate_data_file bug25416_f3.brep] f1
+restore [locate_data_file bug25416_f4.brep] f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+#Trim according to "xbounds f1"
+trim s1 s1 -55.44 150.554 -98.1087 79.1766
+
+mkface ff1 s1
+donly ff1 f2
+
+#############################
+set log [bopcurves ff1 f2 -2d]
+#############################
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+#This value must be equal to the analogical value in bug25292_31 and bug25292_32 of "bugs modalg_5" testgrid. 
+set MaxTol 1.e-7
+
+#This value must be equal to the analogical value in bug25292_31 and bug25292_32 of "bugs modalg_5" testgrid. 
+set GoodNbCurv 2
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+
+#-------------
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  bounds c_$i U1 U2
+  
+  dump U1 U2
+  
+  if {[dval $U2-$U1] < 1.0e-20} {
+    puts "Error: Wrong curve's range!"
+  }
+  
+  xdistcs c_$i s1 ${U1} ${U2} 10 1e-7
+  xdistcs c_$i s2 ${U1} ${U2} 10 1e-7
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,94 @@
+puts "================"
+puts "OCC1032"
+puts "================"
+puts ""
+#
+# Note:   Numerical control of setting width
+#
+
+pload QAcommands
+
+NewDocument D BinOcaf
+UndoLimit D 100
+NewCommand D
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel1 0:2
+SetShape D ${aLabel1} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel1} NS
+
+# Close/Open transaction
+NewCommand D
+
+set list [OCC1032_AISWidth D ${aLabel1}]
+set AISWidth1 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel1}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a width
+set SetWidth 4.5
+OCC1032_AISWidth D ${aLabel1} ${SetWidth}
+
+set list [OCC1032_AISWidth D ${aLabel1}]
+set AISWidth2 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1032_AISWidth D ${aLabel1}]
+set AISWidth3 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1032_AISWidth D ${aLabel1}]
+set AISWidth4 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Check the mode
+puts "AISWidth1 = ${AISWidth1}"
+puts "AISWidth2 = ${AISWidth2}"
+puts "AISWidth3 = ${AISWidth3}"
+puts "AISWidth4 = ${AISWidth4}"
+
+set DefaultAISWidth 0
+set status 0
+if { ${AISWidth1} != ${DefaultAISWidth} } {
+	puts "OCC1032_AISWidth command: Error (case 1)"
+	set status 1
+}
+if { ${AISWidth2} != ${SetWidth} } {
+	puts "OCC1032_AISWidth command: Error (case 2)"
+	set status 1
+}
+if { ${AISWidth3} != ${DefaultAISWidth} } {
+	puts "OCC1032_AISWidth command: Error (case 3)"
+	set status 1
+}
+if { ${AISWidth4} != ${SetWidth} } {
+	puts "OCC1032_AISWidth command: Error (case 4)"
+	set status 1
+}
+
+if { ${status} == 0} {
+	puts "OCC1032_AISWidth command: OK"
+}
+

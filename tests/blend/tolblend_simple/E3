@@ -1,0 +1,14 @@
+#restore 5_L12.draw
+#explode 5_L12.draw F
+#sewing s 5_L12.draw_5 5_L12.draw_6 5_L12.draw_9 5_L12.draw_7 
+#explode s sh
+#save sh_1 5_D12.draw 
+
+restore [locate_data_file CFI_5_d12fgi.rle]  s
+tscale s 0 0 0 SCALE1 
+explode s E
+blend result s 8*SCALE1 s_8  8*SCALE1 s_1 8*SCALE1 s_3 
+explode result sh
+tcopy result_1 result 
+
+checkprops result -s 1.0521e+06

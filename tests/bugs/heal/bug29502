@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC29502"
+puts "========"
+puts ""
+#################################################
+# Improve performance of the ShapeUpgrade_UnifySameDomain::UnifyEdges() method
+#################################################
+
+# create cylinder
+cylinder c 0 0 0 0 0 1 10
+mkface f c 0 2*pi -10 10
+
+# split seam edge by the vertex
+vertex v 10 0 0
+bclearobjects
+bcleartools
+baddobjects f
+baddtools v
+bfillds
+bsplit r
+
+checknbshapes r -vertex 3 -edge 4 -wire 1 -face 1
+
+# perform unification of the seam edge:
+# the split vertex should be removed
+unifysamedom result r
+
+checkshape result
+checkprops result -equal f
+checknbshapes result -ref [nbshapes f]
+

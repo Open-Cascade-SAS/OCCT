@@ -1,0 +1,4 @@
+circle c2 -30 -30 1 0 20
+trim result c2 pi 2*pi
+checklength result -l 62.831853071795862
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

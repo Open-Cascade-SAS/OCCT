@@ -1,0 +1,23 @@
+#INTERFACE IGES
+puts "========"
+puts "OCC260"
+puts "========"
+
+pload XDE
+
+set filepath [locate_data_file OCC260.igs]
+if { [catch { igesbrep $filepath a * } catch_result] } {
+    puts "OCC260: Error: there is reading problem"
+} else {
+    regexp {([-0-9.+eE]+) Shape\(s\) listed} [tpcompound result] full ShapeNumber
+    if {${ShapeNumber} > 0} {
+	puts "OCC260: OK"
+    } else {
+	puts "OCC260: Error"
+    }
+}
+
+checkprops result -l 4.41928 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

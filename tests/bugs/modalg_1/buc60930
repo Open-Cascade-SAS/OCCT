@@ -1,0 +1,22 @@
+
+puts "============"
+puts "BUC60930"
+puts "============"
+puts ""
+######################################
+## Exception ConstructionError in LocOpe_SplitShape. 
+######################################
+
+restore [locate_data_file BUC60930_splitshape.brep] c 
+explode c
+checkshape c_1
+checkshape c_2
+
+renamevar c_1 f
+renamevar c_2 e
+
+splitshape result f f e
+
+checkprops result -s 13.3392 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

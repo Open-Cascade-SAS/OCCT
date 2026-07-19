@@ -1,0 +1,14 @@
+# Original bug : cts40125
+# Date : 07mar97
+
+profile f1 x 100 y 100 x -200 y -200 x 100
+profile f2 x -100 y 100 x 100
+ttranslate f2 0 0 100
+
+prism p1 f1 0 0 100
+prism p2 f2 0 0 100
+
+bfuse result p1 p2
+
+checkprops result -s 180000
+checkview -display result -2d -otherwise { p1 p2 } -s -path ${imagedir}/${test_image}.png

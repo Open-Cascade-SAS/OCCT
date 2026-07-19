@@ -1,0 +1,7 @@
+restore [locate_data_file fra61083a.rle] a
+restore [locate_data_file CIN900_fra61hlt.rle] b
+
+bfuse result a b
+
+checkprops result -s 309.521
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

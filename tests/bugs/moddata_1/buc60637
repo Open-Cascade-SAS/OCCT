@@ -1,0 +1,10 @@
+
+puts "========================"
+puts "BUC60637"
+puts "========================"
+
+restore [locate_data_file buc60637a.brep] result
+fsameparameter result
+
+checkprops result -s 144.866
+checkview -display result -2d -path ${imagedir}/${test_image}.png

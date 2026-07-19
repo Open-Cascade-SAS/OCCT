@@ -1,0 +1,10 @@
+box b 5 5 5 
+explode b E
+blend b b 1 b_6
+pcylinder c 1 10
+ttranslate c 2.5 2.5 2.5
+bfuse s c b
+explode s E
+blend result s 1 s_2
+
+checkprops result -s 192.343

@@ -1,0 +1,13 @@
+proc CheckIsFeatureRemoved {theFeature types} {
+  savehistory rf_hist
+  upvar $theFeature TheFeature
+  compound TheFeature TheFeatureC
+  foreach t $types {
+    foreach s [explode TheFeatureC $t] {
+      set log [isdeleted rf_hist $s]
+      if {$log != "Deleted."} {
+        puts "Error: Feature is not removed"
+      }
+    }
+  }
+}

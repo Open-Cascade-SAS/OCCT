@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC27987"
+puts "========"
+puts ""
+#################################################
+# CellsBuilder algorithm does not find shared common parts of the arguments
+#################################################
+
+restore [locate_data_file bug27987.brep] b
+
+explode b
+bclearobjects
+bcleartools
+baddobjects b_1
+baddtools b_2
+bfillds
+bcbuild rx
+bcadd result b_1 1 b_2 1
+
+checknbshapes result -face 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

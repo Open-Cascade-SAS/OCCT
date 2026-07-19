@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC22796: Possibility to display multi-line text in 3D"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+vfont add [locate_data_file bug22149_mona.ttf] Mona
+set s [encoding convertfrom unicode "\x42\x30\x09\x00\x79\x30\x0A\x00\x6F\x30\x42\x26"]
+vdrawtext text0 $s -pos 0 0 0 -color WHITE -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular -font Mona
+
+vdump $imagedir/${casename}.png

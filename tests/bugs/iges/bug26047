@@ -1,0 +1,92 @@
+puts "============"
+puts "0026047: Data Exchange - Lost colors for IGES export"
+puts "============"
+
+pload MODELING VISUALIZATION OCAF XDE
+
+Close D D_Cope -silent
+
+# create original
+box b 0 -20 -10 100 40 20
+compound b b b a
+explode a
+trotate a_1 0 0 0 1 0 0 60
+trotate a_2 0 0 0 1 0 0 -60
+bcommon b a a_1
+bcommon b b a_2
+
+pcylinder c 4 100
+trotate c 0 0 0 0 1 0 90
+
+psphere s 1.4
+ttranslate s 99.2 0 0
+bfuse cx c s
+
+pcone e 60 0.5 101
+trotate e 0 0 0 0 1 0 90
+
+bcommon body b e
+bcut body body c
+bcommon core cx e
+
+text2brep text "CAD Assistant" -font Times -height 10
+ttranslate text 10 -4 10
+prism tr text 0 0 -1
+bfuse body body tr
+
+donly body core
+
+#vdisplay body core
+#vsetcolor body yellow
+#vsetcolor core red
+
+explode body so
+explode body_1 f
+explode core so
+
+NewDocument D
+XAddShape D body_1
+XAddShape D core_1
+
+for {set i 1} {$i <= 26} {incr i} {XSetColor D body_1_$i BLUE}
+XSetColor D body_1_1 E68066
+XSetColor D body_1_9 E68066
+for {set i 10} {$i <= 22} {incr i} {XSetColor D body_1_$i 99B300}
+XSetColor D core_1 1A1AFF
+foreach ff [explode core_1 f] { XSetColor D $ff 1A1AFF ; puts "set color $ff" }
+
+vinit
+vclear 
+XDisplay D -dispMode 1
+vfit
+vdump "$::imagedir/${::casename}_orig.png"
+set aColorOrig [vreadpixel 360 290 rgb name]
+
+# export a copy
+set anIgesCopy "$::imagedir/${::casename}_exported.igs"
+WriteIges D $anIgesCopy
+
+# display an exported model
+ReadIges D_Copy $anIgesCopy
+file delete $anIgesCopy
+
+vinit
+vclear 
+XDisplay D_Copy -dispMode 1
+vfit
+vdump "$::imagedir/${::casename}_exported.png"
+
+# check color
+set aColorNew [vreadpixel 360 290 rgb name]
+if { "$aColorOrig" == "$aColorNew" } {
+  puts "OK: Image of exported model matches original"
+} else {
+  puts "Error: Image of exported model is wrong!"
+}
+
+set xst [ XStat D_Copy 1] 
+regexp {Number +of +labels +with +color +link += +([-0-9.+eE]+)} $xst full nbshcolor_Copy
+
+if {$nbshcolor_Copy != 33} {
+  puts "Error: incorrect count of color links to shapes"
+}

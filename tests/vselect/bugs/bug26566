@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC26566: Visualization - incorrect highlight after selection of owners with auto-highlight disabled"
+puts "========"
+puts ""
+
+pload VISUALIZATION MODELING XSDRAW STL
+vinit View1
+
+# create an object with auto-highlight disabled
+meshfromstl m [locate_data_file b.stl]
+vselmode m 8 1
+
+# create an object with auto-highlight enabled
+box b 100 100 100
+vdisplay b
+
+vfit
+
+# select box
+vselect 200 200
+
+# select mesh with auto-highlight disabled
+vselect 290 370
+# check that box is drawn with its own color
+checkcolor 321 128 1 1 0
+# check that selection prs for mesh is displayed
+checkcolor 316 321 0.8 0.8 0.8
+
+vselect 200 200
+# check that box is highlighted with selection color
+checkcolor 321 128 0.8 0.8 0.8
+# check that mesh is drawn without selection
+checkcolor 316 321 0 0 0
+
+vdump ${imagedir}/${casename}.png

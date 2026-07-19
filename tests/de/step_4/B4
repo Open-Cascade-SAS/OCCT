@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL:  Update of 3D-Parameters has failed" 
+
+
+set filename PRO7656.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 110  ( 113 )  Summary  = 110  ( 113 )
+CHECKSHAPE  : Wires    = 6  ( 6 )  Faces    = 6  ( 6 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 5  ( 5 )  Face     = 627  ( 627 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 5  ( 5 )  Face     = 627  ( 627 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =    14.02132488  (    14.02132488 )  AvgTol   =    0.1145633178  (    0.1145769154 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

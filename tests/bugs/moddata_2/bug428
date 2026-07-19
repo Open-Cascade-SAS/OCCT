@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC428: Excep-tion during visualization on attached shape in application."
+puts "SAM1414: Excep-tion is raised in the package StdPrs."
+puts "========"
+
+restore [locate_data_file OCC428.brep] result
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}_shade.png
+
+vclear
+
+smallview
+isos result 0
+triangles result
+fit
+
+checktrinfo result -tri 10409 -nod 7615
+checkview -screenshot -2d -path ${imagedir}/${test_image}_axo.png

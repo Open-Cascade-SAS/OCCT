@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC10435"
+puts "============"
+puts ""
+#######################################################################
+# error in fillet after Cut of torus from box
+#######################################################################
+
+set BugNumber OCC10435
+
+puts "Load shape ..."
+restore [locate_data_file OCC10435.brep] b1 
+
+explode b1 e
+
+puts "Start fillet ..."
+fillet result b1 5 b1_15 5 b1_16 5 b1_10
+puts "Finish fillet ..."
+
+checkprops result -s 36455.2 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 12 -edge 19 -wire 11 -face 10 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 55
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

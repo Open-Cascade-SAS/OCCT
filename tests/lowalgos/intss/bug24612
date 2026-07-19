@@ -1,0 +1,82 @@
+puts "========="
+puts "OCC24612"
+puts "========="
+puts ""
+###########################################################
+# Wrong pcurve of the section curve
+###########################################################
+
+set MaxTol 7.0e-5
+set NbCurv_OK 1
+restore [locate_data_file bug24612_b1.brep] b1
+restore [locate_data_file bug24612_b2.brep] b2
+
+mksurface s1 b1
+bounds s1 U1f_exp U1l_exp V1f_exp V1l_exp
+
+dval U1f_exp
+dval U1l_exp
+dval V1f_exp
+dval V1l_exp
+
+set log [bopcurves b1 b2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${NbCurv} != ${NbCurv_OK}} {
+  puts "Error: ${NbCurv_OK} curve(s) expected, but ${NbCurv} found."
+}
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+#Theoretically, c2d1_1 must cover V-diapason of surface s1 fully.
+
+set log [dump c2d1_1]
+
+regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
+puts "Degree=${Degree}"
+puts "Poles=${Poles}"
+puts "KnotsPoles=${KnotsPoles}"
+puts ""
+
+set Pole 1
+set exp_string " +${Pole} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
+regexp ${exp_string} ${log} full U_begin V_begin
+
+puts "Pole=${Pole}"
+puts "U_begin=${U_begin}"
+puts "V_begin=${V_begin}"
+dset V_begin ${V_begin}
+puts ""
+
+set Pole ${Poles}
+set exp_string " +${Pole} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
+regexp ${exp_string} ${log} full U_end V_end
+
+puts "Pole=${Pole}"
+puts "U_end=${U_end}"
+puts "V_end=${V_end}"
+dset V_end ${V_end}
+puts ""
+
+set delta_f [dval V1l_exp-V_begin]
+
+#ATTENTION!!! V_begin must be strictly equal V1l_exp (without any tolerance)
+if {${delta_f} != 0} {
+  puts "Error: Bad value. V_begin = [dval V_begin], Vlast = [dval V1l_exp]."
+} else {
+  puts "OK: Good value. V_begin matches with Vlast of surface."
+}
+
+puts ""
+
+set delta_l [dval V1f_exp-V_end]
+
+#ATTENTION!!! V_end must be strictly equal V1f_exp (without any tolerance)
+if {${delta_l} != 0} {
+  puts "Error: Bad value. V_end = [dval V_end], Vfirst = [dval V1f_exp]."
+} else {
+  puts "OK: Good value. V_end matches with Vfirst of surface."
+}

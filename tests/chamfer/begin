@@ -1,0 +1,240 @@
+# File : begin
+
+# to prevent loops limit to 10 minutes
+cpulimit 600
+
+if { [array get Draw_Groups "TOPOLOGY Fillet construction commands"] == "" } {
+	pload TOPTEST
+}
+
+# This procedure tries to load an EDGE (one point) or EDGE (two points)
+proc get_element { type args } {
+# First point
+     set x [lindex $args 0]
+     set y [lindex $args 1]
+     set z [lindex $args 2]
+
+# Second point if necessary
+     if { [string compare $type "FACE"] == 0 } {
+     	set x1 [lindex $args 3]
+     	set y1 [lindex $args 4]
+     	set z1 [lindex $args 5]     	
+
+     } else {
+        set x1 $x
+	set y1 $y
+	set z1 $z
+     }
+
+     global ver
+     vertex ver $x $y $z
+     global dd
+     global dd_val
+     set res {}
+
+# Try to find element with points inside a bounding box
+     foreach element [directory] {
+	     global $element
+	     distmini dd ver $element
+     	     if { [string match "*$type*" [whatis $element]] } {
+               set bbox [bounding $element -save xx1 yy1 zz1 xx2 yy2 zz2 ]
+# Get distance
+               set dv [lindex [dump dd_val] 5]
+               if {[expr {[dval xx1-1e-2] <= $x  && $x  <= [dval xx2+1e-2]
+              && [dval yy1-1e-2] <= $y  && $y  <= [dval yy2+1e-2]
+              && [dval zz1-1e-2] <= $z  && $z  <= [dval zz2+1e-2]
+              && [dval xx1-1e-2] <= $x1 && $x1 <= [dval xx2+1e-2]
+              && [dval yy1-1e-2] <= $y1 && $y1 <= [dval yy2+1e-2]
+              && [dval zz1-1e-2] <= $z1 && $z1 <= [dval zz2+1e-2]
+		   	}]
+		   } {
+		   if { [llength $res] == 0 } {
+		      lappend res $element
+		      lappend res $dv
+		   } else {
+		      if { [lindex $res 1] > $dv } {
+		      	 lset res 0 $element
+		      	 lset res 1 $dv
+		      }
+		   }
+#		   return $element
+		}
+	     }
+     }
+
+     unset dd
+     if { [llength $res] != 0 } {
+     	return [lindex $res 0]
+     }
+
+     set error "Error  : $type is not found at $x $y $z"
+     if { [string compare $type "FACE"] == 0 } {
+	set error "$error and $x1 $y1 $z1"
+     }
+
+     puts $error
+     return ""
+}
+
+# Compute chamfer sequentially
+# The edge and face numbers are changed after each step.
+# It is necessary to compute new names on result shape after each camf command.
+proc chamf_sequence { args } {
+     set len [llength $args]
+     if { $len == 1 } {
+     	set args [lindex $args 0]
+	set len [llength $args]
+     }
+     set chamfer_list {}
+     set chamf_current {}
+     set result_shape [lindex $args 0]
+     set shape_edges [lindex $args 1]
+     set shape_faces [lindex $args 2]
+
+     global group
+     global chamf_edge_face
+     global chamf_type
+     global chamf_parameters
+
+     global $result_shape
+     foreach d [directory] {
+     	     global $d
+     }
+
+     set len [llength $chamf_edge_face]
+     for {set i 0} {$i < $len} {incr i} {
+# Numbers of EDGE and FACE in initial shape for step $i
+	 set ef [lindex $chamf_edge_face  $i]
+# Parameters of chamfer for step $i
+	 set p  [lindex $chamf_parameters $i]
+
+# Name of EDGE in initial shape
+	 set stre "${shape_edges}_[lindex $ef 0]"
+# Name of FACE in initial shape
+	 set strf "${shape_faces}_[lindex $ef 1]"
+# Get a Cender of gravity for each element and compute new names of on each step.
+# get_element procedure tries to find an element with Cender of gravity inside an bounding box.
+	 foreach name [list EDGE FACE] {
+	 	 if { [string compare $name "EDGE"] == 0 } {
+		    set props [lprops $stre]
+	 	    if { [llength $chamf_current] != 0 } {
+	    	       lappend chamfer_list $chamf_current
+	    	       set chamf_current {}
+	 	    }
+       	 	    lappend chamf_current $result_shape
+       	 	    lappend chamf_current $shape_edges
+		 } else {
+		    set props [sprops $strf]
+		 }
+       	    	 if { [regexp {Center of gravity[^0-9=]+= +([-0-9.+eE]+)[^0-9=]+= +([-0-9.+eE]+)[^0-9=]+= +([-0-9.+eE]+)} $props full x y z] } {
+# New names of element will be computed dynamically on each step.
+		    if { [string compare $name "EDGE"] == 0 } {
+	       	       lappend chamf_current "\[get_element $name $x $y $z\]"
+# Save EDGE center for get_element command with FACE argument.
+		       set x1 $x
+		       set y1 $y
+		       set z1 $z
+		    } else {
+		      if { [string compare $group "equal_dist"] != 0 } {
+	       	       lappend chamf_current "\[get_element $name $x $y $z $x1 $y1 $z1\]"
+		       }
+		    }
+	    	 }
+	 }
+	 if { [string compare $chamf_type ""] != 0} {
+	    lappend chamf_current $chamf_type
+	 }
+	 foreach pe $p {
+	 	 lappend chamf_current $pe
+	 }
+     } 
+     lappend chamfer_list $chamf_current
+     foreach chamf_current $chamfer_list {
+# Compute new name of EDGE
+     	     lset chamf_current 2 [expr [lindex $chamf_current 2]]
+# Compute new name of FACE
+	    if { [string compare $group "equal_dist"] != 0 } {
+     	     lset chamf_current 3 [expr [lindex $chamf_current 3]]
+	     }
+
+	     set str "chamf $chamf_current"
+	     puts $str
+# Compute chamfer
+	     set failed [catch $str res]
+	     if { $failed } {
+	     	puts "Error   : chamfer is not done. $res"
+# Save previous shape in new name
+		renamevar $shape_edges $result_shape
+	     }
+# Delete temporary edges and faces
+	     foreach str [directory] {
+	     	     set type [whatis $str]
+	 	     set is_edge [string match "*EDGE*" $type]
+	 	     set is_face [string match "*FACE*" $type]
+	     	     if { $is_edge || $is_face } {
+		     	unset $str
+		     }
+	     }
+	     if { $failed == 0 } {
+	     	unset $shape_edges
+	     }
+# Allow to use exploded elements on next step
+	     set nb [countshapes $result_shape]
+	     regexp {EDGE[^0-9]+([0-9]+)} $nb full nbedges
+	     regexp {FACE[^0-9]+([0-9]+)} $nb full nbfaces
+	     for {set j 1} {$j <= $nbedges} {incr j} {
+	     	 global "${result_shape}_$j"
+	     }
+	     for {set j 1} {$j <= $nbfaces} {incr j} {
+	     	 global "${shape_edges}_$j"
+	     }
+	     explode $result_shape E
+	     renamevar $result_shape $shape_edges
+	     explode $shape_edges F
+     }
+# Save result shape in new name
+     renamevar $shape_edges $result_shape
+}
+
+# Compute chamfer at one command or sequentially
+proc compute_chamf { args } {
+     global command
+     global group
+     if { [string compare $command "chamf_sequence"] == 0 } {
+     	chamf_sequence $args
+     } else {
+        set len [llength $args]
+     	set result_shape [lindex $args 0]
+     	set shape_edges [lindex $args 1]
+     	set shape_faces [lindex $args 2]
+ 
+	global chamf_edge_face
+     	global chamf_type
+     	global chamf_parameters
+ 
+    	global $result_shape
+    	foreach d [directory] {
+		global $d
+     	}
+
+	set chamf_str "chamf $result_shape $shape_edges"
+
+	set len [llength $chamf_edge_face]
+	for {set i 0} {$i < $len} {incr i} {
+	    set ef [lindex $chamf_edge_face  $i]
+	    set p  [lindex $chamf_parameters $i]
+	    if { [string compare $group "equal_dist"] == 0 } {
+	       set chamf_str "${chamf_str} ${shape_edges}_[lindex $ef 0] $p"
+	    } else {
+	       set chamf_str "${chamf_str} ${shape_edges}_[lindex $ef 0] ${shape_faces}_[lindex $ef 1] $chamf_type $p"
+	    }
+	}
+
+	puts $chamf_str
+# Compute chamfer in one command
+	if { [catch "$chamf_str" res] } {
+	   puts "Error   : chamfer is not done. $res"
+	   renamevar $shape_edges $result_shape
+	} 
+     }
+}

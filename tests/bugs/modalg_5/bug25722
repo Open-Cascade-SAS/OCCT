@@ -1,0 +1,33 @@
+puts "=========="
+puts "OCC25722"
+puts "=========="
+puts ""
+#################################################
+# Wrong implementation of SetFuzzyValue method
+#################################################
+
+box b1 10 10 10
+box b2 10.0001 0 0 10 10 10
+bfuzzyvalue 0.0001
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop r 1
+
+checknbshapes r -solid 1
+
+bfuzzyvalue 0.
+box b1 10 10 10
+box b2 10.0001 0 0 10 10 10
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 1
+
+checknbshapes result -solid 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

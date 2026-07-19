@@ -1,0 +1,142 @@
+puts "=================================="
+puts "AIS_Manipulator - rotate an object"
+puts "=================================="
+
+pload MODELING VISUALIZATION
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+set anImage4 $imagedir/${casename}_4.png
+set anImage5 $imagedir/${casename}_5.png
+
+# -------------------------------------
+# create manipulated and helper objects
+# -------------------------------------
+
+pcylinder c1_1  5 10
+pcylinder c1_2  3 10
+pcylinder c2 10 20
+ttranslate c1_1 100 0 20
+ttranslate c1_2 100 0 20
+trotate c1_2 100 0 25 0 1 0 90
+trotate c1_2 100 0 25 0 0 1 10
+ttranslate c2 100 0 0
+
+compound c1_1 c1_2 c1
+
+# ------------------------------------
+# display manipulated objects (test 1)
+# ------------------------------------
+
+vdisplay c1
+vdisplay c2
+vsetdispmode 1
+vaxo
+vfit
+
+# ------------------
+# attach manipulator
+# ------------------
+
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
+
+# ----------------------------------------------------
+# test rotation around x axis (object reference frame)
+# ----------------------------------------------------
+
+vmanipulator m -followRotation 1
+
+set mouse_pick {199 092}
+set mouse_drag {176 142}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage1
+
+# ----------------------------------------------------
+# test rotation around y axis (object reference frame)
+# ----------------------------------------------------
+
+vmanipulator m -followRotation 1
+
+set mouse_pick {175 135}
+set mouse_drag {232 144}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage2
+
+# ----------------------------------------------------
+# test rotation around z axis (object reference frame)
+# ----------------------------------------------------
+
+vmanipulator m -followRotation 1
+
+set mouse_pick {200 094}
+set mouse_drag {182 117}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage3
+
+# ------------------------------------
+# display manipulated objects (test 2)
+# ------------------------------------
+
+vremove -all
+vdisplay c1
+vdisplay c2
+vsetdispmode 1
+vaxo
+vfit
+
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
+vmanipulator m -followRotation 0
+
+# ---------------------------------------------------
+# test rotation around y axis (world reference frame)
+# ---------------------------------------------------
+
+set mouse_pick {205 088}
+set mouse_drag {232 127}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage4
+
+# ---------------------------------------------------
+# test rotation around z axis (world reference frame)
+# ---------------------------------------------------
+
+set mouse_pick {228 142}
+set mouse_drag {184 143}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage5

@@ -1,0 +1,8 @@
+puts "================"
+puts "0030421: Data Exchange - Standard_RangeError  e x c e p t i o n  while reading VRML files with polygons"
+puts "================"
+puts ""
+
+loadvrml result [locate_data_file bug30421.wrl]
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

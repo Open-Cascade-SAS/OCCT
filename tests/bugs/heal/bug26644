@@ -1,0 +1,44 @@
+puts "========"
+puts "OCC26644"
+puts "========"
+puts ""
+#######################################################################
+# ShapeUpgrade_UnifySameDomain - strange behavior
+#######################################################################
+
+restore [locate_data_file bug26644_input.brep] a
+
+# 1
+checkarea a 158.466 1e-1 0.01
+
+vinit
+vsetdispmode 1
+vclear
+vdisplay a
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+# 2
+unifysamedom r a +f +e -b
+
+checkshape r f
+
+checkarea a 158.466 1e-1 0.01
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 32
+ EDGE      : 50
+ WIRE      : 23
+ FACE      : 23
+ SHELL     : 3
+ SOLID     : 3
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 135
+"
+checknbshapes r -ref ${nbshapes_expected} -t -m "Shape Upgrade"
+
+vclear
+vdisplay r
+vdump ${imagedir}/${casename}_2.png

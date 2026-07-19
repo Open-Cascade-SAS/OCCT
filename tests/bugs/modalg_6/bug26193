@@ -1,0 +1,51 @@
+puts "========"
+puts "OCC26193"
+puts "========"
+puts ""
+##@@###########################
+# Incomplete intersection curve
+###############################
+
+restore [locate_data_file OCC26193_qfv.brep] q
+explode q
+copy q_1 b1
+copy q_2 b2
+
+explode b1 e
+
+set NbVertGood 8
+
+bsection rr b1 b2
+
+set lst [checksection rr]
+set i 1
+while {$i} {
+  if {[regexp "is a shape VERTEX" [whatis alone_$i]]} {
+    distmini dd1 alone_$i b1_1
+    distmini dd2 alone_$i b1_3
+    
+    set dd1 [dval dd1_val]
+    set dd2 [dval dd2_val]
+    
+    set dist [expr min( $dd1, $dd2 ) ]
+    
+    if {$dist > 1.0e-7} {
+      puts "Error: Vertex alone_$i is not on boundary"
+    }
+    
+    incr i
+  } else {
+    break
+  }  
+}
+
+set NbVertFound [expr $i-1]
+
+if {$NbVertFound != $NbVertGood} {
+  puts "Error: $NbVertFound found but $NbVertGood expected"
+}
+
+smallview
+donly b1 b2 rr
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,4 @@
+parabola result 70 1  0  1 10
+2drotate result 0 0 90
+checkdump result -name {Center Axis XAxis YAxis Focal} -ref {{-0.999999999999996 70} {-1 6.12303176911189e-17} {-1 6.12303176911189e-17} {-6.12303176911189e-17 -1} {10}} -eps 0.01
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

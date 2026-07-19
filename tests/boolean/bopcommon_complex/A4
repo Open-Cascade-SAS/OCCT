@@ -1,0 +1,13 @@
+puts "================================="
+puts "COMMON of OCC212-2.brep and  OCC212-1.brep"
+puts "Case is duplicate of chl 918 CIN001_a5.rle, bug OCC212 "
+puts "================================="
+
+restore [locate_data_file OCC212-1.brep] a
+restore [locate_data_file OCC212-2.brep] b
+
+bop b a 
+bopcommon result
+
+checkprops result -s 314.301
+checkview -display result -2d -otherwise { b a  } -s -path ${imagedir}/${test_image}.png

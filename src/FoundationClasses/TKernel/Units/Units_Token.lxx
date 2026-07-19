@@ -1,0 +1,139 @@
+// Created on: 1992-06-24
+// Created by: Gilles DEBARBOUILLE
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <stdio.h>
+#include <string.h>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <TCollection_AsciiString.hxx>
+#include <Units_Dimensions.hxx>
+
+//=================================================================================================
+
+inline TCollection_AsciiString Units_Token::Word() const
+{
+  return theword;
+}
+
+//=================================================================================================
+
+inline TCollection_AsciiString Units_Token::Mean() const
+{
+  return themean;
+}
+
+//=================================================================================================
+
+inline double Units_Token::Value() const
+{
+  return thevalue;
+}
+
+//=================================================================================================
+
+inline occ::handle<Units_Dimensions> Units_Token::Dimensions() const
+{
+  return thedimensions;
+}
+
+//=================================================================================================
+
+inline void Units_Token::Word(const char* const aword)
+{
+  theword = aword;
+}
+
+//=================================================================================================
+
+inline void Units_Token::Mean(const char* const amean)
+{
+  themean = amean;
+}
+
+//=================================================================================================
+
+inline void Units_Token::Value(const double avalue)
+{
+  thevalue = avalue;
+}
+
+//=================================================================================================
+
+inline bool Units_Token::IsNotEqual(const char* const astring) const
+{
+  TCollection_AsciiString string = Word();
+  int                     length = string.Length();
+  if (strlen(astring) == (unsigned int)length)
+    return strncmp(string.ToCString(), astring, unsigned(length)) != 0;
+  else
+    return true;
+}
+
+//=================================================================================================
+
+inline bool Units_Token::IsNotEqual(const occ::handle<Units_Token>& atoken) const
+{
+  TCollection_AsciiString string1 = Word();
+  TCollection_AsciiString string2 = atoken->Word();
+  int                     length  = string1.Length();
+  if (length == atoken->Length())
+    return strcmp(string1.ToCString(), string2.ToCString()) != 0;
+  else
+    return true;
+}
+
+//=================================================================================================
+
+inline bool Units_Token::IsLessOrEqual(const char* const astring) const
+{
+  TCollection_AsciiString string = Word();
+  int                     length = string.Length();
+  if (strlen(astring) >= (unsigned int)length)
+    return strncmp(string.ToCString(), astring, unsigned(length)) == 0;
+  else
+    return false;
+}
+
+//=================================================================================================
+
+inline bool Units_Token::IsGreater(const char* const astring) const
+{
+  TCollection_AsciiString string = Word();
+  int                     length = string.Length();
+  return strncmp(string.ToCString(), astring, unsigned(length)) > 0;
+}
+
+//=================================================================================================
+
+inline bool Units_Token::IsGreater(const occ::handle<Units_Token>& atoken) const
+{
+  TCollection_AsciiString string1 = Word();
+  TCollection_AsciiString string2 = atoken->Word();
+  int                     length  = string1.Length();
+  return strncmp(string1.ToCString(), string2.ToCString(), unsigned(length)) > 0;
+}
+
+//=================================================================================================
+
+inline bool Units_Token::IsGreaterOrEqual(const occ::handle<Units_Token>& atoken) const
+{
+  TCollection_AsciiString string1 = Word();
+  TCollection_AsciiString string2 = atoken->Word();
+  int                     length  = string1.Length();
+  return strncmp(string1.ToCString(), string2.ToCString(), unsigned(length)) >= 0;
+}

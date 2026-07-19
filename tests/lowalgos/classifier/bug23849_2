@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC23849"
+puts "================"
+puts ""
+#######################################################################
+# BOP regression
+#######################################################################
+
+set BugNumber OCC23849
+
+restore [locate_data_file bug23849_segment_1.brep] b1
+explode b1 f
+
+point p2D 4.1882396063720497 50.643343428894831
+
+set info [b2dclassify b1_1 p2D]
+set check [regexp "ON" $info]
+
+if { ${check} == 1 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}

@@ -1,0 +1,12 @@
+puts "========="
+puts "OCC25578"
+puts "========="
+puts ""
+###########################################################
+# SIGSEGV in BRepSweep_Rotation in case of singularities
+###########################################################
+
+psphere Sphere 5 0 90 90
+explode Sphere F
+revol rr Sphere_1 0 0 0 0 0 1 360
+revol rr Sphere_1 0 0 0 1 0 0 90

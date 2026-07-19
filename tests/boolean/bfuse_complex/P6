@@ -1,0 +1,13 @@
+# Original bug : pro16255
+
+#pkv f
+restore [locate_data_file CTO909_part3bis.brep] s
+restore [locate_data_file CTO909_part5-with-fillet.brep] u
+updatetolerance s 1
+updatetolerance u 1
+#pkv t
+
+bfuse result s u
+
+checkprops result -s 22999.2
+checkview -display result -2d -otherwise { s u } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,7 @@
+restore [locate_data_file pro14151a.rle] a
+restore [locate_data_file CFI_pro14fjq.rle] b
+bsection result a b
+
+checkprops result -l 49.9609
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

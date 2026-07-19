@@ -1,0 +1,17 @@
+puts "==========="
+puts "OCC22240: Bad triangulation of transformed shapes"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug22240_Pump_Nut.brep] a
+restore [locate_data_file bug22240_Pump_Nut.brep] b
+tscale b 0 0 0 2.
+vinit View1
+vdisplay a b
+vsetdispmode a 1
+vsetdispmode b 1
+vfit
+checkcolor 320 104 0.78 0.55 0.09
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,12 @@
+puts "===================================="
+puts "0029803: STEP Import: Units (inch) not applied to entity possessing GEOMETRIC_REPRESENTATION_CONTEXT"
+puts "===================================="
+
+puts "Read STEP file containing GEOMETRIC_REPRESENTATION_CONTEXT and check"
+puts "that it has been translated into two empty faces"
+
+dall
+param read.step.constructivegeom.relationship 1
+stepread [locate_data_file bug29803.stp] a *
+tpdraw #1759
+checknbshapes tp_1577 -face 2 -wire 0 -compound 1

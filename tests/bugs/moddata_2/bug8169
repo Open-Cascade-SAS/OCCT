@@ -1,0 +1,26 @@
+pload QAcommands
+
+puts "============"
+puts "OCC8169"
+puts "============"
+puts ""
+#######################################################################
+# Wrong Geom2dAPI_InterCurveCurve segment
+#######################################################################
+
+set BugNumber OCC6768
+
+restore [locate_data_file OCC8169_1.brep] e1 
+restore [locate_data_file OCC8169_2.brep] e2 
+
+plane p 0 0 500 0 0 1 1 0 0
+dump p
+mkface result p
+
+if { [regexp {Faulty} [OCC8169 e1 e2 result]] == 0 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

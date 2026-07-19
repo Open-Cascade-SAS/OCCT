@@ -1,0 +1,10 @@
+puts "TODO OCC24592 ALL: Error : Number of free edges is"
+#puts "TODO OCC24592 ALL: Error : Number of faults is"
+restore [locate_data_file CNP002_projoiep.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref  19.731382910922985
+checknbshapes result -shell 1
+checkfreebounds result 15
+checkfaults result a 1

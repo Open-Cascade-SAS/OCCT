@@ -1,0 +1,50 @@
+puts "============"
+puts "OCC31452"
+puts "0031452: Impossible to get Backup of the attribute and status that attribute was modified before commit transaction"
+puts "============"
+
+set BugNumber OCC31452
+set status 0
+
+pload TOBJ
+
+# Create a new document
+TObjNew TD1
+UndoLimit TD1 10
+TObjAddObj TD1 obj1
+TObjAddObj TD1 obj2
+TObjAddObj TD1 obj3
+
+set parent "obj1 obj2 obj2"
+set children "ch11 ch21 ch22"
+for { set i 0} {$i <= 2} {incr i} {
+  set p [lindex $parent $i]
+  set ch [lindex $children $i]
+  TObjAddChild TD1 $p $ch
+}
+
+TObjSetRef TD1 obj1 obj2
+
+TObjSetVal TD1 ch11 200
+TObjSetVal TD1 ch21 110
+TObjSetVal TD1 obj2 -r 3 3.14 2.78 0.123
+OpenCommand TD1
+
+TObjSetVal TD1 ch11 150
+TObjSetVal TD1 obj2 -r 3 3.14 2.78 0.150
+
+for {set i 1} {$i <=2} {incr i} {
+ set out [TObjHasModifications TD1 obj$i]
+ set fields [split $out ":"]
+ set status [lindex $fields 1]
+ if {$status != 1} {
+  puts "Error : status of the modification of the object incorrect"
+ }
+
+}
+
+
+TObjClose TD1
+unset TD1                                                          
+
+

@@ -1,0 +1,4 @@
+restore [locate_data_file pro5075_bug-proj4-curve2.rle] curv1
+restore [locate_data_file pro5075_bug-proj4-surface.rle] surf1
+project result curv1 surf1 -v 50
+checklength result -l 1.2463576545507855

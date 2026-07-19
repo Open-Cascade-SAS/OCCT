@@ -1,0 +1,45 @@
+
+puts "============"
+puts "OCC22623"
+puts "============"
+puts ""
+puts "ATTENTION! TEST IN DEBUG MODE!"
+puts ""
+#######################################################################
+# Use of uninitialized variables in HLRBRep_Curve::UpdateMinMax in debug mode
+#######################################################################
+
+catch { pload XDE }
+
+set BugNumber OCC22623
+
+stepread [locate_data_file OCC22623-fg5test.step] a *
+
+# Axes for a_3 only
+hprj p1 -166.887936587259 -524.121423723229 -3.52089319794717 0. 0. 1. 1. 0. 0.
+
+# Axes for complete assembly
+compound a_1 a_2 a_3 a_4 a_5 a
+houtl o1 a_3
+hfill o1 p1 0
+hload o1
+hsetprj p1
+hupdate
+
+set exception_status 0
+set r [hhide]
+set index [lsearch $r exception]
+if {$index > -1} {
+  set exception_status 1
+}
+
+hres2d
+
+# Resume
+puts ""
+if { ${exception_status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

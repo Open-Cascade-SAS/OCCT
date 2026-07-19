@@ -1,0 +1,32 @@
+set aTestName "caf100-P1"
+puts ${aTestName}
+
+# Set a coordinates
+set X 123.456
+set Y 789.012
+set Z 345.678
+
+# Set a position attribute
+set aCLabel 0:1:1
+Label D ${aCLabel}
+SetPosition D ${aCLabel} ${X} ${Y} ${Z}
+
+# Save the document
+set aFile ${WorkDirectory}/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a variable from the label
+set IsDone [catch {GetPosition DD ${aCLabel} X2 Y2 Z2} aResult]
+if { ${IsDone} != 0 } {
+    puts "Error : Get a value of TPrsStd_Position attribute from restoring document"
+} else {
+
+    if { ${X2} != ${X} || ${Y2} != ${Y} || ${Z2} != ${Z}} {
+	puts "Error : Get a value of TPrsStd_Position attribute from restoring document"
+    }
+}

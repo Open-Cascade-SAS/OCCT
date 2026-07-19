@@ -1,0 +1,9 @@
+puts "TODO OCC24255 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+restore [locate_data_file offset_wire_067.brep] s
+
+set length 32.4572
+set nbsh_v 105
+set nbsh_e 105
+set nbsh_w 1
+

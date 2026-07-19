@@ -1,0 +1,157 @@
+// Copyright (c) 2022 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <DE_ConfigurationNode.hxx>
+
+#include <DE_ConfigurationContext.hxx>
+#include <DE_Provider.hxx>
+#include <DE_Wrapper.hxx>
+#include <Message.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Protection.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(DE_ConfigurationNode, Standard_Transient)
+
+//=================================================================================================
+
+DE_ConfigurationNode::DE_ConfigurationNode()
+    : myIsEnabled(true)
+{
+}
+
+//=================================================================================================
+
+DE_ConfigurationNode::DE_ConfigurationNode(
+  const occ::handle<DE_ConfigurationNode>& theConfigurationNode)
+{
+  GlobalParameters = theConfigurationNode->GlobalParameters;
+  myIsEnabled      = theConfigurationNode->IsEnabled();
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationNode::Load(const TCollection_AsciiString& theResourcePath)
+{
+  occ::handle<DE_ConfigurationContext> aResource = new DE_ConfigurationContext();
+  aResource->LoadFile(theResourcePath);
+  return Load(aResource);
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationNode::Save(const TCollection_AsciiString& theResourcePath) const
+{
+  OSD_Path       aPath = theResourcePath;
+  OSD_File       aFile(aPath);
+  OSD_Protection aProt;
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      aFile.Build(OSD_ReadWrite, aProt);
+    }
+    catch (Standard_Failure const&)
+    {
+      Message::SendFail() << "Error: Configuration writing process was stopped. Can't build file.";
+      return false;
+    }
+  }
+  if (aFile.Failed())
+  {
+    Message::SendFail() << "Error: Configuration writing process was stopped. Can't build file.";
+    return false;
+  }
+  TCollection_AsciiString aResConfiguration = Save();
+  aFile.Write(aResConfiguration, aResConfiguration.Length());
+  aFile.Close();
+  return true;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationNode::UpdateLoad(const bool theToImport, const bool theToKeep)
+{
+  (void)theToImport;
+  (void)theToKeep;
+  return true;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationNode::IsImportSupported() const
+{
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationNode::IsExportSupported() const
+{
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationNode::IsStreamSupported() const
+{
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationNode::CheckExtension(const TCollection_AsciiString& theExtension) const
+{
+  TCollection_AsciiString anExtension(theExtension);
+  if (anExtension.IsEmpty())
+  {
+    return false;
+  }
+  if (anExtension.Value(1) == '.')
+  {
+    anExtension.Remove(1);
+  }
+  const NCollection_List<TCollection_AsciiString>& anExtensions = GetExtensions();
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIter(anExtensions); anIter.More();
+       anIter.Next())
+  {
+    if (TCollection_AsciiString::IsSameString(anIter.Value(), anExtension, false))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
+bool DE_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer>& theBuffer) const
+{
+  (void)theBuffer;
+  return false;
+}
+
+//=================================================================================================
+
+void DE_ConfigurationNode::Register(const occ::handle<DE_Wrapper>& theWrapper) const
+{
+  theWrapper->Bind(this);
+}
+
+//=================================================================================================
+
+void DE_ConfigurationNode::UnRegister(const occ::handle<DE_Wrapper>& theWrapper) const
+{
+  theWrapper->UnBind(this);
+}

@@ -1,0 +1,55 @@
+restore [locate_data_file bug28840_5.brep] s
+explode s f
+
+compound s_3 s_8 s_29 s_2 s_1 feature1
+compound s_15 s_10 s_6 s_18 s_9 s_13 s_11 feature2
+compound s_19 s_14 s_7 s_16 s_17 s_12 feature3
+
+# remove first feature
+removefeatures res1 s feature1
+checkshape res1
+checkprops res1 -s 19165.2 -v 142408 -deps 1.e-7
+checknbshapes res1 -vertex 31 -edge 53 -wire 25 -face 24 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved feature1 {v e f}
+
+# get history of the operation
+savehistory rf_hist
+
+# prepare for removal of the second feature
+compound mfeature2
+foreach f [explode feature2 f] {
+  if {[regexp "has not been modified" [modified fm rf_hist $f]]} {
+    add $f mfeature2
+  } else {
+    add fm mfeature2
+  }
+}
+
+# remove second feature
+removefeatures res2 res1 mfeature2
+checkshape res2
+checkprops res2 -s 19396.1 -v 141748 -deps 1.e-7
+checknbshapes res2 -vertex 24 -edge 39 -wire 18 -face 17 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved mfeature2 {v e f}
+
+# get history of the operation
+savehistory rf_hist2
+
+# prepare for removal of the third feature
+compound mfeature3
+foreach f [explode feature3 f] {
+  if {[regexp "has not been modified" [modified fm rf_hist2 $f]]} {
+    add $f mfeature3
+  } else {
+    add fm mfeature3
+  }
+}
+
+# remove the third feature
+removefeatures result res2 mfeature3
+checkshape result
+checkprops result -s 19692.7 -v 142463 -deps 1.e-7
+checknbshapes result -vertex 16 -edge 24 -wire 12 -face 11 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved mfeature3 {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

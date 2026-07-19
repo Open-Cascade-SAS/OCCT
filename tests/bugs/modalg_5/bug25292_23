@@ -1,0 +1,29 @@
+puts "================"
+puts "OCC25292"
+puts "================"
+puts ""
+#######################################################################
+# Face/Face intersection algorithm gives different results for different order of the arguments
+#######################################################################
+
+# Boolean operations
+
+restore [locate_data_file bug25292_Input_3.brep] b1
+restore [locate_data_file bug25292_Input_11.brep] b2
+
+bclearobjects
+bcleartools
+
+#################
+baddobjects b1 b2
+#################
+
+bfillds
+bbuild result
+
+#These values must be equal to the analogical values in bug25292_23 and bug25292_24 of "bugs modalg_5" testgrid. 
+checkprops result -s 31.6797 
+checkshape result
+
+checknbshapes result -vertex 10 -edge 19 -wire 13 -face 13 -shell 3 -solid 3 -compsolid 0 -compound 1 -shape 62
+checkview -display result -3d -path ${imagedir}/${test_image}.png

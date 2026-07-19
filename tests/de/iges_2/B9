@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
+set filename totale.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 7 )  Warnings = 0  ( 1 )  Summary  = 0  ( 8 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 357  ( 603 )  Summary  = 357  ( 603 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 926  ( 926 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 926  ( 926 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.09919926743  (  0.09919926743 )  AvgTol   =  0.002465917615  (  0.002479473291 )
+LABELS      : N0Labels = 926  ( 926 )  N1Labels = 0  ( 638 )  N2Labels = 0  ( 0 )   TotalLabels = 926  ( 1564 )   NameLabels = 926  ( 1035 )   ColorLabels = 926  ( 1564 )   LayerLabels = 19  ( 19 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 4 )
+COLORS      : Colors   = BLUE RED  ( BLUE GREEN RED YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 40  ( 40 )
+
+}

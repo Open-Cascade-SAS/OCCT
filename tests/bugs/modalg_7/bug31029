@@ -1,0 +1,11 @@
+puts "======================================================="
+puts "0031029: BRepLib::SameParameter regression in OCCT 7.4 from OCCT 7.3"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug31029.brep] f
+
+sameparameter f 1.e-5
+
+checkshape f
+

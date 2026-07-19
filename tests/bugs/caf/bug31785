@@ -1,0 +1,10 @@
+puts "==========="
+puts "0031785: \[REGRESSION\] Application Framework - application crashes on reading XBF document in background thread"
+puts "==========="
+
+pload XDE QAcommands
+XNewDoc D
+XSave D ${imagedir}/bug31785.xbf
+Close D
+
+OCC31785 ${imagedir}/bug31785.xbf

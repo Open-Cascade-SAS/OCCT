@@ -1,0 +1,22 @@
+puts "======================================================================"
+puts "OCC31735: BRepOffset_MakeOffset works slowly and produces wrong result"
+puts "======================================================================"
+puts ""
+
+restore [locate_data_file bug31735_1.brep] a
+explode a
+thickshell result a_1 0.02 i
+
+checkshape result
+
+checknbshapes result -t -wire 56 -face 56 -shell 2 -solid 1
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.001001} {
+   puts "Error: bad tolerance of result"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+puts "TEST COMPLETED"

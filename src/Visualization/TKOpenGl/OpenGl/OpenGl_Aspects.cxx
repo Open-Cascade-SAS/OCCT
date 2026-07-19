@@ -1,0 +1,105 @@
+// Copyright (c) 2019 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <OpenGl_Aspects.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_Workspace.hxx>
+
+#include <Graphic3d_TypeOfReflection.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+
+namespace
+{
+//! Initialize default material in this way for backward compatibility.
+inline Graphic3d_MaterialAspect initDefaultMaterial()
+{
+  Graphic3d_MaterialAspect aMat;
+  aMat.SetMaterialType(Graphic3d_MATERIAL_ASPECT);
+  aMat.SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.2f)));
+  aMat.SetDiffuseColor(Quantity_Color(NCollection_Vec3<float>(0.8f)));
+  aMat.SetEmissiveColor(Quantity_Color(NCollection_Vec3<float>(0.1f)));
+  aMat.SetSpecularColor(Quantity_NOC_BLACK);
+  aMat.SetShininess(10.0f / 128.0f);
+  aMat.SetRefractionIndex(1.0f);
+  return aMat;
+}
+
+static const Graphic3d_MaterialAspect THE_DEFAULT_MATERIAL = initDefaultMaterial();
+} // namespace
+
+//=================================================================================================
+
+OpenGl_Aspects::OpenGl_Aspects()
+    : myAspect(new Graphic3d_Aspects()),
+      myShadingModel(Graphic3d_TypeOfShadingModel_Unlit)
+{
+  myAspect->SetInteriorStyle(Aspect_IS_SOLID);
+  myAspect->SetInteriorColor(Quantity_NOC_WHITE);
+  myAspect->SetEdgeColor(Quantity_NOC_WHITE);
+  myAspect->SetFrontMaterial(THE_DEFAULT_MATERIAL);
+  myAspect->SetBackMaterial(THE_DEFAULT_MATERIAL);
+  myAspect->SetShadingModel(myShadingModel);
+  myAspect->SetHatchStyle(occ::handle<Graphic3d_HatchStyle>());
+}
+
+//=================================================================================================
+
+OpenGl_Aspects::OpenGl_Aspects(const occ::handle<Graphic3d_Aspects>& theAspect)
+    : myShadingModel(Graphic3d_TypeOfShadingModel_DEFAULT)
+{
+  SetAspect(theAspect);
+}
+
+//=================================================================================================
+
+void OpenGl_Aspects::SetAspect(const occ::handle<Graphic3d_Aspects>& theAspect)
+{
+  myAspect       = theAspect;
+  myShadingModel = theAspect->ShadingModel();
+
+  // invalidate resources
+  myResTextureSet.UpdateRediness(myAspect);
+  myResSprite.UpdateRediness(myAspect);
+  myResProgram.UpdateRediness(myAspect);
+  if (!myResSprite.IsReady())
+  {
+    myResTextureSet.Invalidate();
+  }
+}
+
+//=================================================================================================
+
+void OpenGl_Aspects::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
+{
+  theWorkspace->SetAspects(this);
+}
+
+//=================================================================================================
+
+void OpenGl_Aspects::Release(OpenGl_Context* theContext)
+{
+  myResTextureSet.Release(theContext);
+  myResSprite.Release(theContext);
+  myResProgram.Release(theContext);
+}
+
+//=================================================================================================
+
+void OpenGl_Aspects::DumpJson(Standard_OStream& theOStream, int theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Aspects)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, OpenGl_Element)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myAspect.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myShadingModel)
+}

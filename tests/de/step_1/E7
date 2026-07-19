@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename trj5_k1-ct-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1  ( 1 )  Summary  = 1  ( 1 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 58  ( 58 )  Face     = 58  ( 58 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 58  ( 58 )  Face     = 58  ( 58 )   FreeWire = 0  ( 16 ) 
+TOLERANCE   : MaxTol   = 0.0008167207419  ( 0.0009854215582 )  AvgTol   =  5.200297373e-005  (  0.0001118094952 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 60  ( 76 )  N2Labels = 0  ( 0 )   TotalLabels = 63  ( 79 )   NameLabels = 5  ( 5 )   ColorLabels = 58  ( 74 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

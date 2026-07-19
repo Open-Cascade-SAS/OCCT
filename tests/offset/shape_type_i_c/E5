@@ -1,0 +1,7 @@
+restore [locate_data_file bug25926_input_shape_fails.brep] s
+
+OFFSETSHAPE 30 {} $calcul $type
+
+checkprops result -v 4.0384e+007
+
+checknbshapes result -shell 1

@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC22823"
+puts "============"
+puts ""
+##############################################################################################
+# Exception in thickshell operation
+##############################################################################################
+
+catch {pload XDE}
+
+set BugNumber OCC22823
+
+restore [locate_data_file OCC22823-occ_bug_thickshell.brep] sh 
+
+checkshape sh
+tolerance sh
+set aStatus [catch {thickshell result sh 0.01} ]
+
+# Resume
+puts ""
+if { ${aStatus} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+checkprops result -s 0.38266 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

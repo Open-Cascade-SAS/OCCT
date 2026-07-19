@@ -1,0 +1,23 @@
+puts "============"
+puts "CR23470"
+puts "============"
+puts ""
+##########################################################################################################
+# Boolean Fuse between two edges fails
+##########################################################################################################
+
+restore [locate_data_file bug23470_qe.brep] qe
+explode qe
+bop qe_1 qe_2
+bopfuse result
+
+checknbshapes result -vertex 2 -edge 1 -wire 0 -shape 4
+
+checkprops result -l 48.4459 
+checkshape result 
+checksection result
+set command bopfuse
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

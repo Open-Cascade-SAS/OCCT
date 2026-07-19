@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC2172"
+puts "============"
+puts ""
+######################################################
+# Fuse operation produces invalid shape
+######################################################
+## (old topology)
+## (fuse)
+######################################################
+
+restore [locate_data_file OCC2172-torus.brep] torus 
+restore [locate_data_file OCC2172-cylinder.brep] cylinder 
+
+checkshape torus
+checkshape cylinder
+
+if { [catch {bfuse result cylinder torus} catch_result] } {
+    puts "Faulty OCC2172"
+}
+
+checkprops result -s 28603.8 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

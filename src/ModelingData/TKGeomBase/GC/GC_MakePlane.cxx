@@ -1,0 +1,114 @@
+// Created on: 1992-10-02
+// Created by: Remi GILET
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <GC_MakePlane.hxx>
+#include <gce_MakePln.hxx>
+#include <Geom_Plane.hxx>
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
+#include <NCollection_Array1.hxx>
+
+//=================================================================================================
+
+GC_MakePlane::GC_MakePlane(const gp_Pln& Pl)
+{
+  TheError = gce_Done;
+  ThePlane = new Geom_Plane(Pl);
+}
+
+//=================================================================================================
+
+GC_MakePlane::GC_MakePlane(const gp_Pnt& P, const gp_Dir& V)
+{
+  TheError = gce_Done;
+  ThePlane = new Geom_Plane(P, V);
+}
+
+//=================================================================================================
+
+GC_MakePlane::GC_MakePlane(const double A, const double B, const double C, const double D)
+{
+  if (std::sqrt(A * A + B * B + C * C) <= gp::Resolution())
+  {
+    TheError = gce_BadEquation;
+  }
+  else
+  {
+    TheError = gce_Done;
+    ThePlane = new Geom_Plane(gp_Pln(A, B, C, D));
+  }
+}
+
+//=================================================================================================
+
+GC_MakePlane::GC_MakePlane(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
+{
+  gce_MakePln Pl(P1, P2, P3);
+  TheError = Pl.Status();
+  if (TheError == gce_Done)
+  {
+    ThePlane = new Geom_Plane(Pl.Value());
+  }
+}
+
+//=================================================================================================
+
+GC_MakePlane::GC_MakePlane(const gp_Pln& Pl, const double Dist)
+{
+  gce_MakePln aMaker(Pl, Dist);
+  TheError = aMaker.Status();
+  if (TheError == gce_Done)
+  {
+    ThePlane = new Geom_Plane(aMaker.Value());
+  }
+}
+
+//=================================================================================================
+
+GC_MakePlane::GC_MakePlane(const gp_Pln& Pl, const gp_Pnt& Point)
+{
+  gce_MakePln aMaker(Pl, Point);
+  TheError = aMaker.Status();
+  if (TheError == gce_Done)
+  {
+    ThePlane = new Geom_Plane(aMaker.Value());
+  }
+}
+
+//=================================================================================================
+
+GC_MakePlane::GC_MakePlane(const gp_Ax1& Axis)
+{
+  gce_MakePln aMaker(Axis);
+  TheError = aMaker.Status();
+  if (TheError == gce_Done)
+  {
+    ThePlane = new Geom_Plane(aMaker.Value());
+  }
+}
+
+//=================================================================================================
+
+const occ::handle<Geom_Plane>& GC_MakePlane::Value() const
+{
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakePlane::Value() - no result");
+  return ThePlane;
+}

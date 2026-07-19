@@ -1,0 +1,23 @@
+puts "============"
+puts "0030807: Visualization, TKOpenGl - supporting cubemaps"
+puts "Test multi-image cubemap"
+puts "============"
+puts ""
+
+set aCubeMap_posx [locate_data_file SF_CubeMap_posx.jpg]
+set aCubeMap_negx [locate_data_file SF_CubeMap_negx.jpg]
+set aCubeMap_posy [locate_data_file SF_CubeMap_posy.jpg]
+set aCubeMap_negy [locate_data_file SF_CubeMap_negy.jpg]
+set aCubeMap_posz [locate_data_file SF_CubeMap_posz.jpg]
+set aCubeMap_negz [locate_data_file SF_CubeMap_negz.jpg]
+
+pload MODELING VISUALIZATION
+vclear
+vinit v -w 512 -h 512
+vcamera -fovy 100
+if { [checkplatform -windows] && [vdriver -default] == "TKOpenGles" } {
+  # Mipmaps cannot be generated for GL_SRGB8 texture format
+}
+
+vbackground -cubemap $aCubeMap_posx $aCubeMap_negx $aCubeMap_posy $aCubeMap_negy $aCubeMap_posz $aCubeMap_negz
+foreach {i} { front back top bottom left right } { v$i; vdump $imagedir/${casename}_${i}.png }

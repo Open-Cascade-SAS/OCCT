@@ -1,0 +1,43 @@
+# Multiple cut of the cylindrical plate by the cylindrical tool
+
+boptions -default
+bsimplify -e 1 -f 1
+
+pcylinder plate 50 10
+
+explode plate e
+copy plate_1 e
+mkcurve curve e
+
+set radius 10
+
+set nbp 100
+bounds curve t1 t2
+set delta [dval ($t2-$t1)/$nbp]
+
+for {set i 0} {$i < $nbp} {incr i} {
+  set t [dval $t1+[dval $delta*$i]]
+  cvalue curve $t x y z
+  # create cylinder at 0 0 0
+  pcylinder tool $radius 10
+  # move cylinder on top of plate
+  ttranslate tool x y z
+  # move it inside
+  ttranslate tool 0 0 -5
+
+  bclearobjects
+  bcleartools
+  baddobjects plate
+  baddtools tool
+  bfillds
+  bapibop plate 2
+}
+
+# restore default values
+boptions -default
+
+checkshape plate
+checknbshapes plate -vertex 202 -edge 303 -wire 105 -face 104 -shell 1 -solid 1
+checkprops plate -s 18541.7 -v 64444.2
+
+checkview -display plate -2d -path ${imagedir}/${test_image}_2.png

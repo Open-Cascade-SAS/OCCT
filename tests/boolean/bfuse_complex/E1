@@ -1,0 +1,9 @@
+# Original bug FRA11018: 
+# Date : 19mar98
+restore [locate_data_file CTO900_fra11018a.rle] a
+restore [locate_data_file CTO900_fra11018b.rle] b
+
+bfuse result a b
+
+checkprops result -s 25189.7
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

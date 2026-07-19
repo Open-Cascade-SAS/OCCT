@@ -1,0 +1,13 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : A5
+## Comment : 
+## ====================================
+
+box s 100 100 10
+explode s E
+mkevol result s
+updatevol s_5 0 2 1 4 2 2
+buildevol
+
+checkprops result -s 23985.2

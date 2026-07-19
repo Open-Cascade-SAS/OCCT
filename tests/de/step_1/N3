@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bm4_ct_eye.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 26 )  Summary  = 7  ( 26 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 5  ( 5 )  Face     = 87  ( 87 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 5  ( 5 )  Face     = 87  ( 87 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.001640491495  (  0.01540214878 )  AvgTol   =  0.0003285278472  (  0.001132360727 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 8  ( 8 )  N2Labels = 0  ( 0 )   TotalLabels = 11  ( 11 )   NameLabels = 5  ( 5 )   ColorLabels = 7  ( 7 )   LayerLabels = 5  ( 5 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = GREEN MAGENTA4 YELLOW  ( GREEN MAGENTA4 YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 0  ( 0 )
+
+}

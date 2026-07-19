@@ -1,0 +1,22 @@
+puts "=========="
+puts "0023513: BRepMesh doesn't stop until out-of-memory"
+puts "=========="
+puts ""
+
+restore [locate_data_file bug23513_infface.brep] result
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+ 
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+checktrinfo result -tri 62936 -nod 31509 -defl 0.01006437767331419 -tol_abs_defl 1e-6
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}

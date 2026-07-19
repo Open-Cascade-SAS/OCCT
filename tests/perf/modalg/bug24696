@@ -1,0 +1,26 @@
+puts "========="
+puts "OCC24696"
+puts "========="
+puts ""
+###########################################################
+# Lower performance of the new Edge/Edge intersection algorithm
+###########################################################
+
+pload QAcommands
+
+dchrono h restart
+
+restore [locate_data_file bug24696_cx_e1200_nurbs.brep] cx
+
+bclearobjects
+bcleartools
+
+set edges [explode cx e]
+set nbe [llength $edges]
+for {set i 1} {$i <= $nbe} {incr i} {baddobjects cx_$i}
+bfillds
+bbuild result
+
+dchrono h stop counter EdgeIntersection
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

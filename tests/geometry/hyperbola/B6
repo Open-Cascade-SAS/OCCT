@@ -1,0 +1,8 @@
+hyperbola result 0  0 1 0 20 10
+dset ech 1.1
+repeat 20 { 
+    2dpscale result 0 0 0 ech; 
+    copy result .; 
+}
+checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{0 0} {1 0} {1 0} {-0 1} {134.549998986512 67.2749994932561}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

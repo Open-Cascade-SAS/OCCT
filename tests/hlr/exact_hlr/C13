@@ -1,0 +1,5 @@
+set viewname "vright"
+set length 9547.11
+
+testreadstep [locate_data_file bug27341_Assembly_ABS_1_CAD.stp] a
+COMPUTE_HLR $viewname $algotype

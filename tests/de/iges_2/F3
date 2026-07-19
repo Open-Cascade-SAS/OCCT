@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename BUC60195.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 367 )  Warnings = 64  ( 1209 )  Summary  = 64  ( 1576 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 211  ( 211 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 211  ( 211 )   FreeWire = 255  ( 267 ) 
+TOLERANCE   : MaxTol   =   0.9498862984  (   0.9498862984 )  AvgTol   =  0.008206959878  (  0.008218042456 )
+LABELS      : N0Labels = 3  ( 6 )  N1Labels = 487  ( 2305 )  N2Labels = 0  ( 0 )   TotalLabels = 490  ( 2311 )   NameLabels = 381  ( 858 )   ColorLabels = 487  ( 2302 )   LayerLabels = 438  ( 2285 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 7 )
+COLORS      : Colors   = BLUE CYAN GREEN MAGENTA RED WHITE  ( BLUE CYAN GREEN MAGENTA RED WHITE YELLOW )
+NLAYERS     : NLayers  = 4  ( 6 )
+LAYERS      : Layers   = 200 240 255 4  ( 192 200 239 240 255 4 )
+
+}

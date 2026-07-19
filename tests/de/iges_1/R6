@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename polyrepro_13juin.igs
+
+set ref_data {
+DATA        : Faulties = 20  ( 0 )  Warnings = 0  ( 0 )  Summary  = 20  ( 0 )
+TPSTAT      : Faulties = 40  ( 181 )  Warnings = 83  ( 1168 )  Summary  = 123  ( 1349 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 527  ( 527 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 527  ( 527 )   FreeWire = 57  ( 57 ) 
+TOLERANCE   : MaxTol   =   0.5505691323  (   0.5505691341 )  AvgTol   =  0.008350513911  (  0.008374961542 )
+LABELS      : N0Labels = 8  ( 8 )  N1Labels = 1598  ( 4138 )  N2Labels = 0  ( 0 )   TotalLabels = 1606  ( 4146 )   NameLabels = 1552  ( 1918 )   ColorLabels = 1598  ( 4138 )   LayerLabels = 1544  ( 4136 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 10  ( 10 )
+COLORS      : Colors   = BLUE CYAN GREEN MAGENTA MAGENTA3 MEDIUMPURPLE1 RED WHITE YELLOW YELLOW3  ( BLUE CYAN GREEN MAGENTA MAGENTA3 MEDIUMPURPLE1 RED WHITE YELLOW YELLOW3 )
+NLAYERS     : NLayers  = 35  ( 36 )
+LAYERS      : Layers   = 100 101 102 110 111 120 121 122 123 125 126 127 128 130 131 132 133 134 135 136 137 138 140 141 142 150 20 21 254 31 5 50 51 52 53  ( 100 101 102 110 111 120 121 122 123 125 126 127 128 130 131 132 133 134 135 136 137 138 140 141 142 150 20 21 254 30 31 5 50 51 52 53 )
+
+}

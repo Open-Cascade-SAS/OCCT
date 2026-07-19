@@ -1,0 +1,53 @@
+puts "============"
+puts "OCC6334"
+puts "============"
+puts ""
+#####################################################################
+# Invalid result of MakeCylindricalHole when input solid is REVERSED
+#####################################################################
+
+set BugNumber OCC6334
+
+# 1. Make box
+box b 100 100 100
+
+subshape b f 1
+offsetshape t b 10 b_1
+
+checkshape t
+
+bounding t -save xt1 yy zz xt2 yy zz -dump
+set ori [lindex [dtyp t] 2]
+puts "Orientation of thick solid is $ori"
+
+# 3. Make hole
+hole h t 110 50 50 1 0 0 10
+
+set che [checkshape h]
+if { [regexp {Faulty} $che] } {
+    puts "Faulty ${BugNumber} : checkshape is wrong for h"
+}
+
+bounding h -save xh1 yy zz xh2 yy zz -dump
+
+renamevar h result
+
+checkprops result -s 117509 
+checkshape result
+
+checknbshapes result -vertex 30 -edge 51 -wire 27 -face 24 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 135
+
+# 4. Check thickness of box and hole
+set dx_t [ dval xt2-xt1 ]
+set dx_h [ dval xh2-xh1 ]
+
+if { [expr abs($dx_h - $dx_t)] > 1e-5 } {
+  puts "Thickness of solid = $dx_t"
+  puts "Thickness of solid with hole = $dx_h"
+  puts "Invalid result of making a hole"
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

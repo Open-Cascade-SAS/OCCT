@@ -1,0 +1,5 @@
+ReadStep D_First [locate_data_file xr1-db-214_0.stp]
+set TypeOfFile ""
+set AddToDocument ""
+set CompareDocumentsMode "ALL"
+

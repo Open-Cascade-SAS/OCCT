@@ -1,0 +1,5 @@
+set chamf_shape CCH_osa__hfe.rle
+set chamf_edge_face  [list "   1    1" "  18    2" " 19    2"]
+set chamf_dist_angle [list "0.05   30" "0.05   30" "0.1   30"]
+set chamf_dist_dist  [list "0.05 0.03" "0.05 0.04" "0.1 0.08"]
+set chamf_equal_dist [list "0.05     " "0.05     " "0.1     "]

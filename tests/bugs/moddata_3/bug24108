@@ -1,0 +1,31 @@
+puts "============"
+puts "CR24108"
+puts "============"
+puts ""
+#######################################################################
+# Boolean fuse fails
+#######################################################################
+
+puts "Load first shape ..."
+restore [locate_data_file bug24108_face_411.brep] b1 
+puts "Load second shape ..."
+restore [locate_data_file bug24108_face_514.brep] b2 
+
+explode b1 f
+explode b2 f
+
+copy b1_1 b1
+copy b2_1 b2
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+checkprops result -s 1328.78
+
+# Analysis of "nbshapes result"
+checknbshapes result -vertex 37 -edge 39 -wire 4 -face 3 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 84
+checkview -display result -3d -path ${imagedir}/${test_image}.png

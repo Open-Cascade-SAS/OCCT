@@ -1,0 +1,3 @@
+IGNORE /on screen buffer is used for image dump - content might be invalid/ reported when software Microsoft OpenGL driver is used (remote desktop)
+IGNORE /^\s*Syntax error: '0:2' label has no presentation\b/ ignore presentation K2 error message
+FAILED /\binvalid\b/ error

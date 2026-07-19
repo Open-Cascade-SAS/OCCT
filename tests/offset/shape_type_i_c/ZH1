@@ -1,0 +1,7 @@
+restore [locate_data_file bug26917_rm37_input_3.brep] s
+
+OFFSETSHAPE 20 {} $calcul $type
+
+checkprops result -v 2.46955e+007
+
+checknbshapes result -shell 1

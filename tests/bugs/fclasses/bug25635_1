@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC25635"
+puts "============"
+puts ""
+######################################################
+# Wrong result of 2D-extrema between two ellipsis
+######################################################
+
+ellipse c1 0 0 2 1
+ellipse c2 4 0 2 1
+
+set info [2dextrema c1 c2]
+
+set tol_abs 7.e-5
+set tol_rel 0.01
+
+# Check result distance.
+regexp "dist 1: +(\[-0-9.+eE\]+)" ${info} full dist_1
+
+set expected_dist_1 0.
+checkreal "Distance" ${dist_1} ${expected_dist_1} ${tol_abs} ${tol_rel}

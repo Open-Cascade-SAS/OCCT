@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename PRO7073.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 123 )  Warnings = 0  ( 0 )  Summary  = 0  ( 123 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 19 )  Summary  = 7  ( 19 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 66  ( 66 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 66  ( 66 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.1618939735  (   0.3526151761 )  AvgTol   =   0.03794599264  (   0.05391604631 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 124  ( 124 )  N2Labels = 0  ( 0 )   TotalLabels = 127  ( 127 )   NameLabels = 5  ( 5 )   ColorLabels = 123  ( 123 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = CYAN FORESTGREEN GREEN INDIANRED1 MAGENTA WHITE YELLOW  ( CYAN FORESTGREEN GREEN INDIANRED1 MAGENTA WHITE YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

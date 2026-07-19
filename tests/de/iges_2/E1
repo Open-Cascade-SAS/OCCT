@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename carenage.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 20 )  Summary  = 0  ( 20 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 0  ( 50 )  Summary  = 0  ( 52 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 12  ( 6 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 12  ( 12 )   FreeWire = 40  ( 40 ) 
+TOLERANCE   : MaxTol   =   0.2600681266  (    7.241845164 )  AvgTol   =   0.03211270001  (    0.4065212776 )
+LABELS      : N0Labels = 7  ( 7 )  N1Labels = 83  ( 98 )  N2Labels = 0  ( 0 )   TotalLabels = 90  ( 105 )   NameLabels = 51  ( 97 )   ColorLabels = 89  ( 104 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = RED WHITE  ( RED WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

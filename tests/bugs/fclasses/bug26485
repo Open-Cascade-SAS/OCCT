@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC26485"
+puts "========"
+puts ""
+####################################################
+# Problem with the normals of a triangulated shape
+####################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC26485-meshed_shape.brep] a
+OCC26485 a

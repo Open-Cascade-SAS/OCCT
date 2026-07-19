@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC25879"
+puts "============"
+puts ""
+######################################################
+# result of blend fails the bopcheck
+######################################################
+
+box Box 10 10 10
+explode Box E
+
+blend Fillet Box 1 Box_1 1 Box_2 1 Box_3 1 Box_4 1 Box_5 1 Box_6 1 Box_7 1 Box_8 1 Box_9 1 Box_10 1 Box_11 1 Box_12
+
+set bug_info [string trim [bopcheck Fillet]]
+if {$bug_info != "This shape seems to be OK."} {
+    puts "Error : result of blend fails the bopcheck"
+}
+
+checkview -display Fillet -2d -path ${imagedir}/${test_image}-2d.png

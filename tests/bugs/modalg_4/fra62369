@@ -1,0 +1,22 @@
+
+puts "==========="
+puts "FRA62369"
+puts "==========="
+
+restore [locate_data_file fra62369a.brep] a 
+checkshape a
+
+compound result
+
+set i 1
+repeat 100 { 
+    plane p_$i 0 0 200+$i
+    mkface f_$i p_$i
+    bsection s_$i a f_$i
+    compound s_$i result result
+    incr i
+}
+checkprops result -l 3854.34 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

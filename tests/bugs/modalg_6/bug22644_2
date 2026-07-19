@@ -1,0 +1,19 @@
+puts "=========="
+puts "OCC22644"
+puts "=========="
+puts ""
+##############################################################
+# Incorrect result of Boolean operations (Fuse, Cut, Common)
+##############################################################
+
+restore [locate_data_file bug22644_Torus.brep] t
+restore [locate_data_file bug22644_Prism.brep] p
+checkshape t
+checkshape p
+
+bop t p
+bopcut result
+
+checkprops result -s 491.142 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC25380"
+puts "================"
+puts ""
+#######################################################################
+# Intersection curve cannot reach boundary of surface
+#######################################################################
+
+restore [locate_data_file bug25380_b1.brep] b1
+restore [locate_data_file bug25380_b2.brep] b2
+
+set log [bopcurves b1 b2]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+set MaxTol 1.e-11
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+checklength c_1 -l 1.614
+
+smallview
+donly c_1 b1
+fit
+display b2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,19 @@
+puts "========================"                                               
+puts "BUC60823"
+puts "========================"                                                
+
+igesbrep [locate_data_file buc60823.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+checktrinfo result -tri 3552 -nod 3033
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

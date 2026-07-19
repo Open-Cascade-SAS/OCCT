@@ -1,0 +1,10 @@
+restore [locate_data_file bug25926_topology.brep] s
+
+set distance 10
+offsetparameter 1.e-7 $calcul $type
+offsetload s $distance
+offsetperform result
+
+checkprops result -v 8.99282e+007
+
+checknbshapes result -shell 1

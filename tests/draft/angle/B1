@@ -1,0 +1,7 @@
+#C2-----------------------------------------------------
+pcone p 10 2 20
+nexplode p f
+depouille result p 1 1 0 p_2 5 -2 0 0 1 0 0 \
+p_1 5 20 0 0 0 1 0
+
+checkprops result -s 1143.37

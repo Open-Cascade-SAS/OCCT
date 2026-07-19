@@ -1,0 +1,18 @@
+cpulimit 1000
+
+# Trims spaces and removed empty lines within multi-line string.
+proc trimmedDump { theDump } {
+  set aDump {}
+  foreach aLineIter [split $theDump "\n"] { set aLine [string trimright $aLineIter]; if { $aLine != "" } { lappend aDump $aLine } }
+  return [join $aDump "\n"]
+}
+
+# Check Xdump results with reference data.
+proc checkXDump { theDoc theRefDump } {
+  puts "===== DUMP===="
+  set aDump [trimmedDump [uplevel #0 Xdump $theDoc]]
+  puts "=============="
+  if { $aDump != [trimmedDump $theRefDump] } {
+    puts "Error: unexpected document '$theDoc' structure\n===REF DUMP===\n$theRefDump\n=============="
+  }
+}

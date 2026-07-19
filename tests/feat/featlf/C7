@@ -1,0 +1,10 @@
+profile p x 5 y 1 x -4 y 4 x -1 y -5
+prism pr p 0 0 1
+profile pp x 2 y -2 ww
+plane pl 0 0 0.3 0 0 -1
+ttranslate pp 0.5 2.5 0.3
+featlf pr pp pl 0 0 0.3 0 0 -0.2 1 1
+featperform lf result 
+
+
+checkprops result -s 42.5

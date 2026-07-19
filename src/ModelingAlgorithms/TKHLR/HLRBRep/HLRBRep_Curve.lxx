@@ -1,0 +1,169 @@
+// Created on: 1992-03-13
+// Created by: Christophe MARION
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_NotImplemented.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <HLRBRep_BCurveTool.hxx>
+
+//=================================================================================================
+
+inline BRepAdaptor_Curve& HLRBRep_Curve::Curve()
+{
+  return myCurve;
+}
+
+//=================================================================================================
+
+inline const BRepAdaptor_Curve& HLRBRep_Curve::GetCurve() const
+{
+  return myCurve;
+}
+
+//=================================================================================================
+
+inline gp_Pnt HLRBRep_Curve::Value3D(const double U) const
+{
+  gp_Pnt P;
+  D0(U, P);
+  return P;
+}
+
+//=================================================================================================
+
+inline void HLRBRep_Curve::D0(const double U, gp_Pnt& P) const
+{
+  HLRBRep_BCurveTool::D0(myCurve, U, P);
+}
+
+//=================================================================================================
+
+inline void HLRBRep_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
+{
+  HLRBRep_BCurveTool::D1(myCurve, U, P, V);
+}
+
+//=================================================================================================
+
+inline double HLRBRep_Curve::FirstParameter() const
+{
+  return Parameter2d(HLRBRep_BCurveTool::FirstParameter(myCurve));
+}
+
+//=================================================================================================
+
+inline double HLRBRep_Curve::LastParameter() const
+{
+  return Parameter2d(HLRBRep_BCurveTool::LastParameter(myCurve));
+}
+
+//=================================================================================================
+
+inline GeomAbs_Shape HLRBRep_Curve::Continuity() const
+{
+  return HLRBRep_BCurveTool::Continuity(myCurve);
+}
+
+//=================================================================================================
+
+inline int HLRBRep_Curve::NbIntervals(const GeomAbs_Shape S) const
+{
+  return HLRBRep_BCurveTool::NbIntervals(myCurve, S);
+}
+
+//=================================================================================================
+
+inline void HLRBRep_Curve::Intervals(NCollection_Array1<double>& Tab, const GeomAbs_Shape Sh) const
+{
+  HLRBRep_BCurveTool::Intervals(myCurve, Tab, Sh);
+}
+
+//=================================================================================================
+
+inline bool HLRBRep_Curve::IsClosed() const
+{
+  return HLRBRep_BCurveTool::IsClosed(myCurve);
+}
+
+//=================================================================================================
+
+inline bool HLRBRep_Curve::IsPeriodic() const
+{
+  return HLRBRep_BCurveTool::IsPeriodic(myCurve);
+}
+
+//=================================================================================================
+
+inline double HLRBRep_Curve::Period() const
+{
+  return HLRBRep_BCurveTool::Period(myCurve);
+}
+
+//=================================================================================================
+
+inline gp_Pnt2d HLRBRep_Curve::Value(const double U) const
+{
+  gp_Pnt2d P;
+  D0(U, P);
+  return P;
+}
+
+//=================================================================================================
+
+inline double HLRBRep_Curve::Resolution(const double R3d) const
+{
+  return HLRBRep_BCurveTool::Resolution(myCurve, R3d);
+}
+
+//=================================================================================================
+
+inline GeomAbs_CurveType HLRBRep_Curve::GetType() const
+{
+  return myType;
+}
+
+//=================================================================================================
+
+inline int HLRBRep_Curve::Degree() const
+{
+  return HLRBRep_BCurveTool::Degree(myCurve);
+}
+
+//=================================================================================================
+
+inline int HLRBRep_Curve::NbPoles() const
+{
+  return HLRBRep_BCurveTool::NbPoles(myCurve);
+}
+
+//=================================================================================================
+
+inline int HLRBRep_Curve::NbKnots() const
+{
+  return HLRBRep_BCurveTool::NbKnots(myCurve);
+}
+
+//=================================================================================================
+
+inline bool HLRBRep_Curve::IsRational() const
+{
+  return HLRBRep_BCurveTool::IsRational(myCurve);
+}

@@ -1,0 +1,62 @@
+set aTestName "caf100-D1"
+puts ${aTestName}
+
+# Create a box
+box aBox1 10 20 30 100 200 300
+
+# Close/Open transaction
+NewCommand D
+
+# Set a shape to the label
+set aBLabel 0:2
+Label D ${aBLabel}
+SetShape D ${aBLabel} aBox1
+
+# Close/Open transaction
+NewCommand D
+
+# Set a real attribute
+set aRLabel 0:3
+Label D ${aRLabel}
+SetReal D ${aRLabel} 123.456789
+
+# Set an integer attribute
+set anILabel 0:4
+Label D ${anILabel}
+SetInteger D ${anILabel} 123456789
+
+# Set a signature
+set signature 1
+
+# Set a pattern
+set aCLabel 0:1:1
+Label D ${aCLabel}
+SetPattern D ${aCLabel} ${signature} ${aBLabel} ${aRLabel} ${anILabel}
+
+# Save dump before storing
+set dump_before [DumpPattern D ${aCLabel}]
+puts "dump_before = ${dump_before}"
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a shape from the label
+set IsDone [catch {DumpPattern DD ${aCLabel}} aResult]
+if { ${IsDone} != 0 } {
+    puts "Error : Get a value of TDataStd_PatternStd attribute from restoring document"
+} else {
+
+    # Save dump after retrieving
+    set dump_after [DumpPattern DD ${aCLabel}]
+    puts "dump_after = ${dump_after}"
+
+    if { ${dump_before} != ${dump_after} } {
+	puts "Error : Get a value of TDataStd_PatternStd attribute from restoring document"
+    }
+}

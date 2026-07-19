@@ -1,0 +1,14 @@
+puts "========================================================="
+puts "0033383: Modeling Algorithms - Wire/Face creation problem"
+puts "========================================================="
+puts ""
+
+pload MODELING
+restore [locate_data_file bug33383.brep] a
+connectedges res a 1e-07 0
+explode res
+mkplane pln1 res_1 1
+
+if ![catch { buildfaces rebf pln1 res_2 }] then {
+  puts "Error: buildfaces command should be failed"
+}

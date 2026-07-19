@@ -1,0 +1,10 @@
+# Test for #24863: memory leak
+
+set listmem {}
+
+for {set i 1} {$i < 10} {incr i} {
+    box b 10 10 10
+
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 256 "Memory leak detected"
+}

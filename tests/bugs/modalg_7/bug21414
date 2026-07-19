@@ -1,0 +1,24 @@
+puts "TODO OCC21414 ALL: ERROR: OCC21414 is reproduced."
+
+puts "========"
+puts "OCC21414"
+puts "========"
+puts ""
+########################################################################################
+# GeomAPI_IntCS fails to find all intersections between line and surface of revolution
+########################################################################################
+
+restore [locate_data_file bug21414_wave.brep] a
+
+mksurface s a
+line l 0 2.5 0 1 0 0
+
+set theResList [intersect res l s]
+
+if {[llength $theResList] != 100} {
+  puts "ERROR: OCC21414 is reproduced. Total number of intersections is [llength $theResList] but should be 100."
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

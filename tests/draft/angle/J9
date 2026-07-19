@@ -1,0 +1,14 @@
+#B5----------------------------------------------
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_"
+
+plane p 0 0 0 1 0 0
+pcone p p 15 14 20
+profile pf o 5 0 5 l 10 c 2 90 l 5 d -1 0 \
+l 14 d 0 -1 l 5 c 2 90
+polyline pl 0 0 5 0 0 30
+pipe p2 pl pf
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_5 5 0 0 29 0 0 1
+
+checkprops result -s 3814.99

@@ -1,0 +1,23 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_1"
+puts "============"
+puts "OCC25509"
+puts "============"
+puts ""
+######################################################
+# Wrong shape considered as valid by checkshape
+######################################################
+
+# 01 
+# A solid with 2 shells that are regular
+# and the SAME
+#
+
+box b 10 10 10 
+explode b 
+shape result so
+add b_1 result
+add b_1 result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

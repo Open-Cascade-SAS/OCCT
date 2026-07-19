@@ -1,0 +1,21 @@
+
+puts "========"                                                                                                                                                 
+puts "BUC60868"                                                                                                                                                 
+puts "========"                                                                                                                                                 
+puts ""                                                                         
+
+pload QAcommands
+
+restore [locate_data_file buc60868.brep] sh 
+checkshape sh
+
+BUC60868 result sh
+checkshape result
+
+set len [llength [explode result w]]
+if { $len != 3 } {
+    puts "Error : the number of curves is $len, but it should be 3."
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

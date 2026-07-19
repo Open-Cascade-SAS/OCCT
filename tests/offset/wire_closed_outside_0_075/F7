@@ -1,0 +1,10 @@
+puts "TODO OCC24255 ALL: Faulty shapes"
+puts "TODO OCC24255 ALL: Error : big tolerance"
+
+restore [locate_data_file offset_wire_067.brep] s
+
+set length 51.8506
+set nbsh_v 61
+set nbsh_e 61
+set nbsh_w 1
+

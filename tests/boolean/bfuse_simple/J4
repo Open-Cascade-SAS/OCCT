@@ -1,0 +1,25 @@
+# Permutation of all forms of construction
+# when fusing a box and an oblong prism
+
+# L series from right side face
+
+vertex vp1 3 3 0
+vertex vp2 8 3 0
+vertex vp3 8 9 0
+vertex vp4 3 9 0
+edge eap vp1 vp2
+edge ebp vp2 vp3
+edge ecp vp3 vp4
+edge edp vp4 vp1
+wire wp eap ebp ecp edp
+mkplane fp wp
+prism ba fp 0 0 5
+
+profile prof O 8 7 3  P -1 0 0 0 1 0  D 0 -1  C 1 180  Y 2  C 1 180  W
+mkplane pl prof
+prism ob pl 1 0 0
+
+bfuse result ba ob
+
+checkprops result -s 180.283
+checkview -display result -2d -otherwise { ba ob } -s -path ${imagedir}/${test_image}.png

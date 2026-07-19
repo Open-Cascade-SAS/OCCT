@@ -1,0 +1,46 @@
+puts "============"
+puts "CR25627: SelectedShape() and HasSelectedShape() of AIS_InteractiveContext class do not work as expected."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+vinit View1
+box aBox 5 5 5
+vdisplay aBox
+vfit
+vselect 100 100
+set aSelectionRes [vstate -hasSelected]
+if { [lsearch $aSelectionRes 0] != -1 } {
+  puts "ERROR: Incorrect result of HasSelectedShape of the context!"
+}
+vpickselected aSelected
+set aRes [vstate aSelected]
+if { $aRes == "aSelected doesn't exist!" } {
+  puts "ERROR: No shape selected in neutral point!"
+}
+set aCompRes [compare aBox aSelected]
+if { [lsearch $aCompRes not] != -1 } {
+  puts "ERROR: Selected box and selected shape from the context are not equal!"
+}
+
+vselect 0 0
+vremove aSelected
+
+vselmode aBox 6 1
+vselect 100 100
+set aSelectionRes [vstate -hasSelected]
+if { [lsearch $aSelectionRes 0] != -1 } {
+  puts "ERROR: Incorrect result of HasSelectedShape of the context!"
+}
+vpickselected aSelected
+set aRes [vstate aSelected]
+if { $aRes == "aSelected doesn't exist!" } {
+  puts "ERROR: No shape selected in local selection!"
+}
+set aCompRes [compare aBox aSelected]
+if { [lsearch $aCompRes not] != -1 } {
+  puts "ERROR: Selected box and selected solid are not equal!"
+}
+
+vdump ${imagedir}/${casename}.png

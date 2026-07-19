@@ -1,0 +1,6 @@
+if { [string compare $command "ShapeConvertRev"] == 0 } {
+   puts "TODO OCC23127 ALL: Error : The resulting shape is not correct"
+   puts "TODO OCC23127 ALL: Error : The area of the resulting shape is"
+}
+restore [locate_data_file m2_8] a
+

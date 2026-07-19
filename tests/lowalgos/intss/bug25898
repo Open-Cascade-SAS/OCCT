@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC25898"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result obtained by intersection algorithm.
+#######################################################################
+
+# Before fix intersection algorithm threw an exception.
+
+restore [locate_data_file bug25898_x001_1.draw] s1
+restore [locate_data_file bug25898_x001_2.draw] s2
+
+set CurveNumb [intersect i s1 s2]
+
+if { [llength ${CurveNumb}] != 2 } {
+    puts "Error : Wrong result obtained by intersection algorithm."
+} else {
+    puts "OK : Good result obtained by intersection algorithm."
+}
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,19 @@
+puts "==========="
+puts "OCC22789"
+puts "==========="
+puts ""
+#######################################################################
+# Exception in Encode regularity if edge has no pcurve
+#######################################################################
+
+set BugNumber OCC22789
+
+restore [locate_data_file OCC22789-cErr.brep] result
+
+if [catch { encoderegularity result } catch_result] {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "${BugNumber}  OK"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

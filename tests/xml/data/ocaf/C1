@@ -1,0 +1,45 @@
+set aTestName "caf005-C2"
+puts ${aTestName}
+
+# Add an attribute to a data framework
+set aName_Root Label_1
+set aLabel_Root 0:2
+Label D ${aLabel_Root}
+
+SetName D ${aLabel_Root} ${aName_Root}
+
+SetNode D ${aLabel_Root}
+
+Label D 0:7
+Label D 0:8
+Label D 0:9
+
+SetNode D 0:7
+SetNode D 0:8
+SetNode D 0:9
+
+AppendNode D ${aLabel_Root} 0:7
+AppendNode D ${aLabel_Root} 0:8
+AppendNode D ${aLabel_Root} 0:9
+
+# Close/Open the transaction
+NewCommand D
+
+# Save result for check after retrieval
+set dump1 [ChildNodeIterate D ${aLabel_Root} 0]
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set aGetLabel_Root ""
+set IsDone [catch {set dump2 [ChildNodeIterate DD ${aLabel_Root} 0]} aResult]
+if { ${IsDone} != 0 || ${dump1} != ${dump2} } {
+    puts "Error : Get a value of TDataStd_TreeNode attribute from restoring document"
+}

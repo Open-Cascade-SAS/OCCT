@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename PRO14319.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 1  ( 0 )  Warnings = 3  ( 64 )  Summary  = 4  ( 64 )
+CHECKSHAPE  : Wires    = 3  ( 5 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 61  ( 61 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 61  ( 61 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.3140268251  (   0.3140268243 )  AvgTol   =  0.0004719499868  (  0.0004897135517 )
+LABELS      : N0Labels = 61  ( 61 )  N1Labels = 0  ( 1212 )  N2Labels = 0  ( 0 )   TotalLabels = 61  ( 1273 )   NameLabels = 61  ( 61 )   ColorLabels = 61  ( 1273 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = CYAN GREEN WHITE  ( CYAN GREEN WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

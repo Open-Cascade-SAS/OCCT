@@ -1,0 +1,12 @@
+# Original bug : cts21899
+# Date : 26 Nov 98
+
+restore [locate_data_file CFE903_cts21ggs.rle] base
+
+nexplode base face
+vertex v1 0 0 0
+
+depouille result base 0 0 1 base_2 1.5 0 0 0 0 0 1
+
+fsameparameter result 
+checkprops result -s 75281.9

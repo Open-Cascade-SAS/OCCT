@@ -1,0 +1,8 @@
+restore [locate_data_file CCH_jyl1.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 8.0000000199999993e-006
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

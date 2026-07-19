@@ -1,0 +1,8 @@
+set TheFileName shading_109.brep
+###if { [string compare ${command} "shading"] == 0 && [string compare ${group} "standard"] == 0} {
+###  set bug_cross "OCC25503"
+###  set nbcross(All) 2
+###} else {
+###  set bug_cross "OCC22687"
+###  set nbcross(All) 4
+###}

@@ -1,0 +1,17 @@
+puts "========="
+puts "OCC25729"
+puts "========="
+puts ""
+###############################################
+# algorithm BRepOffset_MakeOffset(...) produces wrong result for join type Intersection
+###############################################
+
+restore [locate_data_file bug25729_source_shape.brep] s
+
+offsetparameter 1.e-7 c i
+offsetload s 0.14
+offsetperform result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

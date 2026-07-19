@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC21727"
+puts "========"
+puts ""
+###########################################################################################
+# BRepBuilderAPI_Copy (and possibly other similar tools) create new shape in Frozen state
+###########################################################################################
+
+box b 10 10 10
+set bug_info [whatis b]
+if {[lindex $bug_info 6] != "Free"} {
+  puts "ERROR: OCC21727 is reproduced. Shape b does not have flag FREE."
+}
+compound b c
+set bug_info [whatis b]
+if {[lindex $bug_info 6] == "Free"} {
+  puts "ERROR: OCC21727 is reproduced. Shape b has flag FREE."
+}
+tcopy b q
+set bug_info [whatis q]
+if {[lindex $bug_info 6] != "Free"} {
+  puts "ERROR: OCC21727 is reproduced. Shape q does not have flag FREE."
+}

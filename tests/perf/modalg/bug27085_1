@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC27085"
+puts "============"
+puts ""
+###############################
+## ShapeUpgrade_UnifySameDomain very large performance difference for seemingly similar shapes
+###############################
+
+restore [locate_data_file bug27085_fused_primitive.fast.brep] fp
+
+dchrono h restart
+
+unifysamedom res fp
+
+dchrono h stop counter unifysamedom

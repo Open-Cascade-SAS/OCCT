@@ -1,0 +1,18 @@
+puts "============"
+puts "CR24133: Development of improvement of dimensions implementation - Length dimension"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vpoint lengthP1 0 0 0
+vpoint lengthP2 50 50 50
+vdimension dim1 -length -plane xoy -shapes lengthP1 lengthP2 -font SansFont
+vfit
+vmoveto 82 254
+checkcolor 362 102 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of length dimension is wrong." }
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,19 @@
+puts "==================================================="
+puts " 0032914: Data Exchange - Some parts of compound are lost while writing STEP in nonmanifold mode "
+puts "==================================================="
+puts ""
+
+set BugNumber OCC32914
+
+set filepath [locate_data_file ${BugNumber}.brep]
+
+restore ${filepath} s
+
+param write.step.nonmanifold 1
+stepwrite 0 s ${imagedir}/${BugNumber}.step
+
+testreadstep ${imagedir}/${BugNumber}.step result
+
+checknbshapes result -vertex 16 -edge 17 -wire 7 -face 7 -shell 2 -solid 0 -compsolid 0 -compound 4 -shape 53
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

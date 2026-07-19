@@ -1,0 +1,8 @@
+## cts20077
+
+restore [locate_data_file CTO904_cts20077a.rle] sh
+restore [locate_data_file cts20077b.rle]  pr
+
+bcut result sh pr
+checkprops result -s 4909.72
+checkview -display result -2d -s -otherwise { sh pr } -path ${imagedir}/${test_image}.png

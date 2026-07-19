@@ -1,0 +1,6 @@
+# Test overriding error status defined in the parse.rules file of the group 
+# by OK rule in the grid
+
+puts "Wanted exception"
+
+puts "TEST COMPLETED"

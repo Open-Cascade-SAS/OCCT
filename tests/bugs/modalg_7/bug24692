@@ -1,0 +1,31 @@
+puts "TODO OCC24692 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC24692"
+puts "========"
+puts ""
+#########################################
+# fuseedge corruption of spherical edge
+#########################################
+
+# Object_1
+pcylinder cyl 10 40
+box abox 10 40 25
+ttranslate abox 0 -20 5
+bop cyl abox
+bopfuse fuse1
+
+# Object_2
+psphere asphere 7
+ttranslate asphere 0 0 3
+box abox2 5 30 25
+ttranslate abox2 -2 -15 -11
+bop abox2 asphere
+bopfuse fuse2
+
+# Object_Result
+bop fuse1 fuse2
+bopcut result
+fuseedge result
+
+checkshape result_1

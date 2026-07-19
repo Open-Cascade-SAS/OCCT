@@ -1,0 +1,66 @@
+pload TOPTEST DCAF
+
+cpulimit 300
+
+set ValidatorCheck 0
+
+if { [info exists env(CSF_ValidatorPath)] != 0 } {
+    if {[file exists $env(CSF_ValidatorPath)]} {
+	set ValidatorCheck 1
+	set Validator $env(CSF_ValidatorPath)
+    }
+}
+
+if { [info exists imagedir] == 0 } {
+    set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+    set test_image photo
+}
+
+set WorkDirectory $imagedir
+
+if { [checkplatform -windows] } {
+    if {[regexp -nocase {jdk} $env(PATH)] || [regexp -nocase {java} $env(PATH)]} {
+        set Java "java"
+    } else {
+        puts "Warning: environment variable PATH doesn't contain path to Java"
+    }
+} else {
+    catch {set Java $env(JAVAHOME)/bin/java}
+}
+
+set SchemaFile    ""
+
+proc SaveToFile { aD aFile } {
+    upvar $aD D 
+    global FileSuffix ValidatorCheck
+    catch {[file delete ${aFile}]}
+    SaveAs D $aFile
+    if { [file exists $aFile] } {
+	if { $FileSuffix == "xml" && $ValidatorCheck} {
+	    ValidateXml $aFile
+	} else {
+	    puts "Validation of XML file by XSD schema is not provided."
+	}
+    } else {
+	puts "Error : There is no ${aFile} file"
+    }
+    catch {[file attributes ${aFile} -permissions 0777]}
+}
+
+proc ValidateXml { aFile } {
+    global Validator Java SchemaFile 
+    if { ![info exists Java] } {
+	puts "Error : Java is not exists"
+	return
+    }
+    set isValidInfo ""
+    set ValCommand "exec $Java -jar $Validator $SchemaFile ${aFile}"
+    set isValid [catch {set isValidInfo [eval $ValCommand]}]
+    puts $isValidInfo
+    if { ![regexp "the document is valid" ${isValidInfo}] } {
+	puts "Error : File is not valid"
+    }
+}

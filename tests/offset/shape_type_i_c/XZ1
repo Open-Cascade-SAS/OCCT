@@ -1,0 +1,17 @@
+puts "============================================================================================="
+puts "0032307: Modeling Algorithms - Empty result of offset operation in mode \"Complete\" Joint type \"Intersection\""
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32307.brep] s
+
+offsetparameter 1e-7 c i r
+offsetload s 20
+offsetperform result
+
+checkprops result -s 1.29992e+07 -v 8.09132e+08
+
+# number of shapes should not change
+checknbshapes result -ref [nbshapes s]
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

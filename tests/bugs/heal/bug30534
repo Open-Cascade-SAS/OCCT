@@ -1,0 +1,20 @@
+puts "========================================================================="
+puts "OCC30534: Regression in the tool UnifySameDomain - the shape looses faces"
+puts "========================================================================="
+puts ""
+
+binrestore [locate_data_file bug30534_Werth_369.bin] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 423 -wire 431 -edge 1162 -vertex 736
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.00969438844497875} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 18814.1

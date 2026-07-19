@@ -1,0 +1,10 @@
+#B3----------------------------------------------
+plane p 0 0 0 1 0 0 0 -1 0
+pcylinder p p 10 20
+plane p2 10 0 5 0 0 1
+pcone p2 p2 7 5 20
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_4 10 0 0 25 0 0 1
+
+checkprops result -s 2441.77

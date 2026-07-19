@@ -1,0 +1,43 @@
+puts "========"
+puts "0029303: Data Exchange - add RWObj_CafWriter tool for wavefront OBJ file"
+puts "Write textured plane OBJ model into OBJ file"
+puts "========"
+
+pload VISUALIZATION XDE OCAF MODELING
+Close D  -silent
+Close D1 -silent
+
+XNewDoc D1
+XSetLengthUnit D1 cm
+ReadObj D1 [locate_data_file "P-51 Mustang.obj"] -nocreatedoc -unit 1
+XGetOneShape s1 D1
+set aLProps1 [uplevel #0 sprops $s1]
+
+set aTmpObjBase "${imagedir}/${casename}_tmp"
+set aTmpObj "${aTmpObjBase}.obj"
+lappend occ_tmp_files $aTmpObj
+lappend occ_tmp_files "${aTmpObjBase}.mtl"
+lappend occ_tmp_files "${aTmpObjBase}_textures"
+
+WriteObj D1 "$aTmpObj"
+
+XNewDoc D
+XSetLengthUnit D cm
+ReadObj D "$aTmpObj" -nocreatedoc -unit 1
+XGetOneShape s D
+set aLProps2 [uplevel #0 sprops $s]
+checknbshapes s -face 14 -compound 1
+checktrinfo s -tri 4309 -nod 4727
+
+regexp {Mass\s:\s*([0-9\.]+)} $aLProps1 dummy anArea1
+regexp {Mass\s:\s*([0-9\.]+)} $aLProps2 dummy anArea2
+if {abs($anArea1 - $anArea2) > 1e-8 * $anArea1} {
+  puts "Error: invalid area $anArea1 instead of $anArea2"
+}
+
+vclear
+vinit View1
+XDisplay -dispMode 1 D
+vaxo
+vfit
+vdump ${imagedir}/${casename}.png

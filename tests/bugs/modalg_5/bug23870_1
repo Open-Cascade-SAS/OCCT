@@ -1,0 +1,22 @@
+puts "TODO OCC24156 MacOS: An exception was caught"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+puts "============"
+puts "0023870: Integration of new options of sweeping into BRepOffsetAPI_MakePipe algorithm"
+puts "============"
+puts ""
+
+set BugNumber OCC23870
+
+restore [locate_data_file bug23824_AXE.brep] spine 
+restore [locate_data_file bug23824_profil.brep] profile 
+
+wire spine spine
+
+pipe result spine profile 2 approx
+
+checkprops result -s 516.633 
+checkshape result
+
+checknbshapes result -vertex 8 -edge 10 -wire 3 -face 3 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 25
+checkview -display result -2d -path ${imagedir}/${test_image}.png

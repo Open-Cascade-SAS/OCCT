@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC443: 'Fit all view' does not centered picture during fitting the view (SAM024)"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC443.brep] result
+
+vinit View1
+vdisplay result
+vfit
+
+checkcolor 31 304 0 0 0
+vdump $imagedir/${casename}.png

@@ -1,0 +1,7 @@
+#E1----------------------------------------------
+profile p d 1 0 l 10 c 5 90 l 10 x -15 
+prism p p 0 0 12
+nexplode p f
+depouille result p 0 0 1 p_2 5 0 0 0 0 0 1
+
+checkprops result -s 1083.89

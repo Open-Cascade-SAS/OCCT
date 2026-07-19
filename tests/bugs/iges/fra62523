@@ -1,0 +1,16 @@
+puts "============="
+puts "FRA62523"
+puts "============="
+
+igesbrep [locate_data_file fra62523a.igs] a_1 *
+
+# tpcompound b
+# checkshape a_1
+
+vinit
+tclean a_1
+vdisplay a_1
+vsetdispmode a_1 1
+
+defle a_1 .005
+defle a_1 .001

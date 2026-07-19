@@ -1,0 +1,16 @@
+
+box b 1 1 1
+nexplode b f
+depouille b b 0 1 0 b_6 10 0.5 0.5 1 0 1 0
+vertex v1 0.5 0.5 1.2
+vertex v2 0.5 0.5 0.5
+vertex v3 1.2 0.5 0.5
+edge e1 v1 v2
+edge e2 v2 v3
+wire w e1 e2
+plane pl 0.5 0.5 0.5 0 1 0
+featlf b w pl 0 0.3 0 0 0 0 0 1
+featperform lf result
+
+
+checkprops result -s 6.88666

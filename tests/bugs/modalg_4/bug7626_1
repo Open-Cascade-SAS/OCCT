@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC7626"
+puts "============"
+puts ""
+######################################################
+# Bad result of bcut operation
+######################################################
+
+set BugNumber OCC7626
+
+psphere s 10
+box b 10 0 0 20 20 20
+trotate b 10 0 0 0 0 1 45
+
+bcut result s b
+
+checkprops result -s 1271.7 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 7 -wire 4 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 21
+checkview -display result -2d -path ${imagedir}/${test_image}.png

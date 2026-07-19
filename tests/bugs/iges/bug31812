@@ -1,0 +1,13 @@
+puts "============"
+puts "OCC31812"
+puts "============"
+puts ""
+########################################################################
+# Problem of reading IGES files
+########################################################################
+
+igesread [locate_data_file OCC31812.igs] a *
+
+checkshape a
+checknbshapes a -face 4
+checkview -display a -2d -path ${imagedir}/${test_image}.png

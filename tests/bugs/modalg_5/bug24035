@@ -1,0 +1,14 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_2"
+puts "============"
+puts "OCC24035"
+puts "============"
+puts ""
+######################################################
+# Intersector is not symmetrical
+######################################################
+
+restore [locate_data_file bug24035_face1] face1
+restore [locate_data_file bug24035_face2] face2
+
+checkshape face1
+checkshape face2

@@ -1,0 +1,39 @@
+puts "========"
+puts "OCC20785"
+puts "========"
+puts ""
+######################################################
+# Surfaces are empty after shading
+######################################################
+
+set BugNumber OCC20785
+
+restore [locate_data_file OCC20785.brep] result
+
+checkprops result -s 322688 
+checkshape result
+
+checknbshapes result -vertex 119 -edge 199 -wire 96 -face 87 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 503
+vinit
+vdisplay result
+vsetdispmode 1
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+set scale    2.7840527693872859
+set center_X 3.7559505017270567e-07
+set proj_X   -0.89892524480819702
+set proj_Y   -0.37323716282844543
+set proj_Z   -0.22940616309642792
+set up_X     -0.41990724205970764
+set up_Y     0.58468854427337646
+set up_Z     0.69413024187088013
+set at_X     -44.6832661344329
+set at_Y     -21.4529078187916
+set at_Z     -95.9601818852522
+
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,21 @@
+
+puts "========================"
+puts " BUC60957 "
+puts " OCC86 "
+puts "========================"
+
+puts "Restoring the wires :"
+restore [locate_data_file OCC86a.brep] w1 
+checkshape w1
+restore [locate_data_file OCC86b.brep] w2
+checkshape w2
+
+puts "Do Thrusection by following command: thrusections res 0 0 w1 w2 "
+
+thrusections result 0 0 w1 w2
+
+checkprops result -l 102.832 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

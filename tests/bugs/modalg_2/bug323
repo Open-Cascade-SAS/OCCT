@@ -1,0 +1,20 @@
+puts "================"
+puts "OCC323"
+puts "OCC229"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC323.brep] f 
+explode f
+
+bsection r f_1 f_2
+
+checkshape r
+checksection r
+
+bsection result f_1 f_3
+
+checkprops result -l 1 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

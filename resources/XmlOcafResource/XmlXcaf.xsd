@@ -1,0 +1,109 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML/XCAF"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+        elementFormDefault="qualified">
+<import namespace="http://www.opencascade.org/OCAF/XML"
+        schemaLocation="XmlOcaf.xsd"/>
+
+<annotation>
+  <documentation xml:lang="en">
+    Copyright (c) 2001-2014 OPEN CASCADE SAS
+
+    This file is part of Open CASCADE Technology software library.
+
+    This library is free software; you can redistribute it and/or modify it under
+    the terms of the GNU Lesser General Public License version 2.1 as published
+    by the Free Software Foundation, with special exception defined in the file
+    OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+    distribution for complete text of the license and disclaimer of any warranty.
+
+    Alternatively, this file may be used under the terms of Open CASCADE
+    commercial license or contractual agreement.
+
+    Open Cascade Application Framework: Definition of attributes from XCAFDoc
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_XCAFDoc.xsd
+  </documentation>
+</annotation>
+
+<element name="Area"       type="ocaf:AbsRealAttributeType"
+         substitutionGroup="ocaf:AbstractRealAtt"/>
+
+<element name="Volume"     type="ocaf:AbsRealAttributeType"
+         substitutionGroup="ocaf:AbstractRealAtt"/>
+
+<element name="Color"      type="ocaf:AbsIntegerAttributeType"
+         substitutionGroup="ocaf:AbstractIntegerAtt"/>
+
+<element name="Centroid"   type="ocaf:AbsList3RealAttributeType"
+         substitutionGroup="ocaf:AbstractList3RealAtt"/>
+
+<element name="GraphNode" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="treeid" type="ocaf:GuidType" use="required"/>
+        <attribute name="children" type="ocaf:ListOfInteger"/>
+        <attribute name="fathers" type="ocaf:ListOfInteger"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="Location" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <sequence>
+          <element ref="ocaf:location" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="DocumentTool" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <sequence>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="ColorTool" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <sequence>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="ShapeTool" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <sequence>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="LayerTool" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <sequence>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+</schema>

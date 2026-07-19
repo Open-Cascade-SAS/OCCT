@@ -1,0 +1,6 @@
+#old file ofs16
+
+restore [locate_data_file CHE_vevopar.rle] s
+OFFSETSHAPE -0.1 {} $calcul $type
+
+checkprops result -v 0.650881

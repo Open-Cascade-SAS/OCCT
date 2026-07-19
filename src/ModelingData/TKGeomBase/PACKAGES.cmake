@@ -1,0 +1,30 @@
+# Auto-generated list of packages for TKGeomBase toolkit
+set(OCCT_TKGeomBase_LIST_OF_PACKAGES
+  ProjLib
+  GeomProjLib
+  GCPnts
+  CPnts
+  Approx
+  AppParCurves
+  FEmTool
+  AppCont
+  Extrema
+  ExtremaPC
+  IntAna
+  IntAna2d
+  GeomConvert
+  AdvApp2Var
+  GeomLib
+  Geom2dConvert
+  Hermit
+  BndLib
+  GeomBndLib
+  AppDef
+  GeomTools
+  GC
+  GCE2d
+  gce
+  LProp
+  GeomLProp
+  GProp
+)

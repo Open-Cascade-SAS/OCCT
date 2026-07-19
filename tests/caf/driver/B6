@@ -1,0 +1,108 @@
+#1 - create 4 Pnts
+NewCommand D
+AddDriver D PntXYZ PntRLT Line3D Attach;
+set Pnt1 [AddPoint D 0 0 0];		## add point1
+ComputeFun D $Pnt1:1;			## compute function
+GetShape D $Pnt1:1:2 P1;		## check result
+whatis P1
+# refers to result NS
+GetReference D $Pnt1;			## check is reference set 
+
+set Pnt2 [AddPoint D 0 200 0];
+ComputeFun D $Pnt2:1;
+set Pnt3 [AddPoint D 200 200 0];
+ComputeFun D $Pnt3:1;
+set Pnt4 [AddPoint D 200 0 0];
+ComputeFun D $Pnt4:1;
+GetShape D $Pnt2:1:2 P2;
+GetShape D $Pnt3:1:2 P3;
+GetShape D $Pnt4:1:2 P4;
+
+#2 create open Lin1
+#NewCommand D
+#set Lin1 [ AddLine3D D 0 $Pnt1 $Pnt2 $Pnt3 $Pnt4]
+#ComputeFun D $Lin1:1;
+#GetShape D $Lin1:1:2 L1;
+
+#3 create closed Lin3
+NewCommand D
+set Lin2 [ AddLine3D D 1 $Pnt1 $Pnt2 $Pnt3 $Pnt4]
+ComputeFun D $Lin2:1;
+GetShape D $Lin2:1:2 L1;
+
+#4 Prism  (after step #1)
+NewCommand D
+AddDriver D Prism Box PTxyz
+set Prism [AddPrism D $Lin2 300 1]
+ComputeFun D $Prism:1
+GetShape D $Prism:1:2 Pr
+GetReference D $Prism;			## check is reference set 
+
+#5 Add Box
+NewCommand D
+set B1 [AddBox D 400 140 600];
+ComputeFun D $B1:1;
+GetShape D $B1:1:2 Box;
+
+#6 Translate Box1
+NewCommand D
+set FTr1 [PTranslateDXYZ D $B1 -100 -20 -100]
+ComputeFun D $FTr1
+GetShape D $B1:2:2 Box
+
+#7 add Common
+NewCommand D
+AddDriver D Comm Cut Fuse
+set Com1 [AddCommon D $Prism $B1]
+ComputeFun D $Com1
+GetShape D $Com1:2 Pr
+
+#8 add Cylinder
+NewCommand D
+explode Pr E
+AddDriver D Attach Cyl
+set Sel1 [AttachShape D Pr_6 ${Prism} ${Prism} 0]; ## set attachment
+set Cyl [AddCyl D 70 515 ${Sel1}]
+ComputeFun D $Cyl:1
+GetShape D $Cyl:1:2 CylS
+
+#9 Translate Cylinder
+NewCommand D
+set FTr1 [PTranslateDXYZ D $Cyl -100 200 170]
+ComputeFun D $FTr1
+GetShape D $Cyl:2:2 CylS
+
+#10 Cut Prism by Cylinder
+set Cut1 [AddCut D $Prism $Cyl]
+ComputeFun D $Cut1
+GetShape D $Cut1:2 Pr
+don Pr
+
+#11 test selection
+NewCommand D
+set SL  [TestSingleSelection   D $Prism 0]
+set SL2 [TestMultipleSelection D $Prism 0]
+
+
+
+#12 modify
+NewCommand D
+PntOffset D $Pnt1  25 15 skip
+
+#13 recompute
+NewCommand D
+ComputeFun D $Pnt1:1
+ComputeFun D $Lin2:1
+ComputeFun D $Prism:1
+ComputeFun D $Com1
+ComputeFun D $Sel1:1                                    
+ComputeFun D $Cyl:1
+ComputeFun D $FTr1
+ComputeFun D $Cut1
+erase
+GetShape D $Cut1:2 Pr
+
+
+#recomputation of entities of the TestSelection commands
+catch {SolveFlatFrom D $SL} res
+NewCommand D

@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC12507"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result of fuse operation
+#######################################################################
+
+puts "First shape ..."
+pcylinder c 3 3
+explode c e
+
+puts "Second shape ..."
+tcopy c_3 e3
+ttranslate e3 0 6 0
+
+bop c_3 e3
+bopfuse result
+
+checknbshapes result -vertex 3 -edge 4 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 8
+checkview -display result -2d -path ${imagedir}/${test_image}.png

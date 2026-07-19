@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC25819"
+puts "============"
+puts ""
+######################################################
+# Bad result of BOP cut on valid shapes
+######################################################
+
+restore [locate_data_file bug25819_2_BodyA.brep] a
+restore [locate_data_file bug25819_2_BodyB.brep] b
+
+bcut result a b
+
+checkprops result -s 268575 
+checkshape result
+
+checknbshapes result -vertex 8 -edge 12 -wire 6 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 34 -t -m "Result of BOP cut"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename 12ls328.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5  ( 8 )  Summary  = 5  ( 8 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1521  ( 1521 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1521  ( 1521 )   FreeWire = 20  ( 20 ) 
+TOLERANCE   : MaxTol   =     0.99945453  (   0.9994545568 )  AvgTol   =   0.05493266383  (    0.0549332116 )
+LABELS      : N0Labels = 1502  ( 1502 )  N1Labels = 30  ( 4747 )  N2Labels = 0  ( 0 )   TotalLabels = 1532  ( 6249 )   NameLabels = 1532  ( 1550 )   ColorLabels = 1531  ( 6248 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = GOLD  ( GOLD )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

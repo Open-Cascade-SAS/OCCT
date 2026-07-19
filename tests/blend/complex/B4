@@ -1,0 +1,13 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : E6
+## Comment : from pro11907
+## ====================================
+
+restore [locate_data_file CFI_pro11907.rle] a
+nexplode a e
+blend result a 4 a_10
+explode result Sh
+renamevar result_1 result
+
+checkprops result -s 9856.27

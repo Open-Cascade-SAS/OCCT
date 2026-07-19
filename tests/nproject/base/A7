@@ -1,0 +1,5 @@
+restore [locate_data_file CNP001_projoien.rle] p 
+explode p
+compound p_2 p_3 c
+nproject result c p_1 0.001 2 14 10
+checkprops result -l 95.8118

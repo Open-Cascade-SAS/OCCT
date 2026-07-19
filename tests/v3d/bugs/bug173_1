@@ -1,0 +1,26 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "========"
+puts "OCC173: Impossible to change the material or the transparency of the attached BREP shape."
+puts "(case 1)"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC173.brep] result
+checkshape result
+
+vinit View1
+tclean result
+vdisplay result
+vfit
+vsetdispmode result 1
+
+checkcolor 175 195 1 0.75 0.15
+if { $stat != 1 } { puts "Error : Shading is missing in 3D Viewer" }
+
+########################################################
+vsetmaterial result COPPER
+checkcolor 175 195 0.77 0.32 0.23
+if { $stat != 1 } { puts "Error : material of shape is not COPPER" }
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC24065"
+puts "========"
+puts ""
+#######################################################################
+# Wrong intersection point
+#######################################################################
+
+restore [locate_data_file bug24065_f.brep] f
+restore [locate_data_file bug24065_e.brep] e
+
+# 1
+set CMP_TOL 1.e-7
+
+checkmaxtol f -min_tol ${CMP_TOL}
+
+mksurface s f
+mkcurve c e
+intersect i c s
+
+# 2
+set CMP_DIST 1.86835288e-8
+set distmax [projponf f i_2]
+regexp {proj dist = ([-0-9.+eE]+)} ${distmax} full MaxDist
+if { [expr abs(${MaxDist} - ${CMP_DIST})] > ${CMP_TOL} } {
+   puts "Error: Wrong intersection point"
+}

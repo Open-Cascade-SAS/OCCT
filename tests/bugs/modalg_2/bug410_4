@@ -1,0 +1,23 @@
+
+puts "========================"
+puts " OCC410 "
+puts "(case 4)"
+puts "========================"
+puts ""
+
+restore [locate_data_file f7] b1 
+checkshape b1
+
+restore [locate_data_file f3] b2
+checkshape b2
+
+
+if [catch {bcut result b2 b1 } res] {
+    puts "Faulty OCC410: function CUT works wrongly"
+} else {
+    puts " OCC410 OK: function CUT works properly"
+}
+
+checkprops result -s 93.6289 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

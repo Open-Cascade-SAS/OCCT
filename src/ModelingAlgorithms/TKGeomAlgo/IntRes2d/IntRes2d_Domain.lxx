@@ -1,0 +1,109 @@
+// Created on: 1992-03-31
+// Created by: Laurent BUCHARD
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_DomainError.hxx>
+
+//-------------------------------------------------
+//-- hasfirst <--> status & 1
+//-- haslast  <--> status & 2
+//-- closed   <--> status & 4
+//-------------------------------------------------
+
+inline void IntRes2d_Domain::SetEquivalentParameters(const double p_first, const double p_last)
+{
+  if ((status & 3) != 3)
+  {
+    throw Standard_DomainError();
+  }
+  status |= 4;
+  periodfirst = p_first;
+  periodlast  = p_last;
+}
+
+inline bool IntRes2d_Domain::HasFirstPoint() const
+{
+  return (status & 1) != 0;
+}
+
+inline double IntRes2d_Domain::FirstParameter() const
+{
+  if (!(status & 1))
+  {
+    throw Standard_DomainError();
+  }
+  return (first_param);
+}
+
+inline const gp_Pnt2d& IntRes2d_Domain::FirstPoint() const
+{
+  if (!(status & 1))
+  {
+    throw Standard_DomainError();
+  }
+  return (first_point);
+}
+
+inline double IntRes2d_Domain::FirstTolerance() const
+{
+  if (!(status & 1))
+  {
+    throw Standard_DomainError();
+  }
+  return (first_tol);
+}
+
+inline bool IntRes2d_Domain::HasLastPoint() const
+{
+  return (status & 2) != 0;
+}
+
+inline double IntRes2d_Domain::LastParameter() const
+{
+  if (!(status & 2))
+  {
+    throw Standard_DomainError();
+  }
+  return (last_param);
+}
+
+inline const gp_Pnt2d& IntRes2d_Domain::LastPoint() const
+{
+  if (!(status & 2))
+  {
+    throw Standard_DomainError();
+  }
+  return (last_point);
+}
+
+inline double IntRes2d_Domain::LastTolerance() const
+{
+  if (!(status & 2))
+  {
+    throw Standard_DomainError();
+  }
+  return (last_tol);
+}
+
+inline bool IntRes2d_Domain::IsClosed() const
+{
+  return (status & 4) != 0;
+}
+
+inline void IntRes2d_Domain::EquivalentParameters(double& p_first, double& p_last) const
+{
+  p_first = periodfirst;
+  p_last  = periodlast;
+}

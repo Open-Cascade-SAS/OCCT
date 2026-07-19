@@ -1,0 +1,281 @@
+// Created by: DAUTRY Philippe
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//      	---------------
+// Version:	0.0
+// Version	Date		Purpose
+//		0.0	Oct  3 1997	Creation
+
+#include <DDF_AttributeBrowser.hxx>
+#include <DDF_Browser.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeIterator.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_Tool.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(DDF_Browser, Draw_Drawable3D)
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Communication convention with tcl:
+// tcl waits for a string of characters, being an information list.
+// In this list, each item is separated from another by a separator: '\'.
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#define TDF_BrowserSeparator1 '\\'
+#define TDF_BrowserSeparator2 ' '
+#define TDF_BrowserSeparator3 '#'
+#define TDF_BrowserSeparator4 ','
+
+//=================================================================================================
+
+DDF_Browser::DDF_Browser(const occ::handle<TDF_Data>& aDF)
+    : myDF(aDF)
+{
+}
+
+//=================================================================================================
+
+void DDF_Browser::DrawOn(Draw_Display& /*dis*/) const
+{
+  // std::cout<<"DDF_Browser"<<std::endl;
+}
+
+//=================================================================================================
+
+occ::handle<Draw_Drawable3D> DDF_Browser::Copy() const
+{
+  return new DDF_Browser(myDF);
+}
+
+//=================================================================================================
+
+void DDF_Browser::Dump(Standard_OStream& S) const
+{
+  S << "DDF_Browser on a DF:" << '\n';
+  S << myDF;
+}
+
+//=================================================================================================
+
+void DDF_Browser::Whatis(Draw_Interpretor& I) const
+{
+  I << "Data Framework Browser";
+}
+
+//=================================================================================================
+
+void DDF_Browser::Data(const occ::handle<TDF_Data>& aDF)
+{
+  myDF = aDF;
+}
+
+//=================================================================================================
+
+occ::handle<TDF_Data> DDF_Browser::Data() const
+{
+  return myDF;
+}
+
+//=================================================================================================
+
+TCollection_AsciiString DDF_Browser::OpenRoot() const
+{
+  TCollection_AsciiString list;
+  const TDF_Label&        root = myDF->Root();
+  TDF_Tool::Entry(root, list);
+  occ::handle<TDataStd_Name> name;
+  list.AssignCat(TDF_BrowserSeparator2);
+  list.AssignCat("\"");
+  if (root.FindAttribute(TDataStd_Name::GetID(), name))
+  {
+    TCollection_AsciiString tmpStr(name->Get());
+    tmpStr.ChangeAll(' ', '_');
+    list.AssignCat(tmpStr);
+  }
+  list.AssignCat("\"");
+  list.AssignCat(TDF_BrowserSeparator2);
+  if (!root.MayBeModified())
+  {
+    list.AssignCat("Not");
+  }
+  list.AssignCat("Modified");
+  list.AssignCat(TDF_BrowserSeparator2);
+  list.AssignCat((root.HasAttribute() || root.HasChild()) ? "1" : "0");
+  return list;
+}
+
+//=======================================================================
+// function : OpenLabel
+// purpose  :
+// an item is composed as follows:
+// "Entry "Name" Modified|NotModified 0|1"
+// the end bit shows if the label has attributes or children.
+// The 1st can be
+// "AttributeList Modified|NotModified"
+// The items are separated by "\\".
+//=======================================================================
+
+TCollection_AsciiString DDF_Browser::OpenLabel(const TDF_Label& aLab) const
+{
+  bool                    split = false;
+  TCollection_AsciiString entry, list;
+  if (aLab.HasAttribute() || aLab.AttributesModified())
+  {
+    list.AssignCat("AttributeList");
+    list.AssignCat(TDF_BrowserSeparator2);
+    if (!aLab.AttributesModified())
+    {
+      list.AssignCat("Not");
+    }
+    list.AssignCat("Modified");
+    split = true;
+  }
+  occ::handle<TDataStd_Name> name;
+  for (TDF_ChildIterator itr(aLab); itr.More(); itr.Next())
+  {
+    if (split)
+    {
+      list.AssignCat(TDF_BrowserSeparator1);
+    }
+    TDF_Tool::Entry(itr.Value(), entry);
+    list.AssignCat(entry);
+    list.AssignCat(TDF_BrowserSeparator2);
+    list.AssignCat("\"");
+    if (itr.Value().FindAttribute(TDataStd_Name::GetID(), name))
+    {
+      TCollection_AsciiString tmpStr(name->Get());
+      tmpStr.ChangeAll(' ', '_');
+      list.AssignCat(tmpStr);
+    }
+    list.AssignCat("\"");
+    list.AssignCat(TDF_BrowserSeparator2);
+    if (!itr.Value().MayBeModified())
+    {
+      list.AssignCat("Not");
+    }
+    list.AssignCat("Modified");
+    list.AssignCat(TDF_BrowserSeparator2);
+    // May be open.
+    list.AssignCat((itr.Value().HasAttribute() || itr.Value().HasChild()) ? "1" : "0");
+    split = true;
+  }
+  return list;
+}
+
+//=======================================================================
+// function : OpenAttributeList
+// purpose  :
+// an item is composed as follows:
+// "DynamicType#MapIndex TransactionIndex Valid|Notvalid Forgotten|NotForgotten
+// Backuped|NotBackuped" The items are separated by "\\".
+//=======================================================================
+
+TCollection_AsciiString DDF_Browser::OpenAttributeList(const TDF_Label& aLab)
+{
+  TCollection_AsciiString list;
+  bool                    split1 = false;
+  for (TDF_AttributeIterator itr(aLab, false); itr.More(); itr.Next())
+  {
+    if (split1)
+    {
+      list.AssignCat(TDF_BrowserSeparator1);
+    }
+    const occ::handle<TDF_Attribute>& att   = itr.Value();
+    const int                         index = myAttMap.Add(att);
+    TCollection_AsciiString           indexStr(index);
+    list.AssignCat(att->DynamicType()->Name());
+    list.AssignCat(TDF_BrowserSeparator3);
+    list.AssignCat(indexStr);
+    list.AssignCat(TDF_BrowserSeparator2);
+    list.AssignCat(att->Transaction());
+    // Valid.
+    list.AssignCat(TDF_BrowserSeparator2);
+    if (!att->IsValid())
+    {
+      list.AssignCat("Not");
+    }
+    list.AssignCat("Valid");
+    // Forgotten.
+    list.AssignCat(TDF_BrowserSeparator2);
+    if (!att->IsForgotten())
+    {
+      list.AssignCat("Not");
+    }
+    list.AssignCat("Forgotten");
+    // Backuped.
+    list.AssignCat(TDF_BrowserSeparator2);
+    if (!att->IsBackuped())
+    {
+      list.AssignCat("Not");
+    }
+    list.AssignCat("Backuped");
+    // May be open.
+    list.AssignCat(TDF_BrowserSeparator2);
+    DDF_AttributeBrowser* br = DDF_AttributeBrowser::FindBrowser(att);
+    list.AssignCat(br ? "1" : "0");
+    split1 = true;
+  }
+  return list;
+}
+
+//=======================================================================
+// function : OpenAttribute
+// purpose  : Attribute's intrinsic information given by an attribute browser.
+//=======================================================================
+
+TCollection_AsciiString DDF_Browser::OpenAttribute(const int anIndex)
+{
+  TCollection_AsciiString    list;
+  occ::handle<TDF_Attribute> att = myAttMap.FindKey(anIndex);
+  DDF_AttributeBrowser*      br  = DDF_AttributeBrowser::FindBrowser(att);
+  if (br)
+  {
+    list = br->Open(att);
+  }
+  return list;
+}
+
+//=================================================================================================
+
+TCollection_AsciiString DDF_Browser::Information() const
+{
+  TCollection_AsciiString list;
+  return list;
+}
+
+//=================================================================================================
+
+TCollection_AsciiString DDF_Browser::Information(const TDF_Label& /*aLab*/) const
+{
+  TCollection_AsciiString list;
+  return list;
+}
+
+//=======================================================================
+// function : Information
+// purpose  : Information about an attribute.
+//=======================================================================
+
+TCollection_AsciiString DDF_Browser::Information(const int /*anIndex*/) const
+{
+  TCollection_AsciiString list;
+  return list;
+}

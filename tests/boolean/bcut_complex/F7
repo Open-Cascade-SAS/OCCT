@@ -1,0 +1,17 @@
+# Original bug : buc60219
+# Date : 15 Sept 98
+
+restore [locate_data_file CTO900_buc60219a.rle] a
+restore [locate_data_file CTO900_buc60219b.rle] b
+
+#pkv
+breducetolerance a
+breducetolerance b
+#pkv
+
+explode a so
+explode b so
+
+bcut result a_1 b_1
+checkprops result -s 3020.55
+checkview -display result -2d -s -otherwise { a_1 b_1 } -path ${imagedir}/${test_image}.png

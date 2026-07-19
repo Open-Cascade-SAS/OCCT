@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC26535"
+puts "========"
+puts ""
+#################################################
+# Boolean Cut does not work on shell and solids
+#################################################
+
+smallview
+
+restore [locate_data_file bug26535-plate.brep] plate
+restore [locate_data_file bug26535-cutter.brep] cutter
+
+checkshape plate
+checkshape cutter
+
+bopargcheck plate
+bopargcheck cutter
+
+bcut result plate cutter
+checkshape result
+
+donly result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

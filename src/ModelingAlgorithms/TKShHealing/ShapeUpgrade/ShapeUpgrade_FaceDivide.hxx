@@ -1,0 +1,127 @@
+// Created on: 1998-02-18
+// Created by: Pierre BARRAS
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _ShapeUpgrade_FaceDivide_HeaderFile
+#define _ShapeUpgrade_FaceDivide_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
+
+#include <TopoDS_Face.hxx>
+#include <Standard_Integer.hxx>
+#include <ShapeUpgrade_Tool.hxx>
+#include <ShapeExtend_Status.hxx>
+class ShapeUpgrade_SplitSurface;
+class ShapeUpgrade_WireDivide;
+
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
+
+//! Divides a Face (both edges in the wires, by splitting
+//! curves and pcurves, and the face itself, by splitting
+//! supporting surface) according to splitting criteria.
+//! * The domain of the face to divide is defined by the PCurves
+//! of the wires on the Face.
+//!
+//! * all the PCurves are supposed to be defined (in the parametric
+//! space of the supporting surface).
+//!
+//! The result is available after the call to the Build method.
+//! It is a Shell containing all the resulting Faces.
+//!
+//! All the modifications made during splitting are recorded in the
+//! external context (ShapeBuild_ReShape).
+class ShapeUpgrade_FaceDivide : public ShapeUpgrade_Tool
+{
+
+public:
+  //! Creates empty constructor.
+  Standard_EXPORT ShapeUpgrade_FaceDivide();
+
+  //! Initialize by a Face.
+  Standard_EXPORT ShapeUpgrade_FaceDivide(const TopoDS_Face& F);
+
+  //! Initialize by a Face.
+  Standard_EXPORT void Init(const TopoDS_Face& F);
+
+  //! Purpose sets mode for trimming (segment) surface by
+  //! wire UV bounds.
+  Standard_EXPORT void SetSurfaceSegmentMode(const bool Segment);
+
+  //! Performs splitting and computes the resulting shell
+  //! The context is used to keep track of former splittings
+  //! in order to keep sharings. It is updated according to
+  //! modifications made.
+  //! The optional argument <theArea> is used to initialize
+  //! the tool for splitting surface in the case of
+  //! splitting into N parts where N is user-defined.
+  Standard_EXPORT virtual bool Perform(const double theArea = 0.);
+
+  //! Performs splitting of surface and computes the shell
+  //! from source face.
+  //! The optional argument <theArea> is used to initialize
+  //! the tool for splitting surface in the case of
+  //! splitting into N parts where N is user-defined.
+  Standard_EXPORT virtual bool SplitSurface(const double theArea = 0.);
+
+  //! Performs splitting of curves of all the edges in the
+  //! shape and divides these edges.
+  Standard_EXPORT virtual bool SplitCurves();
+
+  //! Gives the resulting Shell, or Face, or Null shape if not done.
+  Standard_EXPORT TopoDS_Shape Result() const;
+
+  //! Queries the status of last call to Perform
+  //! OK   : no splitting was done (or no call to Perform)
+  //! DONE1: some edges were split
+  //! DONE2: surface was split
+  //! DONE3: surface was modified without splitting
+  //! FAIL1: some fails encountered during splitting wires
+  //! FAIL2: face cannot be split
+  Standard_EXPORT bool Status(const ShapeExtend_Status status) const;
+
+  //! Sets the tool for splitting surfaces.
+  Standard_EXPORT void SetSplitSurfaceTool(
+    const occ::handle<ShapeUpgrade_SplitSurface>& splitSurfaceTool);
+
+  //! Sets the tool for dividing edges on Face.
+  Standard_EXPORT void SetWireDivideTool(
+    const occ::handle<ShapeUpgrade_WireDivide>& wireDivideTool);
+
+  //! Returns the tool for splitting surfaces.
+  //! This tool must be already initialized.
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_SplitSurface> GetSplitSurfaceTool() const;
+
+  //! Returns the tool for dividing edges on Face.
+  //! This tool must be already initialized.
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_WireDivide> GetWireDivideTool() const;
+
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivide, ShapeUpgrade_Tool)
+
+protected:
+  TopoDS_Face  myFace;
+  TopoDS_Shape myResult;
+  bool         mySegmentMode;
+  int          myStatus;
+
+private:
+  occ::handle<ShapeUpgrade_SplitSurface> mySplitSurfaceTool;
+  occ::handle<ShapeUpgrade_WireDivide>   myWireDivideTool;
+};
+
+#endif // _ShapeUpgrade_FaceDivide_HeaderFile

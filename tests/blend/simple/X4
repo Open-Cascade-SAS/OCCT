@@ -1,0 +1,13 @@
+#puts "TODO #OCC26740 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+
+## ===========================================
+## Grid    : CCV001
+## Test    : H1
+## Comment : From CV tests serie page 25/26
+## ===========================================
+
+restore [locate_data_file CCV_1_h1_gsk.rle] s
+explode s E
+blend result s 30 s_14
+
+checkprops result -s 43339.8

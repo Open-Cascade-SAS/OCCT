@@ -1,0 +1,17 @@
+puts "==========="
+puts "  BUC60949"
+puts "==========="
+
+######################################################
+## Can not read iges file in XCAFEXE neither by command ReadIges no igesbrep. 
+######################################################
+
+igesbrep [locate_data_file buc60949.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

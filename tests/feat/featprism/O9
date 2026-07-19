@@ -1,0 +1,16 @@
+# Original bug : cts20088
+# Date : 25 Nov 98
+
+restore [locate_data_file cts20088_base.brep] base
+restore [locate_data_file contour_pkv.rle] cont
+
+explode base face
+copy base_54 ffrom
+copy base_55 funtil
+
+ttranslate cont 0 0 -0.1
+
+featprism base cont cont 1 0 0 1 1
+featperform prism result ffrom funtil
+
+checkprops result -s 4796.46

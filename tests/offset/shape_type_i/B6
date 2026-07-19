@@ -1,0 +1,8 @@
+puts "TODO OCC23068 ALL: Error: bsection of the result and s is not equal to zero."
+
+psphere s 15 270
+
+OFFSETSHAPE 1 {} $calcul $type
+
+checkprops result -v 1.77778e+014
+

@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC26701"
+puts "============"
+puts ""
+###############################
+## BOPAlgo_Builder::Perform crash.
+###############################
+
+restore [locate_data_file bug26701_crash_tbb.brep] d
+
+brunparallel 1
+
+bclearobjects
+eval baddobjects [explode d]
+
+bfillds
+bbuild result
+
+checkprops result -s 8244.36 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 19252
+ EDGE      : 19264
+ WIRE      : 4824
+ FACE      : 1620
+ SHELL     : 1600
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 46561
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result obtained by Common operator"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

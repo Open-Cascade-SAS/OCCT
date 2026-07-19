@@ -1,0 +1,27 @@
+puts "REQUIRED All: Projection Failed"
+
+puts "==========="
+puts " OCC308 "
+puts "==========="
+puts ""
+#################################################################
+## Can not project 3D-curve on surface.
+#################################################################
+
+restore [locate_data_file OCC308a.draw] a 
+restore [locate_data_file OCC308b.draw] b
+
+if [catch {project result a b} catch_result] {
+    set mistake 1
+} else {
+    set mistake 0
+}
+
+if { $mistake == 0} {
+    puts "Faulty OCC308 : function PROJECT works wrongly"
+} else {
+    puts "OCC308 OK : function PROJECT works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

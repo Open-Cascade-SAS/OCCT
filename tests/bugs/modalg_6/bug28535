@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC28535"
+puts "========"
+puts ""
+##########################################
+##  BOP Fuse reports "ErrorStatus : 11" on two attached faces
+##########################################
+
+restore [locate_data_file bug28535_Face_5.brep] f5
+restore [locate_data_file bug28535_Face_6.brep] f6
+
+bfuse result f5 f6
+
+checknbshapes result -face 2 -wire 2 -edge 7
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

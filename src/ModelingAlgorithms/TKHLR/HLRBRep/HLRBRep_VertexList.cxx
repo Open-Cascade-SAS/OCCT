@@ -1,0 +1,155 @@
+// Created on: 1997-04-17
+// Created by: Christophe MARION
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef No_Exception
+  #define No_Exception
+#endif
+
+#include <HLRBRep_VertexList.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+//=================================================================================================
+
+HLRBRep_VertexList::HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&                     T,
+                                       const NCollection_List<HLRAlgo_Interference>::Iterator& I)
+    : myIterator(I),
+      myTool(T),
+      fromEdge(false),
+      fromInterf(false)
+{
+  myTool.InitVertices();
+  Next();
+}
+
+//=================================================================================================
+
+bool HLRBRep_VertexList::IsPeriodic() const
+{
+  return myTool.IsPeriodic();
+}
+
+//=================================================================================================
+
+bool HLRBRep_VertexList::More() const
+{
+  return (fromEdge || fromInterf);
+}
+
+//=================================================================================================
+
+void HLRBRep_VertexList::Next()
+{
+  if (fromInterf)
+  {
+    myIterator.Next();
+  }
+  if (fromEdge)
+  {
+    myTool.NextVertex();
+  }
+  fromInterf = myIterator.More();
+  fromEdge   = myTool.MoreVertices();
+  if (fromEdge && fromInterf)
+  {
+    if (!myTool.SameVertexAndInterference(myIterator.Value()))
+    {
+      if (myTool.CurrentParameter() < myTool.ParameterOfInterference(myIterator.Value()))
+      {
+        fromInterf = false;
+      }
+      else
+      {
+        fromEdge = false;
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+const HLRAlgo_Intersection& HLRBRep_VertexList::Current() const
+{
+  if (fromEdge)
+  {
+    return myTool.CurrentVertex();
+  }
+  else if (fromInterf)
+  {
+    return myIterator.Value().Intersection();
+  }
+  else
+  {
+    throw Standard_NoSuchObject("HLRBRep_VertexList::Current");
+  }
+}
+
+//=================================================================================================
+
+bool HLRBRep_VertexList::IsBoundary() const
+{
+  return fromEdge;
+}
+
+//=================================================================================================
+
+bool HLRBRep_VertexList::IsInterference() const
+{
+  return fromInterf;
+}
+
+//=================================================================================================
+
+TopAbs_Orientation HLRBRep_VertexList::Orientation() const
+{
+  if (fromEdge)
+  {
+    return myTool.CurrentOrientation();
+  }
+  else
+  {
+    throw Standard_DomainError("HLRBRep_VertexList::Orientation");
+  }
+}
+
+//=================================================================================================
+
+TopAbs_Orientation HLRBRep_VertexList::Transition() const
+{
+  if (fromInterf)
+  {
+    return myIterator.Value().Transition();
+  }
+  else
+  {
+    throw Standard_DomainError("HLRBRep_VertexList::Transition");
+  }
+}
+
+//=================================================================================================
+
+TopAbs_Orientation HLRBRep_VertexList::BoundaryTransition() const
+{
+  if (fromInterf)
+  {
+    return myIterator.Value().BoundaryTransition();
+  }
+  else
+  {
+    throw Standard_DomainError("HLRBRep_VertexList::BoundaryTransition");
+  }
+}

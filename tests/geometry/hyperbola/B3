@@ -1,0 +1,12 @@
+hyperbola h 5 -1 0 1 1 0.5
+trim h h -1 1
+copy h hr
+2dtranslate hr 0 -4
+reverse hr
+convert result hr
+2dpl 
+2dpl
+2dpu
+2dpu
+checklength result -l 1.6539462322641865
+checkview -display result -2d -path ${imagedir}/${test_image}.png

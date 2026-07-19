@@ -1,0 +1,19 @@
+puts "========"
+puts "0026379: Wrong result produced by the volume maker algorithm"
+puts "========"
+puts ""
+
+restore [locate_data_file OCC26379-csf_2.brep] cf
+mkvolume result cf -ni
+
+vclear
+vinit View1
+vdisplay -dispMode 1 result
+vfit
+
+if { [vreadpixel 350 310 -rgb -name] == "BLACK" } { puts "ERROR: OCC26379 is reproduced. Volume is incorrect." }
+
+checkprops result -s 6.60933e+006 
+checkshape result
+
+vdump ${imagedir}/${test_image}.png

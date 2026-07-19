@@ -1,0 +1,51 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+
+set NbIters 31
+set step [expr 360.0/($NbIters-1) ]
+
+restore [locate_data_file OCC26443-shell_2.brep] a
+
+# Check PCA-algorithm
+tclean a
+
+set VMax -1.0e200
+set VMin 1.0e200
+
+set MaxIteration 0
+set MinIteration 0
+
+for {set i 1} { $i <= $NbIters} { incr i } {
+  bounding a -obb -shape rr$i
+  
+  regexp {Mass +: +([-0-9.+eE]+)} [vprops rr$i 1.0e-12 -full] full Vreal
+  
+  if { $Vreal > $VMax } {
+    set VMax $Vreal
+    set MaxIteration $i
+    copy a amax
+  }
+  
+  if { $Vreal < $VMin } {
+    set VMin $Vreal
+    set MinIteration $i
+    copy a amin
+  }  
+  
+  if { $i != $NbIters } { trotate a 283 162 317 2 7 9 $step }
+}
+
+checkreal {Transformed BndBoxes} $VMax $VMin 0.0 0.001
+
+puts "The box with maximal volume is achieved in $MaxIteration iteration. See \"amax\" shape."
+puts "The box with minimal volume is achieved in $MinIteration iteration. See \"amin\" shape."
+
+bounding amax -obb -dump
+bounding amin -obb -dump
+

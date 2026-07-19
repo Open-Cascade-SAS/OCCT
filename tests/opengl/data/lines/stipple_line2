@@ -1,0 +1,15 @@
+puts "========"
+puts "0031174: Visualization - support user-provided stipple line patterns"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 1 2 3
+box b2 1 2 3
+vclear
+vinit View1
+vdisplay -dispMode 0 b1 b2
+vfit
+vaspects b1 -setLineWidth 4 -setLineType FF00 -setColor RED   -setStippleLineFactor 2
+vaspects b2 -setLineWidth 4 -setLineType 00FF -setColor GREEN -setStippleLineFactor 2
+vdump $::imagedir/${::casename}_glsl.png

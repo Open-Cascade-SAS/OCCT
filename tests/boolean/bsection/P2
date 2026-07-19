@@ -1,0 +1,9 @@
+restore [locate_data_file CIN901_intcqhmj.rle] m
+explode m
+# m_1 : Sr Revolution
+# m_2 : Sr Reglee
+bsection result m_1 m_2
+
+checkprops result -l 126.535
+checksection result
+checkview -display result -2d -otherwise { m_1 m_2 } -l -path ${imagedir}/${test_image}.png

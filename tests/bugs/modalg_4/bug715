@@ -1,0 +1,30 @@
+
+puts "========"
+puts "OCC715"
+puts "SAM1582"
+puts "========"
+puts ""
+##########################################
+## section of two faces produces wrong number of section edges
+##########################################
+
+restore [locate_data_file OCC715_2.brep] f2 
+restore [locate_data_file OCC715_3.brep] f3 
+
+bsection result f2 f3
+
+set expl [explode result]
+
+set length [llength $expl]
+puts "Result is $length section edge"
+
+if {$length != 3} {
+    puts "Faulty OCC715"
+} else {
+    puts "OCC715 OK"
+}
+
+checkprops result -l 100. 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,41 @@
+puts "=========="
+puts "OCC25368"
+puts "=========="
+puts ""
+################################################
+# BREPExtrma DistShapeShape gives wrong result for Sphere and Line
+################################################
+
+sphere s 0 0 0 4.5
+rotate s 0 0.5 1 1 1 0.5 34.9
+line l -0.79 0.88 1.22 0.579 1.765 0.576
+
+set extrema_res [extrema l s]
+set extrema_length [llength ${extrema_res} ]
+
+# Amount check
+if {${extrema_length} != 18 } {
+  puts "Error: expected only two lines as result of extrema!"
+}
+
+# Distance check on ext_1
+set info [dump ext_1]
+regexp {Extrema 1 is point : +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $extrema_res full x1 y1 z1
+# Point check
+set good_x1 -2.2838350838816694
+set good_y1 -3.6737459810900646
+set good_z1 -0.2660950057268425
+checkreal "Intersection point x:" ${x1} ${good_x1} 0.01 0.01
+checkreal "Intersection point y:" ${y1} ${good_y1} 0.01 0.01
+checkreal "Intersection point z:" ${z1} ${good_z1} 0.01 0.01
+
+
+# Distance check on ext_2
+regexp {Extrema 2 is point : +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $extrema_res full x2 y2 z2
+# Point check
+set good_x2 0.29086178559218934
+set good_y2 4.1748550113475211
+set good_z2 2.2952614654595873
+checkreal "Intersection point x:" ${x2} ${good_x2} 0.01 0.01
+checkreal "Intersection point y:" ${y2} ${good_y2} 0.01 0.01
+checkreal "Intersection point z:" ${z2} ${good_z2} 0.01 0.01

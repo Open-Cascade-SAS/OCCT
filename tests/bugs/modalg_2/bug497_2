@@ -1,0 +1,24 @@
+
+puts "========="
+puts " OCC497 "
+puts "(case 2)"
+puts "========="
+puts ""
+########################################################
+## Result of cut and fuse operation are faulty shapes although arguments are valid.
+########################################################
+
+restore [locate_data_file OCC497c.brep] a_1 
+checkshape a_1
+
+restore [locate_data_file OCC497d.brep] a_2
+checkshape a_2
+
+if [catch {bcut result a_1 a_2 } catch_result] {
+    puts "Faulty OCC497:function CUT works wrongly "
+} else {
+    puts "OCC497 : function CUT works without hangs up "
+}
+checkprops result -s 2225.65 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

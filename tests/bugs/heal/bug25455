@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC25455"
+puts "============"
+puts ""
+######################################################
+# fixshape works at the second attempt
+######################################################
+
+restore [locate_data_file bug25455_rx.brep] rx
+
+fixshape rx rx
+
+set info [checkshape rx]
+
+# Resume
+puts ""
+if { [regexp {This shape seems to be valid} ${info}] } {
+   puts "OK: fixshape works properly"
+} else {
+   puts "Error: fixshape works bad"
+}

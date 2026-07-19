@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename CTS21136.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 106  ( 536 )  Summary  = 106  ( 536 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 206  ( 206 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 206  ( 206 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.2688118771  (   0.2688118774 )  AvgTol   =  0.0006737414948  (  0.0006736040557 )
+LABELS      : N0Labels = 210  ( 210 )  N1Labels = 0  ( 722 )  N2Labels = 0  ( 0 )   TotalLabels = 210  ( 932 )   NameLabels = 210  ( 210 )   ColorLabels = 210  ( 932 )   LayerLabels = 210  ( 932 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = BURLYWOOD1 DARKORANGE DEEPSKYBLUE1 GRAY79 MAGENTA MEDIUMSPRINGGREEN WHITE  ( BURLYWOOD1 DARKORANGE DEEPSKYBLUE1 GRAY79 MAGENTA MEDIUMSPRINGGREEN WHITE )
+NLAYERS     : NLayers  = 10  ( 10 )
+LAYERS      : Layers   = 2 3 4 50 52 53 54 55 58 59  ( 2 3 4 50 52 53 54 55 58 59 )
+
+}

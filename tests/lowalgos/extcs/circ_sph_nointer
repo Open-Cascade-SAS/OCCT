@@ -1,0 +1,160 @@
+puts "======================="
+puts "Test for Circle/Sphere extrema algorithm"
+puts "No intersection cases - one minimum solution should be found"
+puts "======================="
+puts ""
+
+# Make sphere
+set x0 0.
+set y0 0.
+set z0 0.
+set sph_radius 10.
+sphere s $x0 $y0 $z0 $sph_radius
+
+# The circles will be made on the distance from the surface
+# as intersection of pairs of inner and outer spheres with the plane
+
+# Set the number of iterations
+set nbstep 5
+# Rotation angle
+set angle [expr 180. / $nbstep]
+
+# Set the number of Inner/Outer spheres in one direction
+set nbpairs 1
+# Set the delta for the radius of inner circle
+set delta_radius [expr $sph_radius * 0.9 / (2 * $nbpairs)]
+
+# Step for sampling of the circle
+set dt [expr [dval 2*pi] / $nbstep]
+
+# Iteration step
+set iStep 1
+
+for {set i 1} {$i <= $nbpairs} {incr i} {
+  # Define the inner circle
+  set circ_radius [expr $i * $delta_radius]
+  circle c $x0 $y0 $z0 0 0 1 $circ_radius
+
+  set diff [expr $sph_radius - $circ_radius]
+  
+  # Distance between inner sphere on circle and initial sphere
+  set real_dist [expr $sph_radius - 2*$circ_radius]
+  
+  # Circle will be rotated around the line
+  line rotation_line $x0 $y0 $z0 1 0 0
+  
+  # Line rotation
+  for {set j 1} {$j <= $nbstep} {incr j} {
+    rotate rotation_line $x0 $y0 $z0 0 0 1 $angle
+    
+    # Get direction for circle's rotation
+    regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump rotation_line] full dx dy dz
+    
+    # Circle rotation
+    copy c c_rotated
+    for {set k 1} {$k <= $nbstep} {incr k} {
+      rotate c_rotated 0 0 0 $dx $dy $dz $angle
+      
+      # Sampling of the circle
+      for {set n 1} {$n <= $nbstep} {incr n} {
+        cvalue c_rotated $n*$dt x1 y1 z1
+        
+        set x1 [dval x1]
+        set y1 [dval y1]
+        set z1 [dval z1]
+        
+        # Normalize the vector
+        set dtx [expr ($x1 - $x0) / $circ_radius]
+        set dty [expr ($y1 - $y0) / $circ_radius]
+        set dtz [expr ($z1 - $z0) / $circ_radius]
+
+        # Create inner and outer spheres
+        set iC 1
+        
+        repeat 2 {
+          sphere s_to_int $x1 $y1 $z1 $circ_radius
+          
+          # Define the point closest to the initial sphere
+          set x_sol [expr $x1 + $iC * $circ_radius * $dtx]
+          set y_sol [expr $y1 + $iC * $circ_radius * $dty]
+          set z_sol [expr $z1 + $iC * $circ_radius * $dtz]
+
+          
+          # Intersect the sphere with the plane originated in closes point
+          
+          # Make the sampling of the sphere to define section plane's direction
+          
+          bounds s_to_int umin umax vmin vmax
+          
+          set du [dval (umax-umin)/$nbstep]
+          set dv [dval (vmax-vmin)/$nbstep]
+          
+          for {set u 1} {$u <= $nbstep} {incr u} {
+            for {set v 1} {$v <= $nbstep} {incr v} {
+            
+              # Get point on surface
+              svalue s_to_int [dval umin+$u*$du] [dval vmin+$v*$dv] xs ys zs
+              
+              # Check that it is not the same point
+              set sqdist [dval (xs-$x_sol)*(xs-$x_sol)+(ys-$y_sol)*(ys-$y_sol)+(zs-$z_sol)*(zs-$z_sol)]
+              if {$sqdist < 1.e-16} {
+                # Skip the sampling point
+                continue;
+              }
+              
+              # Create the intersection plane
+              plane p_int $x_sol $y_sol $z_sol [dval xs-$x_sol] [dval ys-$y_sol] [dval zs-$z_sol]
+              # Intersect the sphere by plane to obtain the circle
+              foreach c_int [intersect c_inter s_to_int p_int] {
+                
+                # Check if the circle contains the point
+                if {![regexp "Point on curve" [proj $c_int $x_sol $y_sol $z_sol]]} {
+                  if {[lindex [length ext_1] end] >= 1.e-7} {
+                    # run extrema - one of the ends of the curve should be the solution
+                    set log [extrema $c_int s 1]
+                    if {[regexp "prm_1_1" $log]} {
+                      # get parameters of the curve
+                      bounds $c_int fp lp
+                      if {[dval prm_1_1-fp] > 1.e-7 && [dval lp-prm_1_1] > 1.e-7} {
+                        puts "Error: Extrema has failed to find the minimal distance on step $iStep"
+                      }                           
+                    } else {
+                      puts "Error: Extrema has failed to find the minimal distance on step $iStep"
+                    }
+                    
+                    # save each circle if necessary
+                    # copy $c_int c_$iStep
+                    
+                    incr iStep
+                    continue
+                  }
+                }
+ 
+                # Make extrema computation
+                set log [extrema $c_int s]
+
+                # save each circle if necessary
+                # copy $c_int c_$iStep
+
+                if {![regexp "ext_1" $log]} {
+                  puts "Error: Extrema has failed to find the minimal distance on step $iStep"
+                } else {
+                  set ext_dist [lindex [length ext_1] end]
+                  checkreal "Step $iStep, min distance " $ext_dist $real_dist 1.e-7 1.e-7
+                }
+                incr iStep
+              }
+            }
+          }
+          
+          # prepare for the outer sphere
+          set x1 [expr $x1 + 2 * $diff * $dtx]
+          set y1 [expr $y1 + 2 * $diff * $dty]
+          set z1 [expr $z1 + 2 * $diff * $dtz]
+          
+          set iC -1
+        }
+      }
+    }
+  }
+}

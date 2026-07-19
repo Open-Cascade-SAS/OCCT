@@ -1,0 +1,45 @@
+puts "============"
+puts "OCC26251"
+puts "============"
+puts ""
+###############################
+## Section curve cannot be found
+###############################
+
+restore [locate_data_file bug26251_b31_3.brep] b1
+restore [locate_data_file bug26251_tank31.brep] b2
+
+bsection result b1 b2
+
+checkprops result -l 2.49934 
+checkshape result 
+checksection result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 3
+ EDGE      : 2
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 6
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Section curve"
+
+explode b2 f
+copy b2_5 b2
+
+set NbCurves 0
+
+set log [bopcurves b1 b2 -2d]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurves
+
+if {$NbCurves == 0} {
+  puts "Error: Intersection curve is not found"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

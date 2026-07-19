@@ -1,0 +1,433 @@
+// Created by: Christian CAILLET <cky@phobox>
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Interface_InterfaceModel_HeaderFile
+#define _Interface_InterfaceModel_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
+
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Interface_DataState.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+class Interface_Check;
+class TCollection_HAsciiString;
+class Interface_GTool;
+class Interface_Protocol;
+class Interface_ReportEntity;
+class Interface_CheckIterator;
+class Interface_GeneralLib;
+class Interface_EntityIterator;
+
+//! Defines an (Indexed) Set of data corresponding to a complete
+//! Transfer by a File Interface, i.e. File Header and Transient
+//! Entities (Objects) contained in a File. Contained Entities are
+//! identified in the Model by unique and consecutive Numbers.
+//!
+//! In addition, a Model can attach to each entity, a specific
+//! Label according to the norm (e.g. Name for VDA, #ident for
+//! Step ...), intended to be output on a string or a stream
+//! (remark : labels are not obliged to be unique)
+//!
+//! InterfaceModel itself is not Transient, it is intended to
+//! work on a set of Transient Data. The services offered are
+//! basic Listing and Identification operations on Transient
+//! Entities, storage of Error Reports, Copying.
+//!
+//! Moreovere, it is possible to define and use templates. These
+//! are empty Models, from which copies can be obtained in order
+//! to be filled with effective data. This allows to record
+//! standard definitions for headers, avoiding to recreate them
+//! for each sendings, and assuring customisation of produced
+//! files for a given site.
+//! A template is attached to a name. It is possible to define a
+//! template from another one (get it, edit it then record it
+//! under another name).
+//!
+//! See also Graph, ShareTool, CheckTool for more
+class Interface_InterfaceModel : public Standard_Transient
+{
+
+public:
+  //! Clears the list of entities (service WhenDelete)
+  Standard_EXPORT void Destroy();
+
+  ~Interface_InterfaceModel() override { Destroy(); }
+
+  //! Sets a Protocol for this Model
+  //! It is also set by a call to AddWithRefs with Protocol
+  //! It is used for : DumpHeader (as required), ClearEntities ...
+  Standard_EXPORT void SetProtocol(const occ::handle<Interface_Protocol>& proto);
+
+  //! Returns the Protocol which has been set by SetProtocol, or
+  //! AddWithRefs with Protocol
+  Standard_EXPORT virtual occ::handle<Interface_Protocol> Protocol() const;
+
+  //! Sets a GTool for this model, which already defines a Protocol
+  Standard_EXPORT void SetGTool(const occ::handle<Interface_GTool>& gtool);
+
+  //! Returns the GTool, set by SetProtocol or by SetGTool
+  Standard_EXPORT occ::handle<Interface_GTool> GTool() const;
+
+  //! Returns the Dispatch Status, either for get or set
+  //! A Model which is produced from Dispatch may share entities
+  //! with the original (according to the Protocol), hence these
+  //! non-copied entities should not be deleted
+  Standard_EXPORT bool& DispatchStatus();
+
+  //! Erases contained data; used when a Model is copied to others :
+  //! the new copied ones begin from clear
+  //! Clear calls specific method ClearHeader (see below)
+  Standard_EXPORT virtual void Clear();
+
+  //! Clears the entities; uses the general service WhenDelete, in
+  //! addition to the standard Memory Manager; can be redefined
+  Standard_EXPORT virtual void ClearEntities();
+
+  //! Erases information about labels, if any : specific to each
+  //! norm
+  Standard_EXPORT virtual void ClearLabels() = 0;
+
+  //! Clears Model's header : specific to each norm
+  Standard_EXPORT virtual void ClearHeader() = 0;
+
+  //! Returns count of contained Entities
+  Standard_EXPORT int NbEntities() const;
+
+  //! Returns True if a Model contains an Entity (for a ReportEntity,
+  //! looks for the ReportEntity itself AND its Concerned Entity)
+  Standard_EXPORT bool Contains(const occ::handle<Standard_Transient>& anentity) const;
+
+  //! Returns the Number of an Entity in the Model if it contains it.
+  //! Else returns 0. For a ReportEntity, looks at Concerned Entity.
+  //! Returns the Directory entry Number of an Entity in
+  //! the Model if it contains it. Else returns 0.
+  //! For a ReportEntity, looks at Concerned Entity.
+  Standard_EXPORT int Number(const occ::handle<Standard_Transient>& anentity) const;
+
+  //! Returns an Entity identified by its number in the Model
+  //! Each sub-class of InterfaceModel can define its own method
+  //! Entity to return its specific class of Entity (e.g. for VDA,
+  //! VDAModel returns a VDAEntity), working by calling Value
+  //! Remark : For a Reported Entity, (Erroneous, Corrected, Unknown), this
+  //! method returns this Reported Entity.
+  //! See ReportEntity for other questions.
+  Standard_EXPORT const occ::handle<Standard_Transient>& Value(const int num) const;
+
+  //! Returns the count of DISTINCT types under which an entity may
+  //! be processed. Defined by the Protocol, which gives default as
+  //! 1 (dynamic Type).
+  Standard_EXPORT int NbTypes(const occ::handle<Standard_Transient>& ent) const;
+
+  //! Returns a type, given its rank : defined by the Protocol
+  //! (by default, the first one)
+  Standard_EXPORT occ::handle<Standard_Type> Type(const occ::handle<Standard_Transient>& ent,
+                                                  const int num = 1) const;
+
+  //! Returns the type name of an entity, from the list of types
+  //! (one or more ...)
+  //! <complete> True (D) gives the complete type, else packages are
+  //! removed
+  //! WARNING : buffered, to be immediately copied or printed
+  Standard_EXPORT const char* TypeName(const occ::handle<Standard_Transient>& ent,
+                                       const bool complete = true) const;
+
+  //! From a CDL Type Name, returns the Class part (package dropped)
+  //! WARNING : buffered, to be immediately copied or printed
+  Standard_EXPORT static const char* ClassName(const char* const typnam);
+
+  //! Returns the State of an entity, given its number
+  Standard_EXPORT Interface_DataState EntityState(const int num) const;
+
+  //! Returns True if <num> identifies a ReportEntity in the Model
+  //! Hence, ReportEntity can be called.
+  //!
+  //! By default, queries main report, if <semantic> is True, it
+  //! queries report for semantic check
+  //!
+  //! Remember that a Report Entity can be defined for an Unknown
+  //! Entity, or a Corrected or Erroneous (at read time) Entity.
+  //! The ReportEntity is defined before call to method AddEntity.
+  Standard_EXPORT bool IsReportEntity(const int num, const bool semantic = false) const;
+
+  //! Returns a ReportEntity identified by its number in the Model,
+  //! or a Null Handle If <num> does not identify a ReportEntity.
+  //!
+  //! By default, queries main report, if <semantic> is True, it
+  //! queries report for semantic check
+  Standard_EXPORT occ::handle<Interface_ReportEntity> ReportEntity(
+    const int  num,
+    const bool semantic = false) const;
+
+  //! Returns True if <num> identifies an Error Entity : in this
+  //! case, a ReportEntity brings Fail Messages and possibly an
+  //! "undefined" Content, see IsRedefinedEntity
+  Standard_EXPORT bool IsErrorEntity(const int num) const;
+
+  //! Returns True if <num> identifies an Entity which content is
+  //! redefined through a ReportEntity (i.e. with literal data only)
+  //! This happens when an entity is syntactically erroneous in the
+  //! way that its basic content remains empty.
+  //! For more details (such as content itself), see ReportEntity
+  Standard_EXPORT bool IsRedefinedContent(const int num) const;
+
+  //! Removes the ReportEntity attached to Entity <num>. Returns
+  //! True if done, False if no ReportEntity was attached to <num>.
+  //! Warning : the caller must assume that this clearing is meaningful
+  Standard_EXPORT bool ClearReportEntity(const int num);
+
+  //! Sets or Replaces a ReportEntity for the Entity <num>. Returns
+  //! True if Report is replaced, False if it has been replaced
+  //! Warning : the caller must assume that this setting is meaningful
+  Standard_EXPORT bool SetReportEntity(const int                                  num,
+                                       const occ::handle<Interface_ReportEntity>& rep);
+
+  //! Adds a ReportEntity as such. Returns False if the concerned
+  //! entity is not recorded in the Model
+  //! Else, adds it into, either the main report list or the
+  //! list for semantic checks, then returns True
+  Standard_EXPORT bool AddReportEntity(const occ::handle<Interface_ReportEntity>& rep,
+                                       const bool                                 semantic = false);
+
+  //! Returns True if <num> identifies an Unknown Entity : in this
+  //! case, a ReportEntity with no Check Messages designates it.
+  Standard_EXPORT bool IsUnknownEntity(const int num) const;
+
+  //! Fills the list of semantic checks.
+  //! This list is computed (by CheckTool). Hence, it can be stored
+  //! in the model for later queries
+  //! <clear> True (D) : new list replaces
+  //! <clear> False    : new list is cumulated
+  Standard_EXPORT void FillSemanticChecks(const Interface_CheckIterator& checks,
+                                          const bool                     clear = true);
+
+  //! Returns True if semantic checks have been filled
+  Standard_EXPORT bool HasSemanticChecks() const;
+
+  //! Returns the check attached to an entity, designated by its
+  //! Number. 0 for global check
+  //! <semantic> True  : recorded semantic check
+  //! <semantic> False : recorded syntactic check (see ReportEntity)
+  //! If no check is recorded for <num>, returns an empty Check
+  Standard_EXPORT const occ::handle<Interface_Check>& Check(const int  num,
+                                                            const bool syntactic) const;
+
+  //! Does a reservation for the List of Entities (for optimized
+  //! storage management). If it is not called, storage management
+  //! can be less efficient. <nbent> is the expected count of
+  //! Entities to store
+  Standard_EXPORT virtual void Reservate(const int nbent);
+
+  //! Internal method for adding an Entity. Used by file reading
+  //! (defined by each Interface) and Transfer tools. It adds the
+  //! entity required to be added, not its refs : see AddWithRefs.
+  //! If <anentity> is a ReportEntity, it is added to the list of
+  //! Reports, its Concerned Entity (Erroneous or Corrected, else
+  //! Unknown) is added to the list of Entities.
+  //! That is, the ReportEntity must be created before Adding
+  Standard_EXPORT virtual void AddEntity(const occ::handle<Standard_Transient>& anentity);
+
+  //! Adds to the Model, an Entity with all its References, as they
+  //! are defined by General Services FillShared and ListImplied.
+  //! Process is recursive (any sub-levels) if <level> = 0 (Default)
+  //! Else, adds sub-entities until the required sub-level.
+  //! Especially, if <level> = 1, adds immediate subs and that's all
+  //!
+  //! If <listall> is False (Default), an entity (<anentity> itself
+  //! or one of its subs at any level) which is already recorded in
+  //! the Model is not analysed, only the newly added ones are.
+  //! If <listall> is True, all items are analysed (this allows to
+  //! ensure the consistency of an adding made by steps)
+  Standard_EXPORT void AddWithRefs(const occ::handle<Standard_Transient>& anent,
+                                   const occ::handle<Interface_Protocol>& proto,
+                                   const int                              level   = 0,
+                                   const bool                             listall = false);
+
+  //! Same as above, but works with the Protocol of the Model
+  Standard_EXPORT void AddWithRefs(const occ::handle<Standard_Transient>& anent,
+                                   const int                              level   = 0,
+                                   const bool                             listall = false);
+
+  //! Same as above, but works with an already created GeneralLib
+  Standard_EXPORT void AddWithRefs(const occ::handle<Standard_Transient>& anent,
+                                   const Interface_GeneralLib&            lib,
+                                   const int                              level   = 0,
+                                   const bool                             listall = false);
+
+  //! Replace Entity with Number=nument on other entity - "anent"
+  Standard_EXPORT void ReplaceEntity(const int                              nument,
+                                     const occ::handle<Standard_Transient>& anent);
+
+  //! Reverses the Numbers of the Entities, between <after> and the
+  //! total count of Entities. Thus, the entities :
+  //! 1,2 ... after, after+1 ... nb-1, nb  become numbered as :
+  //! 1,2 ... after, nb, nb-1 ... after+1
+  //! By default (after = 0) the whole list of Entities is reversed
+  Standard_EXPORT void ReverseOrders(const int after = 0);
+
+  //! Changes the Numbers of some Entities : <oldnum> is moved to
+  //! <newnum>, same for <count> entities. Thus :
+  //! 1,2 ... newnum-1 newnum ... oldnum .. oldnum+count oldnum+count+1 .. gives
+  //! 1,2 ... newnum-1 oldnum .. oldnum+count newnum ... oldnum+count+1
+  //! (can be seen as a circular permutation)
+  Standard_EXPORT void ChangeOrder(const int oldnum, const int newnum, const int count = 1);
+
+  //! Gets contents from an EntityIterator, prepared by a
+  //! Transfer tool (e.g TransferCopy). Starts from clear
+  Standard_EXPORT void GetFromTransfer(const Interface_EntityIterator& aniter);
+
+  //! Gets header (data specific of a defined Interface) from
+  //! another InterfaceModel; called from TransferCopy
+  Standard_EXPORT virtual void GetFromAnother(
+    const occ::handle<Interface_InterfaceModel>& other) = 0;
+
+  //! Returns a New Empty Model, same type as <me> (whatever its
+  //! Type); called to Copy parts a Model into other ones, then
+  //! followed by a call to GetFromAnother (Header) then filling
+  //! with specified Entities, themselves copied
+  Standard_EXPORT virtual occ::handle<Interface_InterfaceModel> NewEmptyModel() const = 0;
+
+  //! Records a category number for an entity number
+  //! Returns True when done, False if <num> is out of range
+  Standard_EXPORT bool SetCategoryNumber(const int num, const int val);
+
+  //! Returns the recorded category number for a given entity number
+  //! 0 if none was defined for this entity
+  Standard_EXPORT int CategoryNumber(const int num) const;
+
+  //! Allows an EntityIterator to get a list of Entities
+  Standard_EXPORT void FillIterator(Interface_EntityIterator& iter) const;
+
+  //! Returns the list of all Entities, as an Iterator on Entities
+  //! (the Entities themselves, not the Reports)
+  Standard_EXPORT Interface_EntityIterator Entities() const;
+
+  //! Returns the list of all ReportEntities, i.e. data about
+  //! Entities read with Error or Warning information
+  //! (each item has to be casted to Report Entity then it can be
+  //! queried for Concerned Entity, Content, Check ...)
+  //! By default, returns the main reports, is <semantic> is True it
+  //! returns the list for semantic checks
+  Standard_EXPORT Interface_EntityIterator Reports(const bool semantic = false) const;
+
+  //! Returns the list of ReportEntities which redefine data
+  //! (generally, if concerned entity is "Error", a literal content
+  //! is added to it : this is a "redefined entity"
+  Standard_EXPORT Interface_EntityIterator Redefineds() const;
+
+  //! Returns the GlobalCheck, which memorizes messages global to
+  //! the file (not specific to an Entity), especially Header
+  Standard_EXPORT const occ::handle<Interface_Check>& GlobalCheck(
+    const bool syntactic = true) const;
+
+  //! Allows to modify GlobalCheck, after getting then completing it
+  //! Remark : it is SYNTACTIC check. Semantics, see FillChecks
+  Standard_EXPORT void SetGlobalCheck(const occ::handle<Interface_Check>& ach);
+
+  //! Minimum Semantic Global Check on data in model (header)
+  //! Can only check basic Data. See also GlobalCheck from Protocol
+  //! for a check which takes the Graph into account
+  //! Default does nothing, can be redefined
+  Standard_EXPORT virtual void VerifyCheck(occ::handle<Interface_Check>& ach) const;
+
+  //! Dumps Header in a short, easy to read, form, onto a Stream
+  //! <level> allows to print more or less parts of the header,
+  //! if necessary. 0 for basic print
+  Standard_EXPORT virtual void DumpHeader(Standard_OStream& S, const int level = 0) const = 0;
+
+  //! Prints identification of a given entity in <me>, in order to
+  //! be printed in a list or phrase
+  //! <mode> < 0 : prints only its number
+  //! <mode> = 1 : just calls PrintLabel
+  //! <mode> = 0 (D) : prints its number plus '/' plus PrintLabel
+  //! If <ent> == <me>, simply prints "Global"
+  //! If <ent> is unknown, prints "??/its type"
+  Standard_EXPORT void Print(const occ::handle<Standard_Transient>& ent,
+                             Standard_OStream&                      s,
+                             const int                              mode = 0) const;
+
+  //! Prints label specific to each norm, for a given entity.
+  //! Must only print label itself, in order to be included in a
+  //! phrase. Can call the result of StringLabel, but not obliged.
+  Standard_EXPORT virtual void PrintLabel(const occ::handle<Standard_Transient>& ent,
+                                          Standard_OStream&                      S) const = 0;
+
+  //! Prints label specific to each norm in log format, for
+  //! a given entity.
+  //! By default, just calls PrintLabel, can be redefined
+  Standard_EXPORT virtual void PrintToLog(const occ::handle<Standard_Transient>& ent,
+                                          Standard_OStream&                      S) const;
+
+  //! Returns a string with the label attached to a given entity.
+  //! Warning : While this string may be edited on the spot, if it is a read
+  //! field, the returned value must be copied before.
+  Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> StringLabel(
+    const occ::handle<Standard_Transient>& ent) const = 0;
+
+  //! Searches a label which matches with one entity.
+  //! Begins from <lastnum>+1 (default:1) and scans the entities
+  //! until <NbEntities>. For the first which matches <label>,
+  //! this method returns its Number. Returns 0 if nothing found
+  //! Can be called recursively (labels are not specified as unique)
+  //! <exact> : if True (default), exact match is required
+  //! else, checks the END of entity label
+  //!
+  //! This method is virtual, hence it can be redefined for a more
+  //! efficient search (if exact is true).
+  Standard_EXPORT virtual int NextNumberForLabel(const char* const label,
+                                                 const int         lastnum = 0,
+                                                 const bool        exact   = true) const;
+
+  //! Returns true if a template is attached to a given name
+  Standard_EXPORT static bool HasTemplate(const char* const name);
+
+  //! Returns the template model attached to a name, or a Null Handle
+  Standard_EXPORT static occ::handle<Interface_InterfaceModel> Template(const char* const name);
+
+  //! Records a new template model with a name. If the name was
+  //! already recorded, the corresponding template is replaced by
+  //! the new one. Then, WARNING : test HasTemplate to avoid
+  //! surprises
+  Standard_EXPORT static bool SetTemplate(const char* const                            name,
+                                          const occ::handle<Interface_InterfaceModel>& model);
+
+  //! Returns the complete list of names attached to template models
+  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+    ListTemplates();
+
+  DEFINE_STANDARD_RTTIEXT(Interface_InterfaceModel, Standard_Transient)
+
+protected:
+  //! Defines empty InterfaceModel, ready to be filled
+  Standard_EXPORT Interface_InterfaceModel();
+
+private:
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>   theentities;
+  NCollection_DataMap<int, occ::handle<Standard_Transient>> thereports;
+  NCollection_DataMap<int, occ::handle<Standard_Transient>> therepch;
+  occ::handle<Interface_Check>                              thecheckstx;
+  occ::handle<Interface_Check>                              thechecksem;
+  bool                                                      haschecksem;
+  bool                                                      isdispatch;
+  occ::handle<TCollection_HAsciiString>                     thecategory;
+  occ::handle<Interface_GTool>                              thegtool;
+};
+
+#endif // _Interface_InterfaceModel_HeaderFile

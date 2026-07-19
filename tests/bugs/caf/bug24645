@@ -1,0 +1,45 @@
+puts "=========="
+puts "OCC24645"
+puts "=========="
+puts ""
+###################################################
+# Pointer to the last is wrong for a tree node
+###################################################
+
+NewDocument D
+UndoLimit D 1000
+
+NewCommand D
+SetNode D 0:1
+
+NewCommand D
+AppendNode D 0:1 0:1:1
+NewCommand D
+AppendNode D 0:1 0:1:2
+NewCommand D
+AppendNode D 0:1 0:1:3
+NewCommand D
+AppendNode D 0:1 0:1:4
+
+NewCommand D
+AppendNode D 0:1 0:1:5
+
+if { [regexp "Last=0:1:5" [XDumpDF D] ] == 1 } {
+    puts "OK : Last node is good"
+} else {
+    puts "Error : Last node is bad"
+}
+puts ""
+
+DetachNode D 0:1:3
+DetachNode D 0:1:4
+
+NewCommand D
+Undo D
+
+if { [regexp "Last" [XDumpDF D] ] != 1 } {
+    puts "OK : Last node is not defined"
+} else {
+    puts "Error : Last node is bad"
+}
+puts ""

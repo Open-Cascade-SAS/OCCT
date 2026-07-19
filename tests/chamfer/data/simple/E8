@@ -1,0 +1,6 @@
+set chamf_shape 4_N1(hlacg05).draw
+set chamf_edge_face  [list "  1   1"]
+set chamf_dist_angle [list "0.8  30"]
+set chamf_dist_dist  [list "0.8 0.6"]
+set chamf_equal_dist [list "0.6    "]
+dset SCALE 100

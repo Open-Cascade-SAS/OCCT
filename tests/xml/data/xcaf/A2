@@ -1,0 +1,17 @@
+set aTestName "SATCOM"
+puts $aTestName
+
+stepread [locate_data_file 1_SATCOM_BIRD_7.stp] aShape *
+XAddShape D aShape_1
+
+# Close the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD

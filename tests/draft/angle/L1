@@ -1,0 +1,5 @@
+restore [locate_data_file CDA900_pro10142.rle] shp
+explode shp f
+depouille result shp 0 0 1 shp_2 -3 0 0 0 0 0 1 shp_3 -3 0 0 0 0 0 1  shp_4 -3 0 0 0 0 0 1  shp_5 -3 0 0 0 0 0 1  shp_6 -3 0 0 0 0 0 1  shp_7 -3 0 0 0 0 0 1 shp_8 -3 0 0 0 0 0 1 shp_9 -3 0 0 0 0 0 1 shp_10 -3 0 0 0 0 0 1 shp_11 -3 0 0 0 0 0 1 shp_12 -3 0 0 0 0 0 1 shp_13 -3 0 0 0 0 0 1 shp_14 -3 0 0 0 0 0 1 shp_15 -3 0 0 0 0 0 1 shp_16 -3 0 0 0 0 0 1 shp_17 -3 0 0 0 0 0 1 shp_18 -3 0 0 0 0 0 1 shp_19 -3 0 0 0 0 0 1 shp_20 -3 0 0 0 0 0 1 shp_21 -3 0 0 0 0 0 1 
+
+checkprops result -s 50752.4

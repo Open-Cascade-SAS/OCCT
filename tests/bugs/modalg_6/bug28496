@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC28496"
+puts "========"
+puts ""
+#################################################
+# BOP Cut failed on two attached faces with error "ErrorStatus : 191"
+#################################################
+
+restore [locate_data_file bug28496_Face_3.brep] f1
+restore [locate_data_file bug28496_Face_9.brep] f2
+
+bclearobjects
+bcleartools
+baddobjects f1
+baddtools f2
+bfillds
+bbuild result
+
+checkshape result
+checkprops result -s 499.564
+checknbshapes result -face 3 -wire 3
+
+smallview
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

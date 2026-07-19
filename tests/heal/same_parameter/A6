@@ -1,0 +1,1 @@
+restore [locate_data_file self-int.rle] result

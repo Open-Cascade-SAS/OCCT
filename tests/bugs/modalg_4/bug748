@@ -1,0 +1,19 @@
+
+puts "========"
+puts "OCC748"
+puts "========"
+puts ""
+##################################
+## Incorrect work of DRAW-command "common"
+##################################
+
+restore [locate_data_file OCC748_1.brep] s1 
+checkshape s1
+restore [locate_data_file OCC748_2.brep] s2 
+checkshape s2
+
+bcommon result s1 s2
+
+checkprops result -s 628.319 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

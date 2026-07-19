@@ -1,0 +1,151 @@
+// Created on: 2008-01-23
+// Created by: Sergey ZARITCHNY
+// Copyright (c) 2008-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <TDataStd_DeltaOnModificationOfIntPackedMap.hxx>
+
+#include <Standard_Type.hxx>
+#include <TDataStd_IntPackedMap.hxx>
+#include <TDF_DeltaOnModification.hxx>
+#include <TDF_Label.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntPackedMap, TDF_DeltaOnModification)
+
+#ifdef OCCT_DEBUG
+  #define MAXUP 1000
+#endif
+
+//=================================================================================================
+
+TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPackedMap(
+  const occ::handle<TDataStd_IntPackedMap>& OldAtt)
+    : TDF_DeltaOnModification(OldAtt)
+{
+  occ::handle<TDataStd_IntPackedMap> CurrAtt;
+  if (Label().FindAttribute(OldAtt->ID(), CurrAtt))
+  {
+    occ::handle<TColStd_HPackedMapOfInteger> aMap1, aMap2;
+    aMap1 = OldAtt->GetHMap();
+    aMap2 = CurrAtt->GetHMap();
+#ifdef OCCT_DEBUG_disable
+    if (aMap1.IsNull())
+      std::cout << "DeltaOnModificationOfIntPackedMap:: Old Map is Null" << std::endl;
+    if (aMap2.IsNull())
+      std::cout << "DeltaOnModificationOfIntPackedMap:: Current Map is Null" << std::endl;
+#endif
+
+    if (aMap1.IsNull() || aMap2.IsNull())
+    {
+      return;
+    }
+    if (aMap1 != aMap2)
+    {
+      const TColStd_PackedMapOfInteger& map1 = aMap1->Map();
+      const TColStd_PackedMapOfInteger& map2 = aMap2->Map();
+      if (NCollection_PackedMapAlgo::IsSubset(map1, map2))
+      {
+        myDeletion = new TColStd_HPackedMapOfInteger();
+        NCollection_PackedMapAlgo::Subtraction(myDeletion->ChangeMap(), map2, map1);
+      }
+      else if (NCollection_PackedMapAlgo::IsSubset(map2, map1))
+      {
+        myAddition = new TColStd_HPackedMapOfInteger();
+        NCollection_PackedMapAlgo::Subtraction(myAddition->ChangeMap(), map1, map2);
+      }
+      else if (NCollection_PackedMapAlgo::HasIntersection(map1, map2))
+      {
+        myAddition = new TColStd_HPackedMapOfInteger();
+        NCollection_PackedMapAlgo::Subtraction(myAddition->ChangeMap(), map1, map2);
+        myDeletion = new TColStd_HPackedMapOfInteger();
+        NCollection_PackedMapAlgo::Subtraction(myDeletion->ChangeMap(), map2, map1);
+      }
+      else
+      {
+        myAddition = new TColStd_HPackedMapOfInteger(map1);
+        myDeletion = new TColStd_HPackedMapOfInteger(map2);
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
+{
+
+  occ::handle<TDF_Attribute>         aTDFAttribute = Attribute();
+  occ::handle<TDataStd_IntPackedMap> aBackAtt =
+    occ::down_cast<TDataStd_IntPackedMap>(aTDFAttribute);
+  if (aBackAtt.IsNull())
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "DeltaOnModificationOfIntPAckedMap::Apply: OldAtt is Null" << std::endl;
+#endif
+    return;
+  }
+
+  occ::handle<TDataStd_IntPackedMap> aCurAtt;
+  if (!Label().FindAttribute(aBackAtt->ID(), aCurAtt))
+  {
+
+    Label().AddAttribute(aBackAtt);
+  }
+
+  if (aCurAtt.IsNull())
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "DeltaOnModificationOfIntAPckedMAp::Apply: CurAtt is Null" << std::endl;
+#endif
+    return;
+  }
+  else
+  {
+    aCurAtt->Backup();
+  }
+
+  occ::handle<TColStd_HPackedMapOfInteger> IntMap = aCurAtt->GetHMap();
+  if (IntMap.IsNull())
+  {
+    return;
+  }
+
+  if (myDeletion.IsNull() && myAddition.IsNull())
+  {
+    return;
+  }
+
+  if (!myDeletion.IsNull())
+  {
+    if (myDeletion->Map().Extent())
+    {
+      NCollection_PackedMapAlgo::Subtract(IntMap->ChangeMap(), myDeletion->Map());
+    }
+  }
+  if (!myAddition.IsNull())
+  {
+    if (myAddition->Map().Extent())
+    {
+      NCollection_PackedMapAlgo::Unite(IntMap->ChangeMap(), myAddition->Map());
+    }
+  }
+
+#ifdef OCCT_DEBUG_disable
+  std::cout << " << Map Dump after Delta Apply >>" << std::endl;
+  occ::handle<TColStd_HPackedMapOfInteger> aIntMap = aCurAtt->GetHMap();
+  TColStd_PackedMapOfInteger::Iterator     it(aIntMap->Map());
+  for (int i = 1; it.More() && i <= MAXUP; it.Next(), i++)
+    std::cout << it.Key() << "  ";
+  std::cout << std::endl;
+#endif
+}

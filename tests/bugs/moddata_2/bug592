@@ -1,0 +1,41 @@
+puts "TODO OCC12345 ALL: Faulty OCC592 : Checkshape BRepCheck_Analyzer does not detect faulty shape"
+
+puts "========================"
+puts " OCC592 "
+puts "========================"
+puts ""
+###################################
+##BRepCheck_Analyzer does not detect faulty shape
+#####################################
+
+restore [locate_data_file OCC592.brep] ff114 
+
+explode ff114 e
+mkcurve cc ff114_8
+cvalue cc 0.95 x y z
+vertex vv x y z
+mksurface gs ff114
+mkface ff gs
+donly ff114 vv
+trim trcc cc
+set aa [distmini dd vv ff]
+
+puts "******* Result *******"
+regexp {([-0-9.+eE]+)$} [dump dd_val] full dis1
+puts "distance between the point on curve and the surface is $dis1"
+
+set tolerance [maxtolerance ff114_8]
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
+puts "the tolerance of the edge is $MaxEdgeTolerance"
+puts "the tolerance is less than distance between point and surface"
+puts "BUT"
+
+set che [checkshape ff114]
+
+if { [regexp {Faulty} $che] != 1 } {
+    puts "Faulty OCC592 : Checkshape BRepCheck_Analyzer does not detect faulty shape"
+} else {
+    puts "OCC592 OK: Checkshape (BRepCheck_Analyzer) detects bad shape"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

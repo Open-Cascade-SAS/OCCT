@@ -1,0 +1,31 @@
+puts "========="
+puts "CR25628: BRepMesh fails to mesh face with open wire, considered as correct by checkshape"
+puts "========="
+puts ""
+
+pload XDE
+
+stepread [locate_data_file bug25628_twr_hull.stp] a *
+renamevar a_1 a
+explode a f
+
+checkshape a_36
+
+incmesh a_36 0.1
+
+set log [tricheck a_36]
+if { [llength $log] != 0 } {
+  puts "ERROR: OCC25628 is reproduced. Nontriangulated face have been detected."
+} else {
+  puts "Mesh is OK"
+}
+
+checktrinfo a_36 -tri 4551 -nod 2302
+
+vinit
+vdisplay a_36
+vsetdispmode a_36 1
+vleft
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

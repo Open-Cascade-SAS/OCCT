@@ -1,0 +1,8 @@
+restore [locate_data_file CFE_diamant.rle] a
+restore [locate_data_file diamantprof] b
+restore [locate_data_file CFE_diamagaa.rle] un
+
+featprism a b b 0 0 -1 0 1
+featperform prism result un
+
+checkprops result -s 6.94655

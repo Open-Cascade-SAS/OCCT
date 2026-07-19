@@ -1,0 +1,8 @@
+ellipse result 0  0 1 0 40 20
+dset ech 1.1
+repeat 20 { 
+    2dpscale result 0 0 0 ech; 
+    copy result .; 
+}
+checklength result -l 1303.5806982555659
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

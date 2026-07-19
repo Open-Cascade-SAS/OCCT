@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC25693"
+puts "============"
+puts ""
+###############################
+## Wire of BSplines fails bopcheck
+###############################
+
+restore [locate_data_file bug25693_path3035.brep] result
+
+set bug_info [string trim [bopcheck result]]
+if {$bug_info != "This shape seems to be OK."} {
+    puts "Error : Wire of BSplines fails bopcheck"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png

@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC24643"
+puts "================"
+puts ""
+#######################################################################
+# No section curve between plane and cone
+#######################################################################
+
+restore [locate_data_file bug24643_b1.brep] b1
+restore [locate_data_file bug24643_b2.brep] b2
+bopcurves b1 b2
+checklength c_1 -l 107.39085794960783
+
+set log [dump c_1]
+if {[regexp {Trimmed +curve} ${log}]} {
+  puts "OK: section curve is good"
+} else {
+  puts "Error: section curve is bad"
+}
+
+smallview
+donly c_1 b1 b2
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

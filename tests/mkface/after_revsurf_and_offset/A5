@@ -1,0 +1,7 @@
+ellipse ellipse 0 0 0 30 10
+revsurf rs_ellipse ellipse 0 40 0 1 0 0
+offset rs_ellipse_of rs_ellipse 5
+mkface result rs_ellipse_of 0 1 0 1
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.5796749076530655e-07
+set MaxVTol 9.5796749076530697e-07

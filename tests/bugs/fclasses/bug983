@@ -1,0 +1,24 @@
+puts "================"
+puts "OCC983"
+puts "================"
+puts ""
+#######################################################################################
+# LDOM xml parser does not take into account "&amp;" xml entity.
+#######################################################################################
+
+pload QAcommands
+
+set list [OCC983 [locate_data_file OCC983.xml]]
+
+if { [regexp "Document parsed" $list] == 1 } {
+    if {[lsearch -exact ${list} "&View"] != -1 } {
+	puts "OCC983: OK"
+    } elseif {[lsearch -exact ${list} "&amp;View"] != 0 } {
+	puts "OCC983: Error"
+    } else {
+	puts "OCC983: Error ; bad input file."
+    }
+} else {
+    puts "OCC983: Error ; document not parsed"
+}
+

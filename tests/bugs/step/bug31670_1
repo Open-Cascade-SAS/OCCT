@@ -1,0 +1,117 @@
+puts "================"
+puts "0031670: Data Exchange - cp1251 Cyrillic characters in STEP file"
+puts "Target encodings: cp1250, cp1251, cp1252, cp1253, cp1254, cp1255, cp1256,, cp1257, cp1258"
+puts "Test case:"
+puts "1) Creates a temporary STEP file-template using WriteStep."
+puts "2) Reads generated template and replaces @tmp_name@ entity in it with target language characters using Tcl."
+puts "3) Generates 2 STEP files in UTF-8 and CP125(N) encodings (converted by Tcl)."
+puts "4) Reads generated files using StepRead and validates entity name."
+puts "================"
+puts ""
+
+proc fileToString { thePath } {
+  set aFile [open "$thePath" r]
+  set aText [read $aFile [file size "$thePath"]]
+  close $aFile
+  return $aText
+}
+
+proc fileFromString { thePath theContent theCodePage } {
+  set aFile [open "$thePath" w]
+  fconfigure $aFile -translation lf -encoding "$theCodePage"
+  puts $aFile $theContent
+  close $aFile
+}
+
+proc fileCreateAndCompare { thePathFrom theUtfPathTo theCpPathTo theNameFrom theNameTo theCodePage } {
+  set aCodePage [string tolower "$theCodePage"]
+  regsub -all -- $theNameFrom [fileToString "$thePathFrom"] "$theNameTo" aContent
+  fileFromString "$theUtfPathTo" "$aContent" "utf-8"
+  fileFromString "$theCpPathTo" "$aContent" "$aCodePage"
+  
+  param read.step.codepage UTF8
+  ReadStep U "$theUtfPathTo"
+  ReadStep A "$theCpPathTo"
+  param read.step.codepage "$theCodePage"
+  ReadStep CP "$theCpPathTo"
+  
+  if { [GetName U  0:1:1:1] != "$theNameTo" } { puts "Error: unable to read UTF-8  STEP" }
+  if { [GetName CP 0:1:1:1] != "$theNameTo" } { puts "Error: unable to read $theCodePage STEP" }
+  if { [GetName A  0:1:1:1] == "$theNameTo" } { puts "Error: broken test case" }
+  Close A U CP -silent
+}
+
+pload XDE OCAF MODELING VISUALIZATION
+set aTmpNameTmpl "@tmp_name@"
+set aTmpFileTmpl "${imagedir}/${casename}-tmp.stp"
+set aTmpFileUtf8 "${imagedir}/${casename}-tmp-utf8.stp"
+set aTmpFileCP125N "${imagedir}/${casename}-tmp-CP125N.stp"
+
+# "Test" (english multi-encoding) + "Test" (encoding in the target language)
+
+# multi-encoding
+set anEngName [encoding convertfrom utf-8 "\x54\x65\x73\x74"]
+# cp1250
+set aLat1Name [encoding convertfrom utf-8 "\x50\x72\x6f\x62\xed\x68\xe1"]
+# cp1251
+set aCyrName [encoding convertfrom utf-8 "\xD0\xa2\xD0\xB5\xD1\x81\xD1\x82"]
+# cp1252
+set aLat2Name [encoding convertfrom utf-8 "\x50\x72\x6f\x62\xed\x68\xe1"]
+# cp1253 
+set aGreekName [encoding convertfrom utf-8 "\xce\x94\xce\xbf\xce\xba\xce\xb9\xce\xbc\xce\xae"]
+# cp1254
+set aTurkName [encoding convertfrom utf-8 "\xd6\x6c\xe7\x65\x6b"]
+# cp1255
+set aHebrName [encoding convertfrom utf-8 "\xd7\x9e\xd6\xb4\xd7\x91\xd6\xb0\xd7\x97\xd6\xb8\xd7\x9f"]
+# cp1256
+set anArabName [encoding convertfrom utf-8 "\xd8\xa7\xd8\xae\xd8\xaa\xd8\xa8\xd8\xa7\xd8\xb1"]
+# cp1257
+set aBaltName [encoding convertfrom utf-8 "\x50\xc4\x81\x72\x62\x61\x75\x64\x65"]
+# cp1258
+set aViettName [encoding convertfrom utf-8 "\u0054\u0068\u00ed \u006e\u0067\u0068\u0069\u1ec7\u006d"]
+
+box b 1 2 3
+Close A T U CP -silent
+
+XNewDoc   T
+XAddShape T b 0
+XSetColor T b 1 0 0
+SetName   T 0:1:1:1 "$aTmpNameTmpl"
+GetName   T 0:1:1:1
+WriteStep T "$aTmpFileTmpl"
+
+puts "Central European"
+set aName "$anEngName $aLat1Name"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1250"
+
+puts "Cyrillic"
+set aName "$anEngName $aCyrName"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1251"
+
+puts "Western European"
+set aName "$anEngName $aLat2Name"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1252"
+
+puts "Greek"
+set aName "$anEngName $aGreekName"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1253"
+
+puts "Turkish"
+set aName "$anEngName $aTurkName"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1254"
+
+puts "Hebrew"
+set aName "$anEngName $aHebrName"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1255"
+
+puts "Arabic"
+set aName "$anEngName $anArabName"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1256"
+
+puts "Baltic"
+set aName "$anEngName $aBaltName"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1257"
+
+puts "Vietnamese"
+set aName "$anEngName $aViettName"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileCP125N" "$aTmpNameTmpl" "$aName" "CP1258"

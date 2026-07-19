@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC28118"
+puts "========"
+puts ""
+###########################################
+# Mesh generation hangs then crashes
+###########################################
+
+pload DATAEXCHANGEKERNEL STEP
+
+testreadstep [locate_data_file bug28118_18547.stp] result
+vclear
+vinit View1
+vdefaults -autoTriang off
+vdisplay result
+vfit
+incmesh result 0.1 -relative
+vsetdispmode 1
+set tri_info [trinfo result]
+
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { $tri > 0 && $nod > 0 } {
+  puts "OK: mesh was created correctly"
+} else {
+  puts "Error: mesh was not built"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

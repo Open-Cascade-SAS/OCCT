@@ -1,0 +1,5 @@
+restore [locate_data_file buc60281_1.rle] w1
+restore [locate_data_file buc60281_2.rle] w2
+restore [locate_data_file buc60281_3.rle] w3
+thrusections result 0 0 w1 w2 w3
+checkprops result -s 476995

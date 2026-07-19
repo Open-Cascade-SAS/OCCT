@@ -1,0 +1,12 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : C6
+## Comment : 
+## ====================================
+
+pcylinder s 50 100 90
+trotate s 0 0 0 0 0 1 270
+explode s E
+blend result s 10 s_1 10 s_4 10 s_5
+
+checkprops result -s 20559.5

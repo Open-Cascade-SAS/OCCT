@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC16497"
+puts "============"
+puts ""
+#######################################################################
+# XML OCAF storage of document on disk looses "0" in "00", "000", etc.
+#######################################################################
+
+set BugNumber OCC16497
+
+set aTestName "xml001-D7"
+puts ${aTestName}
+
+# Add an attribute to a data framework
+set aSetAttr1 "00"
+set aLabel 0:2
+Label D ${aLabel}
+SetName D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+if { ![file exists ${aFile}] } {
+	puts "Error : ${BugNumber} (case 1)"
+}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetAttr3 [GetName DD ${aLabel}]} aResult]
+puts "aSetAttr1=${aSetAttr1} aGetAttr3=${aGetAttr3}"
+if { ${IsDone} != 0 || ${aSetAttr1}!=${aGetAttr3} } {
+    puts "Error : Get a value of TDataStd_Name attribute from restoring document ${BugNumber}"
+}

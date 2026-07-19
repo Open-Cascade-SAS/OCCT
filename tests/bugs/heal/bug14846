@@ -1,0 +1,40 @@
+puts "TODO OCC14846 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC14846"
+puts "========"
+puts ""
+###########################################################################
+# ShapeFix_Wireframe::FixWireGaps() works wrong on a shape with seam edge
+###########################################################################
+
+restore [locate_data_file bug14846_Surf_Top.brep] a
+
+checkshape a
+fixwgaps result a
+checkshape result
+
+set bug_info_inp [string trim [lindex [tolerance a] 1]]
+set bug_info_inp [string trim [string range $bug_info_inp [expr {[string last "=" $bug_info_inp] + 1}] [expr {[string length $bug_info_inp] - 1}]]]
+
+set bug_info_out [string trim [lindex [tolerance result] 1]]
+set bug_info_out [string trim [string range $bug_info_out [expr {[string last "=" $bug_info_out] + 1}] [expr {[string length $bug_info_out] - 1}]]]
+
+set tmp_i [string trim [string range $bug_info_inp [expr {[string last "." $bug_info_inp] + 1}] [expr {[string length $bug_info_inp] - 1}]]]
+set tmp_o [string trim [string range $bug_info_out [expr {[string last "=" $bug_info_out] + 1}] [expr {[string length $bug_info_out] - 1}]]]
+
+set bug_info_value 0
+if {[string length $bug_info_inp] < [string length $bug_info_out]} {
+  set bug_info_value [string length $bug_info_inp]
+} else {
+  set bug_info_value [string length $bug_info_out]
+}
+if {$bug_info_value > 8} {
+  set bug_info_value 8
+}
+set bug_info_inp [string trim [string range $bug_info_inp 0 [expr {[string last "." $bug_info_inp] + $bug_info_value}]]]
+set bug_info_out [string trim [string range $bug_info_out 0 [expr {[string last "." $bug_info_out] + $bug_info_value}]]]
+
+if {$bug_info_out > $bug_info_inp} {
+  puts "OCC14846 is reproduced. Tolerance is increased after fixwgaps."
+}

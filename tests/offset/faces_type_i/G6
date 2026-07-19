@@ -1,0 +1,5 @@
+box s 10 10 10
+
+OFFSETSHAPE 1 {s_3} $calcul $type
+
+checkprops result -v 584

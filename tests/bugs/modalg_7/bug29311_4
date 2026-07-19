@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+ptorus result 20 5 
+trotate result 5 10 15 1 1 1 28
+
+puts "AABB"
+bounding result -shape ra -dump -save x1 y1 z1 x2 y2 z2
+
+dump x1 y1 z1 x2 y2 z2
+
+set VaExp [ dval (x2-x1)*(y2-y1)*(z2-z1) ]
+
+checkprops ra -v $VaExp
+
+puts "OBB"
+bounding result -shape ro -dump -obb
+
+checkprops ro -v 28694.7
+
+smallview 
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

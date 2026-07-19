@@ -1,0 +1,10 @@
+# Original bug : fra61146
+# Date : 25 Nov 98
+
+restore [locate_data_file CFE900_fra61gdz.rle] base
+restore [locate_data_file fra61146_face.brep] cont
+
+featrevol base cont cont 200 0 200 1 0 0 1 1
+featperformval revol result 180
+
+checkprops result -s 254248

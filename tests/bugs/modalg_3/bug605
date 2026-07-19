@@ -1,0 +1,40 @@
+
+puts "========================"
+puts " OCC605"
+puts "========================"
+puts ""
+##############################
+## No any faces in result of pipe command.
+##############################
+pload ALL
+
+restore [locate_data_file OCC605a.brep] w1 
+settolerance w1 1.e-7
+checkshape w1
+restore [locate_data_file OCC605b.brep] w2 
+checkshape w2
+
+if { [catch {pipe result w2 w1 } catch_result] } {
+    puts "Faulty OCC605: function PIPE works with exception."
+} else {
+    explode result f
+    set nom 0
+    set j 1
+    repeat 20 {
+	if { [regexp {FACE} [whatis result_$j]] != 1 } {
+    	    break
+        } else {
+    	    set nom [expr $nom + 1]
+        }
+	incr j
+    }
+    if { $nom == 0 } {
+	puts " Faulty OCC605: Result of PIPE operation is incorrect !!! "
+    } else {
+	puts "OCC605 OK : Result of PIPE operation is NOT empty shell!!! "
+   }
+}
+
+checkprops result -s 20.6253
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,16 @@
+puts "========="
+puts "OCC24950"
+puts "========="
+puts ""
+###########################################
+# Wrong result of Boolean CUT operation
+###########################################
+
+restore [locate_data_file bug24950_test1.brep] b1
+restore [locate_data_file bug24950_test2.brep] b2
+
+bop b1 b2
+bopcut result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

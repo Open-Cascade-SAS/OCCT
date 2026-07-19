@@ -1,0 +1,11 @@
+#D6----------------------------------------------
+plane p 0 0 0 0 0 1 -1 0 0
+psphere p p 20 0 90
+profile pr o 2 0 5  p 0 -1 0 1 0 0 l 10 t 0 30 \
+t -7 0  
+revol pr pr 0 0 0 0 0 1 360
+bfuse f p pr
+nexplode f f
+depouille result f 0 0 1 f_5 -10 0 0 35 0 0 1
+
+checkprops result -s 5966.54

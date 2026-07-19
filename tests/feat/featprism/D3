@@ -1,0 +1,16 @@
+restore [locate_data_file cylindre.rle] cyl
+restore [locate_data_file contour.rle] cont
+mkplane cont cont
+nexplode cyl F
+ 
+ttranslate cont 0 0 -100
+#
+# flo : 25/06/1998 : Argument 3 featperformval -> valeur numerique
+# flo : 25/06/1998 : Until = featperform -> et non featperformval
+#
+mksurface surf cyl_3
+mkface face surf
+featprism cyl cont cont 0 1 0 1 1
+featperform prism result face
+
+checkprops result -s 97490.4

@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC25354"
+puts "============"
+puts ""
+#######################################################################
+# Intersection operation
+#######################################################################
+
+# Case 01
+
+restore [locate_data_file bug25354_e1.brep] b1
+restore [locate_data_file bug25354_e2.brep] b2
+
+bop b1 b2
+bopsection result
+
+checknbshapes result -vertex 1 -edge 0 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 2
+checkview -display result -2d -path ${imagedir}/${test_image}.png

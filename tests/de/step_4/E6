@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj12_b3-ac-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 27  ( 107 )  Summary  = 27  ( 107 )
+CHECKSHAPE  : Wires    = 3  ( 4 )  Faces    = 3  ( 4 )  Shells   = 1  ( 1 )   Solids   = 1 ( 1 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 1173  ( 1173 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 1173  ( 1173 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =    7.063782203  (    7.063782203 )  AvgTol   =  0.002934550873  (  0.002942749644 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 1  ( 1 )  N2Labels = 0  ( 0 )   TotalLabels = 3  ( 3 )   NameLabels = 3  ( 3 )   ColorLabels = 1  ( 1 )   LayerLabels = 1  ( 1 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 0  ( 0 )
+
+}

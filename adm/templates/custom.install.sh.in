@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ "$1" == "@BIN_LETTER@" ]; then
+  if [ "$2" == "@COMPILER_BITNESS@" ]; then
+    # set environment variables used by OCCT
+    export CSF_FPE=@BUILD_ENABLE_FPE_SIGNAL_HANDLER@
+
+    export TCL_DIR="@USED_3RDPARTY_TCL_DIR@"
+    export TK_DIR="@USED_3RDPARTY_TK_DIR@"
+    export FREETYPE_DIR="@USED_3RDPARTY_FREETYPE_DIR@"
+    export FREEIMAGE_DIR="@USED_3RDPARTY_FREEIMAGE_DIRS@"
+    export TBB_DIR="@USED_3RDPARTY_TBB_DIR@"
+    export VTK_DIR="@USED_3RDPARTY_VTK_DIR@"
+    export FFMPEG_DIR="@USED_3RDPARTY_FFMPEG_DIR@"
+    export JEMALLOC_DIR="@USED_3RDPARTY_JEMALLOC_DIR@"
+
+    if [ "x@USED_3RDPARTY_QT_DIR@" != "x" ]; then
+      export QTDIR="@USED_3RDPARTY_QT_DIR@"
+    fi
+
+    export TCL_VERSION_WITH_DOT="@3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT@"
+    export TK_VERSION_WITH_DOT="@3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT@"
+
+    # Set paths based on layout
+    @OCCT_CUSTOM_BIN_LIB_PATHS@
+    
+    @OCCT_CUSTOM_ADDITIONAL_PATHS@
+  fi
+fi
+

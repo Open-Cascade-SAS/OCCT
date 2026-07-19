@@ -1,0 +1,10 @@
+#A2----------------------------------------------
+plane p 0 0 0 1 0 0 0 -.5 1
+pcylinder p p 10 20
+plane p2 10 -.2 5 0 0 1
+pcylinder p2 p2 4 10
+bfuse f p p2
+nexplode f f
+depouille result f 0 0 1 f_4 4 0 0 15 0 0 1
+
+checkprops result -s 2018.64

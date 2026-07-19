@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename PRO11713.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 33  ( 8228 )  Summary  = 33  ( 8228 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 127  ( 127 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 127  ( 127 )   FreeWire = 8189  ( 8189 ) 
+TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
+LABELS      : N0Labels = 42695  ( 42695 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 42695  ( 42695 )   NameLabels = 42695  ( 42695 )   ColorLabels = 0  ( 0 )   LayerLabels = 33059  ( 42695 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 87  ( 91 )
+LAYERS      : Layers   = 1 101 106 111 131 132 141 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 163 164 165 166 167 168 169 170 171 176 177 180 181 182 183 184 185 187 188 189 190 192 193 194 195 196 197 207 21 211 212 22 228 229 230 231 235 236 254 3 31 32 36 37 4 51 52 53 56 61 62 63 71 72 73 74 76 77 78 79 81 82 91  ( 1 101 106 111 131 132 141 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 163 164 165 166 167 168 169 170 171 176 177 180 181 182 183 184 185 187 188 189 190 191 192 193 194 195 196 197 199 207 21 211 212 22 228 229 230 231 235 236 254 3 31 32 36 37 4 51 52 53 56 6 61 62 63 7 71 72 73 74 76 77 78 79 81 82 91 )
+
+}

@@ -1,0 +1,319 @@
+# script for each OCCT toolkit
+
+# filling some variables by default values(src) or using custom(tools, samples)
+set (RELATIVE_SOURCES_DIR "${RELATIVE_DIR}")
+if ("${RELATIVE_SOURCES_DIR}" STREQUAL "")
+  #if it is not defined, use default directory
+  set (RELATIVE_SOURCES_DIR "src")
+endif()
+
+set (OCC_MODULES_LIST "${MODULES_LIST}")
+if ("${OCC_MODULES_LIST}" STREQUAL "")
+  set (OCC_MODULES_LIST ${OCCT_MODULES})
+endif()
+
+set (OCC_TARGET_FOLDER "${TARGET_FOLDER}")
+if ("${OCC_TARGET_FOLDER}" STREQUAL "")
+  set (OCC_TARGET_FOLDER "Modules")
+endif()
+
+set (OCCT_TOOLKITS_NAME_SUFFIX "${TOOLKITS_NAME_SUFFIX}")
+if ("${OCCT_TOOLKITS_NAME_SUFFIX}" STREQUAL "")
+  set (OCCT_TOOLKITS_NAME_SUFFIX "TOOLKITS")
+endif()
+
+# parse PACKAGES file
+EXTRACT_TOOLKIT_PACKAGES (${RELATIVE_SOURCES_DIR} ${PROJECT_NAME} USED_PACKAGES)
+if ("${USED_PACKAGES}" STREQUAL "")
+  set (USED_PACKAGES ${PROJECT_NAME})
+endif()
+
+if (USE_QT)
+  # Qt dependencies
+  OCCT_INCLUDE_CMAKE_FILE (adm/cmake/qt_macro)
+  FIND_QT_PACKAGE(PROJECT_LIBRARIES_DEBUG PROJECT_LIBRARIES_RELEASE PROJECT_INCLUDES)
+  include_directories("${PROJECT_INCLUDES}")
+endif(USE_QT)
+
+set (PRECOMPILED_DEFS)
+
+if (NOT BUILD_SHARED_LIBS)
+  list (APPEND PRECOMPILED_DEFS "-DOCCT_NO_PLUGINS")
+  if (WIN32 AND NOT EXECUTABLE_PROJECT)
+    list (APPEND PRECOMPILED_DEFS "-DOCCT_STATIC_BUILD")
+  endif()
+endif()
+
+# Get all used packages from toolkit
+UNSET(RESOURCE_FILES)
+foreach (OCCT_PACKAGE ${USED_PACKAGES})
+  #remove part after "/" in the OCCT_PACKAGE variable if exists
+  string (FIND "${OCCT_PACKAGE}" "/" _index)
+  if (_index GREATER -1)
+    math (EXPR _index "${_index}")
+    string (SUBSTRING "${OCCT_PACKAGE}" 0 ${_index} OCCT_PACKAGE_NAME)
+  else()
+    set (OCCT_PACKAGE_NAME "${OCCT_PACKAGE}")
+  endif()
+
+  set (SOURCE_FILES)
+  set (HEADER_FILES)
+
+  EXTRACT_PACKAGE_FILES (${RELATIVE_SOURCES_DIR} ${OCCT_PACKAGE} ALL_FILES INCLUDE_FOLDER)
+
+  set (HEADER_FILES_FILTERING ${ALL_FILES})
+  set (SOURCE_FILES_FILTERING ${ALL_FILES})
+
+  list (FILTER HEADER_FILES_FILTERING INCLUDE REGEX ".+[.](h|p|g|lxx|hxx|pxx|hpp|gxx)$")
+    
+  if(APPLE)
+    list (FILTER SOURCE_FILES_FILTERING INCLUDE REGEX ".+[.](c|cxx|cpp|mm)$")
+  else()
+    list (FILTER SOURCE_FILES_FILTERING INCLUDE REGEX ".+[.](c|cpp|cxx)$")
+  endif()
+
+  list (APPEND HEADER_FILES ${HEADER_FILES_FILTERING})
+  list (APPEND SOURCE_FILES ${SOURCE_FILES_FILTERING})
+
+  SOURCE_GROUP ("Header Files\\${OCCT_PACKAGE_NAME}" FILES "${HEADER_FILES_FILTERING}")
+  SOURCE_GROUP ("Source Files\\${OCCT_PACKAGE_NAME}" FILES "${SOURCE_FILES_FILTERING}")
+
+  list (APPEND USED_INCFILES ${HEADER_FILES})
+  list (APPEND USED_SRCFILES ${SOURCE_FILES})
+
+  if (USE_QT)
+    FIND_AND_INSTALL_QT_RESOURCES (${OCCT_PACKAGE} RESOURCE_FILES)
+    #message("Qt Resource files are: ${QT_RESOURCE_FILES} in ${OCCT_PACKAGE}")
+  endif(USE_QT)
+
+  #message("Resource files are: ${RESOURCE_FILES} in ${OCCT_PACKAGE}")
+  foreach(RESOURCE_FILE ${RESOURCE_FILES})
+    SOURCE_GROUP ("Resource Files\\${OCCT_PACKAGE_NAME}" FILES "${RESOURCE_FILE}")
+  endforeach()
+endforeach()
+string (REGEX REPLACE ";" " " PRECOMPILED_DEFS "${PRECOMPILED_DEFS}")
+
+set (USED_RCFILE "")
+if (MSVC)
+  set (USED_RCFILE "${CMAKE_BINARY_DIR}/resources/${PROJECT_NAME}.rc")
+  configure_file("${OCCT_ROOT_DIR}/adm/templates/occt_toolkit.rc.in" "${USED_RCFILE}" @ONLY)
+endif()
+
+set (CURRENT_MODULE)
+foreach (OCCT_MODULE ${OCC_MODULES_LIST})
+  list (FIND ${OCCT_MODULE}_${OCCT_TOOLKITS_NAME_SUFFIX} ${PROJECT_NAME} CURRENT_PROJECT_IS_BUILT)
+
+  if (NOT ${CURRENT_PROJECT_IS_BUILT} EQUAL -1)
+    set (CURRENT_MODULE ${OCCT_MODULE})
+  endif()
+endforeach()
+
+if (MSVC)
+  OCCT_INSERT_CODE_FOR_TARGET ()
+endif()
+
+if (USE_QT)
+  FIND_AND_WRAP_MOC_FILES("${USED_INCFILES}" "${PROJECT_NAME}_MOC_FILES")
+  #message("MOC files: ${${PROJECT_NAME}_MOC_FILES}")
+endif (USE_QT)
+
+if (EXECUTABLE_PROJECT)
+  add_executable (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES} ${USED_RCFILE} ${RESOURCE_FILES} ${${PROJECT_NAME}_MOC_FILES})
+
+  if (LAYOUT_IS_VCPKG)
+    install (TARGETS ${PROJECT_NAME}
+             DESTINATION "$<IF:$<CONFIG:Debug>,debug/${INSTALL_DIR_BIN},${INSTALL_DIR_BIN}>")
+  else()
+    install (TARGETS ${PROJECT_NAME}
+             DESTINATION "${INSTALL_DIR_BIN}\${OCCT_INSTALL_BIN_LETTER}")
+  endif()
+
+  if (EMSCRIPTEN)
+    install(FILES ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin\${OCCT_INSTALL_BIN_LETTER}/${PROJECT_NAME}.wasm DESTINATION "${INSTALL_DIR_BIN}/${OCCT_INSTALL_BIN_LETTER}")
+  endif()
+else()
+  add_library (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES} ${USED_RCFILE} ${RESOURCE_FILES} ${${PROJECT_NAME}_MOC_FILES})
+
+  if (MSVC AND BUILD_SHARED_LIBS)
+    if (BUILD_FORCE_RelWithDebInfo)
+      set (aReleasePdbConf "Release")
+    else()
+      set (aReleasePdbConf)
+    endif()
+    if (BUILD_SHARED_LIBS)
+      install (FILES  ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin\${OCCT_INSTALL_BIN_LETTER}/${PROJECT_NAME}.pdb
+             CONFIGURATIONS Debug ${aReleasePdbConf} RelWithDebInfo
+             DESTINATION "${INSTALL_DIR_BIN}\${OCCT_INSTALL_BIN_LETTER}")
+    else()
+      install (FILES  ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib\${OCCT_INSTALL_BIN_LETTER}/${PROJECT_NAME}.pdb
+             CONFIGURATIONS Debug ${aReleasePdbConf} RelWithDebInfo
+             DESTINATION "${INSTALL_DIR_LIB}\${OCCT_INSTALL_BIN_LETTER}")
+    endif()
+  endif()
+
+  if (BUILD_SHARED_LIBS AND NOT "${BUILD_SHARED_LIBRARY_NAME_POSTFIX}" STREQUAL "")
+    set (CMAKE_SHARED_LIBRARY_SUFFIX_DEFAULT ${CMAKE_SHARED_LIBRARY_SUFFIX})
+    set (CMAKE_SHARED_LIBRARY_SUFFIX "${BUILD_SHARED_LIBRARY_NAME_POSTFIX}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  endif()
+
+  if (LAYOUT_IS_VCPKG)
+    install (TARGETS ${PROJECT_NAME}
+             EXPORT OpenCASCADE${CURRENT_MODULE}Targets
+             RUNTIME DESTINATION "$<IF:$<CONFIG:Debug>,debug/${INSTALL_DIR_BIN},${INSTALL_DIR_BIN}>"
+             ARCHIVE DESTINATION "$<IF:$<CONFIG:Debug>,debug/${INSTALL_DIR_LIB},${INSTALL_DIR_LIB}>"
+             LIBRARY DESTINATION "$<IF:$<CONFIG:Debug>,debug/${INSTALL_DIR_LIB},${INSTALL_DIR_LIB}>"
+             INCLUDES DESTINATION ${INSTALL_DIR_INCLUDE})
+  else()
+    install (TARGETS ${PROJECT_NAME}
+             EXPORT OpenCASCADE${CURRENT_MODULE}Targets
+             RUNTIME DESTINATION "${INSTALL_DIR_BIN}\${OCCT_INSTALL_BIN_LETTER}"
+             ARCHIVE DESTINATION "${INSTALL_DIR_LIB}\${OCCT_INSTALL_BIN_LETTER}"
+             LIBRARY DESTINATION "${INSTALL_DIR_LIB}\${OCCT_INSTALL_BIN_LETTER}"
+             INCLUDES DESTINATION ${INSTALL_DIR_INCLUDE})
+  endif()
+
+  if (NOT WIN32)
+    if (BUILD_SHARED_LIBS AND NOT "${BUILD_SHARED_LIBRARY_NAME_POSTFIX}" STREQUAL "")
+      set (LINK_NAME    "${INSTALL_DIR}/${INSTALL_DIR_LIB}\${OCCT_INSTALL_BIN_LETTER}/lib${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX_DEFAULT}")
+      set (LIBRARY_NAME "${INSTALL_DIR}/${INSTALL_DIR_LIB}\${OCCT_INSTALL_BIN_LETTER}/lib${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+      OCCT_CREATE_SYMLINK_TO_FILE (${LIBRARY_NAME} ${LINK_NAME})
+    endif()
+  endif()
+endif()
+
+if (CURRENT_MODULE)
+  set_target_properties (${PROJECT_NAME} PROPERTIES FOLDER "${OCC_TARGET_FOLDER}/${CURRENT_MODULE}")
+  set_target_properties (${PROJECT_NAME} PROPERTIES MODULE "${CURRENT_MODULE}")
+  if (APPLE)
+    if (NOT "${INSTALL_NAME_DIR}" STREQUAL "")
+      set_target_properties (${PROJECT_NAME} PROPERTIES BUILD_WITH_INSTALL_RPATH 1 INSTALL_NAME_DIR "${INSTALL_NAME_DIR}")
+    endif()
+  endif()
+endif()
+
+get_property (OCC_VERSION_MAJOR GLOBAL PROPERTY OCC_VERSION_MAJOR)
+get_property (OCC_VERSION_MINOR GLOBAL PROPERTY OCC_VERSION_MINOR)
+get_property (OCC_VERSION_MAINTENANCE GLOBAL PROPERTY OCC_VERSION_MAINTENANCE)
+
+set (OCC_SOVERSION "")
+if (BUILD_SOVERSION_NUMBERS GREATER 2)
+  set (OCC_SOVERSION "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")
+elseif (BUILD_SOVERSION_NUMBERS GREATER 1)
+  set (OCC_SOVERSION "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}")
+elseif (BUILD_SOVERSION_NUMBERS GREATER 0)
+  set (OCC_SOVERSION "${OCC_VERSION_MAJOR}")
+endif()
+
+set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}"
+                                                  SOVERSION     "${OCC_SOVERSION}"
+                                                  VERSION       "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")
+
+set (USED_TOOLKITS_BY_CURRENT_PROJECT)
+set (USED_EXTERNLIB_AND_TOOLKITS)
+
+# SOME EXECUTABLE PROJECTS MAY USE CUSTOM TOOLKITS AND EXTERNAL LIBRARIES
+if (CUSTOM_EXTERNLIB)
+  set (USED_EXTERNLIB_AND_TOOLKITS ${CUSTOM_EXTERNLIB})
+  foreach (EXTERNAL_LIB ${CUSTOM_EXTERNLIB})
+    string (REGEX MATCH "^TK" TK_FOUND ${EXTERNAL_LIB})
+    if (TK_FOUND)
+      list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT ${EXTERNAL_LIB})
+    endif()
+  endforeach()
+else()
+  EXTRACT_TOOLKIT_EXTERNLIB ("${RELATIVE_SOURCES_DIR}" "${PROJECT_NAME}" USED_EXTERNLIB_AND_TOOLKITS)
+  EXCTRACT_TOOLKIT_DEPS ("${RELATIVE_SOURCES_DIR}" "${PROJECT_NAME}" USED_TOOLKITS_BY_CURRENT_PROJECT _)
+  list (REMOVE_ITEM USED_TOOLKITS_BY_CURRENT_PROJECT ${PROJECT_NAME})
+endif()
+
+foreach (USED_ITEM ${USED_EXTERNLIB_AND_TOOLKITS})
+  string (REGEX MATCH "^ *#" COMMENT_FOUND ${USED_ITEM})
+  if (COMMENT_FOUND)
+    continue()
+  endif()
+
+  string (REGEX MATCH "^CSF_" CSF_FOUND ${USED_ITEM})
+  string (REGEX MATCH "^vtk" VTK_FOUND ${USED_ITEM})
+
+  if (NOT "${VTK_FOUND}" STREQUAL "")
+    list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT ${USED_ITEM})
+    if (BUILD_SHARED_LIBS AND INSTALL_VTK AND COMMAND OCCT_INSTALL_VTK)
+      OCCT_INSTALL_VTK(${USED_ITEM})
+    endif()
+    continue()
+  endif()
+  # Search for 3rd-party libraries as a dependency
+  set (CURRENT_CSF ${${USED_ITEM}})
+  if ("x${CURRENT_CSF}" STREQUAL "x")
+    continue()
+  endif()
+  if ("${CURRENT_CSF}" STREQUAL "${CSF_OpenGlLibs}")
+    add_definitions (-DHAVE_OPENGL)
+  endif()
+  if ("${CURRENT_CSF}" STREQUAL "${CSF_OpenGlesLibs}")
+    add_definitions (-DHAVE_GLES2)
+  endif()
+  PROCESS_CSF_LIBRARIES ("${CURRENT_CSF}" USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT "${PROJECT_NAME}")
+endforeach()
+
+if (APPLE)
+  list (FIND USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT X11 IS_X11_FOUND)
+  if (NOT ${IS_X11_FOUND} EQUAL -1)
+    find_package (X11 COMPONENTS X11)
+    if (NOT X11_FOUND)
+      message (STATUS "Warning: X11 is not found. It's required to install The XQuartz project: http://www.xquartz.org")
+    endif()
+  endif()
+endif()
+
+# Update list of used VTK libraries if OpenGL2 Rendering BackEnd is used.
+# Add VTK_OPENGL2_BACKEND definition.
+if("${VTK_RENDERING_BACKEND}" STREQUAL "OpenGL2" OR IS_VTK_9XX)
+  add_definitions(-DVTK_OPENGL2_BACKEND)
+  foreach (VTK_EXCLUDE_LIBRARY vtkRenderingOpenGL vtkRenderingFreeTypeOpenGL)
+    list (FIND USED_TOOLKITS_BY_CURRENT_PROJECT "${VTK_EXCLUDE_LIBRARY}" IS_VTK_OPENGL_FOUND)
+    if (NOT ${IS_VTK_OPENGL_FOUND} EQUAL -1)
+      list (REMOVE_ITEM USED_TOOLKITS_BY_CURRENT_PROJECT ${VTK_EXCLUDE_LIBRARY})
+      if (${VTK_EXCLUDE_LIBRARY} STREQUAL vtkRenderingOpenGL)
+        list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT vtkRenderingOpenGL2)
+        if(VTK_MAJOR_VERSION GREATER 6)
+          # VTK omits RenderingGL2PSOpenGL2 on Android/iOS and under GLES (Emscripten);
+          # only add the dependency when the target is actually provided.
+          if (TARGET VTK::RenderingGL2PSOpenGL2 OR TARGET vtkRenderingGL2PSOpenGL2)
+            list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT vtkRenderingGL2PSOpenGL2)
+          endif()
+        endif()
+      endif()
+    endif()
+  endforeach()
+else()
+  if(VTK_MAJOR_VERSION EQUAL 6 AND VTK_MINOR_VERSION GREATER 2 OR VTK_MAJOR_VERSION GREATER 6)
+    list (FIND USED_TOOLKITS_BY_CURRENT_PROJECT "vtkRenderingFreeTypeOpenGL" IS_VTK_RENDER_FREETYPE_FOUND)
+    if (NOT ${IS_VTK_RENDER_FREETYPE_FOUND} EQUAL -1)
+      list (REMOVE_ITEM USED_TOOLKITS_BY_CURRENT_PROJECT "vtkRenderingFreeTypeOpenGL")
+    endif()
+  endif()
+endif()
+
+if(IS_VTK_9XX)
+  string (REGEX REPLACE "vtk" "VTK::" USED_TOOLKITS_BY_CURRENT_PROJECT "${USED_TOOLKITS_BY_CURRENT_PROJECT}")
+endif()
+
+target_link_libraries (${PROJECT_NAME} PUBLIC ${USED_TOOLKITS_BY_CURRENT_PROJECT} PRIVATE ${USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT})
+
+if (USE_QT)
+  foreach (PROJECT_LIBRARY_DEBUG ${PROJECT_LIBRARIES_DEBUG})
+    target_link_libraries (${PROJECT_NAME} PRIVATE debug ${PROJECT_LIBRARY_DEBUG})
+  endforeach()
+  foreach (PROJECT_LIBRARY_RELEASE ${PROJECT_LIBRARIES_RELEASE})
+    target_link_libraries (${PROJECT_NAME} PRIVATE optimized ${PROJECT_LIBRARY_RELEASE})
+  endforeach()
+endif()
+
+# suppress deprecation warnings inside OCCT itself for old gcc versions with unavailable Standard_DISABLE_DEPRECATION_WARNINGS
+if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6.0)
+    add_definitions("-DOCCT_NO_DEPRECATED")
+    message (STATUS "Warning: internal deprecation warnings by Standard_DEPRECATED have been disabled due to old gcc version being used")
+  endif()
+endif()

@@ -1,0 +1,22 @@
+puts "TODO OCC12345 ALL: Error : The command is not valid. The length is"
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of"
+
+puts "========================"
+puts " OCC248 "
+puts "========================"
+
+#################################################
+## puts "  BOPCOMMON   case_8_solid.brep and case_8_wire6.brep"
+#################################################
+ puts " " 
+restore [locate_data_file OCC247a.brep] a
+restore [locate_data_file OCC248b.brep] b
+puts [bop a b]
+puts [bopcommon result]
+
+checknbshapes result -vertex 1 -edge 0
+checkprops result -l 0 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+ 

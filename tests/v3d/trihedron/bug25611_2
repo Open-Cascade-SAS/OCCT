@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC25611: Displaying \'zbufftrihedron\' interferes with \'vgraduatedtrihedron\'"
+puts "Test graduated trihedron parameters"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+psphere s 10
+vdisplay s
+vaxo
+vfit
+vsetdispmode s 1
+
+# Font and color parameters
+vgraduatedtrihedron -on -xname X(mm) -yname Y(mm) -zname Z(mm) -xnamecolor PINK -ycolor GREENYELLOW -namefont Courier -valuesfont Courier
+vdump $imagedir/${casename}_1.png
+
+# Boolean parameters
+vgraduatedtrihedron -on -xdrawname off -ydrawvalues off -zdrawticks off
+vdump $imagedir/${casename}_2.png
+
+# Tickmark parameters
+vgraduatedtrihedron -on -xticks 10 -xticklength 15 -xvaluesoffset 20 -xnameoffset 40
+vdump $imagedir/${casename}_3.png
+
+# Arrow parameters
+vgraduatedtrihedron -on -arrowlength 50
+vdump $imagedir/${casename}_4.png

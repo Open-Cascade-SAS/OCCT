@@ -1,0 +1,53 @@
+puts "========"
+puts "0030691: test glTF reader on standard sample models"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_OrientationTest.glb]
+XGetOneShape s D
+checknbshapes s -face 13 -compound 1
+checktrinfo s -tri 524 -nod 1048
+
+set THE_REF_DUMP {
+INSTANCE FACE 0:1:1:1 (refers to 0:1:1:2) "ArrowZ2"
+PART FACE 0:1:1:2 "ArrowMeshZ2"
+INSTANCE FACE 0:1:1:3 (refers to 0:1:1:4) "TargetZ2"
+PART FACE 0:1:1:4 "TargetMeshZ2"
+INSTANCE FACE 0:1:1:5 (refers to 0:1:1:6) "TargetY2"
+PART FACE 0:1:1:6 "TargetMeshY2"
+INSTANCE FACE 0:1:1:7 (refers to 0:1:1:8) "ArrowY2"
+PART FACE 0:1:1:8 "ArrowMeshY2"
+INSTANCE FACE 0:1:1:9 (refers to 0:1:1:10) "ArrowX2"
+PART FACE 0:1:1:10 "ArrowMeshX2"
+INSTANCE FACE 0:1:1:11 (refers to 0:1:1:12) "TargetX2"
+PART FACE 0:1:1:12 "TargetMeshX2"
+INSTANCE FACE 0:1:1:13 (refers to 0:1:1:14) "TargetZ1"
+PART FACE 0:1:1:14 "TargetMeshZ1"
+INSTANCE FACE 0:1:1:15 (refers to 0:1:1:16) "ArrowZ1"
+PART FACE 0:1:1:16 "ArrowMeshZ1"
+INSTANCE FACE 0:1:1:17 (refers to 0:1:1:18) "TargetX1"
+PART FACE 0:1:1:18 "TargetMeshX1"
+INSTANCE FACE 0:1:1:19 (refers to 0:1:1:20) "ArrowX1"
+PART FACE 0:1:1:20 "ArrowMeshX1"
+INSTANCE FACE 0:1:1:21 (refers to 0:1:1:22) "TargetY1"
+PART FACE 0:1:1:22 "TargetMeshY1"
+INSTANCE FACE 0:1:1:23 (refers to 0:1:1:24) "ArrowY1"
+PART FACE 0:1:1:24 "ArrowMeshY1"
+INSTANCE FACE 0:1:1:25 (refers to 0:1:1:26) "BaseCube"
+PART FACE 0:1:1:26 "BaseCubeMesh"
+
+Free Shapes: 13
+INSTANCE FACE  0:1:1:1 (refers to 0:1:1:2) "ArrowZ2"
+INSTANCE FACE  0:1:1:3 (refers to 0:1:1:4) "TargetZ2"
+INSTANCE FACE  0:1:1:5 (refers to 0:1:1:6) "TargetY2"
+INSTANCE FACE  0:1:1:7 (refers to 0:1:1:8) "ArrowY2"
+INSTANCE FACE  0:1:1:9 (refers to 0:1:1:10) "ArrowX2"
+INSTANCE FACE  0:1:1:11 (refers to 0:1:1:12) "TargetX2"
+INSTANCE FACE  0:1:1:13 (refers to 0:1:1:14) "TargetZ1"
+INSTANCE FACE  0:1:1:15 (refers to 0:1:1:16) "ArrowZ1"
+INSTANCE FACE  0:1:1:17 (refers to 0:1:1:18) "TargetX1"
+INSTANCE FACE  0:1:1:19 (refers to 0:1:1:20) "ArrowX1"
+INSTANCE FACE  0:1:1:21 (refers to 0:1:1:22) "TargetY1"
+INSTANCE FACE  0:1:1:23 (refers to 0:1:1:24) "ArrowY1"
+INSTANCE FACE  0:1:1:25 (refers to 0:1:1:26) "BaseCube"
+}
+checkXDump D $THE_REF_DUMP

@@ -1,0 +1,25 @@
+
+puts "========="
+puts " OCC788 "
+puts "========="
+puts ""
+##################################################
+## ThruSection cannot determine correctly correspondence between wires 
+##################################################
+
+restore [locate_data_file OCC788_s1w.brep] w1 
+explode w1
+wire ww1 w1_1
+
+restore [locate_data_file OCC788_s2w.brep] w2 
+explode w2
+wire ww2 w2_1
+
+
+thrusections result 0 0 ww1 ww2
+
+puts "It necessary to analyse the photo"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+checkprops result -s 148608. 
+checkshape result

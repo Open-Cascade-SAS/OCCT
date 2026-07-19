@@ -1,0 +1,23 @@
+puts "=========="
+puts "0031711: Data Exchange - STEPCAFControl_Reader hangs on attached file in an infinite loop"
+puts "=========="
+puts ""
+
+# to prevent loops limit to 2 minute
+cpulimit 120
+
+set path_first [locate_data_file bug31711.stp]
+regsub -all {/} $path_first {\\} path_second
+
+ReadStep D_First $path_first
+
+XGetOneShape result D_First 
+checkshape result
+checknbshapes result -solid 1 -shell 1 -face 3687 -wire 4020
+
+if { [regexp -nocase "Windows" $tcl_platform(os)] != 0 } {
+  ReadStep D_Second $path_second
+}
+
+# return cpu limit
+cpulimit 1000

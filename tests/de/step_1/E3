@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename bm1_sy_exhaust.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 19 )  Warnings = 0  ( 2 )  Summary  = 0  ( 21 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 22  ( 13 )  Summary  = 22  ( 13 )
+CHECKSHAPE  : Wires    = 2  ( 0 )  Faces    = 2  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 35  ( 35 ) 
+STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 35  ( 35 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 6.366120513e-006  (         1e-005 )  AvgTol   =  9.515530559e-007  (  2.924776032e-006 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 31  ( 31 )  N2Labels = 0  ( 0 )   TotalLabels = 35  ( 35 )   NameLabels = 7  ( 7 )   ColorLabels = 28  ( 28 )   LayerLabels = 28  ( 28 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = CHOCOLATE1 RED  ( CHOCOLATE1 RED )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = {}  ( {} )
+
+}

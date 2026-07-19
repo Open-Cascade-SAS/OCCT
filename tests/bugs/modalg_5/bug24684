@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC24684"
+puts "============"
+puts ""
+############################################################################
+# Command fixshape hangs up on the attached shape
+############################################################################
+
+pload XSDRAW
+
+restore [locate_data_file bug24684_r.brep] a
+
+cpulimit 60
+
+fixshape result a
+
+checkprops result -s 337959 
+checkshape result
+
+checknbshapes result -vertex 300 -edge 443 -wire 171 -face 149 -shell 85 -solid 15 -compsolid 0 -compound 3 -shape 1166
+checkview -display result -2d -path ${imagedir}/${test_image}.png

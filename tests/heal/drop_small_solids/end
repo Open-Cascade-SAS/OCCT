@@ -1,0 +1,32 @@
+proc parseprops a {
+  return [regexp -inline {Center of gravity :[
+    ]+X = +([-0-9.+eE]+)[
+    ]+Y = +([-0-9.+eE]+)[
+    ]+Z = +([-0-9.+eE]+)[
+    ]+Matrix of Inertia :[
+    ]+([-0-9.+eE]+)[\t ]+([-0-9.+eE]+)[\t ]+([-0-9.+eE]+)[
+    ]+([-0-9.+eE]+)[\t ]+([-0-9.+eE]+)[\t ]+([-0-9.+eE]+)[
+    ]+([-0-9.+eE]+)[\t ]+([-0-9.+eE]+)[\t ]+([-0-9.+eE]+)} $a]
+}
+
+proc cmpprops {cmd shape1 shape2} {
+  upvar $shape1 a $shape2 b
+  set aa [parseprops [$cmd a]]
+  set bb [parseprops [$cmd b]]
+  for {set i 1} {$i < [llength $aa]} {incr i} {
+    if {[expr abs([lindex $aa $i] - [lindex $bb $i])] > 1e-8} {return 0}
+  }
+  return 1
+}
+
+set env(CSF_resDefaults) [file dirname [locate_data_file res]]
+restore [locate_data_file test.brep] a
+DT_ApplySeq result a res $cmd
+restore [locate_data_file $ref.brep] r
+
+puts [checkshape result]
+if {[statshape result] != [statshape r]} {puts "Error: STATSHAPE"}
+if {![cmpprops vprops result r]} {puts "Error: VPROPS"}
+if {![cmpprops sprops result r]} {puts "Error: SPROPS"}
+if {![cmpprops lprops result r]} {puts "Error: LPROPS"}
+

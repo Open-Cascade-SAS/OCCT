@@ -1,0 +1,13 @@
+restore [locate_data_file CFI901_congefkb.rle] m
+explode m E
+encoderegularity m 3
+blend result m 3 m_1 3 m_2 3 m_3 3 m_4 3 m_5 3 m_6 3 m_7 3 m_8 3 m_9 \
+               3 m_10 3 m_11 3 m_12 3 m_13 3 m_14 3 m_15 3 m_16 3 m_17 3 m_18 3 m_19 \
+               3 m_20 3 m_21 3 m_22 3 m_23 3 m_24 3 m_25 3 m_26 3 m_27 3 m_28 3 m_29 \
+               3 m_30 3 m_31 3 m_32 3 m_33 3 m_34 3 m_35 3 m_36 3 m_37 3 m_38 3 m_39 \
+               3 m_40 3 m_41 3 m_42 3 m_43 3 m_44 3 m_45 3 m_46 3 m_47 3 m_48 3 m_49 \
+               3 m_50 3 m_51
+explode result Sh
+renamevar result_1 result
+
+checkprops result -s 15571.4

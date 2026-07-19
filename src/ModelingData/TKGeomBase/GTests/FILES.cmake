@@ -1,0 +1,57 @@
+# Test source files for TKGeomBase
+set(OCCT_TKGeomBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKGeomBase_GTests_FILES
+  AdvApp2Var_Context_Test.cxx
+  AdvApp2Var_Framework_Test.cxx
+  AdvApp2Var_Iso_Test.cxx
+  AdvApp2Var_Network_Test.cxx
+  AdvApp2Var_Node_Test.cxx
+  AppCont_ContMatrices_Test.cxx
+  BndLib_Test.cxx
+  GeomBndLib_Curve_Test.cxx
+  GeomBndLib_Curve2d_Test.cxx
+  GeomBndLib_OffsetCurve_Test.cxx
+  GeomBndLib_OffsetCurve2d_Test.cxx
+  GeomBndLib_OffsetSurface_Test.cxx
+  GeomBndLib_Surface_Test.cxx
+  GeomBndLib_SurfaceOfExtrusion_Test.cxx
+  GeomBndLib_SurfaceOfRevolution_Test.cxx
+  Extrema_ExtPC_Test.cxx
+  ExtremaPC_BezierCurve_Test.cxx
+  ExtremaPC_BSplineCurve_Test.cxx
+  ExtremaPC_Circle_Test.cxx
+  ExtremaPC_Comparison_Test.cxx
+  ExtremaPC_Curve_Test.cxx
+  ExtremaPC_Ellipse_Test.cxx
+  ExtremaPC_ExtendedGeometry_Test.cxx
+  ExtremaPC_Hyperbola_Test.cxx
+  ExtremaPC_Line_Test.cxx
+  ExtremaPC_OffsetCurve_Test.cxx
+  ExtremaPC_Parabola_Test.cxx
+  ExtremaPC_SearchMode_Test.cxx
+  GC_MakeArcOfCircle_Test.cxx
+  GC_MakeCircle2d_Test.cxx
+  GC_MakeConicalSurface_Test.cxx
+  GC_MakePlane_Test.cxx
+  GC_MakeParabola2d_Test.cxx
+  GC_MakeSegment2d_Test.cxx
+  GCPnts_AbscissaPoint_Test.cxx
+  GeomConvert_CompCurveToBSplineCurve_Test.cxx
+  Geom2dConvert_CompCurveToBSplineCurve_Test.cxx
+  GeomConvert_Test.cxx
+  GProp_PEquation_Test.cxx
+  GProp_PGProps_Test.cxx
+  Hermit_Test.cxx
+  IntAna_IntQuadQuad_Test.cxx
+  ProjLib_Cone_Test.cxx
+  ProjLib_ComputeApproxOnPolarSurface_Test.cxx
+  gce_MakeCone_Test.cxx
+  gce_MakeCirc2d_Test.cxx
+  gce_MakeCylinder_Test.cxx
+  gce_MakeElips_Test.cxx
+  gce_MakeHypr_Test.cxx
+  GeomLProp_CLProps2d_Test.cxx
+  GeomLProp_CurAndInf2d_Test.cxx
+  LProp_CurAndInf_Test.cxx
+)

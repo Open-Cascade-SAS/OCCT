@@ -1,0 +1,10 @@
+puts "========"
+puts "OCC24621: F a i l e d to build Geom_OffsetSurface on B-Spline"
+puts "========"
+puts ""
+
+restore [locate_data_file bug24621_bs.draw] bs
+
+offset obs bs -2
+setunotperiodic bs
+offset obs bs -2

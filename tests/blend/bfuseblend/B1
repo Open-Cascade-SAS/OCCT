@@ -1,0 +1,15 @@
+box b -15 -15 -15 15 30 30
+polyline w 0 0 0 10 10 0
+circle profile 0 0 0 1 0 0 5
+mkedge profile profile
+wire profile profile
+mkplane profile profile
+pipe s w profile
+trotate s b 0 0 0 1 1 0 -20
+trotate s b 0 0 0 0 0 1 20
+tscale b 0 0 0 SCALE1
+tscale s 0 0 0 SCALE1
+explode s E
+bfuseblend result s b 1*SCALE1
+ 
+checkprops result -s 395701

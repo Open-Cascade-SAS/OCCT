@@ -1,0 +1,26 @@
+puts "=========="
+puts "OCC21821"
+puts "=========="
+puts ""
+############################################################
+# Section of face by plane is not built due to small edges
+############################################################
+
+restore [locate_data_file bug21821_plane_tailtop.brep] a
+
+plane p 28.85 0 0 1 0 0
+mkface f p -10 10 -10 10
+bsection result a f
+
+smallview
+clear
+display result
+display f
+display a
+fit
+
+checkprops result -l 2.95277
+checkshape result
+checksection result
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

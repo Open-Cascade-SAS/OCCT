@@ -1,0 +1,29 @@
+puts "========================"
+puts "OCC23043"
+puts "========================"
+puts ""
+################################################################################################################
+# Wrong results of BRepExtrema_DistShapeShape: non-null minimum distance between intersecting line and cylinder
+################################################################################################################
+
+set BugNumber OCC23043
+
+restore [locate_data_file bug23043_croix.brep] a 
+restore [locate_data_file bug23043_cylindre.brep] b 
+vdisplay a b 
+vfit
+distmini dd a b
+set dist1 [ dval dd ]
+set dist2 [ dval dd2 ]
+set dist3 [ dval dd3 ]
+set dist4 [ dval dd4 ]
+
+
+puts ""
+if { $dist1 == 0 && $dist2 == 0 && $dist3 == 0 && $dist4 == 0 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

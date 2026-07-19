@@ -1,0 +1,104 @@
+// Created on: 1999-06-25
+// Created by: data exchange team
+// Copyright (c) 1999-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ShapeFix_Solid.hxx>
+#include <ShapeFix_Shell.hxx>
+#include <ShapeFix_Face.hxx>
+#include <ShapeFix_Wire.hxx>
+
+//=================================================================================================
+
+inline occ::handle<ShapeFix_Solid> ShapeFix_Shape::FixSolidTool() const
+{
+  return myFixSolid;
+}
+
+//=================================================================================================
+
+inline occ::handle<ShapeFix_Shell> ShapeFix_Shape::FixShellTool() const
+{
+  return myFixSolid->FixShellTool();
+}
+
+//=================================================================================================
+
+inline occ::handle<ShapeFix_Face> ShapeFix_Shape::FixFaceTool() const
+{
+  return myFixSolid->FixShellTool()->FixFaceTool();
+}
+
+//=================================================================================================
+
+inline occ::handle<ShapeFix_Wire> ShapeFix_Shape::FixWireTool() const
+{
+  return myFixSolid->FixShellTool()->FixFaceTool()->FixWireTool();
+}
+
+//=================================================================================================
+
+inline occ::handle<ShapeFix_Edge> ShapeFix_Shape::FixEdgeTool() const
+{
+  return myFixSolid->FixShellTool()->FixFaceTool()->FixWireTool()->FixEdgeTool();
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Shape::FixSolidMode()
+{
+  return myFixSolidMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Shape::FixFreeShellMode()
+{
+  return myFixShellMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Shape::FixFreeFaceMode()
+{
+  return myFixFaceMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Shape::FixFreeWireMode()
+{
+  return myFixWireMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Shape::FixSameParameterMode()
+{
+  return myFixSameParameterMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Shape::FixVertexPositionMode()
+{
+  return myFixVertexPositionMode;
+}
+
+//=================================================================================================
+
+inline int& ShapeFix_Shape::FixVertexTolMode()
+{
+  return myFixVertexTolMode;
+}

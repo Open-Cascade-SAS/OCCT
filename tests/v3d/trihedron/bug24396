@@ -1,0 +1,54 @@
+puts "============"
+puts "CR24396: vselmode - disable auto loading of objects into Local Context"
+puts "============"
+puts ""
+
+set trihedron_axis_pick_x 29
+set trihedron_axis_pick_y 56
+
+set trihedron_axis_check_x 29
+set trihedron_axis_check_y 79
+
+set trihedron_point_pick_x 29
+set trihedron_point_pick_y 305
+
+set trihedron_point_check_x 24
+set trihedron_point_check_y 305
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+vaxo
+vtrihedron tri
+box b 10 10 10
+vdisplay b
+vselmode b 1 1
+vfit
+
+# --------------------------------------------------- #
+# check that there is no selection of trihedron axis  #
+# --------------------------------------------------- #
+vmoveto $trihedron_axis_pick_x $trihedron_axis_pick_y
+checkcolor $trihedron_axis_pick_x $trihedron_axis_pick_y 0 0 0
+if { $stat != 1 } { puts "Error : The trihedron should not be highlighted." }
+
+vselmode b 0 0
+vselmode 0 0
+verase b
+vselmode 1 1
+
+# ----------------------------------------------- #
+# check that selection of trihedron point is ok   #
+# ----------------------------------------------- #
+vmoveto $trihedron_point_pick_x $trihedron_point_pick_y
+checkcolor $trihedron_point_check_x $trihedron_point_check_y 0 1 1
+if { $stat != 1 } { puts "Error : The trihedron point highlight is incorrect." }
+
+# --------------------------------------------------------- #
+# check that there is still no selection of trihedron axis  #
+# --------------------------------------------------------- #
+vmoveto $trihedron_axis_pick_x $trihedron_axis_pick_y
+checkcolor $trihedron_axis_pick_x $trihedron_axis_pick_y 0 0 0
+if { $stat != 1 } { puts "Error : The trihedron should not be highlighted." }
+
+vdump $imagedir/${casename}.png

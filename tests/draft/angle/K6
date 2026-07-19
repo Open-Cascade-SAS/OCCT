@@ -1,0 +1,9 @@
+#D2----------------------------------------------
+ptorus pt 9 7
+plane p2 8 4 4 0 0 1 0 -1 0
+pcylinder p2 p2 3 10
+bfuse f pt p2
+nexplode f f
+depouille result f 0 0 1 f_2 10 0 0 15 0 0 1
+
+checkprops result -s 2642.63

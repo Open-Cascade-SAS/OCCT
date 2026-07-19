@@ -1,0 +1,11 @@
+# Original bug : spo0139
+# Date : 19Mai98
+
+restore [locate_data_file spo0139a.rle] a
+restore [locate_data_file spo0139b.rle] b
+
+bsection result a b
+
+checkprops result -l 202.576
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

@@ -1,0 +1,34 @@
+puts "TODO OCC28151 ALL: Faulty shapes in variables faulty_1 to"
+puts "TODO OCC28151 ALL: Error: MaxTolerance"
+
+puts "========"
+puts "OCC28151"
+puts "========"
+puts ""
+##########################################################
+## Sewing faces results in a shell with very big tolerance
+##########################################################
+
+restore [locate_data_file bug28151_surfs.brep] s
+
+puts "\nBefore sewing"
+whatis s
+checkshape s
+tolerance s
+
+set expected_MaxTolerance 0.1
+sewing result ${expected_MaxTolerance} s
+
+puts "\nAfter sewing"
+whatis result
+checkshape result
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTol
+
+set expected_MaxTolerance 0.1
+set tol_abs_MaxTolerance 0.05
+set tol_rel_MaxTolerance 0.5
+checkreal "MaxTolerance" ${MaxTol} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+checkview -display s -3d -path ${imagedir}/${test_image}-s.png
+checkview -display result -3d -path ${imagedir}/${test_image}-result.png

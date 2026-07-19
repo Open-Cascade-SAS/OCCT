@@ -1,0 +1,203 @@
+// Created on: 2002-03-19
+// Created by: QA Admin
+// Copyright (c) 2002-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <QABugs.hxx>
+
+#include <Draw.hxx>
+#include <Draw_Interpretor.hxx>
+#include <DBRep.hxx>
+
+#include <TDocStd_Application.hxx>
+#include <TDocStd_Document.hxx>
+#include <DDocStd.hxx>
+
+#include <TopoDS_Wire.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS.hxx>
+#include <BRep_Tool.hxx>
+#include <TopExp.hxx>
+#include <Geom_Curve.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
+#include <GeomAdaptor_Curve.hxx>
+
+static int OCC267(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 3)
+  {
+    di << "ERROR OCC267: Usage : " << argv[0] << " DOC path\n";
+    return 1;
+  }
+
+  occ::handle<TDocStd_Document> D;
+  if (!DDocStd::GetDocument(argv[1], D))
+  {
+    return 1;
+  }
+  TCollection_ExtendedString       path(argv[2]);
+  occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
+
+  PCDM_StoreStatus theStatus = A->SaveAs(D, path);
+  if (theStatus == PCDM_SS_OK)
+  {
+    di << "OCC267 : PCDM_StoreStatus = PCDM_SS_OK\n";
+  }
+  else
+  {
+    di << "OCC267 : PCDM_StoreStatus = Bad_Store_Status\n";
+  }
+
+  return 0;
+}
+
+static double delta_percent(double a, double b)
+{
+  double result;
+  if (b != 0.)
+  {
+    result = fabs((a - b) / b) * 100.;
+  }
+  else if (a != 0.)
+  {
+    result = fabs((a - b) / a) * 100.;
+  }
+  else
+  {
+    result = 0.;
+  }
+  return result;
+}
+
+static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
+{
+  if (argc != 7)
+  {
+    di << "ERROR : Usage : " << argv[0] << " shape step goodX goodY goodZ percent_tolerance\n";
+    return 1;
+  }
+
+  TopoDS_Wire myTopoDSWire = TopoDS::Wire(DBRep::Get(argv[1]));
+  double      l            = Draw::Atof(argv[2]);
+  double      goodX        = Draw::Atof(argv[3]);
+  double      goodY        = Draw::Atof(argv[4]);
+  double      goodZ        = Draw::Atof(argv[5]);
+  double      percent      = Draw::Atof(argv[6]);
+  bool        aStatus      = false;
+
+  // Find the first vertex of the wire
+  BRepTools_WireExplorer wire_exp(myTopoDSWire);
+  TopoDS_Vertex          vlast;
+  {
+    TopoDS_Vertex vw1, vw2;
+    TopExp::Vertices(myTopoDSWire, vw1, vw2);
+    TopoDS_Vertex ve1, ve2;
+    TopoDS_Edge   edge = TopoDS::Edge(wire_exp.Current());
+    TopExp::Vertices(edge, ve1, ve2);
+    if (vw1.IsSame(ve1) || vw1.IsSame(ve2))
+    {
+      vlast = vw1;
+    }
+    else
+    {
+      Standard_ASSERT_RAISE(vw2.IsSame(ve1) || vw2.IsSame(ve2), "Disconnected vertices");
+      vlast = vw2;
+    }
+  }
+  int    EdgeIndex = 0;
+  double FirstEdgeX, FirstEdgeY, FirstEdgeZ, deltaX, deltaY, deltaZ;
+  FirstEdgeX = FirstEdgeY = FirstEdgeZ = deltaX = deltaY = deltaZ = 0.;
+  for (; wire_exp.More(); wire_exp.Next())
+  {
+    EdgeIndex++;
+    di << "\n\n New Edge \n" << "\n";
+    double                  newufirst, newulast;
+    TopoDS_Edge             edge = TopoDS::Edge(wire_exp.Current());
+    double                  ufirst, ulast;
+    occ::handle<Geom_Curve> acurve;
+    TopoDS_Vertex           ve1, ve2;
+    TopExp::Vertices(edge, ve1, ve2);
+    if (ve1.IsSame(vlast))
+    {
+      acurve    = BRep_Tool::Curve(edge, ufirst, ulast);
+      newufirst = ufirst;
+      newulast  = ulast;
+      vlast     = ve2;
+    }
+    else
+    {
+      Standard_ASSERT_RAISE(ve2.IsSame(vlast), "Not the same vertex");
+      Standard_ASSERT_RAISE(wire_exp.Orientation() == TopAbs_REVERSED, "Wire should be REVERSED");
+      acurve    = BRep_Tool::Curve(edge, ufirst, ulast);
+      newufirst = acurve->ReversedParameter(ufirst);
+      newulast  = acurve->ReversedParameter(ulast);
+      acurve    = acurve->Reversed();
+      vlast     = ve1;
+    }
+
+    GeomAdaptor_Curve      curve;
+    GCPnts_UniformAbscissa algo;
+    curve.Load(acurve);
+    algo.Initialize(curve, l, newufirst, newulast);
+    if (!algo.IsDone())
+    {
+      di << "Not Done!!!" << "\n";
+    }
+    int maxIndex = algo.NbPoints();
+    for (int Index = 1; Index <= maxIndex; Index++)
+    {
+      double t   = algo.Parameter(Index);
+      gp_Pnt pt3 = curve.Value(t);
+      di << "Parameter t = " << t << "\n";
+      di << "Value Pnt = " << pt3.X() << " " << pt3.Y() << " " << pt3.Z() << "\n";
+      if (EdgeIndex == 1 && Index == maxIndex)
+      {
+        FirstEdgeX = pt3.X();
+        FirstEdgeY = pt3.Y();
+        FirstEdgeZ = pt3.Z();
+        deltaX     = delta_percent(FirstEdgeX, goodX);
+        deltaY     = delta_percent(FirstEdgeY, goodY);
+        deltaZ     = delta_percent(FirstEdgeZ, goodZ);
+        if (deltaX <= percent && deltaY <= percent && deltaZ <= percent)
+        {
+          aStatus = true;
+        }
+      }
+    }
+  }
+  di << "\n\nFirstEdge = " << FirstEdgeX << " " << FirstEdgeY << " " << FirstEdgeZ << "\n";
+  di << "deltaX = " << deltaX << " deltaY = " << deltaY << " deltaZ = " << deltaZ << "\n";
+  if (aStatus)
+  {
+    di << argv[0] << " : OK\n";
+  }
+  else
+  {
+    di << argv[0] << " : ERROR\n";
+  }
+
+  return 0;
+}
+
+void QABugs::Commands_18(Draw_Interpretor& theCommands)
+{
+  const char* group = "QABugs";
+
+  theCommands.Add("OCC267", "OCC267 DOC path", __FILE__, OCC267, group);
+  theCommands.Add("OCC367",
+                  "OCC367 shape step goodX goodY goodZ percent_tolerance",
+                  __FILE__,
+                  OCC367,
+                  group);
+}

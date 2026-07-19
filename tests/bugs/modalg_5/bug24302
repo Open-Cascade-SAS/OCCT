@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC24302"
+puts "========"
+puts ""
+###########################################
+# Section operation modifies input argument
+###########################################
+
+restore [locate_data_file bug24302_MyPlane.brep] p
+restore [locate_data_file bug24302_SolidBefore.brep] b
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance b] full MaxTol_b_1
+
+bnondestructive 1
+
+bop p b
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance b] full MaxTol_b_2
+
+set tol_abs_MaxTol 0.0001
+set tol_rel_MaxTol 0.0001
+checkreal "Section operation modifies input argument, Maxtolerance " ${MaxTol_b_2} ${MaxTol_b_1} ${tol_abs_MaxTol} ${tol_rel_MaxTol}

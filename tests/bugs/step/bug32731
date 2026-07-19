@@ -1,0 +1,17 @@
+puts "======="
+puts "0032731: Data Exchange, Step Import - Incorrect PMI text location"
+puts "======="
+
+pload OCAF
+
+Close D -silent
+
+# Read file
+ReadStep D [locate_data_file bug32731_A5E46910589A.stp]
+
+#Checking
+XGetShape repr0 D 0:1:4:106:15
+checkgravitycenter repr0 -l -109.847 153.679 0 1e-7
+
+XGetShape repr1 D 0:1:4:56:15
+checkgravitycenter repr1 -l -68.7 123.272 -18.5624 1e-7

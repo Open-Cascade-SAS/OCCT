@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC32225: Modeling Data - Wrong result of extrema curve-surface"
+puts "========"
+puts ""
+
+restore [locate_data_file bug32225_curve.draw] c
+restore [locate_data_file bug32225_surf.draw] s
+
+extrema c s
+
+if {[isdraw ext_1]} {
+  set ext_dist [lindex [length ext_1] end]
+  checkreal "Ext_1 min distance" $ext_dist 0. 1.e-10 1.e-10
+} else {
+  puts "Error: invalid result"
+}
+
+if {[isdraw ext_2]} {
+  set ext_dist [lindex [length ext_2] end]
+  checkreal "Ext_2 min distance" $ext_dist 0. 1.e-10 1.e-10
+} else {
+  puts "Error: invalid result"
+}
+smallview
+donly c ext_1 ext_2  
+fit
+disp s
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

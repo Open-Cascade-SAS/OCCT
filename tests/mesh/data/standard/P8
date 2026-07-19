@@ -1,0 +1,3 @@
+set TheFileName shading_143.brep
+set bug_freenodes "P8"
+set nbfreenodes(ALL) 2

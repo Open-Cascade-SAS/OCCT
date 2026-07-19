@@ -1,0 +1,183 @@
+// Created on: 1993-11-02
+// Created by: Christophe MARION
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <TopoDS_Shape.hxx>
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::VCompound()
+{
+  return InternalCompound(5, true, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::VCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(5, true, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::Rg1LineVCompound()
+{
+  return InternalCompound(3, true, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::Rg1LineVCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(3, true, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::RgNLineVCompound()
+{
+  return InternalCompound(4, true, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::RgNLineVCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(4, true, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::OutLineVCompound()
+{
+  return InternalCompound(2, true, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::OutLineVCompound3d()
+{
+  return InternalCompound(2, true, TopoDS_Shape(), true);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::OutLineVCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(2, true, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::IsoLineVCompound()
+{
+  return InternalCompound(1, true, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::IsoLineVCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(1, true, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::HCompound()
+{
+  return InternalCompound(5, false, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::HCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(5, false, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::Rg1LineHCompound()
+{
+  return InternalCompound(3, false, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::Rg1LineHCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(3, false, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::RgNLineHCompound()
+{
+  return InternalCompound(4, false, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::RgNLineHCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(4, false, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::OutLineHCompound()
+{
+  return InternalCompound(2, false, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::OutLineHCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(2, false, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::IsoLineHCompound()
+{
+  return InternalCompound(1, false, TopoDS_Shape());
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::IsoLineHCompound(const TopoDS_Shape& S)
+{
+  return InternalCompound(1, false, S);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::CompoundOfEdges(const HLRBRep_TypeOfResultingEdge type,
+                                                        const bool                        visible,
+                                                        const bool                        In3d)
+{
+  return InternalCompound(type, visible, TopoDS_Shape(), In3d);
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::CompoundOfEdges(const TopoDS_Shape&               S,
+                                                        const HLRBRep_TypeOfResultingEdge type,
+                                                        const bool                        visible,
+                                                        const bool                        In3d)
+{
+  return InternalCompound(type, visible, S, In3d);
+}

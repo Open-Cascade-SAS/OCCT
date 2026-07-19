@@ -1,0 +1,5 @@
+line result 70 0 0  1 1 0  
+repeat 4 {pl}
+dmode result U
+checkdump result -name {Origin Axis} -ref {{70 0 0} {0.707106781186548 0.707106781186548 0}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

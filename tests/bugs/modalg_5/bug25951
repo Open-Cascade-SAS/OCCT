@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC25951"
+puts "========"
+puts ""
+#######################################
+# Exception in intersection operation
+#######################################
+
+restore [locate_data_file OCC25951-qff001.brep] q
+explode q
+copy q_1 b1
+copy q_2 b2
+bsection result b1 b2
+
+checknbshapes result -vertex 1 -edge 0 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 2

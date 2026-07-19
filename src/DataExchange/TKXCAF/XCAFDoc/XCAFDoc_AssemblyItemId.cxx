@@ -1,0 +1,141 @@
+// Created on: 2017-02-16
+// Created by: Sergey NIKONOV
+// Copyright (c) 2000-2017 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <XCAFDoc_AssemblyItemId.hxx>
+
+#include <Standard_Dump.hxx>
+
+XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId() = default;
+
+XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId(
+  const NCollection_List<TCollection_AsciiString>& thePath)
+{
+  Init(thePath);
+}
+
+XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId(const TCollection_AsciiString& theString)
+{
+  Init(theString);
+}
+
+void XCAFDoc_AssemblyItemId::Init(const NCollection_List<TCollection_AsciiString>& thePath)
+{
+  myPath = thePath;
+}
+
+void XCAFDoc_AssemblyItemId::Init(const TCollection_AsciiString& theString)
+{
+  myPath.Clear();
+
+  for (int iEntry = 1;; ++iEntry)
+  {
+    TCollection_AsciiString anEntry = theString.Token("/", iEntry);
+    if (anEntry.IsEmpty())
+    {
+      break;
+    }
+
+    myPath.Append(anEntry);
+  }
+}
+
+bool XCAFDoc_AssemblyItemId::IsNull() const
+{
+  return myPath.IsEmpty();
+}
+
+void XCAFDoc_AssemblyItemId::Nullify()
+{
+  myPath.Clear();
+}
+
+bool XCAFDoc_AssemblyItemId::IsChild(const XCAFDoc_AssemblyItemId& theOther) const
+{
+  if (myPath.Size() <= theOther.myPath.Size())
+  {
+    return false;
+  }
+
+  NCollection_List<TCollection_AsciiString>::Iterator anIt(myPath), anItOther(theOther.myPath);
+  for (; anItOther.More(); anIt.Next(), anItOther.Next())
+  {
+    if (anIt.Value() != anItOther.Value())
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool XCAFDoc_AssemblyItemId::IsDirectChild(const XCAFDoc_AssemblyItemId& theOther) const
+{
+  return ((myPath.Size() == theOther.myPath.Size() - 1) && IsChild(theOther));
+}
+
+bool XCAFDoc_AssemblyItemId::IsEqual(const XCAFDoc_AssemblyItemId& theOther) const
+{
+  if (this == &theOther)
+  {
+    return true;
+  }
+
+  if (myPath.Size() != theOther.myPath.Size())
+  {
+    return false;
+  }
+
+  NCollection_List<TCollection_AsciiString>::Iterator anIt(myPath), anItOther(theOther.myPath);
+  for (; anIt.More() && anItOther.More(); anIt.Next(), anItOther.Next())
+  {
+    if (anIt.Value() != anItOther.Value())
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+const NCollection_List<TCollection_AsciiString>& XCAFDoc_AssemblyItemId::GetPath() const
+{
+  return myPath;
+}
+
+TCollection_AsciiString XCAFDoc_AssemblyItemId::ToString() const
+{
+  TCollection_AsciiString aStr;
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(myPath); anIt.More(); anIt.Next())
+  {
+    aStr += '/';
+    aStr += anIt.Value();
+  }
+  aStr.Remove(1, 1);
+  return aStr;
+}
+
+//=================================================================================================
+
+void XCAFDoc_AssemblyItemId::DumpJson(Standard_OStream& theOStream, int) const
+{
+  OCCT_DUMP_CLASS_BEGIN(theOStream, XCAFDoc_AssemblyItemId)
+
+  for (NCollection_List<TCollection_AsciiString>::Iterator aPathIt(myPath); aPathIt.More();
+       aPathIt.Next())
+  {
+    TCollection_AsciiString aPath = aPathIt.Value();
+    OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aPath)
+  }
+}

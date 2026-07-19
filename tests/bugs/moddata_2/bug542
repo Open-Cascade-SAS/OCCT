@@ -1,0 +1,28 @@
+
+puts "========"
+puts "OCC542"
+puts "========"
+puts ""
+################################
+## Wrong projection of the circle on the sphere
+################################
+
+restore [locate_data_file OCC542_C3D.draw] c3d 
+restore [locate_data_file OCC542_S.draw] s 
+
+if { [catch {project result c3d s } catch_result] } {
+    puts "OCC542 Faulty"
+} else {
+    # create dump of resulting curve  
+    set dump [dump result]
+    # read dump of old curve 
+    set olddump [read [open [locate_data_file OCC542_DUMP]]]
+    # if the dumps are equal this bug still exists
+    if { $dump == $olddump } {
+	puts "OCC542 Faulty"
+    } else {
+	puts "OCC542 WARNING: Dumps of old and new curve are different, probably bug still exists"
+    }
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

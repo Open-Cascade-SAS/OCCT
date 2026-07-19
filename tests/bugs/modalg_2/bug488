@@ -1,0 +1,23 @@
+
+puts "========="
+puts " OCC488 "
+puts "========="
+puts ""
+########################################################
+## Boolean operation returns invalid result, it lead to regression on test cfe/002/C1
+########################################################
+
+restore [locate_data_file OCC488a.brep] a_1 
+checkshape a_1
+
+restore [locate_data_file OCC488b.brep] a_2
+checkshape a_2
+
+if [catch {bcommon result a_1 a_2 } catch_result] {
+    puts "Faulty OCC488: command COMMON works wrongly"
+} else {
+    puts "OCC488 OK: function COMMON works properly "
+}
+checkprops result -s 92466.8 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

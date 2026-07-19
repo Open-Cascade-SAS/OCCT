@@ -1,0 +1,45 @@
+# Source files for BRepFeat package
+set(OCCT_BRepFeat_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_BRepFeat_FILES
+  BRepFeat.cxx
+  BRepFeat.hxx
+  BRepFeat_Builder.cxx
+  BRepFeat_Builder.hxx
+  BRepFeat_Form.cxx
+  BRepFeat_Form.hxx
+  BRepFeat_Form.lxx
+  BRepFeat_Gluer.cxx
+  BRepFeat_Gluer.hxx
+  BRepFeat_Gluer.lxx
+  BRepFeat_MakeCylindricalHole.cxx
+  BRepFeat_MakeCylindricalHole.hxx
+  BRepFeat_MakeCylindricalHole.lxx
+  BRepFeat_MakeDPrism.cxx
+  BRepFeat_MakeDPrism.hxx
+  BRepFeat_MakeLinearForm.cxx
+  BRepFeat_MakeLinearForm.hxx
+  BRepFeat_MakeLinearForm.lxx
+  BRepFeat_MakePipe.cxx
+  BRepFeat_MakePipe.hxx
+  BRepFeat_MakePipe.lxx
+  BRepFeat_MakePrism.cxx
+  BRepFeat_MakePrism.hxx
+  BRepFeat_MakePrism.lxx
+  BRepFeat_MakeRevol.cxx
+  BRepFeat_MakeRevol.hxx
+  BRepFeat_MakeRevol.lxx
+  BRepFeat_MakeRevolutionForm.cxx
+  BRepFeat_MakeRevolutionForm.hxx
+  BRepFeat_MakeRevolutionForm.lxx
+  BRepFeat_PerfSelection.hxx
+  BRepFeat_RibSlot.cxx
+  BRepFeat_RibSlot.hxx
+  BRepFeat_RibSlot.lxx
+  BRepFeat_SplitShape.cxx
+  BRepFeat_SplitShape.hxx
+  BRepFeat_SplitShape.lxx
+  BRepFeat_Status.hxx
+  BRepFeat_StatusError.hxx
+  BRepFeat_trace.cxx
+)

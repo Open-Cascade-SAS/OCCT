@@ -1,0 +1,34 @@
+puts "=========================================="
+puts "0031890: Invalid result of common fuse BOP"
+puts "=========================================="
+puts ""
+
+restore [locate_data_file bug31890_sol.brep] sol
+restore [locate_data_file bug31890_ext.brep] ext
+
+bclearobjects
+bcleartools
+baddobjects sol
+baddtools ext
+
+bfillds
+
+bbuild inv
+checkshape inv
+
+set tolres [checkmaxtol inv]
+
+if { ${tolres} > 6.e-6} {
+   puts "Error: bad tolerance of result"
+}
+
+bbop r_0 0
+bbop r_1 1
+
+checkshape r_0
+checknbshapes r_0 -solid 1 -shell 1 -face 9 -wire 11
+checkprops r_0 -s 58.2381 -v 14.1288
+
+checkshape r_1
+checknbshapes r_1 -solid 1 -shell 1 -face 16 -wire 18
+checkprops r_1 -s 91.6213 -v 39.4973

@@ -1,0 +1,13 @@
+puts "================"
+puts "OCC22504"
+puts "================"
+####
+
+igesbrep [locate_data_file OCC22504.igs] a *
+tpcompound result
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

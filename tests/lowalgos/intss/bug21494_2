@@ -1,0 +1,75 @@
+puts "========"
+puts "OCC21494: Intersection between cone and sphere fails"
+puts "========"
+puts ""
+
+foreach a [directory res*] {unset $a}
+
+set aGoodNbCurves 1
+
+pcone c 15 0 10
+psphere s 10
+explode c f
+explode s f
+mksurface sc c_1
+mksurface ss s_1
+
+intersect res sc ss
+
+if { ![info exist res_p_1] } {
+  puts "Error: Cone apex and Pole of sphere are excluded from the intersection result"
+}
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+bclearobjects
+bcleartools
+
+set CurvesList {}
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+    lappend CurvesList res_$ic
+    mkedge ee res_$ic
+    baddobjects ee
+    incr ic
+  }
+}
+
+set ic [expr $ic - 1]
+
+if { $ic != $aGoodNbCurves } {
+  puts "Error: $aGoodNbCurves curves is expected but $ic ones are found"
+} else {
+  CheckIntersectionResult sc ss $CurvesList 100 2.0e-7 2.0e-7
+  
+  if {$ic > 1} {
+    bfillds
+    bbuild result    
+  } elseif {$ic > 0} {
+    mkedge result res_1
+  }
+  
+  # Check gaps between intersection curves
+  checksection result -r 0
+  checkmaxtol result -min_tol 2.0e-7
+
+  checknbshapes result -edge 1 -vertex 1
+}
+
+smallview
+don result*
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

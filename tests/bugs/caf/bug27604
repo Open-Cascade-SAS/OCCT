@@ -1,0 +1,43 @@
+puts "========"
+puts "OCC27604"
+puts "Application Framework - memory is not released after closing XBF file"
+puts "========"
+puts ""
+
+set aBigShape Bottom.brep
+
+pload OCAF MODELING
+
+# just a big shape to fit in memory
+restore [locate_data_file $aBigShape] s
+
+set aTmpFile ${imagedir}/${casename}.cbf
+
+# store it in the document
+NewDocument D BinOcaf
+SetShape D "0:2" s
+SaveAs D $aTmpFile
+Close D
+
+# store the memory used before opening a document
+set aBefore [meminfo h]
+
+Open $aTmpFile DD
+set aDocLoaded [meminfo h]
+set aBigDelta [expr $aDocLoaded - $aBefore]
+Close DD
+
+set anAfter [meminfo h]
+set aDelta [expr $anAfter - $aBefore]
+
+puts "Memory used before: $aBefore"
+puts "After open: $aDocLoaded"
+puts "After close: $anAfter"
+
+# if after the close the memory used left 5% more than before closed, this is an issue
+# (less 5% is the measurement tolerance)
+if {[expr $aBigDelta / 20. - $aDelta] < 0} {
+  puts "Error: the memory is not freed after Open/Close"
+}
+
+file delete -force $aTmpFile

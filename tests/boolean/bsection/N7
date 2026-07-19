@@ -1,0 +1,22 @@
+cpulimit 1000
+
+restore [locate_data_file lh3d_ro1.brep] a
+isos a 0
+compound result
+set i 1
+repeat 199 {
+plane p_$i 0 $i*100 0  0 1 0
+mkface f_$i p_$i
+bsection s_$i a f_$i
+compound result s_$i result
+display s_$i
+clear f_$i
+clear p_$i
+set dist [expr $i * 100]
+puts "OK Section:$dist"
+incr i
+}
+
+checkprops result -l 4.36836e+07
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,13 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "============"
+puts "OCC889"
+puts "============"
+puts ""
+####################################################################
+## Checkshape founds number of errors on new face. It is not true.
+####################################################################
+restore [locate_data_file OCC889.rle] result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

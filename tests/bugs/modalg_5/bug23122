@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC23122"
+puts "============"
+puts ""
+######################################################
+# Operation "cut" crashes on attached shapes
+######################################################
+
+restore [locate_data_file bug23122_ExtTor.brep] s1
+restore [locate_data_file bug23122_IntTor.brep] s2
+
+bcut result s1 s2
+
+checkprops result -s 6962.25 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

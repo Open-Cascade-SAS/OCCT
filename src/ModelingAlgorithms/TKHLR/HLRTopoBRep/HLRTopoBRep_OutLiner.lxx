@@ -1,0 +1,50 @@
+// Created on: 1994-08-04
+// Created by: Christophe MARION
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//=================================================================================================
+
+inline void HLRTopoBRep_OutLiner::OriginalShape(const TopoDS_Shape& OriS)
+{
+  myOriginalShape = OriS;
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape& HLRTopoBRep_OutLiner::OriginalShape()
+{
+  return myOriginalShape;
+}
+
+//=================================================================================================
+
+inline void HLRTopoBRep_OutLiner::OutLinedShape(const TopoDS_Shape& OutS)
+{
+  myOutLinedShape = OutS;
+}
+
+//=================================================================================================
+
+inline TopoDS_Shape& HLRTopoBRep_OutLiner::OutLinedShape()
+{
+  return myOutLinedShape;
+}
+
+//=================================================================================================
+
+inline HLRTopoBRep_Data& HLRTopoBRep_OutLiner::DataStructure()
+{
+  return myDS;
+}

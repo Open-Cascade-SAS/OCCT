@@ -1,0 +1,41 @@
+puts "TODO OCC24156 MacOS: An exception was caught"
+puts "TODO OCC24156 MacOS: OCC8842: Faulty"
+
+puts "============"
+puts "00008842: E r r o r s in Offset Shape algorithm working with bspline and surface of revolution"
+puts "============"
+puts ""
+
+set BugNumber OCC8842
+
+if {[info commands testreadiges] == ""} {pload XSDRAW IGES}
+
+proc myoffset {result sh val tan} {
+  if {$tan == 1} {
+    offsetparameter 1e-7 p i
+  } else {
+    offsetparameter 1e-7 p a
+  }
+  uplevel offsetload $sh $val
+  uplevel offsetperform $result
+}
+
+testreadiges [locate_data_file OCC8842_cylinder_CATIA.igs] a3
+
+sewing cyl1 a3
+
+# join type Intersection
+puts "***** offsetting with join type Intersection"
+puts "   cylinder_CATIA - 5"
+
+if [catch { myoffset result cyl1 -5 1 } catch_result] {
+  puts "${BugNumber}: Faulty (1)"
+} else {
+
+checkprops result -s 57019.9 
+checkshape result
+checknbshapes result -vertex 4 -edge 6 -wire 4 -face 4 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 19
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,35 @@
+# check read / write shape to FSD archive and reading its back
+
+set file2 "bug26256.cmp"
+set driver "cmp"
+set file [locate_data_file ${file2}]
+
+# restore shape from a file
+if {[catch {fsdread ${file} shapein}]} {
+   puts "Error reading fsd file - ${file}"}
+   return
+} 
+
+# check base shape
+checkshape shapein
+
+# write shape to a file
+fsdwrite shapein ${imagedir}/${file2} ${driver}
+
+
+# restore shape from a file
+if {[catch {fsdread ${imagedir}/${file2} result}]} {
+   puts "Error reading fsd file - ${imagedir}/${file2}"}
+   return
+} 
+# check result shape
+checkshape result
+
+
+# check the number of subshapes
+checknbshapes result -ref [nbshapes shapein]
+
+# check properties
+checkprops result -l -equal shapein
+checkprops result -s -equal shapein
+checkprops result -v -equal shapein

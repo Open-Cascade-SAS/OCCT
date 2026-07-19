@@ -1,0 +1,11 @@
+# Original bug : cts20148
+# Date : 19Mai98
+
+restore [locate_data_file CTO904_cts20148a.rle] a
+restore [locate_data_file CTO904_cts20148b.rle] b
+
+bop a b
+bopcut result
+
+checkprops result -s 68758
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

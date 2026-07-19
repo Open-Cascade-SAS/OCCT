@@ -1,0 +1,41 @@
+puts "========"
+puts "0031148: Offset adjacent co-planar faces with different offset values"
+puts "========"
+puts ""
+
+pload MODELING
+
+# unset draw variables for all offset values
+foreach val {0 10} {
+  foreach x [directory r${val}*_unif] {
+    unset $x
+  }
+}
+
+restore [locate_data_file bug31148_case_0.brep] s
+
+perform_offset_multi_with_ref r0_01 s 0 {20 23 26 29 19 22 25 28} {5 5 5 5 5 5 5 5} {1.77792e+06 3.198e+07 38 38} 1
+perform_offset_multi_with_ref r0_02 s 0 {20 23 26 29 19 22 25 28} {43 43 43 43 43 43 43 43} {1.84032e+06 4.708e+07 32 26} 1
+perform_offset_multi_with_ref r0_03 s 0 {20 23 26 29 19 22 25 28} {50 50 50 50 50 50 50 50} {1.85712e+06 4.778e+07 32 26} 1
+perform_offset_multi_with_ref r0_04 s 0 {16 13 10 7 17 14 11 8} {5 5 5 5 5 5 5 5} {1.74272e+06 3.318e+07 38 38} 1
+perform_offset_multi_with_ref r0_05 s 0 {16 13 10 7 17 14 11 8} {43 43 43 43 43 43 43 43} {1.35936e+06 5.734e+07 26 26} 1
+
+perform_offset_multi_with_ref r10_01 s 10 {20 23 26 29 19 22 25 28} {5 5 5 5 5 5 5 5} {1.89232e+06 4.58432e+07 38 38} 1
+perform_offset_multi_with_ref r10_02 s 10 {20 23 26 29 19 22 25 28} {25 25 25 25 25 25 25 25} {2.05232e+06 5.49952e+07 38 38} 1
+perform_offset_multi_with_ref r10_03 s 10 {20 23 26 29 19 22 25 28} {43 43 43 43 43 43 43 43} {1.88804e+06 6.31176e+07 32 26} 1
+perform_offset_multi_with_ref r10_04 s 10 {20 23 26 29 19 22 25 28} {50 50 50 50 50 50 50 50} {1.90568e+06 6.39184e+07 32 26} 1
+perform_offset_multi_with_ref r10_05 s 10 {16 13 10 7 17 14 11 8} {5 5 5 5 5 5 5 5} {1.93072e+06 4.50112e+07 38 38} 1
+perform_offset_multi_with_ref r10_06 s 10 {16 13 10 7 17 14 11 8} {25 25 25 25 25 25 25 25} {1.93712e+06 5.74912e+07 38 38} 1
+perform_offset_multi_with_ref r10_07 s 10 {16 13 10 7 17 14 11 8} {43 43 43 43 43 43 43 43} {1.51172e+06 6.85672e+07 26 26} 1
+
+# display all created shapes
+foreach val {0 10} {
+  foreach x [directory r${val}*_unif] {
+    if {[isdraw $x]} {
+      checkview -display $x -2d -path ${imagedir}/${test_image}_$x.png
+    }
+  }
+}
+
+copy r0_01 result
+copy r0_01_unif result_unif

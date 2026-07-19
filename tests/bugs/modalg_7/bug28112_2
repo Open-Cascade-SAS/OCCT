@@ -1,0 +1,21 @@
+puts "# ================================================================="
+puts "# 0028112:  E x c e p t i o n  during offset computation"
+puts "# ================================================================="
+
+puts ""
+puts "# Fixing small faces on first shape..."
+restore [locate_data_file bug28112_1.brep] shape1
+fixsmallfaces fix1 shape1 -1
+checknbshapes fix1 -face 4
+
+puts ""
+puts "# Fixing small faces on second shape..."
+restore [locate_data_file bug28112_2.brep] shape2
+fixsmallfaces fix2 shape2 -1
+checknbshapes fix2 -face 4
+
+puts ""
+puts "# Trying offset on both shapes to ensure that it works after removal"
+puts "# of small faces"
+offsetshapesimple res1 fix1 10.
+offsetshapesimple res2 fix2 10.

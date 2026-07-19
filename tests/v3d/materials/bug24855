@@ -1,0 +1,44 @@
+puts "========"
+puts "0024855: Revision of parameters of standard materials"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# Ray-Tracing doesn't work with Compatible Profile on macOS
+pload OPENGL
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
+# custom shapes
+set aShape [locate_data_file occ/Top.brep]
+
+# setup 3D viewer content
+vinit View1 w=768 h=768
+vglinfo
+
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
+
+# display shape
+vlight -change 0 -dir 0.577 -0.577 -0.577
+restore $aShape s
+vdisplay -dispMode 1 s
+vfit
+
+proc testmat {dirname filename} {
+  foreach {aMatIter} {brass bronze copper gold jade neon_phc pewter obsidian plaster plastic satin silver steel stone chrome aluminium charcoal} {
+    vsetmaterial -noredraw s $aMatIter
+    vdump $dirname/${filename}_${aMatIter}.png
+  }
+}
+
+# material screenshots, Gouraud shading model (rasterization)
+vrenderparams -shadingModel GOURAUD
+testmat $imagedir $casename
+
+# material screenshots, Phong shading model (rasterization)
+vrenderparams -shadingModel PHONG
+testmat $imagedir ${casename}_phong
+
+# material screenshots, Ray-Tracing
+vrenderparams -raytrace -reflections -fsaa
+vtextureenv on 5
+testmat $imagedir ${casename}_rt

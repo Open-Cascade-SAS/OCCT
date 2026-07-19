@@ -1,0 +1,31 @@
+puts "TODO 0028406 ALL: Error: MaxTolerance"
+
+puts "======="
+puts "0028406"
+puts "======="
+puts ""
+#######################################################
+# High tolerances after boolean operation on OCCT 6.9.1
+#######################################################
+
+restore [locate_data_file bug28406_ar_shape_to_cuts.brep]  b1
+restore [locate_data_file bug28406_ar_cutting_shapes.brep] b2
+
+explode b2 f
+
+set log_1 [bopcurves b1 b2_1 -2d]
+regexp {Tolerance Reached=([-0-9.+eE]+)} $log_1 full tol_reached_1
+
+set log_2 [bopcurves b1 b2_7 -2d]
+regexp {Tolerance Reached=([-0-9.+eE]+)} $log_2 full tol_reached_2
+
+set log_3 [maxtolerance b2]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $log_3 full MaxFaceTolerance
+
+
+set ToleranceReached-6-9-1_1 0.044936986074371126
+set ToleranceReached-6-9-1_2 0.024455156919182791
+set tol_rel_MaxTol 0.0001
+
+checkreal "MaxTolerance 2_1 " ${tol_reached_1} ${ToleranceReached-6-9-1_1} ${MaxFaceTolerance} ${tol_rel_MaxTol}
+checkreal "MaxTolerance 2_7 " ${tol_reached_2} ${ToleranceReached-6-9-1_2} ${MaxFaceTolerance} ${tol_rel_MaxTol}

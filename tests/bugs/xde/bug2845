@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC2845"
+puts "============"
+puts ""
+########################################################
+# Regression of work of selections for STEP translator
+########################################################
+
+stepread [locate_data_file ec_exhaust-A.stp] a *
+
+set bug_info [listtypes xst-transferrable-roots]
+set bug_info [string trim [string range $bug_info [expr {[string last ":" $bug_info] + 1}] [expr {[string length $bug_info] - 1}]]]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first " " $bug_info] - 1}]]]
+if {$bug_info != 4} {
+  puts "ERROR: OCC2845 is reproduced"
+}

@@ -1,0 +1,11 @@
+# Original bug : ger60039
+# Date : 11mar98
+
+restore [locate_data_file ger60039a.brep] a
+fsameparameter a
+restore [locate_data_file CTO900_ger60039b.rle] b 
+
+bfuse result a b
+
+checkprops result -s 18154.6
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

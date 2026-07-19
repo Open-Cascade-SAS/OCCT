@@ -1,0 +1,37 @@
+puts "====="
+puts "OCC82"
+puts "====="
+puts ""
+#################################################
+# BUC60908. Incomplete section of shell by plane.
+#################################################
+
+restore [locate_data_file BUC60907_px1.rle] sh
+
+checkshape sh
+
+set length 113.703
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 42
+ EDGE      : 41
+"
+
+plane f 0 14.8053 0 0 1 0
+mkface f f
+
+bsection result sh f
+
+checkshape result
+
+checkprops result -l ${length}
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Section"
+
+set info [bopcheck result]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : Incomplete section of shell by plane"
+}
+
+checkview -display result -with sh -2d -path ${imagedir}/${test_image}.png

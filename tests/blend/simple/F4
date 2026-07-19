@@ -1,0 +1,11 @@
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 0 pi
+polyline w2 -15 0 0 0 -5 0 15 0 0
+wire w w1 w2
+mkplane w w
+prism s w 2 0 10
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 1*SCALE1 s_1
+
+checkprops result -s 133501

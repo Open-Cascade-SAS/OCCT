@@ -1,0 +1,12 @@
+puts "========================"                                                                                      
+puts "0030831: Shape Healing - ShapeFix algorithm (creation of seam edge) takes too long time with thin faces"
+puts "========================"                                                                                      
+
+cpulimit 10
+binrestore [locate_data_file bug30831.bin] a
+
+fixshape r a 1.e-7 1.
+checkshape r a
+tolerance r
+
+checkview -display r -2d -path ${imagedir}/${test_image}.png

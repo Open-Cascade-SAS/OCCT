@@ -1,0 +1,10 @@
+# Original bug : hkg60206
+# Date : 26Aout98
+
+restore [locate_data_file CTO904_hkg60206.rle]  a
+explode a f
+explode a_3 e
+
+blend result a 1 a_3_1 1 a_3_2
+
+checkprops result -s 1738.79

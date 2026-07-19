@@ -1,0 +1,23 @@
+puts "============="
+puts "0027848: Visualization - sensitivity of lines is too high"
+puts "============="
+
+pload VISUALIZATION
+
+vinit View1
+vclear
+
+box b 10 10 0.1
+vdisplay b -dispmode 1
+
+vline l 0 0 0 10 10 0
+vdisplay l
+
+vpoint p 20 20 0
+
+vtop
+vfit
+
+vselect 100 305
+
+if { [string match "*AIS_Line*" [vstate]] } { puts "Error: AIS_Shape should be detected" }

@@ -1,0 +1,55 @@
+puts "============"
+puts "OCC25890"
+puts "============"
+puts ""
+###############################
+## Intersection algorithm produces curves overlapped
+###############################
+
+set ExpToler 1.5361108163989659e-007
+set ExpLen 5.036361740755879
+
+restore [locate_data_file bug25890_f1.brep] f1
+restore [locate_data_file bug25890_f2.brep] f2
+
+set log [ bopcurves f1 f2 -2d ]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+checkreal TolReached $Toler $ExpToler 0.0 0.1
+
+if { ${NbCurv} != 1 } {
+  puts "Error : NbCurv is bad"
+  
+  set nbshapes_expected "
+  Number of shapes in shape
+   VERTEX : 0
+   EDGE : 0
+   WIRE : 0
+   FACE : 0
+   SHELL : 0
+   SOLID : 0
+   COMPSOLID : 0
+   COMPOUND : 1
+   SHAPE : 1
+  "
+
+  set SumLen 0.0
+  
+  # Check for overlapping
+  for {set i 1} {$i <= $NbCurv} {incr i} {
+    regexp "The +length+ c_$i +is +(\[-0-9.+eE\]+)" [ length c_$i ] full m
+    set SumLen [ expr $SumLen + $m]
+    for {set j [expr $i+1]} {$j <= $NbCurv} {incr j} {
+      puts " Check c_$i and c_$j"
+      mkedge e1 c_$i
+      mkedge e2 c_$j
+      bcommon rr e1 e2
+      checknbshapes rr -ref "${nbshapes_expected}" -t -m "Partition of 2 shapes"
+    }
+  }
+
+  checkreal Length $SumLen $ExpLen 1.0e-7 0.0
+} else {
+  checklength c_1 -l $ExpLen
+}
+

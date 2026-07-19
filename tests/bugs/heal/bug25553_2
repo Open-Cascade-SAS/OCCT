@@ -1,0 +1,11 @@
+puts "========================"                                                                                      
+puts "Bug #25553"                                                                                                      
+puts "========================"                                                                                      
+
+brestore [locate_data_file bug25553_f-cyl-no-seam-shifted-pcurves.brep] face
+
+fixshape result face 1e-7 1
+checkshape result
+checknbshapes result -face 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

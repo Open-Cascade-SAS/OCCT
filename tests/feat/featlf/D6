@@ -1,0 +1,13 @@
+profile pro x 5 y 1 x -3 y -0.5 x -1.5 y 0.5 x 0.5 y 4 x -1 y -5 
+prism pr pro 0 0 1
+nexplode pr f
+depouille pr pr 0 0 1 pr_5 10 1 3 0 0 0 1
+profile pp x 2 c 1 90 y 2 ww
+trotate pp 3 3 0 -1 0 0 180
+ttranslate pp 0.5 -2.5 0.3 
+plane pl 0 0 0.3 0 0 -1
+featlf pr pp pl 0 0 0.3 0 0 -0.2 1 1
+featperform lf result
+
+
+checkprops result -s 50.3873

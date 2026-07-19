@@ -1,0 +1,19 @@
+puts "# =============================================================================="
+puts "# 0031851: Data Exchange, STEP - enable Unicode symbols in STEP export"
+puts "# =============================================================================="
+
+pload OCAF XDE MODELING
+
+puts "# Generate XDE document with a solid having name encoded in Japanese"
+set name "\u30DC\u30C3\u30AF\u30B9" ;# "box"
+box box 10 10 10
+NewDocument D XCAF
+SetName D [XAddShape D box] $name
+
+WriteStep D $imagedir/${casename}.stp
+ReadStep T $imagedir/${casename}.stp
+
+set result [GetName T 0:1:1:1]
+if { $result != $name } {
+   puts "Error: name has been lost on conversion"
+}

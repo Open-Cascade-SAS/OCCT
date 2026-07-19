@@ -1,0 +1,4 @@
+source $env(CSF_OCCTResourcePath)/samples/tcl/raytrace.tcl
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

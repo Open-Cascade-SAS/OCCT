@@ -1,0 +1,71 @@
+puts "============"
+puts "OCC22864"
+puts "============"
+puts ""
+##############################################################################################
+# The algorithm BiTgte_Blend obtains instable results
+##############################################################################################
+
+set BugNumber OCC22864
+
+restore [locate_data_file bug22864_face1.brep] f1 
+restore [locate_data_file bug22864_face2.brep] f2 
+
+shape aShape C
+add f1 aShape
+add f2 aShape
+
+set status 0
+set Numbers 11
+
+for {set i 0} {$i < ${Numbers}} {incr i} {
+  puts "i=$i"
+  rollingball result aShape 15 @ f1 f2
+  
+  checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 8
+   
+  set aFile $imagedir/${test_image}.brep
+  puts "aFile=${aFile}"
+  file delete ${aFile}
+  if { [file exists ${aFile}] } {
+    puts "There is old ${aFile} file; Error"
+    set status 1
+  }
+
+  save result ${aFile}
+  catch {exec chmod 777 ${aFile}}
+  if { ![file exists ${aFile}] } {
+    puts "There is not ${aFile} file; save command: Error"
+    set status 1
+  }
+
+  set fp [open ${aFile} "r"]
+  set Log [read -nonewline ${fp}]
+  close ${fp}
+  #
+  if {$i == 0} {
+	set Standard_Log ${Log}
+  } else {
+	set info_result [string compare ${Log} ${Standard_Log}]
+    if {${info_result} == 0} {
+    	    # Log == Standard_Log
+    	    puts "Log == Standard_Log"
+    } else {
+    	    # Log != Standard_Log
+      set status 1
+    	    puts "Log != Standard_Log"
+    }
+  }
+}
+
+# Resume
+puts ""
+if {${status} == 0} {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+checkprops result -s 8464.91
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

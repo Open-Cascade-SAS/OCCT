@@ -1,0 +1,4 @@
+circle result 0 0 1 0 0 1 1 0 0 30
+val3d  result 0 [dval 2*pi] 20
+checklength result -l 188.49555921538757
+checkview -display result -2d -path ${imagedir}/${test_image}.png

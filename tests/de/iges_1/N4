@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename perno.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1  ( 14 )  Summary  = 1  ( 14 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 50  ( 50 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 50  ( 50 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 8.101203376e-06  (          1e-05 )  AvgTol   =  7.842895251e-07  (  3.006925488e-06 )
+LABELS      : N0Labels = 50  ( 50 )  N1Labels = 16  ( 78 )  N2Labels = 0  ( 0 )   TotalLabels = 66  ( 128 )   NameLabels = 50  ( 50 )   ColorLabels = 66  ( 128 )   LayerLabels = 66  ( 128 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = GREEN  ( GREEN )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}

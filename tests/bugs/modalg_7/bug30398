@@ -1,0 +1,14 @@
+puts "================================================="
+puts "0030398: Modeling Algorithms - thrusection produces twisted solid"
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug30398.brep] a
+eval thrusections r 1 1 [explode a w]
+
+checkshape r
+checknbshapes r -shell 1 -face 630 -wire 630 -edge 1260
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

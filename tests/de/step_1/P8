@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename ec_exhaust-A.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 12 )  Warnings = 0  ( 0 )  Summary  = 0  ( 12 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 46  ( 46 ) 
+STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 46  ( 46 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.02183056591  (  0.02190890861 )  AvgTol   =  0.002096975786  (  0.002169792963 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 4  ( 4 )   NameLabels = 4  ( 4 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

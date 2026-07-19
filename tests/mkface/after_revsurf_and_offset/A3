@@ -1,0 +1,7 @@
+circle circle 0 0 0 0 0 1 10
+revsurf rs_circle circle 0 40 0 1 0 0
+offset rs_circle_of rs_circle 5
+mkface result rs_circle_of 0 1 0 1
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.8244836490146139e-07
+set MaxVTol 9.8244836490146181e-07

@@ -1,0 +1,56 @@
+puts "============"
+puts "OCC6283"
+puts "============"
+puts ""
+######################################################
+# Unstable work fixshape on attached shape (different number of warnings)
+######################################################
+
+set BugNumber OCC6283
+
+# Due to the ambiguous interpretation of the "inner" wire on the surfaces
+# that have natural bound (is it the cutout in the whole surface, or it's just wrong wire orientation),
+# we must manually turn off the adding of the natural bound option of the shape healing for this test.
+if { [info exists imagedir] == 0 } {
+   set imagedir ../BugNumber
+   if {![file exists ${imagedir}]} {
+       file mkdir ${imagedir}
+   }
+}
+# remember the path to the old resource file
+set old_resource_path $::env(CSF_STEPDefaults)
+# reading old resource file
+set anOptions [parse_resource_file "${old_resource_path}/STEP"]
+# activation of ignoring the adding of natural bound
+dict set anOptions "FromSTEP.FixShape.FixAddNaturalBoundMode" "0"
+# path to new resource file
+set new_resource_path ${imagedir}
+# creating resource file
+create_resource_file "${new_resource_path}/STEP" $anOptions
+# changing the path to the resource file
+set ::env(CSF_STEPDefaults) ${new_resource_path}
+
+set list [stepread [locate_data_file wgehaeuse_surface.stp] a *]
+
+if {[lsearch ${list} Error] > -1} {
+    puts "${BugNumber} : Error during reading attached STEP file"
+} else {
+    tpcompound comp
+    if [catch { set fixlist [fixshape result comp 1e-7] } res] {
+        puts "${BugNumber}: Error during fixshape"
+    } else {
+    set index [string first "Segments were disordered; fixed\n" ${fixlist}]
+        if {$index != -1} {
+            puts "Faulty ${BugNumber}"
+        } else {
+            puts "OK ${BugNumber}"
+        }
+    checkprops result -s 2.22665e+06 
+    checkshape result
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
+    }
+}
+
+# Restoring the path to the old resource file
+set ::env(CSF_STEPDefaults) ${old_resource_path}
+

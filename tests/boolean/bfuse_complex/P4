@@ -1,0 +1,28 @@
+## pro16001
+
+restore [locate_data_file CTO909_PbHLR.brep] a
+checkshape a
+
+hlr hlr a
+
+hlr nohlr a
+explode a e
+donly a_4 
+#a_4 d'un seul tenant
+
+#lpa
+explode a f
+explode a_4 w
+checkshape a_4_1
+
+#mfa
+pcylinder pa 10 20
+pcylinder pb 6 15
+
+trotate pb 0 0 0 1 0 0 90
+ttranslate pb 0 0 10
+
+bfuse result pa pb
+
+checkprops result -s 2104.16
+checkview -display result -2d -otherwise { pa pb } -s -path ${imagedir}/${test_image}.png

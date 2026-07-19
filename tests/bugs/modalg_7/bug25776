@@ -1,0 +1,36 @@
+puts "TODO OCC25776 ALL: Error : Number of edges is WRONG"
+
+puts "============"
+puts "OCC25776"
+puts "============"
+puts ""
+##############################################################
+## HLR returns intersecting edges in OutLineV of helical sweep
+##############################################################
+
+restore [locate_data_file bug25776_shape2dhelix1-draw-Shape.brep] Shape
+
+hprj Shape2DView_proj 0 0 0 1 0 0 0 1 0
+houtl Shape2DView_outl Shape
+hfill Shape2DView_outl Shape2DView_proj 0
+hload Shape2DView_outl
+hsetprj Shape2DView_proj
+hupdate
+hhide
+hres2d
+
+# vol_2 and vol_3 - bad edges
+checknbshapes vol -edge 9 -m "Number of edges"
+
+smallview
+top
+donly vol
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-2d.png
+
+vinit
+vsetdispmode 1
+vdisplay Shape
+vright
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-3d-right.png

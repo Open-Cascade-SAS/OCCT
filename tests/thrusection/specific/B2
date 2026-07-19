@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC7166"
+puts "============"
+puts ""
+#######################################################################
+# Improvement of API of ThruSection
+#######################################################################
+
+set BugNumber OCC7166
+
+circle c1 0 0 0 10
+mkedge e1 c1
+wire w1 e1
+
+vertex v1 0 0 20
+vertex v2 0 0 -20
+
+set issolid 0
+set isruled 0
+catch {thrusections result ${issolid} ${isruled} v1 w1 v2}
+
+
+checkprops result -s 1829.23
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 8
+
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+

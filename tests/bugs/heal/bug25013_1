@@ -1,0 +1,16 @@
+puts "========="
+puts " OCC25013"
+puts "========="
+puts ""
+##################################################
+# ShapeFix_Wire tweaks for better results
+##################################################
+
+pload STEP
+
+stepread [locate_data_file bug25013_25013faces.stp] a *
+
+tpcompound result
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

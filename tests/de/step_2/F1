@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename bm4_sd_punch_c.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 6 )  Warnings = 10  ( 6 )  Summary  = 10  ( 12 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 198  ( 198 ) 
+STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 198  ( 198 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 6.149434256e-007  ( 6.149442753e-007 )  AvgTol   =  1.401903735e-007  (  1.401902217e-007 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 35  ( 35 )  N2Labels = 0  ( 0 )   TotalLabels = 40  ( 40 )   NameLabels = 9  ( 9 )   ColorLabels = 35  ( 35 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = BLUE GREEN RED  ( BLUE GREEN RED )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

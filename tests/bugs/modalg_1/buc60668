@@ -1,0 +1,28 @@
+
+puts "===================="
+puts "BUC60668"
+puts "Three boxes must appear on picture"
+puts "===================="
+
+box b 100 0 0 10 10 10
+box b1 10 10 10
+box b2 50 50 50 10 10 10
+box a -10 -10 -10 200 200 200
+
+compound b b1 b2 c 
+
+regexp {Mass +: +([-0-9.+eE]+)} [vprops c] full vcomp
+
+#compound b b1 c
+bcommon result c a
+
+regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full vcomm
+
+if { $vcomp != $vcomm } {
+    puts " Faulty : Common is incorrect"
+} else {
+    puts " BUC60668 OK : Common was made properly"
+}
+checkprops result -s 1800 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

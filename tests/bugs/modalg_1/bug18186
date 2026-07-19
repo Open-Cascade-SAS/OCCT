@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC18186"
+puts "============"
+puts ""
+#######################################################################
+# Boolean operation algo fails
+#######################################################################
+
+restore [locate_data_file OCC18186_r3.brep] bb
+restore [locate_data_file OCC18186_Tool2.brep] bc
+
+bop bb bc
+bopcut result
+
+checkprops result -s 308374 
+checkshape result
+checknbshapes result -vertex 43 -edge 68 -wire 27 -face 27 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 168
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

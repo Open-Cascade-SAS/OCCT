@@ -1,0 +1,41 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom2dHash_CurveHasher_HeaderFile
+#define _Geom2dHash_CurveHasher_HeaderFile
+
+#include <Standard_Handle.hxx>
+#include <cstddef>
+#include <Precision.hxx>
+
+class Geom2d_Curve;
+
+//! Polymorphic hasher for Geom2d_Curve using RTTI dispatch.
+//! Used for geometry deduplication.
+struct Geom2dHash_CurveHasher
+{
+  double CompTolerance;
+  double HashTolerance;
+
+  Standard_EXPORT Geom2dHash_CurveHasher(double theCompTolerance = Precision::Angular(),
+                                         double theHashTolerance = Precision::Confusion());
+
+  // Hashes any Geom2d_Curve by dispatching to the appropriate specific hasher.
+  Standard_EXPORT std::size_t operator()(const occ::handle<Geom2d_Curve>& theCurve) const noexcept;
+
+  // Compares two curves using polymorphic dispatch.
+  Standard_EXPORT bool operator()(const occ::handle<Geom2d_Curve>& theCurve1,
+                                  const occ::handle<Geom2d_Curve>& theCurve2) const noexcept;
+};
+
+#endif // _Geom2dHash_CurveHasher_HeaderFile

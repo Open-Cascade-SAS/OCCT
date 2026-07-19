@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename trj8_k1-hc-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 8 )  Summary  = 0  ( 8 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 52  ( 52 )  Face     = 52  ( 52 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 52  ( 52 )  Face     = 52  ( 52 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.002730674215  (   0.0116718272 )  AvgTol   =  0.0002131881112  (  0.001022773665 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 105  ( 53 )  N2Labels = 0  ( 0 )   TotalLabels = 107  ( 55 )   NameLabels = 3  ( 3 )   ColorLabels = 104  ( 53 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

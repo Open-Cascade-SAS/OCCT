@@ -1,0 +1,30 @@
+puts "================"
+puts "0031476: Wrong shading of a toroidal face from a SAT file"
+puts "================"
+puts ""
+
+restore [locate_data_file bug31476_toroidal_face.brep] result
+
+fixshape result result +i
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+smallview
+fit
+isos result 0
+triangles result
+
+checktrinfo result -tri 135 -nod 104
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}_3d.png 
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2d.png

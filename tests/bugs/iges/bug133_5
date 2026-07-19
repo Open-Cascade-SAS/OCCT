@@ -1,0 +1,19 @@
+puts "========================"
+puts "BUC60983"
+puts "OCC90"
+puts "OCC133"
+puts "========================"
+
+#######################################################
+## Exception when translating an IGES file to Open CASCADE (mapping phase).
+#######################################################
+
+igesbrep [locate_data_file Case.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

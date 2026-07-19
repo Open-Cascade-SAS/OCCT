@@ -1,0 +1,15 @@
+# Original bug : cts20918
+# Date : 12June98
+
+restore [locate_data_file cts20918a.rle] a 
+restore [locate_data_file CTO904_cts20918b.rle] b
+#pkv f
+updatetolerance a 1
+updatetolerance b 1
+#pkv t
+
+bsection result a b
+
+checkprops result -l 130.625
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC28385"
+puts "========"
+puts ""
+#################################################
+# Improve drawing isolines (DBRep_IsoBuilder algorithm)
+#################################################
+
+
+restore [locate_data_file bug28385_circ_face_hole.brep] face
+
+smallview
+isos face 50
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

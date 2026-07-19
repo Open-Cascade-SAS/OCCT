@@ -1,0 +1,73 @@
+puts "========"
+puts "0031099: Visualization, TKOpenGl - support Point light source with artistic full cut-off distance"
+puts "Test of point light's (positional and spot) attenuation and range in PBR"
+puts "========"
+
+pload XDE OCAF VISUALIZATION MODELING
+
+# PBR doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
+Close D -silent
+
+vclear
+vclose ALL
+vinit View1 -w 512 -h 512
+
+vtop
+vrenderparams -shadingmodel pbr
+
+box b -2 -2 -0.00001 4 4 0.00001
+XNewDoc D
+set bs [XAddShape D b 0]
+XAddVisMaterial D m -baseColor WHITE -transparency 0.0 -metallic 0.0 -roughness 1.0
+XSetVisMaterial D $bs m
+XDisplay -dispMode 1 D
+vfit
+
+vlight -clear
+vlight -add positional -pos -1 0 1 -intensity 0.5
+vlight -add spot -pos 1 0 1 -dir 0 0 -1 -intensity 0.5 -angle 100
+
+vdump $::imagedir/${::casename}_norange_high.png
+
+vlight -change 0 -pos -1 0 0.5
+vlight -change 1 -pos 1 0 0.5
+
+vdump $::imagedir/${::casename}_norange_low.png
+
+vlight -change 0 -range 1
+vlight -change 1 -range 1
+
+vdump $::imagedir/${::casename}_range1.png
+
+vlight -change 0 -range 0.5
+vlight -change 1 -range 0.5
+
+vdump $::imagedir/${::casename}_range0_5.png
+
+vlight -change 0 -range 0.6
+vlight -change 1 -range 0.6
+
+vdump $::imagedir/${::casename}_range0_6.png
+
+vlight -change 0 -range 10
+vlight -change 1 -range 10
+
+vdump $::imagedir/${::casename}_range10.png
+
+box b -5.0 -5.0 -0.00001 10 10 0.00001
+XNewDoc D
+set bs [XAddShape D b 0]
+XAddVisMaterial D m -baseColor WHITE -transparency 0.0 -metallic 0.0 -roughness 1.0
+XSetVisMaterial D $bs m
+XDisplay -dispMode 1 D
+vfit
+vlight -clear
+for {set i 0} {$i < 5} {incr i} {
+  for {set j 0} {$j < 5} {incr j} {
+    vlight -add spot -pos [expr -4.0+2.0*$i] [expr -4.0+2.0*$j] 0.5 -dir 0 0 -1 -intensity 0.5 -angle 100 -exp [expr ($i*5+$j) / 24.0]
+  }
+}
+
+vdump $::imagedir/${::casename}_angle_attenuation.png

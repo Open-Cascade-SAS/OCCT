@@ -1,0 +1,28 @@
+
+puts "============"
+puts "BUC60922"
+puts "============"
+puts ""
+#############################
+## Exception NumericError in Extrema 
+#############################
+
+restore [locate_data_file BUC60907_px1.rle] sh 
+checkshape sh
+
+line l 40 0 5 0 1 0
+mkedge e l
+subshape sh F 379
+mksurface result sh_379
+
+puts "Info: compute extrema"
+extrema result l
+
+puts "Info: compute distmini"
+distmini r sh e
+
+mkface result result
+
+checkprops result -s 157.932 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

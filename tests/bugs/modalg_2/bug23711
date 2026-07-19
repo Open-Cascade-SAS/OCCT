@@ -1,0 +1,16 @@
+puts "========"
+puts "CR23711"
+puts "========"
+########################################################
+## Incorrect result done by fuse operation
+########################################################
+
+restore [locate_data_file bug23711_sph1.brep] b1
+restore [locate_data_file bug23711_sph2.brep] b2
+
+bop b1 b2
+bopfuse result
+
+checkprops result -s 1256.63 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

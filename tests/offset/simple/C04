@@ -1,0 +1,9 @@
+# Test data:
+puts "USER GUID: N/A"
+restore [locate_data_file bug26663_test_offset_G4.brep] s
+
+set OffsetValue 2.0
+
+# Reference data.
+set ExpectedMass 2.3543e+006
+set ExpectedMaxTol 0.883

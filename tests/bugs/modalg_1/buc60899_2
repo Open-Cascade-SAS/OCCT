@@ -1,0 +1,57 @@
+
+puts "============"
+puts "BUC60899"
+puts "============"
+puts ""
+#####################################################
+## Execution of the script prism_sec.tcl gives  exception "NumericError". 
+#####################################################
+
+set n 2
+set dx 4
+set sx 1
+set sz 10
+set xc [dval (2*$dx+2*$sx)*$n/2]
+set zc -30
+set r  [dval $xc*0.9]
+
+set x 0
+set y -50
+set z 0
+set pol "polyline w $x $y $z"
+for {set i 1} {$i <= $n} {incr i} {
+    set x [dval $x+$dx]
+    set pol "$pol $x $y $z"
+    set x [dval $x+$sx]
+    set z [dval $z+$sz]
+    set pol "$pol $x $y $z"
+    set x [dval $x+$dx]
+    set pol "$pol $x $y $z"
+    set x [dval $x+$sx]
+    set z [dval $z-$sz]
+    set pol "$pol $x $y $z"
+}
+
+eval $pol
+polyline c $xc-$r -$r*2 $zc $xc+$r -$r*2 $zc $xc+$r $r*2 $zc $xc-$r $r*2 $zc $xc-$r -$r*2 $zc
+
+prism cyl c 0 0 -$zc*2 inf
+prism crg w 0 -$y*2 0 inf
+bsection result crg cyl
+
+#checksection res
+#checkshape res
+
+set nb_info [nbshapes result]
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full edgeness
+    
+if { $edgeness == 1  } {                                         
+    puts "Shape is empty, it is Faulty result"                                                                               
+} else {                                                                                                                        
+    puts "Shape is not empty, OK"                                                                                                   
+}
+
+checkprops result -l 162.299 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

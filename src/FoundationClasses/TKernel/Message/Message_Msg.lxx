@@ -1,0 +1,74 @@
+// Created on: 2007-07-04
+// Created by: Pavel TELKOV
+// Copyright (c) 2007-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Message_Msg.hxx>
+
+#ifndef _TCollection_HAsciiString_HeaderFile
+  #include <TCollection_HAsciiString.hxx>
+#endif
+#ifndef _TCollection_HExtendedString_HeaderFile
+  #include <TCollection_HExtendedString.hxx>
+#endif
+
+//=======================================================================
+// function : Arg (TCollection_AsciiString)
+// purpose  :
+//=======================================================================
+
+inline Message_Msg& Message_Msg::Arg(const TCollection_AsciiString& theString)
+{
+  return Arg(theString.ToCString());
+}
+
+//=======================================================================
+// function : Arg (TCollection_HAsciiString)
+// purpose  :
+//=======================================================================
+
+inline Message_Msg& Message_Msg::Arg(const occ::handle<TCollection_HAsciiString>& theString)
+{
+  return Arg(theString->String().ToCString());
+}
+
+//=======================================================================
+// function : Arg (TCollection_HExtendedString)
+// purpose  :
+//=======================================================================
+
+inline Message_Msg& Message_Msg::Arg(const occ::handle<TCollection_HExtendedString>& theString)
+{
+  return Arg(theString->String());
+}
+
+//=================================================================================================
+
+inline const TCollection_ExtendedString& Message_Msg::Original() const
+{
+  return myOriginal;
+}
+
+//=================================================================================================
+
+inline const TCollection_ExtendedString& Message_Msg::Value() const
+{
+  return myMessageBody;
+}
+
+//=================================================================================================
+
+inline bool Message_Msg::IsEdited() const
+{
+  return !myOriginal.IsEqual(myMessageBody);
+}

@@ -1,0 +1,26 @@
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of"
+
+puts "============"
+puts "OCC6277"
+puts "============"
+puts ""
+######################################################
+# Cut operation does not produce any result
+######################################################
+
+set BugNumber OCC6277
+
+restore [locate_data_file OCC6277_A.brep] s1 
+restore [locate_data_file OCC6277_B.brep] s2 
+
+checkshape s1
+checkshape s2
+
+bcut result s1 s2
+
+checkprops result -s 40084.9 
+checkshape result
+
+checknbshapes result -vertex 23 -edge 34 -wire 19 -face 14 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 93
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

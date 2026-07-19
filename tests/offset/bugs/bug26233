@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC26233"
+puts "========"
+puts ""
+################################################
+# BRepOffset_MakeOffset makes incorrect result
+################################################
+
+psphere a 100
+explode a f
+thickshell result a_1 10 i 1.e-7
+donly result
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 2 -face 2 -wire 2 -edge 6 -vertex 4 -shape 17
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 2.e-7} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 1.38649e+006

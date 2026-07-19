@@ -1,0 +1,16 @@
+puts "============"
+puts "CR23475"
+puts "==========="
+puts ""
+###############################################################################
+# Wrong result of Geom_BSpline_Surface::IsVClosed()
+###############################################################################
+
+restore [locate_data_file bug23475.draw] s1
+set info [dump s1]
+
+if { [regexp "BSplineSurface vclosed" $info] != 1} {
+    puts "Error : surface is not closed by V"
+}
+
+

@@ -1,0 +1,156 @@
+puts "============"
+puts "0033361: Modeling Algorithm - Fuse operation generates incomplete result"
+puts "============"
+puts ""
+
+# prepare first solid 
+vertex v1 -13.1319809553115 86.7822037750006 -0.00566973476865229
+vertex v2 -128.558636709231 86.5345485791916 -0.00570258843333704
+vertex v3 -100.69915263562 -4.39311321186025 -0.00566084285433277
+vertex v4 -79.6175928285065 -4.39310160958954 -0.0056548256445943 
+vertex v5 -14.129603767474 86.2679145189996 -19.5413698283793
+vertex v6 -127.672333074639 86.0243014066245 -19.5414021458256
+vertex v7 -99.9691824161271 -4.39312007067491 -19.5413606345018
+vertex v8 -80.240198192502 -4.39310921279638 -19.5413550033513
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+edge e5 v1 v5
+edge e6 v2 v6
+edge e7 v3 v7
+edge e8 v4 v8
+edge e9 v5 v6
+edge e10 v6 v7
+edge e11 v7 v8
+edge e12 v8 v5
+wire w1 e1 e2 e3 e4
+wire w2 e1 e6 e9 e5
+wire w3 e2 e7 e10 e6
+wire w4 e3 e8 e11 e7
+wire w5 e4 e5 e12 e8
+wire w6 e9 e10 e11 e12
+mkplane f1 w1
+mkplane f2 w2
+mkplane f3 w3
+mkplane f4 w4
+mkplane f5 w5
+mkplane f6 w6
+sewing s1 f1 f2 f3 f4 f5 f6 
+ssolid s1 s1 
+
+# prepare second solid
+vertex v1 127.874808332641 87.0848242748098 -0.00573631640736139
+vertex v2 4.13755363440343 86.8193381629493 -0.00577153550167253
+vertex v3 87.7714933163724 -4.39312459253253 -0.00571376462476536
+vertex v4 108.964655532952 -4.39311292884125 -0.00570771556087379
+vertex v5 127.250964034433 86.5713396058731 -19.5413363036311
+vertex v6 5.24619819968578 86.3095706585265 -19.5413710296105
+vertex v7 88.4127315018899 -4.39313150014382 -19.5413135815986
+vertex v8 108.446956291808 -4.39312047427561 -19.5413078633248
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+edge e5 v1 v5
+edge e6 v2 v6
+edge e7 v3 v7
+edge e8 v4 v8
+edge e9 v5 v6
+edge e10 v6 v7
+edge e11 v7 v8
+edge e12 v8 v5
+wire w1 e1 e2 e3 e4
+wire w2 e1 e6 e9 e5
+wire w3 e2 e7 e10 e6
+wire w4 e3 e8 e11 e7
+wire w5 e4 e5 e12 e8
+wire w6 e9 e10 e11 e12
+mkplane f1 w1
+mkplane f2 w2
+mkplane f3 w3
+mkplane f4 w4
+mkplane f5 w5
+mkplane f6 w6
+sewing s2 f1 f2 f3 f4 f5 f6 
+ssolid s2 s2 
+
+# prepare third solid
+vertex v1 108.933394491783 -4.52270499989385 -0.0678854291688111
+vertex v2 71.6392583557696 -4.82783796975667 0.111191412258037
+vertex v3 71.3588792617103 151.745015502843 0.0366204967163988
+vertex v4 127.845048470054 86.9672826319557 -0.202979251077327
+vertex v5 109.955308180154 -5.58542764710532 46.9881961078522
+vertex v6 70.0688762581537 -5.90713971196433 46.9762651891041
+vertex v7 69.7567011034265 151.061981157248 47.828071244823
+vertex v8 128.441716305279 83.7679782847199 47.4778456953173
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+edge e5 v1 v5
+edge e6 v2 v6
+edge e7 v3 v7
+edge e8 v4 v8
+edge e9 v5 v6
+edge e10 v6 v7
+edge e11 v7 v8
+edge e12 v8 v5
+wire w1 e1 e2 e3 e4
+wire w2 e1 e6 e9 e5
+wire w3 e2 e7 e10 e6
+wire w4 e3 e8 e11 e7
+wire w5 e4 e5 e12 e8
+wire w6 e9 e10 e11 e12
+mkplane f1 w1
+mkplane f2 w2
+mkplane f3 w3
+mkplane f4 w4
+mkplane f5 w5
+mkplane f6 w6
+sewing s3 f1 f2 f3 f4 f5 f6 
+ssolid s3 s3 
+
+# prepare fourth solid
+vertex v1 -122.825413548196 67.8222420317801 -0.00583425335077337
+vertex v2 121.414994525437 55.8353479065558 -0.00563439528369258
+vertex v3 127.874867553719 87.0848594871004 -0.00564196037409204
+vertex v4 -128.558663169796 86.5344601820726 -0.00584644818335889
+vertex v5 -122.343446023918 68.6316879811904 -19.5414411166127
+vertex v6 121.07295954832 56.6852348873057 -19.5412518461508
+vertex v7 127.250997928568 86.5713737315812 -19.5412353309277
+vertex v8 -127.67235532236 86.0242158147956 -19.5414386144761
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+edge e5 v1 v5
+edge e6 v2 v6
+edge e7 v3 v7
+edge e8 v4 v8
+edge e9 v5 v6
+edge e10 v6 v7
+edge e11 v7 v8
+edge e12 v8 v5
+wire w1 e1 e2 e3 e4
+wire w2 e1 e6 e9 e5
+wire w3 e2 e7 e10 e6
+wire w4 e3 e8 e11 e7
+wire w5 e4 e5 e12 e8
+wire w6 e9 e10 e11 e12
+mkplane f1 w1
+mkplane f2 w2
+mkplane f3 w3
+mkplane f4 w4
+mkplane f5 w5
+mkplane f6 w6
+sewing s4 f1 f2 f3 f4 f5 f6 
+ssolid s4 s4 
+
+# perform fuse operations
+bfuse result s1 s2 
+bfuse result result s3 
+bfuse result result s4 
+
+checkshape result 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

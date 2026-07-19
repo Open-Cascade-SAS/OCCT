@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC13116"
+puts "============"
+puts ""
+#######################################################################
+# Boolean Operations produce faulty shape
+#######################################################################
+
+set BugNumber OCC13116
+
+restore [locate_data_file OCC13116_sh1.brep] b1
+restore [locate_data_file OCC13116_sh2.brep] b2
+
+bop b1 b2
+bopfuse result
+
+checkprops result -s 438194 
+checkshape result
+checknbshapes result -vertex 21 -edge 37 -wire 16 -face 16 -shell 2 -solid 1 -compsolid 0 -compound 1 -shape 94
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

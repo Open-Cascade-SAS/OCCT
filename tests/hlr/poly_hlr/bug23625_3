@@ -1,0 +1,10 @@
+puts "============"
+puts "OCC23625"
+puts "============"
+puts ""
+
+set viewname "vtop"
+set length 19649
+
+restore [locate_data_file bug23625_a3.brep] a
+COMPUTE_HLR $viewname $algotype

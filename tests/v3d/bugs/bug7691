@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC7691: Wrong hidden lines computed by HLRBRep_PolyAlgo and HLRBRep_PolyHLRToShape in OCC 5.1"
+puts "============"
+puts ""
+
+# load shape
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC7691-bottle.brep] shape
+trotate shape 0 0 0 1 0 0 -90
+
+# init viewer and compute hlr shape
+vinit View1
+vtop
+vcomputehlr shape hlr
+vfit
+
+# move cursor not to select shape
+vmoveto 0 0
+
+# start position of color picking
+checkcolor 2 200 1 0 0
+
+if { ${stat} != 0 } {
+  puts "HLR shape is correct"
+  puts "OK OCC7691"
+} else {
+  puts "HLR shape is incorrect"
+  puts "Faulty OCC7691"
+}
+
+vdump $imagedir/${casename}.png

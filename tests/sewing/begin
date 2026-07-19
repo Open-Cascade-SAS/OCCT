@@ -1,0 +1,17 @@
+# To prevent loops limit to 5 minutes
+cpulimit 300
+
+if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
+	pload TOPTEST
+        pload XSDRAW
+}
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}
+
+set nbFreeEdges 0

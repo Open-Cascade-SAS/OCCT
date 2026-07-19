@@ -1,0 +1,10 @@
+restore [locate_data_file bug25926_before_offset_trim1.brep] s
+
+offsetparameter 1e-7 c i r
+offsetload s 50
+offsetperform result
+
+checkprops result -s 694900 -v 3.6175e+07
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 9 -face 9 -shell 1 -solid 1

@@ -1,0 +1,23 @@
+puts "========================"
+puts "OCC400"
+puts "========================"
+puts ""
+#######################################################################
+# Wrong triangulation of faces
+#######################################################################
+
+set BugNumber OCC400
+
+restore [locate_data_file OCC400.brep] result
+
+checkprops result -s 6607.38 
+checkshape result
+
+checknbshapes result -vertex 26 -edge 26 -wire 2 -face 2 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 57
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

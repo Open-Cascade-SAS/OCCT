@@ -1,0 +1,280 @@
+// Created by: Julia GERASIMOVA
+// Copyright (c) 2015 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BlendFunc_ConstThroat.hxx>
+#include <ElCLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_Gauss.hxx>
+#include <Standard_NotImplemented.hxx>
+
+#define Eps 1.e-15
+
+//=================================================================================================
+
+BlendFunc_ConstThroat::BlendFunc_ConstThroat(const occ::handle<Adaptor3d_Surface>& S1,
+                                             const occ::handle<Adaptor3d_Surface>& S2,
+                                             const occ::handle<Adaptor3d_Curve>&   C)
+    : BlendFunc_GenChamfer(S1, S2, C),
+      istangent(false),
+      param(0.0),
+      Throat(0.0),
+      normtg(0.0),
+      theD(0.0)
+{
+}
+
+//=================================================================================================
+
+void BlendFunc_ConstThroat::Set(const double aThroat, const double, const int Choix)
+{
+  Throat = aThroat;
+  choix  = Choix;
+}
+
+//=================================================================================================
+
+void BlendFunc_ConstThroat::Set(const double Param)
+{
+  param = Param;
+  curv->D2(param, ptgui, d1gui, d2gui);
+  normtg = d1gui.Magnitude();
+  nplan  = d1gui.Normalized();
+  theD   = -(nplan.XYZ().Dot(ptgui.XYZ()));
+}
+
+//=================================================================================================
+
+bool BlendFunc_ConstThroat::IsSolution(const math_Vector& Sol, const double Tol)
+{
+  math_Vector secmember(1, 4), valsol(1, 4);
+  math_Matrix gradsol(1, 4, 1, 4);
+
+  Value(Sol, valsol);
+  Derivatives(Sol, gradsol);
+
+  tol = Tol;
+
+  gp_Vec dnplan, temp1, temp2, tempmid;
+
+  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol * Tol
+      && std::abs(valsol(4)) <= Tol * Tol)
+  {
+    dnplan.SetLinearForm(1. / normtg, d2gui, -1. / normtg * (nplan.Dot(d2gui)), nplan);
+
+    temp1.SetXYZ(pts1.XYZ() - ptgui.XYZ());
+    temp2.SetXYZ(pts2.XYZ() - ptgui.XYZ());
+    tempmid.SetXYZ((pts1.XYZ() + pts2.XYZ()) / 2 - ptgui.XYZ());
+    surf1->D1(Sol(1), Sol(2), pts1, d1u1, d1v1);
+    surf2->D1(Sol(3), Sol(4), pts2, d1u2, d1v2);
+
+    secmember(1) = nplan.Dot(d1gui) - dnplan.Dot(temp1);
+    secmember(2) = nplan.Dot(d1gui) - dnplan.Dot(temp2);
+    secmember(3) = 2. * d1gui.Dot(tempmid);
+    secmember(4) = 2. * d1gui.Dot(temp2) - 2. * d1gui.Dot(temp1);
+
+    math_Gauss Resol(gradsol);
+    if (Resol.IsDone())
+    {
+      Resol.Solve(secmember);
+      tg1.SetLinearForm(secmember(1), d1u1, secmember(2), d1v1);
+      tg2.SetLinearForm(secmember(3), d1u2, secmember(4), d1v2);
+      tg12d.SetCoord(secmember(1), secmember(2));
+      tg22d.SetCoord(secmember(3), secmember(4));
+      istangent = false;
+    }
+    else
+    {
+      istangent = true;
+    }
+
+    distmin = std::min(distmin, pts1.Distance(pts2));
+
+    return true;
+  }
+
+  return false;
+}
+
+//=================================================================================================
+
+bool BlendFunc_ConstThroat::Value(const math_Vector& X, math_Vector& F)
+{
+  surf1->D0(X(1), X(2), pts1);
+  surf2->D0(X(3), X(4), pts2);
+
+  F(1) = nplan.XYZ().Dot(pts1.XYZ()) + theD;
+  F(2) = nplan.XYZ().Dot(pts2.XYZ()) + theD;
+
+  const gp_Pnt ptmid((pts1.XYZ() + pts2.XYZ()) / 2);
+  const gp_Vec vmid(ptgui, ptmid);
+
+  F(3) = vmid.SquareMagnitude() - Throat * Throat;
+
+  const gp_Vec vref1(ptgui, pts1);
+  const gp_Vec vref2(ptgui, pts2);
+
+  F(4) = vref1.SquareMagnitude() - vref2.SquareMagnitude();
+
+  return true;
+}
+
+//=================================================================================================
+
+bool BlendFunc_ConstThroat::Derivatives(const math_Vector& X, math_Matrix& D)
+{
+  surf1->D1(X(1), X(2), pts1, d1u1, d1v1);
+  surf2->D1(X(3), X(4), pts2, d1u2, d1v2);
+
+  D(1, 1) = nplan.Dot(d1u1);
+  D(1, 2) = nplan.Dot(d1v1);
+  D(1, 3) = 0.;
+  D(1, 4) = 0.;
+  D(2, 1) = 0.;
+  D(2, 2) = 0.;
+  D(2, 3) = nplan.Dot(d1u2);
+  D(2, 4) = nplan.Dot(d1v2);
+  D(3, 1) = gp_Vec((pts1.XYZ() + pts2.XYZ()) / 2 - ptgui.XYZ()).Dot(d1u1);
+  D(3, 2) = gp_Vec((pts1.XYZ() + pts2.XYZ()) / 2 - ptgui.XYZ()).Dot(d1v1);
+  D(3, 3) = gp_Vec((pts1.XYZ() + pts2.XYZ()) / 2 - ptgui.XYZ()).Dot(d1u2);
+  D(3, 4) = gp_Vec((pts1.XYZ() + pts2.XYZ()) / 2 - ptgui.XYZ()).Dot(d1v2);
+  D(4, 1) = 2. * gp_Vec(ptgui, pts1).Dot(d1u1);
+  D(4, 2) = 2. * gp_Vec(ptgui, pts1).Dot(d1v1);
+  D(4, 3) = -2. * gp_Vec(ptgui, pts2).Dot(d1u2);
+  D(4, 4) = -2. * gp_Vec(ptgui, pts2).Dot(d1v2);
+
+  return true;
+}
+
+//=================================================================================================
+
+const gp_Pnt& BlendFunc_ConstThroat::PointOnS1() const
+{
+  return pts1;
+}
+
+//=================================================================================================
+
+const gp_Pnt& BlendFunc_ConstThroat::PointOnS2() const
+{
+  return pts2;
+}
+
+//=================================================================================================
+
+bool BlendFunc_ConstThroat::IsTangencyPoint() const
+{
+  return istangent;
+}
+
+//=================================================================================================
+
+const gp_Vec& BlendFunc_ConstThroat::TangentOnS1() const
+{
+  if (istangent)
+  {
+    throw Standard_DomainError("BlendFunc_ConstThroat::TangentOnS1");
+  }
+  return tg1;
+}
+
+//=================================================================================================
+
+const gp_Vec& BlendFunc_ConstThroat::TangentOnS2() const
+{
+  if (istangent)
+  {
+    throw Standard_DomainError("BlendFunc_ConstThroat::TangentOnS2");
+  }
+  return tg2;
+}
+
+//=================================================================================================
+
+const gp_Vec2d& BlendFunc_ConstThroat::Tangent2dOnS1() const
+{
+  if (istangent)
+  {
+    throw Standard_DomainError("BlendFunc_ConstThroat::Tangent2dOnS1");
+  }
+  return tg12d;
+}
+
+//=================================================================================================
+
+const gp_Vec2d& BlendFunc_ConstThroat::Tangent2dOnS2() const
+{
+  if (istangent)
+  {
+    throw Standard_DomainError("BlendFunc_ConstThroat::Tangent2dOnS2");
+  }
+  return tg22d;
+}
+
+//=================================================================================================
+
+void BlendFunc_ConstThroat::Tangent(const double U1,
+                                    const double V1,
+                                    const double U2,
+                                    const double V2,
+                                    gp_Vec&      TgF,
+                                    gp_Vec&      TgL,
+                                    gp_Vec&      NmF,
+                                    gp_Vec&      NmL) const
+{
+  gp_Pnt pt;
+  gp_Vec d1u, d1v;
+  bool   revF = false;
+  bool   revL = false;
+
+  surf1->D1(U1, V1, pt, d1u, d1v);
+  NmF = d1u.Crossed(d1v);
+
+  surf2->D1(U2, V2, pt, d1u, d1v);
+  NmL = d1u.Crossed(d1v);
+
+  TgF = (nplan.Crossed(NmF)).Normalized();
+  TgL = (nplan.Crossed(NmL)).Normalized();
+
+  if ((choix == 2) || (choix == 5))
+  {
+    revF = true;
+    revL = true;
+  }
+  if ((choix == 4) || (choix == 7))
+  {
+    revL = true;
+  }
+  if ((choix == 3) || (choix == 8))
+  {
+    revF = true;
+  }
+
+  if (revF)
+  {
+    TgF.Reverse();
+  }
+  if (revL)
+  {
+    TgL.Reverse();
+  }
+}
+
+//=================================================================================================
+
+double BlendFunc_ConstThroat::GetSectionSize() const
+{
+  throw Standard_NotImplemented("BlendFunc_ConstThroat::GetSectionSize()");
+}

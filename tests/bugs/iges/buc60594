@@ -1,0 +1,15 @@
+puts "=================================="
+puts "BUC60594"
+puts "=================================="
+puts ""
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+
+igesbrep [locate_data_file buc60594a.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

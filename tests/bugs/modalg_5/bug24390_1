@@ -1,0 +1,25 @@
+puts "========================"
+puts "OCC24390"
+puts "========================" 
+puts ""
+#######################################################################
+# Sewing produces the result with huge tolerance
+#######################################################################
+
+pload XSDRAW
+
+restore [locate_data_file bug24390_face_0.brep] f1
+restore [locate_data_file bug24390_face_1.brep] f2
+restore [locate_data_file bug24390_face_2.brep] f3
+restore [locate_data_file bug24390_face_3.brep] f4
+restore [locate_data_file bug24390_face_4.brep] f5
+restore [locate_data_file bug24390_face_5.brep] f6
+
+sewing result f1 f2 f3 f4 f5 f6
+
+checkshape result
+checkmaxtol result -ref 2.0535401727466399e-005 -source {f1 f2 f3 f4 f5 f6} -min_tol 0 -multi_tol 5.
+checknbshapes result -shell 1
+checkfreebounds result 0
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,81 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_OutOfRange.hxx>
+
+inline bool IntAna2d_AnaIntersection::IsDone() const
+{
+  return done;
+}
+
+inline bool IntAna2d_AnaIntersection::IsEmpty() const
+{
+
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return ((nbp == 0) && (!iden));
+}
+
+inline bool IntAna2d_AnaIntersection::IdenticalElements() const
+{
+
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return iden;
+}
+
+inline bool IntAna2d_AnaIntersection::ParallelElements() const
+{
+
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return para;
+}
+
+inline int IntAna2d_AnaIntersection::NbPoints() const
+{
+
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return nbp;
+}
+
+inline const IntAna2d_IntPoint& IntAna2d_AnaIntersection::Point(const int N) const
+{
+
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  else
+  {
+    if ((N <= 0) || (N > nbp))
+    {
+      throw Standard_OutOfRange();
+    }
+    else
+    {
+      return lpnt[N - 1];
+    }
+  }
+}

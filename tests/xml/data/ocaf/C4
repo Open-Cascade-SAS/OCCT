@@ -1,0 +1,36 @@
+set aTestName "caf100-C1"
+puts ${aTestName}
+
+box ab 10 20 777
+NewShape D 0:1 ab
+
+# Close/Open transaction
+NewCommand D
+
+# Create a label
+set aLabel 0:1:1
+
+# Set a Naming attribute
+SelectShape D ${aLabel} ab
+
+# Close/Open transaction
+NewCommand D
+
+# Dump selection to check result
+DumpSelection D ${aLabel}
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Check the result
+set IsDone [catch {DumpSelection DD ${aLabel}} aResult]
+if { ${IsDone} != 0 } {
+    puts "Error : Get a value of TNaming_Naming attribute from restoring document"
+}
+

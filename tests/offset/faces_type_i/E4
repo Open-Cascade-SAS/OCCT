@@ -1,0 +1,5 @@
+ptorus s 20 5  270
+
+OFFSETSHAPE -1 {s_2} $calcul $type
+
+checkprops result -v 2715.08

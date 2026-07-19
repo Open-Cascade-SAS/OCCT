@@ -1,0 +1,614 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// dce 21/01/99 S3767 : Suppression of general messages
+
+#include <Interface_Check.hxx>
+#include <Interface_CheckFailure.hxx>
+#include <Interface_FileReaderData.hxx>
+#include <Interface_FileReaderTool.hxx>
+#include <Interface_GeneralLib.hxx>
+#include <Interface_GeneralModule.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ReaderLib.hxx>
+#include <Interface_ReaderModule.hxx>
+#include <Interface_ReportEntity.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Transient.hxx>
+
+#ifdef _WIN32
+  #include <OSD_Exception.hxx>
+#else
+  #include <OSD_Signal.hxx>
+#endif
+#include <cstdio>
+
+// MGE 16/06/98
+// To use Msg class
+#include <Message_Msg.hxx>
+// To use TCollectionHAsciiString
+#include <TCollection_HAsciiString.hxx>
+
+// Failure to recover error when reading file,
+// TypeMismatch for detailed error message (important special case)
+
+//  Manages the loading of a File, previously transformed into FileReaderData
+//  (of the right standard), into a Model
+
+//=================================================================================================
+
+Interface_FileReaderTool::Interface_FileReaderTool()
+{
+  themessenger = Message::DefaultMessenger();
+  theerrhand   = true;
+  thetrace     = 0;
+  thenbrep0 = thenbreps = 0;
+}
+
+//=================================================================================================
+
+void Interface_FileReaderTool::SetData(const occ::handle<Interface_FileReaderData>& reader,
+                                       const occ::handle<Interface_Protocol>&       protocol)
+{
+  thereader = reader;
+  theproto  = protocol;
+}
+
+//=================================================================================================
+
+occ::handle<Interface_Protocol> Interface_FileReaderTool::Protocol() const
+{
+  return theproto;
+}
+
+//=================================================================================================
+
+occ::handle<Interface_FileReaderData> Interface_FileReaderTool::Data() const
+{
+  return thereader;
+}
+
+//=================================================================================================
+
+void Interface_FileReaderTool::SetModel(const occ::handle<Interface_InterfaceModel>& amodel)
+{
+  themodel = amodel;
+}
+
+//=================================================================================================
+
+occ::handle<Interface_InterfaceModel> Interface_FileReaderTool::Model() const
+{
+  return themodel;
+}
+
+//=================================================================================================
+
+void Interface_FileReaderTool::SetMessenger(const occ::handle<Message_Messenger>& messenger)
+{
+  if (messenger.IsNull())
+  {
+    themessenger = Message::DefaultMessenger();
+  }
+  else
+  {
+    themessenger = messenger;
+  }
+}
+
+//=================================================================================================
+
+occ::handle<Message_Messenger> Interface_FileReaderTool::Messenger() const
+{
+  return themessenger;
+}
+
+//=================================================================================================
+
+void Interface_FileReaderTool::SetTraceLevel(const int tracelev)
+{
+  thetrace = tracelev;
+}
+
+//=================================================================================================
+
+int Interface_FileReaderTool::TraceLevel() const
+{
+  return thetrace;
+}
+
+//=================================================================================================
+
+void Interface_FileReaderTool::SetErrorHandle(const bool err)
+{
+  theerrhand = err;
+}
+
+//=================================================================================================
+
+bool Interface_FileReaderTool::ErrorHandle() const
+{
+  return theerrhand;
+}
+
+//  ....            Actions Related to MODEL LOADING            ....
+
+// SetEntities calls methods to be provided :
+// based on a Recognizer adapted to the interface :
+// - Recognize makes reco->Evaluate(... : according to record no num)
+//   and retrieves the result
+// as well as the definition of the unknown entity of the interface
+
+//=================================================================================================
+
+void Interface_FileReaderTool::SetEntities()
+{
+  int num;
+  thenbreps = 0;
+  thenbrep0 = 0;
+
+  for (num = thereader->FindNextRecord(0); num > 0; num = thereader->FindNextRecord(num))
+  {
+    occ::handle<Standard_Transient> newent;
+    occ::handle<Interface_Check>    ach = new Interface_Check;
+    if (!Recognize(num, ach, newent))
+    {
+      newent = UnknownEntity();
+      if (thereports.IsNull())
+      {
+        thereports =
+          new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+      }
+      thenbreps++;
+      thenbrep0++;
+      thereports->SetValue(num, new Interface_ReportEntity(ach, newent));
+    }
+    else if ((ach->NbFails() + ach->NbWarnings() > 0) && !newent.IsNull())
+    {
+      if (thereports.IsNull())
+      {
+        thereports =
+          new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+      }
+      thenbreps++;
+      thenbrep0++;
+      thereports->SetValue(num, new Interface_ReportEntity(ach, newent));
+    }
+    thereader->BindEntity(num, newent);
+  }
+}
+
+//=================================================================================================
+
+bool Interface_FileReaderTool::RecognizeByLib(const int                        num,
+                                              Interface_GeneralLib&            glib,
+                                              Interface_ReaderLib&             rlib,
+                                              occ::handle<Interface_Check>&    ach,
+                                              occ::handle<Standard_Transient>& ent) const
+{
+  occ::handle<Interface_GeneralModule> gmod;
+  occ::handle<Interface_ReaderModule>  rmod;
+  occ::handle<Interface_Protocol>      proto;
+  int                                  CN = 0;
+  //   Search in ReaderLib : Case recognition -> CN , proto
+  for (rlib.Start(); rlib.More(); rlib.Next())
+  {
+    rmod = rlib.Module();
+    if (rmod.IsNull())
+    {
+      continue;
+    }
+    CN = rmod->CaseNum(thereader, num);
+    if (CN > 0)
+    {
+      proto = rlib.Protocol();
+      break;
+    }
+  }
+  if (CN <= 0 || proto.IsNull())
+  {
+    return false;
+  }
+  //   Recalibrate in GeneralLib : Creation of empty entity
+  occ::handle<Standard_Type> typrot = proto->DynamicType();
+  for (glib.Start(); glib.More(); glib.Next())
+  {
+    proto = glib.Protocol();
+    if (proto.IsNull())
+    {
+      continue;
+    }
+    if (proto->DynamicType() != typrot)
+    {
+      continue;
+    }
+    bool res = glib.Module()->NewVoid(CN, ent);
+    if (res)
+    {
+      return res;
+    }
+    if (!rmod.IsNull())
+    {
+      return rmod->NewRead(CN, thereader, num, ach, ent);
+    }
+    //    return res;
+  }
+  return false;
+}
+
+//=================================================================================================
+
+occ::handle<Standard_Transient> Interface_FileReaderTool::UnknownEntity() const
+{
+  return theproto->UnknownEntity();
+}
+
+//=================================================================================================
+
+occ::handle<Interface_InterfaceModel> Interface_FileReaderTool::NewModel() const
+{
+  return theproto->NewModel();
+}
+
+//=================================================================================================
+
+void Interface_FileReaderTool::EndRead(const occ::handle<Interface_InterfaceModel>&) {
+} // by default, does nothing; redefinable as needed
+
+//  ....               (Sa Majeste le) CHARGEMENT DU MODELE               ....
+
+//=================================================================================================
+
+void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceModel>& amodel)
+//
+//   General method for reading a file : it is read via a FileReaderData
+//   which must provide access in the most efficient way possible
+//   each interface defines its FileHeader with its methods, called here
+{
+  // MGE 16/06/98
+  // Building of Messages
+  //====================================
+  occ::handle<Message_Messenger> TF = Messenger();
+  //====================================
+  occ::handle<Interface_Check> ach = new Interface_Check;
+
+  SetModel(amodel);
+
+  //  ..            Startup : Header Reading            ..
+  if (theerrhand)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      BeginRead(amodel); // according to the standard
+    }
+    catch (Standard_Failure const&)
+    {
+      // Sendinf of message : Internal error during the header reading
+      if (!TF.IsNull())
+      {
+        Message_Msg Msg11("XSTEP_11");
+        TF->Send(Msg11, Message_Info);
+      }
+    }
+  }
+  else
+  {
+    BeginRead(amodel); // selon la norme
+  }
+
+  //  ..            Reading Entities            ..
+
+  amodel->Reservate(thereader->NbEntities());
+
+  int num, num0 = thereader->FindNextRecord(0);
+  num = num0;
+
+  while (num > 0)
+  {
+    int                             ierr = 0; // error on analysis of an entity
+    occ::handle<Standard_Transient> anent;
+    try
+    {
+      OCC_CATCH_SIGNALS
+      for (num = num0; num > 0; num = thereader->FindNextRecord(num))
+      {
+        num0 = num;
+
+        //    Reading under crash protection
+        //    (also does AddEntity but not SetReportEntity)
+        anent = LoadedEntity(num);
+
+        //     Unprotected reading : useful for working with dbx
+        ////    else
+        ////      anent = LoadedEntity(num);
+
+        //   ..        End Reading        ..
+        if (anent.IsNull())
+        {
+          // Sending of message : Number of ignored Null Entities
+          if (!TF.IsNull())
+          {
+            Message_Msg Msg21("XSTEP_21");
+            Msg21.Arg(amodel->NbEntities());
+            TF->Send(Msg21, Message_Info);
+          }
+          continue;
+        }
+        //      LoadedEntity does AddEntity BUT NOT SetReport (in block at the end)
+
+      } // ---- end loop on entities
+      num0 = 0; // nothing more
+    } // ---- fin du try, le catch suit
+
+    //   In case of UNFORESEEN error by the analysis, default recovery
+    //   Warning : the recovery can itself crash ... (cf ierr)
+    catch (Standard_Failure const& anException)
+    {
+      //      On the next pass, we will attack the next record
+      // clang-format off
+      num0 = thereader->FindNextRecord(num); //:g9 abv 28 May 98: tr8_as2_ug.stp - infinite cycle: (0);
+      // clang-format on
+
+#ifdef _WIN32
+      if (dynamic_cast<const OSD_Exception*>(&anException) != nullptr)
+        ierr = 2;
+#else
+      if (dynamic_cast<const OSD_Signal*>(&anException) != nullptr)
+      {
+        ierr = 2;
+      }
+#endif
+      //: abv 03Apr00: anent is actually a previous one:      if (anent.IsNull())
+      anent = thereader->BoundEntity(num);
+      if (anent.IsNull())
+      {
+        if (thetrace > 0)
+        {
+          // Sending of message : Number of ignored Null Entities
+          if (!TF.IsNull())
+          {
+
+            Message_Msg Msg21("XSTEP_21");
+            Msg21.Arg(amodel->NbEntities() + 1);
+
+            TF->Send(Msg21, Message_Info);
+          }
+          continue;
+        }
+      }
+      /*occ::handle<Interface_Check>*/ ach = new Interface_Check(anent);
+      //: abv 03 Apr 00: trj3_s1-tc-214.stp: generate a message on exception
+      Message_Msg Msg278("XSTEP_278");
+      Msg278.Arg(amodel->StringLabel(anent));
+      ach->SendFail(Msg278);
+
+      if (ierr == 2)
+      {
+        // Sending of message : reading of entity failed
+        if (!TF.IsNull())
+        {
+          Message_Msg Msg22("XSTEP_22");
+          Msg22.Arg(amodel->StringLabel(anent));
+          TF->Send(Msg22, Message_Info);
+        }
+        return;
+      }
+
+      if (!ierr)
+      {
+        // char mess[100]; svv #2
+        ierr = 1;
+        // what would be good here would be to recover the error text for ach ...
+        if (thetrace > 0)
+        {
+          // Sending of message : recovered entity
+          if (!TF.IsNull())
+          {
+            Message_Msg Msg23("XSTEP_23");
+            Msg23.Arg(num);
+            TF->Send(Msg23, Message_Info);
+          }
+        }
+
+        //  Finally, we load an Unknown Entity
+        thenbreps++;
+        occ::handle<Interface_ReportEntity> rep   = new Interface_ReportEntity(ach, anent);
+        occ::handle<Standard_Transient>     undef = UnknownEntity();
+        AnalyseRecord(num, undef, ach);
+        rep->SetContent(undef);
+
+        if (thereports.IsNull())
+        {
+          thereports =
+            new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+        }
+        thenbreps++;
+        thereports->SetValue(num, rep);
+        // if(isValid)
+        amodel->AddEntity(anent); // not done by LoadedEntity ...
+      }
+      else
+      {
+        if (thetrace > 0)
+        {
+          // Sending of message : reading of entity failed
+          if (!TF.IsNull())
+          {
+            Message_Msg Msg22("XSTEP_22");
+            Msg22.Arg(amodel->StringLabel(anent));
+            TF->Send(Msg22, Message_Info);
+          }
+        }
+        //  We keep <rep> as is : no additional file analysis,
+        //  But the eventual preliminary phase is preserved
+        //  (in particular, we keep trace of the Type read from the file, etc...)
+      }
+    } // -----  fin complete du try/catch
+  } // -----  fin du while
+
+  //  ..        Adding Reports, if any
+  if (!thereports.IsNull())
+  {
+    if (thetrace > 0)
+    {
+      // Sending of message : report
+      if (!TF.IsNull())
+      {
+        Message_Msg Msg24("XSTEP_24");
+        Msg24.Arg(thenbreps);
+        TF->Send(Msg24, Message_Info);
+      }
+    }
+    amodel->Reservate(-thenbreps - 10);
+    thenbreps = thereports->Upper();
+    for (int nr = 1; nr <= thenbreps; nr++)
+    {
+      if (thereports->Value(nr).IsNull())
+      {
+        continue;
+      }
+      occ::handle<Standard_Transient>     anent = thereader->BoundEntity(nr);
+      occ::handle<Interface_ReportEntity> rep =
+        occ::down_cast<Interface_ReportEntity>(thereports->Value(nr));
+      amodel->SetReportEntity(-amodel->Number(anent), rep);
+    }
+  }
+
+  //   Conclusion : may do nothing : according to necessity
+  if (theerrhand)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      EndRead(amodel); // according to the standard
+    }
+    catch (Standard_Failure const&)
+    {
+      // Sendinf of message : Internal error during the header reading
+      if (!TF.IsNull())
+      {
+        Message_Msg Msg11("XSTEP_11");
+        TF->Send(Msg11, Message_Info);
+      }
+    }
+  }
+  else
+  {
+    EndRead(amodel); // selon la norme
+  }
+}
+
+//=================================================================================================
+
+occ::handle<Standard_Transient> Interface_FileReaderTool::LoadedEntity(const int num)
+{
+  occ::handle<Standard_Transient>     anent = thereader->BoundEntity(num);
+  occ::handle<Interface_Check>        ach   = new Interface_Check(anent);
+  occ::handle<Interface_ReportEntity> rep; // entite Report, s il y a lieu
+  int                                 irep = 0;
+  // int nbe  = 0; svv #2
+  if (thenbrep0 > 0)
+  {
+    rep = occ::down_cast<Interface_ReportEntity>(thereports->Value(num));
+    if (!rep.IsNull())
+    {
+      irep = num;
+      ach  = rep->Check();
+    }
+  }
+
+  //    Trace Unknown Entity
+  if (thetrace >= 2 && theproto->IsUnknownEntity(anent))
+  {
+    occ::handle<Message_Messenger> TF = Messenger();
+    if (!TF.IsNull())
+    {
+      Message_Msg Msg22("XSTEP_22");
+      // Sending of message : reading of entity failed
+      Msg22.Arg(themodel->StringLabel(anent)->String());
+      TF->Send(Msg22, Message_Info);
+    }
+  }
+  //  ..        Actual Loading : Standard Specific        ..
+  AnalyseRecord(num, anent, ach);
+
+  //  ..        Adding to the model the entity as is        ..
+  //            WARNING, ReportEntity processed in block after Load
+  themodel->AddEntity(anent);
+
+  //   Error or Correction : We create a ReportEntity that memorizes the Check,
+  //   the Entity, and in case of Error an UndefinedEntity for the Parameters
+
+  //   We exploit here the IsLoadError flag: if it has been defined (true or false)
+  //   it has priority over check fails. Otherwise, it's the fails that speak
+
+  int nbf = ach->NbFails();
+  int nbw = ach->NbWarnings();
+  if (nbf + nbw > 0)
+  {
+    // int n0; svv #2
+    themodel->NbEntities();
+    rep = new Interface_ReportEntity(ach, anent);
+    if (irep == 0)
+    {
+      if (thereports.IsNull())
+      {
+        thereports =
+          new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+      }
+      irep = num;
+      thenbreps++;
+    }
+    thereports->SetValue(irep, rep);
+
+    if (thetrace >= 2 && !Messenger().IsNull())
+    {
+      Message_Messenger::StreamBuffer sout = Messenger()->SendInfo();
+      ach->Print(sout, 2);
+    }
+  }
+
+  //    Reloading ? if yes, in an UnknownEntity provided by the protocol
+  if (thereader->IsErrorLoad())
+  {
+    nbf = (thereader->ResetErrorLoad() ? 1 : 0);
+  }
+  if (nbf > 0)
+  {
+    occ::handle<Standard_Transient> undef = UnknownEntity();
+    AnalyseRecord(num, undef, ach);
+    rep->SetContent(undef);
+  }
+
+  //    Conclusion  (Unknown : treated externally because Raise treatment)
+  ////  if (irep > 0) themodel->SetReportEntity (nbe,rep);  en bloc a la fin
+
+  return anent;
+}
+
+//=================================================================================================
+
+Interface_FileReaderTool::~Interface_FileReaderTool() = default;
+
+void Interface_FileReaderTool::Clear()
+{
+  theproto.Nullify();
+  thereader.Nullify();
+  themodel.Nullify();
+  thereports.Nullify();
+}

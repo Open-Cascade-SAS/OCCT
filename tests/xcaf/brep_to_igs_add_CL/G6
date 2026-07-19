@@ -1,0 +1,13 @@
+restore [locate_data_file CTO909_shape_1.brep] Shape1
+XNewDoc D_First
+
+XAddShape D_First Shape1
+
+set TypeOfFile "igs"
+
+set AddToDocument "COLORS_LAYERS"
+
+set CompareDocumentsMode "FACES VOLUME COLORS LAYERS"
+
+
+

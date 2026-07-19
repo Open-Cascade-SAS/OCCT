@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC12522"
+puts "========"
+puts ""
+###########################################################
+# Extrema problems. Case: one of the Extrema arguments is an infinite face or an infinite edge.
+###########################################################
+
+restore [locate_data_file OCC12522.brep] arc1
+explode arc1 e
+mkcurve curve1 arc1_1
+plane plane1 6400 -4000 -160 0 0 1 1 0 0
+extrema curve1 plane1
+
+checklength ext_1 -l 2.9009126041478908

@@ -1,0 +1,6 @@
+#old file ofsc9
+
+restore [locate_data_file CHE_bb9.rle] s
+OFFSETSHAPE 0.8 {} $calcul $type
+
+checkprops result -v 100.616

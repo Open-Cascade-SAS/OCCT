@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC26315"
+puts "========"
+puts ""
+#######################################################
+# BRepFeat_MakeRevol fails to create revol from shape
+#######################################################
+
+circle aCircle 0 0 0 0 0 1 1 0 0 10
+mkedge anEdge aCircle
+wire aWire anEdge
+mkplane aCircle aWire 0
+
+plane aFromPlane 0 0 -10 0 0 1 1 0 0
+mkface aFromPlane aFromPlane
+plane aToPlane 0 0 10 0 0 1 1 0 0
+mkface aToPlane aToPlane
+
+featrevol aCircle aCircle aCircle 20 0 0 0 1 0 2 1
+featperform revol aResult aFromPlane aToPlane
+
+checkshape aResult
+
+vinit
+vdisplay aResult
+vsetdispmode aResult 1
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

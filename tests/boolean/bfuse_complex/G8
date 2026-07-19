@@ -1,0 +1,9 @@
+# bug cts 20221 et cts20222
+
+restore [locate_data_file CTO901_cts20222_base.rle]  base
+restore [locate_data_file CTO901_cts20222_outil.rle]  outil
+
+bfuse result base outil
+
+checkprops result -s 3342.49
+checkview -display result -2d -otherwise { base outil } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,14 @@
+puts "================================"
+puts "0033570: Modeling Algorithms - Incorrect result of cutting spheres"
+puts "================================"
+puts ""
+
+psphere s1 4 
+psphere s2 1 
+ttranslate s1 0 5.5 18 
+ttranslate s2 0 4.5 14 
+
+bcut result s1 s2 
+
+checknbshapes result -vertex 4 -edge 7 -wire 2 -face 2
+checkview -display result -2d -path ${imagedir}/${test_image}.png

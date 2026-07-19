@@ -1,0 +1,81 @@
+puts "=========="
+puts "OCC21707"
+puts "=========="
+puts ""
+##############################################################
+# Selection of Vertex returns Compound of vertexes
+##############################################################
+
+NewDocument D BinOcaf
+isos 12
+NewCommand D
+AddDriver D PntXYZ PntRLT Line3D Attach
+set Pnt1 [AddPoint D 0 0 0]
+ComputeFun D $Pnt1:1
+GetShape D $Pnt1:1:2 P1
+
+set Pnt2 [AddPoint D 0 200 0]
+ComputeFun D $Pnt2:1
+set Pnt3 [AddPoint D 200 200 0]
+ComputeFun D $Pnt3:1
+set Pnt4 [AddPoint D 200 0 0]
+ComputeFun D $Pnt4:1
+GetShape D $Pnt2:1:2 P2
+GetShape D $Pnt3:1:2 P3
+GetShape D $Pnt4:1:2 P4
+
+NewCommand D
+set Lin2 [ AddLine3D D 1 $Pnt1 $Pnt2 $Pnt3 $Pnt4]
+ComputeFun D $Lin2:1
+GetShape D $Lin2:1:2 L1
+
+NewCommand D
+AddDriver D Prism Box PTxyz
+set Prism [AddPrism D $Lin2 300 1]
+ComputeFun D $Prism:1
+GetShape D $Prism:1:2 Pr
+
+NewCommand D
+set B1 [AddBox D 400 140 600]
+ComputeFun D $B1:1
+GetShape D $B1:1:2 Box
+
+NewCommand D
+set FTr1 [PTranslateDXYZ D $B1 -100 -20 -100]
+ComputeFun D $FTr1
+GetShape D $B1:2:2 Box
+
+NewCommand D
+AddDriver D Comm Cut Fuse
+set Com1 [AddCommon D $Prism $B1]
+ComputeFun D $Com1
+GetShape D $Com1:2 Pr
+
+NewCommand D
+explode Pr E
+AddDriver D Attach Cyl
+set Sel1 [AttachShape D Pr_6 ${Prism} ${Prism} 0]
+set Cyl [AddCyl D 70 515 ${Sel1}]
+ComputeFun D $Cyl:1
+GetShape D $Cyl:1:2 CylS
+
+NewCommand D
+set FTr1 [PTranslateDXYZ D $Cyl -100 200 170]
+ComputeFun D $FTr1
+GetShape D $Cyl:2:2 CylS
+
+set Cut1 [AddCut D $Prism $Cyl]
+ComputeFun D $Cut1
+GetShape D $Cut1:2 Pr
+don Pr
+explode Pr V
+don Pr
+set Sel8 [AttachShape D Pr_8 ${Prism} ${Prism} 0]
+set Sel11 [AttachShape D Pr_10 ${Prism} ${Prism} 0]
+
+GetShape D $Cut1:2 result
+
+checknbshapes result -vertex 10
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

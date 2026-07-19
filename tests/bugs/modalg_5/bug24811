@@ -1,0 +1,71 @@
+puts "============"
+puts "OCC24811"
+puts "============"
+puts ""
+#################################
+# Intersection is insufficient
+#################################
+
+set p1_1 -2.22458486160362e-016
+set p1_2 1
+set p1_3 0
+
+set p2_1 0.0202691578002498
+set p2_2 0.999794559518151
+set p2_3 0
+
+restore [locate_data_file bug24811_e1.brep] curve
+restore [locate_data_file bug24811_e2.brep] circle
+
+bop curve circle
+bopcut result
+
+if { [llength [explode result]] != 4 } {
+  puts "Error: wrong number of intersections. Should be result_1 result_2 result_3 result_4"
+} else {
+  puts "OK: right number of intersections"
+}
+
+explode result_2
+set info1 [dump result_2_1]
+regexp {Point 3D +: +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} $info1 full x1 y1 z1
+regexp {Tolerance +: +([-0-9.+eE]+)} $info1 full tol1
+
+if { $p1_1 >= [expr $x1 - $tol1] && $p1_1 <= [expr $x1 + $tol1] } {
+  puts "OK: point1_1 is correct"
+} else {
+  puts "Error: point1_1 is incorrect"
+}
+if { $p1_2 >= [expr $y1 - $tol1] && $p1_2 <= [expr $y1 + $tol1] } {
+  puts "OK: point1_2 is correct"
+} else {
+  puts "Error: point1_2 is incorrect"
+}
+if { $p1_3 >= [expr $z1 - $tol1] && $p1_3 <= [expr $z1 + $tol1] } {
+  puts "OK: point1_3 is correct"
+} else {
+  puts "Error: point1_3 is incorrect"
+}
+
+
+set info2 [dump result_2_2]
+regexp {Point 3D +: +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} $info2 full x2 y2 z2
+regexp {Tolerance +: +([-0-9.+eE]+)} $info2 full tol2
+
+if { $p2_1 >= [expr $x2 - $tol2] && $p2_1 <= [expr $x2 + $tol2] } {
+  puts "OK: point2_1 is correct"
+} else {
+  puts "Error: point2_1 is incorrect"
+}
+if { $p2_2 >= [expr $y2 - $tol2] && $p2_2 <= [expr $y2 + $tol2] } {
+  puts "OK: point2_2 is correct"
+} else {
+  puts "Error: point2_2 is incorrect"
+}
+if { $p2_3 >= [expr $z2 - $tol2] && $p2_3 <= [expr $z2 + $tol2] } {
+  puts "OK: point2_3 is correct"
+} else {
+  puts "Error: point2_3 is incorrect"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

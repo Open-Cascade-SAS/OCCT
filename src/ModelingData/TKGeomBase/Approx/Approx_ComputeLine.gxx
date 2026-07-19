@@ -1,0 +1,1749 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Approx_ParametrizationType.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <AppParCurves_Constraint.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_HArray1.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <Precision.hxx>
+#include <math_IntegerVector.hxx>
+#include <math_Gauss.hxx>
+#include <math_Uzawa.hxx>
+#include <Approx_MCurvesToBSpCurve.hxx>
+
+#include <stdio.h>
+
+#ifdef OCCT_DEBUG
+static bool mydebug = false;
+
+  #include <Geom_BezierCurve.hxx>
+  #include <Geom2d_BezierCurve.hxx>
+  #ifdef DRAW
+    #include <DrawTrSurf.hxx>
+    #include <Draw.hxx>
+    #include <Draw_Appli.hxx>
+  #endif
+
+static void DUMP(const MultiLine& Line)
+{
+  int      i, j, nbP2d, nbP3d, firstP, lastP;
+  gp_Pnt   P1;
+  gp_Pnt2d P12d;
+
+  firstP = LineTool::FirstPoint(Line);
+  lastP  = LineTool::LastPoint(Line);
+
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+
+  NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d);
+
+  std::cout << "DUMP de la MultiLine entre " << firstP << " et " << lastP << ": " << std::endl;
+  for (i = firstP; i <= lastP; i++)
+  {
+    if (nbP3d != 0 && nbP2d != 0)
+      LineTool::Value(Line, i, tabP, tabP2d);
+    else if (nbP2d != 0)
+      LineTool::Value(Line, i, tabP2d);
+    else if (nbP3d != 0)
+      LineTool::Value(Line, i, tabP);
+
+    std::cout << "point " << i << ":" << std::endl;
+    for (j = 1; j <= nbP3d; j++)
+    {
+      P1 = tabP(j);
+      std::cout << P1.X() << " " << P1.Y() << " " << P1.Z() << std::endl;
+    }
+    for (j = 1; j <= nbP2d; j++)
+    {
+      P12d = tabP2d(j);
+      std::cout << P12d.X() << " " << P12d.Y() << std::endl;
+    }
+  }
+}
+
+static void DUMP(const AppParCurves_MultiCurve& C)
+{
+  static int nbappel = 0;
+  int        i;
+  int        nbpoles = C.NbPoles();
+
+  occ::handle<Geom_BezierCurve>   BSp;
+  occ::handle<Geom2d_BezierCurve> BSp2d;
+
+  NCollection_Array1<gp_Pnt>   tabPoles(1, nbpoles);
+  NCollection_Array1<gp_Pnt2d> tabPoles2d(1, nbpoles);
+  char                         solname[100];
+
+  nbappel++;
+  for (i = 1; i <= C.NbCurves(); i++)
+  {
+    if (C.Dimension(i) == 3)
+    {
+      C.Curve(i, tabPoles);
+      BSp = new Geom_BezierCurve(tabPoles);
+      Sprintf(solname, "%s%i%s_%i", "c", i, "3d", nbappel);
+  #ifdef DRAW
+      char* Temp = solname;
+      DrawTrSurf::Set(Temp, BSp);
+  //      DrawTrSurf::Set(solname, BSp);
+  #endif
+    }
+    else
+    {
+      C.Curve(i, tabPoles2d);
+      BSp2d = new Geom2d_BezierCurve(tabPoles2d);
+      Sprintf(solname, "%s%i%s_%i", "c", i, "2d", nbappel);
+  #ifdef DRAW
+      char* Temp = solname;
+      DrawTrSurf::Set(Temp, BSp2d);
+  //      DrawTrSurf::Set(solname, BSp2d);
+  #endif
+    }
+  }
+  #ifdef DRAW
+  dout.Flush();
+  #endif
+}
+
+#endif
+
+static bool CheckMultiCurve(const AppParCurves_MultiCurve& theMultiCurve,
+                            const MultiLine&               theLine,
+                            const int                      theIndfirst,
+                            const int                      theIndlast,
+                            int&                           theIndbad)
+{
+  const int nbp3d = LineTool::NbP3d(theLine);
+  const int nbp2d = LineTool::NbP2d(theLine);
+
+  const double coeff = 4.; // 2*2
+
+  if (nbp3d > 1) // only simple cases are analysed
+    return true;
+
+  const double     MinScalProd = -0.9;
+  constexpr double SqTol3d     = Precision::SquareConfusion();
+
+  theIndbad = 0;
+  int indbads[4];
+  indbads[1] = indbads[2] = indbads[3] = 0;
+
+  int  NbCur     = theMultiCurve.NbCurves();
+  bool LoopFound = false;
+
+  int aNbP3d = std::max(nbp3d, 1);
+  int aNbP2d = std::max(nbp2d, 1);
+
+  NCollection_Array1<gp_Pnt>   tabP(1, aNbP3d);
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, aNbP2d);
+
+#ifdef DRAW
+  char* name = new char[100];
+  int   nbbc = 1;
+  int   indc = 1;
+#endif
+  if (theMultiCurve.Dimension(1) == 3 /*myNbP3d == 1*/)
+  {
+    NCollection_Array1<gp_Pnt> aPoles(1, theMultiCurve.NbPoles());
+    theMultiCurve.Curve(1, aPoles);
+#ifdef DRAW
+    occ::handle<Geom_Curve> theBezier = new Geom_BezierCurve(aPoles);
+    Sprintf(name, "bc3d_%d_%d", indc, nbbc);
+    DrawTrSurf::Set(name, theBezier);
+#endif
+    gp_Vec FirstVec, SecondVec;
+    int    indp = 2;
+    while (indp <= aPoles.Upper())
+    {
+      FirstVec       = gp_Vec(aPoles(1), aPoles(indp++));
+      double aLength = FirstVec.Magnitude();
+      if (aLength > gp::Resolution())
+      {
+        FirstVec /= aLength;
+        break;
+      }
+    }
+    gp_Pnt MidPnt = aPoles(indp - 1);
+    // for (int k = 3; k <= aPoles.Upper(); k++)
+    while (indp <= aPoles.Upper())
+    {
+      SecondVec      = gp_Vec(MidPnt, aPoles(indp));
+      double aLength = SecondVec.Magnitude();
+      if (aLength <= gp::Resolution())
+      {
+        indp++;
+        continue;
+      }
+      SecondVec /= aLength;
+      double ScalProd = FirstVec * SecondVec;
+      if (ScalProd < MinScalProd)
+      {
+#ifdef DRAW
+        std::cout << "ScalProd(" << indp - 2 << "," << indp - 1 << ")-(" << indp - 1 << "," << indp
+                  << ") = " << ScalProd << std::endl;
+#endif
+        LoopFound = true;
+        break;
+      }
+      FirstVec = SecondVec;
+      MidPnt   = aPoles(indp);
+      indp++;
+    }
+    // Check: may be it is a real loop
+    if (LoopFound)
+    {
+#ifdef DRAW
+      for (int ipoint = theIndfirst; ipoint <= theIndlast; ipoint++)
+      {
+        LineTool::Value(theLine, ipoint, tabP);
+        gp_Pnt aPnt = tabP(1);
+        Sprintf(name, "p%d", ipoint);
+        DrawTrSurf::Set(name, aPnt);
+      }
+#endif
+      for (int FirstInd = theIndfirst; FirstInd <= theIndlast - 2; FirstInd++)
+      {
+        LineTool::Value(theLine, FirstInd, tabP);
+        gp_Pnt FirstPnt = tabP(1);
+        for (int k = FirstInd + 1; k < theIndlast; k++)
+        {
+          LineTool::Value(theLine, k, tabP);
+          gp_Pnt Pnt1 = tabP(1);
+          LineTool::Value(theLine, k + 1, tabP);
+          gp_Pnt Pnt2 = tabP(1);
+          if (FirstPnt.SquareDistance(Pnt1) <= SqTol3d || FirstPnt.SquareDistance(Pnt2) <= SqTol3d)
+          {
+            LoopFound = false;
+            break;
+          }
+          gp_Vec Vec1(FirstPnt, Pnt1);
+          Vec1.Normalize();
+          gp_Vec Vec2(FirstPnt, Pnt2);
+          Vec2.Normalize();
+          double ScalProd = Vec1 * Vec2;
+          if (ScalProd < MinScalProd)
+          {
+            LoopFound = false;
+            break;
+          }
+        }
+        if (LoopFound == false)
+          break;
+      }
+    }
+    if (LoopFound)
+    {
+      // search <indbad>
+      double MaxSqDist = 0.;
+      double MinSqDist = RealLast();
+      for (int k = theIndfirst + 1; k <= theIndlast; k++)
+      {
+        LineTool::Value(theLine, k - 1, tabP);
+        gp_Pnt PrevPnt = tabP(1);
+        LineTool::Value(theLine, k, tabP);
+        gp_Pnt CurPnt  = tabP(1);
+        double aSqDist = PrevPnt.SquareDistance(CurPnt);
+        if (aSqDist > MaxSqDist)
+        {
+          MaxSqDist  = aSqDist;
+          indbads[1] = k;
+        }
+        if (aSqDist > gp::Resolution() && aSqDist < MinSqDist)
+          MinSqDist = aSqDist;
+      }
+      double Relation = MaxSqDist / MinSqDist;
+      if (Relation < coeff)
+        LoopFound = false;
+      else
+        for (int indcur = 2; indcur <= NbCur; indcur++)
+        {
+          MaxSqDist = 0.;
+          for (int k = theIndfirst + 1; k <= theIndlast; k++)
+          {
+            LineTool::Value(theLine, k - 1, tabP2d);
+            gp_Pnt2d PrevPnt = tabP2d(indcur - 1);
+            LineTool::Value(theLine, k, tabP2d);
+            gp_Pnt2d CurPnt  = tabP2d(indcur - 1);
+            double   aSqDist = PrevPnt.SquareDistance(CurPnt);
+            if (aSqDist > MaxSqDist)
+            {
+              MaxSqDist       = aSqDist;
+              indbads[indcur] = k;
+            }
+          }
+        }
+    }
+  } // if (myNbP3d == 1)
+  else // 2d case
+  {
+    NCollection_Array1<gp_Pnt2d> aPoles2d(1, theMultiCurve.NbPoles());
+    theMultiCurve.Curve(1, aPoles2d);
+#ifdef DRAW
+    occ::handle<Geom2d_Curve> theBezier2d = new Geom2d_BezierCurve(aPoles2d);
+    Sprintf(name, "bc2d_%d_%d", indc, nbbc);
+    DrawTrSurf::Set(name, theBezier2d);
+#endif
+    const double aSqNormToler = Epsilon(1.0) * Epsilon(1.0);
+    gp_Vec2d     FirstVec(aPoles2d(1), aPoles2d(2)), SecondVec;
+    double       aVecSqNorm = FirstVec.SquareMagnitude();
+    if (aVecSqNorm < aSqNormToler)
+    {
+      theIndbad = theIndfirst + 1;
+      return false;
+    }
+
+    FirstVec /= std::sqrt(aSqNormToler);
+    gp_Pnt2d MidPnt = aPoles2d(2);
+    for (int k = 3; k <= aPoles2d.Upper(); k++)
+    {
+      SecondVec.SetXY(aPoles2d(k).XY() - MidPnt.XY());
+      aVecSqNorm = SecondVec.SquareMagnitude();
+      if (aVecSqNorm < aSqNormToler)
+      {
+        theIndbad = theIndfirst + k - 1;
+        return false;
+      }
+
+      SecondVec /= std::sqrt(aVecSqNorm);
+      double ScalProd = FirstVec * SecondVec;
+      if (ScalProd < MinScalProd)
+      {
+#ifdef DRAW
+        std::cout << "ScalProd(" << k - 2 << "," << k - 1 << ")-(" << k - 1 << "," << k
+                  << ") = " << ScalProd << std::endl;
+#endif
+        LoopFound = true;
+        break;
+      }
+      FirstVec = SecondVec;
+      MidPnt   = aPoles2d(k);
+    }
+    // Check: may be it is a real loop
+    if (LoopFound)
+    {
+#ifdef DRAW
+      for (int ipoint = theIndfirst; ipoint <= theIndlast; ipoint++)
+      {
+        LineTool::Value(theLine, ipoint, tabP2d);
+        gp_Pnt2d aPnt2d = tabP2d(1);
+        Sprintf(name, "p%d", ipoint);
+        DrawTrSurf::Set(name, aPnt2d);
+      }
+#endif
+      for (int FirstInd = theIndfirst; FirstInd <= theIndlast - 2; FirstInd++)
+      {
+        LineTool::Value(theLine, FirstInd, tabP2d);
+        gp_Pnt2d FirstPnt = tabP2d(1);
+        for (int k = FirstInd + 1; k < theIndlast; k++)
+        {
+          LineTool::Value(theLine, k, tabP2d);
+          gp_Pnt2d Pnt1 = tabP2d(1);
+          LineTool::Value(theLine, k + 1, tabP2d);
+          gp_Pnt2d Pnt2 = tabP2d(1);
+          if (FirstPnt.SquareDistance(Pnt1) <= SqTol3d || FirstPnt.SquareDistance(Pnt2) <= SqTol3d)
+          {
+            LoopFound = false;
+            break;
+          }
+          gp_Vec2d Vec1(FirstPnt, Pnt1);
+          Vec1.Normalize();
+          gp_Vec2d Vec2(FirstPnt, Pnt2);
+          Vec2.Normalize();
+          double ScalProd = Vec1 * Vec2;
+          if (ScalProd < MinScalProd)
+          {
+            LoopFound = false;
+            break;
+          }
+        }
+        if (LoopFound == false)
+          break;
+      }
+    }
+    if (LoopFound)
+    {
+      // search <indbad>
+      for (int indcur = 1; indcur <= NbCur; indcur++)
+      {
+        double MaxSqDist = 0.;
+        double MinSqDist = RealLast();
+        for (int k = theIndfirst + 1; k <= theIndlast; k++)
+        {
+          LineTool::Value(theLine, k - 1, tabP2d);
+          gp_Pnt2d PrevPnt = tabP2d(indcur);
+          LineTool::Value(theLine, k, tabP2d);
+          gp_Pnt2d CurPnt  = tabP2d(indcur);
+          double   aSqDist = PrevPnt.SquareDistance(CurPnt);
+          if (aSqDist > MaxSqDist)
+          {
+            MaxSqDist       = aSqDist;
+            indbads[indcur] = k;
+          }
+          if (aSqDist > gp::Resolution() && aSqDist < MinSqDist)
+            MinSqDist = aSqDist;
+        }
+        double Relation = MaxSqDist / MinSqDist;
+        if (Relation < coeff)
+          LoopFound = false;
+      }
+    }
+  }
+
+  // Define <indbad>
+  for (int i = 1; i <= 3; i++)
+    if (indbads[i] != 0)
+    {
+      theIndbad = indbads[i];
+      break;
+    }
+
+  if (!LoopFound)
+    theIndbad = 0;
+
+  return (!LoopFound);
+}
+
+void Approx_ComputeLine::FirstTangencyVector(const MultiLine& Line,
+                                             const int        index,
+                                             math_Vector&     V) const
+{
+
+  int i, j, nbP2d, nbP3d;
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  bool                         Ok = false;
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
+  else if (nbP2d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV2d);
+  else if (nbP3d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV);
+
+  if (Ok)
+  {
+    if (nbP3d != 0)
+    {
+      j = 1;
+      for (i = TabV.Lower(); i <= TabV.Upper(); i++)
+      {
+        V(j)     = TabV(i).X();
+        V(j + 1) = TabV(i).Y();
+        V(j + 2) = TabV(i).Z();
+        j += 3;
+      }
+    }
+    if (nbP2d != 0)
+    {
+      j = nbP3d * 3 + 1;
+      for (i = TabV2d.Lower(); i <= TabV2d.Upper(); i++)
+      {
+        V(j)     = TabV2d(i).X();
+        V(j + 1) = TabV2d(i).Y();
+        j += 2;
+      }
+    }
+  }
+  else
+  {
+
+    // Search for a tangent vector by construction of a parabola:
+    AppParCurves_Constraint firstC, lastC;
+    firstC = lastC      = AppParCurves_PassPoint;
+    int         nbpoles = 3;
+    math_Vector mypar(index, index + 2);
+    Parameters(Line, index, index + 2, mypar);
+    Approx_ParLeastSquareOfMyGradient LSQ(Line, index, index + 2, firstC, lastC, mypar, nbpoles);
+    AppParCurves_MultiCurve           C = LSQ.BezierValue();
+
+    gp_Pnt   myP;
+    gp_Vec   myV;
+    gp_Pnt2d myP2d;
+    gp_Vec2d myV2d;
+    j = 1;
+    for (i = 1; i <= nbP3d; i++)
+    {
+      C.D1(i, 0.0, myP, myV);
+      V(j)     = myV.X();
+      V(j + 1) = myV.Y();
+      V(j + 2) = myV.Z();
+      j += 3;
+    }
+    j = nbP3d * 3 + 1;
+    for (i = nbP3d + 1; i <= nbP3d + nbP2d; i++)
+    {
+      C.D1(i, 0.0, myP2d, myV2d);
+      V(j)     = myV2d.X();
+      V(j + 1) = myV2d.Y();
+      j += 2;
+    }
+  }
+}
+
+void Approx_ComputeLine::LastTangencyVector(const MultiLine& Line,
+                                            const int        index,
+                                            math_Vector&     V) const
+{
+  int i, j, nbP2d, nbP3d;
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  bool                         Ok = false;
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
+  else if (nbP2d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV2d);
+  else if (nbP3d != 0)
+    Ok = LineTool::Tangency(Line, index, TabV);
+
+  if (Ok)
+  {
+    if (nbP3d != 0)
+    {
+      j = 1;
+      for (i = TabV.Lower(); i <= TabV.Upper(); i++)
+      {
+        V(j)     = TabV(i).X();
+        V(j + 1) = TabV(i).Y();
+        V(j + 2) = TabV(i).Z();
+        j += 3;
+      }
+    }
+    if (nbP2d != 0)
+    {
+      j = nbP3d * 3 + 1;
+      for (i = TabV2d.Lower(); i <= TabV2d.Upper(); i++)
+      {
+        V(j)     = TabV2d(i).X();
+        V(j + 1) = TabV2d(i).Y();
+        j += 2;
+      }
+    }
+  }
+  else
+  {
+
+    // Search for a tangent vector by construction of a parabola:
+    AppParCurves_Constraint firstC, lastC;
+    firstC = lastC      = AppParCurves_PassPoint;
+    int         nbpoles = 3;
+    math_Vector mypar(index - 2, index);
+    Parameters(Line, index - 2, index, mypar);
+    Approx_ParLeastSquareOfMyGradient LSQ(Line, index - 2, index, firstC, lastC, mypar, nbpoles);
+    AppParCurves_MultiCurve           C = LSQ.BezierValue();
+
+    gp_Pnt   myP;
+    gp_Vec   myV;
+    gp_Pnt2d myP2d;
+    gp_Vec2d myV2d;
+    j = 1;
+    for (i = 1; i <= nbP3d; i++)
+    {
+      C.D1(i, 1.0, myP, myV);
+      V(j)     = myV.X();
+      V(j + 1) = myV.Y();
+      V(j + 2) = myV.Z();
+      j += 3;
+    }
+    j = nbP3d * 3 + 1;
+    for (i = nbP3d + 1; i <= nbP3d + nbP2d; i++)
+    {
+      C.D1(i, 1.0, myP2d, myV2d);
+      V(j)     = myV2d.X();
+      V(j + 1) = myV2d.Y();
+      j += 2;
+    }
+  }
+}
+
+double Approx_ComputeLine::SearchFirstLambda(const MultiLine&   Line,
+                                             const math_Vector& TheParam,
+                                             const math_Vector& V,
+                                             const int          index) const
+{
+
+  // dq/dw = lambda* V = (p2-p1)/(u2-u1)
+
+  int      nbP2d, nbP3d;
+  gp_Pnt   P1, P2;
+  gp_Pnt2d P12d, P22d;
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  NCollection_Array1<gp_Pnt>   tabP1(1, mynbP3d), tabP2(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> tabP12d(1, mynbP2d), tabP22d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    LineTool::Value(Line, index, tabP1, tabP12d);
+  else if (nbP2d != 0)
+    LineTool::Value(Line, index, tabP12d);
+  else if (nbP3d != 0)
+    LineTool::Value(Line, index, tabP1);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    LineTool::Value(Line, index + 1, tabP2, tabP22d);
+  else if (nbP2d != 0)
+    LineTool::Value(Line, index + 1, tabP22d);
+  else if (nbP3d != 0)
+    LineTool::Value(Line, index + 1, tabP2);
+
+  double U1 = TheParam(index), U2 = TheParam(index + 1);
+  double lambda, S;
+  int    low = V.Lower();
+
+  if (nbP3d != 0)
+  {
+    P1 = tabP1(1);
+    P2 = tabP2(1);
+    gp_Vec P1P2(P1, P2), myV;
+    myV.SetCoord(V(low), V(low + 1), V(low + 2));
+    lambda = (P1P2.Magnitude()) / (myV.Magnitude() * (U2 - U1));
+    S      = (P1P2.Dot(myV) > 0.0) ? 1.0 : -1.0;
+  }
+  else
+  {
+    P12d = tabP12d(1);
+    P22d = tabP22d(1);
+    gp_Vec2d P1P2(P12d, P22d), myV;
+    myV.SetCoord(V(low), V(low + 1));
+    lambda = (P1P2.Magnitude()) / (myV.Magnitude() * (U2 - U1));
+    S      = (P1P2.Dot(myV) > 0.0) ? 1.0 : -1.0;
+  }
+  return (S * lambda);
+}
+
+double Approx_ComputeLine::SearchLastLambda(const MultiLine&   Line,
+                                            const math_Vector& TheParam,
+                                            const math_Vector& V,
+                                            const int          index) const
+{
+  // dq/dw = lambda* V = (p2-p1)/(u2-u1)
+
+  int      nbP2d, nbP3d;
+  gp_Pnt   P1, P2;
+  gp_Pnt2d P12d, P22d;
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d), tabP2(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d), tabP22d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    LineTool::Value(Line, index - 1, tabP, tabP2d);
+  else if (nbP2d != 0)
+    LineTool::Value(Line, index - 1, tabP2d);
+  else if (nbP3d != 0)
+    LineTool::Value(Line, index - 1, tabP);
+
+  if (nbP3d != 0 && nbP2d != 0)
+    LineTool::Value(Line, index, tabP2, tabP22d);
+  else if (nbP2d != 0)
+    LineTool::Value(Line, index, tabP22d);
+  else if (nbP3d != 0)
+    LineTool::Value(Line, index, tabP2);
+
+  double U1 = TheParam(index - 1), U2 = TheParam(index);
+  double lambda, S;
+  int    low = V.Lower();
+
+  if (nbP3d != 0)
+  {
+    P1 = tabP(1);
+    P2 = tabP2(1);
+    gp_Vec P1P2(P1, P2), myV;
+    myV.SetCoord(V(low), V(low + 1), V(low + 2));
+    lambda = (P1P2.Magnitude()) / (myV.Magnitude() * (U2 - U1));
+    S      = (P1P2.Dot(myV) > 0.0) ? 1.0 : -1.0;
+  }
+  else
+  {
+    P12d = tabP2d(1);
+    P22d = tabP22d(1);
+    gp_Vec2d P1P2(P12d, P22d), myV;
+    myV.SetCoord(V(low), V(low + 1));
+    lambda = (P1P2.Magnitude()) / (myV.Magnitude() * (U2 - U1));
+    S      = (P1P2.Dot(myV) > 0.0) ? 1.0 : -1.0;
+  }
+
+  return (S * lambda);
+}
+
+Approx_ComputeLine::Approx_ComputeLine(const MultiLine&   Line,
+                                       const math_Vector& Parameters,
+                                       const int          degreemin,
+                                       const int          degreemax,
+                                       const double       Tolerance3d,
+                                       const double       Tolerance2d,
+                                       const int          NbIterations,
+                                       const bool         cutting,
+                                       const bool         Squares)
+    : myMultiLineNb(0),
+      myIsClear(false)
+{
+  myfirstParam = new NCollection_HArray1<double>(Parameters.Lower(), Parameters.Upper());
+  for (int i = Parameters.Lower(); i <= Parameters.Upper(); i++)
+  {
+    myfirstParam->SetValue(i, Parameters(i));
+  }
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  Par           = Approx_IsoParametric;
+  mydegremin    = degreemin;
+  mydegremax    = degreemax;
+  mytol3d       = Tolerance3d;
+  mytol2d       = Tolerance2d;
+  mysquares     = Squares;
+  mycut         = cutting;
+  myitermax     = NbIterations;
+  alldone       = false;
+  myfirstC      = AppParCurves_TangencyPoint;
+  mylastC       = AppParCurves_TangencyPoint;
+  Perform(Line);
+}
+
+Approx_ComputeLine::Approx_ComputeLine(const math_Vector& Parameters,
+                                       const int          degreemin,
+                                       const int          degreemax,
+                                       const double       Tolerance3d,
+                                       const double       Tolerance2d,
+                                       const int          NbIterations,
+                                       const bool         cutting,
+                                       const bool         Squares)
+    : myMultiLineNb(0),
+      myIsClear(false)
+{
+  myfirstParam = new NCollection_HArray1<double>(Parameters.Lower(), Parameters.Upper());
+  for (int i = Parameters.Lower(); i <= Parameters.Upper(); i++)
+  {
+    myfirstParam->SetValue(i, Parameters(i));
+  }
+  myfirstC      = AppParCurves_TangencyPoint;
+  mylastC       = AppParCurves_TangencyPoint;
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  Par           = Approx_IsoParametric;
+  mydegremin    = degreemin;
+  mydegremax    = degreemax;
+  mytol3d       = Tolerance3d;
+  mytol2d       = Tolerance2d;
+  mysquares     = Squares;
+  mycut         = cutting;
+  myitermax     = NbIterations;
+  alldone       = false;
+}
+
+Approx_ComputeLine::Approx_ComputeLine(const int                        degreemin,
+                                       const int                        degreemax,
+                                       const double                     Tolerance3d,
+                                       const double                     Tolerance2d,
+                                       const int                        NbIterations,
+                                       const bool                       cutting,
+                                       const Approx_ParametrizationType parametrization,
+                                       const bool                       Squares)
+    : myMultiLineNb(0),
+      myIsClear(false)
+{
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  Par           = parametrization;
+  mydegremin    = degreemin;
+  mydegremax    = degreemax;
+  mytol3d       = Tolerance3d;
+  mytol2d       = Tolerance2d;
+  mysquares     = Squares;
+  mycut         = cutting;
+  myitermax     = NbIterations;
+  myfirstC      = AppParCurves_TangencyPoint;
+  mylastC       = AppParCurves_TangencyPoint;
+  alldone       = false;
+}
+
+Approx_ComputeLine::Approx_ComputeLine(const MultiLine&                 Line,
+                                       const int                        degreemin,
+                                       const int                        degreemax,
+                                       const double                     Tolerance3d,
+                                       const double                     Tolerance2d,
+                                       const int                        NbIterations,
+                                       const bool                       cutting,
+                                       const Approx_ParametrizationType parametrization,
+                                       const bool                       Squares)
+    : myMultiLineNb(0),
+      myIsClear(false)
+{
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  alldone       = false;
+  mydegremin    = degreemin;
+  mydegremax    = degreemax;
+  mytol3d       = Tolerance3d;
+  mytol2d       = Tolerance2d;
+  mysquares     = Squares;
+  mycut         = cutting;
+  myitermax     = NbIterations;
+  Par           = parametrization;
+  myfirstC      = AppParCurves_TangencyPoint;
+  mylastC       = AppParCurves_TangencyPoint;
+
+  Perform(Line);
+}
+
+void Approx_ComputeLine::Perform(const MultiLine& Line)
+{
+#ifdef OCCT_DEBUG
+  if (mydebug)
+    DUMP(Line);
+#endif
+  if (!myIsClear)
+  {
+    myMultiCurves.Clear();
+    myPar.Clear();
+    Tolers3d.Clear();
+    Tolers2d.Clear();
+    myMultiLineNb = 0;
+  }
+  else
+    myIsClear = false;
+
+  int           i, nbp, Thefirstpt, Thelastpt, oldlastpt;
+  bool          Finish = false, begin = true, Ok = false, GoUp = false, Interpol;
+  double        thetol3d, thetol2d;
+  Approx_Status MyStatus;
+  //  gp_Vec V13d, V23d;
+  //  gp_Vec2d V2d;
+  Thefirstpt    = LineTool::FirstPoint(Line);
+  Thelastpt     = LineTool::LastPoint(Line);
+  int myfirstpt = Thefirstpt;
+  int mylastpt  = Thelastpt;
+
+  AppParCurves_ConstraintCouple myCouple1(myfirstpt, myfirstC);
+  AppParCurves_ConstraintCouple myCouple2(mylastpt, mylastC);
+  myConstraints->SetValue(1, myCouple1);
+  myConstraints->SetValue(2, myCouple2);
+
+  math_Vector TheParam(Thefirstpt, Thelastpt);
+
+  if (!mycut)
+  {
+    if (myfirstParam.IsNull())
+    {
+      Parameters(Line, Thefirstpt, Thelastpt, TheParam);
+    }
+    else
+    {
+      for (i = myfirstParam->Lower(); i <= myfirstParam->Upper(); i++)
+      {
+        TheParam(i + Thefirstpt - 1) = myfirstParam->Value(i);
+      }
+    }
+    TheMultiCurve = AppParCurves_MultiCurve();
+    MultiLine anOtherLine0;
+    bool      isOtherLine0Made = false;
+    int       indbad           = 0;
+    alldone = Compute(Line, myfirstpt, mylastpt, TheParam, thetol3d, thetol2d, indbad);
+    if (indbad != 0)
+    {
+      isOtherLine0Made =
+        LineTool::MakeMLOneMorePoint(Line, myfirstpt, mylastpt, indbad, anOtherLine0);
+    }
+    if (isOtherLine0Made)
+    {
+      myIsClear = true;
+      //++myMultiLineNb;
+      Perform(anOtherLine0);
+      alldone = true;
+    }
+    if (!alldone && TheMultiCurve.NbCurves() > 0)
+    {
+#ifdef OCCT_DEBUG
+      if (mydebug)
+        DUMP(TheMultiCurve);
+#endif
+      myMultiCurves.Append(TheMultiCurve);
+      Tolers3d.Append(currenttol3d);
+      Tolers2d.Append(currenttol2d);
+      int                                      mylen    = mylastpt - myfirstpt + 1;
+      int                                      myParLen = myParameters->Length();
+      int                                      aLen     = (myParLen > mylen) ? myParLen : mylen;
+      occ::handle<NCollection_HArray1<double>> ThePar =
+        new NCollection_HArray1<double>(myfirstpt, myfirstpt + aLen - 1);
+      for (i = 0; i < aLen; i++)
+        ThePar->SetValue(myfirstpt + i, myParameters->Value(myParameters->Lower() + i));
+      myPar.Append(ThePar);
+    }
+  }
+  else
+  {
+    while (!Finish)
+    {
+      oldlastpt = mylastpt;
+      // Management of the multiline splitting for approximation:
+      if (!begin)
+      {
+        if (!GoUp)
+        {
+          if (Ok)
+          {
+            // Calcul de la partie a approximer.
+            myfirstpt = mylastpt;
+            mylastpt  = Thelastpt;
+            if (myfirstpt == Thelastpt)
+            {
+              Finish  = true;
+              alldone = true;
+              return;
+            }
+          }
+          else
+          {
+            nbp      = mylastpt - myfirstpt + 1;
+            MyStatus = LineTool::WhatStatus(Line, myfirstpt, mylastpt);
+            if (MyStatus == Approx_NoPointsAdded && nbp <= mydegremax + 1)
+            {
+              Interpol = ComputeCurve(Line, myfirstpt, mylastpt);
+              if (Interpol)
+              {
+                if (mylastpt == Thelastpt)
+                {
+                  Finish  = true;
+                  alldone = true;
+                  return;
+                }
+              }
+            }
+            mylastpt = int((myfirstpt + mylastpt) / 2);
+          }
+        }
+        GoUp = false;
+      }
+
+      // Verification du nombre de points restants par rapport au degre
+      // demande.
+      // ==============================================================
+      nbp      = mylastpt - myfirstpt + 1;
+      MyStatus = LineTool::WhatStatus(Line, myfirstpt, mylastpt);
+      if (nbp <= mydegremax + 5)
+      {
+        // Rajout necessaire de points si possible.
+        // ========================================
+        GoUp = false;
+        Ok   = true;
+        if (MyStatus == Approx_PointsAdded)
+        {
+          // Appel recursif du decoupage:
+          GoUp = true;
+
+          MultiLine anOtherLine1 = LineTool::MakeMLBetween(Line, myfirstpt, mylastpt, nbp - 1);
+
+          int nbpdsotherligne =
+            LineTool::FirstPoint(anOtherLine1) - LineTool::LastPoint(anOtherLine1);
+
+          //-- If MakeML failed, return an empty line
+          if ((nbpdsotherligne == 0) || myMultiLineNb >= 3)
+          {
+            //-- cout<<" ** ApproxComputeLine MakeML Echec ** LBR lbr "<<endl;
+            if (myfirstpt == mylastpt)
+              break; // Pour etre sur de ne pas
+            // planter la station !!
+            myCouple1.SetIndex(myfirstpt);
+            myCouple2.SetIndex(mylastpt);
+            myConstraints->SetValue(1, myCouple1);
+            myConstraints->SetValue(2, myCouple2);
+
+            math_Vector                Param(myfirstpt, mylastpt);
+            Approx_ParametrizationType SavePar = Par;
+            Par                                = Approx_IsoParametric;
+            Parameters(Line, myfirstpt, mylastpt, Param);
+            TheMultiCurve = AppParCurves_MultiCurve();
+            MultiLine anOtherLine2;
+            bool      isOtherLine2Made = false;
+            int       indbad           = 0;
+            Ok = Compute(Line, myfirstpt, mylastpt, Param, thetol3d, thetol2d, indbad);
+            if (indbad != 0)
+            {
+              isOtherLine2Made =
+                LineTool::MakeMLOneMorePoint(Line, myfirstpt, mylastpt, indbad, anOtherLine2);
+            }
+            if (isOtherLine2Made)
+            {
+              myIsClear = true;
+              //++myMultiLineNb;
+              Par = SavePar;
+              Perform(anOtherLine2);
+              Ok = true;
+            }
+
+            if (!Ok)
+            {
+              double                                   tt3d = currenttol3d, tt2d = currenttol2d;
+              occ::handle<NCollection_HArray1<double>> saveParameters = myParameters;
+              AppParCurves_MultiCurve                  saveMultiCurve = TheMultiCurve;
+
+              if (SavePar != Approx_IsoParametric)
+                Par = SavePar;
+              else
+                Par = Approx_ChordLength;
+
+              Parameters(Line, myfirstpt, mylastpt, Param);
+              isOtherLine2Made = false;
+              indbad           = 0;
+              Ok = Compute(Line, myfirstpt, mylastpt, Param, thetol3d, thetol2d, indbad);
+              if (indbad != 0)
+              {
+                isOtherLine2Made =
+                  LineTool::MakeMLOneMorePoint(Line, myfirstpt, mylastpt, indbad, anOtherLine2);
+              }
+              if (isOtherLine2Made)
+              {
+                myIsClear = true;
+                //++myMultiLineNb;
+                Perform(anOtherLine2);
+                Ok = true;
+              }
+
+              if (!Ok && tt3d <= currenttol3d && tt2d <= currenttol2d)
+              {
+                currenttol3d  = tt3d;
+                currenttol2d  = tt2d;
+                myParameters  = saveParameters;
+                TheMultiCurve = saveMultiCurve;
+              }
+            }
+            Par = SavePar;
+            if (myfirstpt == Thelastpt)
+            {
+              Finish  = true;
+              alldone = true;
+              return;
+            }
+
+            oldlastpt = mylastpt;
+            if (!Ok)
+            {
+              tolreached = false;
+              if (TheMultiCurve.NbCurves() == 0)
+              {
+                myMultiCurves.Clear();
+                return;
+              }
+#ifdef OCCT_DEBUG
+              if (mydebug)
+                DUMP(TheMultiCurve);
+#endif
+              MultiLine anOtherLine3;
+              bool      isOtherLine3Made = false;
+              int       indbad2          = 0;
+              if (!CheckMultiCurve(TheMultiCurve, Line, myfirstpt, mylastpt, indbad2))
+              {
+                isOtherLine3Made =
+                  LineTool::MakeMLOneMorePoint(Line, myfirstpt, mylastpt, indbad2, anOtherLine3);
+              }
+              if (isOtherLine3Made)
+              {
+                myIsClear = true;
+                //++myMultiLineNb;
+                Perform(anOtherLine3);
+                myfirstpt = mylastpt;
+                mylastpt  = Thelastpt;
+              }
+              else
+              {
+                myMultiCurves.Append(TheMultiCurve);
+                Tolers3d.Append(currenttol3d);
+                Tolers2d.Append(currenttol2d);
+                int mylen    = oldlastpt - myfirstpt + 1;
+                int myParLen = myParameters->Length();
+                int aLen     = (myParLen > mylen) ? myParLen : mylen;
+                occ::handle<NCollection_HArray1<double>> ThePar =
+                  new NCollection_HArray1<double>(myfirstpt, myfirstpt + aLen - 1);
+                for (i = 0; i < aLen; i++)
+                  ThePar->SetValue(myfirstpt + i, myParameters->Value(myParameters->Lower() + i));
+                myPar.Append(ThePar);
+              }
+            }
+            myfirstpt = oldlastpt;
+            mylastpt  = Thelastpt;
+          }
+          else
+          {
+            myIsClear = true;
+            ++myMultiLineNb;
+            Perform(anOtherLine1);
+            myfirstpt = mylastpt;
+            mylastpt  = Thelastpt;
+          }
+        }
+
+        if (MyStatus == Approx_NoPointsAdded && !begin)
+        {
+          // On rend la meilleure approximation obtenue precedemment.
+          // ========================================================
+          GoUp       = true;
+          tolreached = false;
+          if (TheMultiCurve.NbCurves() == 0)
+          {
+            myMultiCurves.Clear();
+            return;
+          }
+#ifdef OCCT_DEBUG
+          if (mydebug)
+            DUMP(TheMultiCurve);
+#endif
+          myMultiCurves.Append(TheMultiCurve);
+          Tolers3d.Append(currenttol3d);
+          Tolers2d.Append(currenttol2d);
+          int                                      mylen    = oldlastpt - myfirstpt + 1;
+          int                                      myParLen = myParameters->Length();
+          int                                      aLen     = (myParLen > mylen) ? myParLen : mylen;
+          occ::handle<NCollection_HArray1<double>> ThePar =
+            new NCollection_HArray1<double>(myfirstpt, myfirstpt + aLen - 1);
+          for (i = 0; i < aLen; i++)
+            ThePar->SetValue(myfirstpt + i, myParameters->Value(myParameters->Lower() + i));
+          myPar.Append(ThePar);
+
+          myfirstpt = oldlastpt;
+          mylastpt  = Thelastpt;
+        }
+
+        else if (MyStatus == Approx_NoApproximation)
+        {
+          // No approximation is done between myfirstpt and mylastpt.
+          // ===========================================================
+          // Store to be able to inform the user.
+          GoUp      = true;
+          myfirstpt = mylastpt;
+          mylastpt  = Thelastpt;
+        }
+      }
+
+      if (myfirstpt == Thelastpt)
+      {
+        Finish  = true;
+        alldone = true;
+        return;
+      }
+      if (!GoUp)
+      {
+        if (myfirstpt == mylastpt)
+          break; // Pour etre sur de ne pas
+                 // planter la station !!
+        myCouple1.SetIndex(myfirstpt);
+        myCouple2.SetIndex(mylastpt);
+        myConstraints->SetValue(1, myCouple1);
+        myConstraints->SetValue(2, myCouple2);
+
+        // Calculation of parameters on this new interval.
+        // Retrieve the initial parameters during splitting.
+
+        math_Vector Param(myfirstpt, mylastpt);
+        if (begin)
+        {
+          if (myfirstParam.IsNull())
+          {
+            Parameters(Line, myfirstpt, mylastpt, Param);
+          }
+          else
+          {
+            for (i = myfirstParam->Lower(); i <= myfirstParam->Upper(); i++)
+            {
+              Param(i) = myfirstParam->Value(i);
+            }
+            myfirstParam.Nullify();
+          }
+          TheParam = Param;
+          begin    = false;
+        }
+        else
+        {
+          double pfirst = TheParam.Value(myfirstpt);
+          double plast  = TheParam.Value(mylastpt);
+          for (i = myfirstpt; i <= mylastpt; i++)
+          {
+            Param(i) = (TheParam.Value(i) - pfirst) / (plast - pfirst);
+          }
+        }
+
+        TheMultiCurve = AppParCurves_MultiCurve();
+        int indbad    = 0;
+        Ok            = Compute(Line, myfirstpt, mylastpt, Param, thetol3d, thetol2d, indbad);
+        if (myfirstpt == Thelastpt)
+        {
+          Finish  = true;
+          alldone = true;
+          return;
+        }
+      }
+    }
+  }
+}
+
+const NCollection_Array1<double>& Approx_ComputeLine::Parameters(const int Index) const
+{
+  return (myPar.Value(Index))->Array1();
+}
+
+int Approx_ComputeLine::NbMultiCurves() const
+{
+  return myMultiCurves.Length();
+}
+
+AppParCurves_MultiCurve& Approx_ComputeLine::ChangeValue(const int Index)
+{
+  return myMultiCurves.ChangeValue(Index);
+}
+
+const AppParCurves_MultiCurve& Approx_ComputeLine::Value(const int Index) const
+{
+  return myMultiCurves.Value(Index);
+}
+
+const AppParCurves_MultiBSpCurve& Approx_ComputeLine::SplineValue()
+{
+  Approx_MCurvesToBSpCurve Trans;
+  Trans.Perform(myMultiCurves);
+  myspline = Trans.Value();
+  return myspline;
+}
+
+void Approx_ComputeLine::Parameters(const MultiLine& Line,
+                                    const int        firstP,
+                                    const int        lastP,
+                                    math_Vector&     TheParameters) const
+{
+  int    i, j, nbP2d, nbP3d;
+  double dist;
+
+  if (Par == Approx_ChordLength || Par == Approx_Centripetal)
+  {
+    nbP3d       = LineTool::NbP3d(Line);
+    nbP2d       = LineTool::NbP2d(Line);
+    int mynbP3d = nbP3d, mynbP2d = nbP2d;
+    if (nbP3d == 0)
+      mynbP3d = 1;
+    if (nbP2d == 0)
+      mynbP2d = 1;
+
+    TheParameters(firstP) = 0.0;
+    dist                  = 0.0;
+    NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d);
+    NCollection_Array1<gp_Pnt>   tabPP(1, mynbP3d);
+    NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d);
+    NCollection_Array1<gp_Pnt2d> tabPP2d(1, mynbP2d);
+
+    for (i = firstP + 1; i <= lastP; i++)
+    {
+      if (nbP3d != 0 && nbP2d != 0)
+        LineTool::Value(Line, i - 1, tabP, tabP2d);
+      else if (nbP2d != 0)
+        LineTool::Value(Line, i - 1, tabP2d);
+      else if (nbP3d != 0)
+        LineTool::Value(Line, i - 1, tabP);
+
+      if (nbP3d != 0 && nbP2d != 0)
+        LineTool::Value(Line, i, tabPP, tabPP2d);
+      else if (nbP2d != 0)
+        LineTool::Value(Line, i, tabPP2d);
+      else if (nbP3d != 0)
+        LineTool::Value(Line, i, tabPP);
+      dist = 0;
+      for (j = 1; j <= nbP3d; j++)
+      {
+        const gp_Pnt &aP1 = tabP(j), &aP2 = tabPP(j);
+        dist += aP2.SquareDistance(aP1);
+      }
+      for (j = 1; j <= nbP2d; j++)
+      {
+        const gp_Pnt2d &aP12d = tabP2d(j), &aP22d = tabPP2d(j);
+
+        dist += aP22d.SquareDistance(aP12d);
+      }
+
+      dist = std::sqrt(dist);
+      if (Par == Approx_ChordLength)
+      {
+        TheParameters(i) = TheParameters(i - 1) + dist;
+      }
+      else
+      { // Par == Approx_Centripetal
+        TheParameters(i) = TheParameters(i - 1) + std::sqrt(dist);
+      }
+    }
+    for (i = firstP; i <= lastP; i++)
+      TheParameters(i) /= TheParameters(lastP);
+  }
+  else
+  {
+    for (i = firstP; i <= lastP; i++)
+    {
+      TheParameters(i) = (double(i) - firstP) / (double(lastP) - double(firstP));
+    }
+  }
+}
+
+bool Approx_ComputeLine::Compute(const MultiLine& Line,
+                                 const int        fpt,
+                                 const int        lpt,
+                                 math_Vector&     Para,
+                                 double&          TheTol3d,
+                                 double&          TheTol2d,
+                                 int&             indbad)
+{
+  indbad = 0;
+  int    deg, i;
+  bool   mydone;
+  double Fv;
+  int    nbp = lpt - fpt + 1;
+
+  math_Vector ParSav(Para.Lower(), Para.Upper());
+  for (i = Para.Lower(); i <= Para.Upper(); i++)
+  {
+    ParSav(i) = Para(i);
+  }
+  int Mdegmax = mydegremax;
+  if (nbp < Mdegmax + 5 && mycut)
+  {
+    Mdegmax = nbp - 5;
+  }
+  if (Mdegmax < mydegremin)
+  {
+    Mdegmax = mydegremin;
+  }
+
+  currenttol3d = currenttol2d = RealLast();
+  for (deg = std::min(nbp - 1, mydegremin); deg <= Mdegmax; deg++)
+  {
+    AppParCurves_MultiCurve mySCU(deg + 1);
+    if (mysquares)
+    {
+      Approx_ParLeastSquareOfMyGradient SQ(Line, fpt, lpt, myfirstC, mylastC, Para, deg + 1);
+      mydone = SQ.IsDone();
+      mySCU  = SQ.BezierValue();
+      SQ.Error(Fv, TheTol3d, TheTol2d);
+    }
+    else
+    {
+      Approx_MyGradient GRAD(Line, fpt, lpt, myConstraints, Para, deg, mytol3d, mytol2d, myitermax);
+      mydone = GRAD.IsDone();
+      mySCU  = GRAD.Value();
+      if (mySCU.NbCurves() == 0)
+        continue;
+      TheTol3d = GRAD.MaxError3d();
+      TheTol2d = GRAD.MaxError2d();
+    }
+    double uu1    = Para(Para.Lower()), uu2;
+    bool   restau = false;
+    for (i = Para.Lower() + 1; i <= Para.Upper(); i++)
+    {
+      uu2 = Para(i);
+      if (uu2 <= uu1)
+      {
+        restau = true;
+        //	cout << "restau = true" << endl;
+        break;
+      }
+      uu1 = uu2;
+    }
+    if (restau)
+    {
+      for (i = Para.Lower(); i <= Para.Upper(); i++)
+      {
+        Para(i) = ParSav(i);
+      }
+    }
+    if (mydone)
+    {
+      if (TheTol3d <= mytol3d && TheTol2d <= mytol2d)
+      {
+        // Stockage de la multicurve approximee.
+        tolreached = true;
+#ifdef OCCT_DEBUG
+        if (mydebug)
+          DUMP(mySCU);
+#endif
+        if (!CheckMultiCurve(mySCU, Line, fpt, lpt, indbad))
+        {
+          return false;
+        }
+        else
+        {
+          myMultiCurves.Append(mySCU);
+          // Storage of parameters of the approximated MultiLine part:
+          // A ameliorer !! (bq trop de recopies)
+          occ::handle<NCollection_HArray1<double>> ThePar =
+            new NCollection_HArray1<double>(Para.Lower(), Para.Upper());
+          for (i = Para.Lower(); i <= Para.Upper(); i++)
+          {
+            ThePar->SetValue(i, Para(i));
+          }
+          myPar.Append(ThePar);
+          Tolers3d.Append(TheTol3d);
+          Tolers2d.Append(TheTol2d);
+          return true;
+        }
+      }
+    }
+
+    if (TheTol3d <= currenttol3d && TheTol2d <= currenttol2d)
+    {
+      TheMultiCurve = mySCU;
+      currenttol3d  = TheTol3d;
+      currenttol2d  = TheTol2d;
+      myParameters  = new NCollection_HArray1<double>(Para.Lower(), Para.Upper());
+      for (i = Para.Lower(); i <= Para.Upper(); i++)
+      {
+        myParameters->SetValue(i, Para(i));
+      }
+    }
+  }
+
+  return false;
+}
+
+bool Approx_ComputeLine::ComputeCurve(const MultiLine& Line, const int firstpt, const int lastpt)
+{
+  int      i, j, nbP3d, nbP2d, deg;
+  gp_Vec   V13d, V23d;
+  gp_Vec2d V12d, V22d;
+  gp_Pnt   P1, P2;
+  gp_Pnt2d P12d, P22d;
+  bool     Tangent1, Tangent2, mydone = false;
+#ifdef OCCT_DEBUG
+  bool Parallel;
+#endif
+  int         myfirstpt = firstpt, mylastpt = lastpt;
+  int         nbp = lastpt - firstpt + 1;
+  math_Vector Para(firstpt, lastpt);
+
+  Parameters(Line, firstpt, lastpt, Para);
+
+  nbP3d       = LineTool::NbP3d(Line);
+  nbP2d       = LineTool::NbP2d(Line);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+
+  NCollection_Array1<gp_Vec>   tabV1(1, mynbP3d), tabV2(1, mynbP3d);
+  NCollection_Array1<gp_Pnt>   tabP1(1, mynbP3d), tabP2(1, mynbP3d), tabP(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> tabV12d(1, mynbP2d), tabV22d(1, mynbP2d);
+  NCollection_Array1<gp_Pnt2d> tabP12d(1, mynbP2d), tabP22d(1, mynbP2d), tabP2d(1, mynbP2d);
+
+  if (nbP3d != 0 && nbP2d != 0)
+  {
+    LineTool::Value(Line, myfirstpt, tabP1, tabP12d);
+    LineTool::Value(Line, mylastpt, tabP2, tabP22d);
+    Tangent1 = LineTool::Tangency(Line, myfirstpt, tabV1, tabV12d);
+    Tangent2 = LineTool::Tangency(Line, mylastpt, tabV2, tabV22d);
+  }
+  else if (nbP2d != 0)
+  {
+    LineTool::Value(Line, myfirstpt, tabP12d);
+    LineTool::Value(Line, mylastpt, tabP22d);
+    Tangent1 = LineTool::Tangency(Line, myfirstpt, tabV12d);
+    Tangent2 = LineTool::Tangency(Line, mylastpt, tabV22d);
+  }
+  else
+  {
+    LineTool::Value(Line, myfirstpt, tabP1);
+    LineTool::Value(Line, mylastpt, tabP2);
+    Tangent1 = LineTool::Tangency(Line, myfirstpt, tabV1);
+    Tangent2 = LineTool::Tangency(Line, mylastpt, tabV2);
+  }
+  if (nbp == 2)
+  {
+    // If there are only 2 points, we still verify that the tangents are
+    // aligned.
+#ifdef OCCT_DEBUG
+    Parallel = true;
+#endif
+    if (Tangent1)
+    {
+      for (i = 1; i <= nbP3d; i++)
+      {
+        gp_Vec PVec(tabP1(i), tabP2(i));
+        V13d = tabV1(i);
+        if (!PVec.IsParallel(V13d, Precision::Angular()))
+        {
+#ifdef OCCT_DEBUG
+          Parallel = false;
+#endif
+          break;
+        }
+      }
+      for (i = 1; i <= nbP2d; i++)
+      {
+        gp_Vec2d PVec2d(tabP12d(i), tabP22d(i));
+        V12d = tabV12d(i);
+        if (!PVec2d.IsParallel(V12d, Precision::Angular()))
+        {
+#ifdef OCCT_DEBUG
+          Parallel = false;
+#endif
+          break;
+        }
+      }
+    }
+
+    if (Tangent2)
+    {
+      for (i = 1; i <= nbP3d; i++)
+      {
+        gp_Vec PVec(tabP1(i), tabP2(i));
+        V23d = tabV2(i);
+        if (!PVec.IsParallel(V23d, Precision::Angular()))
+        {
+#ifdef OCCT_DEBUG
+          Parallel = false;
+#endif
+          break;
+        }
+      }
+      for (i = 1; i <= nbP2d; i++)
+      {
+        gp_Vec2d PVec2d(tabP12d(i), tabP22d(i));
+        V22d = tabV22d(i);
+        if (!PVec2d.IsParallel(V22d, Precision::Angular()))
+        {
+#ifdef OCCT_DEBUG
+          Parallel = false;
+#endif
+          break;
+        }
+      }
+    }
+
+#ifdef OCCT_DEBUG
+    if (!Parallel)
+    {
+      if (mydebug)
+        std::cout << "droite mais tangentes pas vraiment paralleles!!" << std::endl;
+    }
+#endif
+    AppParCurves_MultiCurve mySCU(mydegremin + 1);
+    if (nbP3d != 0 && nbP2d != 0)
+    {
+      AppParCurves_MultiPoint MPole1(tabP1, tabP12d);
+      AppParCurves_MultiPoint MPole2(tabP2, tabP22d);
+      mySCU.SetValue(1, MPole1);
+      mySCU.SetValue(mydegremin + 1, MPole2);
+      for (i = 2; i <= mydegremin; i++)
+      {
+        for (j = 1; j <= nbP3d; j++)
+        {
+          P1 = tabP1(j);
+          P2 = tabP2(j);
+          tabP(j).SetXYZ(P1.XYZ() + (i - 1) * (P2.XYZ() - P1.XYZ()) / mydegremin);
+        }
+        for (j = 1; j <= nbP2d; j++)
+        {
+          P12d = tabP12d(j);
+          P22d = tabP22d(j);
+          tabP2d(j).SetXY(P12d.XY() + (i - 1) * (P22d.XY() - P12d.XY()) / mydegremin);
+        }
+        AppParCurves_MultiPoint MPole(tabP, tabP2d);
+        mySCU.SetValue(i, MPole);
+      }
+    }
+    else if (nbP3d != 0)
+    {
+      AppParCurves_MultiPoint MPole1(tabP1);
+      AppParCurves_MultiPoint MPole2(tabP2);
+      mySCU.SetValue(1, MPole1);
+      mySCU.SetValue(mydegremin + 1, MPole2);
+      for (i = 2; i <= mydegremin; i++)
+      {
+        for (j = 1; j <= nbP3d; j++)
+        {
+          P1 = tabP1(j);
+          P2 = tabP2(j);
+          tabP(j).SetXYZ(P1.XYZ() + (i - 1) * (P2.XYZ() - P1.XYZ()) / mydegremin);
+        }
+        AppParCurves_MultiPoint MPole(tabP);
+        mySCU.SetValue(i, MPole);
+      }
+    }
+    else if (nbP2d != 0)
+    {
+      AppParCurves_MultiPoint MPole1(tabP12d);
+      AppParCurves_MultiPoint MPole2(tabP22d);
+      mySCU.SetValue(1, MPole1);
+      mySCU.SetValue(mydegremin + 1, MPole2);
+      for (i = 2; i <= mydegremin; i++)
+      {
+        for (j = 1; j <= nbP2d; j++)
+        {
+          P12d = tabP12d(j);
+          P22d = tabP22d(j);
+          tabP2d(j).SetXY(P12d.XY() + (i - 1) * (P22d.XY() - P12d.XY()) / mydegremin);
+        }
+        AppParCurves_MultiPoint MPole(tabP2d);
+        mySCU.SetValue(i, MPole);
+      }
+    }
+    mydone = true;
+    // Stockage de la multicurve approximee.
+    tolreached = true;
+#ifdef OCCT_DEBUG
+    if (mydebug)
+      DUMP(mySCU);
+#endif
+    myMultiCurves.Append(mySCU);
+    occ::handle<NCollection_HArray1<double>> ThePar =
+      new NCollection_HArray1<double>(Para.Lower(), Para.Upper());
+    for (i = Para.Lower(); i <= Para.Upper(); i++)
+    {
+      ThePar->SetValue(i, Para(i));
+    }
+    myPar.Append(ThePar);
+    Tolers3d.Append(Precision::Confusion());
+    Tolers2d.Append(Precision::PConfusion());
+    return mydone;
+  }
+
+  // with the tangents.
+  deg = nbp + 1;
+  AppParCurves_MultiCurve mySCU(deg + 1);
+  AppParCurves_Constraint Cons = AppParCurves_TangencyPoint;
+  double                  lambda1, lambda2;
+  math_Vector             V1(1, nbP3d * 3 + nbP2d * 2);
+  math_Vector             V2(1, nbP3d * 3 + nbP2d * 2);
+  FirstTangencyVector(Line, myfirstpt, V1);
+  lambda1 = SearchFirstLambda(Line, Para, V1, myfirstpt);
+
+  LastTangencyVector(Line, mylastpt, V2);
+  lambda2 = SearchLastLambda(Line, Para, V2, mylastpt);
+
+  Approx_ParLeastSquareOfMyGradient LSQ(Line, myfirstpt, mylastpt, Cons, Cons, Para, deg + 1);
+
+  lambda1 = lambda1 / deg;
+  lambda2 = lambda2 / deg;
+  LSQ.Perform(Para, V1, V2, lambda1, lambda2);
+  mydone = LSQ.IsDone();
+  mySCU  = LSQ.BezierValue();
+
+  if (mydone)
+  {
+    double Fv, TheTol3d, TheTol2d;
+    LSQ.Error(Fv, TheTol3d, TheTol2d);
+
+    // Stockage de la multicurve approximee.
+    tolreached = true;
+#ifdef OCCT_DEBUG
+    if (mydebug)
+      DUMP(mySCU);
+#endif
+    myMultiCurves.Append(mySCU);
+    occ::handle<NCollection_HArray1<double>> ThePar =
+      new NCollection_HArray1<double>(Para.Lower(), Para.Upper());
+    for (i = Para.Lower(); i <= Para.Upper(); i++)
+    {
+      ThePar->SetValue(i, Para(i));
+    }
+    myPar.Append(ThePar);
+    Tolers3d.Append(TheTol3d);
+    Tolers2d.Append(TheTol2d);
+    return true;
+  }
+  return mydone;
+}
+
+void Approx_ComputeLine::Init(const int                        degreemin,
+                              const int                        degreemax,
+                              const double                     Tolerance3d,
+                              const double                     Tolerance2d,
+                              const int                        NbIterations,
+                              const bool                       cutting,
+                              const Approx_ParametrizationType parametrization,
+                              const bool                       Squares)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+  mytol3d    = Tolerance3d;
+  mytol2d    = Tolerance2d;
+  Par        = parametrization;
+  mysquares  = Squares;
+  mycut      = cutting;
+  myitermax  = NbIterations;
+}
+
+void Approx_ComputeLine::SetDegrees(const int degreemin, const int degreemax)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+}
+
+void Approx_ComputeLine::SetTolerances(const double Tolerance3d, const double Tolerance2d)
+{
+  mytol3d = Tolerance3d;
+  mytol2d = Tolerance2d;
+}
+
+void Approx_ComputeLine::SetConstraints(const AppParCurves_Constraint FirstC,
+                                        const AppParCurves_Constraint LastC)
+{
+  myfirstC = FirstC;
+  mylastC  = LastC;
+}
+
+bool Approx_ComputeLine::IsAllApproximated() const
+{
+  return alldone;
+}
+
+bool Approx_ComputeLine::IsToleranceReached() const
+{
+  return tolreached;
+}
+
+void Approx_ComputeLine::Error(const int Index, double& tol3d, double& tol2d) const
+{
+  tol3d = Tolers3d.Value(Index);
+  tol2d = Tolers2d.Value(Index);
+}
+
+Approx_ParametrizationType Approx_ComputeLine::Parametrization() const
+{
+  return Par;
+}

@@ -1,0 +1,28 @@
+puts "========"
+puts "0027383: Modeling - improve handling of regularity on edges"
+puts "========"
+puts ""
+#################################################################
+# Check regularity setting on generatrix shared by two cylinders
+#################################################################
+
+pload MODELING
+pcylinder cyl 2 10 90
+explode cyl F
+tcopy cyl_1 c2
+trotate c2 0 2 0 0 0 1 180
+sewing r cyl_1 c2
+encoderegularity r
+
+explode r F
+explode r_1 E
+if { ! [regexp "C1" [getedgeregularity r_1_2 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected C1"
+}
+
+# make image in HLR mode as illustration
+pload VISUALIZATION
+vdisplay r
+vfit
+vhlr on
+vdump ${imagedir}/${test_image}.png

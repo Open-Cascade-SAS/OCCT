@@ -1,0 +1,19 @@
+puts "========"
+puts "0030433: Checkshape: bad solid, created by revolution, is reported as valid."
+puts "========"
+puts ""
+
+ellipse e1 0 0 0 200 100
+mkedge ell1 e1
+wire w1 ell1
+plane p1
+mkface fe1 p1 w1
+revol rev1 fe1 0 0 0 1 0 0 180 1
+
+
+
+if { [isdraw rev1] != 1 } {
+  puts "OK: wrong shape is not created"
+} else {
+  puts "Error: algorithm created wrong shape"
+}

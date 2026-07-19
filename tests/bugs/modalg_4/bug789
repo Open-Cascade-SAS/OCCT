@@ -1,0 +1,26 @@
+
+puts "========="
+puts " OCC789 "
+puts "========="
+puts ""
+########################################################
+## When working on 2 closed wires (each of 1 edge), the thrusection algorithm creates
+## a surface with isolines which oscillate in longitudinal direction somewhere in the 
+## middle between end sections.
+########################################################
+
+restore [locate_data_file OCC789_s3.brep] w1 
+explode w1
+wire ww1 w1_1
+
+restore [locate_data_file OCC789_s4.brep] w2 
+explode w2
+wire ww2 w2_1
+
+thrusections result 0 0 ww1 ww2
+
+puts "It necessary to analyse the photo"
+
+checkprops result -s 142424. 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

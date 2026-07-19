@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC25354"
+puts "============"
+puts ""
+#######################################################################
+# Intersection operation
+#######################################################################
+
+# Case 37
+
+box b1 10 10 10 
+box b2 10 10 10 
+ttranslate b2 10 3 4 
+
+bop b1 b2
+bopsection result
+
+checknbshapes result -vertex 4 -edge 4 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 9
+checkview -display result -2d -path ${imagedir}/${test_image}.png

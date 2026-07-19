@@ -1,0 +1,11 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : B3
+## Comment : 
+## ====================================
+
+wedge s 40 100 100 20 20 70 70
+explode s E
+blend result s 10 s_5 10 s_6 10 s_10 
+
+checkprops result -s 30065.2

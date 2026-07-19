@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename bague.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 89  ( 80 )  Summary  = 89  ( 80 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 1 )  Shell    = 0  ( 1 )  Face     = 320  ( 320 ) 
+STATSHAPE   : Solid    = 0  ( 1 )  Shell    = 0  ( 1 )  Face     = 320  ( 320 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.9408369253  (    1.136317349 )  AvgTol   =    0.0339727389  (   0.03797212283 )
+LABELS      : N0Labels = 521  ( 521 )  N1Labels = 18  ( 1635 )  N2Labels = 0  ( 0 )   TotalLabels = 539  ( 2156 )   NameLabels = 521  ( 521 )   ColorLabels = 537  ( 2156 )   LayerLabels = 455  ( 1834 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = LEMONCHIFFON1 LIGHTSTEELBLUE2 RED WHITE  ( LEMONCHIFFON1 LIGHTSTEELBLUE2 RED WHITE )
+NLAYERS     : NLayers  = 5  ( 5 )
+LAYERS      : Layers   = 10 126 130 26 60  ( 10 126 130 26 60 )
+
+}

@@ -1,0 +1,26 @@
+puts "========="
+puts "OCC26560"
+puts "========="
+puts ""
+#####################################################################
+## BRepBndLib build too large bounding box in Z direction for planar spline edge.
+#####################################################################
+
+restore [locate_data_file bug26560_planarspline.brep] result
+
+bounding result -save Xmin Ymin Zmin Xmax Ymax Zmax -shape resbox
+
+set tol_abs 1.0e-4
+set tol_rel 0.0001
+
+checkreal "Xmin" [dval Xmin] -277.03883383200952  ${tol_abs} ${tol_rel}
+checkreal "Ymin" [dval Ymin] -562.56241861670651 ${tol_abs} ${tol_rel}
+checkreal "Zmin" [dval Zmin] -9.9999999999999995e-08 ${tol_abs} ${tol_rel}
+checkreal "Xmax" [dval Xmax] 20.000000100000001 ${tol_abs} ${tol_rel}
+checkreal "Ymax" [dval Ymax] -221.27317426638498 ${tol_abs} ${tol_rel}
+checkreal "Zmax" [dval Zmax] 9.9999999999999995e-08 ${tol_abs} ${tol_rel}
+
+smallview
+don result resbox
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,25 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename tr9_r0601-ct.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 126  ( 21 )  Summary  = 126  ( 21 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 4252  ( 61 )  Face     = 4252  ( 4252 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 4252  ( 61 )  Face     = 4252  ( 4252 )   FreeWire = 0  ( 1 ) 
+TOLERANCE   : MaxTol   =   0.8498047902  (  0.01572488678 )  AvgTol   =  5.398641378e-005  (  2.592793945e-005 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 7107  ( 7169 )  N2Labels = 0  ( 0 )   TotalLabels = 7110  ( 7172 )   NameLabels = 5  ( 5 )   ColorLabels = 7105  ( 7105 )   LayerLabels = 7105  ( 7167 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = RED WHITE YELLOW  ( RED WHITE YELLOW )
+NLAYERS     : NLayers  = 46  ( 46 )
+LAYERS      : Layers   = 0 1 10 100 101 102 11 12 138 139 15 16 17 175 176 177 178 18 181 182 183 2 200 243 244 245 246 29 3 30 31 32 33 34 35 36 37 4 5 52 7 8 9 96 97 99  ( 0 1 10 100 101 102 11 12 138 139 15 16 17 175 176 177 178 18 181 182 183 2 200 243 244 245 246 29 3 30 31 32 33 34 35 36 37 4 5 52 7 8 9 96 97 99 )
+
+}

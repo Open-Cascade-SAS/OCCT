@@ -1,0 +1,14 @@
+# Original bug : pro13494
+# Date : 4June98
+
+restore [locate_data_file pro13494a.rle] a 
+restore [locate_data_file pro13494b.rle] b
+
+# pkv f
+explode a so
+#bfuse result a b
+bfuse result a_1 b
+# pkv t
+
+checkprops result -s 65482.8
+checkview -display result -2d -otherwise { a_1 b } -s -path ${imagedir}/${test_image}.png

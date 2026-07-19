@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC23120: Transform persistence is not restored"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b1 10 20 30
+box b2 10 20 30
+ttranslate b2 50 50 0
+
+vinit View1
+vdisplay b1 -trihedron center
+vdisplay b2
+vfit
+vsetdispmode 1
+vzoom 0.5
+vpan 100 0
+
+checkcolor 300 130 0.78 0.55 0.9
+if { $stat != 1 } { puts "Error : Transform persistence is not restored" }
+
+vdump ${imagedir}/${casename}.png

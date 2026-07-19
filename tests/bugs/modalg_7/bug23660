@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC23660"
+puts "========"
+puts ""
+#####################################
+# 'bsection' produces result with gap
+#####################################
+
+restore [locate_data_file bug23660_shell_537.brep] s
+restore [locate_data_file bug23660_face_537.brep] f
+
+bsection result s f
+
+checkmaxtol result -min_tol 0.001
+checkprops result -l 19.0858
+
+if {[regexp "alone_5" [checksection result]]} {
+  puts "Error: section with gap"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

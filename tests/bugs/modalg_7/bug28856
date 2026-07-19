@@ -1,0 +1,13 @@
+puts "========"
+puts "OCC28856"
+puts "========"
+puts ""
+########################################
+#  Extrema between two curves gives wrong result
+########################################
+
+# Restore the initial shape
+restore [locate_data_file bug28856_shapes.brep] e
+explode e
+distmini dd e_1 e_2
+checkprops dd -l 0.101881

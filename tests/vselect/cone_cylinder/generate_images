@@ -1,0 +1,36 @@
+puts "================================="
+puts "0032281: Visualization - add Select3D_SensitiveCylinder"
+puts "Generating images based on detection of Select3D_SensitiveCylinder"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+pcylinder cyl 10 20
+vdisplay cyl -dispmode 1
+vfit
+vseldump $imagedir/${casename}_cylinder_selmode_0.png  -type surfNormal
+vselmode 1 1
+vseldump $imagedir/${casename}_cylinder_selmode_1.png  -type surfNormal
+vselmode 4 1
+vseldump $imagedir/${casename}_cylinder_selmode_4.png  -type surfNormal
+vremove cyl
+
+pcone cone 10 0 20
+vdisplay cone -dispmode 1
+vfit
+vseldump $imagedir/${casename}_cone_selmode_0.png  -type surfNormal
+vselmode 1 1
+vseldump $imagedir/${casename}_cone_selmode_1.png  -type surfNormal
+vselmode 4 1
+vseldump $imagedir/${casename}_cone_selmode_4.png  -type surfNormal
+vremove cone
+
+pcone tr_cone 10 5 10
+vdisplay tr_cone -dispmode 1
+vfit
+vseldump $imagedir/${casename}_truncated_cone_selmode_0.png  -type surfNormal
+vselmode 1 1
+vseldump $imagedir/${casename}_truncated_cone_selmode_1.png  -type surfNormal
+vselmode 4 1
+vseldump $imagedir/${casename}_truncated_cone_selmode_4.png  -type surfNormal

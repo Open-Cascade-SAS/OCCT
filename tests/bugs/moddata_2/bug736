@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC736"
+puts "========"
+puts ""
+###################################################################################
+## After restoring attached shape(face) it is obviously that there is
+## selfintersecting wire. However BRepCheck gives reply that shape looks OK.
+###################################################################################
+
+restore [locate_data_file OCC736.brep] result
+
+set che [checkshape result r]
+
+if { [regexp {OK} $che ] == 1 } {
+    puts "Faulty OCC736:  checkshape command works wrongly"
+} else {
+    puts "OCC736 OK: checkshape command works PROPERLY"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

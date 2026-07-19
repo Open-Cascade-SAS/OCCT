@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC26619"
+puts "============"
+puts ""
+#######################################################################
+# Tolerances of operands are modified using bop
+#######################################################################
+
+restore [locate_data_file bug26619_shell_ft81_h0.brep] h0
+restore [locate_data_file bug26619_the_face.brep] f0
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance h0] full MaxTolerance1
+
+tolerance f0
+
+#turn on non-destructive mode of BOP
+#setflags h0 locked
+#setflags f0 locked
+bnondestructive 1
+
+bop h0 f0
+bopsection result
+checkprops result -l 150.232
+
+checknbshapes result -vertex 47 -edge 47 -t -m "result"
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance h0] full MaxTolerance2
+
+set expected_MaxTolerance ${MaxTolerance1}
+set tol_abs_MaxTolerance 0.0001
+set tol_rel_MaxTolerance 0.0001
+checkreal "MaxTolerance" ${MaxTolerance2} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+if {[regexp "alone_1" [checksection result]]} {
+  puts "Error: the section is not closed"
+}

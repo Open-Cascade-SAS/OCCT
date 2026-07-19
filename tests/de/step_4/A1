@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename trj4_pm2-id-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 24  ( 38 )  Summary  = 24  ( 38 )
+CHECKSHAPE  : Wires    = 0  ( 2 )  Faces    = 0  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 230  ( 230 )  Face     = 734  ( 730 ) 
+STATSHAPE   : Solid    = 8  ( 8 )  Shell    = 230  ( 230 )  Face     = 734  ( 730 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.007776477864  ( 0.009838987775 )  AvgTol   =  0.0001629414909  (  0.0003516922103 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 3 )  N2Labels = 0  ( 1 )   TotalLabels = 5  ( 7 )   NameLabels = 5  ( 6 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

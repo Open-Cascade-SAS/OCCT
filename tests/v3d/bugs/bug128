@@ -1,0 +1,12 @@
+puts "================"
+puts "OCC128: The shading is false: objects seem to be situated in front of the others while they are behind."
+puts "================"
+
+pload VISUALIZATION QAcommands
+vinit View1
+OCC128
+vviewparams -scale 4.9487928 -proj 0.7329295 0.59461397 0.33052679 -up -0.536849 0.2071041 0.81786 -at 32.4556665273951 52.9347942181675 -5.1270029887922
+
+checkcolor 171 171 0.43 0.48 0.54
+
+vdump $imagedir/${casename}.png

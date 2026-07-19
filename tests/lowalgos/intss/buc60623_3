@@ -1,0 +1,30 @@
+puts "========================"
+puts "BUC60623"
+puts "========================"
+
+restore [locate_data_file buc60623a.brep] a
+checkshape a
+restore [locate_data_file buc60623b.brep] b
+checkshape b
+
+mksurface S1 a
+mksurface S2 b
+
+intersect I1 S1 S2
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection I1] full cs2
+if { $cs2 != 0 } {
+    puts " Faulty : Intersection is not correct"
+} else {
+    puts "Intersection of S1 and S2 is correct"
+}
+
+intersect I2 S2 S1
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection I2] full cs2
+if { $cs2 != 0 } {
+    puts " Faulty : Intersection is not correct"
+} else {
+    puts "Intersection of S2 and S1 is correct"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

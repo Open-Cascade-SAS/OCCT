@@ -1,0 +1,18 @@
+# Test for #24863: protect variable
+
+box b 10 10 10
+set is_ok [whatis b]
+protect b
+
+if {![catch {set b aaaaa}]} {
+     puts "Error : variable was changed"
+}
+
+if {$b != "b"} {
+    puts "Error : tcl variable doesn't point to same-named draw variable"
+}
+
+set check_ok [whatis b]
+if {$is_ok != $check_ok} {
+    puts "Error : results of command \"whatis\" are different"
+}

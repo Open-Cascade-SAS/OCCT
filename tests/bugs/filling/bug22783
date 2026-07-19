@@ -1,0 +1,30 @@
+puts "TODO OCC24156 MacOS: An exception was caught"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+puts "==========="
+puts "0022783: Improvement of BRepOffsetAPI_MakeFilling: keep old and new boundary edges with all pcurves"
+puts "==========="
+puts ""
+
+catch {pload XDE}
+
+set BugNumber OCC22783
+
+restore [locate_data_file bug22783_cs.brep] a 
+explode a
+explode a_1 e
+explode a_1_6
+explode a_1_13
+edge e1 a_1_6_1 a_1_13_1
+edge e2 a_1_6_2 a_1_13_2
+smallview
+donly a_1_6 a_1_13 e1 e2
+fit
+
+filling result 4 0 0  a_1_6 0 a_1_13 0 e1 0 e2 0
+tolerance result
+checkshape result
+dump result
+
+checkprops result -s 0.00456273 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,22 @@
+puts "=========="
+puts "OCC25004  "
+puts "=========="
+puts ""
+##################################################
+## Extrema curve/curve incorrect result
+##################################################
+
+restore [locate_data_file bug25004_c1.draw] c1
+restore [locate_data_file bug25004_c2.draw] c2
+
+set list [extrema c1 c2]
+set nb [llength ${list}]
+if { ${nb} == 2} {
+    puts "OK : command extrema works properly"
+} else {
+    puts "Error : command extrema does NOT work properly"
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

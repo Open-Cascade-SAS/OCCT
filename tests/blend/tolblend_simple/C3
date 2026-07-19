@@ -1,0 +1,15 @@
+#pcone c 25 50 50
+#ttranslate c 0 0 50
+#explode c f
+#prism p c_3 -25 0 -50
+#explode p F
+#glue s c p c_3 p_2
+
+restore [locate_data_file CFI_7_f1_fhs.rle] s
+tscale  s 0 0 0 SCALE1 
+explode s e
+blend result s 5*SCALE1 s_2
+explode result So
+tcopy result_1 result 
+
+checkprops result -s 782458

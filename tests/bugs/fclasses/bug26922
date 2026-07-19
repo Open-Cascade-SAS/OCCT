@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC26922"
+puts "============"
+puts ""
+###############################
+## Huge performance issue writing data to the output stream
+###############################
+
+pload XDE
+
+if { [regexp {Debug mode} [dversion]] } {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 0.5
+  } else {
+    set max_time 0.5
+  }
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 0.5
+  } else {
+    set max_time 0.5
+  }
+}
+
+psphere result 50.
+incmesh result 0.01
+trinfo result
+
+set time_info [time {writevrml result ${imagedir}/bug26922.wrl 2 2}]
+regexp {([-0-9.+eE]+)} ${time_info} full time_performance
+set time_performance [expr {${time_performance} / 1e6}]
+puts "Performance data writing into the file is ${time_performance} seconds"
+
+if { ${time_performance} > ${max_time} } {                                         
+    puts "Elapsed time of data writing into the file is more than ${max_time} seconds - Faulty"
+} else {
+    puts "Elapsed time of data writing into the file is less than ${max_time} seconds - OK"
+}

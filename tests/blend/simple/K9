@@ -1,0 +1,12 @@
+#box s1 0 0 0 10 10 10
+#box s2 0 0 0 4 4 4
+#ttranslate s2 4 4 10
+#fuse s s1 s2
+#save s CFI_a5678fid.rle 
+
+restore [locate_data_file CFI_a5678fid.rle] s
+tscale s 0 0 0 SCALE1
+explode s e
+blend result s 0.5*SCALE1 s_16 0.5*SCALE1 s_15 0.5*SCALE1 s_24
+
+checkprops result -s 66160.6

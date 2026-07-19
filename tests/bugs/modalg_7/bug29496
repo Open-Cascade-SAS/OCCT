@@ -1,0 +1,57 @@
+puts "========"
+puts "OCC29496"
+puts "========"
+puts ""
+#################################################
+# No intersection curve between faces if starting points are given
+#################################################
+
+restore [locate_data_file bug29488_shapes.brep] s
+explode s shell
+set i 1
+
+explode s_2 f; copy s_2_27 f1
+explode s_6 f; copy s_6_20 f2
+bsection r$i f1 f2
+checknbshapes r$i -vertex 2 -edge 1
+checkprops r$i -l 2.14991
+
+incr i
+
+explode s_2 f; copy s_2_27 f1
+explode s_7 f; copy s_7_8 f2
+bsection r$i f1 f2
+checknbshapes r$i -vertex 2 -edge 1
+checkprops r$i -l 2.15901
+
+incr i
+
+explode s_3 f; copy s_3_27 f1
+explode s_7 f; copy s_7_8 f2
+bsection r$i f1 f2
+checknbshapes r$i -vertex 2 -edge 1
+checkprops r$i -l 2.15901
+
+incr i
+
+explode s_3 f; copy s_3_27 f1
+explode s_6 f; copy s_6_16 f2
+bsection r$i f1 f2
+checknbshapes r$i -vertex 2 -edge 1
+checkprops r$i -l 2.14991
+
+incr i
+
+explode s_2 f; copy s_2_26 f1
+explode s_7 f; copy s_7_2 f2
+bsection r$i f1 f2
+checknbshapes r$i -vertex 2 -edge 1
+checkprops r$i -l 2.22733
+
+incr i
+
+explode s_3 f; copy s_3_26 f1
+explode s_7 f; copy s_7_2 f2
+bsection r$i f1 f2
+checknbshapes r$i -vertex 2 -edge 1
+checkprops r$i -l 2.22733

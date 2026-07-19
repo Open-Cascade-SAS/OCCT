@@ -1,0 +1,34 @@
+puts "========================"
+puts "OCC22833"
+puts "========================"
+puts ""
+#######################################################################
+# Command "checkshape" in DRAWEXE give error "Self intersection wire" on attached shape
+#######################################################################
+
+set BugNumber OCC22833
+
+restore [locate_data_file OCC22833-bugInt.brep] result
+
+set text [checkshape result f]
+set last1 [lindex $text end]
+set last2 [lindex $text end-1]
+
+set status 0
+set s1 "OK"
+set s2 "looks"
+
+if { [string equal $last1 $s1] && [string equal $last2 $s2] } {
+    set status 0
+} else {
+    set status 1 }
+
+if { ${status} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+checkprops result -s 63427.2 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

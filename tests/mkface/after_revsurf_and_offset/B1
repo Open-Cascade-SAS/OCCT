@@ -1,0 +1,8 @@
+parabola parabola 0 0 0 30
+revsurf rs_parabola parabola 0 400 0 1 0 0
+offset rs_parabola_of rs_parabola 10
+offset rs_parabola_of_of rs_parabola_of 5
+mkface result rs_parabola_of_of .3 .5 .3 .5
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 1.5770976546370927e-07
+set MaxVTol 1.5770976546370932e-07

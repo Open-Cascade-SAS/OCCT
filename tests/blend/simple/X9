@@ -1,0 +1,12 @@
+## ===========================================
+## Grid    : CCV001
+## Test    : M2
+## Comment : From CV tests serie page 39/40
+## ===========================================
+
+restore [locate_data_file CCV_1_m12gsp.rle] s
+trotate s 0 0 0 1 0 0 90
+explode s E
+blend result s 10 s_2
+
+checkprops result -s 70160

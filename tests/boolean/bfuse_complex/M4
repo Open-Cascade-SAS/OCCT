@@ -1,0 +1,12 @@
+# Original bug : cts21251
+# Date : 16July98
+
+restore [locate_data_file cts21251a.rle] a 
+restore [locate_data_file cts21251b.rle] skface
+
+revol b skface 0 0 0 0 -1 0 360
+
+bfuse result a b
+
+checkprops result -s 7463.16
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

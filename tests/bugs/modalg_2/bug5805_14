@@ -1,0 +1,66 @@
+puts "============"
+puts "OCC5805"
+puts "============"
+
+#######################################################################
+# BRepOffsetAPI_MakeThickSolid behaves unstably and produces very different results.
+#######################################################################
+
+set BugNumber OCC5805
+
+#
+#                    v12                   v11
+#                    *---------------------*
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    *---------------------*
+#                    v13                   v14
+#
+
+set z1 5
+set z2 -5
+
+# quadrangle1
+polyline UpCover 0 0 ${z1} 5 0 ${z1} 5 5 ${z1} 0 5 ${z1} 0 0 ${z1}
+
+# quadrangle2
+polyline BottomCover 0 0 ${z2} 5 0 ${z2} 5 5 ${z2} 0 5 ${z2} 0 0 ${z2}
+
+set issolid 1
+set isruled 1
+if [catch { thrusections s ${issolid} ${isruled} UpCover BottomCover } catch_result] {
+   puts "Faulty ${BugNumber} : thrusections is wrong"
+   
+}
+
+set distance -0.5
+catch { OFFSETSHAPE $distance {s_5} $calcul $type }
+
+
+checkprops result -s 402 
+checkshape result
+
+checknbshapes result -vertex 16 -edge 24 -wire 12 -face 11 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 65
+
+set index [lsearch [whatis s] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : s is not Closed shape"
+  
+}
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

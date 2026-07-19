@@ -1,0 +1,12 @@
+restore [locate_data_file conge004.brep] m
+explode m E
+encoderegularity m 3
+blend result m 10 m_5 10 m_6 \
+	     10 m_7 10 m_8 10 m_9 10 m_10 10 m_11 10 m_12 \
+	     10 m_13 10 m_14 10 m_15 10 m_16 10 m_17 10 m_18
+# Tous sauf :
+# m_1 m_2 m_3 m_4 m_19 m_20 m_21 m_22
+explode result Sh
+renamevar result_1 result
+
+checkprops result -s 5884.39

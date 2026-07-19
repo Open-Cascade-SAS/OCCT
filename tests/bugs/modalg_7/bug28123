@@ -1,0 +1,42 @@
+puts "=============================================================="
+puts "OCC28123: Boolean Cut produces faulty shape"
+puts "=============================================================="
+puts ""
+
+brestore [locate_data_file bug28123_s1.brep] s1
+brestore [locate_data_file bug28123_s3.brep] s3
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s3
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+
+foreach r {r0 r1 r2 r3 r4} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the result of BOP is self-interfering shape"
+  }
+}
+
+checknbshapes r0 -wire 6 -face 6 -shell 1 -solid 1
+checkprops r0 -s 5.2 -v 0.42
+
+checknbshapes r1 -wire 25 -face 25 -shell 1 -solid 1
+checkprops r1 -s 45921.2 -v 6839.09
+
+checknbshapes r2 -wire 17 -face 17 -shell 1 -solid 1
+checkprops r2 -s 45780.6 -v 6784.77
+
+checknbshapes r3 -wire 10 -face 10 -shell 2 -solid 2
+checkprops r3 -s 142.969 -v 39.5572
+
+checkprops r4 -l 14.2568
+
+checkview -display r2 -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,9 @@
+# Original bug : pro16447
+# Date : 26 Nov 98
+
+restore [locate_data_file CFE903_pro16ggz.rle] base
+
+explode base face
+
+depouille result base 0 0 1 base_3 1 -20 -120 52.00897 0 0 1 base_4  1 -20 -120 52.00897 0 0 1
+checkprops result -s 9217.99

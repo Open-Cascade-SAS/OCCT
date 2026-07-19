@@ -1,0 +1,9 @@
+box b1 0 0 0 1 1 1
+nurbsconvert b1 b1
+dset r sqrt(31)
+box b2 0 0 0 r/4 0.25 1
+trotate b2 0 0 0 0 0 1 34.73
+
+bcut result b2 b1
+checkprops result -s 1.54631
+checkview -display result -2d -s -otherwise { b2 b1 } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,43 @@
+puts "========"
+puts "Point cloud object from triangulated sphere"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# create sphere
+sphere ss 10
+mkface s ss
+incmesh s 0.01
+
+# draw sphere
+vinit View1
+vclear
+vsetdispmode 1
+vaxo
+vpointcloud p s -nonormals
+vaspects p -setcolor GREEN
+vfit
+vrotate 0.2 0.0 0.0
+vdump $::imagedir/${::casename}_green.png
+
+# random colors mode
+vpointcloud p s -randcolors -nonormals
+vdump $::imagedir/${::casename}_rand.png
+
+# texture mapping
+vpointcloud p s -normals -uv
+vtexture p 0
+vaspects p -shadingModel GOURAUD
+vdump $::imagedir/${::casename}_tex3.png
+vaspects p -shadingModel PHONG
+vdump $::imagedir/${::casename}_tex2.png
+vaspects p -shadingModel UNLIT
+vdump $::imagedir/${::casename}_tex1.png
+
+# mode with normals
+vpointcloud p s -normals
+vsetmaterial p COPPER
+vdump $::imagedir/${::casename}_copper.png
+
+vmoveto 200 200
+vdump $imagedir/${casename}.png

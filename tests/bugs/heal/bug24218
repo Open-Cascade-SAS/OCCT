@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC24218"
+puts "============"
+puts ""
+#####################################################################################################
+## ShapeFix_Face requires double execution to produce valid shape when FixSplitFaceMode is in effect
+#####################################################################################################
+
+restore [locate_data_file bug24218_f.brep] f
+
+fixshape r f +o
+checkshape r
+
+fixshape rr r +o
+checkshape rr

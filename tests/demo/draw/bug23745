@@ -1,0 +1,26 @@
+puts "============"
+puts "0023745: Draw Harness, ViewerText - vdrawtext command should not modify global text aspect"
+puts "============"
+puts ""
+
+pload QAcommands
+pload VISUALIZATION
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vclear
+vinit View1
+vaxo
+vdrawtext text0 "ANOTHERBUG" -pos 100 100 100 -color RED -halign left -valign bottom -angle 0 -zoom 1 -height 50 -font SansFont
+vtrihedron trihedron
+
+set x 239
+set y 216
+set R 1
+set G 1
+set B 0
+checkcolor ${x} ${y} ${R} ${G} ${B}
+
+vdump ${imagedir}/${casename}.png
+
+puts "TEST COMPLETED"

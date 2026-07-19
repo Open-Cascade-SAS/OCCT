@@ -1,0 +1,27 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+catch { Close D_First }
+catch { Close D_Second }
+
+set file_path ${imagedir}/${casename}.igs
+
+ReadIges D_First ${filename}
+WriteIges D_First $file_path
+Close D_First
+
+ReadIges D_First $file_path
+XGetOneShape S_First D_First
+
+WriteFile D_First $file_path
+
+ReadIges D_Second $file_path
+XGetOneShape S_Second D_Second
+
+checknbshapes S_Second -ref [nbshapes S_First]
+
+file delete $file_path
+Close D_First 
+Close D_Second

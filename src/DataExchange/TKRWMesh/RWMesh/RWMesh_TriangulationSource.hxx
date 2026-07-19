@@ -1,0 +1,109 @@
+// Copyright (c) 2021 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWMesh_TriangulationSource_HeaderFile
+#define _RWMesh_TriangulationSource_HeaderFile
+
+#include <Poly_Triangulation.hxx>
+#include <NCollection_Array1.hxx>
+
+class RWMesh_TriangulationReader;
+
+//! Mesh data wrapper for delayed triangulation loading.
+//! Class inherits Poly_Triangulation so that it can be put temporarily into TopoDS_Face within
+//! assembly structure.
+class RWMesh_TriangulationSource : public Poly_Triangulation
+{
+  DEFINE_STANDARD_RTTIEXT(RWMesh_TriangulationSource, Poly_Triangulation)
+public:
+  //! Constructor.
+  Standard_EXPORT RWMesh_TriangulationSource();
+
+  //! Destructor.
+  Standard_EXPORT ~RWMesh_TriangulationSource() override;
+
+  //! Returns reader allowing to read data from the buffer.
+  const occ::handle<RWMesh_TriangulationReader>& Reader() const { return myReader; }
+
+  //! Sets reader allowing to read data from the buffer.
+  void SetReader(const occ::handle<RWMesh_TriangulationReader>& theReader) { myReader = theReader; }
+
+  //! Returns number of degenerated triangles collected during data reading.
+  //! Used for debug statistic purpose.
+  int DegeneratedTriNb() const { return myStatisticOfDegeneratedTriNb; }
+
+  //! Gets access to number of degenerated triangles to collect them during data reading.
+  int& ChangeDegeneratedTriNb() { return myStatisticOfDegeneratedTriNb; }
+
+  //! Returns TRUE if triangulation has some geometry.
+  bool HasGeometry() const override
+  {
+    return !myNodes.IsEmpty() && (!myTriangles.IsEmpty() || !myEdges.IsEmpty());
+  }
+
+  //! Returns the number of edges for this triangulation.
+  int NbEdges() const { return myEdges.Length(); }
+
+  //! Returns edge at the given index.
+  //! @param[in] theIndex edge index within [1, NbEdges()] range
+  //! @return edge node indices, with each node defined within [1, NbNodes()] range
+  int Edge(int theIndex) const { return myEdges.Value(theIndex); }
+
+  //! Sets an edge.
+  //! @param[in] theIndex edge index within [1, NbEdges()] range
+  //! @param[in] theEdge edge node indices, with each node defined within [1, NbNodes()] range
+  void SetEdge(int theIndex, int theEdge) { myEdges.SetValue(theIndex, theEdge); }
+
+public: //! @name late-load deferred data interface
+  //! Returns number of nodes for deferred loading.
+  //! Note: this is estimated values defined in object header, which might be different from
+  //! actually loaded values (due to broken header or extra mesh processing). Always check
+  //! triangulation size of actually loaded data in code to avoid out-of-range issues.
+  int NbDeferredNodes() const override { return myNbDefNodes; }
+
+  //! Sets number of nodes for deferred loading.
+  void SetNbDeferredNodes(const int theNbNodes) { myNbDefNodes = theNbNodes; }
+
+  //! Returns number of triangles for deferred loading.
+  //! Note: this is estimated values defined in object header, which might be different from
+  //! actually loaded values (due to broken header or extra mesh processing). Always check
+  //! triangulation size of actually loaded data in code to avoid out-of-range issues.
+  int NbDeferredTriangles() const override { return myNbDefTriangles; }
+
+  //! Sets number of triangles for deferred loading.
+  void SetNbDeferredTriangles(const int theNbTris) { myNbDefTriangles = theNbTris; }
+
+  //! Returns an internal array of edges.
+  //! Edge()/SetEdge() should be used instead in portable code.
+  NCollection_Array1<int>& InternalEdges() { return myEdges; }
+
+  //! Method resizing an internal array of triangles.
+  //! @param[in] theNbTriangles  new number of triangles
+  //! @param[in] theToCopyOld    copy old triangles into the new array
+  Standard_EXPORT void ResizeEdges(int theNbEdges, bool theToCopyOld);
+
+protected:
+  //! Loads triangulation data from deferred storage using specified shared input file system.
+  Standard_EXPORT bool loadDeferredData(
+    const occ::handle<OSD_FileSystem>&     theFileSystem,
+    const occ::handle<Poly_Triangulation>& theDestTriangulation) const override;
+
+protected:
+  occ::handle<RWMesh_TriangulationReader> myReader;
+  NCollection_Array1<int>                 myEdges;
+  int                                     myNbDefNodes;
+  int                                     myNbDefTriangles;
+  mutable int                             myStatisticOfDegeneratedTriNb;
+};
+
+#endif // _RWMesh_TriangulationSource_HeaderFile

@@ -1,0 +1,21 @@
+# External dependencies for TKDEVRML
+set(OCCT_TKDEVRML_EXTERNAL_LIBS
+  TKBRep
+  TKDE
+  TKTopAlgo
+  TKMath
+  TKGeomBase
+  TKernel
+  TKPrim
+  TKG2d
+  TKG3d
+  TKMesh
+  TKHLR
+  TKRWMesh
+  TKService
+  TKGeomAlgo
+  TKV3d
+  TKLCAF
+  TKXCAF
+  TKXSBase
+)

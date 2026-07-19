@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC23870"
+puts "============"
+puts ""
+#######################################################################
+# Integration of new options of sweeping into BRepOffsetAPI_MakePipe algorithm.
+#######################################################################
+
+set BugNumber OCC23870
+
+restore [locate_data_file bug23824_Case2_Path.brep] spine 
+restore [locate_data_file bug23824_Case2_Profile.brep] profile 
+
+wire spine spine
+wire profile profile
+
+pipe result spine profile 2 approx
+
+checkprops result -s 848.989 
+checkshape result
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 8
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,14 @@
+# Original bug : cts20736
+# Date : 28Sept97
+
+restore [locate_data_file CTO900_cts20736a.rle] part
+restore [locate_data_file cts20736b.rle] aface
+
+btolx part
+btolx aface
+
+prism tool aface 0 0 -12
+
+bcut result part tool
+checkprops result -s 36087.8
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

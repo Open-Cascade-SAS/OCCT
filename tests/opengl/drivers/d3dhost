@@ -1,0 +1,27 @@
+puts "============"
+puts "0026392: Visualization, TKD3DHost - provide straight-forward base for integration of TKOpenGl viewer into D3D-based application"
+puts "============"
+puts ""
+
+set to_dump_screen 0
+if { ![checkplatform -windows] } {
+  puts "This test case is applicable only to Windows platform"
+  return
+}
+
+pload MODELING VISUALIZATION
+vdriver -load D3DHOST
+vclear
+vinit View1
+box b 3 0 0 1 2 3
+psphere s 1
+vdisplay -dispMode 1 b s
+set anInfo [vglinfo]
+if { [regexp {D3Dinterop} $anInfo] } {
+  puts "OK: D3Dinterop has been found"
+} else {
+  puts "Error: D3Dinterop is expected"
+}
+vfit
+vrenderparams -shadingModel PHONG
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC6491"
+puts "========"
+puts ""
+####################################################
+## Sewing in DRAW on attached the shape with tolerance 1000 adds duplicated faces
+####################################################
+
+set BugNumber OCC6491
+
+restore [locate_data_file OCC6491.brep] a
+
+set tolerance 1000
+
+sewing result ${tolerance} a
+
+checknbshapes result -face 263 -shell 1
+checkmaxtol result -ref 130.21536414731227
+checkfreebounds result 73
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

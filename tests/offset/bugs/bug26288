@@ -1,0 +1,20 @@
+puts "TODO OCC26030 ALL: Error : The offset cannot be built"
+
+puts "========"
+puts "OCC26288"
+puts "========"
+puts ""
+#############################################
+# Offset on faces with opposite orientation
+#############################################
+
+smallview
+
+restore [locate_data_file OCC26288-plate.brep] plate
+
+offsetparameter 1e-7 p i
+offsetload plate 160
+offsetperform r
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

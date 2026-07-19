@@ -1,0 +1,9 @@
+# Original bug : pro15323
+# Date : 21Sept98
+
+restore [locate_data_file CTO900_pro15323c.rle] part
+restore [locate_data_file pro15323d.rle] tool
+
+bcut result part tool
+checkprops result -s 43877.8
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC25892"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result obtained by projection algorithm.
+#######################################################################
+
+restore [locate_data_file bug25892_c003] c
+restore [locate_data_file bug25892_s003] s
+
+project cx c s
+
+#v2d2
+view 1 -2D-  728 20 400 400
+
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

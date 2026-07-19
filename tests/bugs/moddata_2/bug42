@@ -1,0 +1,42 @@
+puts "================"
+puts "OCC42"
+puts "================"
+puts ""
+###############################################
+## BRepAlgo_Sewing does not sew attached shape with any tolerance.
+###############################################
+
+pload XDE
+
+# 1. retriesve shape
+restore [locate_data_file OCC42.brep] sh 
+checkshape sh
+
+# 2. perform sewing
+set toler 80
+sewing result $toler sh
+
+# 3. Verify result of sewing
+checkshape result
+
+# Retrieve free wires from result shape
+catch { fbclose result $toler $toler } resOfCatch
+
+# Amount of free open wires must be equal 0
+set open_wires [explode result_o W]
+if { [llength $open_wires] != 0} {
+   puts "Error : There are free open wires"
+}
+
+# Amount of free closed wires must be equal 1 
+set closed_wires [explode result_c W]
+if { [llength $closed_wires] != 1} {
+   puts "Error : Amount of free closed wires is not equal 1"
+}
+
+checkmaxtol result -ref 66.072757207853044
+checknbshapes result -shell 1
+checkfreebounds result 86
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

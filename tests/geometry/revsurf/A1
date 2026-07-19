@@ -1,0 +1,12 @@
+restore [locate_data_file base_revol] base_revol
+revsurf  revolution1  base_revol 1 0 0 0 0 1
+svalue revolution1 0.0 1.0  x y z dux duy duz dvx dvy dvz d2ux d2uy d2uz d2vx d2vy d2vz duvx duvy duvz
+dump x y z dux duy duz dvx dvy dvz d2ux d2uy d2uz duvx duvy duvz d2vx d2vy d2vz
+svalue revolution1 pi  1.0  x y z dux duy duz dovx dovy dovz d2ux d2uy d2uz d2vx d2vy d2vz duvx duvy duvz
+dump x y z dux duy duz dovx dovy dovz d2ux d2uy d2uz duvx duvy duvz d2vx d2vy d2vz
+dump revolution1
+dval  dovx+dvx
+dval  dovy+dvy
+mkface result revolution1
+checkprops result -s 13.8136
+checkview -display result -2d -path ${imagedir}/${test_image}.png

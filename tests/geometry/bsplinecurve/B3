@@ -1,0 +1,6 @@
+bsplinecurve b1 3 3 0 4 3 1 4 4  0 0 0 1  1 2 0 1   2 3 0 1  3 2 0 1   1 0 0 1
+copy b1 b2
+pscale b2 0 0 0 1.4
+repeat 5 {pl}
+renamevar b2 result
+checklength result -l 9.5487985926002157

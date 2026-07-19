@@ -1,0 +1,30 @@
+pload QAcommands
+
+#INTERFACE IGES
+puts "========================"
+puts " OCC435 "
+puts " OCC405 "
+puts "========================"
+puts ""
+###############################################################
+## Exception Standard_ConstructuionError is rased in DRAW in the
+## GeomConvert_CompCurveToBSplineCurve on the attached shapes during command merge
+###############################################################
+
+restore [locate_data_file OCC435a.brep] a 
+explode a
+set j 1
+repeat 8 {
+    explode a_$j
+    if { [catch {OCC405 result a_${j}_1 a_${j}_2} catch_result] } {
+	puts "Faulty  OCC435 : merge operation was made incorrect"
+    } else {
+	puts " OCC435 OK:  merge operation was made properly"
+    }
+    incr j
+} 
+
+checkprops result -l 17.2848 
+checkshape result 
+checksection result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

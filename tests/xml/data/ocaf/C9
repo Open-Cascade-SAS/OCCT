@@ -1,0 +1,38 @@
+set aTestName "caf100-V1"
+puts ${aTestName}
+
+# Set isConstant
+set isConstant 1
+
+# Set a units
+set units "kg/m3"
+
+# Set a variable
+set aCLabel 0:1:1
+Label D ${aCLabel}
+SetVariable D ${aCLabel} ${isConstant} ${units}
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a variable from the label
+set IsDone [catch {GetVariable DD ${aCLabel} isC2 units2} aResult]
+if { ${IsDone} != 0 } {
+    puts "Error : Get a value of TDataStd_Variable attribute from restoring document"
+} else {
+
+    if { ${isC2} != ${isConstant} } {
+	puts "Error : Get a value of TDataStd_Variable attribute from restoring document"
+    }
+
+    if { ${units2} != ${units} } {
+	puts "Error : Get a value of TDataStd_Variable attribute from restoring document"
+    }
+}
+

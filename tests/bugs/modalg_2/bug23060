@@ -1,0 +1,18 @@
+puts "==========="
+puts "OCC23060"
+puts "==========="
+puts ""
+#######################################################################
+# Exception is raised during intersection of two edges
+#######################################################################
+
+set BugNumber OCC23060
+
+restore [locate_data_file bug23060_ce.brep] result
+explode result
+bop result_1 result_2
+
+checkprops result -l 176.06 
+checkshape result 
+checksection result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

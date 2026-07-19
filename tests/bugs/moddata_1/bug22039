@@ -1,0 +1,38 @@
+pload QAcommands
+
+puts "================"
+puts "OCC22039"
+puts "================"
+puts ""
+#######################################################################################
+# Incorrect interactive detection (highlights) of elements
+######################################################################################
+
+set BugNumber OCC22039
+
+restore [locate_data_file OCC12121-CrankArm.brep] result
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+###set x1 101
+set x1 102
+set y1 199
+set Color [vreadpixel ${x1} ${y1} rgb]
+
+vmoveto ${x1} ${y1}
+set ColorMove [vreadpixel ${x1} ${y1} rgb]
+
+vselect ${x1} ${y1}
+set ColorSelect [vreadpixel ${x1} ${y1} rgb]
+
+if { ${Color} != ${ColorMove} && ${Color} != ${ColorSelect} && ${ColorMove} != ${ColorSelect} } {
+  puts "OK ${BugNumber}"
+} else {
+  puts "Faulty ${BugNumber}"
+}
+
+checkprops result -s 24859.6
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,38 @@
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+if {[llength $prlist] > 0} {
+  set marker_mass 0
+  if {[isdraw marker] == 1} {
+    regexp {Mass +: +([-0-9.+eE]+)} [lprops marker] full marker_mass
+  }
+  
+  set proj_mass 0
+  foreach pr $prlist {
+    if {[isdraw $pr] == 1} {
+      checkshape $pr
+      regexp {Mass +: +([-0-9.+eE]+)} [lprops $pr] full tmp
+      set proj_mass [expr $proj_mass + $tmp]
+    }
+  }
+  
+  if {$marker_mass != 0 && $proj_mass != 0} {
+    set rel [expr $proj_mass/$marker_mass]
+    puts [format {Length relation: %f} $rel]
+    if {[info exists relcoef] == 0} {
+      set relcoef 1
+    }
+    if {[expr abs($rel - $relcoef)] > 0.02} {
+      puts "Error: deviation of projection length from original is too high"
+    }
+  } else {
+    puts "Error: unable to calculate length"
+  }
+} else {
+  puts "Error: no results produced"
+}
+
+puts ""
+puts "TEST COMPLETED"
+puts ""

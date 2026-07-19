@@ -1,0 +1,12 @@
+restore [locate_data_file pro15515_base.rle] base
+restore [locate_data_file pro15515_face.rle] cont
+
+explode base face
+copy base_4 ffrom
+copy base_3 funtil
+
+### From Until
+featrevol base cont cont 54.06494140625 70.2841796875 0 0 0 1 1 1
+featperform revol result funtil ffrom
+
+checkprops result -s 560028

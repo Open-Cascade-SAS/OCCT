@@ -1,0 +1,25 @@
+pload QAcommands
+
+puts "================"
+puts "OCC454"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC454_b1.brep] b1 
+checkshape b1
+
+restore [locate_data_file OCC454_p1.draw] p1 
+
+set info_result [OCC299 b1 p1]
+set ll [llength ${info_result}]
+if { ${ll} < 4 } {
+    puts "OCC454: ERROR 1"
+} else {
+    if { [regexp {IN} ${info_result}] } {
+	puts "OCC454: OK"
+    } else {
+	puts "OCC454: ERROR 2"
+    }
+}
+
+

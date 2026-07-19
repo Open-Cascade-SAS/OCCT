@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC22125"
+puts "=========="
+puts ""
+################################################################
+# TCollection_ExtendedString: conversion from UTF-8 to unicode
+################################################################
+
+pload XDE
+
+# words "it works" translated to Traditional Chinese by Google Translate
+set filename "${test_image}_[encoding convertfrom utf-8 \xE6\x9C\x89\xE7\x94\xA8].igs"
+
+puts "Test saving file with non-ascii file name: $filename"
+file delete -force ${imagedir}/$filename
+
+box b 10 10 10
+brepiges b ${imagedir}/$filename
+igesbrep ${imagedir}/$filename result *
+
+if { ! [file exists ${imagedir}/$filename] } {
+  puts "Error: file is not found with expected name \"${imagedir}/$filename\""
+}

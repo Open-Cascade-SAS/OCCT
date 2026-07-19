@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC25102"
+puts "========"
+puts ""
+#################################################
+# A part of intersection cannot be found
+#################################################
+
+restore [locate_data_file bug25102.brep] c
+
+explode c
+
+bsection result c_1 c_2
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+
+if { $nbv != 2 } { 
+  puts "Error : Section is incorrect" 
+} else {
+  puts "Section is correct" 
+}
+
+checkprops result -l 49.734
+
+checknbshapes result -edge 44
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+ 

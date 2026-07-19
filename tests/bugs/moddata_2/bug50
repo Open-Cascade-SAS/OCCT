@@ -1,0 +1,22 @@
+puts "TODO OCC24156 ALL: Tcl Exception: tolerance ang"
+puts "TODO OCC24156 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC50"
+puts "========"
+puts ""
+###################################################################
+## the algorithm which allows to calculate and build  the fillet presents probably a bug: when
+##  blending on all edges, the applied algorithm is posting errors and failure during fillet computation.
+###################################################################
+
+restore [locate_data_file OCC50.brep] a 
+checkshape a
+
+explode a e
+
+blend result a 1 a_17 1 a_5 1 a_1 1 a_2 1 a_16 1 a_20 1 a_3 1 a_11 1 a_10 1 a_4
+checkshape result
+
+checkprops result -s 7677.49
+checkview -display result -2d -path ${imagedir}/${test_image}.png

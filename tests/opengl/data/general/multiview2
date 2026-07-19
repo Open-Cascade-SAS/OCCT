@@ -1,0 +1,40 @@
+puts "========"
+puts "0032886: Visualization, V3d_View - introduce interface for creating a subview"
+puts "V1/RootView + V2/ViewLeft + V2/ViewRightTop + V2/ViewRightBottom"
+puts "========"
+
+pload MODELING VISUALIZATION
+vinit V1/RootView -width 768 -height 512 -composer 1
+vbackground GRAY20
+
+vinit V2/ViewLeft -parent V1/RootView -width 0.5  -height 1.0
+vbackground GRAY30
+vaxo
+vcamera -persp
+box b 1 2 3
+vdisplay -dispMode 1 b
+vaspects b -faceBoundaryDraw 1
+vfit
+vzbufftrihedron
+
+vinit V2/ViewRightTop -parent V1/RootView -width 0.5 -height 0.5 -corner topRight
+vbackground GRAY40
+vaxo
+vfit
+
+vinit V2/ViewRightBottom -parent V1/RootView -width 0.5 -height 0.5 -corner bottomRight
+vbackground GRAY50
+vaxo
+vfit
+
+vactivate V1/RootView
+vdump $::imagedir/${::casename}.png
+
+vactivate V2/ViewLeft
+vdump $::imagedir/${::casename}_left.png
+
+vactivate V2/ViewRightTop
+vdump $::imagedir/${::casename}_righttop.png
+
+vactivate V2/ViewRightBottom
+vdump $::imagedir/${::casename}_rightbottom.png

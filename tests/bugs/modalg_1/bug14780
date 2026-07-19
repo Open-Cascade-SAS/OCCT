@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC14780"
+puts "============"
+puts ""
+######################################################
+# Boolean operations (section, fuse, common, cut) give incorrect result
+######################################################
+
+set BugNumber OCC14780
+
+restore [locate_data_file OCC14780_part1.brep] s1
+restore [locate_data_file OCC14780_part2.brep] s2
+
+bop s1 s2
+bopsection result
+
+regexp {nb alone Vertices +: +([-0-9.+eE]+)} [checksection result] full Vertices
+
+set good_Vertices 0
+if { ${Vertices} != ${good_Vertices} } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkprops result -l 171.289 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

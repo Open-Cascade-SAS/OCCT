@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC26"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC26.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+bfuse result a_2 a_1
+
+checkprops result -s 41539.9 -v 348665
+checknbshapes result -wire 44 -face 41 -shell 1 -solid 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

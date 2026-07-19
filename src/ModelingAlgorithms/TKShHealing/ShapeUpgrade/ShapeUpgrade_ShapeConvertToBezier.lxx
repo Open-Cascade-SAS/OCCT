@@ -1,0 +1,155 @@
+// Created on: 1999-06-22
+// Created by: data exchange team
+// Copyright (c) 1999-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set2dConversion(const bool mode)
+{
+  my2dMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::Get2dConversion() const
+{
+  return my2dMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set3dConversion(const bool mode)
+{
+  my3dMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::Get3dConversion() const
+{
+  return my3dMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetSurfaceConversion(const bool mode)
+{
+  mySurfaceMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::GetSurfaceConversion() const
+{
+  return mySurfaceMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set3dLineConversion(const bool mode)
+{
+  my3dLineMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::Get3dLineConversion() const
+{
+  return my3dLineMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set3dCircleConversion(const bool mode)
+{
+  my3dCircleMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::Get3dCircleConversion() const
+{
+  return my3dCircleMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set3dConicConversion(const bool mode)
+{
+  my3dConicMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::Get3dConicConversion() const
+{
+  return my3dConicMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetPlaneMode(const bool mode)
+{
+  myPlaneMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::GetPlaneMode() const
+{
+  return myPlaneMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetRevolutionMode(const bool mode)
+{
+  myRevolutionMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::GetRevolutionMode() const
+{
+  return myRevolutionMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetExtrusionMode(const bool mode)
+{
+  myExtrusionMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::GetExtrusionMode() const
+{
+  return myExtrusionMode;
+}
+
+//=================================================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetBSplineMode(const bool mode)
+{
+  myBSplineMode = mode;
+}
+
+//=================================================================================================
+
+inline bool ShapeUpgrade_ShapeConvertToBezier::GetBSplineMode() const
+{
+  return myBSplineMode;
+}

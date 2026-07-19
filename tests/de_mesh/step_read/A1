@@ -1,0 +1,10 @@
+
+set filename "bug30024_tessell.stp"
+
+ReadStep D [locate_data_file ${filename}]
+
+XGetOneShape S D
+
+set nb_faces     131
+set nb_nodes     2216
+set nb_triangles 2118

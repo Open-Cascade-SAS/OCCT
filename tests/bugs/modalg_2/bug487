@@ -1,0 +1,34 @@
+puts "TODO OCC24156 MacOS: Faulty OCC485: function BLEND works wrongly"
+puts "TODO OCC24156 MacOS: Tcl Exception: result is not a topological shape!!!"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+puts "========================"
+puts " OCC487 "
+puts "========================"
+#######################################################
+## Regression on KAS:dev:ros with respect to OCC4.0
+## Case cfi 900 N3.
+## Fillets are created on OCC4.0
+#######################################################
+
+restore [locate_data_file CFI_pro15441.rle] m 
+explode m e
+
+if [catch {blend result  m 2 m_36 2 m_21 } res] {
+    puts "Faulty OCC485: function BLEND works wrongly"
+} else {
+    puts "OCC485 OK: function BLEND works properly "
+}
+
+explode result sh
+
+renamevar result_1 result
+
+checkprops result -s 6265.68 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+
+
+
+

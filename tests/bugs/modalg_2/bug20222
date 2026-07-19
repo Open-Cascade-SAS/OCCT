@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC20222"
+puts "============"
+puts ""
+#######################################################################
+# Chamfer operation produces incorrect shape (PACE-01-006)
+#######################################################################
+
+set BugNumber OCC20222
+
+restore [locate_data_file OCC20222.brep] s 
+explode s f
+explode s_10 e
+chamf result s s_10_3 50
+
+checkprops result -s 712126 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

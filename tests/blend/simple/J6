@@ -1,0 +1,10 @@
+ellipse w 0 0 0 10 5
+mkedge w w
+wire w w
+mkplane w w
+prism s w 2 0 10
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 1*SCALE1 s_3
+ 
+checkprops result -s 79953.8

@@ -1,0 +1,5 @@
+pcone s 10 5 20
+
+OFFSETSHAPE -1 {} $calcul $type
+
+checkprops result -v 2462.04

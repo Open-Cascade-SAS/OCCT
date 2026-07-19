@@ -1,0 +1,19 @@
+puts "=========="
+puts "OCC24022"
+puts "=========="
+puts ""
+#####################################
+# Slow meshing in BRepMesh
+#####################################
+
+restore [locate_data_file bug24022_hung_mesh.brep] result
+tclean result
+dchrono h restart
+incmesh result 0.1
+dchrono h stop counter incmesh
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,11 @@
+## ====================================
+## Grid	   : CFI001
+## Test    : A3
+## Comment : 
+## ====================================
+
+box s 100 100 100
+explode s E
+blend result s 10 s_5 10 s_6 10 s_10
+
+checkprops result -s 58633.8

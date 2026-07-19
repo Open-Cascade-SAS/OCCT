@@ -1,0 +1,66 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISMaterial
+# Testing command:   AISHasOwnMaterial
+# Note:   Numerical control of setting material
+#
+
+puts "caf003-D4"
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Set shading mode
+vsetdispmode 1
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a material of the shape as NOM_JADE
+set JadeMaterial 18
+AISMaterial D ${aLabel} ${JadeMaterial}
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+# Check the material
+#set aMaterial [lindex [AISMaterial D ${aLabel}] 0]
+set tmpLine [AISMaterial D ${aLabel}]
+set tmpLength [llength ${tmpLine}]
+set aMaterial [lindex ${tmpLine} [expr ${tmpLength} - 1]]
+
+puts "It is not necessary to have the photo for this case."
+
+if { ${aMaterial} != ${JadeMaterial} } {
+	puts "JadeMaterial=${JadeMaterial}"
+	puts "aMaterial=${aMaterial}"
+	puts "The box's material is not NOM_JADE; AISMaterial command: Error"
+        return
+}
+puts "The box's material is NOM_JADE; AISMaterial command: OK"

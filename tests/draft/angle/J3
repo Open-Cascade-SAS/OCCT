@@ -1,0 +1,15 @@
+#K6----------------------------------------------
+beziercurve cb 4  2 0 0  20 10 0  20 20 0  2 30 0 
+polyline pl 2 30 0  2 0 0
+mkedge ed cb
+wire ww ed pl
+mkplane ww ww
+revol rv ww 0 0 0 0 1 0 -180
+profile pf o 2 15 10 p 0 -1 0 1 0 0 l 3 t 0 15 \
+t -3 0  
+revol pr pf 0 15 10 0 0 1 300
+bfuse f rv pr
+nexplode f f
+depouille result f 0 0 1 f_6 1 0 0 25 0 0 1
+
+checkprops result -s 2498.26

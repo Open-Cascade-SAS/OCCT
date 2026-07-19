@@ -1,0 +1,40 @@
+puts "=================================================================================="
+puts "0030630: Visualization - wrong visualization of shape with mirrored transformation"
+puts "Check that local transformation of visualizated object"
+puts "affects only position, not material place"
+puts "=================================================================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+vrotate 3 0 0
+vcamera -persp
+
+# Simple box
+box b 1 1 1
+fmirror b 0 0 0 0 0 1
+vdisplay -dispMode 1 b
+vaspects b -setBackFaceColor RED
+box bb 0.5 0.5 -0.5 0.1 0.1 0.1
+vdisplay -dispMode 1 bb
+vsetcolor bb BLUE
+vfit
+vdump $imagedir/${casename}_simple.png
+if { [vreadpixel 195 220 rgb name] != "BLUE2" } { puts "Error: mirrored box should look inside out" }
+
+# Box with rotation transformation
+vlocation b  -rotate 0 0 0 1 0 0 90
+vlocation bb -rotate 0 0 0 1 0 0 90
+vfit
+vdump $imagedir/${casename}_rotate.png
+if { [vreadpixel 215 230 rgb name] != "BLUE2" } { puts "Error: rotated mirrored box should look inside out" }
+
+# Box with mirror transformation
+vlocation b  -reset
+vlocation b  -mirror 0 -0.5 0 0 1 0
+vlocation bb -reset
+vlocation bb -mirror 0 -0.5 0 0 1 0
+vfit
+vdump $imagedir/${casename}_mirror.png
+if { [vreadpixel 215 230 rgb name] != "BLUE2" } { puts "Error: mirrored mirrored box should look inside out" }

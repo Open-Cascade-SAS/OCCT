@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC58"
+puts "========"
+puts ""
+puts "Shape is incorrect after translation"
+puts "case 2 (JC_Turbine.igs)"
+puts ""
+
+cpulimit 1000
+
+igesbrep [locate_data_file OCC58b.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

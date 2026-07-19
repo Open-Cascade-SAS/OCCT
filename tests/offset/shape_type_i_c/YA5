@@ -1,0 +1,28 @@
+restore [locate_data_file bug28442_simple2.brep] s
+
+offsetparameter 1e-7 c i r
+offsetload s 0
+
+foreach f [explode s f] {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found == 0} {
+    continue
+  }
+  # reverse normal direction for faces with orientation REVERSED  
+  if {[regexp {REVERSED} [whatis $f]]} {
+    set z [expr -1*$z]
+  }
+  # set offset value for top faces only
+  if {abs($z - 1) < 1.e-7 } {
+    offsetonface $f 0.5
+  }
+}
+offsetperform result
+
+checkprops result -v 483.996 -s 587.42
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 16 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

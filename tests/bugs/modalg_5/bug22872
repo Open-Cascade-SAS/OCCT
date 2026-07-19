@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC22872"
+puts "============"
+puts ""
+###########################################################
+# BRepClass3d_SolidClassifier::PerformInfinitePoint fails
+###########################################################
+
+restore [locate_data_file bug22872_solid.brep] result
+solidorientation result
+
+checkprops result -v 24101.9
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

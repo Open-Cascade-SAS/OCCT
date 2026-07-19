@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC25657"
+puts "========"
+puts ""
+###########################################################################################
+#  Bad result of Fillet operation
+###########################################################################################
+
+restore [locate_data_file bug25657_r4.brep] r4
+explode r4 e
+shape c c
+add r4_15 c
+fillet res r4 20 c
+
+explode res f
+
+pcurve res_2
+# exception
+
+pcurve res_5
+# exception
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

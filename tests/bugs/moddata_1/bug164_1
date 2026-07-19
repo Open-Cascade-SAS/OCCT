@@ -1,0 +1,19 @@
+
+puts "================"
+puts "OCC164"
+puts "SAM1478"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC164-1.brep] sh1 
+restore [locate_data_file OCC164-2.brep] sh2
+checkshape sh1
+checkshape sh2
+
+bfuse result sh1 sh2
+checkshape result
+
+checkprops result -s 344595
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,17 @@
+
+puts "==========="
+puts "BUC60707"
+puts "==========="
+puts ""
+#################################################
+## Fillets created in CasCade version 3 do not display as shaded surfaces. 
+#################################################
+restore [locate_data_file buc60707a.brep] result
+checkshape result
+
+tclean result
+incmesh result .1
+triangles result
+
+checktrinfo result -tri
+checkview -display result -3d -path ${imagedir}/${test_image}.png

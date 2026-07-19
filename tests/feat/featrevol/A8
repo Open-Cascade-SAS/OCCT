@@ -1,0 +1,14 @@
+# Original bug : pro13402
+# Date : 25 Nov 98
+
+restore [locate_data_file CFE900_fra61gdz.rle] base
+restore [locate_data_file pro13402_face.brep] cont
+
+explode base face
+copy base_2 funtil
+vertex v1 200 50 200
+
+featrevol base cont cont 200 50 200 0 1 0 1 1
+featperformval revol result 270 funtil
+
+checkprops result -s 190754

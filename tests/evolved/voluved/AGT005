@@ -1,0 +1,24 @@
+puts "=========="
+puts "OCC29523"
+puts "=========="
+
+profile p X 10 Y 2 X -10 W
+polyline t -1 1 0 1.2 1 10
+evolved result -s p -p t -a -solid -v
+
+checkprops result -s 266.546 -v 192.639
+checkshape result
+
+checknbshapes result -solid 1 -shell 1
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in res2"
+}
+
+checkmaxtol result -ref 1.5e-7
+
+smallview
+don result sw tw
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

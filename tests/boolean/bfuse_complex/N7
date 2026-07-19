@@ -1,0 +1,10 @@
+# Original bug : pro15049
+# Date : 26Aout98
+
+restore [locate_data_file pro15049a.rle] a
+restore [locate_data_file pro15049b.rle] b
+
+bfuse result a b
+
+checkprops result -s 741091
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

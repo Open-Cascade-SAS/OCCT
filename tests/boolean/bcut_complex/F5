@@ -1,0 +1,9 @@
+# Original bug : cts19485
+# Date : 19mar98
+
+restore [locate_data_file CTO900_cts19485-part.rle] part
+restore [locate_data_file CTO900_cts19485-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 42297.3
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

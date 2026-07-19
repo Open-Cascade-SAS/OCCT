@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC26201"
+puts "========"
+puts ""
+#############################################################################
+# Wrong processing of dissymetric chamfer: order of chords unjustly changes
+#############################################################################
+
+smallview
+restore [locate_data_file OCC26201_m.brep] m
+copy m m_f
+copy m m_e
+explode m_f f
+explode m_e e
+copy m_e_47 e
+copy m_f_7 f
+donly m f e
+chamf r m e f 0.02 0.01
+explode r v
+explode m v
+donly r_19 m_41
+fit
+donly m r r_19 m_41
+distmini dd r_19 m_41
+set bug_info [dump dd_val]
+if {[lindex $bug_info 5] > 0.01} {
+  puts "ERROR: OCC26201 is reproduced. Minimum distance is too large."
+}
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

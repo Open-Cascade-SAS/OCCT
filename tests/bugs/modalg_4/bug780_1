@@ -1,0 +1,21 @@
+
+puts "========"
+puts "OCC780"
+puts "SAM1239"
+puts "(case 1)"
+puts "========"
+puts ""
+#########################################
+## Fuse and common between two faces are wrong (SAM1239)
+#########################################
+
+restore [locate_data_file OCC780.brep] f 
+explode f f
+checkshape f_1
+checkshape f_2
+
+bcommon result f_1 f_2
+
+checkprops result -s 6283.19 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

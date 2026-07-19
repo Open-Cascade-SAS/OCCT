@@ -1,0 +1,19 @@
+puts "TODO CR33439 ALL: Error :  is WRONG because number of EDGE entities in shape"
+puts "TODO CR33439 ALL: Error :  is WRONG because number of WIRE entities in shape"
+puts "TODO CR33439 ALL: Error :  is WRONG because number of FACE entities in shape"
+
+puts "========================================="
+puts "0033421: Modeling Algorithms - ShapeUpgrade_UnifySameDomain fails"
+puts "========================================="
+puts ""
+
+pcylinder c1 10 10
+copy c1 c2
+tmirror c2 0 0 10 0 0 1
+bop c1 c2
+bopfuse c3
+
+unifysamedom result c3
+
+checknbshapes result -t -solid 1 -shell 1 -face 3 -wire 3 -edge 3 -vertex 3
+checkview -display result -2d -path ${imagedir}/${test_image}.png

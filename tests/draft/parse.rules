@@ -1,0 +1,3 @@
+FAILED /\bFaulty\b/ bad shape
+IGNORE /Error\s+Status\s*:\s*Impossible \w+ recomputation/ in angle G5 (face) G8 (edge)
+OK /Relative error of mass computation/ message from vprops

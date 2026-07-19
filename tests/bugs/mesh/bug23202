@@ -1,0 +1,32 @@
+puts "========="
+puts "OCC23202"
+puts "========="
+puts ""
+#################################
+# BRepMesh of face fails
+#################################
+pload XDE
+stepread [locate_data_file bug23202_Leuchte.stp] a *
+explode a_1 f
+renamevar a_1_714 result
+
+donly result
+smallview
+fit
+isos result 10
+
+set bug_info [incmesh result 0.1]
+if {[regexp "NoError" $bug_info] != 1} {
+    puts "Error: open wire problem on face 714"
+}
+checkshape result
+
+# relative tolerance (%)
+set rel_tol 1
+set area_eps 0
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_face714.png
+v2d
+pcurve result
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_curve.png

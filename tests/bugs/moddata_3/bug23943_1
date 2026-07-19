@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23943"
+puts "============"
+puts ""
+#######################################################################
+# OCC fails to work with offset surfaces with singularities
+#######################################################################
+
+set BugNumber OCC23943
+
+pload XDE
+
+restore [locate_data_file bug23943_a.brep] s
+
+fixshape result s
+checkshape result
+
+regexp {EDGE +: +([-0-9.+eE]+)} [numshapes s] full EDGE_num_s
+
+regexp {EDGE +: +([-0-9.+eE]+)} [numshapes result] full EDGE_num_result
+
+if {${EDGE_num_result} != ${EDGE_num_s} || ${EDGE_num_result} == 0} {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

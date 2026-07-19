@@ -1,0 +1,22 @@
+#circle c1 0 0 0 100
+#mkedge e1 c1 0 pi
+#explode e1 V
+#edge e2 e1_2 e1_1
+#wire w1 e1  e2
+#mkplane w1 w1
+#prism s1 w1 0.0001 20 40
+#prism s2 w1 0 0 -60
+#explode s1 F
+#explode s2 F
+#glue s s1 s2 s1_3 s2_3
+#explode s F
+#sewing s s_1 s_4
+
+restore [locate_data_file 7_C2.draw] s
+tscale s 0 0 0 SCALE1 
+explode s e
+blend result s 15*SCALE1 s_3
+explode result sh
+tcopy result_1 result 
+
+checkprops result -s 803799

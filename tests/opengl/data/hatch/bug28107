@@ -1,0 +1,13 @@
+puts "==========="
+puts "OCC28107: Visualization - provide a flexible interface to set custom hatch styles"
+puts "==========="
+puts ""
+
+pload VISUALIZATION MODELING
+box b 1 1 1
+vinit View1
+vdisplay b -dispMode 1
+vfit
+
+vaspects b -setHatch 4
+vdump $imagedir/${casename}_hatch.png

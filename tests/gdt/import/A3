@@ -1,0 +1,169 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug26689_nist_ctc_03_asme1_ap242.stp
+
+set ref_data {
+
+ NbOfDimensions          : 10
+ NbOfTolerances          : 13
+ NbOfDatumFeature        : 8
+ NbOfAttachedDatum       : 47
+ NbOfDatumTarget         : 0
+
+ 0:1:1:2:2 Shape.5
+ 	 0:1:4:1 GeomTolerance.5.1 ( N "Feature Control Frame (4)" T 12 TV 0, V 0.254 )
+ 0:1:1:2:7 Shape.10
+ 	 0:1:4:6 Dimension.10.1 ( N "linear distance" T 2, V 20.827999999999996, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 0:1:1:2:19 Shape.22
+ 	 0:1:4:39 Dimension.22.1 ( N "diameter" T 15, V 11.1252, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:35 GeomTolerance.22.1 ( N "Feature Control Frame (40)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:36 Datum.22.1.1 ( N "Feature Control Frame (40)" )
+ 	 	 0:1:4:37 Datum.22.1.2 ( N "Feature Control Frame (40)", M 15 )
+ 	 	 0:1:4:38 Datum.22.1.3 ( N "Feature Control Frame (40)", M 15 )
+ 0:1:1:2:20 Shape.23
+ 	 0:1:4:39 Dimension.23.1 ( N "diameter" T 15, V 11.1252, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:35 GeomTolerance.23.1 ( N "Feature Control Frame (40)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:36 Datum.23.1.1 ( N "Feature Control Frame (40)" )
+ 	 	 0:1:4:37 Datum.23.1.2 ( N "Feature Control Frame (40)", M 15 )
+ 	 	 0:1:4:38 Datum.23.1.3 ( N "Feature Control Frame (40)", M 15 )
+ 0:1:1:2:21 Shape.24
+ 	 0:1:4:39 Dimension.24.1 ( N "diameter" T 15, V 11.1252, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:35 GeomTolerance.24.1 ( N "Feature Control Frame (40)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:36 Datum.24.1.1 ( N "Feature Control Frame (40)" )
+ 	 	 0:1:4:37 Datum.24.1.2 ( N "Feature Control Frame (40)", M 15 )
+ 	 	 0:1:4:38 Datum.24.1.3 ( N "Feature Control Frame (40)", M 15 )
+ 0:1:1:2:22 Shape.25
+ 	 0:1:4:39 Dimension.25.1 ( N "diameter" T 15, V 11.1252, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:35 GeomTolerance.25.1 ( N "Feature Control Frame (40)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:36 Datum.25.1.1 ( N "Feature Control Frame (40)" )
+ 	 	 0:1:4:37 Datum.25.1.2 ( N "Feature Control Frame (40)", M 15 )
+ 	 	 0:1:4:38 Datum.25.1.3 ( N "Feature Control Frame (40)", M 15 )
+ 0:1:1:2:28 Shape.31
+ 	 0:1:4:6 Dimension.31.1 ( N "linear distance" T 2, V 20.827999999999996, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:2 GeomTolerance.31.1 ( N "Feature Control Frame (24)" T 12 TV 0, V 0.76200000000000001 )
+ 	 	 0:1:4:3 Datum.31.1.1 ( N "Feature Control Frame (24)" )
+ 	 	 0:1:4:4 Datum.31.1.2 ( N "Feature Control Frame (24)" )
+ 	 	 0:1:4:5 Datum.31.1.3 ( N "Feature Control Frame (24)" )
+ 0:1:1:2:39 Shape.42
+ 	 0:1:4:14 Dimension.42.1 ( N "diameter" T 15, V 50.799999999999997, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:15 GeomTolerance.42.1 ( N "Feature Control Frame (16)" T 10 TV 1, V 1.524 )
+ 	 	 0:1:4:16 Datum.42.1.1 ( N "Feature Control Frame (16)" )
+ 	 	 0:1:4:17 Datum.42.1.2 ( N "Feature Control Frame (16)" )
+ 	 	 0:1:4:18 Datum.42.1.3 ( N "Feature Control Frame (16)" )
+ 0:1:1:2:40 Shape.43
+ 	 0:1:4:14 Dimension.43.1 ( N "diameter" T 15, V 50.799999999999997, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:15 GeomTolerance.43.1 ( N "Feature Control Frame (16)" T 10 TV 1, V 1.524 )
+ 	 	 0:1:4:16 Datum.43.1.1 ( N "Feature Control Frame (16)" )
+ 	 	 0:1:4:17 Datum.43.1.2 ( N "Feature Control Frame (16)" )
+ 	 	 0:1:4:18 Datum.43.1.3 ( N "Feature Control Frame (16)" )
+ 0:1:1:2:48 Shape.51
+ 	 0:1:4:30 Dimension.51.1 ( N "linear distance" T 2, V 19.049999999999997, P 0 )
+ 0:1:1:2:49 Shape.52
+ 	 0:1:4:19 Dimension.52.1 ( N "diameter" T 15, V 38.099999999999994, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:20 GeomTolerance.52.1 ( N "Feature Control Frame (18)" T 10 TV 1, V 2.032 )
+ 	 	 0:1:4:21 Datum.52.1.1 ( N "Feature Control Frame (18)" )
+ 	 	 0:1:4:22 Datum.52.1.2 ( N "Feature Control Frame (18)" )
+ 	 	 0:1:4:23 Datum.52.1.3 ( N "Feature Control Frame (18)" )
+ 	 0:1:4:25 GeomTolerance.52.2 ( N "Feature Control Frame (20)" T 10 TV 0, V 0.76200000000000001 )
+ 	 	 0:1:4:26 Datum.52.2.1 ( N "Feature Control Frame (20)" )
+ 	 	 0:1:4:27 Datum.52.2.2 ( N "Feature Control Frame (20)" )
+ 	 	 0:1:4:28 Datum.52.2.3 ( N "Feature Control Frame (20)" )
+ 0:1:1:2:50 Shape.53
+ 	 0:1:4:19 Dimension.53.1 ( N "diameter" T 15, V 38.099999999999994, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:24 Dimension.53.2 ( N "linear distance" T 2, V 38.099999999999994, P 0 )
+ 	 0:1:4:20 GeomTolerance.53.1 ( N "Feature Control Frame (18)" T 10 TV 1, V 2.032 )
+ 	 	 0:1:4:21 Datum.53.1.1 ( N "Feature Control Frame (18)" )
+ 	 	 0:1:4:22 Datum.53.1.2 ( N "Feature Control Frame (18)" )
+ 	 	 0:1:4:23 Datum.53.1.3 ( N "Feature Control Frame (18)" )
+ 	 0:1:4:25 GeomTolerance.53.2 ( N "Feature Control Frame (20)" T 10 TV 0, V 0.76200000000000001 )
+ 	 	 0:1:4:26 Datum.53.2.1 ( N "Feature Control Frame (20)" )
+ 	 	 0:1:4:27 Datum.53.2.2 ( N "Feature Control Frame (20)" )
+ 	 	 0:1:4:28 Datum.53.2.3 ( N "Feature Control Frame (20)" )
+ 0:1:1:2:51 Shape.54
+ 	 0:1:4:29 Dimension.54.1 ( N "diameter" T 15, V 15.875, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:31 GeomTolerance.54.1 ( N "Feature Control Frame (36)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:32 Datum.54.1.1 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:33 Datum.54.1.2 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:34 Datum.54.1.3 ( N "Feature Control Frame (36)" )
+ 0:1:1:2:52 Shape.55
+ 	 0:1:4:29 Dimension.55.1 ( N "diameter" T 15, V 15.875, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:31 GeomTolerance.55.1 ( N "Feature Control Frame (36)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:32 Datum.55.1.1 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:33 Datum.55.1.2 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:34 Datum.55.1.3 ( N "Feature Control Frame (36)" )
+ 0:1:1:2:53 Shape.56
+ 	 0:1:4:29 Dimension.56.1 ( N "diameter" T 15, V 15.875, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:31 GeomTolerance.56.1 ( N "Feature Control Frame (36)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:32 Datum.56.1.1 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:33 Datum.56.1.2 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:34 Datum.56.1.3 ( N "Feature Control Frame (36)" )
+ 0:1:1:2:54 Shape.57
+ 	 0:1:4:29 Dimension.57.1 ( N "diameter" T 15, V 15.875, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:31 GeomTolerance.57.1 ( N "Feature Control Frame (36)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:32 Datum.57.1.1 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:33 Datum.57.1.2 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:34 Datum.57.1.3 ( N "Feature Control Frame (36)" )
+ 0:1:1:2:55 Shape.58
+ 	 0:1:4:29 Dimension.58.1 ( N "diameter" T 15, V 15.875, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:31 GeomTolerance.58.1 ( N "Feature Control Frame (36)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:32 Datum.58.1.1 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:33 Datum.58.1.2 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:34 Datum.58.1.3 ( N "Feature Control Frame (36)" )
+ 0:1:1:2:56 Shape.59
+ 	 0:1:4:29 Dimension.59.1 ( N "diameter" T 15, V 15.875, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:31 GeomTolerance.59.1 ( N "Feature Control Frame (36)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:32 Datum.59.1.1 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:33 Datum.59.1.2 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:34 Datum.59.1.3 ( N "Feature Control Frame (36)" )
+ 0:1:1:2:57 Shape.60
+ 	 0:1:4:29 Dimension.60.1 ( N "diameter" T 15, V 15.875, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:31 GeomTolerance.60.1 ( N "Feature Control Frame (36)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:32 Datum.60.1.1 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:33 Datum.60.1.2 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:34 Datum.60.1.3 ( N "Feature Control Frame (36)" )
+ 0:1:1:2:58 Shape.61
+ 	 0:1:4:29 Dimension.61.1 ( N "diameter" T 15, V 15.875, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:31 GeomTolerance.61.1 ( N "Feature Control Frame (36)" T 10 TV 1, V 1.27, MR 1 )
+ 	 	 0:1:4:32 Datum.61.1.1 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:33 Datum.61.1.2 ( N "Feature Control Frame (36)" )
+ 	 	 0:1:4:34 Datum.61.1.3 ( N "Feature Control Frame (36)" )
+ 0:1:1:2:123 Shape.126
+ 	 0:1:4:43 GeomTolerance.126.1 ( N "Feature Control Frame (32)" T 12 TV 0, V 1.524 )
+ 	 	 0:1:4:44 Datum.126.1.1 ( N "Feature Control Frame (32)" )
+ 	 	 0:1:4:45 Datum.126.1.2 ( N "Feature Control Frame (32)" )
+ 	 	 0:1:4:46 Datum.126.1.3 ( N "Feature Control Frame (32)" )
+ 	 0:1:4:47 GeomTolerance.126.2 ( N "Feature Control Frame (33)" T 7 TV 0, V 0.127 )
+ 	 0:1:4:48 GeomTolerance.126.3 ( N "Feature Control Frame (34)" T 1 TV 0, V 1.016 )
+ 	 	 0:1:4:49 Datum.126.3.1 ( N "Feature Control Frame (34)" )
+ 0:1:1:2:129 Shape.132
+ 	 0:1:4:1 GeomTolerance.132.1 ( N "Feature Control Frame (4)" T 12 TV 0, V 0.254 )
+ 0:1:1:2:134 Shape.137
+ 	 0:1:4:40 Dimension.137.1 ( N "diameter" T 15, V 27.050999999999998, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:41 GeomTolerance.137.1 ( N "Feature Control Frame (30)" T 9 TV 1, V 0.254 )
+ 	 	 0:1:4:42 Datum.137.1.1 ( N "Feature Control Frame (30)" )
+ 0:1:1:2:135 Shape.138
+ 	 0:1:4:40 Dimension.138.1 ( N "diameter" T 15, V 27.050999999999998, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:41 GeomTolerance.138.1 ( N "Feature Control Frame (30)" T 9 TV 1, V 0.254 )
+ 	 	 0:1:4:42 Datum.138.1.1 ( N "Feature Control Frame (30)" )
+ 0:1:1:2:153 Shape.156
+ 	 0:1:4:7 Dimension.156.1 ( N "diameter" T 15, V 11.1252, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:9 GeomTolerance.156.1 ( N "Feature Control Frame (10)" T 9 TV 1, V 0.254 )
+ 	 	 0:1:4:10 Datum.156.1.1 ( N "Feature Control Frame (10)" )
+ 0:1:1:2:154 Shape.157
+ 	 0:1:4:7 Dimension.157.1 ( N "diameter" T 15, V 11.1252, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:9 GeomTolerance.157.1 ( N "Feature Control Frame (10)" T 9 TV 1, V 0.254 )
+ 	 	 0:1:4:10 Datum.157.1.1 ( N "Feature Control Frame (10)" )
+ 0:1:1:2:155 Shape.158
+ 	 0:1:4:8 Dimension.158.1 ( N "diameter" T 15, V 11.1252, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:11 GeomTolerance.158.1 ( N "Feature Control Frame (11)" T 10 TV 1, V 0.50800000000000001 )
+ 	 	 0:1:4:12 Datum.158.1.1 ( N "Feature Control Frame (11)" )
+ 	 	 0:1:4:13 Datum.158.1.2 ( N "Feature Control Frame (11)" )
+ 0:1:1:2:156 Shape.159
+ 	 0:1:4:8 Dimension.159.1 ( N "diameter" T 15, V 11.1252, VL 64.515999999999991, VU 64.515999999999991, P 0 )
+ 	 0:1:4:11 GeomTolerance.159.1 ( N "Feature Control Frame (11)" T 10 TV 1, V 0.50800000000000001 )
+ 	 	 0:1:4:12 Datum.159.1.1 ( N "Feature Control Frame (11)" )
+ 	 	 0:1:4:13 Datum.159.1.2 ( N "Feature Control Frame (11)" )
+ 0:1:1:2:157 Shape.160
+ 	 0:1:4:24 Dimension.160.1 ( N "linear distance" T 2, V 38.099999999999994, P 0 )
+ 0:1:1:2:158 Shape.161
+ 	 0:1:4:30 Dimension.161.1 ( N "linear distance" T 2, V 19.049999999999997, P 0 )
+}

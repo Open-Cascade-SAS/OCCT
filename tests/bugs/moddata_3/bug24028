@@ -1,0 +1,18 @@
+puts "================"
+puts "CR24028"
+puts "================"
+puts ""
+#######################################################################
+# It is impossible to create a face based on Geom_RectangularTrimmedSurface by standard methods
+#######################################################################
+
+beziercurve cc 3 0 0 -10 1 20 0 0 10 0 0 10 1
+revsurf ss cc 0 0 0 0 0 1
+trimu ts ss 0 pi
+
+mkface result ts
+
+checkprops result -s 1222.58
+
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

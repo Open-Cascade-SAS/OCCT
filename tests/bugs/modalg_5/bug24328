@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC24328"
+puts "================"
+puts ""
+#######################################################################
+# Revolution of a wire generates two interfered faces
+#######################################################################
+
+vertex v1 23.500000 11.123000 0
+vertex v2 22.000000 11.140900 0
+vertex v3 20.500000 11.180700 0
+edge e1 v1 v2
+edge e2 v2 v3
+wire w e1 e2
+revol r w 0 0 0 1 0 0 360
+
+set info [bopcheck r]
+
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : Revolution works wrong"
+} else {
+    puts "OK: Revolution works properly"
+}

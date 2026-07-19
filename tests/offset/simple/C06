@@ -1,0 +1,9 @@
+# Test data:
+puts "USER GUID: N/A"
+restore [locate_data_file bug26578_test_offset_plate6.brep] s
+
+set OffsetValue 60.0
+
+# Reference data.
+set ExpectedMass 2.31634e+007
+set ExpectedMaxTol 2.351

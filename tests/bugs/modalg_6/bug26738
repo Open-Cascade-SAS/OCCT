@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC26738"
+puts "============"
+puts ""
+#######################################################################
+# Make Boolean operations non-destructive when running with fuzzy option
+#######################################################################
+
+restore [locate_data_file bug26619_shell_ft81_h0.brep] h0
+restore [locate_data_file bug26619_the_face.brep] f0
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance h0] full ExpectedMaxTol_h0
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance f0] full ExpectedMaxTol_f0
+
+#turn on non-destructive mode of BOP and fuzzy value;
+#with this combination the test is fail before the fix 26738,
+#as tolerance of input shape is changed
+bnondestructive 1
+bfuzzyvalue 0.1
+
+bclearobjects
+bcleartools
+baddobjects h0
+baddtools f0
+bfillds
+bbop result 4
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance h0] full MaxTol_h0
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance f0] full MaxTol_f0
+
+set tol_abs_MaxTol 0.0001
+set tol_rel_MaxTol 0.0001
+checkreal "MaxTolerance h0" ${MaxTol_h0} ${ExpectedMaxTol_h0} ${tol_abs_MaxTol} ${tol_rel_MaxTol}
+checkreal "MaxTolerance f0" ${MaxTol_f0} ${ExpectedMaxTol_f0} ${tol_abs_MaxTol} ${tol_rel_MaxTol}
+
+checkprops result -l 150.23
+
+set 2dviewer 1

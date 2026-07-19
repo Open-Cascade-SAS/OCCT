@@ -1,0 +1,25 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+puts "TODO OCC12345 ALL: Faulty OCC446"
+###puts "TODO OCC12345 ALL: Error : The area of result shape is"
+
+puts "========"
+puts "OCC446"
+puts "OCC447"
+puts "(case 1)"
+puts "========"
+puts ""
+######################################
+## As result I have fail on shape that it is not closed.
+######################################
+
+restore [locate_data_file OCC446a.brep] result
+
+set che [checkshape result]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC446 (case 1): Source shape is NotClosed"
+} else {
+    puts "OCC446 OK (case 1): Source shape is Closed"
+}
+checkprops result -s 108.845 
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

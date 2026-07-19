@@ -1,0 +1,9 @@
+puts "================================================================="
+puts "OCC27081: Modeling Algorithms - BRepOffsetAPI_MakeOffsetShape fails on shapes with internal edges"
+puts "================================================================="
+puts ""
+
+restore [locate_data_file bug27081.brep] sh
+
+mkoffsetshape result sh 1 1e-7 1 0 i
+checkshape result

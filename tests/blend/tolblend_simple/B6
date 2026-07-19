@@ -1,0 +1,8 @@
+restore [locate_data_file CCH_blendhdq.rle] s
+tscale  s 0 0 0 SCALE 
+explode s e
+blend result s 0.015*SCALE s_2 0.015*SCALE s_22
+explode result Sh
+tcopy result_1 result 
+
+checkprops result -s 23005.9

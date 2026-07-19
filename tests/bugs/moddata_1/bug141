@@ -1,0 +1,17 @@
+
+puts "================"
+puts "OCC141"
+puts "================"
+puts ""
+###############################################
+## exception while do segment operation on BSpline curve.
+###############################################
+
+restore [locate_data_file OCC141.draw] result 
+####        checkshape res   # not a topological shape
+
+segment result -4.76283758432072e-05 1.06458532027221
+
+#let's the segment is displaied only
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

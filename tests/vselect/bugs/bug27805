@@ -1,0 +1,26 @@
+puts "============"
+puts "CR27805"
+puts "AIS_InteractiveContext::FitSelected() is broken for global selection"
+puts "============"
+puts ""
+
+set anImgFitAll $imagedir/${casename}_fitall.png
+set anImgFitSel $imagedir/${casename}_fitsel.png
+set anImgDiff   $imagedir/${casename}_diff.png
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 b
+vfit
+vselect 200 200
+vdump $anImgFitAll
+vfit -selected
+vdump $anImgFitSel
+
+set aDiffRes [diffimage $anImgFitSel $anImgFitAll 0.0 0 0 $anImgDiff]
+if {$aDiffRes != 0} {
+  puts "Error: FitSelected() does not match FitAll() for single object"
+}

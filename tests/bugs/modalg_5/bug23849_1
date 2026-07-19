@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC23849"
+puts "================"
+puts ""
+#######################################################################
+# BOP regression
+#######################################################################
+
+set BugNumber OCC23849
+
+restore [locate_data_file bug23849_segment_1.brep] b1
+restore [locate_data_file bug23849_plane_1.brep] b2
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s empty
+checkshape result

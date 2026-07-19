@@ -1,0 +1,44 @@
+puts "========"
+puts "0031462: Modeling Algorithms - BOP result depends on the arguments order"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31462_obj.brep] s1
+restore [locate_data_file bug31462_tools.brep] s2
+
+tcopy s1 obj
+tcopy s2 sx
+bclearobjects
+bcleartools
+baddobjects obj
+eval baddtools [explode sx]
+bfillds
+bsplit result1
+
+checkshape result1
+if {![regexp "This shape seems to be OK" [bopcheck result1]]} {
+  puts "Error: self-interfering result"
+}
+
+checknbshapes result1 -wire 19 -face 18 -shell 3 -solid 2
+checkprops result1 -s 103.955 -v 38.7982
+
+tcopy s1 obj
+tcopy s2 sx
+bclearobjects
+bcleartools
+baddobjects obj
+explode sx
+baddtools sx_4 sx_5 sx_6 sx_3 sx_2 sx_1
+bfillds
+bsplit result2
+
+checkshape result2
+if {![regexp "This shape seems to be OK" [bopcheck result2]]} {
+  puts "Error: self-interfering result"
+}
+
+checknbshapes result2 -ref [nbshapes result1]
+checkprops result2 -equal result1
+
+checkview -display result1 -2d -path ${imagedir}/${test_image}.png

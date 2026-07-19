@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC6450"
+puts "============"
+puts ""
+######################################################
+# Cannot get common part of two parallel halfspaces
+######################################################
+
+set BugNumber OCC6450
+
+plane pl 100 0 0 1 0 0
+mkface f pl
+halfspace so1 f 0 0 0
+ttranslate f -200 0 0
+trotate f 0 0 0 0 0 1 45
+halfspace so2 f 0 0 0
+bcommon result so1 so2
+if {[dtyp result] == ""} {
+    puts "Faulty ${BugNumber}: operation failed"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

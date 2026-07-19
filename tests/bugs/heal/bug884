@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC884"
+puts "============"
+puts ""
+###################################################
+## ShapeFix_Wire::FixSelfIntersection does not fix 3d curves on planes
+###################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC884.brep] a
+
+OCC884 res a 1.1 1.1
+
+explode res e
+mkplane p res
+pcurve c2d res_1 p
+mkcurve c3d res_1
+
+set list_3 [length $c3d]
+set list_4 [length $c2d]
+
+# len2 is the length of 3d curve
+regexp {The length c3d is +([-0-9.+eE]+)} $list_3 full len2
+
+# len1 is the length of 2d curve
+regexp {The length c2d is +([-0-9.+eE]+)} $list_4 full len1
+
+set percent_max 0.1
+set percent [expr abs(${len2} - ${len1}) / double(${len1}) * 100.]
+
+puts "len1 = ${len1}"
+puts "len2 = ${len2}"
+puts "percent = ${percent}"
+
+if {${percent} > ${percent_max}} {
+  puts "OCC884: Error"
+} else {
+  puts "OCC884: OK"
+}

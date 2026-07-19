@@ -1,0 +1,123 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_DomainError.hxx>
+
+inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
+  const IntRes2d_IntersectionPoint& P1,
+  const IntRes2d_IntersectionPoint& P2,
+  const bool                        Oppos,
+  const bool                        ReverseFlag)
+    :
+
+      oppos(Oppos),
+      first(true),
+      last(true),
+      ptfirst(P1),
+      ptlast(P2)
+{
+  if (ReverseFlag)
+  {
+    if (Oppos)
+    {
+      ptfirst = P2;
+      ptlast  = P1;
+    }
+  }
+}
+
+inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
+  const IntRes2d_IntersectionPoint& P,
+  const bool                        First,
+  const bool                        Oppos,
+  const bool                        ReverseFlag)
+    :
+
+      oppos(Oppos)
+
+{
+  if (ReverseFlag && Oppos)
+  {
+    if (First)
+    {
+      first  = false;
+      last   = true;
+      ptlast = P;
+    }
+    else
+    {
+      first   = true;
+      last    = false;
+      ptfirst = P;
+    }
+  }
+  else
+  {
+    if (First)
+    {
+      first   = true;
+      last    = false;
+      ptfirst = P;
+    }
+    else
+    {
+      first  = false;
+      last   = true;
+      ptlast = P;
+    }
+  }
+}
+
+inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(const bool Oppos)
+    : oppos(Oppos),
+      first(false),
+      last(false)
+
+{
+}
+
+inline bool IntRes2d_IntersectionSegment::IsOpposite() const
+{
+  return oppos;
+}
+
+inline bool IntRes2d_IntersectionSegment::HasFirstPoint() const
+{
+  return first;
+}
+
+inline bool IntRes2d_IntersectionSegment::HasLastPoint() const
+{
+  return last;
+}
+
+inline const IntRes2d_IntersectionPoint& IntRes2d_IntersectionSegment::FirstPoint() const
+{
+
+  if (!first)
+  {
+    throw Standard_DomainError();
+  }
+  return ptfirst;
+}
+
+inline const IntRes2d_IntersectionPoint& IntRes2d_IntersectionSegment::LastPoint() const
+{
+
+  if (!last)
+  {
+    throw Standard_DomainError();
+  }
+  return ptlast;
+}

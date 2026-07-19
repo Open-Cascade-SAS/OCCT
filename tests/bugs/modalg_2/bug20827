@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC20827"
+puts "================"
+puts ""
+#######################################################################################
+# Problem of displaying in SHADING mode
+######################################################################################
+
+set BugNumber OCC20827
+
+restore [locate_data_file OCC20827-ran24s_a-d_1_f107.brep] result
+
+checkprops result -s 9707.82 
+checkshape result
+
+checknbshapes result -vertex 93 -edge 93 -wire 13 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 200
+checkview -display result -3d -path ${imagedir}/${test_image}.png

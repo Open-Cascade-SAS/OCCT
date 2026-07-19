@@ -1,0 +1,46 @@
+puts "================"
+puts "OCC119"
+puts "================"
+puts ""
+
+box a 100 100 100
+explode a e
+
+set mistake 0
+if [catch {blend result_1 a 50 a_10 50 a_5 50 a_12 50 a_3 } catch_result] {
+    set mistake 1
+} else {
+    set mistake 0
+}
+
+if { ${mistake} == 1} {
+    puts " 1) OCC119 OK: BLEND was NOT created and suitable except was given."
+} else {
+    puts "1) OCC119 OK: function BLEND works without suitable except"
+    checkshape result_1
+    explode result_1 e
+
+    if { [catch {blend result_2 result_1 50 result_1_20 50 result_1_22 50 result_1_10} catch_result] } {
+	puts "2) Faulty  OCC119: BLEND was NOT created"
+    } else {
+	puts "2) BLEND OCC199 OK: BLEND was created"
+	checkshape result_2
+    }
+
+    set che [checkshape result_2 r]
+    if { [regexp {OK} $che] != 1 } {
+	puts "Faulty : mistakes are found in shape by checkshape command after BLEND command"
+	puts " Body of the scripts was not executed !"
+    } else {
+	puts "Checking by checkshape - OK"
+
+	vinit
+	vdisplay result_2
+	vsetdispmode result_2 1
+	vfit
+
+	explode result_2 e
+	blend result result_2 50 result_2_20 50 result_2_22 50 result_2_10
+	checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+    }
+}

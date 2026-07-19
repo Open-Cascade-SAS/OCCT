@@ -1,0 +1,11 @@
+# Original bug : buc60172
+# Date : 25Mai98
+
+restore [locate_data_file buc60172a.rle] a
+restore [locate_data_file buc60172b.rle] b
+
+bop a b
+bopcommon result
+
+checkprops result -s 90486.2
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

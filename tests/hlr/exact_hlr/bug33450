@@ -1,0 +1,5 @@
+set viewname "vfront"
+set length 63.8689
+
+restore [locate_data_file bug33450.brep] a
+COMPUTE_HLR $viewname $algotype

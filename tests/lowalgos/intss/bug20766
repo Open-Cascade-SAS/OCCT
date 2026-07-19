@@ -1,0 +1,34 @@
+pload QAcommands
+
+puts "============"
+puts "OCC20766"
+puts "============"
+puts ""
+#######################################################################
+# Intersection of cone with plane in apex point crashes
+#######################################################################
+
+set BugNumber OCC20766
+
+OCC20766 plane 1 0 0 3522.4299999999998
+
+set x -3522.4299999999998
+set y 2540
+set z -1461.4300000000001
+set dx 5449.7857099692965
+set dy 0
+set dz 5537.6938973109054
+set PI180 0.017453292519943295
+set semi-angle [expr 0.46689346637921703 / ${PI180}]
+set radius 0.
+
+cone c ${x} ${y} ${z} ${dx} ${dy} ${dz} ${semi-angle} ${radius}
+
+if [catch { intersect result plane c } ] {
+  puts "Faulty ${BugNumber} : intersect is wrong"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

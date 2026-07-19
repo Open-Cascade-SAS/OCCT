@@ -1,0 +1,31 @@
+
+puts "================"
+puts "BUC61035"
+puts "OCC107"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC107-1.brep] ee 
+checkshape ee
+restore [locate_data_file OCC107-2.brep] ff
+checkshape ff
+
+distmini dd1 ee ff
+
+mkcurve cc ee
+cvalue cc 0 x y z
+vertex vv x y z
+
+distmini dd2 vv ff
+
+set d1 [dset t dd1_val]
+set d2 [dset t dd2_val]
+
+if { [expr abs([expr $d1 - $d2])] > 0.1} then {
+    puts "Faulty :WRONG computation of distances."
+} else {
+    puts "All is OK" 
+}
+
+
+

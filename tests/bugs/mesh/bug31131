@@ -1,0 +1,32 @@
+puts "========="
+puts "0031131: Mesh - location of Wire affects Poly_Polygon3D"
+puts "========="
+puts ""
+
+vertex v1  0  0 0
+vertex v2 10  0 0
+vertex v3 10 10 0
+edge e12 v1 v2
+edge e23 v2 v3
+wire w e12 e23
+tcopy w w0
+copy w w11
+copy w w12
+copy w w13
+ttranslate w12 0 0 10
+ttranslate w13 0 0 20
+compound w11 w12 w13 c
+incmesh c 1
+vclear
+vinit View1
+vdefaults -autoTriang 0
+explode w11 v
+#vdisplay w11 w0 w11_1 w11_2 w11_3
+vdisplay w11 w11_1 w11_2 w11_3
+vfit
+
+bounding w11 -save xmin ymin zmin xmax ymax zmax
+checkpoint Min [list [dval xmin] [dval ymin] [dval zmin]] { -1 -1 -1 } 0.0001
+checkpoint Max [list [dval xmax] [dval ymax] [dval zmax]] { 11 11  1 } 0.0001
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

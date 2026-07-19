@@ -1,0 +1,2 @@
+source [locate_data_file equipement_chambre.asm.1.gdml.tcl]
+

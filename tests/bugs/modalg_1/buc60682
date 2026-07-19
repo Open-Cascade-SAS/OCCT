@@ -1,0 +1,19 @@
+puts "=================="
+puts "BUC60682"
+puts "=================="
+
+restore [locate_data_file buc60682a.brep] shell1 
+restore [locate_data_file buc60682b.brep] shell2
+
+bsection result shell1 shell2
+
+checkshape result
+if {[lindex [checksection result] 4] != 2} {
+  puts "Error: section is incomplete"
+}
+
+checkprops result -l 5.76248
+
+checknbshapes result -edge 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

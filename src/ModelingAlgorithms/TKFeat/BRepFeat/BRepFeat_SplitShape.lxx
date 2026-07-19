@@ -1,0 +1,86 @@
+// Created on: 1995-09-04
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <LocOpe_WiresOnShape.hxx>
+
+//=================================================================================================
+
+inline BRepFeat_SplitShape::BRepFeat_SplitShape() = default;
+
+//=================================================================================================
+
+inline BRepFeat_SplitShape::BRepFeat_SplitShape(const TopoDS_Shape& S)
+    : mySShape(S)
+{
+  myWOnShape = new LocOpe_WiresOnShape(S);
+}
+
+//=================================================================================================
+
+inline bool BRepFeat_SplitShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges)
+{
+  return myWOnShape->Add(theEdges);
+}
+
+//=================================================================================================
+
+inline void BRepFeat_SplitShape::Init(const TopoDS_Shape& S)
+{
+  mySShape.Init(S);
+  if (myWOnShape.IsNull())
+  {
+    myWOnShape = new LocOpe_WiresOnShape(S);
+  }
+  else
+  {
+    myWOnShape->Init(S);
+  }
+}
+
+//=================================================================================================
+
+inline void BRepFeat_SplitShape::SetCheckInterior(const bool ToCheckInterior)
+{
+  myWOnShape->SetCheckInterior(ToCheckInterior);
+}
+
+//=================================================================================================
+
+inline void BRepFeat_SplitShape::Add(const TopoDS_Wire& W, const TopoDS_Face& F)
+{
+  myWOnShape->Bind(W, F);
+}
+
+//=================================================================================================
+
+inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
+{
+  myWOnShape->Bind(E, F);
+}
+
+//=================================================================================================
+
+inline void BRepFeat_SplitShape::Add(const TopoDS_Compound& Comp, const TopoDS_Face& F)
+{
+  myWOnShape->Bind(Comp, F);
+}
+
+//=================================================================================================
+
+inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E, const TopoDS_Edge& EOn)
+{
+  myWOnShape->Bind(E, EOn);
+}

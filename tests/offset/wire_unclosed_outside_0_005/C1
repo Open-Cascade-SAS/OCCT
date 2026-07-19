@@ -1,0 +1,15 @@
+#puts "TODO OCC23068 ALL: Error : big tolerance of shape result"
+#puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+#puts "TODO OCC24255 ALL: An exception was caught" 
+puts "TODO OCC24255 ALL: Error: Offset is not done." 
+puts "TODO OCC24255 ALL: Error: The command cannot be built"
+puts "TODO OCC24255 ALL: Error : The offset cannot be built."
+
+
+restore [locate_data_file offset_wire_072.brep] s
+
+set length 116267
+set nbsh_v 301
+set nbsh_e 301
+set nbsh_w 1
+

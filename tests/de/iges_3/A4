@@ -1,0 +1,26 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename BUC40132.igs
+
+set ref_data {
+DATA        : Faulties = 6  ( 0 )  Warnings = 0  ( 0 )  Summary  = 6  ( 0 )
+TPSTAT      : Faulties = 12  ( 238 )  Warnings = 473  ( 2625 )  Summary  = 485  ( 2863 )
+CHECKSHAPE  : Wires    = 4  ( 4 )  Faces    = 4  ( 4 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1346  ( 1345 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1346  ( 1345 )   FreeWire = 96  ( 170 ) 
+TOLERANCE   : MaxTol   =   0.8099726869  (    1.367966665 )  AvgTol   =  0.008043601785  (  0.008389705625 )
+LABELS      : N0Labels = 27  ( 27 )  N1Labels = 2035  ( 7105 )  N2Labels = 0  ( 0 )   TotalLabels = 2062  ( 7132 )   NameLabels = 1971  ( 2440 )   ColorLabels = 2049  ( 7131 )   LayerLabels = 1958  ( 7131 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 11  ( 12 )
+COLORS      : Colors   = BLUE CYAN CYAN2 DARKGOLDENROD GREEN MAGENTA PALEVIOLETRED1 RED TURQUOISE2 WHITE YELLOW  ( BLUE CYAN CYAN2 DARKGOLDENROD GRAY53 GREEN MAGENTA PALEVIOLETRED1 RED TURQUOISE2 WHITE YELLOW )
+NLAYERS     : NLayers  = 26  ( 27 )
+LAYERS      : Layers   = 10 101 102 104 105 106 11 13 200 201 21 23 25 250 29 32 38 50 53 61 63 73 74 75 83 9  ( 10 101 102 104 105 106 11 13 200 201 21 23 24 25 250 29 32 38 50 53 61 63 73 74 75 83 9 )
+
+}

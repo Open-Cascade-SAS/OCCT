@@ -1,0 +1,41 @@
+puts "========"
+puts "OCC28189"
+puts "========"
+puts ""
+#################################################
+# Result of Boolean operation is non-manifold wire
+#################################################
+
+vertex v1 0 0 0
+vertex v2 1 0 0
+vertex v3 1 1 0
+vertex v4 0 1 0
+edge e1 v1 v2
+edge e2 v3 v2
+edge e3 v3 v4
+edge e4 v1 v4
+
+compound e1 e2 e3 e4 edges
+edgestowire result edges
+
+if {![regexp "WIRE" [whatis result]]} {
+  puts "Error: Wire is not created"
+}
+
+explode result
+
+if {![regexp "FORWARD" [whatis result_1]]} {
+  puts "Error: Incorrect orientation of edges in wire"
+}
+
+if {![regexp "REVERSED" [whatis result_2]]} {
+  puts "Error: Incorrect orientation of edges in wire"
+}
+
+if {![regexp "FORWARD" [whatis result_3]]} {
+  puts "Error: Incorrect orientation of edges in wire"
+}
+
+if {![regexp "REVERSED" [whatis result_4]]} {
+  puts "Error: Incorrect orientation of edges in wire"
+}

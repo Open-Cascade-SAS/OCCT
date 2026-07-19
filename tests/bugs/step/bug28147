@@ -1,0 +1,14 @@
+puts "========="
+puts "OCC28147"
+puts "========="
+puts ""
+#######################################################################
+# Data Exchange - NULL dereference while reading color from STEP file
+#######################################################################
+
+ReadStep D [locate_data_file bug28147_file1.stp]
+XShow D
+vfit
+vsetdispmode 1
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

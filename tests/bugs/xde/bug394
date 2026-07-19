@@ -1,0 +1,58 @@
+puts "================"
+puts "OCC394"
+puts "SAM1296"
+puts "================"
+puts ""
+###################################################################
+## After operation "Merge edges" tolerance shape increased from 5 to 198.
+###################################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC394.brep] a
+
+OCC394 r a 10000 2 1.57
+
+regexp { +Face +: +Min +([-0-9.+eE]+)} [maxtolerance a] full face_a_tolerance
+regexp { +Edge +: +Min +([-0-9.+eE]+)} [maxtolerance a] full edge_a_tolerance
+regexp { +Vertex +: +Min +([-0-9.+eE]+)} [maxtolerance a] full vertex_a_tolerance
+
+set max_a_tolerance ${face_a_tolerance}
+if {${edge_a_tolerance} > ${max_a_tolerance}} {
+   set max_a_tolerance ${edge_a_tolerance}
+}
+if {${vertex_a_tolerance} > ${max_a_tolerance}} {
+   set max_a_tolerance ${vertex_a_tolerance}
+}
+
+regexp { +Face +: +Min +([-0-9.+eE]+)} [maxtolerance r] full face_r_tolerance
+regexp { +Edge +: +Min +([-0-9.+eE]+)} [maxtolerance r] full edge_r_tolerance
+regexp { +Vertex +: +Min +([-0-9.+eE]+)} [maxtolerance r] full vertex_r_tolerance
+
+set max_r_tolerance ${face_r_tolerance}
+if {${edge_r_tolerance} > ${max_r_tolerance}} {
+   set max_r_tolerance ${edge_r_tolerance}
+}
+if {${vertex_r_tolerance} > ${max_r_tolerance}} {
+   set max_r_tolerance ${vertex_r_tolerance}
+}
+
+puts "\nface_a_tolerance = ${face_a_tolerance}"
+puts "edge_a_tolerance = ${edge_a_tolerance}"
+puts "vertex_a_tolerance = ${vertex_a_tolerance}"
+puts "\nmax_a_tolerance = ${max_a_tolerance}"
+
+puts "\nface_r_tolerance = ${face_r_tolerance}"
+puts "edge_a_tolerance = ${edge_a_tolerance}"
+puts "vertex_a_tolerance = ${vertex_a_tolerance}"
+puts "\nmax_r_tolerance = ${max_r_tolerance}\n"
+
+if { ${max_a_tolerance} < ${max_r_tolerance} } {
+    puts "OCC394 - Error"
+} else {
+    puts "OCC394 - OK"
+}
+
+renamevar r result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

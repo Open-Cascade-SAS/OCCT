@@ -1,0 +1,15 @@
+# Original bug : cts20722
+# Date : 21August98
+
+restore [locate_data_file CTO900_cts20722c.rle] base
+restore [locate_data_file cts20722b.rle] cont
+restore [locate_data_file cts20722c.rle] funtil
+
+explode cont face
+#explode base face
+#copy base_14 funtil
+
+featprism base cont_1 cont_1 0 0 1 0 1
+featperform prism result funtil
+
+checkprops result -s 31415

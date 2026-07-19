@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC25095"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result obtained by projection algorithm
+#######################################################################
+
+restore [locate_data_file bug25095_fz639.brep] b1
+restore [locate_data_file bug25095_fz5075.brep] b2
+
+mksurface s1 b1
+bopcurves b1 b2
+
+trim ct1 c_1 0.79929107016766299 7.0824763773472492
+trim ct2 c_1 0.79929107016766343 7.0824763773472501
+
+project cp1 ct1 s1
+project cp2 ct2 s1
+checklength cp1 -l 7.2783309522
+checklength cp2 -l 7.2783309522
+
+#v2d2
+view 1 -2D-  728 20 400 400
+
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

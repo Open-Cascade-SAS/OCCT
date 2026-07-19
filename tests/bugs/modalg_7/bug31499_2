@@ -1,0 +1,36 @@
+puts "============================================================================================="
+puts "OCC31499: Boolean Operations - Custom fuzzy value corrupts the result of CUT"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug31499.brep] s
+
+explode s So
+explode s_1 f; copy s_1_3 f1
+explode s_2 f; copy s_2_4 f2
+
+foreach c [directory c_*] { unset $c }
+
+bfuzzyvalue 1.e-7
+regexp {Tolerance Reached=([-0-9.+eE]*)} [bopcurves f1 f2 -2d] full tol3D1
+
+set length1 0.0
+foreach c [directory c_*] {
+  set length1 [dval $length1+[dval [lindex [length $c] 4]]]
+}
+
+foreach c [directory c_*] { unset $c }
+
+bfuzzyvalue 1.e-5
+regexp {Tolerance Reached=([-0-9.+eE]*)} [bopcurves f1 f2 -2d] full tol3D2
+
+set length2 0.0
+foreach c [directory c_*] {
+  set length2 [dval $length2+[dval [lindex [length $c] 4]]]
+}
+
+checkreal "Length of curves" $length2 $length1 1.e-7 1.e-7
+
+if {$tol3D2 > 1.e-5} {
+  puts "Error: Face/Face intersection tolerance is too big when using fuzzy value"
+}

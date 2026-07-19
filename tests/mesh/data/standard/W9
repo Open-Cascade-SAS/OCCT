@@ -1,0 +1,13 @@
+set TheFileName shading_wrongshape_029.brep
+###set bug_withouttri "OCC22687"
+###set nbwithouttri(All) 1
+###set bug_freelinks "OCC22687"
+###if { [string compare $command "shading"] == 0 } {
+###   set bug_freenodes "OCC23105"
+###   set nbfreenodes(ALL) 2
+###   set nbfree(ALL) 12
+###} else {
+###   set bug_freenodes "OCC23105"
+###   set nbfreenodes(ALL) 2
+###   set nbfree(ALL) 8
+###}

@@ -1,0 +1,5 @@
+restore [locate_data_file  bug26261_notched_2.brep] s
+fixshape  r  s  -maxtaila 1  -maxtailw 1e-2
+
+checknbshapes  r  -vertex 3  -edge 3  -wire 1  -face 1  -shell 0  -solid 0  -compsolid 0  -compound 0
+checkprops r -l 21.767418596938622

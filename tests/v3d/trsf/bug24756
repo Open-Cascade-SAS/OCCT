@@ -1,0 +1,16 @@
+puts "============"
+puts "CR24756: AIS_ConnectedInteractive does not support nested AIS_ConnectedInteractive"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+vinit View1
+box b 1 1 1
+vdisplay b
+vconnectto b1 2 0 0 b
+vconnectto b2 2 0 0 b1
+vsetlocation b1 2 1 0
+vfit
+
+vdump ${imagedir}/${casename}.png

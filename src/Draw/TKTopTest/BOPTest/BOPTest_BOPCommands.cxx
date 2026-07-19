@@ -1,0 +1,871 @@
+// Created on: 2000-03-16
+// Created by: Peter KURNEV
+// Copyright (c) 2000-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_MakerVolume.hxx>
+#include <BOPAlgo_Operation.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Section.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPTest.hxx>
+#include <BOPTest_Objects.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+#include <BRepTest_Objects.hxx>
+#include <DBRep.hxx>
+#include <Draw.hxx>
+#include <DrawTrSurf.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <IntTools_Curve.hxx>
+#include <IntTools_FaceFace.hxx>
+#include <IntTools_PntOn2Faces.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <Draw_ProgressIndicator.hxx>
+
+#include <cstdio>
+//
+//
+static BOPAlgo_PaveFiller* pPF = nullptr;
+//
+
+static int bopsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp);
+//
+static int bsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp);
+//
+static int bop(Draw_Interpretor&, int, const char**);
+static int bopsection(Draw_Interpretor&, int, const char**);
+static int boptuc(Draw_Interpretor&, int, const char**);
+static int bopcut(Draw_Interpretor&, int, const char**);
+static int bopfuse(Draw_Interpretor&, int, const char**);
+static int bopcommon(Draw_Interpretor&, int, const char**);
+//
+static int bsection(Draw_Interpretor&, int, const char**);
+static int btuc(Draw_Interpretor&, int, const char**);
+static int bcut(Draw_Interpretor&, int, const char**);
+static int bfuse(Draw_Interpretor&, int, const char**);
+static int bcommon(Draw_Interpretor&, int, const char**);
+//
+static int bopcurves(Draw_Interpretor&, int, const char**);
+static int mkvolume(Draw_Interpretor&, int, const char**);
+
+//=================================================================================================
+
+void BOPTest::BOPCommands(Draw_Interpretor& theCommands)
+{
+  static bool done = false;
+  if (done)
+  {
+    return;
+  }
+  done = true;
+  // Chapter's name
+  const char* g = "BOPTest commands";
+  // Commands
+
+  theCommands.Add("bop", "use bop s1 s2", __FILE__, bop, g);
+  theCommands.Add("bopcommon", "use bopcommon r", __FILE__, bopcommon, g);
+  theCommands.Add("bopfuse", "use bopfuse r", __FILE__, bopfuse, g);
+  theCommands.Add("bopcut", "use bopcut r", __FILE__, bopcut, g);
+  theCommands.Add("boptuc", "use boptuc r", __FILE__, boptuc, g);
+  theCommands.Add("bopsection", "use bopsection r", __FILE__, bopsection, g);
+  //
+  theCommands.Add("bcommon", "use bcommon r s1 s2", __FILE__, bcommon, g);
+  theCommands.Add("bfuse", "use bfuse r s1 s2", __FILE__, bfuse, g);
+  theCommands.Add("bcut", "use bcut r s1 s2", __FILE__, bcut, g);
+  theCommands.Add("btuc", "use btuc r s1 s2", __FILE__, btuc, g);
+  theCommands.Add("bsection",
+                  "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na]"
+                  "Builds section between shapes. Options:\n"
+                  "-n2d/-n2d1/-n2d2 - disable the PCurve construction;\n"
+                  "-na - disables the approximation of the section curves.\n",
+                  __FILE__,
+                  bsection,
+                  g);
+  //
+  theCommands.Add("bopcurves",
+                  "use bopcurves F1 F2 [-2d/-2d1/-2d2] "
+                  "[-p u1 v1 u2 v2 (to add start points] [-v (for extended output)]",
+                  __FILE__,
+                  bopcurves,
+                  g);
+  theCommands.Add("mkvolume",
+                  "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni] [-ai]",
+                  __FILE__,
+                  mkvolume,
+                  g);
+}
+
+//=================================================================================================
+
+int bop(Draw_Interpretor& di, int n, const char** a)
+{
+  bool                           bRunParallel, bNonDestructive;
+  double                         aTol;
+  TopoDS_Shape                   aS1, aS2;
+  NCollection_List<TopoDS_Shape> aLC;
+  //
+  if (n != 3)
+  {
+    di << " use bop s1 s2 \n";
+    return 0;
+  }
+  //
+  aS1 = DBRep::Get(a[1]);
+  aS2 = DBRep::Get(a[2]);
+  //
+  if (aS1.IsNull() || aS2.IsNull())
+  {
+    di << " null shapes are not allowed \n";
+    return 0;
+  }
+  //
+  aTol                                          = BOPTest_Objects::FuzzyValue();
+  bRunParallel                                  = BOPTest_Objects::RunParallel();
+  bNonDestructive                               = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum                    aGlue     = BOPTest_Objects::Glue();
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+  //
+  aLC.Append(aS1);
+  aLC.Append(aS2);
+  //
+  delete pPF;
+  pPF                                        = nullptr;
+  occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
+  pPF                                        = new BOPAlgo_PaveFiller(aAL);
+  //
+  pPF->SetArguments(aLC);
+  pPF->SetFuzzyValue(aTol);
+  pPF->SetRunParallel(bRunParallel);
+  pPF->SetNonDestructive(bNonDestructive);
+  pPF->SetGlue(aGlue);
+  pPF->SetUseOBB(BOPTest_Objects::UseOBB());
+  //
+  pPF->Perform(aProgress->Start());
+  BOPTest::ReportAlerts(pPF->GetReport());
+  //
+  return 0;
+}
+
+//=================================================================================================
+
+int bopcommon(Draw_Interpretor& di, int n, const char** a)
+{
+  return bopsmt(di, n, a, BOPAlgo_COMMON);
+}
+
+//=================================================================================================
+
+int bopfuse(Draw_Interpretor& di, int n, const char** a)
+{
+  return bopsmt(di, n, a, BOPAlgo_FUSE);
+}
+
+//=================================================================================================
+
+int bopcut(Draw_Interpretor& di, int n, const char** a)
+{
+  return bopsmt(di, n, a, BOPAlgo_CUT);
+}
+
+//=================================================================================================
+
+int boptuc(Draw_Interpretor& di, int n, const char** a)
+{
+  return bopsmt(di, n, a, BOPAlgo_CUT21);
+}
+
+//=================================================================================================
+
+int bopsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp)
+{
+  if (n < 2)
+  {
+    di << " use bopsmt r\n";
+    return 0;
+  }
+  //
+  if (!pPF)
+  {
+    di << " prepare PaveFiller first\n";
+    return 0;
+  }
+  //
+  if (pPF->HasErrors())
+  {
+    di << " PaveFiller has not been done\n";
+    return 0;
+  }
+  //
+  bool        bRunParallel;
+  int         aNb;
+  BOPAlgo_BOP aBOP;
+  //
+  const NCollection_List<TopoDS_Shape>& aLC = pPF->Arguments();
+  aNb                                       = aLC.Extent();
+  if (aNb != 2)
+  {
+    di << " wrong number of arguments " << aNb << '\n';
+    return 0;
+  }
+  //
+  bRunParallel                                  = BOPTest_Objects::RunParallel();
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+  //
+  const TopoDS_Shape& aS1 = aLC.First();
+  const TopoDS_Shape& aS2 = aLC.Last();
+  //
+  aBOP.AddArgument(aS1);
+  aBOP.AddTool(aS2);
+  aBOP.SetOperation(aOp);
+  aBOP.SetRunParallel(bRunParallel);
+  aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
+  aBOP.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
+  //
+  aBOP.PerformWithFiller(*pPF, aProgress->Start());
+  BOPTest::ReportAlerts(aBOP.GetReport());
+
+  // Store the history of Boolean operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    BRepTest_Objects::SetHistory(aBOP.History());
+  }
+
+  if (aBOP.HasErrors())
+  {
+    return 0;
+  }
+  //
+  const TopoDS_Shape& aR = aBOP.Shape();
+  if (aR.IsNull())
+  {
+    di << " null shape\n";
+    return 0;
+  }
+  //
+  DBRep::Set(a[1], aR);
+  return 0;
+}
+
+//=================================================================================================
+
+int bopsection(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 2)
+  {
+    di << " use bopsection r\n";
+    return 0;
+  }
+  //
+  if (!pPF)
+  {
+    di << " prepare PaveFiller first\n";
+    return 0;
+  }
+  //
+  if (pPF->HasErrors())
+  {
+    di << " PaveFiller has not been done\n";
+    return 0;
+  }
+  //
+  bool            bRunParallel;
+  int             aNb;
+  BOPAlgo_Section aBOP;
+  //
+  const NCollection_List<TopoDS_Shape>& aLC = pPF->Arguments();
+  aNb                                       = aLC.Extent();
+  if (aNb != 2)
+  {
+    di << " wrong number of arguments " << aNb << '\n';
+    return 0;
+  }
+  //
+  bRunParallel = BOPTest_Objects::RunParallel();
+  //
+  const TopoDS_Shape& aS1 = aLC.First();
+  const TopoDS_Shape& aS2 = aLC.Last();
+  //
+  aBOP.AddArgument(aS1);
+  aBOP.AddArgument(aS2);
+  aBOP.SetRunParallel(bRunParallel);
+  aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
+  aBOP.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
+  //
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+  aBOP.PerformWithFiller(*pPF, aProgress->Start());
+  BOPTest::ReportAlerts(aBOP.GetReport());
+
+  // Store the history of Section operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    BRepTest_Objects::SetHistory(aBOP.History());
+  }
+
+  if (aBOP.HasErrors())
+  {
+    return 0;
+  }
+  //
+  const TopoDS_Shape& aR = aBOP.Shape();
+  if (aR.IsNull())
+  {
+    di << " null shape\n";
+    return 0;
+  }
+  //
+  DBRep::Set(a[1], aR);
+  return 0;
+}
+
+//=================================================================================================
+
+int bcommon(Draw_Interpretor& di, int n, const char** a)
+{
+  return bsmt(di, n, a, BOPAlgo_COMMON);
+}
+
+//=================================================================================================
+
+int bfuse(Draw_Interpretor& di, int n, const char** a)
+{
+  return bsmt(di, n, a, BOPAlgo_FUSE);
+}
+
+//=================================================================================================
+
+int bcut(Draw_Interpretor& di, int n, const char** a)
+{
+  return bsmt(di, n, a, BOPAlgo_CUT);
+}
+
+//=================================================================================================
+
+int btuc(Draw_Interpretor& di, int n, const char** a)
+{
+  return bsmt(di, n, a, BOPAlgo_CUT21);
+}
+
+//=================================================================================================
+
+int bsection(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 4)
+  {
+    di << "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na] [tol]\n";
+    return 0;
+  }
+  //
+  TopoDS_Shape aS1, aS2;
+  //
+  aS1 = DBRep::Get(a[2]);
+  aS2 = DBRep::Get(a[3]);
+  if (aS1.IsNull() || aS2.IsNull())
+  {
+    di << " Null shapes are not allowed \n";
+    return 0;
+  }
+  //
+  bool   bRunParallel, bNonDestructive, bApp, bPC1, bPC2;
+  double aTol;
+  //
+  bApp                   = true;
+  bPC1                   = true;
+  bPC2                   = true;
+  aTol                   = BOPTest_Objects::FuzzyValue();
+  bRunParallel           = BOPTest_Objects::RunParallel();
+  bNonDestructive        = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
+  //
+  for (int i = 4; i < n; ++i)
+  {
+    if (!strcmp(a[i], "-n2d"))
+    {
+      bPC1 = false;
+      bPC2 = false;
+    }
+    else if (!strcmp(a[i], "-n2d1"))
+    {
+      bPC1 = false;
+    }
+    else if (!strcmp(a[i], "-n2d2"))
+    {
+      bPC2 = false;
+    }
+    else if (!strcmp(a[i], "-na"))
+    {
+      bApp = false;
+    }
+  }
+  //
+  BRepAlgoAPI_Section aSec(aS1, aS2, false);
+  //
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+  aSec.Approximation(bApp);
+  aSec.ComputePCurveOn1(bPC1);
+  aSec.ComputePCurveOn2(bPC2);
+  //
+  aSec.SetFuzzyValue(aTol);
+  aSec.SetRunParallel(bRunParallel);
+  aSec.SetNonDestructive(bNonDestructive);
+  aSec.SetGlue(aGlue);
+  aSec.SetUseOBB(BOPTest_Objects::UseOBB());
+  //
+  aSec.Build(aProgress->Start());
+  // Store the history of Section operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    BRepTest_Objects::SetHistory(aSec.History());
+  }
+
+  //
+  if (aSec.HasWarnings())
+  {
+    Standard_SStream aSStream;
+    aSec.DumpWarnings(aSStream);
+    di << aSStream;
+  }
+  //
+  if (!aSec.IsDone())
+  {
+    Standard_SStream aSStream;
+    aSec.DumpErrors(aSStream);
+    di << aSStream;
+    return 0;
+  }
+  //
+  const TopoDS_Shape& aR = aSec.Shape();
+  if (aR.IsNull())
+  {
+    di << " null shape\n";
+    return 0;
+  }
+  DBRep::Set(a[1], aR);
+  return 0;
+}
+
+//=================================================================================================
+
+int bsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp)
+{
+  TopoDS_Shape                   aS1, aS2;
+  NCollection_List<TopoDS_Shape> aLC;
+  //
+  if (n != 4)
+  {
+    di << " use bx r s1 s2\n";
+    return 0;
+  }
+  //
+  aS1 = DBRep::Get(a[2]);
+  aS2 = DBRep::Get(a[3]);
+  //
+  if (aS1.IsNull() || aS2.IsNull())
+  {
+    di << " null shapes are not allowed \n";
+    return 0;
+  }
+  aLC.Append(aS1);
+  aLC.Append(aS2);
+  //
+  occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
+  //
+  BOPAlgo_BOP aBOP(aAL);
+  aBOP.AddArgument(aS1);
+  aBOP.AddTool(aS2);
+  aBOP.SetOperation(aOp);
+  // set options
+  aBOP.SetGlue(BOPTest_Objects::Glue());
+  aBOP.SetFuzzyValue(BOPTest_Objects::FuzzyValue());
+  aBOP.SetNonDestructive(BOPTest_Objects::NonDestructive());
+  aBOP.SetRunParallel(BOPTest_Objects::RunParallel());
+  aBOP.SetUseOBB(BOPTest_Objects::UseOBB());
+  aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
+  aBOP.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
+  //
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+  aBOP.Perform(aProgress->Start());
+  BOPTest::ReportAlerts(aBOP.GetReport());
+
+  // Store the history of Boolean operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    BRepTest_Objects::SetHistory(aBOP.PDS()->Arguments(), aBOP);
+  }
+
+  if (aBOP.HasErrors())
+  {
+    return 0;
+  }
+  const TopoDS_Shape& aR = aBOP.Shape();
+  if (aR.IsNull())
+  {
+    di << " null shape\n";
+    return 0;
+  }
+  //
+  DBRep::Set(a[1], aR);
+  return 0;
+}
+
+//=================================================================================================
+
+int bopcurves(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 3)
+  {
+    di << "Usage: bopcurves F1 F2 [-2d/-2d1/-2d2] "
+          "[-p u1 v1 u2 v2 (to add start points] [-v (for extended output)]\n";
+    return 1;
+  }
+  //
+  TopoDS_Shape     S1 = DBRep::Get(a[1]);
+  TopoDS_Shape     S2 = DBRep::Get(a[2]);
+  TopAbs_ShapeEnum aType;
+  //
+  if (S1.IsNull() || S2.IsNull())
+  {
+    di << " Null shapes are not allowed \n";
+    return 1;
+  }
+  //
+  aType = S1.ShapeType();
+  if (aType != TopAbs_FACE)
+  {
+    di << " Type mismatch F1\n";
+    return 1;
+  }
+  aType = S2.ShapeType();
+  if (aType != TopAbs_FACE)
+  {
+    di << " Type mismatch F2\n";
+    return 1;
+  }
+  //
+  const TopoDS_Face& aF1 = *(TopoDS_Face*)(&S1);
+  const TopoDS_Face& aF2 = *(TopoDS_Face*)(&S2);
+  //
+  bool                              aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
+  int                               aNbCurves, aNbPoints;
+  double                            anAppTol;
+  NCollection_List<IntSurf_PntOn2S> aListOfPnts;
+  TCollection_AsciiString           aNm("c_"), aNp("p_");
+  //
+  anAppTol         = 0.0000001;
+  aToApproxC3d     = true;
+  aToApproxC2dOnS1 = false;
+  aToApproxC2dOnS2 = false;
+
+  //
+  bool bExtOut = false;
+  for (int i = 3; i < n; i++)
+  {
+    if (!strcasecmp(a[i], "-2d"))
+    {
+      aToApproxC2dOnS1 = true;
+      aToApproxC2dOnS2 = true;
+    }
+    else if (!strcasecmp(a[i], "-2d1"))
+    {
+      aToApproxC2dOnS1 = true;
+    }
+    else if (!strcasecmp(a[i], "-2d2"))
+    {
+      aToApproxC2dOnS2 = true;
+    }
+    else if (!strcasecmp(a[i], "-p"))
+    {
+      IntSurf_PntOn2S aPt;
+      const double    aU1 = Draw::Atof(a[++i]);
+      const double    aV1 = Draw::Atof(a[++i]);
+      const double    aU2 = Draw::Atof(a[++i]);
+      const double    aV2 = Draw::Atof(a[++i]);
+
+      aPt.SetValue(aU1, aV1, aU2, aV2);
+      aListOfPnts.Append(aPt);
+    }
+    else if (!strcasecmp(a[i], "-v"))
+    {
+      bExtOut = true;
+    }
+    else
+    {
+      di << "Wrong key.\n";
+      di << "To build 2d curves use one of the following keys: -2d/-2d1/-2d2\n";
+      di << "To add start points use the following key: -p u1 v1 u2 v2\n";
+      di << "For extended output use the following key: -v\n";
+      return 1;
+    }
+  }
+  //
+  IntTools_FaceFace aFF;
+  //
+  aFF.SetParameters(aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anAppTol);
+  aFF.SetList(aListOfPnts);
+  aFF.SetFuzzyValue(BOPTest_Objects::FuzzyValue());
+  //
+  aFF.Perform(aF1, aF2, BOPTest_Objects::RunParallel());
+  //
+  anIsDone = aFF.IsDone();
+  if (!anIsDone)
+  {
+    di << "Error: Intersection failed\n";
+    return 0;
+  }
+  //
+  aFF.PrepareLines3D(false);
+  const NCollection_Sequence<IntTools_Curve>&       aSCs = aFF.Lines();
+  const NCollection_Sequence<IntTools_PntOn2Faces>& aSPs = aFF.Points();
+  //
+  aNbCurves = aSCs.Length();
+  aNbPoints = aSPs.Length();
+  if (!aNbCurves && !aNbPoints)
+  {
+    di << " has no 3d curves\n";
+    di << " has no 3d points\n";
+    return 0;
+  }
+  //
+  // curves
+  if (aNbCurves)
+  {
+    double aTolR = 0.;
+    if (!bExtOut)
+    {
+      // find maximal tolerance
+      for (int i = 1; i <= aNbCurves; i++)
+      {
+        const IntTools_Curve& anIC = aSCs(i);
+        if (aTolR < anIC.Tolerance())
+        {
+          aTolR = anIC.Tolerance();
+        }
+      }
+      di << "Tolerance Reached=" << aTolR << "\n";
+    }
+    //
+    di << aNbCurves << " curve(s) found.\n";
+    //
+    for (int i = 1; i <= aNbCurves; i++)
+    {
+      const IntTools_Curve& anIC = aSCs(i);
+
+      const occ::handle<Geom_Curve>& aC3D = anIC.Curve();
+
+      if (aC3D.IsNull())
+      {
+        di << " has Null 3d curve# " << i << "\n";
+        continue;
+      }
+
+      TCollection_AsciiString anIndx(i), aNmx;
+      aNmx = aNm + anIndx;
+
+      const char* nameC = aNmx.ToCString();
+
+      DrawTrSurf::Set(nameC, aC3D);
+      di << nameC << " ";
+      //
+      const occ::handle<Geom2d_Curve>& aPC1 = anIC.FirstCurve2d();
+      const occ::handle<Geom2d_Curve>& aPC2 = anIC.SecondCurve2d();
+      //
+      if (!aPC1.IsNull() || !aPC2.IsNull())
+      {
+        di << "(";
+        //
+        if (!aPC1.IsNull())
+        {
+          TCollection_AsciiString pc1N("c2d1_"), pc1Nx;
+          pc1Nx                = pc1N + anIndx;
+          const char* nameC2d1 = pc1Nx.ToCString();
+          //
+          DrawTrSurf::Set(nameC2d1, aPC1);
+          di << nameC2d1;
+        }
+        //
+        if (!aPC2.IsNull())
+        {
+          TCollection_AsciiString pc2N("c2d2_"), pc2Nx;
+          pc2Nx                = pc2N + anIndx;
+          const char* nameC2d2 = pc2Nx.ToCString();
+          //
+          DrawTrSurf::Set(nameC2d2, aPC2);
+          //
+          if (!aPC1.IsNull())
+          {
+            di << ", ";
+          }
+          di << nameC2d2;
+        }
+        di << ") ";
+      }
+      //
+      if (bExtOut)
+      {
+        di << "\nTolerance: " << anIC.Tolerance() << "\n";
+        di << "Tangential tolerance: " << anIC.TangentialTolerance() << "\n";
+        di << "\n";
+      }
+    }
+    if (!bExtOut)
+    {
+      di << "\n";
+    }
+  }
+  //
+  // points
+  if (aNbPoints)
+  {
+    di << aNbPoints << " point(s) found.\n";
+    //
+    for (int i = 1; i <= aNbPoints; i++)
+    {
+      const IntTools_PntOn2Faces& aPi = aSPs(i);
+      const gp_Pnt&               aP  = aPi.P1().Pnt();
+      //
+      TCollection_AsciiString anIndx(i), aNmx;
+      aNmx              = aNp + anIndx;
+      const char* nameP = aNmx.ToCString();
+      //
+      DrawTrSurf::Set(nameP, aP);
+      di << nameP << " ";
+    }
+    di << "\n";
+  }
+  //
+  return 0;
+}
+
+//=================================================================================================
+
+int mkvolume(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 3)
+  {
+    di << "Usage: mkvolume r b1 b2 ... [-c] [-ni] [-ai]\n";
+    di << "Options:\n";
+    di << " -c  - use this option if the arguments are compounds\n";
+    di << "       containing shapes that should be interfered;\n";
+    di << " -ni - use this option if the arguments should not be interfered;\n";
+    di << " -ai - use this option to avoid internal for solids shapes in the result.\n";
+    return 1;
+  }
+  //
+  const char* usage = "Type mkvolume without arguments for the usage of the command.\n";
+  //
+  bool                           bToIntersect, bRunParallel, bNonDestructive;
+  bool                           bCompounds, bAvoidInternal;
+  int                            i;
+  double                         aTol;
+  TopoDS_Shape                   aS;
+  NCollection_List<TopoDS_Shape> aLS;
+  //
+  aTol                   = BOPTest_Objects::FuzzyValue();
+  bRunParallel           = BOPTest_Objects::RunParallel();
+  bNonDestructive        = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
+  //
+  bToIntersect   = true;
+  bCompounds     = false;
+  bAvoidInternal = false;
+  //
+  for (i = 2; i < n; ++i)
+  {
+    aS = DBRep::Get(a[i]);
+    if (!aS.IsNull())
+    {
+      aLS.Append(aS);
+    }
+    else
+    {
+      if (!strcmp(a[i], "-c"))
+      {
+        bCompounds = true;
+      }
+      else if (!strcmp(a[i], "-ni"))
+      {
+        bToIntersect = false;
+      }
+      else if (!strcmp(a[i], "-ai"))
+      {
+        bAvoidInternal = true;
+      }
+    }
+  }
+  //
+  if (aLS.IsEmpty())
+  {
+    di << "No shapes to process.\n";
+    di << usage;
+    return 1;
+  }
+  //
+  // treat list of arguments for the case of compounds
+  if (bToIntersect && bCompounds)
+  {
+    NCollection_List<TopoDS_Shape>           aLSx;
+    NCollection_List<TopoDS_Shape>::Iterator aItLS;
+    //
+    aItLS.Initialize(aLS);
+    for (; aItLS.More(); aItLS.Next())
+    {
+      const TopoDS_Shape& aSx = aItLS.Value();
+      TopoDS_Iterator     aItS(aSx);
+      for (; aItS.More(); aItS.Next())
+      {
+        const TopoDS_Shape& aSxS = aItS.Value();
+        aLSx.Append(aSxS);
+      }
+    }
+    //
+    aLS.Clear();
+    aLS.Assign(aLSx);
+  }
+  //
+  BOPAlgo_MakerVolume aMV;
+  aMV.SetArguments(aLS);
+  aMV.SetIntersect(bToIntersect);
+  aMV.SetRunParallel(bRunParallel);
+  aMV.SetFuzzyValue(aTol);
+  aMV.SetNonDestructive(bNonDestructive);
+  aMV.SetAvoidInternalShapes(bAvoidInternal);
+  aMV.SetGlue(aGlue);
+  aMV.SetUseOBB(BOPTest_Objects::UseOBB());
+  aMV.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
+  //
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+  aMV.Perform(aProgress->Start());
+  BOPTest::ReportAlerts(aMV.GetReport());
+
+  // Store the history of Volume Maker into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    BRepTest_Objects::SetHistory(aLS, aMV);
+  }
+
+  if (aMV.HasErrors())
+  {
+    return 0;
+  }
+  //
+  const TopoDS_Shape& aR = aMV.Shape();
+  //
+  DBRep::Set(a[1], aR);
+  //
+  return 0;
+}

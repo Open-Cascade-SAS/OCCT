@@ -1,0 +1,24 @@
+puts "================"
+puts "OCC6766"
+puts "================"
+puts ""
+#######################################################################################
+# Invalid result of intersection of a bspline face with a plane
+#######################################################################################
+
+set BugNumber OCC6766
+
+restore [locate_data_file OCC6766.brep] a 
+
+checkshape a
+        
+set Y 4
+plane pl 0 ${Y} 0 0 1 0
+mkface f pl
+bsection result a f
+
+checknbshapes result -vertex 4 -edge 3 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 8
+checkprops result -l 138.474 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

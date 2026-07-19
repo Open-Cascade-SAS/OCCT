@@ -1,0 +1,10 @@
+pcylinder b1 1 2
+dset r sqrt(3)/2
+box b2 -0.5 -r 0 1.45 1.8 1
+trotate b2 0 0 0 0 0 1 60
+
+bop b1 b2
+bopfuse result
+
+checkprops result -s 19.9542
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

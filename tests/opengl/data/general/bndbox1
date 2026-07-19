@@ -1,0 +1,17 @@
+puts "============"
+puts "0029823: Visualization, TKOpenGl - highlighting by Bounding Box mistreats Local Transformation"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+psphere s0 1
+psphere s1 1
+vdisplay -dispMode 1 s0 s1
+vlocation s1 -reset -rotate 0 0 0 1 0 0 20 -translate 2 1 0
+vfit
+vbounding
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,76 @@
+puts "============"
+puts "OCC23746"
+puts "============"
+puts ""
+#######################################################################
+# IGES wheel model fails to load when OCCT unit is meters
+#######################################################################
+
+param write.iges.brep.mode Faces
+dall
+
+tpclear
+newmodel
+param xstep.cascade.unit MM
+igesbrep [locate_data_file bug23746_wheel.igs] a *
+checkshape a
+tpclear
+newmodel
+set aFile1 ${imagedir}/bug23746_wheel-0.igs
+file delete ${aFile1}
+brepiges a ${aFile1}
+
+tpclear
+newmodel
+param xstep.cascade.unit M
+igesbrep [locate_data_file bug23746_wheel.igs] b *
+checkshape b
+tpclear
+newmodel
+set aFile2 ${imagedir}/bug23746_wheel-1.igs
+file delete ${aFile2}
+brepiges b ${aFile2}
+
+tpclear
+newmodel
+param xstep.cascade.unit MM
+igesbrep ${aFile1} a0 *
+checkshape a0
+tpclear
+newmodel
+set aFile3 ${imagedir}/bug23746_wheel-0-0.igs
+file delete ${aFile3}
+brepiges a0 ${aFile3}
+
+tpclear
+newmodel
+param xstep.cascade.unit M
+igesbrep ${aFile1} b0 *
+checkshape b0
+tpclear
+newmodel
+set aFile4 ${imagedir}/bug23746_wheel-0-1.igs
+file delete ${aFile4}
+brepiges b0 ${aFile4}
+
+tpclear
+newmodel
+param xstep.cascade.unit MM
+igesbrep ${aFile2} a1 *
+checkshape a1
+tpclear
+newmodel
+set aFile5 ${imagedir}/bug23746_wheel-1-0.igs
+file delete ${aFile5}
+brepiges a1 ${aFile5}
+
+tpclear
+newmodel
+param xstep.cascade.unit M
+igesbrep ${aFile2} b1 *
+checkshape b1
+tpclear
+newmodel
+set aFile6 ${imagedir}/bug23746_wheel-1-1.igs
+file delete ${aFile6}
+brepiges b1 ${aFile6}

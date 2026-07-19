@@ -1,0 +1,65 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC1228"
+puts "================"
+puts ""
+
+# Tree construction attributes
+#
+# Testing attribute: TDF_TagSource
+#
+# Testing command:   NewChild
+#
+
+# ANALOG: puts "caf005-A3"
+
+# Create a new document and set UndoLimit
+NewDocument Doc BinOcaf
+UndoLimit Doc 100
+
+# Open a transaction
+NewCommand Doc
+
+# Add an attribute to a data framework
+set aLabel1 0:2
+set aName1 Label1
+Label Doc ${aLabel1}
+SetName Doc ${aLabel1} ${aName1}
+
+set aName11 Label11
+set aChild1 [NewChild Doc ${aLabel1}]
+###
+set aChild1 0:2:1
+###
+SetName Doc ${aChild1} ${aName11}
+
+# Close/Open the transaction
+NewCommand Doc
+
+# Save the document
+set aFile ${imagedir}/OCC1228-${casename}.cbf
+file delete ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "OCC1228: ERROR (case 1)"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close Doc
+catch {Open ${aFile} DDoc}
+
+# Get a value of the attribute
+set aGetName1 ""
+set IsDone [catch {set aGetName1 [GetName DDoc ${aChild1}]} aResult]
+if { ${IsDone} != 0 ||
+	${aName11}!=${aGetName1} } {
+	puts "aName11=${aName11} aGetName1=${aGetName1}"
+	puts ${aResult}
+	puts "Get a value of TDF_TagSource attribute from restoring document: Error"
+	puts "OCC1228: ERROR (case 2)"
+} else {
+	puts "Get a value of TDF_TagSource attribute from restoring document: OK"
+	puts "OCC1228: OK"
+}

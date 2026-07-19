@@ -1,0 +1,39 @@
+puts "========"
+puts "OCC26308"
+puts "========"
+puts ""
+###################################################
+# Segmentation fault in BSplCLib::LocateParameter
+###################################################
+
+#Exception is thrown when computing a value of B-spline
+#surfaces in point, which is outside of its domain.
+
+pload XDE
+
+ReadStep D_First [locate_data_file OCC26308-Face.stp]
+XGetOneShape rr D_First
+explode rr f
+mksurface ss rr_1
+
+svalue ss -1.427997381773311e+018 4.512451574816904e+016 xx yy zz
+
+set bug_info_x [dump xx]
+set bug_info_y [dump yy]
+set bug_info_z [dump zz]
+
+set bug_info_x [string trim [string range $bug_info_x [expr {[string last "\n" $bug_info_x] + 1}] [expr {[string length $bug_info_x] - 1}]]]
+set bug_info_y [string trim [string range $bug_info_y [expr {[string last "\n" $bug_info_y] + 1}] [expr {[string length $bug_info_y] - 1}]]]
+set bug_info_z [string trim [string range $bug_info_z [expr {[string last "\n" $bug_info_z] + 1}] [expr {[string length $bug_info_z] - 1}]]]
+
+if {$bug_info_x != -5.42659125962715e+207} {
+  puts "ERROR: OCC26308 is reproduced. X value is incorrect."
+}
+
+if {$bug_info_y != 2.90803974424011e+209} {
+  puts "ERROR: OCC26308 is reproduced. Y value is incorrect."
+}
+
+if {$bug_info_z != -3.1731154470359e+207} {
+  puts "ERROR: OCC26308 is reproduced. Z value is incorrect."
+}

@@ -1,0 +1,45 @@
+puts "============"
+puts "OCC27282"
+puts "============"
+puts ""
+###############################
+## [Regression to 6.9.1] smesh/bugs_00/A6: Cut produces an empty shape
+###############################
+
+set MaxTol 2.9376013151287501e-006
+set GoodNbCurv 1
+
+restore [locate_data_file bug27282_cmpd.brep] a
+explode a f
+
+smallview
+don a_2 a_5
+fit
+
+set log [bopcurves a_2 a_5 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+checkreal ToleranceReached ${Toler} ${MaxTol} 0.0 0.1
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+  
+  for {set i 1} {$i < ${NbCurv}} {incr i} {
+    for {set j [expr $i+1]} {$j <= $NbCurv} {incr j} {
+      mkedge e1 c_$i
+      mkedge e2 c_$j
+      
+      dset dd_val 100.0*${Toler}
+      distmini dd e1 e2
+      
+      if { [dval dd_val] > ${Toler} } {
+        puts "Error: Intersection result is not closed"
+      }
+    }
+  }
+} else {
+  checklength c_1 -l 833.56846557106064
+}

@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC21255"
+puts "============"
+puts ""
+#######################################################################
+# Some problems with 3D chamfer construction
+#######################################################################
+
+set BugNumber OCC21255
+
+restore [locate_data_file OCC21255-1.brep] ss 
+explode ss F
+explode ss_7 E
+
+vinit
+if [catch { chamf result ss ss_7_2 ss_7 5. 5. } ] {
+  puts "Faulty ${BugNumber} : chamf is wrong"
+} else {
+  checkprops result -s 45382.5 
+  checkshape result
+
+  checknbshapes result -vertex 15 -edge 22 -wire 9 -face 9 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 58
+
+  set scale    5.8955238204183011
+  set proj_X   0.62061613798141479
+  set proj_Y   -0.6891753077507019
+  set proj_Z   -0.37399500608444214
+  set up_X     -0.12894462049007416
+  set up_Y     -0.56017255783081055
+  set up_Z     0.81827831268310547
+  set at_X     -56.828238528324
+  set at_Y     -19.8089213662065
+  set at_Z     447.801500039167
+
+  vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+  
+  checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+}

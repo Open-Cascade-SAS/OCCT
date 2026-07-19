@@ -1,0 +1,11 @@
+# Original bug : pro5363
+# Date : 07mar97
+
+box b 100 100 40
+nexplode b f
+profile rev S b_4 F 50 20 Y 50 C 10 180 Y -50 C 10 180
+revol rev2 rev 0 0 50 0 1 0 360
+
+bcut result b rev2
+checkprops result -s 41187.4
+checkview -display result -2d -s -otherwise { b rev2 } -path ${imagedir}/${test_image}.png

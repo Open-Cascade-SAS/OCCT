@@ -1,0 +1,37 @@
+puts "========"
+puts "0025822: Visualization, TKOpenGl - front material should be used instead of back material within distinguish mode turned off"
+puts "========"
+
+pload MODELING OCAF XDE
+box b 10 10 10
+vclear
+vinit View1
+Close D -silent
+NewDocument D BinXCAF
+XAddShape D b
+XSetColor D b BLUE
+explode b f
+XSetColor D b_1 RED
+
+XDisplay D
+vviewparams -proj 1 0.1 0.1
+vfit
+vsetdispmode 1
+
+catch { vclipplane delete pln }
+vclipplane create pln
+vclipplane set pln view Driver1/Viewer1/View1
+vclipplane change pln equation -1 0 0 5
+
+# FFP on
+if { [vdriver -default] == "TKOpenGl" } {
+  vcaps -ffp 1
+  set aColorFfp [vreadpixel 200 200 rgb name]
+  if { "$aColorFfp" != "RED" } { puts "Error: RED color is expected at the back side (FFP)" }
+}
+
+# GLSL on
+vcaps -ffp 0
+set aColorGlsl [vreadpixel 200 200 rgb name]
+if { "$aColorGlsl" != "FIREBRICK" && "$aColorGlsl" != "RED" } { puts "Error: FIREBRICK color is expected at the back side (GLSL)" }
+vdump ${imagedir}/${casename}.png

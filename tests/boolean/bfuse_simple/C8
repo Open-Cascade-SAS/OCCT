@@ -1,0 +1,10 @@
+box b1 0 0 0 1 1 1
+nurbsconvert b1 b1
+dset r sqrt(2)
+box b2 0 0 0 r r/2 1
+trotate b2 0 0 0 0 0 1 45
+
+bfuse result  b2 b1
+
+checkprops result -s 7.82843
+checkview -display result -2d -otherwise {  b2 b1 } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,8 @@
+restore [locate_data_file sf5] b1
+restore [locate_data_file sf55] b2
+
+bop b1 b2
+boptuc result
+
+checkprops result -s 25132.7
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

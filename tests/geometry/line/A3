@@ -1,0 +1,3 @@
+line result 0 0 0 1 1 1
+checkdump result -name {Origin Axis} -ref {{0 0 0} {0.577350269189626 0.577350269189626 0.577350269189626}} -eps 0.01
+checkview -display result -2d -path ${imagedir}/${test_image}.png

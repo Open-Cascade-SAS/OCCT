@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC26882"
+puts "========"
+puts ""
+#############################################################
+# Edge/Edge intersection algorithm produces incorrect result
+#############################################################
+
+restore [locate_data_file bug26882_e1.brep] e1
+restore [locate_data_file bug26882_e2.brep] e2
+
+bclearobjects
+bcleartools
+baddobjects e1
+baddtools e2
+
+bfillds
+
+bbuild result
+
+checkshape result
+
+checknbshapes result -vertex 1 -edge 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

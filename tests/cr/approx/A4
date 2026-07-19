@@ -1,0 +1,16 @@
+sphere sph 1
+mkface f sph 0 2 0 pi/2
+explode f w
+nurbsconvert w f_1
+sphere sph 0.1 0.1 0.1 1
+getanasurf res w sph 1.e-3 sph
+if {[isdraw res]} {
+  set log [dump res]
+  if { [regexp {SphericalSurface} $log ] != 1 } {
+     puts "Error: surface is not a spherical surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+
+

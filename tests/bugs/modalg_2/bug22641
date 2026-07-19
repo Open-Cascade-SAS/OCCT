@@ -1,0 +1,28 @@
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of"
+
+puts "================"
+puts "OCC22641"
+puts "================"
+puts ""
+#######################################################################################
+# Meshing problem on the attached model
+######################################################################################
+
+set BugNumber OCC22641
+
+catch { pload XDE }
+
+testreadstep [locate_data_file OCC22641-RailBosch.stp] result
+
+checkprops result -s 160133 
+checkshape result
+
+checknbshapes result -vertex 7608 -edge 12032 -wire 4750 -face 4444 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 28836
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

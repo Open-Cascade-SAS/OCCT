@@ -1,0 +1,24 @@
+puts "================================="
+puts "0032281: Visualization - add Select3D_SensitiveCylinder"
+puts "Tests selection of Select3D_SensitiveCylinder"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+pcone cone 10 0 20
+vdisplay cone -dispmode 1
+vfit
+vselect 300 200
+if { ![string match "*Selected*" [vstate cone]] } { puts "Error: cone should be selected" }
+vselect 300 101
+if { ![string match "*Selected*" [vstate cone]] } { puts "Error: cone should be selected" }
+vselect 300 300
+if { ![string match "*Selected*" [vstate cone]] } { puts "Error: cone should be selected" }
+
+vselect 357 182
+if { [string match "*Selected*" [vstate cone]] } { puts "Error: cone should be unselected" }
+vselect 242 182
+if { [string match "*Selected*" [vstate cone]] } { puts "Error: cone should be unselected" }
+vselect 310 101
+if { [string match "*Selected*" [vstate cone]] } { puts "Error: cone should be unselected" }

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang=en-us>
+<head>
+<meta charset=utf-8><meta content="text/html; charset=utf-8" http-equiv=Content-Type>
+<link rel="shortcut icon" href="lamp.ico" type="image/x-icon" />
+<title>OCCT Draw Harness</title>
+</head>
+<body>
+
+<h2>OCCT Draw Harness</h2>
+<div>
+  <canvas id=occViewerCanvas oncontextmenu=event.preventDefault() tabindex=-1 style="border:0 none;background-color:#000" width="409" height="409"></canvas>
+</div>
+<h4>For output - open JavaScript console in your Browser.</h4>
+<p id="output"></p>
+<script type="text/javascript" src="DRAWEXE.js" charset="utf-8"></script>
+<script>
+/**
+ * Class defining an interface to DRAWEXE and WebAssembly Module.
+ */
+class DrawTerm
+{
+  /**
+   * Class constructor.
+   */
+  constructor()
+  {
+    // define WebGL canvas for WebAssembly viewer
+    this.canvas = document.getElementById ('occViewerCanvas'); // canvas element for OpenGL context
+    this.canvas.tabIndex = -1;
+    this.canvas.onclick = (theEvent) =>
+    {
+      this.canvas.focus()
+    };
+  }
+
+  /**
+   * C++ std::cout callback redirecting to console.
+   */
+  print (theText)
+  {
+    //var anElement = document.getElementById('output');
+    //anElement.innerHTML += theText + "<br>";
+    console.warn (theText);
+  }
+
+  /**
+   * C++ std::cerr callback redirecting to console.
+   */
+  printErr (theText)
+  {
+    //var anElement = document.getElementById('output');
+    //anElement.innerHTML += theText + "<br>";
+    console.warn (theText);
+  }
+
+  /**
+   * C++ Message::Send() callback redirecting to Terminal.
+   */
+  printMessage (theText, theGravity)
+  {
+    switch (theGravity)
+    {
+      case 0: // trace
+        console.debug (theText);
+        return;
+      case 1: // info
+        console.info (theText);
+        return;
+      case 2: // warning
+        console.warn (theText);
+        return;
+      case 3: // alarm
+      case 4: // fail
+        console.error (theText);
+        return;
+    }
+    console.info (theText);
+  }
+
+  onRuntimeInitialized()
+  {
+    //
+  }
+};
+// Define a global DRAWEXE instance (will be initialized asynchronously).
+var DRAWEXE = new DrawTerm();
+
+//! Check browser support.
+function isWasmSupported()
+{
+  try {
+    if (typeof WebAssembly === "object"
+     && typeof WebAssembly.instantiate === "function") {
+      const aDummyModule = new WebAssembly.Module (Uint8Array.of (0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+      if (aDummyModule instanceof WebAssembly.Module)
+      {
+        return new WebAssembly.Instance(aDummyModule) instanceof WebAssembly.Instance;
+      }
+    }
+  } catch (e) {}
+  return false;
+}
+
+if (!isWasmSupported())
+{
+  var anElement = document.getElementById('output');
+  anElement.innerHTML += "Browser is too old - WebAssembly support is missing!<br>Please check updates or install a modern browser.<br>";
+}
+else
+{
+  // load DRAWEXE.wasm (asynchronously) and wait initialization completion
+  createDRAWEXE(DRAWEXE).then (function(Module) {
+    //DRAWEXE.printMessage ("Hint: use \"pload ALL\" command to load standard commands\r\n", 1);
+    //DRAWEXE.eval ("dversion");
+  }).catch ((theError) => {
+    DRAWEXE.printMessage ("WebAssebly initialization has failed:\r\n" + theError, 4);
+  });
+}
+
+</script>
+</body>
+</html>

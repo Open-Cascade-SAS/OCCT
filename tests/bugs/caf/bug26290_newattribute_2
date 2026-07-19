@@ -1,0 +1,78 @@
+# OCAF VISUALIZATION
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation & TDataXtd_Presentation
+#
+# Testing command:   standard set of commands
+#
+# The test checks joint work of these attributes, opens kept before file 'bug26290_new_1.cbf', modifies it,
+# checks Undo/Redo work and keeps it in 'bug26290_new_2.cbf'
+
+pload OCAF VISUALIZATION
+
+# prepare document
+box b 100 200 300
+NewDocument D BinOcaf
+UndoLimit D 100
+NewCommand D
+set Lab1 [Label D 0:1:1]
+SetShape D $Lab1 b
+AISInitViewer D
+vsetdispmode 1
+AISSet D $Lab1 NS
+AISDisplay D $Lab1
+vfit
+NewCommand D
+Undo D 1
+Redo D 1
+AISColor D $Lab1 AQUAMARINE4
+NewCommand D
+
+set aTmpFile1 ${imagedir}/${casename}_1.cbf
+SaveAs D $aTmpFile1
+Close D
+
+# test
+Open $aTmpFile1 D
+file delete -force $aTmpFile1
+UndoLimit D 100
+NewCommand D
+
+## DFBrowse D
+AISInitViewer D
+vsetdispmode 1
+vfit
+NewCommand D
+set Lab2 [Label D 0:1:2]
+pcylinder cy 50 190
+ttranslate cy 200 0 0
+SetShape D $Lab2 cy
+AISSet D $Lab2 NS
+AISDisplay D $Lab2
+NewCommand D
+vfit
+AISTransparency D $Lab2 0.7
+NewCommand D
+Undo D 1
+Redo D 1
+
+set aTmpFile2 ${imagedir}/${casename}_2.cbf
+SaveAs D $aTmpFile2
+AISErase D $Lab2
+set Lab1 [Label D 0:1:1]
+AISErase D $Lab1
+NewCommand D
+Close D
+
+Open $aTmpFile2 D
+file delete -force $aTmpFile1
+
+## DFBrowse D
+AISInitViewer D
+vsetdispmode 1
+vfit
+AISColor D $Lab2 CHARTREUSE2
+AISErase D $Lab2
+AISErase D $Lab1
+AISUnset D $Lab2
+Close D

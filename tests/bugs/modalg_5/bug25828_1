@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC25828"
+puts "========"
+puts ""
+##########################################
+## BRepAlgoAPI_Section fails for a solid and a face depending on order of arguments
+##########################################
+
+set BugNumber OCC25828
+
+restore [locate_data_file bug25828_intersectionproblem.brep] t
+explode t
+
+bop t_1 t_2
+bopsection result
+
+set expl [explode result]
+
+set ll [llength $expl]
+
+if {${ll} == 2} {
+    puts "Result is ${ll} section edges"
+    puts "${BugNumber} OK"
+} else {
+    puts "Result is ${ll} section edge"
+    puts "Error ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

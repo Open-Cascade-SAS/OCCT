@@ -1,0 +1,5 @@
+if {[string compare $command "SplitAngle"] == 0 } {
+    puts "TODO OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_2 "
+}
+restore [locate_data_file CTO908_topo101-t1.brep] a
+

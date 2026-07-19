@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC13211"
+puts "============"
+puts ""
+#######################################################################
+# Wrong treatment of conical faces in BOP algorithm
+#######################################################################
+
+vertex v1 136.06, 187.51, 0.0
+vertex v2 136.06, 143.01, 0.0
+edge e1 v1 v2
+vertex v3 136.06, 143.01, 0.0
+vertex v4 128.08, 143.01, 0.0
+edge e2 v3 v4
+vertex v5 128.08, 143.01, 0.0
+vertex v6 127.88, 164.75, 0.0
+edge e3 v5 v6
+vertex v7 127.88, 164.75, 0.0
+vertex v8 116.11, 176.00, 0.0
+edge e4 v7 v8
+vertex v9 116.11, 176.00, 0.0
+vertex v10 136.06, 187.51, 0.0
+edge e5 v9 v10
+wire twire e1 e2 e3 e4 e5
+mkplane tface twire
+revol r1 tface 153.08, 143.01 0.0 1 0 0 360 1
+revol r2 tface 136.06, 68.01, 0.0 0 1 0 360 1
+
+bop r1 r2
+bopsection result
+
+checkprops result -l 228.699 
+checkshape result
+checksection result
+
+checknbshapes result -vertex 13 -edge 15 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 29
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

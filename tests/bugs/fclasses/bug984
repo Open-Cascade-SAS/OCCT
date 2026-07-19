@@ -1,0 +1,14 @@
+puts "================"
+puts "OCC984"
+puts "================"
+puts ""
+
+pload QAcommands
+
+set list [OCC984 [locate_data_file OCC984.xml]]
+
+if { [regexp "Document parsed" $list] == 1 } {
+    puts "OCC984: OK"
+} else {
+    puts "OCC984: Error"
+}

@@ -1,0 +1,30 @@
+puts "==========="
+puts "BUC60813"
+puts "==========="
+
+NewDocument D BinOcaf
+UndoLimit D 100
+
+NewCommand D
+
+Label D 0:1
+
+SetName D 0:1 SourceLabel
+SetReal D 0:1 3.1415
+
+set Result [CopyLabel D 0:1 0:2]
+if { ${Result} == 0} {
+    puts "BUC60813: Error 1"
+} else {
+    set Name [GetName D 0:2]
+    if { [string length ${Name}] == 0 } {
+        puts "BUC60813: Error 2"
+    } else {
+	set Result [CopyLabel D 0:2 0:3]
+	if { ${Result} == 0 } {
+	    puts "BUC60813: Error 3"
+	} else {
+	    puts "BUC60813: OK"
+	}
+    }
+}

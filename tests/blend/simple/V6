@@ -1,0 +1,22 @@
+#circle c1 -sqrt(50) 0 0 10
+#mkedge c1 c1 pi*1/4 pi*7/4
+#circle c2 sqrt(50) 0 0 10
+#mkedge c2 c2 pi*5/4 pi*3/4
+#wire w c1 c2
+#mkplane w w
+#trotate w 0 0 0 1 0 0 90
+#beziercurve c1 3 0 0 0 2 8 0 0 16 0
+#mkedge c1 c1
+#wire d c1
+#pipe s d w
+#save s  8_I1.draw 
+
+restore [locate_data_file 8_I1.draw] s
+tscale s 0 0 0 SCALE1
+fsameparameter s
+explode s E
+blend result s 2*SCALE1 s_2 
+explode result So
+tcopy result_1 result
+
+checkprops result -s 263402

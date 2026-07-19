@@ -1,0 +1,58 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: User defined (additional GUID) TDataStd_Real
+#
+# Testing command:   SetReal
+# Testing command:   GetReal
+#
+
+puts "caf001-B6"
+
+# Add an attribute to a data framework
+set aSetAttr1 100.11
+set aSetAttr2 200.11
+set aGuid1 "12e94551-6dbc-11d4-b9c8-0060b0ee281b"
+set aGuid2 "12e94552-6dbc-11d4-b9c8-0060b0ee281b"
+set aLabel 0:2
+SetReal D ${aLabel} ${aSetAttr1} ${aGuid1}
+SetReal D ${aLabel} ${aSetAttr2} ${aGuid2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-B6.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute #1
+set IsDone [catch {set aGetAttr3 [GetReal DD ${aLabel} ${aGuid1}]} aResult]
+if { ${IsDone} != 0 ||
+	${aSetAttr1}!=${aGetAttr3} } {
+	puts ${aResult}
+	puts "aSetAttr1=${aSetAttr1} aGetAttr3=${aGetAttr3}"
+	puts "Get a value of the first TDataStd_Real attribute from restoring document: Error"
+	return
+}
+
+# Get a value of the attribute #2
+set IsDone [catch {set aGetAttr4 [GetReal DD ${aLabel} ${aGuid2}]} aResult]
+if { ${IsDone} != 0 ||
+	${aSetAttr2}!=${aGetAttr4} } {
+	puts ${aResult}
+	puts "aSetAttr2=${aSetAttr2} aGetAttr4=${aGetAttr4}"
+	puts "Get a value of the second TDataStd_Real attribute from restoring document: Error"
+	return
+}
+
+puts "Get a value of user defined TDataStd_Integer attributes from restoring document: OK"

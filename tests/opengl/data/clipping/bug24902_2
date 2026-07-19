@@ -1,0 +1,29 @@
+puts "==========="
+puts "OCC24902: Visualization - advanced processing of compounds containing solids and other shape types"
+puts "Tests the capping on compound that contains shell and solid"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b 0 0 0 10 10 10
+box b_solid 20 0 0 10 10 10
+explode b F
+
+# Put shell and solid into compound
+compound b_1 b_2 b_3 b_4 b_6 b_shell
+compound b_shell b_solid comp
+vdisplay comp
+vsetdispmode 1
+vfit
+
+# set clipping plane
+vclipplane create pln1
+vclipplane change pln1 equation 0 1 0 -5
+vclipplane change pln1 capping on
+vclipplane change pln1 capping color 0.9 0.9 0.9
+vclipplane set pln1 view Driver1/Viewer1/View1
+
+vrotate 0 0.2 0
+
+vdump $imagedir/${casename}.png

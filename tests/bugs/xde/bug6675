@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC6675"
+puts "========"
+puts ""
+####################################################
+## Sewing can not sewed attached shape for any tolerance.Followed bug for 6542.
+####################################################
+
+set BugNumber OCC6675
+
+restore [locate_data_file OCC6675.brep] a
+
+set tolerance 1.00000e-07
+
+sewing result ${tolerance} a
+
+checkshape result
+checkmaxtol result -ref 1.0021647610996499e-005
+checknbshapes result -shell 1
+checkfreebounds result 0
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

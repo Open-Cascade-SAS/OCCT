@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC24249"
+puts "============"
+puts ""
+######################################################
+# Crash on ShapeFix_Shape
+######################################################
+
+pload XDE
+
+restore [locate_data_file bug24249_a_149.brep] a_149
+
+mksurface surf a_149
+mkface face surf
+
+fixshape result face

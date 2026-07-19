@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC6474"
+puts "============"
+puts ""
+######################################################
+# Incorrect result of intersection of a plane and an extrusion surface
+######################################################
+
+set BugNumber OCC6474
+
+restore [locate_data_file OCC6474-s1.draw] s1 
+restore [locate_data_file OCC6474-s2.draw] s2 
+
+intersect res s1 s2
+
+if {[llength [directory res*]] != 1} {
+    puts "Faulty ${BugNumber}: more than 1 intersection line is got"
+} else {
+    puts "OK ${BugNumber}"
+}

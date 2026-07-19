@@ -1,0 +1,10 @@
+puts "TODO OCC23674 ALL: Error : Number of faults is"
+
+restore [locate_data_file CFI_pro15441.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 72.971139124346976
+checknbshapes result -shell 1
+checkfreebounds result 4
+checkfaults result a 5

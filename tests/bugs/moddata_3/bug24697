@@ -1,0 +1,16 @@
+puts "================"
+puts "OCC24697"
+puts "================"
+puts ""
+#######################################################################
+# Exception is raised during projection of the curve on the surface
+#######################################################################
+
+restore [locate_data_file bug24697_curve.draw] c
+restore [locate_data_file bug24697_surf.draw] s
+
+project c2d c s
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

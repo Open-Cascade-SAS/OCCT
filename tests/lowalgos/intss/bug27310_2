@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC27310"
+puts "========"
+puts ""
+#################################################
+# Huge tolerance obtained in the result of intersection of two cylindrical faces
+#################################################
+
+# Number of intersection curves cannot be subject to anything (indeed, output result can be empty).
+# The main reason of the bug #27310 was a HUGE TOLERANCE VALUE (TolReached > 10).
+# See test "bugs moddata_2 bug496" in case of doubt.
+
+set ExpTol 9.9999999999999995e-08
+
+restore [locate_data_file OCC496a.brep] a 
+restore [locate_data_file OCC496b.brep] b
+
+explode a f
+explode b f
+
+set log [bopcurves a_10 b_4 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+checkreal TolReached $Toler $ExpTol 0.0 0.1

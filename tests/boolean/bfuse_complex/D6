@@ -1,0 +1,10 @@
+# Original bug : pro6050
+# Date : 11mar98
+
+restore [locate_data_file CTO900_pro6050a.rle] a
+restore [locate_data_file CTO900_pro6050b.rle] b
+
+bfuse result a b
+
+checkprops result -s 1.06905e+06
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

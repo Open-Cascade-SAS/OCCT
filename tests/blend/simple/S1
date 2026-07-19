@@ -1,0 +1,17 @@
+#box b -10 -10 -10 20 20 20
+#pcylinder c 8 15
+#ttranslate c 0 0 10
+#fuse f1 b c
+#pcylinder c 6 15
+#ttranslate c 0 0 10
+#trotate c 0 0 0 1 0 0 90
+#fuse s f1 c
+#donly s
+#save s 6_A56.draw
+
+restore [locate_data_file CFI_6_a56fgs.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 6*SCALE2 s_10
+
+checkprops result -s 3662.79

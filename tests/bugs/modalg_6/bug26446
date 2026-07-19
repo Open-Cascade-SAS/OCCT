@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC26446"
+puts "========"
+puts ""
+#####################################################
+# GeomConvert::ConcatC1 produces not expected curve
+#####################################################
+
+pload QAcommands
+
+smallview
+
+restore [locate_data_file OCC26446-c1.draw] c1
+restore [locate_data_file OCC26446-c2.draw] c2
+OCC26446 r c1 c2
+
+donly r
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

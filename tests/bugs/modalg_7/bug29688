@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC29688"
+puts "========"
+puts ""
+#################################################
+# Regression vs 7.2.0: Wrong result of CUT operation
+#################################################
+
+brestore [locate_data_file bug29688_shape.brep] s1
+brestore [locate_data_file bug29688_tool.brep] s2
+
+bfuzzyvalue 2.1e-5
+
+bcut result s1 s2
+
+bfuzzyvalue 0.0
+
+checkshape result
+checknbshapes result -wire 19 -face 19 -shell 1 -solid 1
+checkprops result -s 64946 -v 253467
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,287 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IFGraph_AllShared.hxx>
+#include <IFSelect_PacketList.hxx>
+#include <IFSelect_ShareOut.hxx>
+#include <IFSelect_ShareOutResult.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_GraphContent.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <TCollection_AsciiString.hxx>
+
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(
+  const occ::handle<IFSelect_ShareOut>&        sho,
+  const occ::handle<Interface_InterfaceModel>& amodel)
+    : thegraph(amodel),
+      thedispres(amodel, false)
+{
+  theshareout = sho;
+  theeval     = false;
+  //  thedisplist = new NCollection_Sequence<int>();
+}
+
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_ShareOut>& sho,
+                                                 const Interface_Graph&                G)
+    : thegraph(G),
+      thedispres(G, false)
+{
+  theshareout = sho;
+  theeval     = false;
+  //  thedisplist = new NCollection_Sequence<int>();
+}
+
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(
+  const occ::handle<IFSelect_Dispatch>&        disp,
+  const occ::handle<Interface_InterfaceModel>& amodel)
+    : thegraph(amodel),
+      thedispres(amodel, false)
+{
+  thedispatch = disp;
+  theeval     = false;
+  //  thedisplist = new NCollection_Sequence<int>();
+}
+
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_Dispatch>& disp,
+                                                 const Interface_Graph&                G)
+    : thegraph(G),
+      thedispres(G, false)
+{
+  thedispatch = disp;
+  theeval     = false;
+  //  thedisplist = new NCollection_Sequence<int>();
+}
+
+occ::handle<IFSelect_ShareOut> IFSelect_ShareOutResult::ShareOut() const
+{
+  return theshareout;
+}
+
+const Interface_Graph& IFSelect_ShareOutResult::Graph() const
+{
+  return thegraph;
+}
+
+void IFSelect_ShareOutResult::Reset()
+{
+  theeval = false;
+}
+
+void IFSelect_ShareOutResult::Evaluate()
+{
+  if (theeval)
+  {
+    return; // already done. if not OK, do Reset before
+  }
+  Prepare();
+  theeval = true;
+}
+
+occ::handle<IFSelect_PacketList> IFSelect_ShareOutResult::Packets(const bool complete)
+{
+  Evaluate();
+  occ::handle<IFSelect_PacketList> list = new IFSelect_PacketList(thegraph.Model());
+  Interface_EntityIterator         iter;
+  for (; More(); Next())
+  {
+    list->AddPacket();
+    if (complete)
+    {
+      list->AddList(PacketContent().Content());
+    }
+    else
+    {
+      list->AddList(PacketRoot().Content());
+    }
+  }
+  return list;
+}
+
+int IFSelect_ShareOutResult::NbPackets()
+{
+  Evaluate();
+  return thedispres.NbParts();
+}
+
+void IFSelect_ShareOutResult::Prepare()
+{
+  thedisplist.Clear();
+  //  On alimente thedispres, thedisplist
+  thedispres.Reset();
+  IFGraph_AllShared              A(thegraph);
+  occ::handle<IFSelect_Dispatch> disp = thedispatch;
+  int                            nb = 1, first = 1;
+  if (!theshareout.IsNull())
+  {
+    nb    = theshareout->NbDispatches();
+    first = theshareout->LastRun() + 1;
+  }
+  int i; // svv Jan11 2000 : porting on DEC
+  for (i = first; i <= nb; i++)
+  {
+    if (!theshareout.IsNull())
+    {
+      disp = theshareout->Dispatch(i);
+    }
+    if (disp->FinalSelection().IsNull())
+    {
+      continue; // Dispatch neutralise
+    }
+    IFGraph_SubPartsIterator packs(thegraph, false);
+    disp->Packets(thegraph, packs);
+    for (packs.Start(); packs.More(); packs.Next())
+    {
+      Interface_EntityIterator iter = packs.Entities();
+      if (iter.NbEntities() == 0)
+      {
+        continue;
+      }
+      thedispres.AddPart();
+      thedispres.GetFromIter(iter); // we register this packet
+      A.ResetData();
+      A.GetFromIter(iter);
+      thedisplist.Append(i); // n0 of producer dispatch
+    }
+  }
+  thedispnum = thepacknum = 1;
+  thepackdisp             = 1; // calculation on 1st Dispatch
+  thenbindisp             = 0;
+  for (i = thepacknum; i <= thedisplist.Length(); i++)
+  {
+    if (thedisplist.Value(i) != thedispnum)
+    {
+      break;
+    }
+    thenbindisp++;
+  }
+}
+
+bool IFSelect_ShareOutResult::More()
+{
+  return thedispres.More();
+} // thepacknum < thedisplist.Length());
+
+void IFSelect_ShareOutResult::Next()
+{
+  thedispres.Next();
+  thepacknum++;
+  int dispnum;
+  if (thepacknum <= thedisplist.Length())
+  {
+    dispnum = thedisplist.Value(thepacknum);
+  }
+  else
+  {
+    thenbindisp = 0;
+#if !defined No_Exception
+//    std::cout<<" ** **  IFSelect_ShareOutResult::Next, void dispatch ignored"<<std::endl;
+#endif
+    return;
+  }
+  if (thedispnum == dispnum)
+  {
+    thepackdisp++;
+  }
+  else
+  {
+    thedispnum  = dispnum;
+    thepackdisp = 1;
+    thenbindisp = 0;
+    for (int i = thepacknum; i <= thedisplist.Length(); i++)
+    {
+      if (thedisplist.Value(i) != thedispnum)
+      {
+        break;
+      }
+      thenbindisp++;
+    }
+    if (!theshareout.IsNull())
+    {
+      thedispatch = theshareout->Dispatch(thedispnum);
+    }
+  }
+}
+
+void IFSelect_ShareOutResult::NextDispatch()
+{
+  for (; thepacknum <= thedisplist.Length(); thepacknum++)
+  {
+    thedispres.Next();
+    if (thedispnum != thedisplist.Value(thepacknum))
+    {
+      thedispnum = thedisplist.Value(thepacknum);
+      //  Calcul donnees propres au Dispatch
+      thepackdisp = 1;
+      thenbindisp = 0;
+      for (int i = thepacknum; i <= thedisplist.Length(); i++)
+      {
+        if (thedisplist.Value(i) != thedispnum)
+        {
+          break;
+        }
+        thenbindisp++;
+      }
+      if (!theshareout.IsNull())
+      {
+        thedispatch = theshareout->Dispatch(thedispnum);
+      }
+      return;
+    }
+  }
+  thepacknum = thedisplist.Length() + 1; // no next dispatch ...
+  thedispnum = thepackdisp = thenbindisp = 0;
+}
+
+occ::handle<IFSelect_Dispatch> IFSelect_ShareOutResult::Dispatch() const
+{
+  return thedispatch;
+}
+
+int IFSelect_ShareOutResult::DispatchRank() const
+{
+  return thedispnum;
+}
+
+void IFSelect_ShareOutResult::PacketsInDispatch(int& numpack, int& nbpacks) const
+{
+  numpack = thepackdisp;
+  nbpacks = thenbindisp;
+}
+
+Interface_EntityIterator IFSelect_ShareOutResult::PacketRoot()
+{
+  return thedispres.Entities();
+}
+
+Interface_EntityIterator IFSelect_ShareOutResult::PacketContent()
+{
+  //  IFGraph_Cumulate G(thegraph);
+  Interface_EntityIterator iter = thedispres.Entities();
+  Interface_Graph          G(thegraph);
+  //  G.GetFromIter(thedispres.Entities(),0);
+  for (iter.Start(); iter.More(); iter.Next())
+  {
+    G.GetFromEntity(iter.Value(), true);
+  }
+  Interface_GraphContent GC(G);
+  return GC.Result();
+}
+
+TCollection_AsciiString IFSelect_ShareOutResult::FileName() const
+{
+  int nd = DispatchRank();
+  int np, nbp;
+  PacketsInDispatch(np, nbp);
+  return theshareout->FileName(nd, np, nbp);
+}

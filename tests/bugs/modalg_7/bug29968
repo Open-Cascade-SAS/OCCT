@@ -1,0 +1,24 @@
+puts "========"
+puts "0029968: Modeling Algorithms - BRepAlgoAPI_Cut produces an empty result with half-space"
+puts "========"
+puts ""
+
+restore [locate_data_file bug29968_h.brep] h
+restore [locate_data_file bug29968_s.brep] s
+
+bop s h
+
+bopcommon rcom
+checkshape rcom
+checknbshapes rcom -wire 1 -face 1
+checkprops rcom -s 12348
+
+bopcut rcut
+checkshape rcut
+checknbshapes rcut -wire 1 -face 1
+checkprops rcut -s 12348
+
+bopsection rsec
+checkshape rsec
+checknbshapes rsec -vertex 2 -edge 1
+checkprops rsec -l 117.6

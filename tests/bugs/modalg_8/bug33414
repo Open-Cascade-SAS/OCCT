@@ -1,0 +1,10 @@
+puts "========================"
+puts "0033414: Modeling Algorithms - Access violation during executing BRepAlgoAPI_Section::Build()"
+puts "========================"
+
+set filepath1 [locate_data_file "bug33414_1.brep"]
+set filepath2 [locate_data_file "bug33414_2.brep"]
+restore ${filepath1} shape1
+restore ${filepath2} shape2
+bsection res shape1 shape2
+# If bsection didn't cause a crash - everything is OK.

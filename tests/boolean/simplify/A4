@@ -1,0 +1,41 @@
+# Multiple cut of the plate by the rectangular tool
+
+boptions -default
+bsimplify -e 1 -f 1
+
+box plate 100 20 20
+
+explode plate e
+mkcurve curve plate_10
+
+set nbp 100
+bounds curve t1 t2
+set delta [dval ($t2-10-$t1)/$nbp]
+
+for {set i 0} {$i < $nbp} {incr i} {
+  set t [dval $t1+[dval $delta*$i]]
+  cvalue curve $t x y z
+  # create tool 
+  box tool x y z 10 10 10
+  # move it inside
+  ttranslate tool 0 0 -5
+
+  bclearobjects
+  bcleartools
+  baddobjects plate
+  baddtools tool
+  bfillds
+  bapibop plate 2
+
+  checkshape plate
+  # number of faces should be the same from operation to operation
+  checknbshapes plate -vertex 14 -edge 21 -wire 9 -face 9 -shell 1 -solid 1
+}
+
+# restore default values
+boptions -default
+
+checkshape plate
+checkprops plate -s 8800 -v 35045
+
+checkview -display plate -2d -path ${imagedir}/${test_image}_2.png

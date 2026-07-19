@@ -1,0 +1,9 @@
+restore [locate_data_file sf5] b1
+restore [locate_data_file sf55] b2
+
+bop b1 b2
+bopsection result
+
+checkprops result -l 1376.64
+checksection result
+checkview -display result -2d -otherwise { b1 b2 } -l -path ${imagedir}/${test_image}.png

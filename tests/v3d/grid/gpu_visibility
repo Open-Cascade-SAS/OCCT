@@ -1,0 +1,20 @@
+puts "=================================================================="
+puts "GPU shader grid is visible without scene objects and without vfit"
+puts "=================================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1 w=400 h=400
+vaxo
+
+# Empty view: shader grid must not depend on scene bounding boxes.
+vgrid -type gpu -size 100 100 -drawAxis 0
+vdump $imagedir/${casename}_empty.png
+
+# Adding an object without vfit must not be required to make the grid visible.
+box b 10 10 10
+vdisplay b -dispMode 1
+vdump $imagedir/${casename}_display_no_vfit.png
+
+vgrid off

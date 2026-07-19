@@ -1,0 +1,10 @@
+restore [locate_data_file case_2_shell_r.brep] a
+restore [locate_data_file case_2_edge2.brep] b
+
+bop a b
+bopcommon result
+
+checkprops result -l 847.007
+checksection result
+checknbshapes result -vertex 14 -edge 7 -t
+

@@ -1,0 +1,84 @@
+puts "TODO OCC11111 ALL: Error : CheckSpiral"
+
+puts "============"
+puts "OCCGH648"
+puts "============"
+puts ""
+#######################################################################
+#    setaxis (0Y)
+#######################################################################
+
+set BugNumber OCCGH648
+
+set x  0
+set y  0
+set z  0
+set Nx 0
+set Ny 1
+set Nz 0
+set Xx 1
+set Xy 0
+set Xz 0
+
+set np 1
+set D1 100
+
+set H1 100
+
+set P1 5
+
+set PF1 0
+
+setaxis $x $y $z $Nx $Ny $Nz $Xx $Xy $Xz
+
+set mistake 0
+set result ""
+if [catch { set info_result [helix result ${np} ${D1} ${H1} ${P1} ${PF1}]} ] {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : approximation algorithm is broken"
+  set mistake 1
+} elseif { [regexp {ErrorStatus} ${info_result}] } {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : helix is broken"
+  set mistake 1
+}
+
+if { ${mistake} == 0 } {
+  set good_Center_X 1.15868e-14
+  set good_Center_Y 50
+  set good_Center_Z 1.15567e-15
+  set good_Moments_IX 4.01968e+06
+  set good_Moments_IY 3.27912e+06
+  set good_Moments_IZ 3.19438e+06
+  CheckSpiral
+  set d 5
+  set x [expr $D1/2]
+  set y 0
+  set z 0
+  set dx 0
+  set dy 0
+  set dz 1
+
+  circle c $x $y $z $dx $dy $dz $d
+  mkedge e c
+  wire s2 e
+
+  renamevar result s1
+
+
+set square 49555.4
+set volume 123370
+
+set nb_v_good 6
+set nb_e_good 11
+set nb_w_good 7
+set nb_f_good 7
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 33
+
+CheckSweep
+}
+set 2dviewer 0

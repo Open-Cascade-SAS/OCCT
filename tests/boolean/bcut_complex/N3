@@ -1,0 +1,9 @@
+# Original bug : usa60180
+# Date : 16July98
+
+restore [locate_data_file usa60180a.rle] a 
+restore [locate_data_file usa60180b.rle] b
+
+bcut result a b
+checkprops result -s 88325
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

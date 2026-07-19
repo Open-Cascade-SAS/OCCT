@@ -1,0 +1,11 @@
+set TheFileName shading_027.brep
+##if { [string compare $command "shading"] != 0 } {
+##   set bug_freenodes "OCC23105"
+##   set nbfreenodes(All) 3
+##}
+###set bug_withouttri "OCC23106"
+###set nbwithouttri(All) 1
+set bug_freenodes "OCC23105"
+set bug_cross "OCC23105"
+set nbfreenodes(All) 2
+set nbcross(ALL) 1

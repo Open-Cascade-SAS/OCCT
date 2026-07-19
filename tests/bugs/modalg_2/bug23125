@@ -1,0 +1,21 @@
+puts "================"
+puts "OCC23125"
+puts "================"
+puts ""
+##########################################################################################
+# Wrong result done by classifier algorithm for a point and a solid
+##########################################################################################
+
+set BugNumber OCC23125
+
+restore [locate_data_file bug23125_ref] b 
+restore [locate_data_file bug23125_pref] p 
+set info [ bclassify b p ]
+
+# Resume
+puts ""
+if { [regexp "The point is IN shape" $info] != 1 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}

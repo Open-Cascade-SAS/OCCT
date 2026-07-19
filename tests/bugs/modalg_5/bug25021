@@ -1,0 +1,17 @@
+puts "========================"
+puts "OCC25021"
+puts "========================" 
+puts ""
+#######################################################################
+# New option of BRepOffsetAPI_MakeOffset algorithm: open result for open wire
+#######################################################################
+
+restore [locate_data_file bug24573_Wire.brep] ww
+
+openoffset res1 ww 1 12.5
+openoffset res2 ww 1 -12.5
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

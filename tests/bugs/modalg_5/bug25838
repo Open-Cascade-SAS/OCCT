@@ -1,0 +1,27 @@
+puts "========="
+puts "OCC25838"
+puts "========="
+puts ""
+###############################################
+# Wrong result obtained by General Fuse operator.
+###############################################
+puts "TODO #OCC26816 ALL: Error : Result done by General Fuse operator is WRONG because number of"
+puts "TODO #OCC26816 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+restore [locate_data_file bug25715_p02c3s1.brep] b1
+restore [locate_data_file bug25838_p02c3s2.brep] b2
+restore [locate_data_file bug25715_p02c3s3.brep] b3
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3
+
+bfillds
+bbuild result
+
+checkprops result -s 3107.42 
+checkshape result
+
+checknbshapes result -vertex 26 -edge 45 -wire 23 -face 23 -shell 5 -solid 5 -compsolid 0 -compound 1 -shape 128 -t -m "Result done by General Fuse operator"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

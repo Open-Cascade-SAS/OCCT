@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC10781: MeshVS is not sensitive to width of edges"
+puts "============"
+puts ""
+
+pload XDE VISUALIZATION
+
+vinit View1
+vclear
+vaxo
+
+meshfromstl m [locate_data_file OMF6391_box.stl]
+
+set aCoordX 206
+set aCoordY 280
+
+vmoveto $aCoordX $aCoordY
+
+set aColor1px [vreadpixel $aCoordX $aCoordY rgb name]
+if { "$aColor1px" != "BLACK" } { puts "Error: BLACK color is expected at pixel ${aCoordX}x${aCoordY}" }
+
+mesh_edge_width m 6
+set aColor5px [vreadpixel $aCoordX $aCoordY rgb name]
+if { "$aColor5px" == "BLACK" } { puts "Error: YELLOW color is expected at pixel ${aCoordX}x${aCoordY}" }
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,13 @@
+########## ger61235 ###############
+puts "GER61235"
+puts "intersect"
+puts ""
+
+restore [locate_data_file ger61235a.brep] tool 
+restore [locate_data_file ger61235b.brep] object 
+
+bsection result object tool 
+
+checkprops result -l 16.4762
+checksection result
+checkview -display result -2d -otherwise { object tool  } -l -path ${imagedir}/${test_image}.png

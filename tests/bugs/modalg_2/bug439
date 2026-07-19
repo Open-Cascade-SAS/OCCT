@@ -1,0 +1,26 @@
+
+puts "========================"
+puts " OCC439 "
+puts "========================"
+puts ""
+#####################################################
+## Cut operation produces NOT Valid result on attached shapes 
+#####################################################
+
+restore [locate_data_file OCC439.brep] a 
+explode a
+
+checkshape a_1
+checkshape a_2
+
+bcut result a_1 a_2
+
+set che [checkshape result]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC134: Resulte shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC134 OK: Result shape is valid"
+}
+
+checkprops result -s 247000 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

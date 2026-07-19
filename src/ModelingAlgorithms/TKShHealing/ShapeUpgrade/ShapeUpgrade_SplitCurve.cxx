@@ -1,0 +1,128 @@
+// Created on: 1998-03-12
+// Created by: Pierre BARRAS
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//    gka 30.04.99 S4137: re-worked
+
+#include <Geom_BSplineCurve.hxx>
+#include <Precision.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade.hxx>
+#include <ShapeUpgrade_SplitCurve.hxx>
+#include <Standard_Type.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve, Standard_Transient)
+
+//=================================================================================================
+
+ShapeUpgrade_SplitCurve::ShapeUpgrade_SplitCurve()
+    : myNbCurves(0),
+      myStatus(0)
+{
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_SplitCurve::Init(const double First, const double Last)
+{
+  myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  //  if (ShapeUpgrade::Debug()) std::cout << "SplitCurve::Init"<<std::endl;
+
+  myNbCurves = 1;
+  // mySplitValues.Clear();
+  mySplitValues = new NCollection_HSequence<double>;
+  mySplitValues->Append(First);
+  mySplitValues->Append(Last);
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_SplitCurve::SetSplitValues(
+  const occ::handle<NCollection_HSequence<double>>& SplitValues)
+{
+  constexpr double precision = Precision::PConfusion();
+  if (SplitValues.IsNull())
+  {
+    return;
+  }
+  if (SplitValues->Length() == 0)
+  {
+    return;
+  }
+
+  double First = mySplitValues->Value(1), Last = mySplitValues->Value(mySplitValues->Length());
+  int    i   = 1;
+  int    len = SplitValues->Length();
+  for (int k = 2; k <= mySplitValues->Length(); k++)
+  {
+    Last = mySplitValues->Value(k);
+    for (; i <= len; i++)
+    {
+      if ((First + precision) >= SplitValues->Value(i))
+      {
+        continue;
+      }
+      if ((Last - precision) <= SplitValues->Value(i))
+      {
+        break;
+      }
+      mySplitValues->InsertBefore(k++, SplitValues->Value(i));
+    }
+    First = Last;
+  }
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_SplitCurve::Build(const bool /*Segment*/)
+{
+  myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+}
+
+//=================================================================================================
+
+const occ::handle<NCollection_HSequence<double>>& ShapeUpgrade_SplitCurve::SplitValues() const
+{
+  return mySplitValues;
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_SplitCurve::Perform(const bool Segment)
+{
+  Compute();
+  // if ( ! mySplitValues.IsNull() )
+  //   SetSplitValues(mySplitValues);
+  Build(Segment);
+}
+
+//=================================================================================================
+
+void ShapeUpgrade_SplitCurve::Compute()
+{
+  myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+}
+
+//=================================================================================================
+
+bool ShapeUpgrade_SplitCurve::Status(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatus, status);
+}

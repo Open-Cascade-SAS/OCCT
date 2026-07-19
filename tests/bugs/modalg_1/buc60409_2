@@ -1,0 +1,28 @@
+puts "============="
+puts "   BUC60409  "
+puts "     CUT     "
+puts "============="
+
+restore [locate_data_file buc60409a.brep] c 
+restore [locate_data_file buc60409b.brep] s
+
+set che [checkshape c]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty BUC60409 (shape 1): Source shape is invalid. It was detected by Checkshape command"
+    puts "Body of the script was NOT executed"
+    renamevar c result
+} else {
+    puts "BUC60409 OK (shape 1): Source shape is valid"
+    set che [checkshape s]
+    if { [regexp {Faulty} $che ] == 1 } {
+        puts "Faulty BUC60409 (shape 2): Source shape is invalid. It was detected by Checkshape command"
+        puts "Body of the script was NOT executed"
+	renamevar s result
+    } else {
+	puts "BUC60409 OK (shape 2): Source shape is valid"
+	bcut result c s
+    }
+}
+checkprops result -s 31.8476 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

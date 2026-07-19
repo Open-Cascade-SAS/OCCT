@@ -1,0 +1,34 @@
+puts "================"
+puts "OCC25861"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result obtained by projection algorithm.
+#######################################################################
+
+pload QAcommands
+
+restore [locate_data_file bug25861_f3.brep] f3
+
+point p 6.9184976310066668 -24.127668568051799 8.6427835999999978
+
+set info [xprojponf p f3]
+
+if { [regexp {point px +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} ${info} string x2 y2 z2] != 1 } {
+    puts "Error: Wrong result obtained by projection algorithm"
+} else {
+    puts "OK: Good result obtained by projection algorithm"
+
+    vertex v1 p
+    vertex v2 ${x2} ${y2} ${z2}
+
+    set CMP_TOL 1.0e-7
+    distmini res v1 v2
+    set distmin [dval res_val]
+    if { [expr abs(${distmin})] > ${CMP_TOL} } {
+       puts "Error: Wrong projection point"
+    } else {
+       puts "OK: Good projection point"
+    }
+
+}

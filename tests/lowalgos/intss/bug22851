@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC22851"
+puts "============"
+puts ""
+#######################################################################
+# No intersection curve between two surfaces
+#######################################################################
+
+set BugNumber OCC22851
+
+restore [locate_data_file bug22851_fz1.brep] b1 
+restore [locate_data_file bug22851_fz8.brep] b2 
+mksurface s1 b1
+mksurface s2 b2
+intersect i s1 s2
+
+set dump_info  [dump i]
+
+set lst [split ${dump_info}]
+set dump_length [llength $lst]
+
+set find_BSCurve [regexp {BSplineCurve} $dump_info]
+set find_Degree_Poles_Knots [regexp {Degree +[-0-9.+eE]+, +[-0-9.+eE]+ +Poles, +[-0-9.+eE]+ +Knots} $dump_info]
+
+if { $dump_length == 0 && !$find_BSCurve && !$find_Degree_Poles_Knots } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}

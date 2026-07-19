@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC5805"
+puts "============"
+
+#######################################################################
+# BRepOffsetAPI_MakeThickSolid behaves unstably and produces very different results.
+#######################################################################
+
+set BugNumber OCC5805
+
+# pcone
+pcone s 30 5 20
+explode s sh
+renamevar s_1 s
+
+set distance -0.5
+catch { OFFSETSHAPE $distance {s_2 s_3} $calcul $type }
+
+
+checkprops result -s 7051.59
+checkshape result
+checknbshapes result -vertex 4 -edge 6 -wire 6 -face 4 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 22
+
+set index [lsearch [whatis s] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : s is not Closed shape"
+  
+}
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

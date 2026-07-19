@@ -1,0 +1,10 @@
+# Original bug : buc60116
+# Date : 12June98
+
+restore [locate_data_file CTO904_buc60116a.rle] a 
+restore [locate_data_file buc60116b.rle] b
+
+bfuse result a b
+
+checkprops result -s 224496
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC23158"
+puts "============"
+puts ""
+#######################################################################
+# ApproxInt_PrmPrmSvSurfaces raises FPE (division by zero) signal
+#######################################################################
+
+set BugNumber OCC23158
+
+restore [locate_data_file bug23158_f1.brep] b1 
+restore [locate_data_file bug23158_f2.brep] b2 
+
+set exception_status [ catch { bop b1 b2 } ]
+
+if { ${exception_status} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+

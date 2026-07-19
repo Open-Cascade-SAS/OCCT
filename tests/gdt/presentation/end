@@ -1,0 +1,189 @@
+# Set flag dump_file to 1 in order to regenerate script files with actual data
+# used as reference. In this mode all tests intentionally report failure. 
+set dump_file 0
+########################################################################
+set mist 0;
+# First
+set x_First 0; set y_First 0; set z_First 0;
+set mass_First 0;
+# Second
+set x_Second 0; set y_Second 0; set z_Second 0;
+set mass_Second 0;
+###################################################################
+set ref_Compare 0
+set todo_msg ""
+set todo_mask "puts \"TODO CR27235 ALL: "
+set end_line "\" \n"
+##################################################################
+
+# Read original file
+if { [string length $filename] > 1} {
+  set path_file [locate_data_file $filename]
+  if { [catch { ReadStep D_First $path_file } catch_result] } {
+    set err_msg "Error: First - file was not read - exception "
+    puts $err_msg
+    append todo_msg $todo_mask $err_msg $end_line
+    set mist 1
+  }
+} else {
+  set mist 1
+}
+
+# Get information presentations
+if { $mist < 1} {           
+  puts ""
+  set xst [ OCC27235 D_First] 
+
+  if { [llength $xst] > 0 } {
+    regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $xst full x_First y_First z_First
+    regexp {Mass+: +([-0-9.+eE]+)} $xst full mass_First
+  } else {
+      puts " GDT information was NOT provided"
+  }
+}
+
+if { $mist != 1 } {  
+  puts "" 
+  set result ""
+  append result [format $xst]
+}
+
+# Writing file
+if { $mist < 1} {
+  puts " "
+  puts "-----------------------------WRITING FILE ------------------------------"
+  if { [catch { WriteStep D_First $imagedir/${casename}_D_First.stp } catch_result] } {
+    set err_msg "Error: First - file was not written - exception"
+    puts $err_msg
+    append todo_msg $todo_mask $err_msg $end_line
+    set mist 1
+  }
+  if { $mist < 1 } {
+    if { [catch { ReadStep D_Second $imagedir/${casename}_D_First.stp } catch_result] } {
+      set err_msg "Error: Second - file was not read - exception"
+      puts $err_msg
+      append todo_msg $todo_mask $err_msg $end_line
+      set mist 1
+    }
+  }
+}
+
+catch {[file delete $imagedir/${casename}_D_First.stp]}
+if { [catch { Close D_First } catch_result] } {
+  set err_msg "Error : cannot close a document D_First - exception"
+  puts $err_msg
+}
+
+# Get information about translation
+if { $mist < 1} {           
+  puts ""
+  set xst2 [ OCC27235 D_Second] 
+
+  if { [llength $xst] > 0 } {
+    regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $xst2 full x_Second y_Second z_Second
+    regexp {Mass+: +([-0-9.+eE]+)} $xst2 full mass_Second
+  } else {
+      puts " GDT information was NOT provided"
+  }
+  if { [catch { Close D_Second } catch_result] } {
+    set err_msg "Error : cannot close a document D_Second - exception"
+    puts $err_msg
+  }
+}
+
+if { $mist != 1 } {  
+  puts "" 
+  set result2 ""
+  append result2 [format $xst2]
+}
+
+set err_compare_ref ""
+# Put reference data to the test script file if option "dump" is set
+if { $dump_file == 1 } { 
+  set fd_stream  [open $dirname/$groupname/$gridname/$casename w] 
+  puts $fd_stream "# !!!! This file is generated automatically, do not edit manually! See end script"
+  puts $fd_stream "set filename $filename"
+  if { $mist != 1 } {
+    puts $fd_stream "" 
+    puts $fd_stream "set ref_data \{"
+    puts $fd_stream $result
+    puts $fd_stream "\}"
+    if (![string equal $xst $xst2]) {
+      puts $fd_stream "" 
+      puts $fd_stream "set ref_data_write \{"
+      puts $fd_stream $result2
+      puts $fd_stream "\}"
+    }
+  }
+  close $fd_stream 
+} elseif { $mist != 1 } {
+  puts "========================== Comparison with reference data ========"
+  puts ""
+  # Comparison of reference data with obtained result
+  # Variable ref_data is used to check values on the first read.
+  # If after writing and reading file again values differ, variable
+  # ref_data_write should be used for the new reference data. In 
+  # case if it is not set, ref_data will be used to check the result again.
+  set x_Ref 0; set y_Ref 0; set z_Ref 0;
+  set x_Ref_write 0; set y_Ref_write 0; set z_Ref_write 0;
+  set mass_Ref 0;
+  set mass_Ref_write 0;
+  regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $ref_data full x_Ref y_Ref z_Ref
+  regexp {Mass+: +([-0-9.+eE]+)} $ref_data full mass_Ref
+
+  if { [info exists ref_data_write] } {
+    regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $ref_data_write full x_Ref_write y_Ref_write z_Ref_write
+    regexp {Mass+: +([-0-9.+eE]+)} $ref_data_write full mass_Ref_write
+  } else {
+    set x_Ref_write $x_Ref;
+    set y_Ref_write $y_Ref;
+    set z_Ref_write $z_Ref;
+    set mass_Ref_write $mass_Ref;
+  }
+
+  if {[expr abs($x_Ref - $x_First)] > 1e-4 || [expr abs($x_Ref_write - $x_Second)] > 1e-4} {
+    incr ref_Compare
+    append err_compare_ref " Reference data - $x_Ref_write ($x_Ref)\n"
+    append err_compare_ref " Current data - $x_Second ($x_First)\n"
+    append err_compare_ref "--------------------------------------------------------------------\n"
+  }
+    
+  if {[expr abs($y_Ref - $y_First)] > 1e-4 || [expr abs($y_Ref_write - $y_Second)] > 1e-4} {
+    incr ref_Compare
+    append err_compare_ref " Reference data - $y_Ref_write ($y_Ref)\n"
+    append err_compare_ref " Current data - $y_Second ($y_First)\n"
+    append err_compare_ref "--------------------------------------------------------------------\n"
+    }
+  if {[expr abs($z_Ref - $z_First)] > 1e-4 || [expr abs($z_Ref_write - $z_Second)] > 1e-4} {
+    incr ref_Compare
+    append err_compare_ref " Reference data - $z_Ref_write ($z_Ref)\n"
+    append err_compare_ref " Current data - $z_Second ($z_First)\n"
+    append err_compare_ref "--------------------------------------------------------------------\n"
+    }
+  if {[expr abs($mass_Ref - $mass_First)] > 1e-4 || [expr abs($mass_Ref_write - $mass_Second)] > 1e-4} {
+    incr ref_Compare
+    append err_compare_ref " Reference data - $mass_Ref_write ($mass_Ref)\n"
+    append err_compare_ref " Current data - $mass_Second ($mass_First)\n"
+    append err_compare_ref "--------------------------------------------------------------------\n"
+    }
+  }
+
+if { $dump_file != 0 } {
+    puts "Error : Running in regeneration mode, comparison was not performed!"
+    if { $mist != 1 } {
+      	 puts "Generation of test file $groupname/$gridname/$casename successful"
+    } else {
+      	 puts "Generation of reference data failed"
+    }
+} else {
+    if { $ref_Compare > 0} {
+        puts "Error : $ref_Compare differences with reference data found :\n$err_compare_ref"
+    } else {
+        puts "Comparison of current result with reference data - OK\n"
+    }    
+}
+
+puts "--------------------------------------------------------------------"
+puts ""
+
+puts "TEST COMPLETED"

@@ -1,0 +1,15 @@
+puts "REQUIRED All: ERROR. Degenerated normal on input data."
+puts "========"
+puts "OCC26556"
+puts "========"
+puts ""
+##################################################
+# Infinite calculations of BRepOffset_MakeOffset
+##################################################
+
+restore [locate_data_file OCC26556-004_extract_2015-01-C37_0240_res.brep] sh
+explode sh F
+offsetparameter 1e-7 p i
+offsetload sh_3 300
+
+offsetperform r

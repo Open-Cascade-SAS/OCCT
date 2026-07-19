@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC29511"
+puts "============"
+puts ""
+##################################################################
+# Section fails for these two faces
+##################################################################
+
+restore [locate_data_file bug29511_face.brep] face
+restore [locate_data_file bug29511_prism.brep] prism
+
+bsection result face prism -n2d
+
+smallview
+donly result
+fit
+
+checkprops result -l 764.018
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

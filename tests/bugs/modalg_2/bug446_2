@@ -1,0 +1,22 @@
+
+puts "========"
+puts "OCC446"
+puts "OCC447"
+puts "(case 2)"
+puts "========"
+puts ""
+######################################
+## As result I have fail on shape that it is not closed.
+######################################
+
+restore [locate_data_file OCC446b.brep] result
+
+set che [checkshape result]
+if { [regexp {Faulty} $che ] == 1} {
+    puts "Faulty OCC446 (case 2): Source shape is NotClosed"
+} else {
+    puts "OCC446 OK (case 2): Source shape is Closed"
+}
+checkprops result -s 24272.8 
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC27804"
+puts "============"
+puts ""
+################################################################
+## Two breps cause intersections to loop for too long/infinitely
+################################################################
+
+# The main idea of the test is performance meter. 
+
+
+restore [locate_data_file bug27804_il1.brep] b1
+restore [locate_data_file bug27804_il2.brep] b2
+
+explode b2 e
+
+#should create pcurve
+bhaspc b2_1 b1 do
+
+mk2dcurve c2d b2_1 b1
+
+if { [regexp "2d curve" [whatis c2d]] != 1 } {
+    puts "Faulty: No 2D curves detected"
+}
+
+v2d
+donly c2d
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

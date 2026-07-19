@@ -1,0 +1,16 @@
+puts "============================================================"
+puts "OCC31617: Export STEP in nonmanifold mode corrupts the shape"
+puts "============================================================"
+puts ""
+
+brestore [locate_data_file bug31617.brep] a
+
+param write.step.nonmanifold 1
+
+set aTmpFile "$imagedir/${casename}.step"
+testwritestep "$aTmpFile" a
+testreadstep  "$aTmpFile" result
+file delete   "$aTmpFile"
+
+checkshape result
+checknbshapes result -ref [lrange [nbshapes a] 11 16]

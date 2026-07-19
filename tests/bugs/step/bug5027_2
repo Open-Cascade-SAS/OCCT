@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC5027"
+puts "============"
+puts ""
+######################################################
+# Incorrect result translating wire with loops from STEP
+######################################################
+
+set BugNumber OCC5027
+
+set filepath [locate_data_file OCC5027.stp]
+if [catch { stepread $filepath a * } res] {
+   puts "Error ${BugNumber} : here is reading problem"
+} else {
+    tpcompound result
+    
+    checkprops result -s 159588 
+    checkshape result
+    checknbshapes result -vertex 44 -edge 72 -wire 36 -face 31 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 186
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

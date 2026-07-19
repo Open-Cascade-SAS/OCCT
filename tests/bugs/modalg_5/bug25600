@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC25600"
+puts "==========" 
+puts ""
+####################################################
+# Wrong result of Boolean FUSE operation
+####################################################
+
+restore [locate_data_file bug25600_helix_pipe.brep] b1
+restore [locate_data_file bug25600_sphere_2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds -s
+bbop result 1
+
+checkprops result -s 12.2258 
+checkshape result
+
+checknbshapes result -vertex 3 -edge 6 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 18
+checkview -display result -2d -path ${imagedir}/${test_image}.png

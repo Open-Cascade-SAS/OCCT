@@ -1,0 +1,24 @@
+puts "================================================================================================="
+puts "0028205: Visualization - add functionality for dumping results of detection algorithms into image"
+puts "Selection image from colors of selection modes."
+puts "================================================================================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+box b0 0 0 0 1 1 1
+box b1 2 2 2 1 1 1
+box b2 4 4 4 1 1 1
+box b3 6 6 6 1 1 1
+
+vdisplay -dispMode 1 b0 b1 b2 b3
+vfit
+
+vselmode b0 1 1
+vselmode b0 2 1
+vselmode b1 4 1
+vselmode b2 2 1
+vselmode b3 3 1
+
+vseldump $imagedir/${casename}_selmode.png -type selectionModeColor
+vdump $imagedir/${casename}.png

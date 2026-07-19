@@ -1,0 +1,30 @@
+# Permutation of all forms of construction
+# when fusing a box and a prism
+
+
+
+box ba 3 3 0 5 7 4
+
+# prism from left
+
+vertex v1 3 2 0
+vertex v2 3 3 0
+vertex v3 3 3 1
+vertex v4 3 2 1
+
+edge ea v1 v2
+edge eb v2 v3
+edge ec v3 v4
+edge ed v4 v1
+
+wire w ea eb ec ed
+mkplane f w
+
+prism bb f 1 0 0
+
+bfuse result ba bb
+
+normals result
+
+checkprops result -s 170
+checkview -display result -2d -otherwise { ba bb } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,12 @@
+circle w -20 0 0 20
+mkedge w w 0 pi/2
+wire w w
+polyline profile 0 0 0  10 0 0  5 0 5  0 0 0
+mkplane profile profile
+pipe s w profile
+tscale s 0 0 0 SCALE1
+fsameparameter s SCALE1*1.e-7
+explode s E
+blend result s 1*SCALE1 s_6 1*SCALE1 s_9 1*SCALE1 s_4
+
+checkprops result -s 90939.5

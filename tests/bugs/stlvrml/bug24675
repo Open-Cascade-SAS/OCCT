@@ -1,0 +1,11 @@
+puts "========================"
+puts "OCC24675"
+puts "========================"
+puts ""
+#######################################################################
+# Crash reading a VRML file
+#######################################################################
+
+loadvrml result [locate_data_file T00111111_0000.wrl]
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

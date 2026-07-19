@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL:  Update of 3D-Parameters has failed" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
+
+set filename Z8M6SAT.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 911  ( 3168 )  Summary  = 911  ( 3168 )
+CHECKSHAPE  : Wires    = 43  ( 40 )  Faces    = 44  ( 39 )  Shells   = 0  ( 4 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 769  ( 32 )  Face     = 3241  ( 3241 ) 
+STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 769  ( 32 )  Face     = 3241  ( 3241 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =    15.00151489  (    20.46526799 )  AvgTol   =   0.01760302715  (   0.03612886317 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,89 @@
+puts "========"
+puts "OCC567: Can not intersect two Rectangular Trimmed Surfaces ."
+puts "========"
+puts ""
+
+set GoodNbCurves 1
+
+restore [locate_data_file OCC567a.draw] s1 
+restore [locate_data_file OCC567b.draw] s2 
+
+foreach a [directory res*] {unset $a}
+
+trim s1x s1 0 2*pi 0 2*pi/13
+trim s2x s2 0 2*pi 0 2*pi/13
+
+if { [catch {intersect res s1x s2x } catch_result] } {
+    puts "Faulty OCC565 exception: function intersection works wrongly with trimmed Surfaces"
+} else {
+  set che [whatis res]
+  set ind [string first "3d curve" $che]
+  if {${ind} >= 0} {
+    #Only variable "res" exists
+    renamevar res res_1
+  }
+
+  bclearobjects
+  bcleartools
+  
+  set ic 1
+  set AllowRepeat 1
+  while { $AllowRepeat != 0 } {
+    set che [whatis res_$ic]
+    set ind [string first "3d curve" $che]
+    if {${ind} < 0} {
+      set AllowRepeat 0
+    } else {
+     
+      bounds res_$ic U1 U2
+      
+      if {[dval U2-U1] < 1.0e-9} {
+        puts "Error: Wrong curve's range!"
+      }
+      
+      xdistcs res_$ic s1 U1 U2 100 2.0e-7
+      xdistcs res_$ic s2 U1 U2 100 2.0e-7
+      
+      for { set ip [expr $ic-1] } { $ip > 0 } { incr ip -1 } {
+        mkedge e1 res_$ic
+        mkedge e2 res_$ip
+
+        set coe [checkoverlapedges e1 e2 5.0e-5]
+
+        puts "res_$ic <-> res_$ip: $coe"
+        if { [regexp "Edges are not overlapped" $coe] != 1 } {
+          puts "Error: res_$ic and res_$ip are overlapped"
+        }
+      }
+      
+      mkedge ee res_$ic
+      baddobjects ee
+      
+      incr ic
+    }
+  }
+
+  incr ic -1
+  
+  if {$ic != $GoodNbCurves} {
+    puts "Error: $GoodNbCurves curves are expected but $ic ones are found."
+  }
+  
+  if {$ic != 1} {
+    # Check of gaps between intersection curves
+    bfillds
+    bbuild rs
+  
+    checknbshapes rs -edge 1
+    checksection rs -r 2
+  }
+}
+
+smallview
+don res_*
+
+fit
+don s1 s2
+disp res_*
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

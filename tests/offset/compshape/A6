@@ -1,0 +1,11 @@
+## ======================================
+## Grid    : CCV002
+## Test    : F1
+## Comment : From CV tests serie page 63
+## ======================================
+
+restore [locate_data_file CCV_2_f1_gsy.rle] s
+explode s F
+offsetcompshape result s -5 s_10
+
+checkprops result -v 231220

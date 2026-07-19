@@ -1,0 +1,22 @@
+puts [DT_ShapeConvertRev result a 1 1]
+
+set expsh [expshape result 0 0]
+set nb_plane 0
+set nb_other_surf 0
+set nb_curve 0
+set nb_pcurve 0
+regexp {Number +of +Planes +- +([-0-9.+eE]+)} $expsh full nb_plane
+regexp {Number +of +other +surfaces +- +([-0-9.+eE]+)} $expsh full nb_other_surf
+regexp {Number +of +other +curves +- +([-0-9.+eE]+)} $expsh full nb_curve
+regexp {Number +of +other +pcurves +- +([-0-9.+eE]+)} $expsh full nb_pcurve
+if { $nb_plane != 0 || $nb_other_surf != 0 || $nb_curve != 0 || $nb_pcurve != 0} {
+   puts "Error : The resulting shape is not correct"
+}
+regexp {Mass +: +([-0-9.+eE]+)} [sprops a] full mass
+regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+
+if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > $rel_tol) || ($mass == 0 && $m != 0) } {
+   puts "Error : The area of the resulting shape is $m"
+} else {
+   puts "The areas of the initial and the resulting shape are equal"
+}

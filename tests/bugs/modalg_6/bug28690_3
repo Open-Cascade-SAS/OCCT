@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC28690"
+puts "========"
+puts ""
+##########################################
+##  Section algorithm produces micro edge
+##########################################
+
+restore [locate_data_file bug28690_gdml_G1_tore_sphere.brep] c
+explode c
+bclearobjects
+bcleartools
+baddobjects c_1
+baddtools c_2
+bfillds
+bbuild result1
+
+checkshape result1
+checknbshapes result1 -wire 3 -face 3 -shell 5 -solid 3
+checkprops result1 -s 4420.05 -v 15877.8
+
+bbop result 2
+checkshape result
+checknbshapes result -wire 1 -face 1 -shell 1 -solid 1
+checkprops result -s 112.393 -v 89.7477
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

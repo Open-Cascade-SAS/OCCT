@@ -1,0 +1,547 @@
+// Created on: 1996-12-05
+// Created by: Jean-Pierre COMBE/Odile Olivier
+// Copyright (c) 1996-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <PrsDim_TangentRelation.hxx>
+
+#include <PrsDim.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <DsgPrs_TangentPresentation.hxx>
+#include <ElCLib.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(PrsDim_TangentRelation, PrsDim_Relation)
+
+//=================================================================================================
+
+PrsDim_TangentRelation::PrsDim_TangentRelation(const TopoDS_Shape&            aFShape,
+                                               const TopoDS_Shape&            aSShape,
+                                               const occ::handle<Geom_Plane>& aPlane,
+                                               const int                      anExternRef)
+    : myExternRef(anExternRef)
+{
+  myFShape            = aFShape;
+  mySShape            = aSShape;
+  myPlane             = aPlane;
+  myAutomaticPosition = false;
+}
+
+//=================================================================================================
+
+void PrsDim_TangentRelation::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                     const occ::handle<Prs3d_Presentation>& aPresentation,
+                                     const int)
+{
+  switch (myFShape.ShapeType())
+  {
+    case TopAbs_FACE: {
+      ComputeTwoFacesTangent(aPresentation);
+    }
+    break;
+    case TopAbs_EDGE: {
+      ComputeTwoEdgesTangent(aPresentation);
+    }
+    break;
+    default:
+      break;
+  }
+}
+
+//=================================================================================================
+
+void PrsDim_TangentRelation::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                              const int)
+{
+  gp_Vec vec(myDir);
+  gp_Vec vec1 = vec.Multiplied(myLength);
+  gp_Vec vec2 = vec.Multiplied(-myLength);
+  gp_Pnt p1   = myPosition.Translated(vec1);
+  gp_Pnt p2   = myPosition.Translated(vec2);
+
+  occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<Select3D_SensitiveSegment> seg = new Select3D_SensitiveSegment(own, p1, p2);
+  aSelection->Add(seg);
+}
+
+//=================================================================================================
+
+void PrsDim_TangentRelation::ComputeTwoFacesTangent(
+  const occ::handle<Prs3d_Presentation>& /*aPresentation*/)
+{
+}
+
+// jfa 19/10/2000 begin
+//=================================================================================================
+
+static bool ComputeTangencyPoint(const occ::handle<Geom_Curve>& GC1,
+                                 const occ::handle<Geom_Curve>& GC2,
+                                 gp_Pnt&                        aPoint)
+{
+  double U1f = GC1->FirstParameter();
+  double U1l = GC1->LastParameter();
+  double U2f = GC2->FirstParameter();
+  double U2l = GC2->LastParameter();
+
+  gp_Pnt                    PC1;
+  double                    mindist = 0;
+  GeomAPI_ExtremaCurveCurve Ex(GC1, GC2, U1f, U1l, U2f, U2l);
+  for (int i = 1; i <= Ex.NbExtrema(); i++)
+  {
+    gp_Pnt P1, P2;
+    Ex.Points(i, P1, P2);
+    double dist = P1.Distance(P2);
+    if (i == 1)
+    {
+      mindist = dist;
+      PC1     = P1;
+    }
+    else
+    {
+      if ((dist < mindist) || (dist < Precision::Confusion()))
+      {
+        mindist = dist;
+        PC1     = P1;
+      }
+    }
+    if (dist < Precision::Confusion())
+    {
+      if (GC1->IsInstance(STANDARD_TYPE(Geom_Line)))
+      {
+        continue; // tangent line and conic can have only one point with zero distance
+      }
+      gp_Vec aVector1, aVector2;
+      if (GC1->IsInstance(STANDARD_TYPE(Geom_Circle)))
+      {
+        occ::handle<Geom_Circle> circle(occ::down_cast<Geom_Circle>(GC1));
+        double                   par_inter = ElCLib::Parameter(circle->Circ(), P1);
+        ElCLib::D1(par_inter, circle->Circ(), P1, aVector1);
+      }
+      else if (GC1->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
+      {
+        occ::handle<Geom_Ellipse> ellipse(occ::down_cast<Geom_Ellipse>(GC1));
+        double                    par_inter = ElCLib::Parameter(ellipse->Elips(), P1);
+        ElCLib::D1(par_inter, ellipse->Elips(), P1, aVector1);
+      }
+      if (GC2->IsInstance(STANDARD_TYPE(Geom_Circle)))
+      {
+        occ::handle<Geom_Circle> circle(occ::down_cast<Geom_Circle>(GC2));
+        double                   par_inter = ElCLib::Parameter(circle->Circ(), P2);
+        ElCLib::D1(par_inter, circle->Circ(), P2, aVector2);
+      }
+      else if (GC2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
+      {
+        occ::handle<Geom_Ellipse> ellipse(occ::down_cast<Geom_Ellipse>(GC2));
+        double                    par_inter = ElCLib::Parameter(ellipse->Elips(), P2);
+        ElCLib::D1(par_inter, ellipse->Elips(), P2, aVector2);
+      }
+      //	  if ( aVector1.IsParallel(aVector2, 100*Precision::Angular()) ) break;
+      if (aVector1.IsParallel(aVector2, M_PI / 360.0))
+      {
+        break; // 0.5 graduce
+      }
+    }
+  }
+  aPoint = PC1;
+  return true;
+}
+
+// jfa 19/10/2000 end
+
+//=================================================================================================
+
+void PrsDim_TangentRelation::ComputeTwoEdgesTangent(
+  const occ::handle<Prs3d_Presentation>& aPresentation)
+{
+  occ::handle<Geom_Curve> copy1, copy2;
+  gp_Pnt                  ptat11, ptat12, ptat21, ptat22;
+  bool                    isInfinite1, isInfinite2;
+  occ::handle<Geom_Curve> extCurv;
+  if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape),
+                               TopoDS::Edge(mySShape),
+                               myExtShape,
+                               copy1,
+                               copy2,
+                               ptat11,
+                               ptat12,
+                               ptat21,
+                               ptat22,
+                               extCurv,
+                               isInfinite1,
+                               isInfinite2,
+                               myPlane))
+  {
+    return;
+  }
+
+  aPresentation->SetInfiniteState(isInfinite1 || isInfinite2);
+  // current face
+  BRepBuilderAPI_MakeFace makeface(myPlane->Pln());
+  BRepAdaptor_Surface     adp(makeface.Face());
+
+  int typArg(0);
+
+  if (copy1->IsInstance(STANDARD_TYPE(Geom_Line)))
+  {
+    typArg = 10;
+  }
+  else if (copy1->IsInstance(STANDARD_TYPE(Geom_Circle)))
+  {
+    typArg = 20;
+  }
+  else if (copy1->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
+  {
+    typArg = 30;
+  }
+  else
+  {
+    return;
+  }
+
+  if (copy2->IsInstance(STANDARD_TYPE(Geom_Line)))
+  {
+    typArg += 1;
+  }
+  else if (copy2->IsInstance(STANDARD_TYPE(Geom_Circle)))
+  {
+    typArg += 2;
+  }
+  else if (copy2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
+  {
+    typArg += 3;
+  }
+  else
+  {
+    return;
+  }
+
+  // First find the tangengy vector if exists
+  TopoDS_Vertex   VCom;
+  TopExp_Explorer expF(TopoDS::Edge(myFShape), TopAbs_VERTEX);
+  TopExp_Explorer expS(TopoDS::Edge(mySShape), TopAbs_VERTEX);
+  TopoDS_Shape    tab[2];
+  int             p;
+  for (p = 0; expF.More(); expF.Next(), p++)
+  {
+    tab[p] = TopoDS::Vertex(expF.Current());
+  }
+  bool found(false);
+  for (; expS.More() && !found; expS.Next())
+  {
+    for (int l = 0; l <= p && !found; l++)
+    {
+      found = (expS.Current().IsSame(tab[l]));
+      if (found)
+      {
+        VCom = TopoDS::Vertex(expS.Current());
+      }
+    }
+  }
+
+  gp_Vec theVector;
+  gp_Pnt pint3d;          // tangency point
+  gp_Dir theDir;          // tangency direction
+  double par_inter = 0.0; // parameter of tangency point
+
+  if (found)
+  {
+    pint3d = BRep_Tool::Pnt(VCom);
+  }
+
+  // Otherwise it is found as if it was known that 2 curves
+  // are tangents (which must be the cases)
+  switch (typArg)
+  {
+    case 12: // circle line
+    {
+      occ::handle<Geom_Line>   line(occ::down_cast<Geom_Line>(copy1));
+      occ::handle<Geom_Circle> circle(occ::down_cast<Geom_Circle>(copy2));
+
+      if (!found)
+      {
+        // it is enough to project the circus  center on the straight line
+        par_inter = ElCLib::Parameter(line->Lin(), circle->Location());
+        pint3d    = ElCLib::Value(par_inter, line->Lin());
+      }
+
+      theDir   = line->Lin().Direction();
+      myLength = circle->Radius() / 5.;
+      if (!isInfinite1)
+      {
+        double copy1Length = ptat12.Distance(ptat11);
+        if (copy1Length < myLength)
+        {
+          myLength = copy1Length / 3.;
+        }
+      }
+    }
+    break;
+    case 21: // circle line
+    {
+      occ::handle<Geom_Circle> circle(occ::down_cast<Geom_Circle>(copy1));
+      occ::handle<Geom_Line>   line(occ::down_cast<Geom_Line>(copy2));
+
+      if (!found)
+      {
+        // it is enough to project the circus  center on the straight line
+        par_inter = ElCLib::Parameter(line->Lin(), circle->Location());
+        pint3d    = ElCLib::Value(par_inter, line->Lin());
+      }
+
+      theDir   = line->Lin().Direction();
+      myLength = circle->Radius() / 5.;
+      if (!isInfinite2)
+      {
+        double copy2Length = ptat21.Distance(ptat22);
+        if (copy2Length < myLength)
+        {
+          myLength = copy2Length / 3.;
+        }
+      }
+    }
+    break;
+    // jfa 19/10/2000 begin
+    case 13: // line ellipse
+    {
+      occ::handle<Geom_Line>    line(occ::down_cast<Geom_Line>(copy1));
+      occ::handle<Geom_Ellipse> ellipse(occ::down_cast<Geom_Ellipse>(copy2));
+
+      if (!found)
+      {
+        ComputeTangencyPoint(line, ellipse, pint3d);
+      }
+
+      theDir   = line->Lin().Direction();
+      myLength = ellipse->MajorRadius() / 5.;
+
+      if (!isInfinite1)
+      {
+        double copy1Length = ptat12.Distance(ptat11);
+        if (copy1Length < myLength)
+        {
+          myLength = copy1Length / 3.;
+        }
+      }
+    }
+    break;
+    case 31: // ellipse line
+    {
+      occ::handle<Geom_Ellipse> ellipse(occ::down_cast<Geom_Ellipse>(copy1));
+      occ::handle<Geom_Line>    line(occ::down_cast<Geom_Line>(copy2));
+
+      if (!found)
+      {
+        ComputeTangencyPoint(line, ellipse, pint3d);
+      }
+
+      theDir   = line->Lin().Direction();
+      myLength = ellipse->MajorRadius() / 5.;
+
+      if (!isInfinite2)
+      {
+        double copy2Length = ptat21.Distance(ptat22);
+        if (copy2Length < myLength)
+        {
+          myLength = copy2Length / 3.;
+        }
+      }
+    }
+    break;
+    case 22: // circle circle
+    {
+      occ::handle<Geom_Circle> circle1(occ::down_cast<Geom_Circle>(copy1));
+      occ::handle<Geom_Circle> circle2(occ::down_cast<Geom_Circle>(copy2));
+      double                   R1 = circle1->Radius();
+      double                   R2 = circle2->Radius();
+      myLength                    = std::max(R1, R2) / 5.0;
+      if (!found)
+      {
+        if ((circle1->Location()).IsEqual(circle2->Location(), Precision::Confusion()))
+        {
+          if (R1 >= R2)
+          {
+            ElCLib::D1(par_inter, circle1->Circ(), pint3d, theVector);
+          }
+          else
+          {
+            ElCLib::D1(par_inter, circle2->Circ(), pint3d, theVector);
+          }
+        }
+        else
+        {
+          if (R1 >= R2)
+          {
+            par_inter = ElCLib::Parameter(circle1->Circ(), circle2->Location());
+            ElCLib::D1(par_inter, circle1->Circ(), pint3d, theVector);
+          }
+          else
+          {
+            par_inter = ElCLib::Parameter(circle2->Circ(), circle1->Location());
+            ElCLib::D1(par_inter, circle2->Circ(), pint3d, theVector);
+          }
+        }
+      }
+      else
+      {
+        par_inter = ElCLib::Parameter(circle1->Circ(), pint3d);
+        ElCLib::D1(par_inter, circle1->Circ(), pint3d, theVector);
+      }
+      theDir = gp_Dir(theVector);
+    }
+    break;
+    case 23: // circle ellipse
+    {
+      occ::handle<Geom_Circle>  circle(occ::down_cast<Geom_Circle>(copy1));
+      occ::handle<Geom_Ellipse> ellipse(occ::down_cast<Geom_Ellipse>(copy2));
+      double                    R1 = circle->Radius();
+      double                    R2 = ellipse->MajorRadius();
+      myLength                     = std::max(R1, R2) / 5.0;
+      if (!found)
+      {
+        if (R1 >= R2)
+        {
+          ComputeTangencyPoint(circle, ellipse, pint3d);
+          par_inter = ElCLib::Parameter(circle->Circ(), pint3d);
+          ElCLib::D1(par_inter, circle->Circ(), pint3d, theVector);
+        }
+        else
+        {
+          ComputeTangencyPoint(ellipse, circle, pint3d);
+          par_inter = ElCLib::Parameter(ellipse->Elips(), pint3d);
+          ElCLib::D1(par_inter, ellipse->Elips(), pint3d, theVector);
+        }
+      }
+      else
+      {
+        par_inter = ElCLib::Parameter(circle->Circ(), pint3d);
+        ElCLib::D1(par_inter, circle->Circ(), pint3d, theVector);
+      }
+      theDir = gp_Dir(theVector);
+    }
+    break;
+    case 32: // ellipse circle
+    {
+      occ::handle<Geom_Ellipse> ellipse(occ::down_cast<Geom_Ellipse>(copy1));
+      occ::handle<Geom_Circle>  circle(occ::down_cast<Geom_Circle>(copy2));
+      double                    R1 = ellipse->MajorRadius();
+      double                    R2 = circle->Radius();
+      myLength                     = std::max(R1, R2) / 5.0;
+      if (!found)
+      {
+        if (R1 >= R2)
+        {
+          ComputeTangencyPoint(ellipse, circle, pint3d);
+          par_inter = ElCLib::Parameter(ellipse->Elips(), pint3d);
+          ElCLib::D1(par_inter, ellipse->Elips(), pint3d, theVector);
+        }
+        else
+        {
+          ComputeTangencyPoint(circle, ellipse, pint3d);
+          par_inter = ElCLib::Parameter(circle->Circ(), pint3d);
+          ElCLib::D1(par_inter, circle->Circ(), pint3d, theVector);
+        }
+      }
+      else
+      {
+        par_inter = ElCLib::Parameter(circle->Circ(), pint3d);
+        ElCLib::D1(par_inter, circle->Circ(), pint3d, theVector);
+      }
+      theDir = gp_Dir(theVector);
+    }
+    break;
+    case 33: // ellipse ellipse
+    {
+      occ::handle<Geom_Ellipse> ellipse1(occ::down_cast<Geom_Ellipse>(copy1));
+      occ::handle<Geom_Ellipse> ellipse2(occ::down_cast<Geom_Ellipse>(copy2));
+      double                    R1 = ellipse1->MajorRadius();
+      double                    R2 = ellipse2->MajorRadius();
+      myLength                     = std::max(R1, R2) / 5.0;
+      if (!found)
+      {
+        if (R1 > R2)
+        {
+          ComputeTangencyPoint(ellipse1, ellipse2, pint3d);
+          par_inter = ElCLib::Parameter(ellipse1->Elips(), pint3d);
+          ElCLib::D1(par_inter, ellipse1->Elips(), pint3d, theVector);
+        }
+        else
+        {
+          ComputeTangencyPoint(ellipse2, ellipse1, pint3d);
+          par_inter = ElCLib::Parameter(ellipse2->Elips(), pint3d);
+          ElCLib::D1(par_inter, ellipse2->Elips(), pint3d, theVector);
+        }
+      }
+      else
+      {
+        par_inter = ElCLib::Parameter(ellipse1->Elips(), pint3d);
+        ElCLib::D1(par_inter, ellipse1->Elips(), pint3d, theVector);
+      }
+      theDir = gp_Dir(theVector);
+    }
+    break;
+    // jfa 19/10/2000 end
+    default:
+      return;
+  }
+
+  myAttach   = pint3d;
+  myDir      = theDir;
+  myPosition = pint3d;
+  myLength   = std::min(myLength, myArrowSize);
+
+  DsgPrs_TangentPresentation::Add(aPresentation, myDrawer, myAttach, myDir, myLength);
+  if ((myExtShape != 0) && !extCurv.IsNull())
+  {
+    gp_Pnt pf, pl;
+    if (myExtShape == 1)
+    {
+      if (!isInfinite1)
+      {
+        pf = ptat11;
+        pl = ptat12;
+      }
+      ComputeProjEdgePresentation(aPresentation, TopoDS::Edge(myFShape), copy1, pf, pl);
+    }
+    else
+    {
+      if (!isInfinite2)
+      {
+        pf = ptat21;
+        pl = ptat22;
+      }
+      ComputeProjEdgePresentation(aPresentation, TopoDS::Edge(mySShape), copy2, pf, pl);
+    }
+  }
+}

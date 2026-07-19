@@ -1,0 +1,10 @@
+restore [locate_data_file case_8_solid_repaired.brep] a
+restore [locate_data_file case_8_wire2.brep] b
+
+bop a b
+boptuc result
+
+checkprops result -l 472.684
+checksection result
+checknbshapes result -vertex 8 -edge 6 -t
+

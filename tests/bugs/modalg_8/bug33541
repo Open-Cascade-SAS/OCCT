@@ -1,0 +1,12 @@
+puts "================================"
+puts "0033541: Modeling Algorithms - Simple sphere cut from cylinder fails"
+puts "================================"
+puts ""
+
+pcylinder c 1 1 
+psphere s 1 
+ttranslate s 1 1 1
+bcut result c s 
+
+checknbshapes result -vertex 3 -edge 5 -wire 4 -face 4
+checkview -display result -2d -path ${imagedir}/${test_image}.png

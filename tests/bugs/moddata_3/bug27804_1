@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC27804"
+puts "============"
+puts ""
+################################################################
+## Two breps cause intersections to loop for too long/infinitely
+################################################################
+
+# The main idea of the test is performance meter. 
+
+restore [locate_data_file bug27804_il1.brep] b1
+restore [locate_data_file bug27804_il2.brep] b2
+
+bsection result b1 b2
+
+checkprops result -l 0.000335043
+checkshape result 
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+if { $nbv != 0 } { puts "Error : Section is incorrect" }
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 1
+ EDGE      : 1
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 3
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Section curve"
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

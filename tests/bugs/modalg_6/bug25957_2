@@ -1,0 +1,13 @@
+puts "============"
+puts "OCC25957"
+puts "============"
+puts ""
+######################################################
+# nurbsconvert modifies original shape
+######################################################
+
+restore [locate_data_file bug25957__face2.brep] s
+checkshape s
+setflags s locked
+nurbsconvert nurbs_s s
+checkshape s

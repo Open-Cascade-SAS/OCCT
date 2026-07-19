@@ -1,0 +1,13 @@
+puts "================"
+puts "0032817: Data Exchange - Step export - writing untrimmed Curve"
+puts "================"
+
+pload XDE
+
+catch {Close D}
+XNewDoc D
+line l1 0 0 0 0 1 0
+mkedge e1 l1
+XAddShape D e1
+WriteStep D $imagedir/${casename}.stp
+file delete $imagedir/${casename}.stp

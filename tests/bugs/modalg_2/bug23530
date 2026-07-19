@@ -1,0 +1,17 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========"
+puts "CR23530"
+puts "========"
+puts ""
+######################################################################
+## Error in Draw command "checkshape": invalid face is not recognized
+######################################################################
+
+restore [locate_data_file bug23530_BadFace.brep] result
+pcurve result
+
+set CheckLog [checkshape result]
+
+if { [regexp "BRepCheck_UnorientableShape" ${CheckLog}] != 1 } {
+   puts "CR23530: Error"
+}

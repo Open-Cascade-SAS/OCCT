@@ -1,0 +1,37 @@
+puts "============"
+puts "0025276: Visualization - Lighting is broken if some kinds of transformation applied to a shape"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b1 1 6 1
+vsetdispmode 1
+vdisplay b1
+vconnectto b2 6 0 0 b1
+box b3 7 1 1
+vdisplay b3
+vlocation b3 -translate 0 4 0
+vconnect z 0 0 0 b1 b2 b3
+
+vconnect z1 0 0 0 z
+vlocation z1 -translate 10 0 0
+
+vconnect z2 0 10 0 z
+vlocation z2 -prerotate 0 0 0 1 0 0 90
+
+vconnect z3 -10 0 0 z
+vlocation z3 -prescale 0 0 0 0.5
+
+vconnect z4 0 0 0 z
+vlocation z4 -copyFrom z3
+
+psphere sp 3
+vdisplay sp
+vlocation sp -copyFrom z3
+vlocation sp -reset
+
+vlocation z -mirror 0 -0.5 0 0 1 0
+vfit
+
+vdump $imagedir/${casename}.png

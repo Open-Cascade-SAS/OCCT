@@ -1,0 +1,11 @@
+# Original bug : cts20482
+# Date : 19Mai98
+
+restore [locate_data_file CTO902_cts20482a.rle] part
+restore [locate_data_file CTO902_cts20482b.rle] tool1
+
+bsection result part tool1
+
+checkprops result -l 408.37
+checksection result
+checkview -display result -2d -otherwise { part tool1 } -l -path ${imagedir}/${test_image}.png

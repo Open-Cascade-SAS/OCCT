@@ -1,0 +1,39 @@
+puts "========"
+puts "OCC3936"
+puts "========"
+puts ""
+#################################################################
+# Face on a surface of extrusion is extended after import to IGES
+#################################################################
+
+set File1 [locate_data_file bug3936_tt.igs]
+set File2 ${imagedir}/bug3936_tt1.igs
+file delete -force ${File2}
+
+igesbrep ${File1} a *
+
+brepiges a ${File2}
+
+igesbrep ${File2} a1 *
+
+#
+####
+#
+set area 191477.
+
+set nbshapes_expected "
+Number of shapes in shape
+ EDGE      : 4
+ WIRE      : 1
+ FACE      : 1
+"
+##
+checkprops a -s ${area}
+checkshape a
+checknbshapes a -ref ${nbshapes_expected} -t -m "initial file"
+checkview -display a -2d -path ${imagedir}/${test_image}-initial.png
+##
+checkprops a1 -s ${area}
+checkshape a1
+checknbshapes a1 -ref ${nbshapes_expected} -t -m "importing file"
+checkview -display a1 -2d -path ${imagedir}/${test_image}-importing.png

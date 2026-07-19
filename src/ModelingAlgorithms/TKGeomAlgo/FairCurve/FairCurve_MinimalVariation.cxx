@@ -1,0 +1,598 @@
+// Created on: 1996-02-26
+// Created by: Philippe MANGIN
+// Copyright (c) 1996-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef OCCT_DEBUG
+  #define No_Standard_RangeError
+  #define No_Standard_OutOfRange
+#endif
+
+#include <Precision.hxx>
+
+#include <BSplCLib.hxx>
+#include <FairCurve_EnergyOfMVC.hxx>
+#include <FairCurve_MinimalVariation.hxx>
+#include <FairCurve_Newton.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_Matrix.hxx>
+#include <PLib.hxx>
+#include <Standard_NullValue.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+
+//======================================================================================
+FairCurve_MinimalVariation::FairCurve_MinimalVariation(const gp_Pnt2d& P1,
+                                                       const gp_Pnt2d& P2,
+                                                       const double    Heigth,
+                                                       const double    Slope,
+                                                       const double    PhysicalRatio)
+    //======================================================================================
+    : FairCurve_Batten(P1, P2, Heigth, Slope),
+      OldCurvature1(0),
+      OldCurvature2(0),
+      OldPhysicalRatio(PhysicalRatio),
+      NewCurvature1(0),
+      NewCurvature2(0),
+      NewPhysicalRatio(PhysicalRatio)
+{
+}
+
+//======================================================================================
+bool FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACode,
+                                         const int               NbIterations,
+                                         const double            Tolerance)
+//======================================================================================
+{
+  bool Ok = true, End = false;
+  // clang-format off
+  double AngleMax = 0.7;      // parameter regulating the function of increment ( 40 degrees )
+  // clang-format on
+  double AngleMin = 2 * M_PI / 100; // parameter regulating the function of increment
+                                    // full passage should not contain more than 100 steps.
+  double DAngle1, DAngle2, DRho1, DRho2, Ratio, Fraction, Toler;
+  double OldDist, NewDist;
+
+  //  Loop of Homotopy : calculation of the step and optimisation
+
+  while (Ok && !End)
+  {
+    DAngle1 = NewAngle1 - OldAngle1;
+    DAngle2 = NewAngle2 - OldAngle2;
+    DRho1   = NewCurvature1 - OldCurvature1;
+    DRho2   = NewCurvature2 - OldCurvature2;
+    Ratio   = 1;
+
+    if (NewConstraintOrder1 > 0)
+    {
+      Fraction =
+        std::abs(DAngle1) / (AngleMax * std::exp(-std::abs(OldAngle1) / AngleMax) + AngleMin);
+      if (Fraction > 1)
+      {
+        Ratio = 1 / Fraction;
+      }
+    }
+    if (NewConstraintOrder2 > 0)
+    {
+      Fraction =
+        std::abs(DAngle2) / (AngleMax * std::exp(-std::abs(OldAngle2) / AngleMax) + AngleMin);
+      if (Fraction > 1)
+      {
+        Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
+      }
+    }
+
+    OldDist  = OldP1.Distance(OldP2);
+    NewDist  = NewP1.Distance(NewP2);
+    Fraction = std::abs(OldDist - NewDist) / (OldDist / 3);
+    if (Fraction > 1)
+    {
+      Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
+    }
+
+    if (NewConstraintOrder1 > 1)
+    {
+      Fraction = std::abs(DRho1) * OldDist / (2 + std::abs(OldAngle1) + std::abs(OldAngle2));
+      if (Fraction > 1)
+      {
+        Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
+      }
+    }
+
+    if (NewConstraintOrder2 > 1)
+    {
+      Fraction = std::abs(DRho2) * OldDist / (2 + std::abs(OldAngle1) + std::abs(OldAngle2));
+      if (Fraction > 1)
+      {
+        Ratio = (Ratio < 1 / Fraction ? Ratio : 1 / Fraction);
+      }
+    }
+
+    gp_Vec2d DeltaP1(OldP1, NewP1), DeltaP2(OldP2, NewP2);
+    if (Ratio == 1)
+    {
+      End   = true;
+      Toler = Tolerance;
+    }
+    else
+    {
+      DeltaP1 *= Ratio;
+      DeltaP2 *= Ratio;
+      DAngle1 *= Ratio;
+      DAngle2 *= Ratio;
+      DRho1 *= Ratio;
+      DRho2 *= Ratio;
+      Toler = 10 * Tolerance;
+    }
+
+    Ok = Compute(DeltaP1, DeltaP2, DAngle1, DAngle2, DRho1, DRho2, ACode, NbIterations, Toler);
+
+    if (ACode != FairCurve_OK)
+    {
+      End = true;
+    }
+    if (NewFreeSliding)
+    {
+      NewSlidingFactor = OldSlidingFactor;
+    }
+    if (NewConstraintOrder1 == 0)
+    {
+      NewAngle1 = OldAngle1;
+    }
+    if (NewConstraintOrder1 < 2)
+    {
+      NewCurvature1 = OldCurvature1;
+    }
+    if (NewConstraintOrder2 == 0)
+    {
+      NewAngle2 = OldAngle2;
+    }
+    if (NewConstraintOrder2 < 2)
+    {
+      NewCurvature2 = OldCurvature2;
+    }
+  }
+  myCode = ACode;
+  return Ok;
+}
+
+//======================================================================================
+bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
+                                         const gp_Vec2d&         DeltaP2,
+                                         const double            DeltaAngle1,
+                                         const double            DeltaAngle2,
+                                         const double            DeltaCurvature1,
+                                         const double            DeltaCurvature2,
+                                         FairCurve_AnalysisCode& ACode,
+                                         const int               NbIterations,
+                                         const double            Tolerance)
+//======================================================================================
+{
+  bool Ok, OkCompute = true;
+  ACode = FairCurve_OK;
+
+  // Deformation of the curve by adding a polynom of interpolation
+  int L = 2 + NewConstraintOrder1 + NewConstraintOrder2, kk, ii;
+//                    NbP1 = Poles->Length()-1, kk, ii;
+#ifdef OCCT_DEBUG
+  int NbP1 =
+#endif
+    Poles->Length();
+#ifdef OCCT_DEBUG
+  NbP1 = NbP1 - 1;
+#endif
+  NCollection_Array1<double> knots(1, 2);
+  knots(1) = 0;
+  knots(2) = 1;
+  NCollection_Array1<int>                    mults(1, 2);
+  NCollection_Array1<gp_Pnt2d>               HermitePoles(1, L);
+  NCollection_Array1<gp_Pnt2d>               Interpolation(1, L);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> NPoles =
+    new NCollection_HArray1<gp_Pnt2d>(1, Poles->Length());
+
+  // Polynomes of Hermite
+  math_Matrix HermiteCoef(1, L, 1, L);
+  Ok = PLib::HermiteCoefficients(0, 1, NewConstraintOrder1, NewConstraintOrder2, HermiteCoef);
+  if (!Ok)
+  {
+    return false;
+  }
+
+  // Definition of constraints of interpolation
+  NCollection_Array1<gp_XY> ADelta(1, L);
+  gp_Vec2d VOld(OldP1, OldP2), VNew(-(OldP1.XY() + DeltaP1.XY()) + (OldP2.XY() + DeltaP2.XY()));
+  double   DAngleRef = VNew.Angle(VOld);
+  double   DAngle1   = DeltaAngle1 - DAngleRef,
+         // clang-format off
+                 DAngle2 = DAngleRef   - DeltaAngle2; // Correction of Delta by the Delta induced by the points.
+  // clang-format on
+
+  ADelta(1) = DeltaP1.XY();
+  kk        = 2;
+  if (NewConstraintOrder1 > 0)
+  {
+    // rotation of the derivative premiereDeltaAngle1
+    gp_Vec2d OldDerive(Poles->Value(Poles->Lower()), Poles->Value(Poles->Lower() + 1));
+    double   aKnotGapL = Knots->Value(Knots->Lower() + 1) - Knots->Value(Knots->Lower());
+    if (std::abs(aKnotGapL) > Precision::Computational())
+    {
+      OldDerive *= Degree / aKnotGapL;
+    }
+    ADelta(kk) = (OldDerive.Rotated(DAngle1) - OldDerive).XY();
+    kk += 1;
+
+    if (NewConstraintOrder1 > 1)
+    {
+      // rotation of the second derivative + adding
+      gp_Vec2d OldSeconde(Poles->Value(Poles->Lower()).XY() + Poles->Value(Poles->Lower() + 2).XY()
+                          - 2 * Poles->Value(Poles->Lower() + 1).XY());
+      double   aKnotGapLSq = aKnotGapL * aKnotGapL;
+      if (std::abs(aKnotGapLSq) > Precision::SquareComputational())
+      {
+        OldSeconde *= Degree * (Degree - 1) / aKnotGapLSq;
+      }
+      double CPrim = OldDerive.Magnitude();
+      ADelta(kk)   = (OldSeconde.Rotated(DAngle1) - OldSeconde
+                    + DeltaCurvature1 * CPrim * OldDerive.Rotated(M_PI / 2 + DAngle1))
+                     .XY();
+      kk += 1;
+    }
+  }
+  ADelta(kk) = DeltaP2.XY();
+  kk += 1;
+  if (NewConstraintOrder2 > 0)
+  {
+    gp_Vec2d OldDerive(Poles->Value(Poles->Upper() - 1), Poles->Value(Poles->Upper()));
+    double   aKnotGapU = Knots->Value(Knots->Upper()) - Knots->Value(Knots->Upper() - 1);
+    if (std::abs(aKnotGapU) > Precision::Computational())
+    {
+      OldDerive *= Degree / aKnotGapU;
+    }
+    ADelta(kk) = (OldDerive.Rotated(DAngle2) - OldDerive).XY();
+    kk += 1;
+    if (NewConstraintOrder2 > 1)
+    {
+      // rotation of the second derivative + adding
+      gp_Vec2d OldSeconde(Poles->Value(Poles->Upper()).XY() + Poles->Value(Poles->Upper() - 2).XY()
+                          - 2 * Poles->Value(Poles->Upper() - 1).XY());
+      double   aKnotGapUSq = aKnotGapU * aKnotGapU;
+      if (std::abs(aKnotGapUSq) > Precision::SquareComputational())
+      {
+        OldSeconde *= Degree * (Degree - 1) / aKnotGapUSq;
+      }
+      double CPrim = OldDerive.Magnitude();
+      ADelta(kk)   = (OldSeconde.Rotated(DAngle2) - OldSeconde
+                    + DeltaCurvature2 * CPrim * OldDerive.Rotated(M_PI / 2 + DAngle2))
+                     .XY();
+      kk += 1;
+    }
+  }
+
+  // Interpolation
+  gp_XY AuxXY(0, 0);
+  for (ii = 1; ii <= L; ii++)
+  {
+    AuxXY.SetCoord(0.0, 0);
+    for (kk = 1; kk <= L; kk++)
+    {
+      AuxXY += HermiteCoef(kk, ii) * ADelta(kk);
+    }
+    Interpolation(ii).SetXY(AuxXY);
+  }
+  // Conversion into BSpline of the same structure as the current batten.
+  PLib::CoefficientsPoles(Interpolation, PLib::NoWeights(), HermitePoles, PLib::NoWeights());
+
+  mults.Init(L);
+
+  occ::handle<Geom2d_BSplineCurve> DeltaCurve =
+    new Geom2d_BSplineCurve(HermitePoles, knots, mults, L - 1);
+
+  DeltaCurve->IncreaseDegree(Degree);
+  if (Mults->Length() > 2)
+  {
+    DeltaCurve->InsertKnots(Knots->Array1(), Mults->Array1(), 1.e-10);
+  }
+
+  // Summing
+  NPoles->ChangeArray1() = DeltaCurve->Poles();
+  for (kk = NPoles->Lower(); kk <= NPoles->Upper(); kk++)
+  {
+    NPoles->ChangeValue(kk).ChangeCoord() += Poles->Value(kk).Coord();
+  }
+
+  // Intermediaires
+
+  double Angle1, Angle2, SlidingLength,
+    Alph1 = OldAngle1 + DeltaAngle1, Alph2 = OldAngle2 + DeltaAngle2,
+    Rho1 = OldCurvature1 + DeltaCurvature1, Rho2 = OldCurvature2 + DeltaCurvature2,
+    Dist       = NPoles->Value(NPoles->Upper()).Distance(NPoles->Value(NPoles->Lower())),
+    LReference = SlidingOfReference(Dist, Alph1, Alph2);
+  gp_Vec2d Ox(1, 0),
+    P1P2(NPoles->Value(NPoles->Upper()).Coord() - NPoles->Value(NPoles->Lower()).Coord());
+
+  // Angles corresponding to axis ox
+
+  Angle1 = Ox.Angle(P1P2) + Alph1;
+  Angle2 = -Ox.Angle(P1P2) + Alph2;
+
+  // Calculation of the length of sliding (imposed or initial);
+
+  if (!NewFreeSliding)
+  {
+    SlidingLength = NewSlidingFactor * LReference;
+  }
+  else
+  {
+    if (OldFreeSliding)
+    {
+      SlidingLength = OldSlidingFactor * LReference;
+    }
+    else
+    {
+      SlidingLength = SlidingOfReference(Dist, Alph1, Alph2);
+    }
+  }
+
+  // Energy and vectors of initialization
+  FairCurve_BattenLaw   LBatten(NewHeight, NewSlope, SlidingLength);
+  FairCurve_EnergyOfMVC EMVC(Degree + 1,
+                             Flatknots,
+                             NPoles,
+                             NewConstraintOrder1,
+                             NewConstraintOrder2,
+                             LBatten,
+                             NewPhysicalRatio,
+                             SlidingLength,
+                             NewFreeSliding,
+                             Angle1,
+                             Angle2,
+                             Rho1,
+                             Rho2);
+  math_Vector           VInit(1, EMVC.NbVariables());
+
+  // The value below gives an idea about the smallest value of the criterion of flexion.
+  double VConvex = 0.01 * pow(NewHeight / SlidingLength, 3);
+  if (VConvex < 1.e-12)
+  {
+    VConvex = 1.e-12;
+  }
+
+  Ok = EMVC.Variable(VInit);
+
+  // Minimisation
+  FairCurve_Newton Newton(EMVC,
+                          Tolerance * (P1P2.Magnitude() / 10),
+                          Tolerance,
+                          NbIterations,
+                          VConvex);
+  Newton.Perform(EMVC, VInit);
+  Ok = Newton.IsDone();
+
+  if (Ok)
+  {
+    gp_Vec2d Tangente, PseudoNormale;
+    Poles = NPoles;
+    Newton.Location(VInit);
+
+    if (NewFreeSliding)
+    {
+      OldSlidingFactor = VInit(VInit.Upper()) / LReference;
+    }
+    else
+    {
+      OldSlidingFactor = NewSlidingFactor;
+    }
+
+    if (NewConstraintOrder1 < 2)
+    {
+      Tangente.SetXY(Poles->Value(Poles->Lower() + 1).XY() - Poles->Value(Poles->Lower()).XY());
+
+      if (NewConstraintOrder1 == 0)
+      {
+        OldAngle1 = P1P2.Angle(Tangente);
+      }
+      else
+      {
+        OldAngle1 = Alph1;
+      }
+
+      PseudoNormale.SetXY(Poles->Value(Poles->Lower()).XY()
+                          - 2 * Poles->Value(Poles->Lower() + 1).XY()
+                          + Poles->Value(Poles->Lower() + 2).XY());
+      OldCurvature1 = (((double)Degree - 1) / Degree) * (Tangente.Normalized() ^ PseudoNormale)
+                      / Tangente.SquareMagnitude();
+    }
+    else
+    {
+      OldCurvature1 = Rho1;
+      OldAngle1     = Alph1;
+    }
+
+    if (NewConstraintOrder2 < 2)
+    {
+      Tangente.SetXY(Poles->Value(Poles->Upper()).XY() - Poles->Value(Poles->Upper() - 1).XY());
+      if (NewConstraintOrder2 == 0)
+      {
+        OldAngle2 = (-Tangente).Angle(-P1P2);
+      }
+      else
+      {
+        OldAngle2 = Alph2;
+      }
+      PseudoNormale.SetXY(Poles->Value(Poles->Upper()).XY()
+                          - 2 * Poles->Value(Poles->Upper() - 1).XY()
+                          + Poles->Value(Poles->Upper() - 2).XY());
+      OldCurvature2 = (((double)Degree - 1) / Degree) * (Tangente.Normalized() ^ PseudoNormale)
+                      / Tangente.SquareMagnitude();
+    }
+    else
+    {
+      OldAngle2     = Alph2;
+      OldCurvature2 = Rho2;
+    }
+
+    OldP1               = Poles->Value(Poles->Lower());
+    OldP2               = Poles->Value(Poles->Upper());
+    OldConstraintOrder1 = NewConstraintOrder1;
+    OldConstraintOrder2 = NewConstraintOrder2;
+    OldFreeSliding      = NewFreeSliding;
+    OldSlope            = NewSlope;
+    OldHeight           = NewHeight;
+    OldPhysicalRatio    = NewPhysicalRatio;
+  }
+  else
+  {
+    double V;
+    ACode = EMVC.Status();
+    if (!LBatten.Value(0, V) || !LBatten.Value(1, V))
+    {
+      ACode = FairCurve_NullHeight;
+    }
+    else
+    {
+      OkCompute = false;
+    }
+    return OkCompute;
+  }
+
+  Ok = EMVC.Variable(VInit);
+
+  // Processing of non convergence
+  if (!Newton.IsConverged())
+  {
+    ACode = FairCurve_NotConverged;
+  }
+
+  // Prevention of infinite sliding
+  if (NewFreeSliding && VInit(VInit.Upper()) > 2 * LReference)
+  {
+    ACode = FairCurve_InfiniteSliding;
+  }
+
+  // Eventual insertion of Nodes
+  bool   NewKnots = false;
+  int    NbKnots  = Knots->Length();
+  double ValAngles =
+    (std::abs(OldAngle1) + std::abs(OldAngle2) + 2 * std::abs(OldAngle2 - OldAngle1));
+  while (ValAngles > (2 * (NbKnots - 2) + 1) * (1 + 2 * NbKnots))
+  {
+    NewKnots = true;
+    NbKnots += NbKnots - 1;
+  }
+
+  if (NewKnots)
+  {
+    occ::handle<Geom2d_BSplineCurve> NewBS =
+      new Geom2d_BSplineCurve(NPoles->Array1(), Knots->Array1(), Mults->Array1(), Degree);
+
+    occ::handle<NCollection_HArray1<int>> NMults = new NCollection_HArray1<int>(1, NbKnots);
+    NMults->Init(Degree - 3);
+
+    occ::handle<NCollection_HArray1<double>> NKnots = new NCollection_HArray1<double>(1, NbKnots);
+    for (ii = 1; ii <= NbKnots; ii++)
+    {
+      NKnots->ChangeValue(ii) = (double)(ii - 1) / (NbKnots - 1);
+    }
+
+    NewBS->InsertKnots(NKnots->Array1(), NMults->Array1(), 1.e-10);
+    occ::handle<NCollection_HArray1<gp_Pnt2d>> NewNPoles =
+      new NCollection_HArray1<gp_Pnt2d>(NewBS->Poles());
+    NMults = new NCollection_HArray1<int>(NewBS->Multiplicities());
+    NKnots = new NCollection_HArray1<double>(NewBS->Knots());
+    occ::handle<NCollection_HArray1<double>> FKnots =
+      new NCollection_HArray1<double>(NewBS->KnotSequence());
+
+    Poles     = NewNPoles;
+    Mults     = NMults;
+    Knots     = NKnots;
+    Flatknots = FKnots;
+  }
+
+  // For eventual debug Newton.Dump(std::cout);
+
+  return OkCompute;
+}
+
+//======================================================================================
+void FairCurve_MinimalVariation::Dump(Standard_OStream& o) const
+//======================================================================================
+{
+
+  o << "  MVCurve      |";
+  o.width(7);
+  o << "Old  |   New" << '\n';
+  o << "  P1    X      |";
+  o.width(7);
+  o << OldP1.X() << " | " << NewP1.X() << '\n';
+  o << "        Y      |";
+  o.width(7);
+  o << OldP1.Y() << " | " << NewP1.Y() << '\n';
+  o << "  P2    X      |";
+  o.width(7);
+  o << OldP2.X() << " | " << NewP2.X() << '\n';
+  o << "        Y      |";
+  o.width(7);
+  o << OldP2.Y() << " | " << NewP2.Y() << '\n';
+  o << "      Angle1   |";
+  o.width(7);
+  o << OldAngle1 << " | " << NewAngle1 << '\n';
+  o << "      Angle2   |";
+  o.width(7);
+  o << OldAngle2 << " | " << NewAngle2 << '\n';
+  o << " Curvature1    |";
+  o.width(7);
+  o << OldCurvature1 << " | " << NewCurvature1 << '\n';
+  o << " Curvature2    |";
+  o.width(7);
+  o << OldCurvature2 << " | " << NewCurvature2 << '\n';
+  o << "      Height   |";
+  o.width(7);
+  o << OldHeight << " | " << NewHeight << '\n';
+  o << "      Slope    |";
+  o.width(7);
+  o << OldSlope << " | " << NewSlope << '\n';
+  o << " PhysicalRatio |";
+  o.width(7);
+  o << OldPhysicalRatio << " | " << NewPhysicalRatio << '\n';
+  o << " SlidingFactor |";
+  o.width(7);
+  o << OldSlidingFactor << " | " << NewSlidingFactor << '\n';
+  o << " FreeSliding   |";
+  o.width(7);
+  o << OldFreeSliding << " | " << NewFreeSliding << '\n';
+  o << " ConstrOrder1  |";
+  o.width(7);
+  o << OldConstraintOrder1 << " | " << NewConstraintOrder1 << '\n';
+  o << " ConstrOrder2  |";
+  o.width(7);
+  o << OldConstraintOrder2 << " | " << NewConstraintOrder2 << '\n';
+  switch (myCode)
+  {
+    case FairCurve_OK:
+      o << "AnalysisCode : Ok" << '\n';
+      break;
+    case FairCurve_NotConverged:
+      o << "AnalysisCode : NotConverged" << '\n';
+      break;
+    case FairCurve_InfiniteSliding:
+      o << "AnalysisCode : InfiniteSliding" << '\n';
+      break;
+    case FairCurve_NullHeight:
+      o << "AnalysisCode : NullHeight" << '\n';
+      break;
+  }
+}

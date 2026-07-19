@@ -1,0 +1,14 @@
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 0 pi/2
+trotate w1 0 0 0 1 0 0 90
+polyline w2 15 0 0  25 0 -10  0 0 -10  0 0 10
+orientation w2 R
+wire w w1 w2
+revol s w 0 0 0 0 0 1 360
+tscale s 0 0 0 SCALE1
+explode s E
+mkevol result s
+updatevol s_1 0 1*SCALE1 1 2*SCALE1 2 1*SCALE1
+buildevol
+
+checkprops result -s 484801

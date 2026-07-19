@@ -1,0 +1,62 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IntSurf_PathPoint.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Dir2d.hxx>
+
+inline gp_Pnt IntSurf_PathPointTool::Value3d(const IntSurf_PathPoint& PStart)
+{
+  return PStart.Value();
+}
+
+inline void IntSurf_PathPointTool::Value2d(const IntSurf_PathPoint& PStart, double& U, double& V)
+{
+  PStart.Value2d(U, V);
+}
+
+inline bool IntSurf_PathPointTool::IsPassingPnt(const IntSurf_PathPoint& PStart)
+{
+
+  return PStart.IsPassingPnt();
+}
+
+inline bool IntSurf_PathPointTool::IsTangent(const IntSurf_PathPoint& PStart)
+{
+  return PStart.IsTangent();
+}
+
+inline gp_Vec IntSurf_PathPointTool::Direction3d(const IntSurf_PathPoint& PStart)
+{
+  return PStart.Direction3d();
+}
+
+inline gp_Dir2d IntSurf_PathPointTool::Direction2d(const IntSurf_PathPoint& PStart)
+{
+  return PStart.Direction2d();
+}
+
+inline int IntSurf_PathPointTool::Multiplicity(const IntSurf_PathPoint& PStart)
+{
+  return PStart.Multiplicity();
+}
+
+inline void IntSurf_PathPointTool::Parameters(const IntSurf_PathPoint& PStart,
+                                              const int                Mult,
+                                              double&                  U,
+                                              double&                  V)
+{
+  PStart.Parameters(Mult, U, V);
+}

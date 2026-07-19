@@ -1,0 +1,13 @@
+puts "============"
+puts "OCC23943"
+puts "============"
+puts ""
+#######################################################################
+# OCC fails to work with offset surfaces with singularities
+#######################################################################
+
+set BugNumber OCC23943
+
+restore [locate_data_file bug23943_s.draw] s
+
+proj s 4.99019, 38.0944, -11.244

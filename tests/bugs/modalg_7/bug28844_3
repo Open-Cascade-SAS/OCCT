@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC28844"
+puts "========"
+puts ""
+#######################################################
+# Regression vs 7.1.0: Exception is raised by the solid classification algorithm
+#######################################################
+
+restore [locate_data_file bug28844_Body.brep] b
+restore [locate_data_file bug28844_Face.brep] f
+
+bcommon result b f
+checknbshapes result -shape 1
+checkprops result -s empty

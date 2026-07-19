@@ -1,0 +1,14 @@
+# Original bug : cts20445
+# Date : 25 Nov 98
+
+restore [locate_data_file CFE900_cts20gef.rle] base
+restore [locate_data_file cts20445_face.brep] cont
+
+explode base face
+copy base_7 funtil
+
+## Until TrhuAll = FromEnd
+featprism base cont cont 0 0 1 0 1
+featperform prism result rien funtil
+
+checkprops result -s 307758

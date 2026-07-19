@@ -1,0 +1,7 @@
+polyline profile 0 150 0 10 150 0
+beziercurve w 7 0 150 0 0 200 50 0 170 70 0 40 30 0 0 0 0 50 10 0 150 0
+mkedge w w
+wire w w
+pipe result w profile
+
+checkprops result -s 2669.45

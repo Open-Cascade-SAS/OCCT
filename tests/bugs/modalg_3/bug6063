@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC6063"
+puts "============"
+puts ""
+######################################################
+# Exception is raised during command "sprops" in DRAW on attached shape.
+######################################################
+
+set BugNumber OCC6063
+cpulimit 1000
+
+restore [locate_data_file OCC6063-2.brep] result
+
+checkshape result
+
+checkprops result -s 2465.96 -eps 1.e-6
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

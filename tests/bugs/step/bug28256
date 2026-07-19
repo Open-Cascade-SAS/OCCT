@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC28256"
+puts "========"
+puts ""
+##########################################################################
+# Opening specific STEP file leads to application crash
+##########################################################################
+
+stepread [locate_data_file bug28256_test.stp] a *
+tpcompound result
+
+checkprops result -s 1.8e+101 
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 56883
+ EDGE      : 85310
+ WIRE      : 37795
+ FACE      : 32992
+ SHELL     : 1318
+ SOLID     : 1308
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 215607
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "importing file"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

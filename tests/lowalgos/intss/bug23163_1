@@ -1,0 +1,28 @@
+puts "TODO OCC23163 ALL: Error: No resulting circle of radius 5 at the intersection of tori, only b-splines"
+
+puts "================"
+puts "OCC23163"
+puts "================"
+puts ""
+#######################################################################
+#  Intersection of tori fails to produce results
+#######################################################################
+
+torus t1 20 5
+torus t2 40 0 0 20 5
+
+intersect result t1 t2
+
+set NbCurv [llength [directory result*]]
+
+if { $NbCurv > 4 } {
+  puts "OK: Number of curves is good"
+} else {
+  puts "Error: No resulting circle of radius 5 at the intersection of tori, only b-splines"
+}
+
+smallview
+donly result*
+fit
+display t1 t2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

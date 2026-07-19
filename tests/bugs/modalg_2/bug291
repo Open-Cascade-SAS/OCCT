@@ -1,0 +1,22 @@
+
+puts "================= OCC291 ==================="
+
+#################################################################
+## Some triangles of shading mesh are outside of shape boundaries. (See attached shape). 
+#################################################################
+
+restore [locate_data_file shading_171.brep] result
+checkshape result
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+isos result 0
+triangles result
+
+checktrinfo result -tri 522 -nod 426
+checkprops result -s 376.873 
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

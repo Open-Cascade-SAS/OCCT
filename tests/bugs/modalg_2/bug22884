@@ -1,0 +1,32 @@
+pload QAcommands
+
+puts "============"
+puts "OCC22884"
+puts "============"
+puts ""
+#############################################################################
+# The attached face cannot be displayed in shading mode
+#############################################################################
+
+set BugNumber OCC22884
+
+set x1 136
+set y1 176
+
+restore [locate_data_file bug22884_Face_1.brep] result
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+
+checkprops result -s 697.812 
+checkshape result
+
+checknbshapes result -vertex 46 -edge 46 -wire 3 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 96
+if { "[vreadpixel $x1 $y1 rgb name]" == "BLACK" } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

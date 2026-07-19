@@ -1,0 +1,18 @@
+puts "========"
+puts "0030817: Modeling Algorithms - BRepOffsetAPI_MakePipeShell produces invalid result"
+puts "========"
+puts ""
+
+binrestore [locate_data_file bug30794_shapes.bin] c
+explode c
+
+mksweep c_1
+addsweep c_2
+buildsweep result -C -S
+
+checkshape result
+
+checkprops result -s 1.44508e+06 -v 1.78664e+07
+checknbshapes result -wire 7 -face 7 -shell 1 -solid 1 -t
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

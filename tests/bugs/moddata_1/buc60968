@@ -1,0 +1,16 @@
+
+puts "========================"
+puts "BUC60968"
+puts "========================"
+
+restore [locate_data_file buc60968-c.draw] c 
+restore [locate_data_file buc60968-s1.draw] s1
+
+set che [extrema c s1]
+set err [llength $che]
+if { $err == 0} {
+    puts "Error : command extrema does NOT work properly"
+}
+
+
+

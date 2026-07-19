@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC25858"
+puts "========"
+puts ""
+##########################################################################################################
+# Incorrect result of open offset on single edge based on BSpline curve
+##########################################################################################################
+
+restore [locate_data_file bug25858_hf2d.brep] ff
+
+invert ff
+explode ff
+
+smallview
+donly ff_1
+fit
+display ff
+
+openoffset res ff 1 0.1
+renamevar res_1 result
+
+checknbshapes result -vertex 2 -edge 1 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 4 -t -m "Result of open offset on single edge based on BSpline curve"
+
+checkprops result -l 0.879164 
+checkshape result 
+checksection result
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

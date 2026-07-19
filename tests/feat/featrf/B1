@@ -1,0 +1,17 @@
+#old revolrib14
+pcylinder c1 2 5
+box b 1 1 3
+ttranslate b -0.5 -0.5 5
+bfuse s c1 b
+
+vertex v1 -2 0 5
+vertex v2 -1 0 8
+edge e v1 v2
+wire w e
+ttranslate w 0.6 0 -0.2
+plane pl -1.4 0 4.8 0 1 0
+
+featrf s w pl 0 0 0 0 0 1 0.2 0.2 1 0
+featperform rf result
+
+checkprops result -s 101.665

@@ -1,0 +1,6 @@
+set TypeOfFile "brep"
+
+set AddToDocument "ASSEMBLY_C_L"
+
+set CompareDocumentsMode "SHAPES VOLUME"
+

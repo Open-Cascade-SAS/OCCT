@@ -1,0 +1,570 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_PacketList.hxx>
+#include <IFSelect_SelectSignature.hxx>
+#include <IFSelect_SessionPilot.hxx>
+#include <IFSelect_WorkSession.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESSelect_Activator.hxx>
+#include <IGESSelect_AddGroup.hxx>
+#include <IGESSelect_AutoCorrect.hxx>
+#include <IGESSelect_ComputeStatus.hxx>
+#include <IGESSelect_DispPerDrawing.hxx>
+#include <IGESSelect_DispPerSingleView.hxx>
+#include <IGESSelect_FloatFormat.hxx>
+#include <IGESSelect_IGESTypeForm.hxx>
+#include <IGESSelect_RebuildDrawings.hxx>
+#include <IGESSelect_RebuildGroups.hxx>
+#include <IGESSelect_SelectBypassGroup.hxx>
+#include <IGESSelect_SelectDrawingFrom.hxx>
+#include <IGESSelect_SelectFromDrawing.hxx>
+#include <IGESSelect_SelectFromSingleView.hxx>
+#include <IGESSelect_SelectLevelNumber.hxx>
+#include <IGESSelect_SelectName.hxx>
+#include <IGESSelect_SelectSingleViewFrom.hxx>
+#include <IGESSelect_SelectVisibleStatus.hxx>
+#include <IGESSelect_SetGlobalParameter.hxx>
+#include <IGESSelect_SetVersion5.hxx>
+#include <IGESSelect_SplineToBSpline.hxx>
+#include <IGESSelect_UpdateCreationDate.hxx>
+#include <IGESSelect_UpdateFileName.hxx>
+#include <IGESSelect_UpdateLastChange.hxx>
+#include <IGESSelect_ViewSorter.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <MoniTool_Macros.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+
+#include <cstdio>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_Activator, IFSelect_Activator)
+
+static int THE_IGESSelect_Activator_initActivator = 0;
+
+IGESSelect_Activator::IGESSelect_Activator()
+{
+  if (THE_IGESSelect_Activator_initActivator)
+  {
+    return;
+  }
+  THE_IGESSelect_Activator_initActivator = 1;
+  //  Add ( 0,"load");
+  //  Add ( 0,"loadiges");    // homonyme
+  SetForGroup("XSTEP-IGES");
+
+  Add(5, "listviews");
+  Add(6, "listdrawings");
+  Add(7, "listsviews");
+
+  AddSet(10, "igestype");
+  AddSet(11, "bypassgroup");
+  AddSet(12, "igesname");
+  AddSet(13, "igesvisible");
+  AddSet(14, "igeslevel");
+
+  AddSet(21, "igesfromdrawing");
+  AddSet(22, "igesfromview");
+  AddSet(23, "igesdrawingfrom");
+  AddSet(24, "igesviewfrom");
+
+  AddSet(31, "igesdispdrawing");
+  AddSet(32, "igesdispview");
+
+  AddSet(40, "floatformat");
+  AddSet(41, "setglobalparam");
+  AddSet(42, "setversion5");
+  AddSet(43, "updatecreationdate");
+  AddSet(44, "updatelastchange");
+  AddSet(45, "updatefilename");
+
+  AddSet(50, "autocorrect");
+  AddSet(51, "computestatus");
+  AddSet(52, "rebuildgroups");
+  AddSet(53, "rebuilddrawings");
+  AddSet(54, "addgroup");
+
+  AddSet(60, "splinetobspline");
+
+  Add(70, "setuseflag");
+}
+
+IFSelect_ReturnStatus IGESSelect_Activator::Do(const int                                 number,
+                                               const occ::handle<IFSelect_SessionPilot>& pilot)
+{
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Word(1).ToCString();
+  const char* const arg2 = pilot->Word(2).ToCString();
+  //  const char* const arg3 = pilot->Word(3).ToCString();
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
+
+  switch (number)
+  {
+
+    case 5:   //        ****    ListViews (without additional sorting)
+    case 6:   //        ****    ListDrawings
+    case 7: { //        ****    ListS(ingle)Views
+      int listmode = 0;
+      if (argc == 2 && arg1[0] == '?')
+      {
+        argc = -1;
+      }
+      if (argc < 2)
+      {
+        std::cout << "Add an argument to have :\n"
+                  << " l : summary list"
+                  << " c : complete list per item (but not for remaining)\n"
+                  << " r : same + complete remaining list\n"
+                  << "  on entire model. Add selection name to list on a part" << '\n';
+        return (argc >= 0 ? IFSelect_RetError : IFSelect_RetVoid);
+      }
+      if (arg1[0] == 'l')
+      {
+        listmode = 0;
+        std::cout << "Liste resumee";
+      }
+      else if (arg1[0] == 'c')
+      {
+        listmode = 1;
+        std::cout << "Complete list per item (not for Remaining)" << '\n';
+      }
+      else if (arg1[0] == 'r')
+      {
+        listmode = 2;
+        std::cout << "Complete list per item and for Remaining" << '\n';
+      }
+      else
+      {
+        std::cout << "Parametre de listage non compris" << '\n';
+        return IFSelect_RetError;
+      }
+
+      occ::handle<IGESSelect_ViewSorter> vs = new IGESSelect_ViewSorter;
+      vs->SetModel(GetCasted(IGESData_IGESModel, WS->Model()));
+      if (argc == 2)
+      {
+        vs->AddModel(WS->Model());
+      }
+      else
+      {
+        //   on demande une selection
+        DeclareAndCast(IFSelect_Selection, sel, WS->NamedItem(arg2));
+        if (sel.IsNull())
+        {
+          std::cout << "Pas une selection : " << arg2 << '\n';
+          return IFSelect_RetError;
+        }
+        vs->AddList(WS->SelectionResult(sel));
+      }
+      bool listdr = (number > 5);
+      if (number == 6)
+      {
+        vs->SortDrawings(WS->Graph());
+      }
+      if (number == 7)
+      {
+        vs->SortSingleViews(true);
+      }
+      occ::handle<IFSelect_PacketList> sets = vs->Sets(listdr);
+      int                              nb   = vs->NbSets(listdr);
+      std::cout << " --  ViewSorter for";
+      if (number == 5)
+      {
+        std::cout << " Views & Drawings";
+      }
+      if (number == 6)
+      {
+        std::cout << " Drawings only (complete)";
+      }
+      if (number == 7)
+      {
+        std::cout << " Single Views & Drawing Frames";
+      }
+      std::cout << ", on " << vs->NbEntities() << " ent.s, give " << nb << " Sets" << '\n';
+
+      Interface_EntityIterator iter;
+      for (int i = 1; i <= nb; i++)
+      {
+        std::cout << " --  Set n0 " << i
+                  << " Item=entity n0: " << WS->Model()->Number(vs->SetItem(i, listdr))
+                  << "  List:";
+        std::cout << sets->NbEntities(i) << " ent.s:" << '\n';
+        if (listmode == 0)
+        {
+          continue;
+        }
+        iter = sets->Entities(i);
+        WS->ListEntities(iter, 0, std::cout);
+      }
+
+      std::cout << " --  Remaining Entities (not yet sorted) :" << sets->NbDuplicated(0, false)
+                << '\n';
+      if (listmode < 2)
+      {
+        return IFSelect_RetVoid;
+      }
+      iter = sets->Duplicated(0, false);
+      WS->ListEntities(iter, 0, std::cout);
+      return IFSelect_RetVoid;
+    }
+
+    case 10: { //        ****    IGESType (form Type/Form)
+      if (argc < 2)
+      {
+        std::cout << "Give the desired type number, + optionally the form\n"
+                  << "  If no form, takes all forms of the requested type" << '\n';
+        return IFSelect_RetError;
+      }
+      char signature[20];
+      if (argc == 2)
+      {
+        Sprintf(signature, "%s", arg1);
+      }
+      else
+      {
+        Sprintf(signature, "%s %s", arg1, arg2);
+      }
+      occ::handle<IFSelect_SelectSignature> sel =
+        new IFSelect_SelectSignature(new IGESSelect_IGESTypeForm, signature, (argc > 2));
+      return pilot->RecordItem(sel);
+    }
+
+    case 11: { //        ****    IGES BypassGroup
+      return pilot->RecordItem(new IGESSelect_SelectBypassGroup);
+    }
+
+    case 12: { //        ****    IGES Name
+      if (argc < 2)
+      {
+        std::cout << "Give a TextParam Name for IGESName" << '\n';
+        return IFSelect_RetError;
+      }
+      occ::handle<IGESSelect_SelectName> sel = new IGESSelect_SelectName;
+      sel->SetName(GetCasted(TCollection_HAsciiString, WS->NamedItem(arg1)));
+      return pilot->RecordItem(sel);
+    }
+
+    case 13: { //        ****    IGES VisibleStatus
+      return pilot->RecordItem(new IGESSelect_SelectVisibleStatus);
+    }
+
+    case 14: { //        ****    IGES LevelNumber
+      if (argc < 2)
+      {
+        std::cout << "Give IntParam name for Level" << '\n';
+        return IFSelect_RetError;
+      }
+      DeclareAndCast(IFSelect_IntParam, lev, WS->NamedItem(arg1));
+      if (lev.IsNull())
+      {
+        std::cout << arg1 << " : not an IntParam (for Level)" << '\n';
+        return IFSelect_RetError;
+      }
+      occ::handle<IGESSelect_SelectLevelNumber> sel = new IGESSelect_SelectLevelNumber;
+      sel->SetLevelNumber(lev);
+      return pilot->RecordItem(sel);
+    }
+
+    case 21: { //        ****    IGES FromDrawing
+      return pilot->RecordItem(new IGESSelect_SelectFromDrawing);
+    }
+    case 22: { //        ****    IGES FromSingleView
+      return pilot->RecordItem(new IGESSelect_SelectFromSingleView);
+    }
+    case 23: { //        ****    IGES FromDrawing
+      return pilot->RecordItem(new IGESSelect_SelectDrawingFrom);
+    }
+    case 24: { //        ****    IGES FromDrawing
+      return pilot->RecordItem(new IGESSelect_SelectSingleViewFrom);
+    }
+
+    case 31: { //        ****    IGES DispatchPerDrawing
+      return pilot->RecordItem(new IGESSelect_DispPerDrawing);
+    }
+    case 32: { //        ****    IGES DispatchPerSingleView
+      return pilot->RecordItem(new IGESSelect_DispPerSingleView);
+    }
+
+    case 40: { //        ****    FloatFormat
+      char prem = ' ';
+      if (argc < 2)
+      {
+        prem = '?';
+      }
+      else if (argc == 5)
+      {
+        std::cout << "floatformat alone gives the accepted forms" << '\n';
+        return IFSelect_RetError;
+      }
+      else
+      {
+        prem = arg1[0];
+      }
+      bool zerosup = false;
+      int  digits  = 0;
+      if (prem == 'N' || prem == 'n')
+      {
+        zerosup = false;
+      }
+      else if (prem == 'Z' || prem == 'z')
+      {
+        zerosup = true;
+      }
+      else if (prem >= 48 && prem <= 57)
+      {
+        digits = atoi(arg1);
+      }
+      else
+      {
+        std::cout << "floatformat digits, digits=nb of significant digits, or\n"
+                  << "floatformat NZ %mainformat [%rangeformat [Rmin Rmax]]\n"
+                  << "  NZ : N or n for Non-zero-suppress, Z or z for zero-suppress\n"
+                  << " %mainformat  : main format printf type, ex,: %E\n"
+                  << " + optional  : secondary format (floats around 1.) :\n"
+                  << " %rangeformat Rmin Rmax : printf type format between Rmin and Rmax\n"
+                  << " %rangeformat alone : printf type format between 0.1 and 1000.\n"
+                  << std::flush;
+        return (prem == '?' ? IFSelect_RetVoid : IFSelect_RetError);
+      }
+      double Rmin = 0., Rmax = 0.;
+      if (argc > 4)
+      {
+        Rmin = Atof(pilot->Word(4).ToCString());
+        Rmax = Atof(pilot->Word(5).ToCString());
+        if (Rmin <= 0 || Rmax <= 0)
+        {
+          std::cout << "intervalle : donner reels > 0" << '\n';
+          return IFSelect_RetError;
+        }
+      }
+      occ::handle<IGESSelect_FloatFormat> fm = new IGESSelect_FloatFormat;
+      if (argc == 2)
+      {
+        fm->SetDefault(digits);
+      }
+      else
+      {
+        fm->SetZeroSuppress(zerosup);
+        fm->SetFormat(arg2);
+        if (argc == 4)
+        {
+          fm->SetFormatForRange(pilot->Word(3).ToCString());
+        }
+        else if (argc >= 6)
+        {
+          fm->SetFormatForRange(pilot->Word(3).ToCString(), Rmin, Rmax);
+        }
+        else
+        {
+          fm->SetFormatForRange("");
+        }
+      }
+      return pilot->RecordItem(fm);
+    }
+
+    case 41: { //        ****    SetGlobalParameter
+      if (argc < 3)
+      {
+        std::cout << "Give integer=n0 param to change + TextParam name for the value" << '\n';
+        return IFSelect_RetError;
+      }
+      int numpar = atoi(arg1);
+      if (numpar <= 0)
+      {
+        std::cout << "Pas un n0 de param global correct:" << arg1 << '\n';
+        return IFSelect_RetError;
+      }
+      DeclareAndCast(TCollection_HAsciiString, val, WS->NamedItem(arg2));
+      if (val.IsNull())
+      {
+        std::cout << "Pas un nom de TextParam:" << arg2 << '\n';
+        return IFSelect_RetError;
+      }
+      occ::handle<IGESSelect_SetGlobalParameter> mod = new IGESSelect_SetGlobalParameter(numpar);
+      mod->SetValue(val);
+      return pilot->RecordItem(mod);
+    }
+
+    case 42: { //        ****    Set IGES Version 5.1
+      return pilot->RecordItem(new IGESSelect_SetVersion5);
+    }
+    case 43: { //        ****    Update Creation Date
+      return pilot->RecordItem(new IGESSelect_UpdateCreationDate);
+    }
+    case 44: { //        ****    Update Last Change Date
+      return pilot->RecordItem(new IGESSelect_UpdateLastChange);
+    }
+    case 45: { //        ****    Update File Name
+      return pilot->RecordItem(new IGESSelect_UpdateFileName);
+    }
+
+    case 50: { //        ****    AutoCorrect
+      return pilot->RecordItem(new IGESSelect_AutoCorrect);
+    }
+    case 51: { //        ****    Compute Status
+      return pilot->RecordItem(new IGESSelect_ComputeStatus);
+    }
+    case 52: { //        ****    Rebuild Groups
+      return pilot->RecordItem(new IGESSelect_RebuildGroups);
+    }
+    case 53: { //        ****    Rebuild Drawings
+      return pilot->RecordItem(new IGESSelect_RebuildDrawings);
+    }
+    case 54: { //        ****    Add Group
+      return pilot->RecordItem(new IGESSelect_AddGroup);
+    }
+
+    case 60: { //        ****    Spline To BSpline
+      if (argc < 2)
+      {
+        std::cout << "For SplineToBSpline, give mode :\n"
+                  << " n for normal, t for tryC2" << '\n';
+        return IFSelect_RetError;
+      }
+      bool tryC2;
+      if (arg1[0] == 'n' || arg1[0] == 'N')
+      {
+        tryC2 = false;
+      }
+      else if (arg1[0] == 't' || arg1[0] == 'T')
+      {
+        tryC2 = true;
+      }
+      else
+      {
+        std::cout << " Mode incorrect : " << arg1 << '\n';
+        return IFSelect_RetError;
+      }
+      occ::handle<IGESSelect_SplineToBSpline> conv = new IGESSelect_SplineToBSpline(tryC2);
+      return pilot->RecordItem(conv);
+    }
+
+    case 70: { //        ****    SetUseFlag
+      int usefl = atoi(arg1);
+      if (argc > 2)
+      {
+        occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+          WS->GiveList(pilot->CommandPart(2));
+        int i, nb = list->Length();
+        for (i = 1; i <= nb; i++)
+        {
+          DeclareAndCast(IGESData_IGESEntity, ent, list->Value(i));
+          if (!ent.IsNull())
+          {
+            ent->InitStatus(ent->BlankStatus(),
+                            ent->SubordinateStatus(),
+                            usefl,
+                            ent->HierarchyStatus());
+          }
+        }
+      }
+      else
+      {
+        int i, nb = WS->NbStartingEntities();
+        for (i = 1; i <= nb; i++)
+        {
+          DeclareAndCast(IGESData_IGESEntity, ent, WS->StartingEntity(i));
+          if (!ent.IsNull())
+          {
+            ent->InitStatus(ent->BlankStatus(),
+                            ent->SubordinateStatus(),
+                            usefl,
+                            ent->HierarchyStatus());
+          }
+        }
+      }
+      return IFSelect_RetDone;
+    }
+
+    default:
+      break;
+  }
+  return IFSelect_RetVoid;
+}
+
+const char* IGESSelect_Activator::Help(const int number) const
+{
+  switch (number)
+  {
+    case 5:
+      return "List Views (all types). Selection name otherwise entire model";
+    case 6:
+      return "List Drawings. Selection name otherwise entire model";
+    case 7:
+      return "List SIMPLE Views. Selection name otherwise entire model";
+
+    case 10:
+      return "type:integer [form:integer]  : cree Select IGESType";
+    case 11:
+      return "cree Select Bypass Group";
+    case 12:
+      return "name:TextParam  : cree Select Name (Name/Label)";
+    case 13:
+      return "cree Select Visible Status (Blank Status = 0 sinon 1)";
+    case 14:
+      return "level:IntParam  : cree Select LevelNumber";
+
+    case 21:
+      return "cree Select From Drawing";
+    case 22:
+      return "create Select From Single View";
+    case 23:
+      return "create Select Drawing From, drawing(s) for an entity list";
+    case 24:
+      return "create Select View From, views for an entity list";
+
+    case 31:
+      return "create Dispatch Per Drawing";
+    case 32:
+      return "create Dispatch Per SingleView";
+
+    case 40:
+      return "options... : create FloatFormat ... floatformat alone->help";
+    case 41:
+      return "numpar:integer  value:TextParam  : create Set Global Param";
+    case 42:
+      return "cree Set Version -> 5.1";
+    case 43:
+      return "cree Update Creation Date";
+    case 44:
+      return "cree Update Last Change Date";
+    case 45:
+      return "cree Update File Name (dynamic)";
+
+    case 50:
+      return "cree AutoCorrect";
+    case 51:
+      return "cree Compute Status (in D.E.)";
+    case 52:
+      return "cree Rebuild Groups";
+    case 53:
+      return "cree Rebuild Drawings";
+    case 54:
+      return "cree AddGroup";
+
+    case 60:
+      return "cree SplineToBSpline Conversion";
+
+    case 70:
+      return "useflag givelist  :  Set Use Flag to value";
+
+    default:
+      break;
+  }
+  return "??";
+}

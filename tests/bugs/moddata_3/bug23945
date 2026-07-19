@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC23945"
+puts "================"
+puts ""
+###################################################
+## GeomAdaptor_Surface fails to compute the first derivatives on the surface of the attached face
+###################################################
+
+pload QAcommands
+
+restore [locate_data_file bug23945_f.brep] f
+
+mksurface s f
+
+OCC23945 s 0. -6.337359082e-009 x y z dux duy duz dvx dvy dvz
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

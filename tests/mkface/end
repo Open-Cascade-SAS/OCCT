@@ -1,0 +1,48 @@
+#set MaxFTol 0
+#set MaxETol 0
+#set MaxVTol 0
+if { [isdraw result] } {
+   #check if result is valid
+   puts [checkshape result]
+   set tolerance [tolerance result]
+   puts $tolerance
+   regexp { *FACE +: +MAX=([-0-9.+eE]+)} $tolerance full maxf 
+   regexp { *EDGE +: +MAX=([-0-9.+eE]+)} $tolerance full maxe 
+   regexp { *VERTEX +: +MAX=([-0-9.+eE]+)} $tolerance full maxv 
+
+   if { [info exists MaxFTol ] } {
+      if { $MaxFTol != 0 && $maxf > $MaxFTol && [expr 1.*abs($MaxFTol - $maxf)/$MaxFTol] > 0.01 } {
+         puts "Error : The resulting shape is WRONG. MAX tolerance of a FACE should be equal to $MaxFTol instead of $maxf"
+      } elseif { $MaxFTol == 0 && $maxf != 0 } {
+         puts "Error : The resulting shape is WRONG."
+      } else {
+         puts "MAX tolerance of a FACE of the resulting shape is equal to $maxf"
+      }
+   } 
+
+   if { [info exists MaxETol ] } {
+      if { $MaxETol != 0 && $maxe > $MaxETol && [expr 1.*abs($MaxETol - $maxe)/$MaxETol] > 0.01 } {
+         puts "Error : The resulting shape is WRONG. MAX tolerance of an EDGE should be equal to $MaxETol instead of $maxe"
+      } elseif { $MaxETol == 0 && $maxe != 0 } {
+         puts "Error : The resulting shape is WRONG."
+      } else {
+         puts "MAX tolerance of an EDGE of the resulting shape is equal to $maxe"
+      }
+   } 
+
+   if { [info exists MaxVTol ] } {
+      if { $MaxVTol != 0 && $maxv > $MaxVTol && [expr 1.*abs($MaxVTol - $maxv)/$MaxVTol] > 0.01 } {
+         puts "Error : The resulting shape is WRONG. MAX tolerance of VERTEX should be equal to $MaxVTol instead of $maxv"
+      } elseif { $MaxVTol == 0 && $maxv != 0 } {
+         puts "Error : The resulting shape is WRONG."
+      } else {
+         puts "MAX tolerance of a VERTEX of the resulting shape is equal to $maxv"
+      }
+   } 
+   checkview -display result -2d -path ${imagedir}/${test_image}.png
+} else {
+   puts "Error : The mkface can not be built."
+}
+
+# to end a test script
+puts "TEST COMPLETED"

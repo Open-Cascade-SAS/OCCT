@@ -1,0 +1,10 @@
+puts "=========="
+puts "0027342: Data Exchange, STEP - support C++ streams for import / export"
+puts "=========="
+puts ""
+
+puts "Testing read of STEP file using stream interface"
+testreadstep [locate_data_file PRO7071.stp] result -stream
+
+checkshape result
+checknbshapes result -solid 4

@@ -1,0 +1,22 @@
+puts "========================"
+puts " OCC599"
+puts "========================"
+puts ""
+#########################################################
+## Result of BOPFUSE operation is unclosed shape in spite of source solids are valid
+#########################################################
+
+cpulimit 1000
+
+restore [locate_data_file OCC600_1.brep] a
+checkshape a
+restore [locate_data_file OCC600_2.brep] b
+checkshape b
+
+bop b a
+bopfuse result
+
+checkprops result -s 679784
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

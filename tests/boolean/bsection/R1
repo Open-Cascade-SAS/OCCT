@@ -1,0 +1,15 @@
+# Original bug : cts20290 : 
+# Date : 12June98
+
+restore [locate_data_file CTO904_cts20290a.rle] a 
+restore [locate_data_file CTO904_cts20290b.rle] b
+
+#pkv f
+btolx a
+#pkv t
+
+bsection result a b
+
+checkprops result -l 267.11
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

@@ -1,0 +1,24 @@
+puts "========"
+puts "CR23703"
+puts "========"
+puts ""
+####################################################################
+## Projection algorithm produces incomplete 2D-Curve
+####################################################################
+
+restore [locate_data_file bug23703_c2x.draw] c
+restore [locate_data_file bug23703_s1.draw] s
+
+mkface f s
+pcurve f
+
+project c2d c s
+
+# Length check
+checklength c2d -l 6.2831853071795862
+
+# Visual Check
+v2d
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

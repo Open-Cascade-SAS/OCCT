@@ -1,0 +1,14 @@
+puts "================"
+puts "BUC60654"
+puts "OCC143"
+puts "================"
+puts ""
+######################################################################
+## Raises exception "Standard_NotImplemented3" in GCPnts_AbscissaPoint on a Geom2d_OffsetCurve 
+######################################################################
+
+set len_expected 4.e100
+line line_2d 0 0 1 1
+offset result line_2d 10 1 0
+
+checklength result -l 4.e100

@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC22587"
+puts "================"
+puts ""
+######################################################################################
+# Problem with missing seam fixer
+######################################################################################
+
+set BugNumber OCC22587
+
+catch {pload XDE}
+
+restore [locate_data_file OCC22587-face.brep] f 
+fixshape result f -l -o -h +m -d -s -i -n
+set info [checkshape result]
+
+# Resume
+puts ""
+if { [regexp {This shape seems to be valid} $info] } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+checkprops result -s 290.283
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+

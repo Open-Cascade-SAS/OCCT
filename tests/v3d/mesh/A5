@@ -1,0 +1,9 @@
+vclear
+meshfromstl m1 [locate_data_file b.stl]
+meshfromstl m2 [locate_data_file b2.stl]
+meshfromstl m3 [locate_data_file b3.stl]
+vsetdispmode m1 2
+vsetdispmode m2 3
+vdump $::imagedir/${::casename}_dsd.png
+meshhide m3
+vdump $::imagedir/${::casename}_hdn.png

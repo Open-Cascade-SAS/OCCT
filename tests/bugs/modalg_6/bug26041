@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC26041"
+puts "========"
+puts ""
+########################################
+# GeomLib_Tool::Parameter method fails
+########################################
+
+restore [locate_data_file OCC26041-edge_haut.brep] a
+
+mkcurve c a
+cvalue c -0.58758239134636203 x y z
+parameters c x y z 1.e-7 u
+trim c2 c
+parameters c2 x y z 1.e-7 u

@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC9303"
+puts "============"
+puts ""
+######################################################
+# Intersection curve surface doesn't take account of bounds of the surface
+######################################################
+
+set BugNumber OCC9303
+
+cone c 0 0 0 30 0
+trimv nc c 20 30
+
+smallview +X+Z
+donly nc
+fit
+
+line ll 0 0 10 1 0 0
+
+if [catch {intersect res ll nc} result] {
+   set mistake 1
+} else {
+   set  mistake 0
+}
+
+if { $mistake == 0} {                                                                           
+   puts "${BugNumber} OK : intersection was finished"                 
+   puts ""
+   set nom 0
+   set j 1
+   repeat 2 {
+     set che [whatis res_$j]
+     set err [lindex $che [expr [llength $che] - 1]]
+     if { $err != "point"} {
+        break
+     } else {
+        set nom [expr $nom + 1]
+     }
+     incr j
+   }
+   if { $nom != 0 } {
+      puts [format "Faulty ${BugNumber}: Intersection was made WRONGLY: %s points" $nom]
+   } else {
+      puts [format "${BugNumber} OK : Intersection command works properly: %s points" $nom]
+   }
+} else {
+   puts "Faulty ${BugNumber} : intersection does not finished"
+}
+

@@ -1,0 +1,11 @@
+circle c   0 0 0 0 0 1 0 1 0 1
+copy c cr
+translate cr 0 -4 0
+reverse cr
+convert result cr
+pl
+pl
+pu
+pu
+checklength result -l 6.2831853071795853
+checkview -display result -2d -path ${imagedir}/${test_image}.png

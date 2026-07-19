@@ -1,0 +1,17 @@
+vertex v1 -1 0 0
+vertex v2 9 0 0
+vertex v3 1 1 0
+vertex v4 1 1 5
+polyvertex w1 v1 v3 v2 v1
+mkplane s1 w1
+polyvertex w2 v1 v2 v4 v1
+mkplane s2 w2
+polyvertex w3 v2 v3 v4 v2
+mkplane s3 w3
+polyvertex w4 v1 v4 v3 v1
+mkplane s4 w4
+sewing s s1 s2 s3 s4
+fixshape  r  s  -maxtaila 10  -maxtailw 0.7
+
+checknbshapes  r  -vertex 5  -edge 7  -wire 4  -face 4  -shell 1  -solid 0  -compsolid 0  -compound 0
+checkprops r -l 69.237606465667483

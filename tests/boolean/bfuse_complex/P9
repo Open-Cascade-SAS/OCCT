@@ -1,0 +1,9 @@
+#ger60239
+
+restore [locate_data_file mds-part1.rle] a
+restore [locate_data_file mds-part2.rle] b
+
+bfuse result a b
+
+checkprops result -s 239.333
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

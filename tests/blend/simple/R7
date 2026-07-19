@@ -1,0 +1,9 @@
+restore [locate_data_file 4_T1(shell).draw] s
+tscale s 0 0 0 SCALE
+explode s E
+blend result s SCALE*0.001 s_2  SCALE*0.001 s_4  SCALE*0.001 s_1  SCALE*0.001 s_3  \
+               SCALE*0.001 s_19 SCALE*0.001 s_15 SCALE*0.001 s_20 SCALE*0.001 s_21 \
+               SCALE*0.001 s_9  SCALE*0.001 s_17 SCALE*0.001 s_6  SCALE*0.001 s_16 \
+               SCALE*0.001 s_14 SCALE*0.001 s_7  SCALE*0.001 s_23 SCALE*0.001 s_10
+
+checkprops result -s 2079.48

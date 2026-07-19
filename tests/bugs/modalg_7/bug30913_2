@@ -1,0 +1,39 @@
+puts "========"
+puts "0030913: Invalid result of Fusing slices"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30913_case2.brep] s
+
+bclearobjects
+bcleartools
+set exp [explode s]
+baddobjects s_1
+eval baddtools [lrange $exp 1 end]
+
+# Use gluing Shift option
+bglue 1
+# Avoid History filling
+setfillhistory 0
+
+bfillds
+bbop result 1
+
+checkshape result
+
+dchrono unify restart
+unifysamedom result result
+dchrono unify stop counter UNIFY_SD
+
+checkshape result
+
+checkprops result -s 3.89766e+06 -v 1.40733e+08
+checknbshapes result -vertex 46597 -edge 70375 -wire 24212 -face 23995 -shell 1 -solid 1 -t
+
+#if {![regexp "This shape seems to be OK" [bopcheck result]]} {
+#  puts "Error: result is a self-intersecting shape"
+#}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+boptions -default

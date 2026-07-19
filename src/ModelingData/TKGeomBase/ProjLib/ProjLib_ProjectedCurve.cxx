@@ -1,0 +1,1178 @@
+// Created on: 1993-08-25
+// Created by: Bruno DUMORTIER
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//  Modified by skv - Wed Aug 11 15:45:58 2004 OCC6272
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <ProjLib_HCompProjectedCurve.hxx>
+#include <ProjLib_ComputeApproxOnPolarSurface.hxx>
+#include <ProjLib_ComputeApprox.hxx>
+#include <ProjLib_Projector.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Approx_CurveOnSurface.hxx>
+#include <ProjLib_Plane.hxx>
+#include <ProjLib_Cylinder.hxx>
+#include <ProjLib_Cone.hxx>
+#include <ProjLib_Sphere.hxx>
+#include <ProjLib_Torus.hxx>
+#include <Precision.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <gp_Vec2d.hxx>
+#include <StdFail_NotDone.hxx>
+#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <NCollection_Array1.hxx>
+#include <GeomAbs_IsoType.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <GeomLib.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <NCollection_DataMap.hxx>
+#include <ElSLib.hxx>
+#include <ElCLib.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(ProjLib_ProjectedCurve, Adaptor2d_Curve2d)
+
+//=================================================================================================
+
+static double ComputeTolU(const occ::handle<Adaptor3d_Surface>& theSurf, const double theTolerance)
+{
+  double aTolU = theSurf->UResolution(theTolerance);
+  if (theSurf->IsUPeriodic())
+  {
+    aTolU = std::min(aTolU, 0.01 * theSurf->UPeriod());
+  }
+
+  return aTolU;
+}
+
+//=================================================================================================
+
+static double ComputeTolV(const occ::handle<Adaptor3d_Surface>& theSurf, const double theTolerance)
+{
+  double aTolV = theSurf->VResolution(theTolerance);
+  if (theSurf->IsVPeriodic())
+  {
+    aTolV = std::min(aTolV, 0.01 * theSurf->VPeriod());
+  }
+
+  return aTolV;
+}
+
+//=================================================================================================
+
+static bool IsoIsDeg(const Adaptor3d_Surface& S,
+                     const double             Param,
+                     const GeomAbs_IsoType    IT,
+                     const double             TolMin,
+                     const double             TolMax)
+{
+  double U1 = 0., U2 = 0., V1 = 0., V2 = 0., T;
+  bool   Along = true;
+  U1           = S.FirstUParameter();
+  U2           = S.LastUParameter();
+  V1           = S.FirstVParameter();
+  V2           = S.LastVParameter();
+  gp_Vec D1U, D1V;
+  gp_Pnt P;
+  double Step, D1NormMax;
+  if (IT == GeomAbs_IsoV)
+  {
+    Step      = (U2 - U1) / 10;
+    D1NormMax = 0.;
+    for (T = U1; T <= U2; T = T + Step)
+    {
+      S.D1(T, Param, P, D1U, D1V);
+      D1NormMax = std::max(D1NormMax, D1U.Magnitude());
+    }
+
+    if (D1NormMax > TolMax || D1NormMax < TolMin)
+    {
+      Along = false;
+    }
+  }
+  else
+  {
+    Step      = (V2 - V1) / 10;
+    D1NormMax = 0.;
+    for (T = V1; T <= V2; T = T + Step)
+    {
+      S.D1(Param, T, P, D1U, D1V);
+      D1NormMax = std::max(D1NormMax, D1V.Magnitude());
+    }
+
+    if (D1NormMax > TolMax || D1NormMax < TolMin)
+    {
+      Along = false;
+    }
+  }
+  return Along;
+}
+
+//=================================================================================================
+
+static void TrimC3d(occ::handle<Adaptor3d_Curve>& myCurve,
+                    bool*                         IsTrimmed,
+                    const double                  dt,
+                    const gp_Pnt&                 Pole,
+                    int*                          SingularCase,
+                    const int                     NumberOfSingularCase,
+                    const double                  TolConf)
+{
+  double f = myCurve->FirstParameter();
+  double l = myCurve->LastParameter();
+
+  gp_Pnt P = myCurve->Value(f);
+
+  if (P.Distance(Pole) <= TolConf)
+  {
+    IsTrimmed[0]    = true;
+    f               = f + dt;
+    myCurve         = myCurve->Trim(f, l, Precision::Confusion());
+    SingularCase[0] = NumberOfSingularCase;
+  }
+
+  P = myCurve->Value(l);
+  if (P.Distance(Pole) <= TolConf)
+  {
+    IsTrimmed[1]    = true;
+    l               = l - dt;
+    myCurve         = myCurve->Trim(f, l, Precision::Confusion());
+    SingularCase[1] = NumberOfSingularCase;
+  }
+}
+
+//=================================================================================================
+
+static void ExtendC2d(occ::handle<Geom2d_BSplineCurve>& aRes,
+                      const double /*t*/,
+                      const double /*dt*/,
+                      const double u1,
+                      const double u2,
+                      const double v1,
+                      const double v2,
+                      const int    FirstOrLast,
+                      const int    NumberOfSingularCase)
+{
+  double theParam = (FirstOrLast == 0) ? aRes->FirstParameter() : aRes->LastParameter();
+
+  gp_Pnt2d                              aPBnd;
+  gp_Vec2d                              aVBnd;
+  gp_Dir2d                              aDBnd;
+  occ::handle<Geom2d_TrimmedCurve>      aSegment;
+  Geom2dConvert_CompCurveToBSplineCurve aCompCurve(aRes, Convert_RationalC1);
+  constexpr double                      aTol = Precision::Confusion();
+
+  aRes->D1(theParam, aPBnd, aVBnd);
+  aDBnd.SetXY(aVBnd.XY());
+  gp_Lin2d aLin(aPBnd, aDBnd); // line in direction of derivative
+
+  gp_Pnt2d thePole;
+  gp_Dir2d theBoundDir;
+  switch (NumberOfSingularCase)
+  {
+    case 1: {
+      thePole.SetCoord(u1, v1);
+      theBoundDir.SetCoord(0., 1.);
+      break;
+    }
+    case 2: {
+      thePole.SetCoord(u2, v1);
+      theBoundDir.SetCoord(0., 1.);
+      break;
+    }
+    case 3: {
+      thePole.SetCoord(u1, v1);
+      theBoundDir.SetCoord(1., 0.);
+      break;
+    }
+    case 4: {
+      thePole.SetCoord(u1, v2);
+      theBoundDir.SetCoord(1., 0.);
+      break;
+    }
+  }
+  gp_Lin2d BoundLin(thePole, theBoundDir); // one of the bounds of rectangle
+  double   ParOnLin = 0.;
+  if (theBoundDir.IsParallel(aDBnd, 100. * Precision::Angular()))
+  {
+    ParOnLin = ElCLib::Parameter(aLin, thePole);
+  }
+  else
+  {
+    double U1x   = BoundLin.Direction().X();
+    double U1y   = BoundLin.Direction().Y();
+    double U2x   = aLin.Direction().X();
+    double U2y   = aLin.Direction().Y();
+    double Uo21x = aLin.Location().X() - BoundLin.Location().X();
+    double Uo21y = aLin.Location().Y() - BoundLin.Location().Y();
+
+    double D = U1y * U2x - U1x * U2y;
+
+    ParOnLin = (Uo21y * U1x - Uo21x * U1y) / D; // parameter of intersection point
+  }
+
+  occ::handle<Geom2d_Line> aSegLine = new Geom2d_Line(aLin);
+  aSegment = (FirstOrLast == 0) ? new Geom2d_TrimmedCurve(aSegLine, ParOnLin, 0.)
+                                : new Geom2d_TrimmedCurve(aSegLine, 0., ParOnLin);
+
+  bool anAfter = FirstOrLast != 0;
+  aCompCurve.Add(aSegment, aTol, anAfter);
+  aRes = aCompCurve.BSplineCurve();
+}
+
+//=================================================================================================
+
+static void Project(ProjLib_Projector& P, occ::handle<Adaptor3d_Curve>& C)
+{
+  GeomAbs_CurveType CType = C->GetType();
+  switch (CType)
+  {
+    case GeomAbs_Line:
+      P.Project(C->Line());
+      break;
+    case GeomAbs_Circle:
+      P.Project(C->Circle());
+      break;
+    case GeomAbs_Ellipse:
+      P.Project(C->Ellipse());
+      break;
+    case GeomAbs_Hyperbola:
+      P.Project(C->Hyperbola());
+      break;
+    case GeomAbs_Parabola:
+      P.Project(C->Parabola());
+      break;
+    case GeomAbs_BSplineCurve:
+    case GeomAbs_BezierCurve:
+    case GeomAbs_OffsetCurve:
+    case GeomAbs_OtherCurve: // try the approximation
+      break;
+    default:
+      throw Standard_NoSuchObject(" ");
+  }
+}
+
+//=================================================================================================
+
+ProjLib_ProjectedCurve::ProjLib_ProjectedCurve()
+    : myTolerance(Precision::Confusion()),
+      myDegMin(-1),
+      myDegMax(-1),
+      myMaxSegments(-1),
+      myMaxDist(-1.),
+      myBndPnt(AppParCurves_TangencyPoint)
+{
+}
+
+//=================================================================================================
+
+ProjLib_ProjectedCurve::ProjLib_ProjectedCurve(const occ::handle<Adaptor3d_Surface>& S)
+    : myTolerance(Precision::Confusion()),
+      myDegMin(-1),
+      myDegMax(-1),
+      myMaxSegments(-1),
+      myMaxDist(-1.),
+      myBndPnt(AppParCurves_TangencyPoint)
+{
+  Load(S);
+}
+
+//=================================================================================================
+
+ProjLib_ProjectedCurve::ProjLib_ProjectedCurve(const occ::handle<Adaptor3d_Surface>& S,
+                                               const occ::handle<Adaptor3d_Curve>&   C)
+    : myTolerance(Precision::Confusion()),
+      myDegMin(-1),
+      myDegMax(-1),
+      myMaxSegments(-1),
+      myMaxDist(-1.),
+      myBndPnt(AppParCurves_TangencyPoint)
+{
+  Load(S);
+  Perform(C);
+}
+
+//=================================================================================================
+
+ProjLib_ProjectedCurve::ProjLib_ProjectedCurve(const occ::handle<Adaptor3d_Surface>& S,
+                                               const occ::handle<Adaptor3d_Curve>&   C,
+                                               const double                          Tol)
+    : myTolerance(std::max(Tol, Precision::Confusion())),
+      myDegMin(-1),
+      myDegMax(-1),
+      myMaxSegments(-1),
+      myMaxDist(-1.),
+      myBndPnt(AppParCurves_TangencyPoint)
+{
+  Load(S);
+  Perform(C);
+}
+
+//=================================================================================================
+
+occ::handle<Adaptor2d_Curve2d> ProjLib_ProjectedCurve::ShallowCopy() const
+{
+  occ::handle<ProjLib_ProjectedCurve> aCopy = new ProjLib_ProjectedCurve();
+
+  aCopy->myTolerance = myTolerance;
+  if (!mySurface.IsNull())
+  {
+    aCopy->mySurface = mySurface->ShallowCopy();
+  }
+  if (!myCurve.IsNull())
+  {
+    aCopy->myCurve = myCurve->ShallowCopy();
+  }
+  aCopy->myResult      = myResult;
+  aCopy->myDegMin      = myDegMin;
+  aCopy->myDegMax      = myDegMax;
+  aCopy->myMaxSegments = myMaxSegments;
+  aCopy->myMaxDist     = myMaxDist;
+  aCopy->myBndPnt      = myBndPnt;
+
+  return aCopy;
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::Load(const occ::handle<Adaptor3d_Surface>& S)
+{
+  mySurface = S;
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::Load(const double theTol)
+{
+  myTolerance = theTol;
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
+{
+  myTolerance                          = std::max(myTolerance, Precision::Confusion());
+  myCurve                              = C;
+  double              FirstPar         = C->FirstParameter();
+  double              LastPar          = C->LastParameter();
+  GeomAbs_SurfaceType SType            = mySurface->GetType();
+  GeomAbs_CurveType   CType            = myCurve->GetType();
+  bool                isAnalyticalSurf = true;
+  bool                IsTrimmed[2]     = {false, false};
+  int                 SingularCase[2];
+  const double        eps     = 0.01;
+  double              TolConf = Precision::Confusion();
+  double              dt      = (LastPar - FirstPar) * eps;
+  double              U1 = 0.0, U2 = 0.0, V1 = 0.0, V2 = 0.0;
+  U1 = mySurface->FirstUParameter();
+  U2 = mySurface->LastUParameter();
+  V1 = mySurface->FirstVParameter();
+  V2 = mySurface->LastVParameter();
+
+  switch (SType)
+  {
+    case GeomAbs_Plane: {
+      ProjLib_Plane P(mySurface->Plane());
+      Project(P, myCurve);
+      myResult = P;
+    }
+    break;
+
+    case GeomAbs_Cylinder: {
+      ProjLib_Cylinder P(mySurface->Cylinder());
+      Project(P, myCurve);
+      myResult = P;
+    }
+    break;
+
+    case GeomAbs_Cone: {
+      ProjLib_Cone P(mySurface->Cone());
+      Project(P, myCurve);
+      myResult = P;
+    }
+    break;
+
+    case GeomAbs_Sphere: {
+      ProjLib_Sphere P(mySurface->Sphere());
+      Project(P, myCurve);
+      if (P.IsDone())
+      {
+        // Place into the pseudo-period (since Sphere is not
+        // periodic in V!)
+        P.SetInBounds(myCurve->FirstParameter());
+      }
+      else
+      {
+        const double Vmax   = M_PI / 2.;
+        const double Vmin   = -Vmax;
+        const double minang = 1.e-5 * M_PI;
+        gp_Sphere    aSph   = mySurface->Sphere();
+        double       anR    = aSph.Radius();
+        double       f      = myCurve->FirstParameter();
+        double       l      = myCurve->LastParameter();
+
+        gp_Pnt Pf      = myCurve->Value(f);
+        gp_Pnt Pl      = myCurve->Value(l);
+        gp_Pnt aLoc    = aSph.Position().Location();
+        double maxdist = std::max(Pf.Distance(aLoc), Pl.Distance(aLoc));
+        TolConf        = std::max(anR * minang, std::abs(anR - maxdist));
+
+        // Surface has pole at V = Vmin and Vmax
+        gp_Pnt Pole = mySurface->Value(U1, Vmin);
+        TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 3, TolConf);
+        Pole = mySurface->Value(U1, Vmax);
+        TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 4, TolConf);
+      }
+      myResult = P;
+    }
+    break;
+
+    case GeomAbs_Torus: {
+      ProjLib_Torus P(mySurface->Torus());
+      Project(P, myCurve);
+      myResult = P;
+    }
+    break;
+
+    case GeomAbs_BezierSurface:
+    case GeomAbs_BSplineSurface: {
+      isAnalyticalSurf = false;
+      double f, l;
+      f  = myCurve->FirstParameter();
+      l  = myCurve->LastParameter();
+      dt = (l - f) * eps;
+
+      const Adaptor3d_Surface& S = *mySurface;
+      U1                         = S.FirstUParameter();
+      U2                         = S.LastUParameter();
+      V1                         = S.FirstVParameter();
+      V2                         = S.LastVParameter();
+
+      if (IsoIsDeg(S, U1, GeomAbs_IsoU, 0., myTolerance))
+      {
+        // Surface has pole at U = Umin
+        gp_Pnt Pole = mySurface->Value(U1, V1);
+        TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 1, TolConf);
+      }
+
+      if (IsoIsDeg(S, U2, GeomAbs_IsoU, 0., myTolerance))
+      {
+        // Surface has pole at U = Umax
+        gp_Pnt Pole = mySurface->Value(U2, V1);
+        TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 2, TolConf);
+      }
+
+      if (IsoIsDeg(S, V1, GeomAbs_IsoV, 0., myTolerance))
+      {
+        // Surface has pole at V = Vmin
+        gp_Pnt Pole = mySurface->Value(U1, V1);
+        TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 3, TolConf);
+      }
+
+      if (IsoIsDeg(S, V2, GeomAbs_IsoV, 0., myTolerance))
+      {
+        // Surface has pole at V = Vmax
+        gp_Pnt Pole = mySurface->Value(U1, V2);
+        TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 4, TolConf);
+      }
+
+      ProjLib_ComputeApproxOnPolarSurface polar;
+      polar.SetTolerance(myTolerance);
+      polar.SetDegree(myDegMin, myDegMax);
+      polar.SetMaxSegments(myMaxSegments);
+      polar.SetBndPnt(myBndPnt);
+      polar.SetMaxDist(myMaxDist);
+      polar.Perform(myCurve, mySurface);
+
+      occ::handle<Geom2d_BSplineCurve> aRes = polar.BSpline();
+
+      if (!aRes.IsNull())
+      {
+        myTolerance = polar.Tolerance();
+        if ((IsTrimmed[0] || IsTrimmed[1]))
+        {
+          if (IsTrimmed[0])
+          {
+            // Add segment before start of curve
+            f = myCurve->FirstParameter();
+            ExtendC2d(aRes, f, -dt, U1, U2, V1, V2, 0, SingularCase[0]);
+          }
+          if (IsTrimmed[1])
+          {
+            // Add segment after end of curve
+            l = myCurve->LastParameter();
+            ExtendC2d(aRes, l, dt, U1, U2, V1, V2, 1, SingularCase[1]);
+          }
+          occ::handle<Geom2d_Curve> NewCurve2d;
+          GeomLib::SameRange(Precision::PConfusion(),
+                             aRes,
+                             aRes->FirstParameter(),
+                             aRes->LastParameter(),
+                             FirstPar,
+                             LastPar,
+                             NewCurve2d);
+          aRes = occ::down_cast<Geom2d_BSplineCurve>(NewCurve2d);
+        }
+        myResult.SetBSpline(aRes);
+        myResult.Done();
+        myResult.SetType(GeomAbs_BSplineCurve);
+      }
+    }
+    break;
+
+    default: {
+      isAnalyticalSurf    = false;
+      double Vsingular[2] = {0.0, 0.0}; // for surfaces of revolution
+      double f = 0.0, l = 0.0;
+      dt = 0.0;
+
+      if (mySurface->GetType() == GeomAbs_SurfaceOfRevolution)
+      {
+        // Check possible singularity
+
+        gp_Pnt P = mySurface->AxeOfRevolution().Location();
+        gp_Dir N = mySurface->AxeOfRevolution().Direction();
+
+        gp_Lin L(P, N);
+
+        f  = myCurve->FirstParameter();
+        l  = myCurve->LastParameter();
+        dt = (l - f) * eps;
+
+        P = myCurve->Value(f);
+        if (L.Distance(P) < Precision::Confusion())
+        {
+          IsTrimmed[0] = true;
+          f            = f + dt;
+          myCurve      = myCurve->Trim(f, l, Precision::Confusion());
+          // Searching the parameter on the basis curve for surface of revolution
+          Extrema_ExtPC anExtr(P, *mySurface->BasisCurve(), myTolerance);
+          if (anExtr.IsDone())
+          {
+            double aMinDist = RealLast();
+            for (int anIdx = 1; anIdx <= anExtr.NbExt(); anIdx++)
+            {
+              if (anExtr.IsMin(anIdx) && anExtr.SquareDistance(anIdx) < aMinDist)
+              {
+                aMinDist     = anExtr.SquareDistance(anIdx);
+                Vsingular[0] = anExtr.Point(anIdx).Parameter();
+              }
+            }
+          }
+          else
+          {
+            Vsingular[0] = ElCLib::Parameter(L, P);
+          }
+          // SingularCase[0] = 3;
+        }
+
+        P = myCurve->Value(l);
+        if (L.Distance(P) < Precision::Confusion())
+        {
+          IsTrimmed[1] = true;
+          l            = l - dt;
+          myCurve      = myCurve->Trim(f, l, Precision::Confusion());
+          // Searching the parameter on the basis curve for surface of revolution
+          Extrema_ExtPC anExtr(P, *mySurface->BasisCurve(), myTolerance);
+          if (anExtr.IsDone())
+          {
+            double aMinDist = RealLast();
+            for (int anIdx = 1; anIdx <= anExtr.NbExt(); anIdx++)
+            {
+              if (anExtr.IsMin(anIdx) && anExtr.SquareDistance(anIdx) < aMinDist)
+              {
+                aMinDist     = anExtr.SquareDistance(anIdx);
+                Vsingular[1] = anExtr.Point(anIdx).Parameter();
+              }
+            }
+          }
+          else
+          {
+            Vsingular[1] = ElCLib::Parameter(L, P);
+          }
+          // SingularCase[1] = 4;
+        }
+      }
+
+      double aTolU  = std::max(ComputeTolU(mySurface, myTolerance), Precision::Confusion());
+      double aTolV  = std::max(ComputeTolV(mySurface, myTolerance), Precision::Confusion());
+      double aTol2d = std::sqrt(aTolU * aTolU + aTolV * aTolV);
+
+      double aMaxDist = 100. * myTolerance;
+      if (myMaxDist > 0.)
+      {
+        aMaxDist = myMaxDist;
+      }
+      occ::handle<ProjLib_HCompProjectedCurve> HProjector =
+        new ProjLib_HCompProjectedCurve(mySurface, myCurve, aTolU, aTolV, aMaxDist);
+
+      // Normally, within the framework of ProjLib, the result
+      // must be one and only one curve!
+      // Moreover, this curve must not be a Single point
+      int    NbCurves = HProjector->NbCurves();
+      double Udeb = 0.0, Ufin = 0.0;
+      if (NbCurves > 0)
+      {
+        HProjector->Bounds(1, Udeb, Ufin);
+      }
+      else
+      {
+        return;
+      }
+      // Approximate this algorithmic curve.
+      bool          Only3d     = false;
+      bool          Only2d     = true;
+      GeomAbs_Shape Continuity = GeomAbs_C1;
+      if (myBndPnt == AppParCurves_PassPoint)
+      {
+        Continuity = GeomAbs_C0;
+      }
+      int MaxDegree = 14;
+      if (myDegMax > 0)
+      {
+        MaxDegree = myDegMax;
+      }
+      int MaxSeg = 16;
+      if (myMaxSegments > 0)
+      {
+        MaxSeg = myMaxSegments;
+      }
+
+      Approx_CurveOnSurface appr(HProjector, mySurface, Udeb, Ufin, myTolerance);
+      appr.Perform(MaxSeg, MaxDegree, Continuity, Only3d, Only2d);
+
+      occ::handle<Geom2d_BSplineCurve> aRes = appr.Curve2d();
+
+      if (!aRes.IsNull())
+      {
+        aTolU            = appr.MaxError2dU();
+        aTolV            = appr.MaxError2dV();
+        double aNewTol2d = std::sqrt(aTolU * aTolU + aTolV * aTolV);
+        myTolerance *= (aNewTol2d / aTol2d);
+        if (IsTrimmed[0] || IsTrimmed[1])
+        {
+          // Treatment only for surface of revolution
+          double u1, u2, v1, v2;
+          u1 = mySurface->FirstUParameter();
+          u2 = mySurface->LastUParameter();
+          v1 = mySurface->FirstVParameter();
+          v2 = mySurface->LastVParameter();
+
+          if (IsTrimmed[0])
+          {
+            // Add segment before start of curve
+            ExtendC2d(aRes, f, -dt, u1, u2, Vsingular[0], v2, 0, 3);
+          }
+          if (IsTrimmed[1])
+          {
+            // Add segment after end of curve
+            ExtendC2d(aRes, l, dt, u1, u2, v1, Vsingular[1], 1, 4);
+          }
+          occ::handle<Geom2d_Curve> NewCurve2d;
+          GeomLib::SameRange(Precision::PConfusion(),
+                             aRes,
+                             aRes->FirstParameter(),
+                             aRes->LastParameter(),
+                             FirstPar,
+                             LastPar,
+                             NewCurve2d);
+          aRes = occ::down_cast<Geom2d_BSplineCurve>(NewCurve2d);
+          if (Continuity == GeomAbs_C0)
+          {
+            // try to smoother the Curve GeomAbs_C1.
+            int    aDeg       = aRes->Degree();
+            bool   OK         = true;
+            double aSmoothTol = std::max(Precision::Confusion(), aNewTol2d);
+            for (int ij = 2; ij < aRes->NbKnots(); ij++)
+            {
+              OK = OK && aRes->RemoveKnot(ij, aDeg - 1, aSmoothTol);
+            }
+          }
+        }
+
+        myResult.SetBSpline(aRes);
+        myResult.Done();
+        myResult.SetType(GeomAbs_BSplineCurve);
+      }
+    }
+  }
+
+  if (!myResult.IsDone() && isAnalyticalSurf)
+  {
+    // Use advanced analytical projector if base analytical projection failed.
+    ProjLib_ComputeApprox Comp;
+    Comp.SetTolerance(myTolerance);
+    Comp.SetDegree(myDegMin, myDegMax);
+    Comp.SetMaxSegments(myMaxSegments);
+    Comp.SetBndPnt(myBndPnt);
+    Comp.Perform(myCurve, mySurface);
+    if (Comp.Bezier().IsNull() && Comp.BSpline().IsNull())
+    {
+      return; // advanced projector has been failed too
+    }
+    myResult.Done();
+    occ::handle<Geom2d_BSplineCurve> aRes;
+    if (Comp.BSpline().IsNull())
+    {
+      aRes = Geom2dConvert::CurveToBSplineCurve(Comp.Bezier());
+    }
+    else
+    {
+      aRes = Comp.BSpline();
+    }
+    if ((IsTrimmed[0] || IsTrimmed[1]))
+    {
+      if (IsTrimmed[0])
+      {
+        // Add segment before start of curve
+        double f = myCurve->FirstParameter();
+        ExtendC2d(aRes, f, -dt, U1, U2, V1, V2, 0, SingularCase[0]);
+      }
+      if (IsTrimmed[1])
+      {
+        // Add segment after end of curve
+        double l = myCurve->LastParameter();
+        ExtendC2d(aRes, l, dt, U1, U2, V1, V2, 1, SingularCase[1]);
+      }
+      occ::handle<Geom2d_Curve> NewCurve2d;
+      GeomLib::SameRange(Precision::PConfusion(),
+                         aRes,
+                         aRes->FirstParameter(),
+                         aRes->LastParameter(),
+                         FirstPar,
+                         LastPar,
+                         NewCurve2d);
+      aRes = occ::down_cast<Geom2d_BSplineCurve>(NewCurve2d);
+      myResult.SetBSpline(aRes);
+      myResult.SetType(GeomAbs_BSplineCurve);
+    }
+    else
+    {
+      // set the type
+      if (SType == GeomAbs_Plane && CType == GeomAbs_BezierCurve)
+      {
+        myResult.SetType(GeomAbs_BezierCurve);
+        myResult.SetBezier(Comp.Bezier());
+      }
+      else
+      {
+        myResult.SetType(GeomAbs_BSplineCurve);
+        myResult.SetBSpline(Comp.BSpline());
+      }
+    }
+    // set the periodicity flag
+    if (SType == GeomAbs_Plane && CType == GeomAbs_BSplineCurve && myCurve->IsPeriodic())
+    {
+      myResult.SetPeriodic();
+    }
+    myTolerance = Comp.Tolerance();
+  }
+
+  bool isPeriodic[] = {mySurface->IsUPeriodic(), mySurface->IsVPeriodic()};
+  if (myResult.IsDone() && (isPeriodic[0] || isPeriodic[1]))
+  {
+    // Check result curve to be in params space.
+
+    // U and V parameters space correspondingly.
+    const double aSurfFirstPar[2] = {mySurface->FirstUParameter(), mySurface->FirstVParameter()};
+    double       aSurfPeriod[2]   = {0.0, 0.0};
+    if (isPeriodic[0])
+    {
+      aSurfPeriod[0] = mySurface->UPeriod();
+    }
+    if (isPeriodic[1])
+    {
+      aSurfPeriod[1] = mySurface->VPeriod();
+    }
+
+    for (int anIdx = 1; anIdx <= 2; anIdx++)
+    {
+      if (!isPeriodic[anIdx - 1])
+      {
+        continue;
+      }
+
+      if (myResult.GetType() == GeomAbs_BSplineCurve)
+      {
+        NCollection_DataMap<int, int>    aMap;
+        occ::handle<Geom2d_BSplineCurve> aRes = myResult.BSpline();
+        const int                        aDeg = aRes->Degree();
+
+        for (int aKnotIdx = aRes->FirstUKnotIndex(); aKnotIdx < aRes->LastUKnotIndex(); aKnotIdx++)
+        {
+          const double aFirstParam = aRes->Knot(aKnotIdx);
+          const double aLastParam  = aRes->Knot(aKnotIdx + 1);
+
+          for (int anIntIdx = 0; anIntIdx <= aDeg; anIntIdx++)
+          {
+            const double aCurrParam =
+              aFirstParam + (aLastParam - aFirstParam) * anIntIdx / (aDeg + 1.0);
+            gp_Pnt2d aPnt2d;
+            aRes->D0(aCurrParam, aPnt2d);
+
+            int aMapKey =
+              int((aPnt2d.Coord(anIdx) - aSurfFirstPar[anIdx - 1]) / aSurfPeriod[anIdx - 1]);
+
+            if (aPnt2d.Coord(anIdx) - aSurfFirstPar[anIdx - 1] < 0.0)
+            {
+              aMapKey--;
+            }
+
+            if (aMap.IsBound(aMapKey))
+            {
+              aMap.ChangeFind(aMapKey)++;
+            }
+            else
+            {
+              aMap.Bind(aMapKey, 1);
+            }
+          }
+        }
+
+        int                                     aMaxPoints = 0, aMaxIdx = 0;
+        NCollection_DataMap<int, int>::Iterator aMapIter(aMap);
+        for (; aMapIter.More(); aMapIter.Next())
+        {
+          if (aMapIter.Value() > aMaxPoints)
+          {
+            aMaxPoints = aMapIter.Value();
+            aMaxIdx    = aMapIter.Key();
+          }
+        }
+        if (aMaxIdx != 0)
+        {
+          gp_Pnt2d aFirstPnt  = aRes->Value(aRes->FirstParameter());
+          gp_Pnt2d aSecondPnt = aFirstPnt;
+          aSecondPnt.SetCoord(anIdx, aFirstPnt.Coord(anIdx) - aSurfPeriod[anIdx - 1] * aMaxIdx);
+          aRes->Translate(gp_Vec2d(aFirstPnt, aSecondPnt));
+        }
+      }
+
+      if (myResult.GetType() == GeomAbs_Line)
+      {
+        double aT1 = myCurve->FirstParameter();
+        double aT2 = myCurve->LastParameter();
+
+        if (anIdx == 1)
+        {
+          // U param space.
+          myResult.UFrame(aT1, aT2, aSurfFirstPar[anIdx - 1], aSurfPeriod[anIdx - 1]);
+        }
+        else
+        {
+          // V param space.
+          myResult.VFrame(aT1, aT2, aSurfFirstPar[anIdx - 1], aSurfPeriod[anIdx - 1]);
+        }
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::SetDegree(const int theDegMin, const int theDegMax)
+{
+  myDegMin = theDegMin;
+  myDegMax = theDegMax;
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::SetMaxSegments(const int theMaxSegments)
+{
+  myMaxSegments = theMaxSegments;
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::SetBndPnt(const AppParCurves_Constraint theBndPnt)
+{
+  myBndPnt = theBndPnt;
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::SetMaxDist(const double theMaxDist)
+{
+  myMaxDist = theMaxDist;
+}
+
+//=================================================================================================
+
+const occ::handle<Adaptor3d_Surface>& ProjLib_ProjectedCurve::GetSurface() const
+{
+  return mySurface;
+}
+
+//=================================================================================================
+
+const occ::handle<Adaptor3d_Curve>& ProjLib_ProjectedCurve::GetCurve() const
+{
+  return myCurve;
+}
+
+//=================================================================================================
+
+double ProjLib_ProjectedCurve::GetTolerance() const
+{
+  return myTolerance;
+}
+
+//=================================================================================================
+
+double ProjLib_ProjectedCurve::FirstParameter() const
+{
+  return myCurve->FirstParameter();
+}
+
+//=================================================================================================
+
+double ProjLib_ProjectedCurve::LastParameter() const
+{
+  return myCurve->LastParameter();
+}
+
+//=================================================================================================
+
+GeomAbs_Shape ProjLib_ProjectedCurve::Continuity() const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::Continuity() - method is not implemented");
+}
+
+//=================================================================================================
+
+int ProjLib_ProjectedCurve::NbIntervals(const GeomAbs_Shape) const
+{
+  throw Standard_NotImplemented(
+    "ProjLib_ProjectedCurve::NbIntervals() - method is not implemented");
+}
+
+//=================================================================================================
+
+// void ProjLib_ProjectedCurve::Intervals(NCollection_Array1<double>&  T,
+void ProjLib_ProjectedCurve::Intervals(NCollection_Array1<double>&, const GeomAbs_Shape) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::Intervals() - method is not implemented");
+}
+
+//=================================================================================================
+
+bool ProjLib_ProjectedCurve::IsClosed() const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::IsClosed() - method is not implemented");
+}
+
+//=================================================================================================
+
+bool ProjLib_ProjectedCurve::IsPeriodic() const
+{
+  return myResult.IsPeriodic();
+}
+
+//=================================================================================================
+
+double ProjLib_ProjectedCurve::Period() const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::Period() - method is not implemented");
+}
+
+//=================================================================================================
+
+gp_Pnt2d ProjLib_ProjectedCurve::Value(const double) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::Value() - method is not implemented");
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::D0(const double, gp_Pnt2d&) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::D0() - method is not implemented");
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::D1(const double, gp_Pnt2d&, gp_Vec2d&) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::D1() - method is not implemented");
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::D2(const double, gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::D2() - method is not implemented");
+}
+
+//=================================================================================================
+
+void ProjLib_ProjectedCurve::D3(const double, gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&, gp_Vec2d&) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::D3() - method is not implemented");
+}
+
+//=================================================================================================
+
+gp_Vec2d ProjLib_ProjectedCurve::DN(const double, const int) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::DN() - method is not implemented");
+}
+
+//=================================================================================================
+
+double ProjLib_ProjectedCurve::Resolution(const double) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::Resolution() - method is not implemented");
+}
+
+//=================================================================================================
+
+GeomAbs_CurveType ProjLib_ProjectedCurve::GetType() const
+{
+  return myResult.GetType();
+}
+
+//=================================================================================================
+
+gp_Lin2d ProjLib_ProjectedCurve::Line() const
+{
+  return myResult.Line();
+}
+
+//=================================================================================================
+
+gp_Circ2d ProjLib_ProjectedCurve::Circle() const
+{
+  return myResult.Circle();
+}
+
+//=================================================================================================
+
+gp_Elips2d ProjLib_ProjectedCurve::Ellipse() const
+{
+  return myResult.Ellipse();
+}
+
+//=================================================================================================
+
+gp_Hypr2d ProjLib_ProjectedCurve::Hyperbola() const
+{
+  return myResult.Hyperbola();
+}
+
+//=================================================================================================
+
+gp_Parab2d ProjLib_ProjectedCurve::Parabola() const
+{
+  return myResult.Parabola();
+}
+
+//=================================================================================================
+
+int ProjLib_ProjectedCurve::Degree() const
+{
+  Standard_NoSuchObject_Raise_if((GetType() != GeomAbs_BSplineCurve)
+                                   && (GetType() != GeomAbs_BezierCurve),
+                                 "ProjLib_ProjectedCurve:Degree");
+  if (GetType() == GeomAbs_BSplineCurve)
+  {
+    return myResult.BSpline()->Degree();
+  }
+  else if (GetType() == GeomAbs_BezierCurve)
+  {
+    return myResult.Bezier()->Degree();
+  }
+
+  // porting WNT
+  return 0;
+}
+
+//=================================================================================================
+
+bool ProjLib_ProjectedCurve::IsRational() const
+{
+  Standard_NoSuchObject_Raise_if((GetType() != GeomAbs_BSplineCurve)
+                                   && (GetType() != GeomAbs_BezierCurve),
+                                 "ProjLib_ProjectedCurve:IsRational");
+  if (GetType() == GeomAbs_BSplineCurve)
+  {
+    return myResult.BSpline()->IsRational();
+  }
+  else if (GetType() == GeomAbs_BezierCurve)
+  {
+    return myResult.Bezier()->IsRational();
+  }
+  // porting WNT
+  return false;
+}
+
+//=================================================================================================
+
+int ProjLib_ProjectedCurve::NbPoles() const
+{
+  Standard_NoSuchObject_Raise_if((GetType() != GeomAbs_BSplineCurve)
+                                   && (GetType() != GeomAbs_BezierCurve),
+                                 "ProjLib_ProjectedCurve:NbPoles");
+  if (GetType() == GeomAbs_BSplineCurve)
+  {
+    return myResult.BSpline()->NbPoles();
+  }
+  else if (GetType() == GeomAbs_BezierCurve)
+  {
+    return myResult.Bezier()->NbPoles();
+  }
+
+  // porting WNT
+  return 0;
+}
+
+//=================================================================================================
+
+int ProjLib_ProjectedCurve::NbKnots() const
+{
+  Standard_NoSuchObject_Raise_if(GetType() != GeomAbs_BSplineCurve,
+                                 "ProjLib_ProjectedCurve:NbKnots");
+  return myResult.BSpline()->NbKnots();
+}
+
+//=================================================================================================
+
+occ::handle<Geom2d_BezierCurve> ProjLib_ProjectedCurve::Bezier() const
+{
+  return myResult.Bezier();
+}
+
+//=================================================================================================
+
+occ::handle<Geom2d_BSplineCurve> ProjLib_ProjectedCurve::BSpline() const
+{
+  return myResult.BSpline();
+}
+
+//=================================================================================================
+
+occ::handle<Adaptor2d_Curve2d> ProjLib_ProjectedCurve::Trim
+  //(const double First,
+  // const double Last,
+  // const double Tolerance) const
+  (const double, const double, const double) const
+{
+  throw Standard_NotImplemented("ProjLib_ProjectedCurve::Trim() - method is not implemented");
+}

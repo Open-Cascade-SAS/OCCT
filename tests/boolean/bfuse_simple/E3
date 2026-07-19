@@ -1,0 +1,36 @@
+## MFA's collection of bugs
+
+vertex v1 0 0 0
+vertex v2 9 0 0
+vertex v3 9 0 3
+vertex v4 6.25 0 3
+vertex v5 6 0 4
+vertex v6 0 0 4
+
+edge ea v1 v2
+edge eb v2 v3
+edge ec v3 v4
+edge ed v4 v5
+edge ee v5 v6
+edge ef v6 v1
+
+wire wa ea eb ec ed ee ef
+mkplane pa wa
+revol cyla pa 0 0 0 0 0 1 360
+
+pcylinder cylb 1 9
+
+## CASE 1 FAILS
+ttranslate cylb 5 0 -2
+
+## CASE 2 OK
+#trotate cylb cylb  0 0 0 0 0 1 45
+#ttranslate cylb 5 0 -2
+
+## CASE 3 OK
+#ttranslate cylb 0 5 -2
+
+bfuse result cyla cylb
+
+checkprops result -s 740.048
+checkview -display result -2d -otherwise { cyla cylb } -s -path ${imagedir}/${test_image}.png

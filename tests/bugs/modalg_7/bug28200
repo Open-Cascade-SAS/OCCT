@@ -1,0 +1,38 @@
+
+puts "========"
+puts "OCC28200"
+puts "========"
+puts ""
+#############################################
+# Invalid topology of the general fuse result
+#############################################
+
+restore [locate_data_file bug28200_sh.brep] sh
+sewing sh sh 1.0
+
+restore [locate_data_file bug28200_cc.brep] c
+
+# Input data check
+checkshape sh
+checkshape c
+
+# Result construction
+bclearobjects
+bcleartools
+baddobjects sh
+baddtools c
+bfuzzyvalue 1.0
+bfillds
+bbuild result
+
+checkshape result
+
+smallview
+donly result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
+smallview -Y+Z
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png
+

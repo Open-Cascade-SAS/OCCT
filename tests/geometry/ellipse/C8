@@ -1,0 +1,6 @@
+ellipse result 70 0 0  0 0 1   1 0 0   40 20
+pscale result 0 0 0 5
+repeat 4 {pl}
+dmode result U
+checklength result -l 968.84482205476752
+checkview -display result -2d -path ${imagedir}/${test_image}.png

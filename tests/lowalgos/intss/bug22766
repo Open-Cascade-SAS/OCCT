@@ -1,0 +1,15 @@
+puts "============"
+puts "CR22766"
+puts "============"
+puts ""
+#####################################################################################################################
+# Wrong results done by several algorithms for the case of intersection between a surface of revolution and a plane
+#####################################################################################################################
+
+restore [locate_data_file bug22766_f1] f1
+restore [locate_data_file bug22766_f2] f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+intersect result s1 s2

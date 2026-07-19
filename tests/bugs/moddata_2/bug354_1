@@ -1,0 +1,19 @@
+
+puts "========================"
+puts " OCC354 "
+puts "(case 1)"
+puts "========================"
+puts ""
+##################################################
+## neither chamfer nor blend is built in similar situation 
+##################################################
+
+restore [locate_data_file OCC354a.brep] a 
+
+explode a e
+
+blend result a 2 a_18
+checkshape result
+
+checkprops result -s 593.527
+checkview -display result -2d -path ${imagedir}/${test_image}.png

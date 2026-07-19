@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC24418"
+puts "========"
+puts ""
+############################################################
+# Wrong section curves when intersecting analytical surfaces
+############################################################
+
+restore [locate_data_file OCC20964_revsolid.brep] b1 
+restore [locate_data_file OCC20964_sphere.brep] b2 
+
+explode b1 f; copy b1_7 b1
+explode b2 f; copy b2_1 b2
+mksurface s1 b1
+mksurface s2 b2
+trimv s1t s1 0 230.14184397163115
+
+intersect ii s1t s2
+
+bounds ii_2 u1 u2
+
+xdistcs ii_2 s1 u1 u2 10 2.0e-7
+xdistcs ii_2 s2 u1 u2 10 2.0e-7

@@ -1,0 +1,30 @@
+puts "TODO CR27414 ALL: Error: number of wire entities in the result"
+puts "TODO CR27414 ALL: Error: number of face entities in the result"
+puts "TODO CR27414 ALL: Error: operation with offset value 9 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 10 has failed"
+puts "TODO CR27414 ALL: Operations with following offset values have failed: 9 10"
+
+puts "============================================================================================="
+puts "0032333: Modeling Algorithms - Empty(wrong) result of offset operation in mode \"Complete\" join type \"Intersection\""
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32333_172_trim1.brep] s
+
+set ref_values { { 171093 2.538e+06   42 42 } \
+                 { 169448 2.70883e+06 41 41 } \
+                 { 174262 2.88068e+06 41 41 } \
+                 { 176065 3.05738e+06 25 25 } \
+                 { 181589 3.2362e+06  25 25 } \
+                 { 185420 3.42058e+06 17 17 } \
+                 { 191400 3.60898e+06 17 17 } \
+                 { 197447 3.8034e+06  17 17 } \
+		 { 175027 3.98979e+06 11 11 } \
+		 { 179953 4.16727e+06 11 11 } }
+
+perform_offset_increasing s 1 10 1 $ref_values
+
+copy r5 result
+copy r5_unif result_unif
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

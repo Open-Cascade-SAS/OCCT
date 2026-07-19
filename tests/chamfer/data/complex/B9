@@ -1,0 +1,44 @@
+set chamf_shape 4_L1(hlacg03).draw
+set chamf_edge_face  [list "  6  1" "  5   1" "  9   2"]
+set chamf_dist_angle [list "1.2 30" "  1  30" "  1  30"]
+set chamf_dist_dist  [list "1.1  1" "  1 1.2" "  1 1.4"]
+set chamf_equal_dist [list "1     " "1.1    " "1.2    "]
+dset SCALE 100
+if { [string compare $command chamf_sequence] == 0 } {
+  puts "TODO #22909 ALL: Error: The tests should be reviewed"
+  puts "Error: The tests should be reviewed."
+  
+  set nf 0
+  if { ![checkplatform -windows] } {
+    if { [string compare $group dist_dist] == 0 } {
+      set nf 2
+    } elseif { [string compare $group equal_dist] == 0 } {
+      set nf 4
+    }
+  }
+  
+  if { [checkplatform -windows] } {
+    if {[string compare $group dist_dist] == 0 || [string compare $group equal_dist] == 0 } {
+      set nf 2
+    }
+  }
+
+  if { [checkplatform -osx] } {
+    if { [string compare $group dist_dist] == 0 } {
+      puts "TODO OCC24156 MacOS: chamfer is not done. compute of chamfer failed"
+      set nf 8
+    }
+    if { [string compare $group equal_dist] == 0 } {
+      puts "TODO OCC24156 MacOS: chamfer is not done. compute of chamfer failed"
+      set nf 2
+    }
+    if { [string compare $group dist_angle] == 0 } {
+      puts "TODO OCC24156 MacOS: chamfer is not done. compute of chamfer failed"
+    }
+  }  
+
+  if { $nf != 0 } {
+     #puts "TODO OCC22909 [checkplatform]:Faulty shapes in variables faulty_1 to faulty_$nf"
+     puts "TODO OCC22909 ALL:Faulty shapes in variables faulty_1 to faulty_"
+  }
+}

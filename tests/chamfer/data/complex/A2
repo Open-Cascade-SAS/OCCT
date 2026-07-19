@@ -1,0 +1,5 @@
+set chamf_shape CCH_001_ahev.rle
+set chamf_edge_face  [list " 3  1" " 4  9" "21  9" "20  7"]
+set chamf_dist_angle [list "20 30" "20 30" "20 30" "20 30"]
+set chamf_dist_dist  [list "20 15" "20 15" "20 15" "20 15"]
+set chamf_equal_dist [list "20   " "20   " "20   " "20   "]

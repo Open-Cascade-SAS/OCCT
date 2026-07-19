@@ -1,0 +1,32 @@
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+# remove all features from the shape
+
+# remove the step first
+compound s_6 s_18 step
+
+removefeatures res s step
+
+compound s_4 s_15 s_21 s_22 s_7 s_11 s_8 s_9 s_10 s_14 s_20 s_13 features
+
+# get history of the operation
+savehistory rf_hist
+
+# check modification of the features
+compound mf
+foreach f [explode features f] {
+  if { [regexp "The shape has not been modified" [modified m rf_hist $f]]} {
+    add $f mf
+  } else {
+    add m mf
+  }
+}
+
+removefeatures result res mf
+checkshape result
+checkprops result -s 460 -v 200
+checknbshapes result -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+CheckIsFeatureRemoved mf {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

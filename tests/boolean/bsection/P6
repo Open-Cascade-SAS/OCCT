@@ -1,0 +1,9 @@
+restore [locate_data_file CIN902_intcqhmp.rle] m
+explode m
+# m_1 : Prisme
+# m_2 : Contre-depouille
+bsection result m_1 m_2
+
+checkprops result -l 574.782
+checksection result
+checkview -display result -2d -otherwise { m_1 m_2 } -l -path ${imagedir}/${test_image}.png

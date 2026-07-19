@@ -1,0 +1,36 @@
+puts "===================================="
+puts "0032679: Data Exchange - STEP writer loses assembly instance name"
+puts "===================================="
+puts ""
+
+pload OCAF
+
+proc CheckName {doc1 doc2 lab} {
+  upvar $doc1 d1 $doc2 d2
+  puts "Checking name [set name1 [GetName d1 $lab]]"
+  if [catch {set name2 [GetName d2 $lab]}] {
+    puts "Error: name at label $lab is not found"
+  }
+  if {$name1 != $name2} {
+    puts "Error: at label $lab expected name $name1 but found $name2"
+  }
+}
+
+proc RunTestWithFile {file} {
+  puts "Testing file $file"
+  XOpen [locate_data_file $file] d1
+  set aTmpFile ${::imagedir}/${::casename}_${file}.step
+  WriteStep d1 $aTmpFile
+  ReadStep  d2 $aTmpFile
+
+  CheckName d1 d2 0:1:1:1:1
+  CheckName d1 d2 0:1:1:2:1
+  CheckName d1 d2 0:1:1:3:1
+
+  Close d1
+  Close d2
+  file delete -force $aTmpFile
+}
+
+RunTestWithFile as1-no-ass-name.xbf
+RunTestWithFile as1-with-ass-name.xbf

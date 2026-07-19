@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC28393"
+puts "========"
+puts ""
+###################################
+# Boolean cut produce wrong result.
+###################################
+
+restore [locate_data_file bug28393_o2.brep] o
+restore [locate_data_file bug28393_t2.brep] t
+
+bcut result o t
+
+checkshape result
+bopcheck result
+
+checkprops result -s 216.264 -v 238.204
+checknbshapes result -solid 1 -shell 1 -face 12 -wire 12
+
+checkview -display result -2d -path ${imagedir}/${test_image}-result.png

@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename Rough_1.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 178 )  Summary  = 8  ( 178 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2136  ( 2136 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2136  ( 2136 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =     0.05529392  (  0.05529391994 )  AvgTol   =  0.0003644333536  (  0.0003640919991 )
+LABELS      : N0Labels = 2136  ( 2136 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 2136  ( 2136 )   NameLabels = 2136  ( 2136 )   ColorLabels = 2136  ( 2136 )   LayerLabels = 2136  ( 2136 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = BLACK CYAN YELLOW  ( BLACK CYAN YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}

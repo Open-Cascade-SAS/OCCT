@@ -1,0 +1,18 @@
+#box b -10 -10 -10 20 20 20
+#pcylinder c 8 15
+#ttranslate c 0 0 10
+#fuse f1 b c
+#pcylinder c 6 15
+#ttranslate c 0 0 10
+#trotate c 0 0 0 1 0 0 90
+#fuse s f1 c
+#donly s
+
+restore [locate_data_file CFI_6_a56fgs.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+mkevol result s
+updatevol s_10 0 5*SCALE2 1 6*SCALE2 2 3*SCALE2
+buildevol
+
+checkprops result -s 3676.87

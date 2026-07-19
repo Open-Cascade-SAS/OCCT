@@ -1,0 +1,17 @@
+puts "========================"
+puts "BUC60800"
+puts "OCC89"
+puts "========================"
+
+#######################################################
+##  Reading of this file crashes  ??? Reading of this file gives invalid shape ??? 
+#######################################################
+
+igesbrep [locate_data_file BUC60800.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,15 @@
+pload XDE
+
+stepread [locate_data_file bug29481_L3.step] s *
+
+copy s_1 s
+explode s f
+
+# remove the square protrusio keeping the spherical one
+compound s_2 s_25 s_1 s_4 feature
+
+removefeatures result s feature
+checkshape result
+checkprops result -s 2392.42 -v 1063.76 -deps 1.e-7
+checknbshapes result -vertex 61 -edge 91 -wire 34 -face 33 -shell 1 -solid 1
+CheckIsFeatureRemoved feature {e f}

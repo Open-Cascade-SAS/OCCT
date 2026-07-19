@@ -1,0 +1,9 @@
+#buc60381
+
+restore [locate_data_file CTO909_IR2_TuyoPipe20.brep] pip 
+restore [locate_data_file CTO909_IR2_sphere1_20.brep] sp1 
+
+bfuse result pip sp1
+
+checkprops result -s 35184.5
+checkview -display result -2d -otherwise { pip sp1 } -s -path ${imagedir}/${test_image}.png

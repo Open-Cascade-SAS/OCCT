@@ -1,0 +1,59 @@
+puts "========"
+puts "OCC314"
+puts "========"
+puts ""
+
+param write.iges.brep.mode BRep
+
+restore [locate_data_file OCC314.brep] a1
+regexp { +Face +: +Min +([-0-9.+eE]+)} [maxtolerance a1] full MinFace1
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a1] full MaxFace1
+regexp { +Edge +: +Min +([-0-9.+eE]+)} [maxtolerance a1] full MinEdge1
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a1] full MaxEdge1
+regexp { +Vertex +: +Min +([-0-9.+eE]+)} [maxtolerance a1] full MinVertex1
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a1] full MaxVertex1
+
+######################################################################  
+catch {exec rm ${imagedir}/OCC314.igs}
+brepiges a1 ${imagedir}/OCC314.igs
+
+igesbrep ${imagedir}/OCC314.igs a2 *
+
+tpcompound a2
+
+regexp { +Face +: +Min +([-0-9.+eE]+)} [maxtolerance a2] full MinFace2
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a2] full MaxFace2
+regexp { +Edge +: +Min +([-0-9.+eE]+)} [maxtolerance a2] full MinEdge2
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a2] full MaxEdge2
+regexp { +Vertex +: +Min +([-0-9.+eE]+)} [maxtolerance a2] full MinVertex2
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance a2] full MaxVertex2
+
+
+if { $MinFace2 > $MinFace1 } {
+   puts "Error : MinFace Tolerance is increased"
+}
+
+if { $MaxFace2 > $MaxFace1 } {
+   puts "Error : MaxFace Tolerance is increased"
+}
+
+if { $MinEdge2 > $MinEdge1 } {
+   puts "Error : MinEdge Tolerance is increased"
+}
+
+if { $MaxEdge2 > $MaxEdge1 } {
+   puts "Error : MaxEdge Tolerance is increased"
+}
+
+if { $MinVertex2 > $MinVertex1 } {
+   puts "Error : MinVertex Tolerance is increased"
+}
+
+if { $MaxVertex2 > $MaxVertex1 } {
+   puts "Error : MaxVertex Tolerance is increased"
+}
+
+renamevar a2 result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,39 @@
+puts "=================================="
+puts "0031336: Modeling data - extend BRepPrimAPI_MakeBox with planar shape creation"
+puts "Check a creation preview if it is a valid box and creation a box"
+puts "=================================="
+
+pload TOPTEST
+           
+smallview
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+set anImage4 $imagedir/${casename}_4.png
+set anImage5 $imagedir/${casename}_5.png 
+             
+box b1 0.0 0.0 0.0 10.0 10.0 10.0 -preview
+donly b1
+fit                    
+checkview -screenshot -2d -path $anImage1
+
+box b2 -min 0.0 0.0 0.0 -max 10.0 20.0 30.0 -preview
+donly b2
+fit            
+checkview -screenshot -2d -path $anImage2
+
+box b3 0.0 0.0 0.0 10.0 10.0 10.0
+donly b3
+fit            
+checkview -screenshot -2d -path $anImage3
+
+box b4 -min 0.0 0.0 0.0 -max 10.0 20.0 30.0
+donly b4
+fit            
+checkview -screenshot -2d -path $anImage4
+                
+box b5 20.0 20.0 20.0
+donly b5
+fit            
+checkview -screenshot -2d -path $anImage5

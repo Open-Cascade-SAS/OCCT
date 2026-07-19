@@ -1,0 +1,19 @@
+puts "============"
+puts "0029122: Visualization - improve Font_BRepFont to handle one-line-fonts"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file OLFTestFont-Regular.ttf]
+vfont add [locate_data_file machtgth.ttf] singleStroke machtgth
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+text2brep s1 "ABCDabcd123" -font "OLF TestFont" -height 48 -pos 0   0 0
+text2brep s2 "ABCDabcd123" -font "machtgth"     -height 48 -pos 0  50 0
+text2brep s3 "ABCDabcd123" -font "SansFont"     -height 48 -pos 0 100 0
+vclear
+vinit View1
+vtop
+vdisplay -dispMode 1 s1 s2 s3
+vfit
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,3 @@
+set TheFileName s-bspline.brep
+set bug_area "OCC22687"
+set nbfreenodes(All) 1.47

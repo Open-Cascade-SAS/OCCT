@@ -1,0 +1,11 @@
+
+ReadStep D_First [locate_data_file "as1_motor.step"]
+
+set RESCALE_ASSEMBLY_FACTOR 0.001
+set RESCALE_ASSEMBLY_ARGS "-root 0:1:1:1"
+
+set TypeOfFile ""
+
+set AddToDocument ""
+
+set CompareDocumentsMode "RESCALE_ASSEMBLY"

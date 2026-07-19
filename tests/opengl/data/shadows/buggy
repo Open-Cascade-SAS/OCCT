@@ -1,0 +1,32 @@
+puts "========"
+puts "0032039: Visualization, TKOpenGl - implement simple shadow mapping for a direct light source"
+puts "Test shadow map from single directional light source on a buggy."
+puts "========"
+
+pload MODELING VISUALIZATION XDE OCAF
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+Close D -silent
+ReadGltf D [locate_data_file bug30691_Buggy.glb]
+vclear
+vinit View1
+vzbufftrihedron
+XDisplay -dispMode 1 D
+vfit
+vzoom 0.75
+box bb -500000 -500000 -10875 1000000 1000000 0 -preview
+vdisplay -dispMode 1 bb
+vaspects bb -material STONE
+vlight -change 0 -head 0 -dir -1 -1 -1 -castShadows 1
+
+if { ![string match "OpenGL ES 2.0*" [vglinfo VERSION]] && ![string match "OpenGL ES 3.0*" [vglinfo VERSION]] } {
+  vraytrace 1
+  vdump $::imagedir/${::casename}_raytrace.png
+}
+
+vraytrace 0
+vrenderparams -shadingModel phong
+vrenderparams -shadowMapResolution 2048
+vdump $::imagedir/${::casename}_phong.png
+
+vrenderparams -shadingModel pbr
+vdump $::imagedir/${::casename}_pbr.png

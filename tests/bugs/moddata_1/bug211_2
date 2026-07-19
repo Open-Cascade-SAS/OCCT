@@ -1,0 +1,18 @@
+
+puts "========"
+puts "OCC211"
+puts "========"
+
+##########################################
+##Error of fillet prolongation. 
+##########################################
+
+restore [locate_data_file OCC211.brep] a 
+
+explode a e
+
+blend result a 10 a_4
+checkshape result
+
+checkprops result -s 1.34399e+06
+checkview -display result -2d -path ${imagedir}/${test_image}.png

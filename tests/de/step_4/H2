@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj10_pm8-ac-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 117  ( 120 )  Summary  = 117  ( 120 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 25  ( 25 )  Shell    = 25  ( 25 )  Face     = 2995  ( 2995 ) 
+STATSHAPE   : Solid    = 41  ( 41 )  Shell    = 41  ( 41 )  Face     = 4431  ( 4431 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.009678785757  ( 0.009678785757 )  AvgTol   =  1.728708943e-005  (  1.735364336e-005 )
+LABELS      : N0Labels = 55  ( 55 )  N1Labels = 76  ( 76 )  N2Labels = 0  ( 0 )   TotalLabels = 131  ( 131 )   NameLabels = 125  ( 125 )   ColorLabels = 31  ( 31 )   LayerLabels = 31  ( 31 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 21  ( 21 )
+COLORS      : Colors   = BLUE BURLYWOOD2 DARKGOLDENROD1 DARKGREEN DARKORANGE1 DARKSLATEBLUE DARKSLATEGRAY GRAY15 GRAY9 KHAKI4 KHAKI4 LIGHTGOLDENROD4 MAGENTA MATRABLUE MEDIUMPURPLE1 MEDIUMSPRINGGREEN ORANGE4 RED STEELBLUE TURQUOISE4 YELLOW  ( BLUE BURLYWOOD2 DARKGOLDENROD1 DARKGREEN DARKORANGE1 DARKSLATEBLUE DARKSLATEGRAY GRAY15 GRAY9 KHAKI4 KHAKI4 LIGHTGOLDENROD4 MAGENTA MATRABLUE MEDIUMPURPLE1 MEDIUMSPRINGGREEN ORANGE4 RED STEELBLUE TURQUOISE4 YELLOW )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 0 Slider_Button|AMV_9_HATCH  ( 0 Slider_Button|AMV_9_HATCH )
+
+}

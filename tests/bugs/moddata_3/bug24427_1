@@ -1,0 +1,31 @@
+puts "========="
+puts "CR24427"
+puts "========="
+puts ""
+###############################
+## Wrong section curves
+###############################
+
+restore [locate_data_file bug24427_b1.brep] b1
+restore [locate_data_file bug24427_b2.brep] b2
+
+mksurface s1 b1
+mksurface s2 b2
+
+bop b1 b2
+bopsection ressec
+
+explode ressec e
+mkcurve rr ressec_1
+
+puts "First test"
+xdistcs rr s1 0 1 100 1e-7
+
+puts "Second test"
+xdistcs rr s2 0 1 100 1e-7
+
+donly rr s1t s2t
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

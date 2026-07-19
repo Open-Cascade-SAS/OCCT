@@ -1,0 +1,21 @@
+puts "========"
+puts "OCP-1948: Implement non-uniform scaling in Gltf Import"
+puts "========"
+Close D -silent
+ReadGltf D [locate_data_file bug_ocp1948_PSU_Cartoning_subunit__right-01.01.01.03-CART-03_green_bottom.glb]
+
+XGetOneShape s D
+checknbshapes s -face 87 -compound 21
+checktrinfo s -tri 16473 -nod 15835
+
+# check center of gravity
+set REF_X 18300.5
+set REF_Y -9484
+set REF_Z 129.844
+set tol 1e-4
+set pos [vprops s]
+if {([expr abs($REF_X - [lindex $pos  9])] > $tol) || 
+    ([expr abs($REF_Y - [lindex $pos 12])] > $tol) ||
+    ([expr abs($REF_Z - [lindex $pos 15])] > $tol)} {
+  puts "Error: wrong position of the imported model."
+  }

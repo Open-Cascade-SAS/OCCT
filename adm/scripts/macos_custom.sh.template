@@ -1,0 +1,31 @@
+# environment configuration template for macos_build.sh (to be renamed as macos_custom_env.sh)
+export PATH=/Applications/CMake.app/Contents/bin:$PATH
+export aFreeType="$aSrcRoot/../3rdparty/freetype-2.10.4-macos"
+export aFreeImage="$aSrcRoot/../3rdparty/freeimage-3.18-macos"
+export aRapidJson="$aSrcRoot/../3rdparty/rapidjson-1.1.0"
+export aDraco="$aSrcRoot/../3rdparty/draco-1.4.1-macos"
+
+# Uncomment to customize building steps
+#export aBuildRoot=work
+#export toCMake=1
+#export toClean=1
+#export toMake=1
+#export toInstall=1
+#export toPack=1
+#export toPackFat=1
+
+#export BUILD_ModelingData=ON
+#export BUILD_ModelingAlgorithms=ON
+#export BUILD_Visualization=ON
+#export BUILD_ApplicationFramework=ON
+#export BUILD_DataExchange=ON
+#export BUILD_Draw=ON
+
+#export USE_RAPIDJSON=ON
+#export USE_DRACO=ON
+#export USE_FREEIMAGE=ON
+
+#export MACOSX_DEPLOYMENT_TARGET=10.10
+#export anAbiList=arm64
+#export anAbiList=x86_64
+#export anAbiList="arm64 x86_64"

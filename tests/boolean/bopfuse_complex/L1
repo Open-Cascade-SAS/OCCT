@@ -1,0 +1,15 @@
+# pro17221
+
+restore [locate_data_file Jyls3] a
+explode a sh
+copy a_1 a
+
+restore [locate_data_file Jyls4] b
+explode b sh
+copy b_1 b
+
+bop a b
+bopfuse result 
+
+checkprops result -s 45600
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

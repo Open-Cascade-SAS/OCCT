@@ -1,0 +1,44 @@
+# Source files for BVH package
+set(OCCT_BVH_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_BVH_FILES
+  BVH.cxx
+  BVH_BinnedBuilder.hxx
+  BVH_Box.hxx
+  BVH_BoxSet.hxx
+  BVH_Builder.hxx
+  BVH_Builder3d.hxx
+  BVH_BuildQueue.hxx
+  BVH_BuildThread.hxx
+  BVH_BuildThread.cxx
+  BVH_Constants.hxx
+  BVH_Distance.hxx
+  BVH_DistanceField.hxx
+  BVH_DistanceField.lxx
+  BVH_Geometry.hxx
+  BVH_IndexedBoxSet.hxx
+  BVH_LinearBuilder.hxx
+  BVH_Object.hxx
+  BVH_ObjectSet.hxx
+  BVH_PairDistance.hxx
+  BVH_PrimitiveSet.hxx
+  BVH_PrimitiveSet3d.hxx
+  BVH_Properties.cxx
+  BVH_Properties.hxx
+  BVH_QueueBuilder.hxx
+  BVH_Ray.hxx
+  BVH_Set.hxx
+  BVH_Sorter.hxx
+  BVH_QuickSorter.hxx
+  BVH_RadixSorter.hxx
+  BVH_SpatialMedianBuilder.hxx
+  BVH_SweepPlaneBuilder.hxx
+  BVH_Tools.hxx
+  BVH_Traverse.hxx
+  BVH_Traverse.lxx
+  BVH_Tree.hxx
+  BVH_BinaryTree.hxx
+  BVH_QuadTree.hxx
+  BVH_Triangulation.hxx
+  BVH_Types.hxx
+)

@@ -1,0 +1,59 @@
+puts "================"
+puts "OCC25335: Visualization - add test command for V3d_View::FitAll by view area"
+puts "================"
+puts ""
+
+set check1_x 2
+set check1_y 2
+
+set check2_x 407
+set check2_y 2
+
+set check3_x 2
+set check3_y 407
+
+set check4_x 407
+set check4_y 407
+
+set check5_x 204
+set check5_y 204
+
+pload MODELING VISUALIZATION
+vinit View1
+vtop
+
+# 2D view area
+vpoint p1  5.0   5.0  0.0
+vpoint p2 15.0   5.0  0.0
+vpoint p3 15.0  15.0  0.0
+vpoint p4  5.0  15.0  0.0
+vpoint p5 10.0  10.0  0.0
+
+vfitarea 4.999 4.999 15.001 15.001
+
+# Check area by 1st point
+vmoveto ${check1_x} ${check1_y}
+checkcolor ${check1_x} ${check1_y} 0 1 1
+if {$stat != 1} { puts "Error : Fit all by view area is broken." }
+
+# Check area by 2nd point
+vmoveto ${check2_x} ${check2_y}
+checkcolor ${check2_x} ${check2_y} 0 1 1
+if {$stat != 1} { puts "Error : Fit all by view area is broken." }
+
+# Check area by 3rd point
+vmoveto ${check3_x} ${check3_y}
+checkcolor ${check3_x} ${check3_y} 0 1 1
+if {$stat != 1} { puts "Error : Fit all by view area is broken." }
+
+# Check area by 4th point
+vmoveto ${check4_x} ${check4_y}
+checkcolor ${check4_x} ${check4_y} 0 1 1
+if {$stat != 1} { puts "Error : Fit all by view area is broken." }
+
+# Check area by 5th point
+vmoveto ${check5_x} ${check5_y}
+checkcolor ${check5_x} ${check5_y} 0 1 1
+if {$stat != 1} { puts "Error : Fit all by view area is broken." }
+
+vdump ${imagedir}/${casename}.png

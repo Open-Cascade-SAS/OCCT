@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+restore [locate_data_file bug29712_edge.brep] ee
+restore [locate_data_file bug29712_face.brep] ff
+
+distmini dd ee ff
+
+checkreal Distance [dval dd_val] 0.0028427570965204128 1.0e-7 0.0

@@ -1,0 +1,33 @@
+box b1 10 10 10
+box b2 -2 -2 2 7 14 6
+box b3 5 -2 2 7 14 6
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2 b3
+bfillds
+bbuild r
+
+buildbop r0 -o b1 -t b3 b2 -op common
+buildbop r1 -o b1 -t b3 b2 -op fuse
+buildbop r2 -o b1 -t b3 b2 -op cut
+buildbop r3 -o b1 -t b3 b2 -op tuc
+
+foreach r {r0 r1 r2 r3} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: shape is self-interfered"
+  }
+}
+
+checkprops r0 -s 560 -v 600
+checknbshapes r0 -vertex 12 -edge 20 -wire 11 -face 11 -shell 2 -solid 2
+
+checkprops r1 -s 888 -v 1576
+checknbshapes r1 -vertex 32 -edge 50 -wire 20 -face 20 -shell 1 -solid 1
+
+checkprops r2 -s 560 -v 400
+checknbshapes r2 -vertex 20 -edge 30 -wire 14 -face 14 -shell 2 -solid 2
+
+checkprops r3 -s 816 -v 576
+checknbshapes r3 -vertex 24 -edge 40 -wire 18 -face 18 -shell 2 -solid 2

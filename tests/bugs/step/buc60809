@@ -1,0 +1,19 @@
+puts "========================"
+puts "BUC60809"
+puts "========================"
+
+################################################################
+### Reading file teststp.stp produces a sphere without restriction which is not usable in the viewer 
+################################################################
+
+param read.step.product.mode OFF
+stepread [locate_data_file BUC60809.stp] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

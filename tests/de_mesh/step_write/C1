@@ -1,0 +1,10 @@
+
+# simple meshed box (mesh without brep)
+
+box S 1 1 1
+incmesh S 0.1
+tclean -geom S
+
+set nb_faces     6
+set nb_nodes     24
+set nb_triangles 12

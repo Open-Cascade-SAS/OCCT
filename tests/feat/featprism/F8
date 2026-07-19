@@ -1,0 +1,15 @@
+profile p x 4 y 1 x -3 y 3 x 3 y 1 x -4
+prism pr p 0 0 1
+explode pr f
+profile pp x 0.5 y 0.5 x -0.5 y -0.5
+trotate pp 0 0 0 1 0 0 90
+ttranslate pp 4 1 0.25
+mksurface s1 pr_1
+mksurface s2 pr_7
+mkface f1 s1
+mkface f2 s2
+
+featprism pr pp pp 0 1 0 1 1
+featperform prism result f1 f2
+
+checkprops result -s 54.5

@@ -1,0 +1,12 @@
+# Original bug : cts20875
+# Date : 25 Nov 98
+
+restore [locate_data_file CFE900_cts20gdx.rle] base
+restore [locate_data_file cts20875_face.brep] cont
+
+ttranslate cont 0 -5.65 0
+
+featprism base cont cont 0 1 0 0 1
+featperformval prism result 11.3
+
+checkprops result -s 848.269

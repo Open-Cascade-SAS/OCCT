@@ -1,0 +1,8 @@
+# Photo
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,5 @@
+sphere a 30
+offset r a 30
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 1.0000000000000002e-07

@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC25104"
+puts "========"
+puts ""
+##########################################################
+# 0025104: Prism from BSpline curve can not be chamfered
+##########################################################
+
+restore [locate_data_file bug25104_whale2-draw-path.brep] path
+
+prism Extrude001 path 0. 0. 5.
+
+set bug_info [string trim [bopcheck Extrude001]]
+if {$bug_info != "This shape seems to be OK."} {
+  puts "ERROR: OCC25104 is reproduced. Prism has been created with errors."
+}

@@ -1,0 +1,33 @@
+puts "========"
+puts "CR25202"
+puts "========"
+puts ""
+#########################################
+## Incorrect value of IsClosed flag in shapes produced by some algorithms
+#########################################
+
+pload QAcommands
+
+box b 100 100 100
+vertex v1 0 0 50
+explode b v
+edge ee1 b_2 v1
+edge ee2 v1 b_1
+explode b e
+wire ww1 ee1 ee2 b_2 b_3 b_4
+wire ww2 ee1 ee2 b_9 b_10 b_5
+mkplane ff1 ww1
+mkplane ff2 ww2
+explode b f
+#Replaced edge lies between b_1 and b_3 faces.
+
+OCC25202 result b 1 ff1 3 ff2
+
+set info [whatis result]
+if { [regexp {Closed} ${info}] != 1 } {
+    puts "OK : value of IsClosed flag is correct"
+} else {
+    puts "Error : value of IsClosed flag is not correct"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

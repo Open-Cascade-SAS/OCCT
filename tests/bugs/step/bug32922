@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC32922 Data Exchange, STEP - The torus is stored incorrectly in STEP format"
+puts "============"
+puts ""
+#####################################################
+# STEP testing the case when a torus is saved in STEP
+# format with an incorrect edge order
+#####################################################
+
+pload MODELING XDE
+
+if { [info exists imagedir] == 0 } {
+   set imagedir ../bug32922
+   if {![file exists ${imagedir}]} {
+       file mkdir ${imagedir}
+   }
+}
+# remember the path to the old resource file
+set old_resource_path $::env(CSF_STEPDefaults)
+# reading old resource file
+set anOptions [parse_resource_file "${old_resource_path}/STEP"]
+# turn off shape healing
+dict set anOptions "FromSTEP.exec.op" ""
+# path to new resource file
+set new_resource_path ${imagedir}
+# creating resource file
+create_resource_file "${new_resource_path}/STEP" $anOptions
+# changing the path to the resource file
+set ::env(CSF_STEPDefaults) ${new_resource_path}
+
+# Generating, writing and reading the torus
+ptorus tor 20 5
+set step_file ${imagedir}/torus.stp
+testwritestep ${step_file} tor
+stepread ${step_file} a *
+
+# Checking the face of the torus
+explode a_1 f
+renamevar a_1_1 result
+checkshape result
+
+# Making screenshort
+pcurve result
+view 1 -2D- 728 20 400 400
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+# Restoring the path to the old resource file
+set ::env(CSF_STEPDefaults) ${old_resource_path}

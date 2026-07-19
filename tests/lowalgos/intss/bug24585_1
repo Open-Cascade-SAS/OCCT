@@ -1,0 +1,67 @@
+puts "========="
+puts "OCC24585"
+puts "========="
+puts ""
+###########################################################
+# Wrong pcurve of the section curve
+###########################################################
+
+set NbCurv_OK 1
+
+restore [locate_data_file bug24585_b1.brep] b1
+restore [locate_data_file bug24585_b2.brep] b2
+
+mksurface s1 b1
+bounds s1 U1f_exp U1l_exp V1f_exp V1l_exp
+
+set log [bopcurves b1 b2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${NbCurv} != ${NbCurv_OK}} {
+  puts "Error: ${NbCurv_OK} curve(s) expected, but ${NbCurv} found."
+}
+
+if { ${Toler} > 5.e-5} {
+   puts "Error: bad tolerance of result"
+}
+
+bounds c2d1_1 U1 U2
+2dcvalue c2d1_1 U1 U_begin V_begin
+2dcvalue c2d1_1 U2 U_end V_end
+
+#Theoretically, c2d1_1 must cover U-diapason of surface s1 fully.
+
+set delta_f [dval U1f_exp-U_begin]
+
+#ATTENTION!!! U_begin must be strictly equal U1f_exp (without any tolerance)
+if {${delta_f} != 0} {
+  puts "Error: Bad value. U_begin = [dval U_begin], Ufirst = [dval U1f_exp]."
+} else {
+  puts "OK: Good value. U_begin matches with Ufirst of surface."
+}
+
+puts ""
+
+set delta_l [dval U1l_exp-U_end]
+
+#ATTENTION!!! U_end must be strictly equal U1l_exp (without any tolerance)
+if {${delta_l} != 0} {
+  puts "Error: Bad value. U_end = [dval U_end], Ulast = [dval U1l_exp]."
+} else {
+  puts "OK: Good value. U_end matches with Ulast of surface."
+}
+
+puts ""
+puts "Check if tangents in first and last point of line have the same directions"
+
+#See bug#26752
+cvalue c_1 U1 xx yy zz dx1 dy1 dz1
+cvalue c_1 U2 xx yy zz dx2 dy2 dz2
+
+set DP [dval dx1*dx2+dy1*dy2+dz1*dz2]
+if {${DP} < 0} {
+  puts "Error: Tangents are reversed. Bug 26752 is reproduced."
+} else {
+  puts "OK: Tangents are not reversed."
+}

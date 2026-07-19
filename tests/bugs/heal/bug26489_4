@@ -1,0 +1,52 @@
+puts "============"
+puts "OCC26489"
+puts "============"
+puts ""
+######################################################
+# The class ShapeUpgrade_UnifySameDomain provides the results that are wrong or difficult to explain.
+######################################################
+
+restore [locate_data_file bug26489_r002.brep] b1
+
+unifysamedom result b1
+
+savehistory usd_hist
+
+explode b1 f
+
+vinit
+vsetdispmode 1
+
+modified x1 usd_hist b1_1
+vclear
+vdisplay x1
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+modified x2 usd_hist b1_2
+vclear
+vdisplay x2
+vfit
+vdump ${imagedir}/${casename}_2.png
+
+modified x3 usd_hist b1_3
+vclear
+vdisplay x3
+vfit
+vdump ${imagedir}/${casename}_3.png
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 4
+ EDGE      : 4
+ WIRE      : 1
+ FACE      : 1
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 10
+"
+checknbshapes x1 -ref ${nbshapes_expected} -t -m "x1 result provided by the class ShapeUpgrade_UnifySameDomain"
+checknbshapes x2 -ref ${nbshapes_expected} -t -m "x2 result provided by the class ShapeUpgrade_UnifySameDomain"
+checknbshapes x3 -ref ${nbshapes_expected} -t -m "x3 result provided by the class ShapeUpgrade_UnifySameDomain"

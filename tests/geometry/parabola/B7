@@ -1,0 +1,12 @@
+parabola  p 7 0 0 0 0 1 0 1 0 0.2
+trim p p -1 1
+copy p pr
+translate pr 0 -4 0
+reverse pr
+convert result pr
+pl
+pl
+pu
+pu
+checklength result -l 3.3514748622014476
+checkview -display result -2d -path ${imagedir}/${test_image}.png

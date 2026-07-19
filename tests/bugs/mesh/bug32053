@@ -1,0 +1,14 @@
+puts "======="
+puts "0032053: Mesh - Invalid mesh after shape scaling"
+puts "======="
+puts ""
+
+restore [locate_data_file bug32053_prob_face.brep] a
+
+scaleshape result a 0.1
+vdisplay result -dispMode 1
+vfit
+
+checktrinfo result -tri 168 -nod 133
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

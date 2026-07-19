@@ -1,0 +1,21 @@
+
+puts "========================"
+puts "OCC618"
+puts "========================"
+puts ""
+############################
+## Exception during bop
+############################
+
+restore [locate_data_file OCC618a.brep] a 
+checkshape a
+restore [locate_data_file OCC618b.brep] b 
+checkshape b
+
+if [catch {bop a b} catch_result] {
+    puts "Faulty OCC618 : BOP operation was made wrongly"
+} else {
+    puts "OCC618 OK: BOP operation works OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

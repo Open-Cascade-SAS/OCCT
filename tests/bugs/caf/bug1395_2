@@ -1,0 +1,61 @@
+puts "TODO OCC12345 ALL: OCC1395 Error : There is not the integer attribute on the label 0:2"
+puts "TODO OCC12345 ALL: OCC1395 Error"
+
+puts "================"
+puts "OCC1395"
+puts "================"
+puts ""
+#######################################################################################
+# Wrong behaviour of Undo Redo and SetUndoLimit methods in TDocStd_Document
+#######################################################################################
+# Case 3 (SetUndoLimit)
+#######################################################################################
+
+# Create a new document and set UndoLimit
+NewDocument D BinOcaf
+UndoLimit D 100
+
+# Create a label
+set aLabel 0:2
+Label D ${aLabel}
+
+# Open a transaction
+OpenTran D
+
+# Set integer attribute
+set anInteger 5
+SetInteger D ${aLabel} ${anInteger}
+
+# Commit transaction
+CommitTran D 1
+
+# Set UndoLimit
+UndoLimit D 10
+
+# Set real attribute
+set aReal 8.8
+SetReal D ${aLabel} ${aReal}
+
+# Undo
+DFUndo D 1
+
+# Check integer and real attributes
+set IsGood 1
+if [catch { set Integer [GetInteger D ${aLabel}] } message] {
+  set IsGood 0
+  puts "OCC1395 Error : There is not the integer attribute on the label ${aLabel}"
+} else {
+  puts "OCC1395 OK : There is the integer attribute on the label ${aLabel}"
+}
+if [catch { set Real [GetReal D ${aLabel}] } message] {
+  set IsGood 0
+  puts "OCC1395 Error : There is not the real attribute on the label ${aLabel}"
+} else {
+  puts "OCC1395 OK : There is the real attribute on the label ${aLabel}"
+}
+
+if { ${IsGood} == 1 } {
+  puts "OCC1395 OK"
+} else {
+  puts "OCC1395 Error"
+}

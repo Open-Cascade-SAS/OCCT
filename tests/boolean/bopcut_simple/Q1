@@ -1,0 +1,9 @@
+box b1 0 0 0 1 1 1
+box b2 1.25 0 0.5 0.25 1.7 1
+trotate b2 1.1 0 0 0 0 1 45
+
+bop b1 b2
+bopcut result
+
+checkprops result -s 6.36924
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

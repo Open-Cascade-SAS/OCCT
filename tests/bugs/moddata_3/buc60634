@@ -1,0 +1,26 @@
+puts "Output with mistake is correct!"
+puts "TODO #60634 ALL: Standard_ConstructionError: BRepFill_Draft"
+puts "=================="
+puts "BUC60634"
+puts "=================="
+
+sphere s 10
+mkshell sh s
+explode sh f
+
+catch {draft r sh 0 0 1 10 shape} first
+catch {draft result sh_1 0 0 1 10 shape} second
+
+if { ! [regexp {Standard_ConstructionError:} $first] } {
+    puts "Error : not suitablle exception"
+} else {
+    puts "Output is as expected"
+}
+
+if { ! [regexp {External} $second] } {
+    puts "Error : not word External found"
+} else {
+    puts "Output is as expected"
+}
+
+

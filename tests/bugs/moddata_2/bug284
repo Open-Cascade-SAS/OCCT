@@ -1,0 +1,19 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========"
+puts "OCC284"
+puts "========"
+
+#########################################################
+## Command "checkshape" "gives" exception during attempt to check attached shape.
+#########################################################
+
+restore [locate_data_file OCC284.brep] result
+
+if [catch { checkshape result } catch_result] {
+  puts "Faulty OCC284 : here is problem in checkshape function"
+} else {
+  puts "OCC284  OK: function checkshape works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

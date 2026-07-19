@@ -1,0 +1,8 @@
+readstl a [locate_data_file bug30113.stl]
+
+# Number of triangles check
+checktrinfo a -tri 14248 -nod 7114
+
+# Visual check
+checkview -display a -3d -vdispmode 0 -path ${imagedir}/${test_image}_edges.png
+checkview -display a -3d -vdispmode 1 -path ${imagedir}/${test_image}_shading.png

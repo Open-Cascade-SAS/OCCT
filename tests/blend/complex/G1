@@ -1,0 +1,12 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : L2
+## Comment : from pro14035
+## ====================================
+
+restore [locate_data_file CFI_pro14035.rle] a
+explode a e
+blend result a 3 a_9 3 a_7 3 a_5 3 a_3 3 a_1 3 a_2 3 a_4 3 a_6 3 a_8
+# it's a_8 which causes the problem
+
+checkprops result -s 90330.5

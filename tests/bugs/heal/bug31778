@@ -1,0 +1,28 @@
+puts "============================================="
+puts "OCC31778: UnifySameDomain fails in Debug mode"
+puts "============================================="
+puts ""
+
+brestore [locate_data_file bug31778.brep] s
+explode s
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2 s_3
+bfillds
+bbop q 1
+explode q
+
+unifysamedom result q_1
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 19 -wire 21 -edge 51 -vertex 34
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 5.e-5} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 15173.9

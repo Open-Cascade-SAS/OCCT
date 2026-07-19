@@ -1,0 +1,16 @@
+001 bugs
+002 clipping
+003 edge
+004 edge_face
+005 edge_solid
+006 face
+007 vertex
+008 vertex_edge
+009 vertex_face
+010 vertex_solid
+011 vertex_wire
+012 wire
+013 wire_solid
+014 sphere
+015 axis
+016 cone_cylinder

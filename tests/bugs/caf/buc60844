@@ -1,0 +1,39 @@
+puts "==========="
+puts "BUC60844"
+puts "BUC60845"
+puts "==========="
+
+NewDocument D BinOcaf
+UndoLimit D 100
+
+NewCommand D
+Label D 0:2
+Label D 0:2:1
+Label D 0:2:1:1
+Label D 0:2:1:2
+Label D 0:3
+
+SetNode D 0:1
+SetNode D 0:2
+SetNode D 0:2:1
+SetNode D 0:2:1:1
+SetNode D 0:2:1:2
+SetNode D 0:3
+ 
+InsertNodeAfter D 0:1 0:2
+InsertNodeAfter D 0:2 0:3
+
+AppendNode D 0:2 0:2:1
+
+AppendNode D 0:2:1 0:2:1:1
+InsertNodeAfter D 0:2:1:1 0:2:1:2
+
+NewCommand D
+
+ForgetAll D 0:2:1
+
+NewCommand D
+
+Undo D
+
+

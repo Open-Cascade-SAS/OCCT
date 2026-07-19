@@ -1,0 +1,14 @@
+puts "================"
+puts "0032579: Draw Harness, ViewerTest - extend vbackground -cubemap syntax to configure sRGB flag"
+puts "================"
+puts ""
+
+pload VISUALIZATION
+vcaps -noExtensions
+vinit View1
+
+vbackground -image [locate_data_file carrelage1.gif] -srgb 0
+vdump $imagedir/${casename}_nosrgb.png
+
+vbackground -image [locate_data_file carrelage1.gif] -srgb 1
+vdump $imagedir/${casename}_srgb.png

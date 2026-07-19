@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj7_c2-tu-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 8 )  Warnings = 0  ( 0 )  Summary  = 0  ( 8 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 2 )  Summary  = 0  ( 2 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 1  ( 1 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 1  ( 1 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 4  ( 4 )  N2Labels = 0  ( 0 )   TotalLabels = 7  ( 7 )   NameLabels = 5  ( 5 )   ColorLabels = 3  ( 3 )   LayerLabels = 1  ( 1 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = DARKSLATEGRAY2 GREEN ROYALBLUE3  ( DARKSLATEGRAY2 GREEN ROYALBLUE3 )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 001  ( 001 )
+
+}

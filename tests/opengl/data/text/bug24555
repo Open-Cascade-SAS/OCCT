@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC24555: Visualization - the same text is rendered with shift at second time"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vclear
+vaxo
+vdrawtext text0 "This program" -pos 0 0 0 -color GREEN -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font SansFont
+
+vdrawtext text1 "This program" -pos 0 0 0 -color RED   -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font SansFont
+
+set x 346
+set y 190
+
+set R 0
+set G 0.9843137264251709
+set B 0
+
+if {"[vreadpixel $x $y rgb]" == "$R $G $B" } {
+  puts "Error : color is bad"
+} else {
+  puts "OK : color is good"
+}
+
+vdump $imagedir/${casename}.png

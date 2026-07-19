@@ -1,0 +1,23 @@
+# To prevent loops limit to 15 minutes
+cpulimit 900
+if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
+    pload TOPTEST
+    setfillhistory 0
+}
+if { [array get Draw_Groups "Shape Healing"] == "" } {
+    pload XSDRAW
+}
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}
+proc OFFSETSHAPE {distance faces  calcul type} {
+    global GlobFaces
+    set GlobFaces $faces
+    if {[llength $faces] > 0} {uplevel #0 explode s f}
+    uplevel #0 offsetparameter 1e-7 $calcul $type
+    uplevel #0 offsetload s $distance $faces
+    uplevel #0 offsetperform result
+}

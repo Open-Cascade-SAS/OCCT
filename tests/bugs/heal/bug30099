@@ -1,0 +1,20 @@
+puts "===================================================================================="
+puts "OCC30099: Modeling Algorithms - ShapeUpgrade_UnifySameDomain produces invalid result"
+puts "===================================================================================="
+puts ""
+
+restore [locate_data_file bug30099.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 12 -wire 14 -edge 36 -vertex 26
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.2e-05} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 2.04221e+06

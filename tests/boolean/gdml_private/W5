@@ -1,0 +1,2 @@
+source [locate_data_file 20000_voile_salle-exp.prt.2.gdml.tcl]
+

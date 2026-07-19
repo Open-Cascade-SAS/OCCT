@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC25298: Modeling Algorithms - BRepOffsetAPI_MakeOffset produces wire with another orientation in compare with source wire"
+puts "============"
+puts ""
+
+circle c 0 0 0 100
+mkedge e c
+wire a e
+
+smallview
+display a
+fit
+
+vori a
+
+if [catch { mkoffset resoffset a 1 -10 } ] {
+  puts "Error : mkoffset is wrong"
+} else {
+  renamevar resoffset_1 result
+
+  vori result
+
+  checkprops result -l 565.487 
+  checkshape result 
+  checksection result
+
+  display result
+  fit
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

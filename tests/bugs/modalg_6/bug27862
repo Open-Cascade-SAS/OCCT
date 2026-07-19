@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC27862"
+puts "============"
+puts ""
+######################################################
+#  Exception in BRepOffsetAPI_MakePipeShell
+######################################################
+
+restore [locate_data_file bug27862.brep] a
+explode a
+pipe r a_1 a_2

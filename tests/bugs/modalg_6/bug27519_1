@@ -1,0 +1,13 @@
+puts "========"
+puts "0027519: Inconsistent result of SECTION operation"
+puts "========"
+puts ""
+
+restore [locate_data_file bug27448_b1255.brep] b
+explode b
+bsection result b_1 b_2
+set chsec [checksection result]
+puts $chsec
+if {![regexp {nb alone Vertices : 2} $chsec]} { 
+  puts "Error: the section is not closed"
+}

@@ -1,0 +1,14 @@
+puts "================"
+puts "OCC23952"
+puts "================"
+puts ""
+###########################################################################################
+# Improving thread-safety of intersections, approximations and other modeling algorithms
+###########################################################################################
+
+pload QAcommands
+restore [locate_data_file bug23952_s1.draw] a
+restore [locate_data_file bug23952_s2.draw] b
+
+set NbLines 6
+OCC23952intersect $NbLines a b

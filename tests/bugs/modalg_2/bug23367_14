@@ -1,0 +1,28 @@
+puts "============"
+puts "CR23367"
+puts "============"
+puts ""
+##########################################################################################################
+# New functionality restoring the middle path of pipe-like shape
+##########################################################################################################
+
+polyline pp 0 0 0 10 -10 0 20 0 0 10 10 0 0 0 0
+polyline sp 0 0 0 0 0 50 -100 0 0 -50 0 -50 0 0 0
+mksweep sp
+addsweep pp
+buildsweep a -R
+explode a e
+wire ww a_11 a_8 a_5 a_2
+donly a ww
+fit
+middlepath result a ww ww
+
+checkprops result -l 365.161 
+checkshape result 
+checksection result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+

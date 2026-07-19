@@ -1,0 +1,18 @@
+
+puts "================"
+puts "OCC4"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC4.brep] sh 
+checkshape sh
+
+explode sh e
+
+fillet result sh 15 sh_14
+checkshape result
+
+checkprops result -s 177328
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

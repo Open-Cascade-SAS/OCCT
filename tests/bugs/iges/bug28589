@@ -1,0 +1,12 @@
+#######################################################################
+puts "Data Exchange - Writing face with NaturalRestriction flag to IGES"
+#######################################################################
+
+restore [locate_data_file bug28589.brep] face
+
+set aTmpFile ${imagedir}/${casename}.igs
+brepiges face $aTmpFile
+igesbrep $aTmpFile result *
+file delete -force ${aTmpFile}
+
+checknbshapes result -shape 10

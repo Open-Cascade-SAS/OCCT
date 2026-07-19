@@ -1,0 +1,14 @@
+#G1----------------------------------------------
+beziersurf bs 4 4  0  0 0  4 0 0  8 0 0  12 0 0 \
+                   0  4 0  4 4 1  8 4 0  12 4 0 \
+                   0  8 0  4 8 0  8 8 -1  12 8 0 \
+                   0 12 0 4 12 0 8 12 0 12 12 0 
+mkface bs bs
+prism p bs 0 0 5
+box bx 3 3 2 6 6 10
+bfuse f p bx
+nexplode f f
+depouille result f 0 0 1 f_4 5 0 0 12 0 0 1 \
+f_10 5 0 0 12 0 0 1
+
+checkprops result -s 697.476

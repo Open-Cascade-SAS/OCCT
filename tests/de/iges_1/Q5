@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename 919-004-T02-01-FT-VL.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 117  ( 825 )  Summary  = 117  ( 825 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 406  ( 406 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 406  ( 406 )   FreeWire = 275  ( 278 ) 
+TOLERANCE   : MaxTol   =  0.08309604195  (  0.08309604195 )  AvgTol   =  0.0004558987831  (  0.0004699766623 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 700  ( 4059 )  N2Labels = 0  ( 0 )   TotalLabels = 702  ( 4061 )   NameLabels = 426  ( 897 )   ColorLabels = 700  ( 4060 )   LayerLabels = 426  ( 4060 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = TURQUOISE WHITE  ( TURQUOISE WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}

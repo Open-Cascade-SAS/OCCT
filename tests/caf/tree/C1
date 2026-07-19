@@ -1,0 +1,41 @@
+#INTERFACE CAF
+# Tree construction attributes
+#
+# Testing attribute: TDataStd_TreeNode
+#
+# Testing command:   SetNode
+#
+# Testing command:   RootNode
+#
+
+puts "caf005-C1"
+
+# Add an attribute to a data framework
+set aLabel_Root 0:2
+set aName_Root Label_1
+Label D ${aLabel_Root}
+SetName D ${aLabel_Root} ${aName_Root}
+SetNode D ${aLabel_Root}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel_Root}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set aGetLabel_Root [RootNode D ${aLabel_Root}]
+if { ${aLabel_Root}!=${aGetLabel_Root} } {
+	puts "aLabel_Root=${aLabel_Root} aGetLabel_Root=${aGetLabel_Root}"
+	puts "Set TDataStd_TreeNode attribute: Error"
+	return
+}
+puts "Set TDataStd_TreeNode attribute: OK"

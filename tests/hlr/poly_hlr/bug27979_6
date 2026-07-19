@@ -1,0 +1,12 @@
+puts "TODO OCC30286 ALL: Error : The length of result shape is 11.\\d+, expected 11."
+
+puts "========================================================================"
+puts "OCC27979: Parasolid converted BREP shows weird lines on hidden line Algo"
+puts "========================================================================"
+puts ""
+
+set viewname "vleft"
+set length 11.
+
+restore [locate_data_file bug27979_parsed.brep] a
+COMPUTE_HLR $viewname $algotype

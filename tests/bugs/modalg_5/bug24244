@@ -1,0 +1,64 @@
+puts "========="
+puts "OCC24244"
+puts "========="
+puts ""
+###########################################################
+# Command bclear in DRAW does not clear all the data required for BOP re-initialization
+###########################################################
+
+vinit View1
+
+proc bclear_proc {} {
+brestore [locate_data_file bug24244_ShellExternalHull.brep] hull
+
+# box encompassing all objects
+box over  -11 -15 -1 220 30 22
+
+# two simplified decks
+box b -10 -14 10 210 28 5
+explode b f
+renamevar b_5 deck1
+renamevar b_6 deck2
+
+# two simplified transverse bulkheads in the middle
+box b 50 -14 -0.5 40 28 20
+explode b f
+renamevar b_1 bhd1
+renamevar b_2 bhd2
+
+# two simplified transverse bulkheads in the fore
+box b 180 -14 -0.5 10 28 20
+explode b f
+renamevar b_1 bhd3
+renamevar b_2 bhd4
+
+# fill BOP data structures
+bclear
+baddobjects over hull deck1 deck2 bhd1 bhd2 bhd3 bhd4
+bfillds
+bbuild result
+
+# check validity
+puts [checkshape result]
+
+# show compartments (solids) in shading with different colors
+set compartments [explode result so]
+set icol 0
+set colors {red green blue magenta yellow cyan brown}
+foreach s [lrange $compartments 1 end] {
+    vdisplay $s
+    vsetcolor $s [lindex $colors [expr [incr icol] % [llength $colors]]]
+    vsetdispmode $s 1
+    vsetmaterial $s plastic
+}
+
+# show all elements in wireframe
+vdisplay result
+vsetdispmode result 0
+vfit
+}
+
+bclear_proc
+bclear_proc
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

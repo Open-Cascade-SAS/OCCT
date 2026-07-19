@@ -1,0 +1,14 @@
+pload XDE
+
+stepread [locate_data_file bug29481_L3.step] s *
+
+copy s_1 s
+explode s f
+
+compound s_37 s_26 s_27 s_28 gap
+
+removefeatures res s gap
+checkshape res
+checkprops res -s 2387.07 -v 1060.76 -deps 1.e-7
+checknbshapes res -vertex 62 -edge 92 -wire 32 -face 32 -shell 1 -solid 1
+CheckIsFeatureRemoved gap {v e f}

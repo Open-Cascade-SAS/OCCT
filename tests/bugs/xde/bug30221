@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC30221"
+puts "========"
+puts ""
+#################################################################
+# Data Exchange - VRML is exported with inversed normals
+#################################################################
+
+set FileName bug30221_vmt01b
+XOpen [locate_data_file ${FileName}.xbf] D
+XShow D
+vfit
+vsetdispmode 1
+vclose
+file delete -force ${imagedir}/${FileName}.wrl
+WriteVrml D ${imagedir}/${FileName}.wrl
+loadvrml a ${imagedir}/${FileName}.wrl
+
+vinit View1
+vdisplay -dispMode 1 a
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

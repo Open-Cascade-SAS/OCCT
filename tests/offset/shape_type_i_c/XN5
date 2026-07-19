@@ -1,0 +1,30 @@
+restore [locate_data_file bug28387_input.brep] s
+
+offsetparameter 1e-7 c i r
+offsetload s 4
+
+foreach f [explode s f] {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found == 0} {
+    continue;
+  }
+  if {abs(abs($z) - 1) < 1.e-7} {
+    # set offset value for the top/bottom faces to 0
+    offsetonface $f 0
+  } elseif {abs($z) < 1.e-7} {
+    # set offset value for the vertical faces to 5
+    offsetonface $f 5 
+  } elseif { abs($y) > 0.7} {
+    # set offset value for the slightly tilted faces
+    offsetonface $f 4.9969541350954784775
+  }
+}
+offsetperform result
+
+checkprops result -v 9.54598e+006 -s 938434
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 415 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

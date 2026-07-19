@@ -1,0 +1,84 @@
+puts "============"
+puts "0024387: Draw the text with different fonts"
+puts "============"
+puts ""
+
+pload TOPTEST VISUALIZATION
+vinit View1
+
+vfont add [locate_data_file DejaVuSansMono.ttf] MonoFont
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+vfont add [locate_data_file DejaVuSerif.ttf] SerifFont
+
+dtracelevel trace
+vfont -verbose 1
+
+vtrihedron trihedr
+
+vpoint p1  100  100 -400
+vpoint p2  000  000 -400
+vpoint p3 -100 -100 -400
+vdrawtext OC0 OpenCascade -pos  100  100 -400 -color CYAN -halign left   -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext OC1 OpenCascade -pos  000  000 -400 -color CYAN -halign center -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext OC2 OpenCascade -pos -100 -100 -400 -color CYAN -halign right  -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint p4  100  100 -500
+vpoint p5  000  000 -500
+vpoint p6 -100 -100 -500 
+vdrawtext OC3 OpenCascade -pos  100  100 -500 -color RED -halign left   -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext OC4 OpenCascade -pos  000  000 -500 -color RED -halign center -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext OC5 OpenCascade -pos -100 -100 -500 -color RED -halign right  -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint p7  100  100 -450
+vpoint p8  000  000 -450
+vpoint p9 -100 -100 -450 
+vdrawtext OC6 OpenCascade -pos  100  100 -450 -color 05FF00 -halign left   -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext OC7 OpenCascade -pos  000  000 -450 -color 05FF00 -halign center -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext OC8 OpenCascade -pos -100 -100 -450 -color 05FF00 -halign right  -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+
+vdrawtext L0 _.Left._ -pos 200 200 200 -color WHITE  -halign left -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext L1 _.Left._ -pos 200 200 200 -color YELLOW -halign left -valign bottom -angle 090 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vdrawtext R0 _.Right._ -pos 200 200 200 -color MAGENTA -halign right -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext R1 _.Right._ -pos 200 200 200 -color FF9B96   -halign right -valign top -angle 090 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vdrawtext N0 _.0123456789._ -pos 200 200 200 -color BLUE -halign center -valign center -angle 045 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext N1 _.0123456789._ -pos 200 200 200 -color RED   -halign center -valign center -angle -45 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vdrawtext SS _.~!@#$%^&*:?|+-._ -pos -200 000 400 -color RED -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular -font SansFont
+
+box atextbox -100 -100 -100 -200 -200 -200
+vdisplay atextbox
+
+vdrawtext OC9  OpenCascade -pos -300 -300 -300 -color GREEN -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
+vdrawtext OC10 OpenCascade -pos -300 -300 -100 -color GREEN -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
+vdrawtext OC11 OpenCascade -pos -100 -100 -300 -color GREEN -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
+vdrawtext OC12 OpenCascade -pos -100 -100 -100 -color GREEN -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
+
+vdrawtext OC13 OpenCascade -pos -300 -100 -300 -color GREEN -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
+vdrawtext OC14 OpenCascade -pos -100 -300 -300 -color GREEN -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
+vdrawtext OC15 OpenCascade -pos -300 -100 -100 -color GREEN -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
+vdrawtext OC16 OpenCascade -pos -100 -300 -100 -color GREEN -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
+
+vdrawtext OC17 OpenCascade -pos -200 -200 100 -color MAGENTA -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font sans-serif
+vdrawtext OC18 OpenCascade -pos -200 -200 150 -color CYAN    -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font serif
+vdrawtext OC19 OpenCascade -pos -200 -200 200 -color YELLOW  -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect italic  -font serif
+vdrawtext OC20 OpenCascade -pos -200 -200 250 -color 00FF05  -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect bolditalic -font monospace
+vdrawtext OC21 OpenCascade -pos -200 -200 300 -color FF0005  -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font monospace
+
+vglinfo
+vrenderparams -fontHinting normal
+vbackground -color WHITE
+vdump ${imagedir}/${test_image}_white_hinted.png
+vbackground -color BLACK
+vdump ${imagedir}/${test_image}_hinted.png
+
+vrenderparams -fontHinting off
+vbackground -color WHITE
+vdump ${imagedir}/${test_image}_white.png
+vbackground -color BLACK
+vdump ${imagedir}/${test_image}.png
+
+vsensdis
+vdump $imagedir/${casename}_sensitive.png

@@ -1,0 +1,35 @@
+# Test procedure locate_data_file
+
+# add path to subdirectory tests_data to CSF_TestDataPath, 
+# for testing of files search procedure
+set addpath [file dirname [info script]]/tests_data
+if { ! [info exists env(CSF_TestDataPath)] } {
+    set env(CSF_TestDataPath) $addpath
+} elseif { ! [regexp "$addpath" $env(CSF_TestDataPath)] } {
+    set env(CSF_TestDataPath) "$env(CSF_TestDataPath)[_path_separator]$addpath"
+}
+
+puts "CSF_TestDataPath set to $env(CSF_TestDataPath)"
+
+# Failed search
+if [catch {locate_data_file file1.empty} path] {
+    puts "Data file file1.empty not found, that is OK"
+} else {
+    error "Data file file1.empty is found at $path, while it should not be"
+}
+
+# Successful search
+puts "Data file 2 found in [locate_data_file file2.empty]"
+puts "Data file 3 found in [locate_data_file file3.empty]"
+puts "Data file 4 found in [locate_data_file file4.empty]"
+puts "Data file 5 found in [locate_data_file file5.empty]"
+
+# Failed search
+if [catch {locate_data_file file6.empty} path] {
+    puts "Data file file6.empty not found, that is OK"
+} else {
+    error "Data file file6.empty is found at $path, while it should not be"
+}
+
+
+puts "TEST COMPLETED"

@@ -1,0 +1,21 @@
+puts "========================"
+puts "0032049: Data Exchange - STEP file import problems"
+puts "========================"
+
+pload OCAF
+Close D -silent
+
+# Read file
+ReadStep D [locate_data_file bug32049_sp7_04dx_242.stp]
+
+# Check file
+set xst [ XStat D ] 
+if { [regexp {Number of labels with layer link = 191} $xst] != 1 } {
+  puts "Error: Incorrect number of layer references"
+}
+
+if { [regexp {Number of layers = 5} $xst] != 1 } {
+  puts "Error: incorrect number of layers"
+}
+
+Close D

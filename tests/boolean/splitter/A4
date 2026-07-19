@@ -1,0 +1,46 @@
+puts "============"
+puts "OCC26874"
+puts "============"
+puts ""
+#######################################################################
+# Implementation of the Partition operator in OCCT
+#######################################################################
+
+# split face by set of edges
+
+cylinder cyl 0 0 0 0 0 1 10
+set height 20
+mkface f cyl 0 2*pi -$height $height
+
+bclearobjects
+bcleartools
+baddobjects f
+
+# create tool edges
+compound edges
+
+set nb_uedges 10
+set pi2 [dval 2*pi]
+set ustep [expr $pi2/$nb_uedges]
+for {set i 0} {$i <= $pi2} {set i [expr $i + $ustep]} {
+  uiso c cyl $i
+  mkedge e c -25 25
+  add e edges
+}
+
+set nb_vedges 10
+set vstep [expr 2*$height/$nb_vedges]
+for {set i -20} {$i <= 20} {set i [expr $i + $vstep]} {
+  viso c cyl $i
+  mkedge e c
+  add e edges
+}
+
+baddctools edges
+
+bfillds
+bsplit result
+
+checkshape result
+checknbshapes result -face 100
+checkprops result -s 2513.27

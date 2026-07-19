@@ -1,0 +1,34 @@
+puts "================"
+puts "OCC322"
+puts "================"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file OCC322.brep] a 
+checkshape a
+
+sewing result a
+
+vinit
+vdisplay result
+vfit
+
+set x_coord 204
+set y_coord 297
+
+checkcolor $x_coord $y_coord 1 1 0
+
+set x_coord 251
+set y_coord 232
+
+checkcolor $x_coord $y_coord 1 1 0
+
+checkmaxtol result -ref 1.0001007808605688e-007
+checknbshapes result -shell 1
+checkfreebounds result 6
+
+checkprops result -s 20000 
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+

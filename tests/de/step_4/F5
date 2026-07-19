@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename trj6_b1-sd-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 0 )  Summary  = 8  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 343  ( 343 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 343  ( 343 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 7.62532254e-007  ( 7.625327353e-007 )  AvgTol   =  2.09260761e-007  (  2.092607057e-007 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 1  ( 1 )  N2Labels = 0  ( 0 )   TotalLabels = 3  ( 3 )   NameLabels = 3  ( 3 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = MATRAGRAY  ( MATRAGRAY )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,12 @@
+
+puts "0030839: Data Exchange - triangulation-only STEP file is read as empty shape"
+
+set filename "nist_ftc_08_asme1_ap242-2.stp"
+
+ReadStep D [locate_data_file ${filename}]
+
+XGetOneShape S D
+
+set nb_faces     273
+set nb_nodes     3788
+set nb_triangles 3377

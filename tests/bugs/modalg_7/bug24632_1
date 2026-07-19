@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC24632"
+puts "========"
+puts ""
+###############################################################
+# Artifacts during Boolean cut operation on neighboring parts
+###############################################################
+
+restore [locate_data_file bug24632_general.brep] general
+restore [locate_data_file bug24632_cramp.brep] cramp
+restore [locate_data_file bug24632_cut_1.brep] cut_1
+restore [locate_data_file bug24632_cut_2.brep] cut_2
+
+bclearobjects
+bcleartools
+baddobjects general cramp
+bfillds
+bbuild beam
+checkshape beam
+
+bop beam cut_1
+bopcut beam_1
+checkshape beam_1
+
+bop beam_1 cut_2
+bopcut result
+checkshape result
+
+checknbshapes result -solid 2 -shell 2 -face 33 -wire 40 -t
+checkprops result -v 5.40325e+7
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

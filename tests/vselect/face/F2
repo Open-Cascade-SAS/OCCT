@@ -1,0 +1,169 @@
+vclear
+box t_box 100 100 100
+vdisplay t_box
+vfit
+vmoveto 0 0
+vselmode 4 1
+vmoveto 150 250
+vselect 100 347
+vmoveto 0 0
+
+vdump $imagedir/${casename}_1.png
+
+vmoveto 90 89
+
+vdump $imagedir/${casename}_2.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_3.png
+
+vselect 90 89 1
+vmoveto 0 0
+
+vdump $imagedir/${casename}_4.png
+
+vmoveto 150 250
+
+vdump $imagedir/${casename}_5.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_6.png
+
+vmoveto 90 89
+
+vdump $imagedir/${casename}_7.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_8.png
+
+vmoveto 250 250
+vmoveto 350 250
+
+vdump $imagedir/${casename}_9.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_10.png
+
+vviewparams -scale 6.063090 -proj 0.411696 -0.786621 0.462736 -up -0.373037 0.31875 0.871669 -at 38.160233803417 72.5566786768416 36.6684620085254
+vfit
+vmoveto 0 0
+vmoveto 200 200
+
+vdump $imagedir/${casename}_11.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_12.png
+
+vmoveto 30 290
+
+vdump $imagedir/${casename}_13.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_14.png
+
+vmoveto 300 300
+
+vdump $imagedir/${casename}_15.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_16.png
+
+vselect 200 200 1
+vmoveto 0 0
+
+vdump $imagedir/${casename}_17.png
+
+vmoveto 200 200
+
+vdump $imagedir/${casename}_18.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_19.png
+
+vmoveto 30 290
+
+vdump $imagedir/${casename}_20.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_21.png
+
+vmoveto 300 300
+
+vdump $imagedir/${casename}_22.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_23.png
+
+vviewparams -scale 6.063090 -proj 0.826197 -0.328587 -0.456835 -up -0.325366 0.383482 -0.864270 -at 7.09632267265386 62.6518178738573 76.0263734322149
+vfit
+vmoveto 0 0
+vmoveto 250 300
+
+vdump $imagedir/${casename}_24.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_25.png
+
+vmoveto 300 250
+
+vdump $imagedir/${casename}_26.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_27.png
+
+vmoveto 200 200
+
+vdump $imagedir/${casename}_28.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_29.png
+
+vselect 0 0
+vmoveto 0 0
+
+vdump $imagedir/${casename}_30.png
+
+vmoveto 300 250
+
+vdump $imagedir/${casename}_31.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_32.png
+
+vviewparams -scale 6.063090 -proj -0.333605 0.937786 -0.108455 -up -0.146382 -0.163422 -0.975587 -at 63.9550768175051 -11.0454729423178 55.0758857080164
+vfit
+vmoveto 0 0
+vmoveto 100 150
+
+vdump $imagedir/${casename}_33.png
+
+vmoveto 0 0
+
+vdump $imagedir/${casename}_34.png
+
+vselect 200 90
+vmoveto 0 0
+
+vdump $imagedir/${casename}_35.png
+
+vselect 100 150
+vmoveto 0 0
+
+vdump $imagedir/${casename}_36.png
+
+vselect 0 0
+vmoveto 0 0

@@ -1,0 +1,16 @@
+
+puts "========"                                                                                   
+puts "BUC60971"
+puts "CASE 2"                                                                                   
+puts "========"                                                                                   
+puts ""                                                                                           
+
+restore [locate_data_file buc60971.brep] a 
+explode a
+checkshape a_1
+checkshape a_2
+
+bfuse result a_2 a_3
+checkprops result -s 93698.1 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

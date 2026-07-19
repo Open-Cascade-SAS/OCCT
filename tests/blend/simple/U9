@@ -1,0 +1,8 @@
+restore [locate_data_file 8_B1.draw] s
+tscale s 0 0 0 SCALE
+explode s e
+blend result  s SCALE*0.15 s_1
+explode result sh 
+tcopy result_1 result 
+
+checkprops result -s 1.77169e+06

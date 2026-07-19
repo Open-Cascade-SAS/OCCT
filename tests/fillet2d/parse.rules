@@ -1,0 +1,3 @@
+FAILED /\bFaulty\b/ bad shape
+SKIPPED /Error: unsupported locale specification/ locale is unavailable on tested system
+OK /Relative error of mass computation/ message from vprops

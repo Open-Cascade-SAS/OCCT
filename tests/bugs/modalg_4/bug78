@@ -1,0 +1,43 @@
+puts "====="
+puts "OCC78"
+puts "====="
+puts ""
+#####################################################
+# BUC60875. Pipe is created incorrectly on two wires.
+#####################################################
+
+restore [locate_data_file BUC60875_wire.brep] wire
+restore [locate_data_file BUC60875_profile.brep] profile
+
+checkshape wire
+checkshape profile
+
+set area 10225.7
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 27
+ EDGE      : 42
+ WIRE      : 16
+ FACE      : 16
+ SHELL     : 2
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 104
+"
+
+pipe result wire profile
+
+checkshape result
+
+checkprops result -s ${area}
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Pipe"
+
+set info [bopcheck result]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : Pipe is created incorrectly on two wires"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

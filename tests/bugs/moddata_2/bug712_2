@@ -1,0 +1,26 @@
+pload QAcommands
+
+puts "========"
+puts "OCC712"
+puts "========"
+puts ""
+############################################################
+## Exception is raised in DRAW during building draft with help command "depouille"
+## on face in the attached shape.
+## The source code of application is also attached and should be checked.
+############################################################
+
+set draftAngle 15
+set slabThick 30
+
+# Ubuntu have some critical issue on GH
+# originally tests have less then 1s test execution time
+cpulimit 30
+
+if [catch {OCC712 ${draftAngle} ${slabThick} } catch_result] {
+    puts "Faulty OCC712"
+} else {
+    puts "OCC712 OK"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

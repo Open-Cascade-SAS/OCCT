@@ -1,0 +1,16 @@
+puts "================================================================="
+puts "OCC30722: Modeling Algorithms - BRepExtrema_DistShapeShape computes wrong distances"
+puts "================================================================="
+puts ""
+
+restore [locate_data_file bug30722_1.brep] w
+restore [locate_data_file bug30722_2.brep] e
+
+explode w
+mkcurve c1 w_1
+mkcurve c2 e
+extrema c1 c2
+
+if { [isdraw ext_1] == 0 } {
+puts "Error: no solutions!"
+}

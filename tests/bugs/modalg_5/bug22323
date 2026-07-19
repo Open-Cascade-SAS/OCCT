@@ -1,0 +1,15 @@
+puts "============"
+puts "CR22323"
+puts "============"
+puts ""
+##########################################################################################################
+# Example of using offsetshape command instead of redundant "shell" command to get the same result
+##########################################################################################################
+
+pcylinder cy 100 200
+explode cy f
+donly cy cy_2
+fit
+
+offsetshape res cy -1. cy_2
+donly res

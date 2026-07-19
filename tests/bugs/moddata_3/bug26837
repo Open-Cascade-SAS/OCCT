@@ -1,0 +1,17 @@
+puts "========================"
+puts "OCC26837"
+puts "========================"
+puts ""
+#################################################
+# SameParameter algorithm throws an exception
+#################################################
+
+restore [locate_data_file bug26837_e.brep] result
+
+if [catch {sameparameter result} catch_result] {
+    puts "Faulty : SameParameter algorithm throws an exception"
+} else {
+    puts "OK : SameParameter algorithm works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

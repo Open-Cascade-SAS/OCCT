@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC326"
+puts "================"
+puts ""
+###########################################################
+## Exception is raised in sewing on internal edges on attached shape
+###########################################################
+
+restore [locate_data_file OCC326.brep] a 
+
+if [catch { sewing result a } catch_result] {                                                                                                                       
+    puts "Faulty OCC326: here is sewing problem"                                                                                                                                 
+} else {
+    puts "OCC326 OK: Sewing is ok, there is no except"
+}
+
+checkmaxtol result -ref 411.37576056225498
+checknbshapes result -shell 1
+checkfreebounds result 254
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

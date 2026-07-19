@@ -1,0 +1,90 @@
+puts "========"
+puts "OCC29484"
+puts "========"
+puts ""
+#################################################
+# Avoid inheritance of the BRepAlgoAPI_Check from BRepBuilderAPI_MakeShape
+#################################################
+
+puts "check simple box"
+
+box b1 2 2 2
+if {![regexp "The shape seems to be valid" [bopapicheck b1]]} {
+  puts "Error: The simple box is considered as invalid by BRepAlgoAPI_Check"
+}
+
+puts "add another box"
+
+box b2 1 1 1 2 2 2
+compound b1 b2 c
+
+puts "check si compound"
+
+if {![regexp "The shape is invalid" [bopapicheck c]]} {
+  puts "Error: Self-intersection is not detected"
+}
+
+if {![regexp "The shape seems to be valid" [bopapicheck c -si]]} {
+  puts "Error: Check on self-intersection is still enabled"
+}
+
+
+puts "increase tolerance of the vertices of the box to test Small edges detection"
+
+foreach v [explode b1 v] {settolerance $v 5.}
+
+if {![regexp "The shape is invalid" [bopapicheck b1 -si]]} {
+  puts "Error: Small edges are not detected"
+}
+
+if {![regexp "The shape seems to be valid" [bopapicheck c -si -se]]} {
+  puts "Error: Check on small edges is still enabled"
+}
+
+puts "b1 - invalid, b2 - ok"
+
+if {![regexp "The first shape is invalid" [bopapicheck b1 b2]]} {
+  puts "Error: The check is invalid"
+}
+
+if {![regexp "The second shape is invalid" [bopapicheck b2 b1]]} {
+  puts "Error: The check is invalid"
+}
+
+
+puts "test types"
+
+if {![regexp "The shapes seem to be valid" [bopapicheck b1 b2 -op fuse -se -si]]} {
+  puts "Error: The check on types is invalid"
+}
+
+puts "check empty shape"
+compound c
+
+if {![regexp "The shape is empty" [bopapicheck c]]} {
+  puts "Error: Empty shape is not detected"
+}
+
+if {![regexp "The shapes are not valid for Boolean operation" [bopapicheck b2 c]]} {
+  puts "Error: Empty shape is not detected"
+}
+
+
+puts "check vertex/solid BOPs"
+vertex v 1 1 1
+
+if {![regexp "The shapes seem to be valid" [bopapicheck b2 v -op common]]} {
+  puts "Error: The check on types is invalid"
+}
+
+if {![regexp "The shapes are not valid for Boolean operation" [bopapicheck b2 v -op fuse]]} {
+  puts "Error: The check on types is invalid"
+}
+
+if {![regexp "The shapes are not valid for Boolean operation" [bopapicheck b2 v -op cut]]} {
+  puts "Error: The check on types is invalid"
+}
+
+if {![regexp "The shapes seem to be valid" [bopapicheck b2 v -op tuc]]} {
+  puts "Error: The check on types is invalid"
+}

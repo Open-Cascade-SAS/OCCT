@@ -1,0 +1,10 @@
+# Original bug : ksi0014
+# Date : 11mar98
+
+restore [locate_data_file CTO900_ksi0014a.rle] a
+restore [locate_data_file ksi0014b.rle] b
+
+bfuse result a b
+
+checkprops result -s 223775
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

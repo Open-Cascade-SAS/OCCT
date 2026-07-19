@@ -1,0 +1,28 @@
+puts "========"
+puts "0029329: Modeling Algorithms - Low performance of the General Fuse algorithm"
+puts "========"
+puts ""
+
+
+restore [locate_data_file bug29329_objects.brep] a
+restore [locate_data_file bug29329_tools.brep] b
+
+bnondestructive 1
+
+dchrono timer restart
+
+bfuse result a b
+
+dchrono timer stop counter OCC29329Fuse
+dchrono timer show
+
+checkshape result
+checknbshapes result -solid 1 -shell 1 -face 40 -wire 40
+
+if {![regexp "This shape seems to be OK" [bopcheck result]]} {
+  puts "Error: The result is a self-intersecting shape."
+}
+
+checkprops result -s 6483.69 -v 21609.6
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

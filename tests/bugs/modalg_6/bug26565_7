@@ -1,0 +1,54 @@
+puts "============"
+puts "OCC26565"
+puts "============"
+puts ""
+###############################
+## Compsolid after cut becomes compound of solids
+###############################
+
+box b1 10 10 10
+box b2 10 0 0 10 5 5
+box b3 10 5 0 10 5 5
+box b4 10 0 5 10 10 5
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3 b4
+
+bfillds
+bbuild r
+
+explode r so
+shape b1 CS
+add r_1 b1
+add r_2 b1
+add r_3 b1
+add r_4 b1
+
+box b2 5 0 2 10 10 10
+box b3 -5 2 3 30 6 4
+bclearobjects
+bcleartools
+baddobjects b1 b2
+baddtools b3
+
+bfillds
+bbop r 2
+
+explode r
+
+# should be compsolid and solid
+
+set ShapeType "COMPSOLID"
+if { [regexp $ShapeType [whatis r_1]] == 1  } {
+   puts "OK : There is $ShapeType; Compsolid is good"
+} else {
+   puts "Error : There is not $ShapeType; Compsolid is bad"
+}
+
+set ShapeType "SOLID"
+if { [regexp $ShapeType [whatis r_2]] == 1  } {
+   puts "OK : There is $ShapeType; Compsolid is good"
+} else {
+   puts "Error : There is not $ShapeType; Compsolid is bad"
+}

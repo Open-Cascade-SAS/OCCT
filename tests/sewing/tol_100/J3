@@ -1,0 +1,10 @@
+puts "TODO OCC23674 ALL: Error : Number of faults is"
+
+restore [locate_data_file CIN902_intcqhmp.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 98.605773005137095
+checknbshapes result -shell 1
+checkfreebounds result 19
+checkfaults result a 7

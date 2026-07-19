@@ -1,0 +1,41 @@
+puts "========="
+puts "OCC24144"
+puts "========="
+puts ""
+###########################################################
+# BRepPrimAPI_MakeWedge wrong
+###########################################################
+
+set Ox 0
+set Oy 0
+set Oz 0
+
+set Zx 0
+set Zy 0
+set Zz 1
+
+set Xx 0
+set Xy 1
+set Xz 0
+
+set dx 200.0
+set dy 620.0
+set dz 2150.0
+
+set xmin 0
+set xmax 200
+
+set zmin 1075
+set zmax 1075
+
+wedge result ${Ox} ${Oy} ${Oz} ${Zx} ${Zy} ${Zz} ${Xx} ${Xy} ${Xz} \
+      ${dx} ${dy} ${dz} ${xmin} ${zmin} ${xmax} ${zmax}
+#wedge result \
+#      ${dx} ${dy} ${dz} ${xmin} ${zmin} ${xmax} ${zmax}
+
+checkprops result -s 2.25939e+06 
+checkshape result
+
+# Analysis of "nbshapes result"
+checknbshapes result -vertex 6 -edge 9 -wire 5 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 27
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,8 @@
+source [locate_data_file mos2014-asm-scf-final.asm.1.gdml.tcl]
+
+set bcheck [bopcheck result]
+puts $bcheck
+if {![regexp {This shape seems to be OK.} $bcheck]} {
+    puts "Error: bopcheck failed"
+}
+checkprops result -s 429157

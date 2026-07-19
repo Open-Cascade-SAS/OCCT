@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC26635"
+puts "========"
+puts ""
+########################################
+# UnifySameDomain loses internal edges
+########################################
+
+restore [locate_data_file OCC26635_t0.brep] t0
+restore [locate_data_file OCC26635_t1.brep] t1
+restore [locate_data_file OCC26635_t2.brep] t2
+
+bclear
+baddobjects t0 t1
+baddtools t2
+bfillds
+bbop r 1
+
+unifysamedom ru r
+set bug_info [bopargcheck ru #F]
+
+if {$bug_info != "Shape(s) seem(s) to be valid for BOP.\n"} {
+  puts "ERROR: OCC26635 is reproduced."
+}
+

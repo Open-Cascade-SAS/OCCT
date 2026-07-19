@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC25792"
+puts "=========="
+puts ""
+#############################################################
+# BRepAlgoAPI_Section fails depending on order of arguments
+#############################################################
+
+restore [locate_data_file bug25792_Turbine_VTG.brep] t
+explode t
+bop t_1 t_2
+bopsection res
+explode res
+checkprops res -l 1.10148
+checknbshapes res -vertex 2 -edge 1
+
+bop t_2 t_1
+bopsection result
+explode result
+checkprops result -l 1.10148
+checknbshapes result -vertex 2 -edge 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

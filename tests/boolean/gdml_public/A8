@@ -1,0 +1,206 @@
+# test script for eye01.prt.2.gdml file
+compound result
+
+# box 
+box sh46A2C90 -10 -10 -2.5 20 20 5
+
+# cylinder 
+plane pln_sh46A5E00 -0 -0 -2.5 0 0 1 1 0 0
+erase pln_sh46A5E00
+pcylinder sh46A5E00 pln_sh46A5E00 10 5 180
+
+# copy shape
+copy sh46A5E00 sh46A5E00_copy
+
+# shape transformation
+trotate sh46A5E00_copy 0 0 0 5.5511151231257827e-017 -1.6653345369377343e-016 -1 90 
+ttranslate sh46A5E00_copy 9.9999999999999982 0 1.7763568394002505e-015
+
+# shape transformation
+trotate sh46A5E00_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh46A5E00_copy 2.5 -5 0
+
+# cylinder 
+plane pln_sh4B66D90 -0 -0 -2.5 0 0 1 1 0 0
+erase pln_sh4B66D90
+pcylinder sh4B66D90 pln_sh4B66D90 5 5 360
+
+# copy shape
+copy sh4B66D90 sh4B66D90_copy
+
+# shape transformation
+trotate sh4B66D90_copy 0 0 0 5.5511151231257827e-017 -1.6653345369377343e-016 -1 90 
+ttranslate sh4B66D90_copy 9.9999999999999982 0 1.7763568394002505e-015
+
+# shape transformation
+trotate sh4B66D90_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh4B66D90_copy 2.5 -5 0
+
+# cylinder 
+plane pln_sh4B68300 -0 -0 -10 0 0 1 -1 1.2246467991473532e-016 0
+erase pln_sh4B68300
+pcylinder sh4B68300 pln_sh4B68300 10 20 90
+settolerance sh4B68300 1.9999999999999999e-007
+
+# cylinder 
+plane pln_sh4B6A9F0 -0 -0 -10 0 0 1 -1 1.2246467991473532e-016 0
+erase pln_sh4B6A9F0
+pcylinder sh4B6A9F0 pln_sh4B6A9F0 5 20 90
+settolerance sh4B6A9F0 1.9999999999999999e-007
+
+# copy shape
+copy sh4B6A9F0 sh4B6A9F0_copy
+
+# shape transformation
+trotate sh4B6A9F0_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 -120.00000000000001 
+ttranslate sh4B6A9F0_copy -9.9999999999999982 -3.6977854932234911e-031 7.4999999999999964
+
+# shape transformation
+trotate sh4B6A9F0_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh4B6A9F0_copy 2.5 -5 0
+
+# copy shape
+copy sh4B68300 sh4B68300_copy
+
+# shape transformation
+trotate sh4B68300_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 -120.00000000000001 
+ttranslate sh4B68300_copy -9.9999999999999982 -3.6977854932234911e-031 7.4999999999999964
+
+# shape transformation
+trotate sh4B68300_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh4B68300_copy 2.5 -5 0
+
+# cut operation
+bcut sh97D3DB0 sh4B68300_copy sh4B6A9F0_copy; copy sh97D3DB0 sh97D3DB0_copy 
+
+# box 
+box sh97D26F0 -10 -2.5 -10 20 5 20
+
+# cylinder 
+plane pln_sh97D6F90 -0 -0 -2.5 0 0 1 1 0 0
+erase pln_sh97D6F90
+pcylinder sh97D6F90 pln_sh97D6F90 1.5 5 360
+
+# copy shape
+copy sh97D6F90 sh97D6F90_copy
+
+# shape transformation
+trotate sh97D6F90_copy 0 0 0 -5.551115123125779e-017 -1 -5.5511151231257852e-017 90.000000000000014 
+ttranslate sh97D6F90_copy -17.500000000000004 4.9999999999999991 22.499999999999989
+
+# shape transformation
+trotate sh97D6F90_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh97D6F90_copy 2.5 -5 0
+
+# cylinder 
+plane pln_sh97D6820 -0 -0 -2.5 0 0 1 1 0 0
+erase pln_sh97D6820
+pcylinder sh97D6820 pln_sh97D6820 1.5 5 360
+
+# copy shape
+copy sh97D6820 sh97D6820_copy
+
+# shape transformation
+trotate sh97D6820_copy 0 0 0 -5.551115123125779e-017 -1 -5.5511151231257852e-017 90.000000000000014 
+ttranslate sh97D6820_copy -17.500000000000004 -4.9999999999999991 22.499999999999989
+
+# shape transformation
+trotate sh97D6820_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh97D6820_copy 2.5 -5 0
+
+# cylinder 
+plane pln_sh97D6970 -0 -0 -10 0 0 1 1 0 0
+erase pln_sh97D6970
+pcylinder sh97D6970 pln_sh97D6970 1.5 20 360
+settolerance sh97D6970 1.9999999999999999e-007
+
+# copy shape
+copy sh97D6970 sh97D6970_copy
+
+# shape transformation
+trotate sh97D6970_copy 0 0 0 -5.551115123125779e-017 -1 -5.5511151231257852e-017 90.000000000000014 
+ttranslate sh97D6970_copy -19.999999999999996 4.9999999999999991 12.499999999999993
+
+# shape transformation
+trotate sh97D6970_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh97D6970_copy 2.5 -5 0
+
+# cylinder 
+plane pln_sh97D5FD0 -0 -0 -5 0 0 1 1 0 0
+erase pln_sh97D5FD0
+pcylinder sh97D5FD0 pln_sh97D5FD0 1.5 10 360
+
+# copy shape
+copy sh97D5FD0 sh97D5FD0_copy
+
+# shape transformation
+trotate sh97D5FD0_copy 0 0 0 -5.551115123125779e-017 -1 -5.5511151231257852e-017 90.000000000000014 
+ttranslate sh97D5FD0_copy -15 -4.9999999999999991 12.499999999999995
+
+# shape transformation
+trotate sh97D5FD0_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh97D5FD0_copy 2.5 -5 0
+
+# cylinder 
+plane pln_sh97D95A0 -0 -0 -1.25 0 0 1 1 0 0
+erase pln_sh97D95A0
+pcylinder sh97D95A0 pln_sh97D95A0 2.5 2.5 360
+
+# copy shape
+copy sh97D95A0 sh97D95A0_copy
+
+# shape transformation
+trotate sh97D95A0_copy 0 0 0 -5.551115123125779e-017 -1 -5.5511151231257852e-017 90.000000000000014 
+ttranslate sh97D95A0_copy -18.75 -8.6281661508548114e-031 17.499999999999993
+
+# shape transformation
+trotate sh97D95A0_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh97D95A0_copy 2.5 -5 0
+
+# copy shape
+copy sh97D26F0 sh97D26F0_copy
+
+# shape transformation
+trotate sh97D26F0_copy 0 0 0 5.5511151231257827e-017 -1.6653345369377343e-016 -1 90 
+ttranslate sh97D26F0_copy -17.5 -8.6281661508548114e-031 17.499999999999993
+
+# shape transformation
+trotate sh97D26F0_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh97D26F0_copy 2.5 -5 0
+
+# cut operation
+bcut sh4B9D400 sh97D26F0_copy sh97D6F90_copy; copy sh4B9D400 sh4B9D400_copy 
+
+# cut operation
+bcut sh4BA2100 sh4B9D400_copy sh97D6820_copy; copy sh4BA2100 sh4BA2100_copy 
+
+# cut operation
+bcut sh4BA0A40 sh4BA2100_copy sh97D6970_copy; copy sh4BA0A40 sh4BA0A40_copy 
+
+# cut operation
+bcut sh97DD510 sh4BA0A40_copy sh97D5FD0_copy; copy sh97DD510 sh97DD510_copy 
+
+# cut operation
+bcut sh97DAB10 sh97DD510_copy sh97D95A0_copy; copy sh97DAB10 sh97DAB10_copy 
+
+# copy shape
+copy sh46A2C90 sh46A2C90_copy
+
+# shape transformation
+trotate sh46A2C90_copy 0 0 0 0.57735026918962562 0.57735026918962573 0.57735026918962573 120.00000000000001 
+ttranslate sh46A2C90_copy 2.5 -5 0
+
+# fuse operation
+bfuse sh476FAB0 sh46A2C90_copy sh46A5E00_copy; copy sh476FAB0 sh476FAB0_copy 
+
+# cut operation
+bcut sh4772360 sh476FAB0_copy sh4B66D90_copy; copy sh4772360 sh4772360_copy 
+
+# fuse operation
+bfuse sh47C2020 sh4772360_copy sh97D3DB0_copy; copy sh47C2020 sh47C2020_copy 
+
+# fuse operation
+bfuse sh4B58870 sh47C2020_copy sh97DAB10_copy; copy sh4B58870 sh4B58870_copy 
+
+# result
+add sh4B58870_copy result

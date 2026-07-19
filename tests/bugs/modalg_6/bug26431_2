@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC26431"
+puts "============"
+puts ""
+###############################
+## Can't cut a sphere from a cylinder
+###############################
+
+restore [locate_data_file bug26431_Body.brep] b1
+restore [locate_data_file bug26431_Sphere.brep] b2
+
+explode b1 f
+explode b2 f
+
+bsection result b1_3 b2_1
+
+set log [checksection result]
+
+if { [string compare -nocase $log " nb alone Vertices : 0\n\n"] } {
+  puts "ERROR: the section is not closed"
+} else {
+  puts "The section is OK"
+}
+
+smallview
+donly result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

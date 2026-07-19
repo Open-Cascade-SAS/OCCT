@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC272"
+puts "========"
+
+igesbrep [locate_data_file 919-004-T02-01-FT-VL.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+if { [llength [whatis result]] == 3 } {
+    puts "Error : There is no result"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,24 @@
+# Fuse of two boxes
+
+boptions -default
+
+box b1 10 10 15
+box b2 3 7 0 10 10 15
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+# build not simplified result
+bapibop res 1
+checkshape res
+checknbshapes res -vertex 20 -edge 32 -wire 14 -face 14
+
+# set option to simplify result
+bsimplify -f 1
+bapibop res_simple 1
+checkshape res_simple
+checknbshapes res_simple -vertex 16 -edge 24 -wire 10 -face 10
+
+boptions -default

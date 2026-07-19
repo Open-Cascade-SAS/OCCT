@@ -1,0 +1,19 @@
+
+puts "================"
+puts "SAM1225"
+puts "OCC134"
+puts "================"
+puts ""
+###########################################################
+## Faces from attached file are impossible to extrude.
+###########################################################
+
+restore [locate_data_file OCC134-2.brep] sh 
+checkshape sh
+
+prism result sh 100 100 100
+checkshape result
+
+checkprops result -s 271859
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

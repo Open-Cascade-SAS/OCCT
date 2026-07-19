@@ -1,0 +1,13 @@
+puts "========"
+puts "OCC445"
+puts "========"
+puts ""
+
+restore [locate_data_file OCC501.brep] a
+
+fixshape result a 1e-7
+
+checkshape result
+checkprops result -v 477547
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

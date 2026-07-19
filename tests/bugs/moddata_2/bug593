@@ -1,0 +1,54 @@
+puts "TODO OCC12345 ALL: Error : Projection of a 3D point on surface using GeomAPI_ProjectPointOnSurf works incorrect"
+
+puts "========================"
+puts " OCC593 "
+puts "========================"
+puts ""
+#############################################################
+## Projection of a 3D point on surface using GeomAPI_ProjectPointOnSurf works incorrect 
+#############################################################
+
+restore [locate_data_file OCC593.brep] ff48 
+
+set tolerance [maxtolerance ff48]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance
+
+vertex vv -19.561252535222 17.89876466186 71.408126285268
+distmini dd vv ff48
+regexp {([-0-9.+eE]+)$} [dump dd_val] full ddval
+
+mksurface gs ff48
+
+proj gs -19.561252535222 17.89876466186 71.408126285268
+
+set pp1 [lindex [dump ext_1] 9]
+set pp2 [lindex [dump ext_1] 10]
+
+set err [expr abs ([expr $pp2 - $pp1])]
+puts [format "MaxFaceTolerance = %s" $MaxFaceTolerance]
+puts [format "MaxDistance = %s" $err]
+if { $err < $MaxFaceTolerance } {
+    puts  "OCC593 (case 1) : Projection of a 3D point on surface using GeomAPI_ProjectPointOnSurf works properly"
+} else {
+    puts "Error : Projection of a 3D point on surface using GeomAPI_ProjectPointOnSurf works incorrect"
+}
+copy ext_1 oldext_1
+
+puts ""
+puts "***** Another example: *****"
+
+svalue gs 0.56 0.4 x y z
+point p x y z
+proj gs x y z
+
+set p1 [lindex [dump ext_1] 9]
+set p2 [lindex [dump ext_1] 10]
+
+set err1 [expr abs ([expr $p2 - $p1])]
+puts [format "MaxFaceTolerance = %s" $MaxFaceTolerance]
+puts [format "MaxDistance = %s" $err1]
+if { $err1 < $MaxFaceTolerance } {
+    puts  "OCC593 (case 2) : Projection of a 3D point on surface using GeomAPI_ProjectPointOnSurf works properly"
+} else {
+    puts "Error : Projection of a 3D point on surface using GeomAPI_ProjectPointOnSurf works incorrect"
+}

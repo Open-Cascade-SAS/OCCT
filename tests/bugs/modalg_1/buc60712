@@ -1,0 +1,52 @@
+puts "=========="
+puts "BUC60712"
+puts "=========="
+puts ""
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+#
+# OCC22070: Grid Tests: CHL set, detected problems
+# Problems:
+#  The shape buc60712a.brep is self-interferred.
+#  thus it can not be used as the argument for Boolean Operation Algorithm.
+#
+# Proposals:
+#  The Case chl/902/F3 should be removed or rewritten:
+
+restore [locate_data_file buc60712a.brep] a 
+checkshape a
+
+restore [locate_data_file buc60712b.brep] b
+checkshape b
+
+# Recompute "a" shape
+explode a f
+
+bop a_1 a_2
+bopfuse r12
+
+bop a_3 a_4
+bopfuse r34
+
+bop r12 r34
+
+bopfuse r
+
+# Start boolean operation
+bop r b
+bopsection result
+
+# Check result
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full num
+# Resume
+if { $num != 0 } {
+    puts " Faulty BUC60712: Result shape is INcorrect !!! "
+} else {
+    puts "BUC60712 OK: Result shape is correct "
+}
+checkprops result -l 1.88145 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

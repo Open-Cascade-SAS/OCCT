@@ -1,0 +1,18 @@
+puts "================"
+puts "0031340: LDOM fails to read XML file starting with BOM"
+puts "================"
+puts ""
+
+pload QAcommands
+
+set list [OCC983 [locate_data_file bug31340.xml]]
+
+if { [regexp "Document parsed" $list] == 1 } {
+  if {[lsearch -exact ${list} "UTF-8"] != -1 } {
+    puts "OK"
+  } else {
+    puts "Error : BOM was not found in $list"
+  }
+} else {
+  puts "Error : document not parsed"
+}

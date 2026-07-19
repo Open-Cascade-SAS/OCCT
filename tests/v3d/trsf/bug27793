@@ -1,0 +1,21 @@
+puts "========"
+puts "Object drifts at zoom within Graphic3d_TMF_TriedronPers applied"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+box b 100 200 300
+vclear
+vinit View1
+vtrihedron t1
+vtrihedron t2
+vdisplay -dispMode 1 b
+vaxo
+vdisplay -trsfPers trihedron -trsfPersPos -1 -1 100 t1
+vdisplay -trsfPers trihedron -trsfPersPos  1  1 100 t2
+vsetlocation t2 0 0 -50
+vcamera -persp
+vstereo anaglyph
+vfit
+vzoom 0.05
+vdump $imagedir/${casename}.png -stereo blend

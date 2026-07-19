@@ -1,0 +1,11 @@
+box bx1  300 300 100
+explode bx1 e
+blend bl1 bx1 100 bx1_1
+
+plane pl1 100 100 0 0 0 -1   1 0 0
+pcylinder pc pl1 100 50
+
+bfuse result bl1 pc
+
+checkprops result -s 322832
+checkview -display result -2d -otherwise { bl1 pc } -s -path ${imagedir}/${test_image}.png

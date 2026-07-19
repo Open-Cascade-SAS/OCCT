@@ -1,0 +1,22 @@
+
+puts "========================"
+puts " OCC539 "
+puts "(case 1)"
+puts "========================"
+puts ""
+
+ puts "==========================================="
+ puts "  BOPCOMMON   case_4_shell.brep and case_4_wire3.brep"
+ puts "==========================================="
+ puts " " 
+
+restore [locate_data_file case_4_shell.brep] a
+restore [locate_data_file case_4_wire3.brep] b
+bop a b
+bopcommon result
+
+checknbshapes result -vertex 15 -edge 10
+checkprops result -l 1150.78 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

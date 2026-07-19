@@ -1,0 +1,21 @@
+puts "========"
+puts "CR25202"
+puts "========"
+puts ""
+#########################################
+## Incorrect value of IsClosed flag in shapes produced by some algorithms
+#########################################
+
+box b 100 100 100
+explode b sh
+trotate b_1 0 0 0 1 0 0 45
+removeloc result b_1
+
+set info [whatis result]
+if { [regexp {Closed} ${info}] } {
+    puts "OK : value of IsClosed flag is correct"
+} else {
+    puts "Error : value of IsClosed flag is not correct"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,31 @@
+puts "TODO OCC12345 ALL: Faulty : Result shape is WRONG !!!"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+puts "========================"
+puts " OCC238 "
+puts "========================"
+
+#################################################
+## puts "  BOPCOMMON   case_2_solid.brep and case_2_edge1.brep"
+#################################################
+puts " " 
+puts [restore [locate_data_file OCC238a.brep] a] 
+puts [restore [locate_data_file case_2_edge1.brep] b]
+puts [bop a b]
+puts [bopcommon result b a]
+
+explode result v
+explode a e
+distmini di result_1 a_3 
+regexp {([-0-9.+eE]+)$} [dump $di_val] full dis
+if { [expr $dis > 1.e-5] } {
+    puts "Faulty : Result shape is WRONG !!!" 
+} else {
+    puts " Result shape is COMPLETE"
+}
+
+checknbshapes result -vertex 14 -edge 7
+
+checkprops result -l 0 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

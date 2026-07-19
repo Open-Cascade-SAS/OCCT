@@ -1,0 +1,7 @@
+restore [locate_data_file box.brep] b
+restore [locate_data_file c2.brep] c
+
+bfuse result b c
+
+checkprops result -s 131766
+checkview -display result -2d -otherwise { b c } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,203 @@
+// Created on: 2000-01-31
+// Created by: data exchange team
+// Copyright (c) 2000-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Transfer_TransientProcess.hxx>
+#include <IGESData_IGESEntity.hxx>
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetEpsilon(const double eps)
+{
+  myEps = eps;
+}
+
+//=================================================================================================
+
+inline double IGESToBRep_CurveAndSurface::GetEpsilon() const
+{
+  return myEps;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetEpsCoeff(const double eps)
+{
+  myEpsCoeff = eps;
+}
+
+//=================================================================================================
+
+inline double IGESToBRep_CurveAndSurface::GetEpsCoeff() const
+{
+  return myEpsCoeff;
+}
+
+//=================================================================================================
+
+inline double IGESToBRep_CurveAndSurface::GetEpsGeom() const
+{
+  return myEpsGeom;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetMinTol(const double mintol)
+{
+  myMinTol = mintol;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetMaxTol(const double maxtol)
+{
+  myMaxTol = maxtol;
+}
+
+//=================================================================================================
+
+inline double IGESToBRep_CurveAndSurface::GetMinTol() const
+{
+  return myMinTol;
+}
+
+//=================================================================================================
+
+inline double IGESToBRep_CurveAndSurface::GetMaxTol() const
+{
+  return myMaxTol;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetModeApprox(const bool mode)
+{
+  myModeApprox = mode;
+}
+
+//=================================================================================================
+
+inline bool IGESToBRep_CurveAndSurface::GetModeApprox() const
+{
+  return myModeApprox;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetModeTransfer(const bool mode)
+{
+  myModeIsTopo = mode;
+}
+
+//=================================================================================================
+
+inline bool IGESToBRep_CurveAndSurface::GetModeTransfer() const
+{
+  return myModeIsTopo;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetOptimized(const bool optimized)
+{
+  myContIsOpti = optimized;
+}
+
+//=================================================================================================
+
+inline bool IGESToBRep_CurveAndSurface::GetOptimized() const
+{
+  return myContIsOpti;
+}
+
+//=================================================================================================
+
+inline double IGESToBRep_CurveAndSurface::GetUnitFactor() const
+{
+  return myUnitFactor;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetSurfaceCurve(const int ival)
+{
+  mySurfaceCurve = ival;
+}
+
+//=================================================================================================
+
+inline int IGESToBRep_CurveAndSurface::GetSurfaceCurve() const
+{
+  return mySurfaceCurve;
+}
+
+//=================================================================================================
+
+inline occ::handle<IGESData_IGESModel> IGESToBRep_CurveAndSurface::GetModel() const
+{
+  return myModel;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetContinuity(const int continuity)
+{
+  myContinuity = continuity;
+}
+
+//=================================================================================================
+
+inline int IGESToBRep_CurveAndSurface::GetContinuity() const
+{
+  return myContinuity;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SetTransferProcess(
+  const occ::handle<Transfer_TransientProcess>& TP)
+{
+  myTP = TP;
+}
+
+//=================================================================================================
+
+inline occ::handle<Transfer_TransientProcess> IGESToBRep_CurveAndSurface::GetTransferProcess() const
+{
+  return myTP;
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SendFail(const occ::handle<IGESData_IGESEntity>& start,
+                                                 const Message_Msg&                      amsg)
+{
+  GetTransferProcess()->SendFail(start, amsg);
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SendWarning(const occ::handle<IGESData_IGESEntity>& start,
+                                                    const Message_Msg&                      amsg)
+{
+  GetTransferProcess()->SendWarning(start, amsg);
+}
+
+//=================================================================================================
+
+inline void IGESToBRep_CurveAndSurface::SendMsg(const occ::handle<IGESData_IGESEntity>& start,
+                                                const Message_Msg&                      amsg)
+{
+  GetTransferProcess()->SendMsg(start, amsg);
+}

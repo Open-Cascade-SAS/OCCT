@@ -1,0 +1,8 @@
+restore [locate_data_file OCC337.brep] sh
+explode sh
+
+bop sh_1 sh_2
+bopcommon result
+
+checkprops result -s 1249.02
+checkview -display result -2d -otherwise { sh_1 sh_2 } -s -path ${imagedir}/${test_image}.png

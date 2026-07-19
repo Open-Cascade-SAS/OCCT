@@ -1,0 +1,5 @@
+if { "[vviewlist]" != "" } {
+  checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+}
+
+puts "TEST COMPLETED" 

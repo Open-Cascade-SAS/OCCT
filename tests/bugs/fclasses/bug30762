@@ -1,0 +1,22 @@
+puts "================"
+puts "0030762: Foundation Classes - include backtrace within OSD_SIGSEGV on Linux"
+puts "================"
+puts ""
+
+pload QAcommands
+
+dsetsignal set -strackTraceLength 10
+set IsDone [catch {set aResult [OCC30762]} result]
+
+if { ${IsDone} != 0 } {
+  puts "result = ${result}"
+  puts "Error: command raised exception"
+} else {
+  if { [string first "testMethod3" $aResult] != -1 } {
+    puts "OK test case"
+  } else {
+    # stack trace might be missing due to stripped symbols or optimized code
+    #puts "Error: backtrace is not printed"
+    puts "Warning: backtrace is not printed"
+  }
+}

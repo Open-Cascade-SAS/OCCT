@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename BUC50002.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1  ( 24 )  Summary  = 1  ( 24 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 98  ( 98 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 98  ( 98 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.03645053132  (  0.03645054227 )  AvgTol   =  0.0005450433774  (  0.0005479624657 )
+LABELS      : N0Labels = 124  ( 124 )  N1Labels = 66  ( 181 )  N2Labels = 0  ( 0 )   TotalLabels = 190  ( 305 )   NameLabels = 124  ( 124 )   ColorLabels = 190  ( 305 )   LayerLabels = 190  ( 305 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = GREEN  ( GREEN )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 101 141  ( 101 141 )
+
+}

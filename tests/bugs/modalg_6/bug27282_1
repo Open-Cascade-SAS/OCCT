@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC27282"
+puts "============"
+puts ""
+###############################
+## [Regression to 6.9.1] smesh/bugs_00/A6: Cut produces an empty shape
+###############################
+
+restore [locate_data_file bug27282_cmpd.brep] a
+explode a
+
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2
+
+bfillds
+
+# CUT-operation
+bbop result 2
+
+set log [bopargcheck result #F]
+
+if { [string compare -nocase $log "Shape(s) seem(s) to be valid for BOP.\n"] } {
+  puts "ERROR. result is not valid for BOP"
+}
+
+checkshape result
+checknbshapes result -solid 1 -face 4
+checkprops result -v 2.96079e+007
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

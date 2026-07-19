@@ -1,0 +1,8 @@
+restore [locate_data_file a90] a
+restore [locate_data_file b90] b
+
+bop a b
+boptuc result
+
+checkprops result -s 19142.1
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

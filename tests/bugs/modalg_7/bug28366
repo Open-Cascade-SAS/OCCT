@@ -1,0 +1,44 @@
+puts "TODO OCC28366 ALL: Error: BOP"
+
+puts "============"
+puts "OCC28366"
+puts "============"
+puts ""
+#############################################
+# BOP Common fails with solid and planar face
+#############################################
+
+pload XDE
+
+stepread [locate_data_file bug28366_fuselage.stp] a *
+renamevar a_1 a
+
+# Sew all the faces and make a solid.
+explode a f
+sewing shell 1.0e-6 a_1 a_2 a_3 a_4 a_5 a_6 a_7 a_8 
+mkvolume fuselage shell
+
+# Make a xy-plane at the origin.
+plane pln
+mkface face pln
+
+# Try a bcommon
+set Log_1 [bcommon common face fuselage]
+if {[regexp "Warning" ${Log_1}] == 1} {
+    puts "Error: BOP Common fails with solid and planar face"
+}
+set Log [bopcheck common]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BOP Common fails with solid and planar face"
+}
+checkview -display common -2d -path ${imagedir}/${test_image}_common.png
+
+# Try bsection
+set Log_2 [bsection section face fuselage]
+if {[regexp "Warning" ${Log_1}] == 1} {
+    puts "Error: BOP Section fails with solid and planar face"
+}
+set Log [bopcheck section]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BOP Section fails with solid and planar face"
+}

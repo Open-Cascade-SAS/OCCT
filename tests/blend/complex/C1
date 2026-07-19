@@ -1,0 +1,11 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : F6
+## Comment : from cts19335
+## ====================================
+
+restore [locate_data_file CFI_cts19335.rle] a
+nexplode a e
+blend result a 2 a_20
+
+checkprops result -s 19652.4

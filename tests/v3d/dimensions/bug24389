@@ -1,0 +1,243 @@
+puts "============"
+puts "CR24389: Invalid highlight of AIS dimension line in local selection"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+# ----------------------------------------------#
+#  Check highlight of length dimension elements #
+# ----------------------------------------------#
+
+vinit View1
+vtop
+
+# length
+
+vpoint len_p1  0 0 0
+vpoint len_p2 40 0 0
+verase len_p1 len_p2
+
+vdimension len1 -length -text 3d -plane xoy -flyout 20 -arrow external -label left -shapes len_p1 len_p2 -font SansFont
+vdimension len2 -length -text 3d -plane xoy -flyout -20 -arrow external -label right -shapes len_p1 len_p2 -font SansFont
+
+vpoint len_p3  0 20 0
+vpoint len_p4 40 20 0
+verase len_p3 len_p4
+
+vdimension len3 -length -text 3d -plane xoy -flyout 20 -arrow internal -label hcenter -shapes len_p3 len_p4 -font SansFont
+
+# diameter
+
+vpoint diam_p1  90 0   0
+vpoint diam_p2 120 0   0
+vpoint diam_p3 105 -15 0
+verase diam_p1 diam_p2 diam_p3
+vcircle diam_c1 diam_p1 diam_p2 diam_p3 0
+vdimension diam1 -diameter -text 3d -plane xoy -arrow external -label left -shapes diam_c1 -font SansFont
+
+vpoint diam_p4  90 40 0
+vpoint diam_p5 120 40 0
+vpoint diam_p6 105 25 0
+verase diam_p4 diam_p5 diam_p6
+vcircle diam_c2 diam_p4 diam_p5 diam_p6 0
+vdimension diam2 -diameter -text 3d -plane xoy -arrow external -label right -shapes diam_c2 -font SansFont
+
+vpoint diam_p7  80 -40 0
+vpoint diam_p8 120 -40 0
+vpoint diam_p9 100 -60 0
+verase diam_p7 diam_p8 diam_p9
+vcircle diam_c3 diam_p7 diam_p8 diam_p9 0
+vdimension diam3 -diameter -text 3d -plane xoy -arrow external -label hcenter -flyout 30 -shapes diam_c3 -font SansFont
+
+# radius
+
+vpoint rad_p1 140  -5 0
+vpoint rad_p2 180 -45 0
+vpoint rad_p3 220  -5 0
+verase rad_p1 rad_p2 rad_p3
+vcircle rad_c1 rad_p1 rad_p2 rad_p3 0
+vdimension rad1 -radius -text 3d -plane xoy -arrow internal -label hcenter -flyout 0 -shapes rad_c1 -font SansFont
+
+vpoint rad_p4 180 -70 0
+vpoint rad_p5 160 -90 0
+vpoint rad_p6 140 -70 0
+verase rad_p4 rad_p5 rad_p6
+vcircle rad_c2 rad_p4 rad_p5 rad_p6 0
+vdimension rad2 -radius -text 3d -plane xoy -arrow external -label left -shapes rad_c2 -font SansFont
+
+# angles
+
+vpoint ang_p1 0  -50 0
+vpoint ang_p2 25 -75 0
+vpoint ang_p3 0  -100 0
+verase ang_p1 ang_p2 ang_p3
+vdimension ang1 -angle -text 3d -plane xoy -arrow internal -label hcenter -flyout 35 -shapes ang_p1 ang_p2 ang_p3 -font SansFont
+
+vpoint ang_p4   0 -120 0
+vpoint ang_p5  30 -80  0
+vpoint ang_p6  30 -120 0
+verase ang_p4 ang_p5 ang_p6
+vdimension ang2 -angle -text 3d -plane xoy -arrow external -label left -flyout 55 -shapes ang_p4 ang_p5 ang_p6 -font SansFont
+
+vpoint ang_p8  55 -120 0
+vpoint ang_p9  55 -80  0
+vpoint ang_p10 95 -120 0
+verase ang_p8 ang_p9 ang_p10
+vdimension ang3 -angle -text 3d -plane xoy -arrow external -label right -flyout 55 -shapes ang_p8 ang_p9 ang_p10 -font SansFont
+
+vpoint fit1 -75 0 0
+vpoint fit2 235 0 0
+vfit
+
+# ----------------------------------------------------------------------------- #
+#               Verify picking in neutral and local selections                  #
+# ----------------------------------------------------------------------------- #
+
+proc check_picking { pick check name } {
+  for {set i 0} {$i < [llength $pick]} {incr i} {
+  
+    set pick_x [lindex [lindex $pick $i] 0]
+    set pick_y [lindex [lindex $pick $i] 1]
+    set check_x [lindex $check 0]
+    set check_y [lindex $check 1]
+    
+    vmoveto $pick_x $pick_y
+    set res [checkcolor $check_x $check_y 0 1 1]
+    
+    if { $res != 1 } {
+      puts "Error : Highlighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
+    }
+  }
+}
+
+proc check_cross_picking { pick object name } {
+
+  vselmode 0 1
+
+  for {set i 1} {$i < 3} {incr i} {
+    
+    vselmode $object $i 1
+
+    for {set j 1} {$j < 3} {incr j} {
+
+      set pick_idx_i [expr "[llength $pick] - 2 + $i - 1"]
+      set pick_idx_j [expr "[llength $pick] - 2 + $j - 1"]
+
+      set pick_x [lindex [lindex $pick $pick_idx_i] 0]
+      set pick_y [lindex [lindex $pick $pick_idx_i] 1]
+      set check_x [lindex [lindex $pick $pick_idx_j] 0]
+      set check_y [lindex [lindex $pick $pick_idx_j] 1]
+      
+      vmoveto $pick_x $pick_y
+      
+      if {$i == $j} {
+        set res [checkcolor $check_x $check_y 0 1 1]
+        if { $res != 1 } {
+          puts "Error : No local highlighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
+        }
+      } else {
+        set res [checkcolor $check_x $check_y 0 0 0]
+        if { $res != 1 } {
+          puts "Error : Unwanted highlighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
+        }
+      }
+    }
+    vselmode $object $i 0
+  }
+  vselmode 0 1
+}
+
+# pick coord { [flyout], dimension line, text }
+
+# check sensitives "len1"
+set pick_coord { {100 133 } { 106 124 } { 76 130 } }
+set check_coord { 123 125 }
+check_picking $pick_coord $check_coord "length dimension (len1)"
+check_cross_picking $pick_coord len1 "length dimension (len1)"
+
+# check sensitives "len2"
+set pick_coord { { 100 167 } { 126 177 } { 187 180 } }
+set check_coord { 106 177 }
+check_picking $pick_coord $check_coord "length dimension (len2)"
+check_cross_picking $pick_coord len2 "length dimension (len2)"
+
+# check sensitives "len3"
+set pick_coord { { 100 114 } { 106 99 } { 120 97 } }
+set check_coord { 153 109 }
+check_picking $pick_coord $check_coord "length dimension (len3)"
+check_cross_picking $pick_coord len3 "length dimension (len3)"
+
+# check sensitives "diam1"
+set pick_coord { { 247 151 } { 184 150 } }
+set check_coord { 236 151 }
+check_picking $pick_coord $check_coord "diameter dimension (diam1)"
+check_cross_picking $pick_coord diam1 "diameter dimension (diam1)"
+
+# check sensitives "diam2"
+set pick_coord { { 222 99 } { 285 99 } }
+set check_coord { 239 99 }
+check_picking $pick_coord $check_coord "diameter dimension (diam2)"
+check_cross_picking $pick_coord diam2 "diameter dimension (diam2)"
+
+# check sensitives "diam3"
+set pick_coord { { 205 225 } { 263 242 } { 224 242 } }
+set check_coord { 205 233 }
+check_picking $pick_coord $check_coord "diameter dimension (diam3)"
+check_cross_picking $pick_coord diam3 "diameter dimension (diam3)"
+
+# check sensitives "rad1"
+set pick_coord { { 288 158 } { 310 157 } }
+set check_coord { 288 158 }
+check_picking $pick_coord $check_coord "radius dimension (rad1)"
+check_cross_picking $pick_coord rad1 "radius dimension (rad1)"
+
+# check sensitives "rad2"
+set pick_coord { { 320 242 } { 362 241 } }
+set check_coord { 320 242 }
+check_picking $pick_coord $check_coord "radius dimension (rad2)"
+check_cross_picking $pick_coord rad2 "radius dimension (rad2)"
+
+# check sensitives "ang1"
+set pick_coord { { 113 229 } { 96 221 } { 85 256 } }
+set check_coord { 86 250 }
+check_picking $pick_coord $check_coord "angle dimension (ang1)"
+check_cross_picking $pick_coord ang1 "angle dimension (ang1)"
+
+# check sensitives "ang2"
+set pick_coord { { 140 311 } { 91 310 } { 50 278 } }
+set check_coord { 105 318 }
+check_picking $pick_coord $check_coord "angle dimension (ang2)"
+check_cross_picking $pick_coord ang2 "angle dimension (ang2)"
+
+# check sensitives "ang3"
+set pick_coord { { 172 303 } { 163 327 } { 243 287 } }
+set check_coord { 183 326 }
+check_picking $pick_coord $check_coord "angle dimension (ang3)"
+check_cross_picking $pick_coord ang3 "angle dimension (ang3)"
+
+# --------------------------------------------------- #
+#               Dump selected images                  #
+# --------------------------------------------------- #
+
+set xmin -500
+set xmax  500
+set ymin -500
+set ymax  500
+set shift 0
+
+vselmode 0 1
+vselect $xmin $ymin $xmax $ymax $shift
+vdump $imagedir/${casename}_1.png
+
+vselect 0 0 0 0 0
+vselmode 1 1
+vselect $xmin $ymin $xmax $ymax $shift
+vdump $imagedir/${casename}_2.png
+
+vselect 0 0 0 0 0
+vselmode 0 1
+vselmode 2 1
+vselect $xmin $ymin $xmax $ymax $shift
+vdump $imagedir/${casename}_3.png

@@ -1,0 +1,16 @@
+srcinc:::CURVES.tcl
+srcinc:::dftree.tcl
+srcinc:::DrawDefault
+srcinc:::DrawPlugin
+srcinc:::DrawTK.tcl
+srcinc:::Geometry.tcl
+srcinc:::InitEnvironment.tcl
+srcinc:::lamp.ico
+srcinc:::Move.tcl
+srcinc:::PROFIL.tcl
+srcinc:::SCAN.tcl
+srcinc:::StandardCommands.tcl
+srcinc:::StandardViews.tcl
+srcinc:::SURFACES.tcl
+srcinc:::TestCommands.tcl
+srcinc:::TKTopTest.tcl

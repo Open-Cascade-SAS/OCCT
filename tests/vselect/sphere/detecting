@@ -1,0 +1,13 @@
+puts "================================="
+puts "0032182: Visualization - add Select3D_SensitiveSphere"
+puts "Tests detecting Select3D_SenstiveSphere"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+psphere s 1
+vdisplay -dispMode 1 s
+vfit
+vmoveto 300 200
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }

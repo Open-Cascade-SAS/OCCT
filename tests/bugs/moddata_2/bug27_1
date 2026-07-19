@@ -1,0 +1,16 @@
+
+puts "================"
+puts "OCC27"
+puts "================"
+puts ""
+
+restore [locate_data_file shading_128.brep] a 
+checkshape a
+
+explode a e
+blend result a 1 a_5 1 a_6 1 a_7 1 a_8
+checkshape result
+
+checkprops result -s 155.846
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

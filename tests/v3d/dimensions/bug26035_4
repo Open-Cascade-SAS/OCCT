@@ -1,0 +1,24 @@
+puts "============"
+puts "CR26035: Drawing dimension between vertex and edge"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vclear
+vaxo
+
+vertex v1 10 -10 0
+vertex v2 10 10 0
+edge e v1 v2
+vdisplay e
+
+vertex v3 10 0 10
+vdisplay v3
+
+vdimension len -length -shapes v3 e -plane yoz -font SansFont
+
+vfit
+vdump $imagedir/${casename}.png

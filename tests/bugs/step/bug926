@@ -1,0 +1,14 @@
+puts "TODO OCC12345 ALL: Error : OCC926 is WRONG because number of "
+
+puts "================"
+puts "OCC926"
+puts "================"
+puts ""
+
+stepread [locate_data_file OCC926.stp] a *
+
+tpcompound result
+
+checknbshapes result -vertex 4474 -edge 6907 -wire 3823 -face 3085 -shell 196 -solid 154 -compsolid 0 -compound 32 -shape 18671 -m "OCC926"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

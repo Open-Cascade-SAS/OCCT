@@ -1,0 +1,10 @@
+# Original bug : cts20216
+# Date : 13Mai98
+
+restore [locate_data_file CTO901_cts20216_base.rle]  base
+restore [locate_data_file CTO901_cts20216_outil.rle]  outil
+
+bfuse result base outil
+
+checkprops result -s 2005.99
+checkview -display result -2d -otherwise { base outil } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,24 @@
+
+profile p x 5 y 1 x -3 y -0.5 x -1.5 y 0.5 x 0.5 y 4 x -1 y -5 
+prism pr p 0 0 1
+
+nexplode pr f
+depouille pr pr 0 1 0 pr_7 -5 1 1 0 0 1 0
+nexplode pr e 
+blend pr pr 0.1 pr_20 0.1 pr_17 0.1 pr_14 0.1 pr_11 0.1 pr_8 
+
+vertex v1 0.2 6 0.3
+vertex v2 0.2 0.2 0.3
+vertex v3 3 0.2 0.3
+vertex v4 4 -2 0.3
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+wire w e1 e2 e3
+plane pl 0.2 0.2 0.3 0 0 1
+
+featlf pr w pl 0 0 0.3 0 0 0 0 1
+featperform lf result
+
+
+checkprops result -s 50.9297

@@ -1,0 +1,47 @@
+puts "========"
+puts "0027973: Result of Common operation contains a face with an open wire"
+puts "========"
+puts ""
+
+binrestore [locate_data_file bug27973_shapes.bin] s
+
+explode s
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2
+bfillds
+
+bbop r_0 0
+bbop r_1 1
+bbop r_2 2
+bbop r_3 3
+bbop r_4 4
+bbuild r_5
+
+foreach i {0 1 2 3 4 5} {
+  checkshape r_$i
+  if {![regexp "This shape seems to be OK" [bopcheck r_$i]]} {
+    puts "Error: r_$i is self-intersecting shape"
+  }
+}
+
+checkprops r_0 -s 1.15554e+07 -v 6.5178e+08
+checknbshapes r_0 -wire 96 -face 96 -shell 1 -solid 1 -t
+
+checkprops r_1 -s 1.16762e+07 -v 8.5368e+08
+checknbshapes r_1 -wire 91 -face 91 -shell 1 -solid 1 -t
+
+checkprops r_2 -s 279209 -v 4.08016e+06
+checknbshapes r_2 -wire 13 -face 13 -shell 2 -solid 2 -t
+
+checkprops r_3 -s 5.91002e+06 -v 1.9782e+08
+checknbshapes r_3 -wire 132 -face 132 -shell 19 -solid 19 -t
+
+checkprops r_4 -l 60068.1
+checknbshapes r_4 -vertex 186 -edge 226
+
+checkprops r_5 -s 1.77446e+07 -v 8.5368e+08
+checknbshapes r_5 -wire 166 -face 166 -shell 22 -solid 22 -t
+
+checkview -display r_0 -2d -path ${imagedir}/${test_image}.png

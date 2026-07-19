@@ -1,0 +1,18 @@
+puts "============"
+puts "CR25080"
+puts "============"
+puts ""
+###################################################################################
+# [Regression] Problem of meshing narrow face
+###################################################################################
+
+restore [locate_data_file bug25080_cowl_narrow_face.brep] result
+
+incmesh result 0.0005
+if [catch { tricheck result } ] {
+  puts "Error : Problem of meshing narrow face"
+} else {
+  puts "OK : Meshing narrow face is good"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,7 @@
+psphere s 15 -90 60 90
+trotate s 0 0 0 0 0 1 90
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 1*SCALE1 s_2
+
+checkprops result -s 137105

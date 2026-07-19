@@ -1,0 +1,28 @@
+puts "============"
+puts "Verify vfit -selected works correctly for MeshVS_Mesh with transformation"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION STL
+
+vclear
+vinit View1
+
+meshfromstl m [locate_data_file bearing.stl]
+vfit
+
+vlocation m -setLocation 500 0 0
+vfit
+vzoom 0.5
+
+vsetdispmode m 2
+vselmode m 8 1
+vselect 200 200
+
+vfit -selected
+
+if { [vreadpixel 200 200 rgb name] == "BLACK" } {
+  puts "Error: mesh should be visible after vfit -selected with transformation"
+}
+
+vdump $imagedir/${casename}.png

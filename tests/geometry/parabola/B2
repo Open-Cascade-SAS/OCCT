@@ -1,0 +1,4 @@
+parabola result  0  1  0  1 10
+val2d result -50 50 40
+checkdump result -name {Center Axis XAxis YAxis Focal} -ref {{0 1} {0 1} {0 1} {-1 0} {10}} -eps 0.01
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

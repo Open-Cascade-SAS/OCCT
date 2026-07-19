@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC10605"
+puts "============"
+puts ""
+#######################################################################
+# Fuse Fails
+#######################################################################
+
+set BugNumber OCC10605
+
+restore [locate_data_file OCC10605-1.brep] b1 
+restore [locate_data_file OCC10605-3.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopcommon result
+puts "Finish boolean operation ..."
+
+checkprops result -s 233.798 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 10 -edge 15 -wire 7 -face 7 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 42
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC13627"
+puts "============"
+puts ""
+########################################################################
+# Crash during reading a.igs file on Linux (RedHat) platform
+########################################################################
+
+set BugNumber OCC13627
+
+igesread [locate_data_file OCC13627.igs] a *
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

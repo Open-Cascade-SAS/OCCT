@@ -1,0 +1,169 @@
+// Created on: 1997-06-26
+// Created by: Philippe MANGIN
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Pnt.hxx>
+
+inline bool Approx_SweepApproximation::IsDone() const
+{
+  return done;
+}
+
+inline int Approx_SweepApproximation::UDegree() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return udeg;
+}
+
+inline int Approx_SweepApproximation::VDegree() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return vdeg;
+}
+
+inline const NCollection_Array2<gp_Pnt>& Approx_SweepApproximation::SurfPoles() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return tabPoles->Array2();
+}
+
+inline const NCollection_Array2<double>& Approx_SweepApproximation::SurfWeights() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return tabWeights->Array2();
+}
+
+inline const NCollection_Array1<double>& Approx_SweepApproximation::SurfUKnots() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return tabUKnots->Array1();
+}
+
+inline const NCollection_Array1<double>& Approx_SweepApproximation::SurfVKnots() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return tabVKnots->Array1();
+}
+
+inline const NCollection_Array1<int>& Approx_SweepApproximation::SurfUMults() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return tabUMults->Array1();
+}
+
+inline const NCollection_Array1<int>& Approx_SweepApproximation::SurfVMults() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return tabVMults->Array1();
+}
+
+inline int Approx_SweepApproximation::NbCurves2d() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  return Num2DSS;
+}
+
+inline int Approx_SweepApproximation::Curves2dDegree() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
+  return deg2d;
+}
+
+inline const NCollection_Array1<gp_Pnt2d>& Approx_SweepApproximation::Curve2dPoles(
+  const int Index) const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
+  return seqPoles2d(Index)->Array1();
+}
+
+inline const NCollection_Array1<double>& Approx_SweepApproximation::Curves2dKnots() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
+  return tab2dKnots->Array1();
+}
+
+inline const NCollection_Array1<int>& Approx_SweepApproximation::Curves2dMults() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone(" Approx_SweepApproximation");
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
+  return tab2dMults->Array1();
+}
+
+/*
+inline  void Approx_SweepApproximation::TolReached(double& Tol3d,double& Tol2d) const
+{
+
+}*/

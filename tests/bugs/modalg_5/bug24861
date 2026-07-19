@@ -1,0 +1,25 @@
+puts "========="
+puts "OCC24861"
+puts "========="
+puts ""
+###########################################################
+# Extra solid is in the result of General Fuse Operation
+###########################################################
+
+restore [locate_data_file bug24861_b1.brep] b1
+restore [locate_data_file bug24861_b2.brep] b2
+
+explode b2
+
+bclearobjects
+bcleartools
+baddobjects b1 b2_1 b2_2 b2_3 b2_4 b2_5 b2_6 b2_7
+
+bfillds -s
+bbuild result -s
+
+checkprops result -s 1780.37 
+checkshape result
+
+checknbshapes result -vertex 18 -edge 38 -wire 32 -face 29 -shell 9 -solid 7 -compsolid 0 -compound 1 -shape 134
+checkview -display result -2d -path ${imagedir}/${test_image}.png

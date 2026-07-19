@@ -1,0 +1,43 @@
+puts "========"
+puts "0030354: BOP Cut doesn't modify the attached face"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30354_Face_14.brep] b1
+restore [locate_data_file bug30354_vol_neg.brep] b2
+
+explode b2 f
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+bbop r_0 0
+bbop r_1 2
+bbop r_2 4
+
+for {set i 0} {$i <= 2} {incr i} {
+  checkshape r_$i
+  if {[regexp "Faulties" [ bopargcheck r_$i ]]} {
+    puts "Error: bopargcheck has found some faulties in r_$i"
+  }
+}
+
+checknbshapes r_0 -face 1 -wire 1 
+checkprops r_0 -s 0.000284873
+
+checknbshapes r_1 -face 1 -wire 1
+checkprops r_1 -s 0.000284873
+
+checknbshapes r_2 -vertex 2 -edge 1
+checkprops r_2 -l 0.00670288
+
+checksection r_2 -r 2
+
+# CUT
+copy r_1 result
+checkmaxtol result -min_tol 1.0e-4
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

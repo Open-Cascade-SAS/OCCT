@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC129 - infinite cylinder is not selectable in 3D Viewer"
+puts "================"
+puts ""
+
+cylinder c 0 0 1 10
+mkface f c
+
+vclear
+vinit View1
+vdisplay -dispMode 0 f
+# check dynamic highlighting
+vmoveto    207 184
+checkcolor 207 184 0 1 1
+# check selected highlighting
+vselect    207 184
+checkcolor 207 184 0.8 0.8 0.8
+# check unselected
+vselect    222 175
+checkcolor 207 184 1 1 0
+
+vdump ${imagedir}/${casename}.png

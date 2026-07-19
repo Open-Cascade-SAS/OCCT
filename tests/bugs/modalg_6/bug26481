@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC26481"
+puts "========"
+puts ""
+###################################################################################################################
+# Incorrect result of BRepOffsetAPI_MakeOffset: excess hanging arcs in the open result with join type GeomAbs_Arc
+###################################################################################################################
+
+smallview
+
+restore [locate_data_file bug26296_linesarc.brep] a
+fit
+openoffset r a 4 -10.
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

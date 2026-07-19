@@ -1,0 +1,47 @@
+
+puts "========"
+puts "OCC163"
+puts "========"
+puts ""
+###########################################################
+## The result of extrema command is not correct. 
+## Extrema command return max, but it acceptable because relative error near 1.0e-30.
+###########################################################
+
+restore [locate_data_file OCC130.brep] res 
+
+checkshape res
+
+line l -120 -100 400 0 0 1
+mksurface s res
+
+set che [extrema l s]
+set err [llength $che]
+
+# Amount Check
+if { $err != 1} {
+    puts "Error: Invalid extrema number"
+}
+
+set status 0
+set info [dump ext_1]
+regexp "Parameters : 0 +(\[-0-9*\.+eE\]+)" $info full extLength
+
+# Test max
+if { $extLength > 35 && $extLength < 36} {
+    set good_dist 35.6687907545308
+    checkreal "Max distance:" ${extLength} ${good_dist} 0.01 0.01
+    set status 1
+}
+
+# Test min
+if {$extLength > 0 && $extLength < 1} {
+    set good_dist 0.0
+    checkreal "Min distance:" ${extLength} ${good_dist} 0.01 0.01
+    set status 1
+}
+
+# Not min or max
+if {$status == 0} {
+    puts "Error: wrong extrema point"
+}

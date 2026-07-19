@@ -1,0 +1,12 @@
+## fra60813
+puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO #22911 ALL: Error : The area of result shape is"
+
+cpulimit 1000
+
+restore [locate_data_file CTO909_Bug3_Tr_obj.rle] a
+restore [locate_data_file Bug4_Tr_outil.rle] b
+
+bcut result a b
+checkprops result -s 0
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

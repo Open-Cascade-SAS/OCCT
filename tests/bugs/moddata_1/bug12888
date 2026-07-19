@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC12888"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result of projection curve on surface
+#######################################################################
+
+set BugNumber OCC12888
+
+restore [locate_data_file OCC12888_s1.draw] s1
+restore [locate_data_file OCC12888_c2.draw] c2
+
+set BugStatus 0
+if [catch { project result c2 s1 } ] {
+    set BugStatus 1
+}
+
+# Resume
+puts ""
+if { ${BugStatus} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

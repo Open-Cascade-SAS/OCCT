@@ -1,0 +1,3152 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2024 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Bnd_Range.hxx>
+#include <IntWalk_StatusDeflection.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <math_FunctionSetRoot.hxx>
+
+//-- IntWalk_IWalking_1.gxx
+
+#ifdef CHRONO
+  #include <OSD_Chronometer.hxx>
+OSD_Chronometer Chronrsnld;
+#endif
+
+namespace
+{
+static const double CosRef3D = 0.98;    // rule by tests in U4
+                                        // correspond to  11.478 d
+static const double CosRef2D    = 0.88; // correspond to 25 d
+static const int    MaxDivision = 60;   // max number of step division
+                                        // because the angle is too great in 2d (U4)
+} // namespace
+
+//==================================================================================
+// function : IsTangentExtCheck
+// purpose  : Additional check if the point (theU, theV) in parametric surface
+//            is a tangent point.
+//            If that is TRUE then we can go along any (!) direction in order to
+//            obtain next intersection point. At present, this case is difficult
+//            for processing. Therefore, we will return an empty intersection line
+//            in this case.
+//==================================================================================
+static bool IsTangentExtCheck(TheIWFunction& theFunc,
+                              const double   theU,
+                              const double   theV,
+                              const double   theStepU,
+                              const double   theStepV,
+                              const double   theUinf,
+                              const double   theUsup,
+                              const double   theVinf,
+                              const double   theVsup)
+{
+  const double aTol            = theFunc.Tolerance();
+  const int    aNbItems        = 4;
+  const double aParU[aNbItems] = {std::min(theU + theStepU, theUsup),
+                                  std::max(theU - theStepU, theUinf),
+                                  theU,
+                                  theU};
+  const double aParV[aNbItems] = {theV,
+                                  theV,
+                                  std::min(theV + theStepV, theVsup),
+                                  std::max(theV - theStepV, theVinf)};
+
+  math_Vector aX(1, 2), aVal(1, 1);
+
+  for (int i = 0; i < aNbItems; i++)
+  {
+    aX.Value(1) = aParU[i];
+    aX.Value(2) = aParV[i];
+
+    if (!theFunc.Value(aX, aVal))
+      continue;
+
+    if (std::abs(theFunc.Root()) > aTol)
+      return false;
+  }
+
+  return true;
+}
+
+IntWalk_IWalking::IntWalk_IWalking(const double Epsilon,
+                                   const double Deflection,
+                                   const double Increment,
+                                   const bool   theToFillHoles)
+    : done(false),
+      fleche(Deflection),
+      pas(Increment),
+      tolerance(1, 2),
+      epsilon(Epsilon * Epsilon),
+      reversed(false),
+      wd1(),
+      wd2(),
+      nbMultiplicities(),
+      Um(0.0),
+      UM(0.0),
+      Vm(0.0),
+      VM(0.0),
+      ToFillHoles(theToFillHoles)
+{
+}
+
+//=======================================================================
+// function : Reset
+// purpose  : Clears NCollection_DynamicArray-based containers and adds
+//           dummy data to maintain start index of 1 and consistent with
+//           previous TCollection_Sequence-based implementation and other
+//           used TCollection-based containers
+//=======================================================================
+
+void IntWalk_IWalking::Clear()
+{
+  wd1.Clear();
+  wd2.Clear();
+  IntWalk_WalkingData aDummy;
+  aDummy.etat   = -10;
+  aDummy.ustart = aDummy.vstart = 0.;
+  wd1.Append(aDummy);
+  wd2.Append(aDummy);
+  nbMultiplicities.Clear();
+  nbMultiplicities.Append(-1);
+
+  done = false;
+  seqAjout.Clear();
+  lines.Clear();
+}
+
+// ***************************************************************************
+//  etat1=12 not tangent, not passes
+//  etat1=11 tangent, not passes
+//  etat1=2  not tangent, passes
+//  etat1=1  tangent, passes
+//  after a point is processed its state becomes negative.
+// ***************************************************************************
+//  etat2=13  interior start point on closed line
+//  etat2=12  interior start point on open line
+//            (line initially closed -> la line s is open)
+//  after a point is processed (or if it is passed over during
+//  routing) its state becomes negative.
+// ****************************************************************************
+
+//
+// Perform with interior points
+//
+void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
+                               const ThePOLIterator& Pnts2,
+                               TheIWFunction&        Func,
+                               const ThePSurface&    Caro,
+                               const bool            Reversed)
+
+{
+  int    I;
+  bool   Rajout  = false;
+  int    nbPnts1 = Pnts1.Length();
+  int    nbPnts2 = Pnts2.Length();
+  double U, V;
+
+  Clear();
+  reversed = Reversed;
+
+  Um = ThePSurfaceTool::FirstUParameter(Caro);
+  Vm = ThePSurfaceTool::FirstVParameter(Caro);
+  UM = ThePSurfaceTool::LastUParameter(Caro);
+  VM = ThePSurfaceTool::LastVParameter(Caro);
+
+  if (UM < Um)
+  {
+    double utemp = UM;
+    UM           = Um;
+    Um           = utemp;
+  }
+  if (VM < Vm)
+  {
+    double vtemp = VM;
+    VM           = Vm;
+    Vm           = vtemp;
+  }
+
+  const double aStepU = pas * (UM - Um), aStepV = pas * (VM - Vm);
+
+  // Loading of etat1 and etat2  as well as  ustart and vstart.
+
+  NCollection_Sequence<double> Umult;
+  NCollection_Sequence<double> Vmult;
+
+  int decal = 0;
+  wd1.Reserve(nbPnts1 + decal);
+  nbMultiplicities.Reserve(nbPnts1 + decal);
+  for (I = 1; I <= nbPnts1 + decal; I++)
+  {
+    const ThePointOfPath& PathPnt = Pnts1.Value(I - decal);
+    IntWalk_WalkingData   aWD1;
+    aWD1.etat = 1;
+    if (!ThePointOfPathTool::IsPassingPnt(PathPnt))
+      aWD1.etat = 11;
+    if (!ThePointOfPathTool::IsTangent(PathPnt))
+      ++aWD1.etat;
+
+    if (aWD1.etat == 2)
+    {
+      aWD1.etat = 11;
+    }
+
+    ThePointOfPathTool::Value2d(PathPnt, aWD1.ustart, aWD1.vstart);
+    mySRangeU.Add(aWD1.ustart);
+    mySRangeV.Add(aWD1.vstart);
+
+    wd1.Append(aWD1);
+    int aNbMult = ThePointOfPathTool::Multiplicity(PathPnt);
+    nbMultiplicities.Append(aNbMult);
+
+    for (int J = 1; J <= aNbMult; J++)
+    {
+      ThePointOfPathTool::Parameters(PathPnt, J, U, V);
+      Umult.Append(U);
+      Vmult.Append(V);
+    }
+  }
+
+  wd2.Reserve(nbPnts2);
+  for (I = 1; I <= nbPnts2; I++)
+  {
+    IntWalk_WalkingData aWD2;
+    aWD2.etat                         = 1;
+    const IntSurf_InteriorPoint& anIP = Pnts2.Value(I);
+    ThePointOfLoopTool::Value2d(anIP, aWD2.ustart, aWD2.vstart);
+    mySRangeU.Add(aWD2.ustart);
+    mySRangeV.Add(aWD2.vstart);
+
+    if (!IsTangentExtCheck(Func, aWD2.ustart, aWD2.vstart, aStepU, aStepV, Um, UM, Vm, VM))
+      aWD2.etat = 13;
+
+    wd2.Append(aWD2);
+  }
+
+  tolerance(1) = ThePSurfaceTool::UResolution(Caro, Precision::Confusion());
+  tolerance(2) = ThePSurfaceTool::VResolution(Caro, Precision::Confusion());
+
+  Func.Set(Caro);
+
+  if (mySRangeU.Delta() > std::max(tolerance(1), Precision::PConfusion()))
+  {
+    mySRangeU.Enlarge(mySRangeU.Delta());
+    mySRangeU.Common(Bnd_Range(Um, UM));
+  }
+  else
+  {
+    mySRangeU = Bnd_Range(Um, UM);
+  }
+
+  if (mySRangeV.Delta() > std::max(tolerance(2), Precision::PConfusion()))
+  {
+    mySRangeV.Enlarge(mySRangeV.Delta());
+    mySRangeV.Common(Bnd_Range(Vm, VM));
+  }
+  else
+  {
+    mySRangeV = Bnd_Range(Vm, VM);
+  }
+
+  // calculation of all open lines
+  if (nbPnts1 != 0)
+    ComputeOpenLine(Umult, Vmult, Pnts1, Func, Rajout);
+
+  // calculation of all closed lines
+  if (nbPnts2 != 0)
+    ComputeCloseLine(Umult, Vmult, Pnts1, Pnts2, Func, Rajout);
+
+  if (ToFillHoles)
+  {
+    int MaxNbIter = 10, nb_iter = 0;
+    while (seqAlone.Length() > 1 && nb_iter < MaxNbIter)
+    {
+      nb_iter++;
+      NCollection_Sequence<IntSurf_InteriorPoint> PntsInHoles;
+      NCollection_Sequence<int>                   CopySeqAlone = seqAlone;
+      FillPntsInHoles(Func, CopySeqAlone, PntsInHoles);
+      wd2.Clear();
+      IntWalk_WalkingData aDummy;
+      aDummy.etat   = -10;
+      aDummy.ustart = aDummy.vstart = 0.;
+      wd2.Append(aDummy);
+      int nbHoles = PntsInHoles.Length();
+      wd2.Reserve(nbHoles);
+      for (I = 1; I <= nbHoles; I++)
+      {
+        IntWalk_WalkingData aWD2;
+        aWD2.etat                         = 13;
+        const IntSurf_InteriorPoint& anIP = PntsInHoles.Value(I);
+        ThePointOfLoopTool::Value2d(anIP, aWD2.ustart, aWD2.vstart);
+        wd2.Append(aWD2);
+      }
+      ComputeCloseLine(Umult, Vmult, Pnts1, PntsInHoles, Func, Rajout);
+    }
+  }
+
+  for (I = 1; I <= nbPnts1; I++)
+  {
+    if (wd1[I].etat > 0)
+      seqSingle.Append(Pnts1(I));
+  }
+  done = true;
+}
+
+//
+// Perform without interior point
+//
+
+void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
+                               TheIWFunction&        Func,
+                               const ThePSurface&    Caro,
+                               const bool            Reversed)
+
+{
+  int    I;
+  bool   Rajout  = false;
+  int    nbPnts1 = Pnts1.Length();
+  double U, V;
+
+  reversed = Reversed;
+
+  // Loading of etat1 as well as ustart1 and vstart1.
+
+  NCollection_Sequence<double> Umult;
+  NCollection_Sequence<double> Vmult;
+
+  wd1.Reserve(nbPnts1);
+  for (I = 1; I <= nbPnts1; I++)
+  {
+    const ThePointOfPath& PathPnt = Pnts1.Value(I);
+    IntWalk_WalkingData   aWD1;
+    aWD1.etat = 1;
+    if (!ThePointOfPathTool::IsPassingPnt(PathPnt))
+      aWD1.etat = 11;
+    if (!ThePointOfPathTool::IsTangent(PathPnt))
+      ++aWD1.etat;
+    ThePointOfPathTool::Value2d(PathPnt, aWD1.ustart, aWD1.vstart);
+    wd1.Append(aWD1);
+    int aNbMult = ThePointOfPathTool::Multiplicity(PathPnt);
+    nbMultiplicities.Append(aNbMult);
+
+    for (int J = 1; J <= aNbMult; J++)
+    {
+      ThePointOfPathTool::Parameters(PathPnt, J, U, V);
+      Umult.Append(U);
+      Vmult.Append(V);
+    }
+  }
+
+  tolerance(1) = ThePSurfaceTool::UResolution(Caro, Precision::Confusion());
+  tolerance(2) = ThePSurfaceTool::VResolution(Caro, Precision::Confusion());
+
+  Um = ThePSurfaceTool::FirstUParameter(Caro);
+  Vm = ThePSurfaceTool::FirstVParameter(Caro);
+  UM = ThePSurfaceTool::LastUParameter(Caro);
+  VM = ThePSurfaceTool::LastVParameter(Caro);
+
+  if (UM < Um)
+  {
+    double utemp = UM;
+    UM           = Um;
+    Um           = utemp;
+  }
+  if (VM < Vm)
+  {
+    double vtemp = VM;
+    VM           = Vm;
+    Vm           = vtemp;
+  }
+
+  Func.Set(Caro);
+
+  // calcul de toutes les lignes ouvertes
+  if (nbPnts1 != 0)
+    ComputeOpenLine(Umult, Vmult, Pnts1, Func, Rajout);
+
+  for (I = 1; I <= nbPnts1; I++)
+  {
+    if (wd1[I].etat > 0)
+      seqSingle.Append(Pnts1(I));
+  }
+  done = true;
+}
+
+//-- IntWalk_IWalking_2.gxx
+
+#ifndef OCCT_DEBUG
+  #define No_Standard_RangeError
+  #define No_Standard_OutOfRange
+#endif
+
+static void CutVectorByTolerances(gp_Vec2d& theVector, const math_Vector& theTolerance)
+{
+  if (std::abs(theVector.X()) < theTolerance(1))
+    theVector.SetX(0.);
+  if (std::abs(theVector.Y()) < theTolerance(2))
+    theVector.SetY(0.);
+}
+
+// _______________________________________________
+//
+// Location of point (u, v) in the natural domain of a surface AND update
+// of couple (u, v) for the calculation of the next point.
+//
+bool IntWalk_IWalking::Cadrage(math_Vector& BornInf,
+                               math_Vector& BornSup,
+                               math_Vector& UVap,
+                               double&      Step,
+                               //   double& StepV,
+                               const int StepSign) const
+
+// there are always :
+// BorInf(1) <= UVap(1) <= BornSup(1) et BorInf(2) <= UVap(2) <= BornSup(2)
+// 1) check if the process point is out of the natural domain of the surface.
+// 2) if yes the approximated point is located on border taking the best direction
+// the step and a limit blocating one of the parameters during the recent call of
+// FunctionSetRoot are modified;
+// 3) couple (u, v) is recomputed by approximation for the calculation of the next point.
+// 4) return true if location, false if no location.
+{
+  double Duvx = previousd2d.X();
+  double Duvy = previousd2d.Y();
+
+  if (!reversed)
+  {
+    previousPoint.ParametersOnS2(UVap(1), UVap(2));
+  }
+  else
+  {
+    previousPoint.ParametersOnS1(UVap(1), UVap(2));
+  }
+
+  double U1 = UVap(1) + Step * Duvx * StepSign;
+  double V1 = UVap(2) + Step * Duvy * StepSign;
+
+  bool infu = (U1 <= BornInf(1) + Precision::PConfusion());
+  bool supu = (U1 >= BornSup(1) - Precision::PConfusion());
+  bool infv = (V1 <= BornInf(2) + Precision::PConfusion());
+  bool supv = (V1 >= BornSup(2) - Precision::PConfusion());
+
+  double theStepU, theStepV;
+
+  if (!infu && !supu && !infv && !supv)
+  {
+    UVap(1) = U1;
+    UVap(2) = V1;
+    return false;
+  }
+
+  if ((infu || supu) && (infv || supv))
+  {
+    if (infu)
+    { // jag 940616
+      if (Duvx)
+      {
+        theStepU = std::abs((BornInf(1) - UVap(1)) / Duvx); // iso U =BornInf(1)
+      }
+      else
+      {
+        theStepU = Step;
+      }
+    }
+    else
+    {
+      if (Duvx)
+      {
+        theStepU = std::abs((BornSup(1) - UVap(1)) / Duvx); // iso U =BornSup(1)
+      }
+      else
+      {
+        theStepU = Step;
+      }
+    }
+    if (infv)
+    { // jag 940616
+      if (Duvy)
+      {
+        theStepV = std::abs((BornInf(2) - UVap(2)) / Duvy); // iso V =BornInf(2)
+      }
+      else
+      {
+        theStepV = Step;
+      }
+    }
+    else
+    {
+      if (Duvy)
+      {
+        theStepV = std::abs((BornSup(2) - UVap(2)) / Duvy); // iso V =BornSup(2)
+      }
+      else
+      {
+        theStepV = Step;
+      }
+    }
+
+    if (theStepU <= theStepV)
+    {
+      Step = theStepU;
+      if (infu)
+      {
+        UVap(1)    = BornInf(1);
+        BornSup(1) = BornInf(1);
+      }
+      else
+      {
+        UVap(1)    = BornSup(1);
+        BornInf(1) = BornSup(1);
+      }
+      UVap(2) += Step * Duvy * StepSign;
+    }
+    else
+    {
+      Step = theStepV;
+      if (infv)
+      {
+        UVap(2)    = BornInf(2);
+        BornSup(2) = BornInf(2);
+      }
+      else
+      {
+        UVap(2)    = BornSup(2);
+        BornInf(2) = BornSup(2);
+      }
+      UVap(1) += Step * Duvx * StepSign;
+    }
+    return true;
+  }
+
+  else if (infu)
+  { // jag 940616
+    if (Duvx)
+    {
+      double aStep = std::abs((BornInf(1) - UVap(1)) / Duvx); // iso U =BornInf(1)
+      if (aStep < Step)
+        Step = aStep;
+    }
+    BornSup(1) = BornInf(1); // limit the parameter
+    UVap(1)    = BornInf(1);
+    UVap(2) += Step * Duvy * StepSign;
+    return true;
+  }
+  else if (supu)
+  { // jag 940616
+    if (Duvx)
+    {
+      double aStep = std::abs((BornSup(1) - UVap(1)) / Duvx); // iso U =BornSup(1)
+      if (aStep < Step)
+        Step = aStep;
+    }
+    BornInf(1) = BornSup(1); // limit the parameter
+    UVap(1)    = BornSup(1);
+    UVap(2) += Step * Duvy * StepSign;
+    return true;
+  }
+  else if (infv)
+  { // jag 940616
+    if (Duvy)
+    {
+      double aStep = std::abs((BornInf(2) - UVap(2)) / Duvy); // iso V =BornInf(2)
+      if (aStep < Step)
+        Step = aStep;
+    }
+    BornSup(2) = BornInf(2);
+    UVap(1) += Step * Duvx * StepSign;
+    UVap(2) = BornInf(2);
+    return true;
+  }
+  else if (supv)
+  { // jag 940616
+    if (Duvy)
+    {
+      double aStep = std::abs((BornSup(2) - UVap(2)) / Duvy); // iso V =BornSup(2)
+      if (aStep < Step)
+        Step = aStep;
+    }
+    BornInf(2) = BornSup(2);
+    UVap(1) += Step * Duvx * StepSign;
+    UVap(2) = BornSup(2);
+    return true;
+  }
+  return true;
+}
+
+bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umult,
+                                        const NCollection_Sequence<double>& Vmult,
+                                        TheIWFunction&                      sp,
+                                        math_Vector&                        UV,
+                                        int&                                Irang)
+
+// Umult et Vmult : table of stop (or crossing) points on border,
+//         here only the crossing points are taken into account.
+// UV     : the current point.
+// Irang  : at exit : give index of the stop point in uvstart1 or 0.
+//          consider that there is no risk of crossing only if there is one crossing point.
+
+// test of stop for an OPEN intersection line
+// 1) crossing test on all interior points
+// 2) stop test on all start points
+// if a stop is detected, the index of the stop point (Irang) is returned
+// in the iterator of start points and the associated parameters in UV space.
+{
+  double Up, Vp, Du, Dv, Dup, Dvp, Utest, Vtest;
+  int    j, N, ind;
+  double tolu  = tolerance(1);
+  double tolv  = tolerance(2);
+  double tolu2 = 10. * tolerance(1);
+  double tolv2 = 10. * tolerance(2);
+
+  bool Arrive = false;
+
+  // crossing test  on point that can start a loop; mark
+  // as processed if passes through an open line
+
+  if (!reversed)
+  {
+    previousPoint.ParametersOnS2(Up, Vp);
+  }
+  else
+  {
+    previousPoint.ParametersOnS1(Up, Vp);
+  }
+
+  for (size_t i = 1; i < wd2.Size(); i++)
+  {
+    if (wd2[i].etat > 0)
+    {
+      // debug jag 05.04.94
+
+      //      if ((Up-wd2[i].ustart)*(UV(1)-wd2[i].ustart) +
+      //	  (Vp-wd2[i].vstart)*(UV(2)-wd2[i].vstart) <= 0)
+      Utest = wd2[i].ustart;
+      Vtest = wd2[i].vstart;
+
+      Du  = UV(1) - Utest;
+      Dv  = UV(2) - Vtest;
+      Dup = Up - Utest;
+      Dvp = Vp - Vtest;
+
+      //-- lbr le 30 oct 97
+
+      // IFV for OCC20285
+
+      if ((std::abs(Du) < tolu2 && std::abs(Dv) < tolv2)
+          || (std::abs(Dup) < tolu2 && std::abs(Dvp) < tolv2))
+      {
+        wd2[i].etat = -wd2[i].etat;
+      }
+      else
+      {
+        double DDu = (UV(1) - Up);
+        double DDv = (UV(2) - Vp);
+        double DDD = DDu * DDu + DDv * DDv;
+        double DD1 = Du * Du + Dv * Dv;
+        if (DD1 <= DDD)
+        {
+          double DD2 = Dup * Dup + Dvp * Dvp;
+          if (DD2 <= DDD && ((Du * Dup) + (Dv * Dvp * tolu / tolv) <= 0.))
+          {
+            wd2[i].etat = -wd2[i].etat;
+          }
+        }
+      }
+    }
+  }
+
+  // stop test on point given at input and not yet processed
+
+  //  Modified by Sergey KHROMOV - Tue Nov 20 10:55:01 2001 Begin
+  // Check of all path points in the following order:
+  //   * First check all not treated points;
+  //   * After that check of already treated ones.
+  int l;
+
+  //// Modified by jgv, 28.07.2010 for OCC21914 ////
+  // There are several path points between (Up,Vp) and UV
+  // So several path points satisfy the condition
+  // Dup*UV1mUtest + Dvp*UV2mVtest) < 0
+  // We choose from them the path point with
+  // minimum distance to (Up,Vp)
+  NCollection_Sequence<int>    i_candidates;
+  NCollection_Sequence<double> SqDist_candidates;
+
+  for (l = 1; l <= 2 && !Arrive; l++)
+  {
+    bool isToCheck;
+
+    for (size_t i = 1; i < wd1.Size(); i++)
+    {
+      if (l == 1)
+        isToCheck = (wd1[i].etat > 0);
+      else
+        isToCheck = (wd1[i].etat < 0);
+
+      if (isToCheck)
+      {
+        //  Modified by Sergey KHROMOV - Tue Nov 20 11:03:16 2001 End
+
+        // debug jag voir avec isg
+
+        Utest = wd1[i].ustart;
+        Vtest = wd1[i].vstart;
+        Dup   = Up - Utest;
+        Dvp   = Vp - Vtest;
+        if (std::abs(Dup) >= tolu || std::abs(Dvp) >= tolv)
+        {
+          double UV1mUtest = UV(1) - Utest;
+          double UV2mVtest = UV(2) - Vtest;
+          if (((Dup * UV1mUtest + Dvp * UV2mVtest) < 0)
+              || (std::abs(UV1mUtest) < tolu && std::abs(UV2mVtest) < tolv))
+          {
+            i_candidates.Append((int)i);
+            SqDist_candidates.Append(Dup * Dup + Dvp * Dvp);
+            /*
+        Irang=i;
+        Arrive = true;
+        UV(1) = Utest;
+        UV(2) = Vtest;
+        */
+          }
+          else if (nbMultiplicities[i] > 0 && i_candidates.IsEmpty())
+          {
+            N = 0;
+            for (size_t k = 1; k < i; k++)
+            {
+              N += nbMultiplicities[k];
+            }
+            for (j = N + 1; j <= N + nbMultiplicities[i]; j++)
+            {
+              if (((Up - Umult(j)) * (UV(1) - Umult(j)) + (Vp - Vmult(j)) * (UV(2) - Vmult(j)) < 0)
+                  || (std::abs(UV(1) - Umult(j)) < tolu && std::abs(UV(2) - Vmult(j)) < tolv))
+              {
+                Irang  = (int)i;
+                Arrive = true;
+                UV(1)  = Utest;
+                UV(2)  = Vtest;
+                break;
+              }
+            }
+          }
+          if (Arrive)
+          {
+            double      abidF[1], abidD[1][2];
+            math_Vector bidF(abidF, 1, 1);
+            math_Matrix bidD(abidD, 1, 1, 1, 2);
+            sp.Values(UV, bidF, bidD);
+            break;
+          }
+        }
+      }
+    } // end of for (i = 1; i < wd1.Size(); i++)
+    if (!i_candidates.IsEmpty())
+    {
+      double MinSqDist = RealLast();
+      for (ind = 1; ind <= i_candidates.Length(); ind++)
+        if (SqDist_candidates(ind) < MinSqDist)
+        {
+          MinSqDist = SqDist_candidates(ind);
+          Irang     = i_candidates(ind);
+        }
+      Arrive = true;
+      UV(1)  = wd1[Irang].ustart;
+      UV(2)  = wd1[Irang].vstart;
+    }
+  } // end of for (l = 1; l <= 2 && !Arrive; l++)
+  return Arrive;
+}
+
+bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umult,
+                                        const NCollection_Sequence<double>& Vmult,
+                                        const math_Vector&                  UV,
+                                        const int                           Index,
+                                        int&                                Irang)
+{
+  // Umult, Vmult : table of stop (or crossing) points on border, here
+  //          only crossing points are taken into account.
+  // UV     : the current point.
+  // Index  : index of the start point in uvstart2 of the current line
+  //          (this is an interior point).
+  // Irang  : at output : gives the index of the point passing in uvstart1 or 0.
+  //          consider that there is risk to cross only one crossing point.
+
+  // test of stop for a CLOSED intersection line.
+  // 1) test of crossing on all interior points.
+  // 2) test of crossing on all crossing points.
+
+  double Up, Vp, Scal;
+  bool   Arrive = false;
+  int    N, k, i;
+  double Utest, Vtest;
+  double tolu = tolerance(1);
+  double tolv = tolerance(2);
+
+  // tests of stop and of crossing on all interior points.
+
+  if (!reversed)
+  {
+    previousPoint.ParametersOnS2(Up, Vp);
+  }
+  else
+  {
+    previousPoint.ParametersOnS1(Up, Vp);
+  }
+
+  double UV1 = UV(1);
+  double UV2 = UV(2);
+
+  // Normalizing factor. If it is less than 1.0 then the range will be expanded.
+  // This is no good for computation. Therefore, it is limited.
+  // Do not limit this factor in case of highly anisotropic parametrization
+  //(parametric space is considerably larger in one direction than another).
+  const bool   isHighlyAnisotropic = std::max(tolu, tolv) > 1000. * std::min(tolu, tolv);
+  const double deltau =
+    mySRangeU.IsVoid()
+      ? UM - Um
+      : (isHighlyAnisotropic ? mySRangeU.Delta() : std::max(mySRangeU.Delta(), 1.0));
+  const double deltav =
+    mySRangeV.IsVoid()
+      ? VM - Vm
+      : (isHighlyAnisotropic ? mySRangeV.Delta() : std::max(mySRangeV.Delta(), 1.0));
+
+  Up /= deltau;
+  UV1 /= deltau;
+  Vp /= deltav;
+  UV2 /= deltav;
+
+  tolu /= deltau;
+  tolv /= deltav;
+
+  double tolu2 = tolu + tolu;
+  double tolv2 = tolv + tolv;
+
+  double dPreviousCurrent = (Up - UV1) * (Up - UV1) + (Vp - UV2) * (Vp - UV2);
+  for (k = 1; k < (int)wd2.Size(); k++)
+  {
+    if (wd2[k].etat > 0)
+    {
+      Utest = wd2[k].ustart;
+      Vtest = wd2[k].vstart;
+
+      Utest /= deltau;
+      Vtest /= deltav;
+
+      double UV1mUtest = UV1 - Utest;
+      double UV2mVtest = UV2 - Vtest;
+      if ((UV1mUtest < tolu2 && UV1mUtest > -tolu2) && (UV2mVtest < tolv2 && UV2mVtest > -tolv2))
+      {
+        if (Index != k)
+        {
+          //-- cout<<"* etat2 : ("<<k<<")"<<endl;
+          wd2[k].etat = -wd2[k].etat; //-- mark the point as a crossing point
+        }
+        else
+        { //-- Index == k
+          //-- cout<<"* Arrive"<<endl;
+          Arrive = true;
+        }
+      }
+      else
+      {
+        double UpmUtest       = (Up - Utest);
+        double VpmVtest       = (Vp - Vtest);
+        double dPreviousStart = (UpmUtest) * (UpmUtest) + (VpmVtest) * (VpmVtest);
+        double dCurrentStart  = UV1mUtest * UV1mUtest + UV2mVtest * UV2mVtest;
+
+        Scal = (UpmUtest) * (UV1mUtest) + (VpmVtest) * (UV2mVtest);
+        if ((std::abs(UpmUtest) < tolu && std::abs(VpmVtest) < tolv))
+        {
+          if (Index != k)
+          {
+            //-- cout<<"** etat2 : ("<<k<<")"<<endl;
+            wd2[k].etat = -wd2[k].etat;
+          }
+        }
+        else if (Scal < 0 && (dPreviousStart + dCurrentStart < dPreviousCurrent))
+        {
+          if (Index == k)
+          { // on a boucle.
+            Arrive = true;
+            //-- cout<<"** Arrive  : k="<<k<<endl;
+          }
+          else
+          {
+            //-- cout<<"*** etat2 : ("<<k<<")"<<endl;
+            wd2[k].etat = -wd2[k].etat; // mark the point as a crossing point
+          }
+        }
+        else if (k != Index)
+        {
+          if (dPreviousStart < dPreviousCurrent * 0.25)
+          {
+            wd2[k].etat = -wd2[k].etat; // mark the point as a crossing point
+            //-- cout<<"**** etat2 : ("<<k<<")"<<endl;
+          }
+          else
+          {
+            if (dCurrentStart < dPreviousCurrent * 0.25)
+            {
+              //-- cout<<"***** etat2 : ("<<k<<")"<<endl;
+              wd2[k].etat = -wd2[k].etat; // mark the point as a crossing point
+            }
+            else
+            {
+              double UMidUtest    = 0.5 * (UV1 + Up) - Utest;
+              double VMidVtest    = 0.5 * (UV2 + Vp) - Vtest;
+              double dMiddleStart = UMidUtest * UMidUtest + VMidVtest * VMidVtest;
+
+              if (dMiddleStart < dPreviousCurrent * 0.5)
+              {
+                //-- cout<<"*********** etat2 : ("<<k<<")"<<endl;
+                wd2[k].etat = -wd2[k].etat; // mark the point as a crossing point
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // crossing test on crossing points.
+
+  Irang = 0;
+  for (i = 1; i < (int)wd1.Size(); i++)
+  {
+    if (wd1[i].etat > 0 && wd1[i].etat < 11)
+    { // test of crossing points
+      Utest = wd1[i].ustart;
+      Vtest = wd1[i].vstart;
+      Utest /= deltau;
+      Vtest /= deltav;
+
+      if (((Up - Utest) * (UV1 - Utest) + (Vp - Vtest) * (UV2 - Vtest) < 0)
+          || (std::abs(UV1 - Utest) < tolu && std::abs(UV2 - Vtest) < tolv))
+        Irang = i;
+      else if (nbMultiplicities[i] > 0)
+      {
+        N = 0;
+        for (k = 1; k < i; k++)
+          N = N + nbMultiplicities[k];
+        for (int j = N + 1; j <= N + nbMultiplicities[i]; j++)
+        {
+          double Umultj = Umult(j) / deltau;
+          double Vmultj = Vmult(j) / deltav;
+          if (((Up - Umultj) * (UV1 - Umultj) + (Vp - Vmultj) * (UV2 - Vmultj) < 0)
+              || (std::abs(UV1 - Umultj) < tolu && std::abs(UV2 - Vmultj) < tolv))
+          {
+            Irang = i;
+            break;
+          }
+        }
+      }
+    }
+  }
+  return Arrive;
+}
+
+bool IntWalk_IWalking::TestArretAjout(TheIWFunction&   sp,
+                                      math_Vector&     UV,
+                                      int&             Irang,
+                                      IntSurf_PntOn2S& Psol)
+
+// test of stop on added points
+// these are the points on the natural biorder that were not given at input
+// return : Psol,  the added point.
+//          Irang, index in the iterator of added points.
+//          UV,    parameter of the added point.
+//
+{
+  bool   Arrive = false;
+  double U1, V1;
+  double Up, Vp;
+
+  if (!reversed)
+  {
+    previousPoint.ParametersOnS2(Up, Vp);
+  }
+  else
+  {
+    previousPoint.ParametersOnS1(Up, Vp);
+  }
+
+  int nbAjout = seqAjout.Length();
+  for (int i = 1; i <= nbAjout; i++)
+  {
+    Irang = seqAjout.Value(i);
+
+    // add test std::abs(Irang) <= lines.Length() for the case when
+    // a closed line is opened by adding a  1 point on this same
+    // line. Anyway there is a huge problem as 2 points will be
+    // added on this line...
+
+    if (std::abs(Irang) <= lines.Length())
+    {
+      const occ::handle<IntWalk_TheIWLine>& Line = lines.Value(std::abs(Irang));
+      if (Irang > 0)
+        Psol = Line->Value(Line->NbPoints());
+      else
+        Psol = Line->Value(1);
+      if (!reversed)
+      {
+        Psol.ParametersOnS2(U1, V1);
+      }
+      else
+      {
+        Psol.ParametersOnS1(U1, V1);
+      }
+      if (((Up - U1) * (UV(1) - U1) + (Vp - V1) * (UV(2) - V1)) < 0
+          || (std::abs(UV(1) - U1) < tolerance(1) && std::abs(UV(2) - V1) < tolerance(2)))
+      {
+        // jag 940615	Irang= -std::abs(Irang);
+        Arrive = true;
+        UV(1)  = U1;
+        UV(2)  = V1;
+        double      abidF[1], abidD[1][2];
+        math_Vector bidF(abidF, 1, 1);
+        math_Matrix bidD(abidD, 1, 1, 1, 2);
+        sp.Values(UV, bidF, bidD);
+        break;
+      }
+    }
+  }
+  return Arrive;
+}
+
+void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                               sp,
+                                       NCollection_Sequence<int>&                   CopySeqAlone,
+                                       NCollection_Sequence<IntSurf_InteriorPoint>& PntsInHoles)
+{
+  math_Vector BornInf(1, 2), BornSup(1, 2);
+  BornInf(1) = Um;
+  BornSup(1) = UM;
+  BornInf(2) = Vm;
+  BornSup(2) = VM;
+  PointLineLine.Clear();
+  NCollection_Sequence<int> SeqToRemove;
+  NCollection_Map<int>      BadSolutions;
+
+  for (int i = 1; i < CopySeqAlone.Length(); i++)
+  {
+    int Irang1 = CopySeqAlone(i);
+    if (Irang1 == 0)
+      continue;
+    bool                                  ToRemove = false;
+    IntSurf_PntOn2S                       PointAlone1, PointAlone2;
+    const occ::handle<IntWalk_TheIWLine>& Line1 = lines.Value(std::abs(Irang1));
+    if (Irang1 > 0)
+      PointAlone1 = Line1->Value(Line1->NbPoints());
+    else
+      PointAlone1 = Line1->Value(1);
+    gp_Pnt2d P2d1      = PointAlone1.ValueOnSurface(reversed), P2d2;
+    double   MinSqDist = RealLast();
+    int      MinRang = 0, MinIndex = 0;
+    for (int j = i + 1; j <= CopySeqAlone.Length(); j++)
+    {
+      int Irang2 = CopySeqAlone(j);
+      if (Irang2 == 0 || BadSolutions.Contains(Irang2))
+        continue;
+      const occ::handle<IntWalk_TheIWLine>& Line2 = lines.Value(std::abs(Irang2));
+      if (Irang2 > 0)
+        PointAlone2 = Line2->Value(Line2->NbPoints());
+      else
+        PointAlone2 = Line2->Value(1);
+      P2d2           = PointAlone2.ValueOnSurface(reversed);
+      double aSqDist = P2d1.SquareDistance(P2d2);
+      if (aSqDist < MinSqDist)
+      {
+        MinSqDist = aSqDist;
+        MinRang   = Irang2;
+        MinIndex  = j;
+      }
+    }
+    // processing points from Irang1 and MinRang
+    if (MinRang == 0)
+    {
+      SeqToRemove.Append(Irang1);
+      BadSolutions.Clear();
+      continue;
+    }
+    // Ends of same line
+    if (std::abs(Irang1) == std::abs(MinRang) && lines.Value(std::abs(Irang1))->NbPoints() == 2)
+    {
+      SeqToRemove.Append(Irang1);
+      SeqToRemove.Append(MinRang);
+      CopySeqAlone(i)        = 0;
+      CopySeqAlone(MinIndex) = 0;
+      BadSolutions.Clear();
+      continue;
+    }
+    ///////////////////
+    const occ::handle<IntWalk_TheIWLine>& Line2 = lines.Value(std::abs(MinRang));
+    if (MinRang > 0)
+      PointAlone2 = Line2->Value(Line2->NbPoints());
+    else
+      PointAlone2 = Line2->Value(1);
+    gp_Pnt Pnt1        = PointAlone1.Value();
+    gp_Pnt Pnt2        = PointAlone2.Value();
+    P2d2               = PointAlone2.ValueOnSurface(reversed);
+    double MinSqDist3d = Pnt1.SquareDistance(Pnt2);
+    if (MinSqDist3d <= epsilon
+        || (std::abs(P2d1.X() - P2d2.X()) <= tolerance(1)
+            && std::abs(P2d1.Y() - P2d2.Y()) <= tolerance(2))) // close points
+      ToRemove = true;
+    else // real curve
+    {
+      math_Vector UVap(1, 2), UV(1, 2);
+      UVap(1) = (P2d1.X() + P2d2.X()) / 2;
+      UVap(2) = (P2d1.Y() + P2d2.Y()) / 2;
+      math_FunctionSetRoot Rsnld(sp, tolerance);
+      Rsnld.Perform(sp, UVap, BornInf, BornSup);
+      if (Rsnld.IsDone() && std::abs(sp.Root()) <= sp.Tolerance() && !sp.IsTangent())
+      {
+        Rsnld.Root(UV);
+        gp_Pnt2d Pmid(UV(1), UV(2));
+        gp_Vec2d P1P2(P2d1, P2d2);
+        gp_Vec2d P1Pmid(P2d1, Pmid);
+        gp_Vec2d P2Pmid(P2d2, Pmid);
+        double   ScalProd1   = P1P2 * P1Pmid;
+        double   ScalProd2   = P1P2 * P2Pmid;
+        bool     IsPmidValid = (ScalProd1 > 0. && ScalProd2 < 0); // Pmid is in the middle
+        if (IsPmidValid)
+        {
+          for (int iline = 1; iline <= lines.Length(); iline++)
+            if (IsPointOnLine(Pmid, iline))
+            {
+              IsPmidValid = false;
+              break;
+            }
+        }
+        if (IsPmidValid)
+        {
+          IntSurf_InteriorPoint aPoint(sp.Point(),
+                                       UV(1),
+                                       UV(2),
+                                       sp.Direction3d(),
+                                       sp.Direction2d());
+          PntsInHoles.Append(aPoint);
+          NCollection_List<int> LineLine;
+          LineLine.Append(Irang1);
+          LineLine.Append(MinRang);
+          PointLineLine.Bind(PntsInHoles.Length(), LineLine);
+        }
+        else
+        {
+          BadSolutions.Add(MinRang);
+          i--;
+          continue;
+        }
+      }
+      else
+      {
+        BadSolutions.Add(MinRang);
+        i--;
+        continue;
+      }
+    }
+    CopySeqAlone(i)        = 0;
+    CopySeqAlone(MinIndex) = 0;
+    if (ToRemove)
+    {
+      SeqToRemove.Append(Irang1);
+      SeqToRemove.Append(MinRang);
+    }
+    BadSolutions.Clear();
+  }
+
+  for (int i = 1; i <= SeqToRemove.Length(); i++)
+    for (int j = 1; j <= seqAlone.Length(); j++)
+      if (seqAlone(j) == SeqToRemove(i))
+      {
+        seqAlone.Remove(j);
+        break;
+      }
+}
+
+void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&   Umult,
+                                      const NCollection_Sequence<double>&   Vmult,
+                                      const occ::handle<IntWalk_TheIWLine>& Line,
+                                      TheIWFunction&                        sp,
+                                      math_Vector&                          UV,
+                                      int&                                  Irang)
+
+// test of stop when located on border.
+// tried all tests of stop and arrived.
+// test of stop on all given departure points already marked and on the entire current line.
+// This line can be shortened if the stop point is found.
+// std::abs(Irang) = index in the iterator of departure points or 0
+//  if Irang <0 , it is necessary to add this point on the line (no Line->Cut)
+// UV = parameter of the departure point
+{
+  double Scal, Up, Vp, Uc, Vc;
+  int    N;
+  bool   Found = false;
+
+  Irang = 0;
+  for (int i = 1; i < (int)wd1.Size(); i++)
+  {
+    if (wd1[i].etat < 0)
+    {
+      N = 0; // range in UVMult.
+      if (nbMultiplicities[i] > 0)
+      {
+        for (int k = 1; k < i; k++)
+          N += nbMultiplicities[k];
+      }
+      if (!reversed)
+      {
+        Line->Value(1).ParametersOnS2(Up, Vp);
+      }
+      else
+      {
+        Line->Value(1).ParametersOnS1(Up, Vp);
+      }
+      int nbp = Line->NbPoints();
+      for (int j = 2; j <= nbp; j++)
+      {
+        if (!reversed)
+        {
+          Line->Value(j).ParametersOnS2(Uc, Vc);
+        }
+        else
+        {
+          Line->Value(j).ParametersOnS1(Uc, Vc);
+        }
+
+        gp_Vec2d aVec1(Up - wd1[i].ustart, Vp - wd1[i].vstart),
+          aVec2(Uc - wd1[i].ustart, Vc - wd1[i].vstart);
+        CutVectorByTolerances(aVec1, tolerance);
+        CutVectorByTolerances(aVec2, tolerance);
+
+        Scal = aVec1 * aVec2;
+
+        // if a stop point is found: stop the line on this point.
+        if (Scal < 0)
+        {
+          Line->Cut(j);
+          nbp   = Line->NbPoints();
+          Irang = i;
+          UV(1) = wd1[Irang].ustart;
+          UV(2) = wd1[Irang].vstart;
+          Found = true;
+        }
+        else if (std::abs(Uc - wd1[i].ustart) < tolerance(1)
+                 && std::abs(Vc - wd1[i].vstart) < tolerance(2))
+        {
+          Line->Cut(j);
+          nbp   = Line->NbPoints();
+          Irang = i;
+          UV(1) = wd1[Irang].ustart;
+          UV(2) = wd1[Irang].vstart;
+          Found = true;
+        }
+        else if (nbMultiplicities[i] > 0)
+        {
+          for (int k = N + 1; k <= N + nbMultiplicities[i]; k++)
+          {
+            aVec1.SetCoord(Up - Umult(k), Vp - Vmult(k)),
+              aVec2.SetCoord(Uc - Umult(k), Vc - Vmult(k));
+            CutVectorByTolerances(aVec1, tolerance);
+            CutVectorByTolerances(aVec2, tolerance);
+
+            Scal = aVec1 * aVec2;
+
+            if (Scal < 0)
+            {
+              Line->Cut(j);
+              nbp   = Line->NbPoints();
+              Irang = i;
+              UV(1) = wd1[Irang].ustart;
+              UV(2) = wd1[Irang].vstart;
+              Found = true;
+              break;
+            }
+            else if (std::abs(Uc - Umult(k)) < tolerance(1)
+                     && std::abs(Vc - Vmult(k)) < tolerance(2))
+            {
+              Line->Cut(j);
+              nbp   = Line->NbPoints();
+              Irang = i;
+              UV(1) = wd1[Irang].ustart;
+              UV(2) = wd1[Irang].vstart;
+              Found = true;
+              break;
+            }
+          }
+        }
+        if (Found)
+        {
+          double      abidF[1], abidD[1][2];
+          math_Vector bidF(abidF, 1, 1);
+          math_Matrix bidD(abidD, 1, 1, 1, 2);
+          sp.Values(UV, bidF, bidD);
+          int NBP = Line->NbPoints();
+          int Indextg;
+          Line->TangentVector(Indextg);
+          if (Indextg > NBP)
+          {
+            if (j > 3 && j <= NBP + 1)
+            {
+              gp_Vec Dir3d  = sp.Direction3d();
+              gp_Vec Dir3d1 = gp_Vec(Line->Value(j - 2).Value(), Line->Value(j - 1).Value());
+              double dot    = Dir3d.Dot(Dir3d1);
+              if (dot < 0.0)
+              { // Normally this Function should not be used often !!!
+                Dir3d.Reverse();
+                //-- cout<<" IntWalk_IWalking_2.gxx REVERSE "<<endl;
+              }
+              Line->SetTangentVector(previousd3d, j - 1);
+            }
+#ifdef OCCT_DEBUG
+            else
+            {
+              std::cout << " IntWalk_IWalking_2.gxx : bizarrerie 30 10 97 " << std::endl;
+            }
+#endif
+          }
+
+          return;
+        }
+        Up = Uc;
+        Vp = Vc;
+      }
+
+      // now the last point of the line and the last calculated point are compated.
+      // there will be no need to "Cut"
+
+      gp_Vec2d aVec1(Up - wd1[i].ustart, Vp - wd1[i].vstart),
+        aVec2(UV(1) - wd1[i].ustart, UV(2) - wd1[i].vstart);
+      CutVectorByTolerances(aVec1, tolerance);
+      CutVectorByTolerances(aVec2, tolerance);
+
+      Scal = aVec1 * aVec2;
+
+      if (Scal < 0)
+      {
+        Irang = i;
+        UV(1) = wd1[Irang].ustart;
+        UV(2) = wd1[Irang].vstart;
+        Found = true;
+      }
+      else if (std::abs(UV(1) - wd1[i].ustart) < tolerance(1)
+               && std::abs(UV(2) - wd1[i].vstart) < tolerance(2))
+      {
+        Irang = i;
+        UV(1) = wd1[Irang].ustart;
+        UV(2) = wd1[Irang].vstart;
+        Found = true;
+      }
+      else if (nbMultiplicities[i] > 0)
+      {
+        for (int j = N + 1; j <= N + nbMultiplicities[i]; j++)
+        {
+          aVec1.SetCoord(Up - Umult(j), Vp - Vmult(j));
+          aVec2.SetCoord(UV(1) - Umult(j), UV(2) - Vmult(j));
+          CutVectorByTolerances(aVec1, tolerance);
+          CutVectorByTolerances(aVec2, tolerance);
+
+          Scal = aVec1 * aVec2;
+
+          if (Scal < 0)
+          {
+            Irang = i;
+            UV(1) = wd1[Irang].ustart;
+            UV(2) = wd1[Irang].vstart;
+            Found = true;
+            break;
+          }
+          else if (std::abs(UV(1) - Umult(j)) < tolerance(1)
+                   && std::abs(UV(2) - Vmult(j)) < tolerance(2))
+          {
+            Irang = i;
+            UV(1) = wd1[Irang].ustart;
+            UV(2) = wd1[Irang].vstart;
+            Found = true;
+            break;
+          }
+        }
+      }
+      if (Found)
+      {
+        Irang = -Irang; // jag 941017
+        double      abidF[1], abidD[1][2];
+        math_Vector bidF(abidF, 1, 1);
+        math_Matrix bidD(abidD, 1, 1, 1, 2);
+        sp.Values(UV, bidF, bidD);
+        return;
+      }
+    }
+  }
+}
+
+//-- IntWalk_IWalking_3.gxx
+
+// modified by NIZHNY-MKK  Thu Nov  2 15:07:26 2000.BEGIN
+static bool TestPassedSolutionWithNegativeState(const IntWalk_VectorOfWalkingData&  wd,
+                                                const NCollection_Sequence<double>& Umult,
+                                                const NCollection_Sequence<double>& Vmult,
+                                                const double&                       prevUp,
+                                                const double&                       prevVp,
+                                                const IntWalk_VectorOfInteger& nbMultiplicities,
+                                                const math_Vector&             tolerance,
+                                                TheIWFunction&                 sp,
+                                                math_Vector&                   UV,
+                                                int&                           Irang);
+// modified by NIZHNY-MKK  Thu Nov  2 15:07:39 2000.END
+
+void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult,
+                                       const NCollection_Sequence<double>& Vmult,
+                                       const ThePOPIterator&               Pnts1,
+                                       TheIWFunction&                      Func,
+                                       bool&                               Rajout)
+
+// Processing of open line.
+//
+// 1) for any starting point, which is not passing and not tangent and not yet processed,
+//    calculation of the step of advancement = step depending on the arrow and the maximum step.
+//
+// 2) calculate a point of approach (this point is on the tangent to the section
+// of distance = no point in the interior)
+//
+// 3) conditions  {
+//            (all calculated points do not exceed a point in the
+//             list of starting points)
+//                              or
+//            (all points do not form an open line going
+//            from one border of the domain to the other or from a point tangent
+//            to border or from 2 tangent points : single cases)
+//
+//     1) framing of approached point on borders if necessary (there is
+//        calculation of step)
+//     2) calculation of the point
+//     3) if the point is not found the step is divided
+//     4) stop tests
+//     5) calculation of the step depending on the arrow and the max step,
+//        (TestDeflection)
+//        stop  possible.
+//    end of conditions.
+
+{
+  int             I = 0, N = 0, SaveN = 0;
+  double          aBornInf[2] = {}, aBornSup[2] = {}, aUVap[2] = {};
+  math_Vector     BornInf(aBornInf, 1, 2), BornSup(aBornSup, 1, 2), UVap(aUVap, 1, 2);
+  double          PasC = 0.0, PasCu = 0.0, PasCv = 0.0;
+  bool            Arrive     = false; // shows if the line ends
+  bool            Cadre      = false; // shows if one is on border of the domain
+  bool            ArretAjout = false; // shows if one is on added point
+  IntSurf_PntOn2S Psol;
+  occ::handle<IntWalk_TheIWLine> CurrentLine; // line under construction
+  bool                           Tgtend = false;
+
+  IntWalk_StatusDeflection aStatus = IntWalk_OK, StatusPrecedent = IntWalk_OK;
+
+  int NbDivision = 0;
+  // number of divisions of step for each section
+
+  int StepSign = 0;
+
+  ThePointOfPath PathPnt;
+
+  BornInf(1) = Um;
+  BornSup(1) = UM;
+  BornInf(2) = Vm;
+  BornSup(2) = VM;
+
+  math_FunctionSetRoot Rsnld(Func, tolerance);
+  int                  nbPath = Pnts1.Length();
+
+  // modified by NIZHNY-MKK  Fri Oct 27 12:32:34 2000.BEGIN
+  NCollection_LocalArray<int> movementdirectioninfoarr(nbPath + 1);
+  int*                        movementdirectioninfo = movementdirectioninfoarr;
+  for (I = 0; I <= nbPath; I++)
+  {
+    movementdirectioninfo[I] = 0;
+  }
+  // modified by NIZHNY-MKK  Fri Oct 27 12:32:38 2000.END
+
+  TheIWFunction aFuncForDuplicate = Func;
+
+  for (I = 1; I <= nbPath; I++)
+  {
+    // start point of the progression
+    //      if (wd1[I].etat > 11) {
+    //  modified by NIZHNY-MKK  Fri Oct 27 12:33:37 2000.BEGIN
+    if ((wd1[I].etat > 11) || ((wd1[I].etat < -11) && (movementdirectioninfo[I] != 0)))
+    {
+      // modified by NIZHNY-MKK  Fri Oct 27 12:33:43 2000.END
+      PathPnt = Pnts1.Value(I);
+      UVap(1) = wd1[I].ustart;
+      UVap(2) = wd1[I].vstart;
+      MakeWalkingPoint(11, UVap(1), UVap(2), Func, previousPoint);
+
+      if (IsPointOnLine(previousPoint, BornInf, BornSup, Rsnld, aFuncForDuplicate))
+      {
+        wd1[I].etat = -std::abs(wd1[I].etat); // mark point as processed
+        continue;
+      }
+
+      CurrentLine = new IntWalk_TheIWLine(new NCollection_IncAllocator());
+      CurrentLine->SetTangencyAtBegining(false);
+      Tgtend = false;
+      CurrentLine->AddStatusFirst(false, true, I, PathPnt);
+      previousd3d = Func.Direction3d();
+      previousd2d = Func.Direction2d();
+      CurrentLine->AddPoint(previousPoint);
+      // modified by NIZHNY-MKK  Fri Oct 27 12:34:32 2000.BEGIN
+      if (movementdirectioninfo[I] != 0)
+      {
+        if (movementdirectioninfo[I] < 0)
+        {
+          StepSign = -1;
+          CurrentLine->SetTangentVector(previousd3d.Reversed(), 1);
+        }
+        else
+        {
+          StepSign = 1;
+          CurrentLine->SetTangentVector(previousd3d, 1);
+        }
+      }
+      else
+      {
+        double tyutuyt = ThePointOfPathTool::Direction3d(PathPnt) * previousd3d;
+        if (tyutuyt < 0)
+        {
+          StepSign = -1;
+          CurrentLine->SetTangentVector(previousd3d.Reversed(), 1);
+        }
+        else
+        {
+          StepSign = 1;
+          CurrentLine->SetTangentVector(previousd3d, 1);
+        }
+      }
+      // modified by NIZHNY-MKK  Fri Oct 27 12:34:37 2000.END
+
+      //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:45 2001 Begin
+      wd1[I].etat              = -std::abs(wd1[I].etat);
+      movementdirectioninfo[I] = (movementdirectioninfo[I] == 0) ? StepSign : 0;
+      //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:56 2001 End
+      // first step of advancement
+      double d2dx = std::abs(previousd2d.X());
+      double d2dy = std::abs(previousd2d.Y());
+      if (d2dx < tolerance(1))
+      {
+        PasC = pas * (VM - Vm) / d2dy;
+      }
+      else if (d2dy < tolerance(2))
+      {
+        PasC = pas * (UM - Um) / d2dx;
+      }
+      else
+      {
+        PasC = pas * std::min((UM - Um) / d2dx, (VM - Vm) / d2dy);
+      }
+
+      Arrive          = false;
+      ArretAjout      = false;
+      NbDivision      = 0;
+      StatusPrecedent = IntWalk_OK;
+      // modified by NIZHNY-MKK  Fri Oct 27 12:39:37 2000
+      int IndexOfPathPointDoNotCheck = 0;
+      int aNbIter                    = 10;
+      int aNbBadRootIter             = 0; // consecutive iterations where Root > Tolerance
+      while (!Arrive)
+      {
+        Cadre = Cadrage(BornInf, BornSup, UVap, PasC, StepSign);
+        //  Border?
+
+#ifdef CHRONO
+        Chronrsnld.Start();
+#endif
+
+        Rsnld.Perform(Func, UVap, BornInf, BornSup);
+
+#ifdef CHRONO
+        Chronrsnld.Stop();
+#endif
+
+        if (Cadre)
+        {
+          BornInf(1) = Um;
+          BornSup(1) = UM;
+          BornInf(2) = Vm;
+          BornSup(2) = VM;
+        }
+        if (Rsnld.IsDone())
+        {
+          if (std::abs(Func.Root()) > Func.Tolerance())
+          {
+            PasC  = PasC / 2.0;
+            PasCu = std::abs(PasC * previousd2d.X());
+            PasCv = std::abs(PasC * previousd2d.Y());
+            ++aNbBadRootIter;
+            if ((PasCu <= tolerance(1) && PasCv <= tolerance(2)) || aNbBadRootIter > MaxDivision)
+            {
+              // Step collapsed below tolerance, or Cadrage keeps resetting
+              // the step (preventing convergence) after too many attempts.
+              if (CurrentLine->NbPoints() == 1)
+                break;
+              Arrive = true;
+              CurrentLine->AddStatusLast(false);
+              Tgtend = true; // check
+              Rajout = true;
+              seqAlone.Append(lines.Length() + 1);
+              seqAjout.Append(lines.Length() + 1);
+            }
+          }
+          else
+          { // test stop
+            aNbBadRootIter = 0;
+            Rsnld.Root(UVap);
+            Arrive = TestArretPassage(Umult, Vmult, Func, UVap, N);
+            if (Arrive)
+            {
+              Cadre = false;
+              // in case if there is a frame and arrive at the same time
+            }
+            else
+            {
+              if (Rajout)
+              {
+                ArretAjout = TestArretAjout(Func, UVap, N, Psol);
+                SaveN      = N;
+                if (ArretAjout)
+                {
+                  // jag 940615
+                  Tgtend = lines.Value(N)->IsTangentAtEnd();
+                  N      = -N;
+                }
+              }
+              // modified by NIZHNY-MKK  Thu Nov  2 15:09:08 2000.BEGIN
+              if (!(Rajout && ArretAjout))
+              {
+                double prevUp, prevVp;
+                if (!reversed)
+                {
+                  previousPoint.ParametersOnS2(prevUp, prevVp);
+                }
+                else
+                {
+                  previousPoint.ParametersOnS1(prevUp, prevVp);
+                }
+                Arrive = TestPassedSolutionWithNegativeState(wd1,
+                                                             Umult,
+                                                             Vmult,
+                                                             prevUp,
+                                                             prevVp,
+                                                             nbMultiplicities,
+                                                             tolerance,
+                                                             Func,
+                                                             UVap,
+                                                             N);
+                if (Arrive)
+                {
+                  Cadre = false;
+                }
+              }
+              // modified by NIZHNY-MKK  Thu Nov  2 15:09:13 2000.END
+              if (!ArretAjout && Cadre)
+              {
+                if (CurrentLine->NbPoints() == 1)
+                  break; // cancel the line
+                TestArretCadre(Umult, Vmult, CurrentLine, Func, UVap, N);
+                //		if (N == 0) {
+                if (N <= 0)
+                { // jag 941017
+                  MakeWalkingPoint(2, UVap(1), UVap(2), Func, Psol);
+                  Tgtend = Func.IsTangent();
+                  N      = -N;
+                }
+              }
+            }
+            aStatus =
+              TestDeflection(Func, Arrive, UVap, StatusPrecedent, NbDivision, PasC, StepSign);
+            StatusPrecedent = aStatus;
+            if (aStatus == IntWalk_PasTropGrand)
+            {
+              Arrive     = false;
+              ArretAjout = false;
+              Tgtend     = false; // jag 940615
+              if (!reversed)
+              {
+                previousPoint.ParametersOnS2(UVap(1), UVap(2));
+              }
+              else
+              {
+                previousPoint.ParametersOnS1(UVap(1), UVap(2));
+              }
+            }
+            else if (ArretAjout || Cadre)
+            {
+              Arrive = true;
+              CurrentLine->AddStatusLast(false);
+              // if (aStatus != IntWalk_ArretSurPointPrecedent)
+              CurrentLine->AddPoint(Psol);
+              // Remove <SaveN> from <seqAlone>
+              for (int iseq = 1; iseq <= seqAlone.Length(); iseq++)
+                if (seqAlone(iseq) == SaveN)
+                {
+                  seqAlone.Remove(iseq);
+                  break;
+                }
+
+              if (Cadre && N == 0)
+              {
+                Rajout = true;
+                seqAjout.Append(lines.Length() + 1);
+              }
+            }
+            else if (aStatus == IntWalk_ArretSurPointPrecedent)
+            {
+              if (CurrentLine->NbPoints() == 1)
+              { // cancel the line
+                Arrive = false;
+                break;
+              }
+              Arrive = true;
+              Rajout = true;
+              // AddAlonePoint();
+              seqAlone.Append(lines.Length() + 1);
+              seqAjout.Append(lines.Length() + 1);
+              CurrentLine->AddStatusLast(false);
+              Tgtend = true; // check
+            }
+            else if (Arrive)
+            {
+              if (CurrentLine->NbPoints() == 1 && // cancel the line
+                  (N == I || aStatus == IntWalk_PointConfondu))
+              {
+                // if N == I the main uv is probably lost
+                // or the point is a point of accumulation
+                // if point is confused the start data is bad
+                Arrive = false;
+                break;
+              }
+              // necessarily N > 0 jag 940617
+              // point of stop given at input
+              PathPnt = Pnts1.Value(N);
+
+              int etat1N = wd1[N].etat;
+              // modified by NIZHNY-MKK  Thu Nov  2 15:09:51 2000.BEGIN
+              // 	      if (etat1N < 11) { // passing point that is a stop
+              if (std::abs(etat1N) < 11)
+              { // passing point that is a stop
+                // modified by NIZHNY-MKK  Thu Nov  2 15:12:11 2000.END
+                if (aStatus == IntWalk_ArretSurPoint)
+                {
+                  CurrentLine->AddStatusLast(false);
+                  Tgtend = true; // need check
+                }
+                else
+                {
+                  Arrive = false;
+                }
+                CurrentLine->AddIndexPassing(N);
+              }
+              else
+              { // point of stop given at input
+                if (etat1N == 11)
+                {
+                  Tgtend = true;
+                }
+                CurrentLine->AddStatusLast(true, N, PathPnt);
+              }
+              AddPointInCurrentLine(N, PathPnt, CurrentLine);
+              if ((etat1N != 1 && etat1N != 11))
+              {
+                // modified by NIZHNY-MKK  Fri Oct 27 12:43:05 2000.BEGIN
+                // 		wd1[N].etat= - wd1[N].etat;
+                wd1[N].etat              = -std::abs(etat1N);
+                movementdirectioninfo[N] = (movementdirectioninfo[N] == 0) ? StepSign : 0;
+                if (Arrive && movementdirectioninfo[N] != 0)
+                {
+                  IndexOfPathPointDoNotCheck = N;
+                }
+
+                if (Arrive)
+                {
+                  Rajout = true;
+                  seqAjout.Append(lines.Length() + 1);
+                }
+                // modified by NIZHNY-MKK  Fri Oct 27 12:45:33 2000.END
+              }
+            }
+            else if (aStatus == IntWalk_ArretSurPoint)
+            {
+              Arrive = true;
+              CurrentLine->AddStatusLast(false);
+              Tgtend = true;
+              MakeWalkingPoint(1, UVap(1), UVap(2), Func, Psol);
+              CurrentLine->AddPoint(Psol);
+              Rajout = true;
+              seqAlone.Append(lines.Length() + 1);
+              seqAjout.Append(lines.Length() + 1);
+            }
+            else if (aStatus == IntWalk_OK)
+            {
+              MakeWalkingPoint(2, UVap(1), UVap(2), Func, previousPoint);
+              previousd3d = Func.Direction3d();
+              previousd2d = Func.Direction2d();
+              CurrentLine->AddPoint(previousPoint);
+            }
+            else if (aStatus == IntWalk_PointConfondu)
+            {
+              aNbIter--;
+            }
+          }
+        }
+        else
+        { // no numerical solution
+          PasC  = PasC / 2.;
+          PasCu = std::abs(PasC * previousd2d.X());
+          PasCv = std::abs(PasC * previousd2d.Y());
+          if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
+          {
+            if (CurrentLine->NbPoints() == 1)
+              break;
+            Arrive = true;
+            CurrentLine->AddStatusLast(false);
+            Tgtend = true; // need check
+            Rajout = true;
+            seqAlone.Append(lines.Length() + 1);
+            seqAjout.Append(lines.Length() + 1);
+          }
+        }
+
+        if (aNbIter < 0)
+          break;
+      } // end of started line
+
+      if (Arrive)
+      {
+        CurrentLine->SetTangencyAtEnd(Tgtend);
+        lines.Append(CurrentLine);
+        // modified by NIZHNY-MKK  Fri Oct 27 12:59:29 2000.BEGIN
+        movementdirectioninfo[I] = 0;
+        if (wd1[I].etat > 0)
+          // modified by NIZHNY-MKK  Fri Oct 27 12:59:42 2000.END
+          wd1[I].etat = -wd1[I].etat;
+
+        //-- lbr le 5 juin 97 (Pb ds Contap)
+        for (int av = 1; av <= nbPath; av++)
+        {
+          // modified by NIZHNY-MKK  Fri Oct 27 13:00:22 2000.BEGIN
+          // 	  if (wd1[av].etat > 11) {
+          if ((wd1[av].etat > 11)
+              || ((av != I) && (av != IndexOfPathPointDoNotCheck) && (wd1[av].etat < -11)
+                  && (movementdirectioninfo[av] != 0)))
+          {
+            // modified by NIZHNY-MKK  Fri Oct 27 13:00:26 2000.END
+            double                 Uav = wd1[av].ustart;
+            double                 Vav = wd1[av].vstart;
+            double                 Uavp, Vavp;
+            const IntSurf_PntOn2S& avP = CurrentLine->Value(CurrentLine->NbPoints());
+            if (!reversed)
+            {
+              avP.ParametersOnS2(Uavp, Vavp);
+            }
+            else
+            {
+              avP.ParametersOnS1(Uavp, Vavp);
+            }
+            Uav -= Uavp;
+            Vav -= Vavp;
+            Uav *= 0.001;
+            Vav *= 0.001;
+            if (std::abs(Uav) < tolerance(1) && std::abs(Vav) < tolerance(2))
+            {
+              // modified by NIZHNY-MKK  Fri Oct 27 13:01:38 2000.BEGIN
+              // 	      wd1[av].etat=-wd1[av].etat;
+              if (wd1[av].etat < 0)
+              {
+                movementdirectioninfo[av] = 0;
+              }
+              else
+              {
+                wd1[av].etat              = -wd1[av].etat;
+                movementdirectioninfo[av] = StepSign;
+              }
+              // modified by NIZHNY-MKK  Fri Oct 27 13:01:42 2000.END
+              CurrentLine->AddStatusLast(true, av, Pnts1.Value(av));
+              //-- cout<<"\n Debug ? lbr ds IntWalk_IWalking_3.gxx"<<endl;
+            }
+
+            const IntSurf_PntOn2S& avPP = CurrentLine->Value(1);
+            if (!reversed)
+            {
+              avPP.ParametersOnS2(Uavp, Vavp);
+            }
+            else
+            {
+              avPP.ParametersOnS1(Uavp, Vavp);
+            }
+            Uav = wd1[av].ustart;
+            Vav = wd1[av].vstart;
+            Uav -= Uavp;
+            Vav -= Vavp;
+            Uav *= 0.001;
+            Vav *= 0.001;
+            if (std::abs(Uav) < tolerance(1) && std::abs(Vav) < tolerance(2))
+            {
+              // modified by NIZHNY-MKK  Fri Oct 27 13:02:49 2000.BEGIN
+              // 	      wd1[av].etat=-wd1[av].etat;
+              if (wd1[av].etat < 0)
+              {
+                movementdirectioninfo[av] = 0;
+              }
+              else
+              {
+                wd1[av].etat              = -wd1[av].etat;
+                movementdirectioninfo[av] = -StepSign;
+              }
+              // modified by NIZHNY-MKK  Fri Oct 27 13:02:52 2000.END
+              //-- cout<<"\n Debug ? lbr ds IntWalk_IWalking_3.gxx"<<endl;
+              CurrentLine->AddStatusFirst(false, true, av, Pnts1.Value(av));
+            }
+          }
+        }
+      }
+    } // end of point processing
+  } // end of all points
+}
+
+// modified by NIZHNY-MKK  Thu Nov  2 15:07:53 2000.BEGIN
+static bool TestPassedSolutionWithNegativeState(const IntWalk_VectorOfWalkingData&  wd,
+                                                const NCollection_Sequence<double>& Umult,
+                                                const NCollection_Sequence<double>& Vmult,
+                                                const double&                       prevUp,
+                                                const double&                       prevVp,
+                                                const IntWalk_VectorOfInteger& nbMultiplicities,
+                                                const math_Vector&             tolerance,
+                                                TheIWFunction&                 sp,
+                                                math_Vector&                   UV,
+                                                int&                           Irang)
+{
+  bool   Arrive = false;
+  double Dup, Dvp, Utest, Vtest;
+  double tolu = tolerance(1);
+  double tolv = tolerance(2);
+  int    i, j, k, N;
+  for (i = 1; i < (int)wd.Size(); i++)
+  {
+    if (wd[i].etat < -11)
+    {
+      // debug jag see with isg
+
+      Utest = wd[i].ustart;
+      Vtest = wd[i].vstart;
+      Dup   = prevUp - Utest;
+      Dvp   = prevVp - Vtest;
+      if (std::abs(Dup) >= tolu || std::abs(Dvp) >= tolv)
+      {
+        double UV1mUtest = UV(1) - Utest;
+        double UV2mVtest = UV(2) - Vtest;
+        if (((Dup * UV1mUtest + Dvp * UV2mVtest) < 0)
+            || (std::abs(UV1mUtest) < tolu && std::abs(UV2mVtest) < tolv))
+        {
+          Irang  = i;
+          Arrive = true;
+          UV(1)  = Utest;
+          UV(2)  = Vtest;
+        }
+        else if (nbMultiplicities[i] > 0)
+        {
+          N = 0;
+          for (k = 1; k < i; k++)
+          {
+            N += nbMultiplicities[k];
+          }
+          for (j = N + 1; j <= N + nbMultiplicities[i]; j++)
+          {
+            if (((prevUp - Umult(j)) * (UV(1) - Umult(j)) + (prevVp - Vmult(j)) * (UV(2) - Vmult(j))
+                 < 0)
+                || (std::abs(UV(1) - Umult(j)) < tolu && std::abs(UV(2) - Vmult(j)) < tolv))
+            {
+              Irang  = i;
+              Arrive = true;
+              UV(1)  = Utest;
+              UV(2)  = Vtest;
+              break;
+            }
+          }
+        }
+        if (Arrive)
+        {
+          double      abidF[1], abidD[1][2];
+          math_Vector bidF(abidF, 1, 1);
+          math_Matrix bidD(abidD, 1, 1, 1, 2);
+          sp.Values(UV, bidF, bidD);
+          break;
+        }
+      }
+    }
+  }
+  return Arrive;
+}
+// modified by NIZHNY-MKK  Thu Nov  2 15:07:58 2000.END
+
+//-- IntWalk_IWalking_4.gxx
+
+void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umult,
+                                        const NCollection_Sequence<double>& Vmult,
+                                        const ThePOPIterator&               Pnts1,
+                                        const ThePOLIterator&               Pnts2,
+                                        TheIWFunction&                      Func,
+                                        bool&                               Rajout)
+// *********** Processing of closed line **********************
+//
+// for any interior non-processed point
+//       calculate the step of advancement=step depending on the arrow and max step
+//       calculate a point of approach (this point is on the tangent to the section
+// of distance = no interior point)
+//  conditions
+//            (all calculated points do not form a closed loop)
+//                              or
+//            (all points do not form an open line going from
+//            one border of the domain to the other or from a point tangent
+//            to the border or from 2 tangent points : single cases)
+//
+//     frame the point of approach on borders if necessary
+//     calculate the point
+//     if point not found divide the step
+//     test of stop
+//     calculate step depending on the arrow and the max step (stop possible)
+//
+// ********************************************************************
+{
+  int                            I = 0, N = 0, SaveN = 0;
+  double                         aBornInf[2] = {}, aBornSup[2] = {}, aUVap[2] = {};
+  math_Vector                    BornInf(aBornInf, 1, 2), BornSup(aBornSup, 1, 2);
+  math_Vector                    Uvap(aUVap, 1, 2);  // parameters of current approach
+  double                         PasC       = 0.0;   // step of advancement on the tangent
+  double                         PasCu      = 0.0;   // step of advancement current by U
+  double                         PasCv      = 0.0;   // step of advancement current by V
+  double                         PasSav     = 0.0;   // save first step of advancement
+  bool                           Arrive     = false; // show if line ends
+  bool                           Cadre      = false; // show if on border of the  domains
+  bool                           ArretAjout = false; // show if on the added point
+  IntSurf_PntOn2S                Psol;
+  occ::handle<IntWalk_TheIWLine> CurrentLine; // line under construction
+  ThePointOfPath                 PathPnt;
+  ThePointOfLoop                 LoopPnt;
+
+  bool Tgtbeg = false, Tgtend = false;
+
+  int StepSign = 0;
+
+  IntWalk_StatusDeflection aStatus    = IntWalk_OK, StatusPrecedent;
+  int                      NbDivision = 0; // number of divisions of step
+  // during calculation of  1 section
+
+  int Ipass = 0;
+  // index in the iterator of points on edge of point of passage
+
+  BornInf(1) = Um;
+  BornSup(1) = UM;
+  BornInf(2) = Vm;
+  BornSup(2) = VM;
+
+  math_FunctionSetRoot Rsnld(Func, tolerance);
+  int                  nbLoop = Pnts2.Length();
+
+  // Check borders for degeneracy:
+  math_Matrix D(1, 1, 1, 2);
+  const int   aNbSamplePnt                = 10;
+  bool        isLeftDegeneratedBorder[2]  = {true, true};
+  bool        isRightDegeneratedBorder[2] = {true, true};
+  math_Vector aStep(1, 2);
+  aStep = (BornSup - BornInf) / (aNbSamplePnt - 1);
+  for (int aBorderIdx = 1; aBorderIdx <= 2; aBorderIdx++)
+  {
+    int         aChangeIdx = aBorderIdx == 2 ? 1 : 2;
+    math_Vector UV(1, 2);
+
+    // Left border.
+    UV(aBorderIdx) = BornInf(aBorderIdx);
+    for (int aParamIdx = 0; aParamIdx < aNbSamplePnt; aParamIdx++)
+    {
+      double aParam  = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
+      UV(aChangeIdx) = aParam;
+      Func.Derivatives(UV, D);
+      if (std::abs(D(1, aChangeIdx)) > Precision::Confusion())
+      {
+        isLeftDegeneratedBorder[aBorderIdx - 1] = false;
+        break;
+      }
+    }
+
+    // Right border.
+    UV(aBorderIdx) = BornSup(aBorderIdx);
+    for (int aParamIdx = 0; aParamIdx < aNbSamplePnt; aParamIdx++)
+    {
+      double aParam  = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
+      UV(aChangeIdx) = aParam;
+      Func.Derivatives(UV, D);
+      if (std::abs(D(1, aChangeIdx)) > Precision::Confusion())
+      {
+        isRightDegeneratedBorder[aBorderIdx - 1] = false;
+        break;
+      }
+    }
+  }
+
+  TheIWFunction aFuncForDuplicate = Func;
+
+  for (I = 1; I <= nbLoop; I++)
+  {
+    if (wd2[I].etat > 12)
+    { // start point of closed line
+      LoopPnt = Pnts2.Value(I);
+      previousPoint.SetValue(ThePointOfLoopTool::Value3d(LoopPnt),
+                             reversed,
+                             wd2[I].ustart,
+                             wd2[I].vstart);
+
+      if (IsPointOnLine(previousPoint, BornInf, BornSup, Rsnld, aFuncForDuplicate))
+      {
+        wd2[I].etat = -wd2[I].etat; // mark point as processed
+        continue;
+      }
+
+      previousd3d = ThePointOfLoopTool::Direction3d(LoopPnt);
+      previousd2d = ThePointOfLoopTool::Direction2d(LoopPnt);
+
+      CurrentLine = new IntWalk_TheIWLine(new NCollection_IncAllocator());
+      CurrentLine->AddPoint(previousPoint);
+      CurrentLine->SetTangentVector(previousd3d, 1);
+      Tgtbeg  = false;
+      Tgtend  = false;
+      Uvap(1) = wd2[I].ustart;
+      Uvap(2) = wd2[I].vstart;
+
+      StepSign = 1;
+
+      // first step of advancement
+
+      double d2dx = std::abs(previousd2d.X());
+      double d2dy = std::abs(previousd2d.Y());
+      if (d2dx < tolerance(1))
+      {
+        PasC = pas * (VM - Vm) / d2dy;
+      }
+      else if (d2dy < tolerance(2))
+      {
+        PasC = pas * (UM - Um) / d2dx;
+      }
+      else
+      {
+        PasC = pas * std::min((UM - Um) / d2dx, (VM - Vm) / d2dy);
+      }
+
+      PasSav = PasC;
+
+      Arrive             = false;
+      ArretAjout         = false;
+      NbDivision         = 0;
+      StatusPrecedent    = IntWalk_OK;
+      int aNbIter        = 10;
+      int aNbBadRootIter = 0; // consecutive iterations where Root > Tolerance
+      while (!Arrive)
+      {                                                          // as no test of stop is passed
+        Cadre = Cadrage(BornInf, BornSup, Uvap, PasC, StepSign); // border?
+#ifdef CHRONO
+        Chronrsnld.Start();
+#endif
+
+        Rsnld.Perform(Func, Uvap, BornInf, BornSup);
+
+#ifdef CHRONO
+        Chronrsnld.Stop();
+#endif
+        bool isOnDegeneratedBorder = false;
+
+        if (Cadre)
+        { // update of limits.
+          BornInf(1) = Um;
+          BornSup(1) = UM;
+          BornInf(2) = Vm;
+          BornSup(2) = VM;
+        }
+        if (Rsnld.IsDone())
+        {
+          if (std::abs(Func.Root()) > Func.Tolerance())
+          { // no solution for the tolerance
+            PasC  = PasC / 2.;
+            PasCu = std::abs(PasC * previousd2d.X());
+            PasCv = std::abs(PasC * previousd2d.Y());
+            ++aNbBadRootIter;
+
+            if ((PasCu <= tolerance(1) && PasCv <= tolerance(2)) || aNbBadRootIter > MaxDivision)
+            {
+              if (CurrentLine->NbPoints() == 1)
+              {
+                RemoveTwoEndPoints(I);
+                break; // cancel the line
+              }
+              if (wd2[I].etat > 12)
+              {                   // the line should become open
+                wd2[I].etat = 12; // declare it open
+                ArretAjout  = false;
+                OpenLine(0, Psol, Pnts1, Func, CurrentLine);
+                StepSign        = -1;
+                StatusPrecedent = IntWalk_OK;
+                Arrive          = false;
+                PasC            = PasSav;
+                aNbBadRootIter  = 0;
+                Rajout          = true;
+                seqAlone.Append(-lines.Length() - 1);
+                seqAjout.Append(-lines.Length() - 1);
+              }
+              else
+              { // line s is open
+                Arrive = true;
+                CurrentLine->AddStatusLast(false);
+                Rajout = true;
+                seqAlone.Append(lines.Length() + 1);
+                seqAjout.Append(lines.Length() + 1);
+                Tgtend = true;
+              }
+              /*
+              Arrive = true;
+              CurrentLine->AddStatusFirstLast(false,
+                false,false);
+              Rajout = true;
+              seqAlone.Append(lines.Length()+1);
+              seqAjout.Append(lines.Length()+1);
+              Tgtend = true;
+              */
+            }
+          }
+          else
+          { // there is a solution
+            aNbBadRootIter = 0;
+            Rsnld.Root(Uvap);
+
+            // Avoid uninitialized memory access.
+            if (CurrentLine->NbPoints() > 2)
+            {
+              for (int aCoordIdx = 1; aCoordIdx <= 2; aCoordIdx++)
+              {
+                // Check degenerated cases and fix if possible.
+                if ((isLeftDegeneratedBorder[aCoordIdx - 1]
+                     && std::abs(Uvap(aCoordIdx) - BornInf(aCoordIdx)) < Precision::PConfusion())
+                    || (isRightDegeneratedBorder[aCoordIdx - 1]
+                        && std::abs(Uvap(aCoordIdx) - BornSup(aCoordIdx))
+                             < Precision::PConfusion()))
+                {
+                  double uvprev[2], uv[2];
+                  if (!reversed)
+                  {
+                    CurrentLine->Value(CurrentLine->NbPoints() - 1)
+                      .ParametersOnS2(uvprev[0], uvprev[1]);
+                    CurrentLine->Value(CurrentLine->NbPoints()).ParametersOnS2(uv[0], uv[1]);
+                  }
+                  else
+                  {
+                    CurrentLine->Value(CurrentLine->NbPoints() - 1)
+                      .ParametersOnS1(uvprev[0], uvprev[1]);
+                    CurrentLine->Value(CurrentLine->NbPoints()).ParametersOnS1(uv[0], uv[1]);
+                  }
+
+                  double aScaleCoeff = 0.0;
+
+                  // Avoid finite cycle which lead to stop computing iline.
+                  if (aStatus != IntWalk_PasTropGrand)
+                  {
+                    // Make linear extrapolation.
+                    if (std::abs(uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]) > gp::Resolution())
+                      aScaleCoeff = std::abs((Uvap(aCoordIdx) - uv[aCoordIdx - 1])
+                                             / (uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]));
+                    int aFixIdx = aCoordIdx == 1 ? 2 : 1; // Fixing index;
+                    Uvap(aFixIdx) =
+                      uv[aFixIdx - 1] + (uv[aFixIdx - 1] - uvprev[aFixIdx - 1]) * aScaleCoeff;
+                    isOnDegeneratedBorder = true;
+                  }
+                }
+              }
+            }
+
+            Arrive = TestArretPassage(Umult, Vmult, Uvap, I, Ipass);
+            if (Arrive)
+            { // reset proper parameter to test the arrow.
+              Psol = CurrentLine->Value(1);
+              if (!reversed)
+              {
+                Psol.ParametersOnS2(Uvap(1), Uvap(2));
+              }
+              else
+              {
+                Psol.ParametersOnS1(Uvap(1), Uvap(2));
+              }
+              Cadre = false;
+              // in case if there is a frame and arrival at the same time
+            }
+            else
+            { // modif jag 940615
+              if (Rajout)
+              { // test on added points
+                ArretAjout = TestArretAjout(Func, Uvap, N, Psol);
+                SaveN      = N;
+                if (ArretAjout)
+                {
+                  if (N > 0)
+                  {
+                    Tgtend = lines.Value(N)->IsTangentAtEnd();
+                    N      = -N;
+                  }
+                  else
+                  {
+                    Tgtend = lines.Value(-N)->IsTangentAtBegining();
+                  }
+                  Arrive = (wd2[I].etat == 12);
+                }
+              }
+
+              if (!ArretAjout && Cadre)
+              { // test on already marked points
+                if (CurrentLine->NbPoints() == 1)
+                {
+                  RemoveTwoEndPoints(I);
+                  break; // cancel the line
+                }
+                TestArretCadre(Umult, Vmult, CurrentLine, Func, Uvap, N);
+                SaveN = N;
+                //		if (N==0) {
+                if (N <= 0)
+                { // jag 941017
+                  MakeWalkingPoint(2, Uvap(1), Uvap(2), Func, Psol);
+                  Tgtend = Func.IsTangent(); // jag 940616
+                  if (isOnDegeneratedBorder)
+                    Tgtend = true;
+                  N = -N;
+                }
+                Arrive = (wd2[I].etat == 12); // the line is open
+              }
+            }
+            aStatus =
+              TestDeflection(Func, Arrive, Uvap, StatusPrecedent, NbDivision, PasC, StepSign);
+
+            if (isOnDegeneratedBorder && Tgtend)
+              aStatus = IntWalk_ArretSurPoint;
+
+            StatusPrecedent = aStatus;
+            if (aStatus == IntWalk_PasTropGrand)
+            { // division of the step
+              Arrive     = false;
+              ArretAjout = false;
+              Tgtend     = false; // jag 940616
+              if (!reversed)
+              {
+                previousPoint.ParametersOnS2(Uvap(1), Uvap(2));
+              }
+              else
+              {
+                previousPoint.ParametersOnS1(Uvap(1), Uvap(2));
+              }
+            }
+            else if (ArretAjout || Cadre)
+            {
+              if (Arrive)
+              { // line s is open
+                CurrentLine->AddStatusLast(false);
+                // if (aStatus != IntWalk_ArretSurPointPrecedent)
+                CurrentLine->AddPoint(Psol);
+
+                // Remove <SaveN> from <seqAlone> and, if it is first found point,
+                // from <seqAjout> too
+                if (IsValidEndPoint(I, SaveN))
+                {
+                  for (int iseq = 1; iseq <= seqAlone.Length(); iseq++)
+                    if (seqAlone(iseq) == SaveN)
+                    {
+                      seqAlone.Remove(iseq);
+                      break;
+                    }
+                  if (CurrentLine->NbPoints() <= 3)
+                    for (int iseq = 1; iseq <= seqAjout.Length(); iseq++)
+                      if (seqAjout(iseq) == SaveN)
+                      {
+                        seqAjout.Remove(iseq);
+                        break;
+                      }
+                }
+                else
+                {
+                  if (seqAlone.Last() == -lines.Length() - 1)
+                  {
+                    seqAlone.Remove(seqAlone.Length());
+                    seqAjout.Remove(seqAjout.Length());
+                  }
+                  RemoveTwoEndPoints(I);
+                  Arrive = false;
+                  break; // cancel the line
+                }
+
+                if (Cadre && N == 0)
+                {
+                  Rajout = true;
+                  // seqAlone.Append(lines.Length()+1);
+                  seqAjout.Append(lines.Length() + 1);
+                }
+              }
+              else
+              {                       // open
+                wd2[I].etat     = 12; // declare it open
+                Tgtbeg          = Tgtend;
+                Tgtend          = false;
+                ArretAjout      = false;
+                StepSign        = -1;
+                StatusPrecedent = IntWalk_OK;
+                PasC            = PasSav;
+                // Check if <Psol> has been really updated
+                if (Arrive || Rajout || (!ArretAjout && Cadre && SaveN <= 0))
+                {
+                  if (aStatus == IntWalk_ArretSurPointPrecedent)
+                  {
+                    CurrentLine->AddPoint(Psol);
+                    OpenLine(0, Psol, Pnts1, Func, CurrentLine);
+                  }
+                  else
+                  {
+                    OpenLine(-lines.Length() - 1, Psol, Pnts1, Func, CurrentLine);
+                  }
+                }
+                // Remove <SaveN> from <seqAlone> and, if it is first found point,
+                // from <seqAjout> too
+                if (IsValidEndPoint(I, SaveN))
+                {
+                  for (int iseq = 1; iseq <= seqAlone.Length(); iseq++)
+                    if (seqAlone(iseq) == SaveN)
+                    {
+                      seqAlone.Remove(iseq);
+                      break;
+                    }
+                  if (CurrentLine->NbPoints() <= 2)
+                    for (int iseq = 1; iseq <= seqAjout.Length(); iseq++)
+                      if (seqAjout(iseq) == SaveN)
+                      {
+                        seqAjout.Remove(iseq);
+                        break;
+                      }
+                }
+                else
+                {
+                  RemoveTwoEndPoints(I);
+                  break; // cancel the line
+                }
+
+                if (Cadre && N == 0)
+                {
+                  Rajout = true;
+                  seqAjout.Append(-lines.Length() - 1);
+                }
+              }
+            }
+            else if (aStatus == IntWalk_ArretSurPointPrecedent)
+            {
+              if (CurrentLine->NbPoints() == 1)
+              { // cancel the line
+                Arrive = false;
+                RemoveTwoEndPoints(I);
+                break;
+              }
+              if (wd2[I].etat > 12)
+              {                   // the line should become open
+                wd2[I].etat = 12; // declare it open
+                ArretAjout  = false;
+                OpenLine(0, Psol, Pnts1, Func, CurrentLine);
+                StepSign        = -1;
+                StatusPrecedent = IntWalk_OK;
+                Arrive          = false;
+                PasC            = PasSav;
+                aNbBadRootIter  = 0;
+                Rajout          = true;
+                seqAlone.Append(-lines.Length() - 1);
+                seqAjout.Append(-lines.Length() - 1);
+              }
+              else
+              { // line s is open
+                Arrive = true;
+                CurrentLine->AddStatusLast(false);
+                Rajout = true;
+                seqAlone.Append(lines.Length() + 1);
+                seqAjout.Append(lines.Length() + 1);
+              }
+            }
+            else if (Arrive)
+            {
+              if (wd2[I].etat > 12)
+              { // line closed good case
+                CurrentLine->AddStatusFirstLast(true, false, false);
+                CurrentLine->AddPoint(CurrentLine->Value(1));
+              }
+              else if ((N > 0) && (Pnts1.Length() >= N))
+              {
+                // point of stop given at input
+                PathPnt = Pnts1.Value(N);
+                CurrentLine->AddStatusLast(true, N, PathPnt);
+                AddPointInCurrentLine(N, PathPnt, CurrentLine);
+              }
+            }
+            else if (aStatus == IntWalk_ArretSurPoint)
+            {
+              if (wd2[I].etat > 12)
+              {                   // line should become open
+                wd2[I].etat = 12; // declare it open
+                Tgtbeg      = true;
+                Tgtend      = false;
+                N           = -lines.Length() - 1;
+                Psol.SetValue(Func.Point(), reversed, Uvap(1), Uvap(2));
+                OpenLine(N, Psol, Pnts1, Func, CurrentLine);
+                StepSign = -1;
+                Rajout   = true;
+                seqAlone.Append(N);
+                seqAjout.Append(N);
+                StatusPrecedent = IntWalk_OK;
+                Arrive          = false;
+                PasC            = PasSav;
+                aNbBadRootIter  = 0;
+              }
+              else
+              {
+                Arrive = true;
+                if (Ipass != 0)
+                { // point of passage, point of stop
+                  PathPnt = Pnts1.Value(Ipass);
+                  CurrentLine->AddStatusLast(true, Ipass, PathPnt);
+                  AddPointInCurrentLine(Ipass, PathPnt, CurrentLine);
+                }
+                else
+                {
+                  CurrentLine->AddStatusLast(false);
+                  IntSurf_PntOn2S newP;
+                  newP.SetValue(Func.Point(), reversed, Uvap(1), Uvap(2));
+                  CurrentLine->AddPoint(newP);
+                  Rajout = true;
+                  seqAlone.Append(lines.Length() + 1);
+                  seqAjout.Append(lines.Length() + 1);
+                }
+              }
+            }
+            else if (aStatus == IntWalk_OK)
+            {
+              if (Ipass != 0)
+                CurrentLine->AddIndexPassing(Ipass);
+              previousPoint.SetValue(Func.Point(), reversed, Uvap(1), Uvap(2));
+              previousd3d = Func.Direction3d();
+              previousd2d = Func.Direction2d();
+              CurrentLine->AddPoint(previousPoint);
+            }
+            else if (aStatus == IntWalk_PointConfondu)
+            {
+              aNbIter--;
+            }
+          }
+        }
+        else
+        { // no numerical solution NotDone
+          PasC  = PasC / 2.;
+          PasCu = std::abs(PasC * previousd2d.X());
+          PasCv = std::abs(PasC * previousd2d.Y());
+
+          if (PasCu <= tolerance(1) && PasCv <= tolerance(2))
+          {
+            if (CurrentLine->NbPoints() == 1)
+            {
+              RemoveTwoEndPoints(I);
+              break; // cancel the line
+            }
+            if (wd2[I].etat > 12)
+            {                   // the line should become open
+              wd2[I].etat = 12; // declare it open
+              ArretAjout  = false;
+              OpenLine(0, Psol, Pnts1, Func, CurrentLine);
+              StepSign        = -1;
+              StatusPrecedent = IntWalk_OK;
+              Arrive          = false;
+              PasC            = PasSav;
+              aNbBadRootIter  = 0;
+              Rajout          = true;
+              seqAlone.Append(-lines.Length() - 1);
+              seqAjout.Append(-lines.Length() - 1);
+            }
+            else
+            { // line s is open
+              Arrive = true;
+              CurrentLine->AddStatusLast(false);
+              Tgtend = true;
+              Rajout = true;
+              seqAlone.Append(lines.Length() + 1);
+              seqAjout.Append(lines.Length() + 1);
+            }
+            /*
+            Arrive = true;
+            CurrentLine->AddStatusFirstLast(false,false,
+              false);
+            Tgtend = true;
+            Rajout = true;
+            seqAlone.Append(lines.Length()+1);
+            seqAjout.Append(lines.Length()+1);
+            */
+          }
+        }
+
+        if (aNbIter < 0)
+          break;
+      } // end of started line
+      if (Arrive)
+      {
+        CurrentLine->SetTangencyAtBegining(Tgtbeg);
+        CurrentLine->SetTangencyAtEnd(Tgtend);
+
+        lines.Append(CurrentLine);
+        wd2[I].etat = -wd2[I].etat; // mark point as processed
+      }
+    } // end of processing of start point
+  } // end of all start points
+}
+
+//-- IntWalk_IWalking_5.gxx
+
+IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
+  TheIWFunction&                 sp,
+  const bool                     Finished,
+  const math_Vector&             UV,
+  const IntWalk_StatusDeflection StatusPrecedent,
+  int&                           NbDivision,
+  double&                        Step,
+  const int                      StepSign)
+{
+  // Check the step of advancement, AND recalculate this step :
+  //
+  // 1) test point confused
+  //     if yes other tests are not done
+  // 2) test angle 3d too great
+  //     if yes divide the step and leave
+  //     angle3d = angle ((previous point, calculated point),
+  //                       previous tangent)
+  // 3) check step of advancement in 2d
+  // 4) test point confused
+  // 5) test angle 2d too great
+  // 6) test point of tangency
+  //     if yes leave
+  // 7) calculate the tangent by u,v of the section
+  // 8) test angle 3d too great
+  //     angle3d = angle ((previous point, calculated point),
+  //                       new tangent)
+  // 9) test angle 2d too great
+  // 10) test change of side (pass the tangent point not knowing it)
+  // 11) calculate the step of advancement depending on the vector
+  // 12) adjust the step depending on the previous steps
+
+  IntWalk_StatusDeflection aStatus = IntWalk_OK;
+
+  //---------------------------------------------------------------------------------
+  //-- lbr le 4 Avril 95 : it is possible that the status returns points confused
+  //-- if epsilon is great enough (1e-11). In this case one loops
+  //-- without ever changing the values sent to Rsnld.
+  //---------------------------------------------------------------------------------
+  double Paramu = 0.0, Paramv = 0.0;
+
+  if (!reversed)
+  {
+    previousPoint.ParametersOnS2(Paramu, Paramv);
+  }
+  else
+  {
+    previousPoint.ParametersOnS1(Paramu, Paramv);
+  }
+
+  const double Du  = UV(1) - Paramu;
+  const double Dv  = UV(2) - Paramv;
+  const double Duv = Du * Du + Dv * Dv;
+
+  gp_Vec Corde(previousPoint.Value(), sp.Point());
+
+  const double Norme = Corde.SquareMagnitude();
+
+  if ((Norme <= 4.0 * Precision::SquareConfusion())
+      && ((Duv <= Precision::SquarePConfusion()) || (StatusPrecedent != IntWalk_OK)))
+  { // the square is already taken in the constructor
+    aStatus = IntWalk_PointConfondu;
+    if (StatusPrecedent == IntWalk_PasTropGrand)
+    {
+      return IntWalk_ArretSurPointPrecedent;
+    }
+  }
+  else
+  {
+    double Cosi  = Corde * previousd3d;
+    double Cosi2 = 0.0;
+
+    if (Cosi * StepSign >= 0.)
+    { // angle 3d <= pi/2 !!!!
+      const double aDiv = previousd3d.SquareMagnitude() * Norme;
+      if (aDiv == 0)
+        return aStatus;
+      Cosi2 = Cosi * Cosi / aDiv;
+    }
+    if (Cosi2 < CosRef3D)
+    { // angle 3d too great
+      Step         = Step / 2.0;
+      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
+      if (StepU < tolerance(1) && StepV < tolerance(2))
+        aStatus = IntWalk_ArretSurPointPrecedent;
+      else
+        aStatus = IntWalk_PasTropGrand;
+      return aStatus;
+    }
+  }
+
+  const double aMinTolU = 0.1 * std::abs(Step * previousd2d.X()),
+               aMinTolV = 0.1 * std::abs(Step * previousd2d.Y());
+  const double aTolU    = (aMinTolU > 0.0) ? std::min(tolerance(1), aMinTolU) : tolerance(1),
+               aTolV    = (aMinTolV > 0.0) ? std::min(tolerance(2), aMinTolV) : tolerance(2);
+
+  // If aMinTolU==0.0 then (std::abs(Du) < aMinTolU) is equivalent of (std::abs(Du) < 0.0).
+  // It is impossible. Therefore, this case should be processed separately.
+  // Analogically for aMinTolV.
+
+  if ((std::abs(Du) < aTolU) && (std::abs(Dv) < aTolV))
+  {
+    // Thin shapes (for which Ulast-Ufirst or/and Vlast-Vfirst is quite small)
+    // exists (see bug #25820). In this case, step is quite small too.
+    // Nevertheless, it not always means that we mark time. Therefore, Du and Dv
+    // must consider step (aMinTolU and aMinTolV parameters).
+
+    return IntWalk_ArretSurPointPrecedent; // confused point 2d
+  }
+
+  double Cosi = StepSign * (Du * previousd2d.X() + Dv * previousd2d.Y());
+
+  if (Cosi < 0 && aStatus == IntWalk_PointConfondu)
+    return IntWalk_ArretSurPointPrecedent; // leave as step back
+                                           // with confused point
+
+  if (sp.IsTangent())
+    return IntWalk_ArretSurPoint;
+
+  // if during routing one has subdivided more than  MaxDivision for each
+  // previous step, bug on the square; do nothing (experience U4)
+
+  if ((NbDivision < MaxDivision) && (aStatus != IntWalk_PointConfondu)
+      && (StatusPrecedent != IntWalk_PointConfondu))
+  {
+    double Cosi2 = Cosi * Cosi / Duv;
+    if (Cosi2 < CosRef2D || Cosi < 0)
+    {
+      Step         = Step / 2.0;
+      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
+
+      if (StepU < tolerance(1) && StepV < tolerance(2))
+        aStatus = IntWalk_ArretSurPointPrecedent;
+      else
+        aStatus = IntWalk_PasTropGrand;
+      NbDivision = NbDivision + 1;
+      return aStatus;
+    }
+
+    Cosi  = Corde * sp.Direction3d();
+    Cosi2 = Cosi * Cosi / sp.Direction3d().SquareMagnitude() / Norme;
+    if (Cosi2 < CosRef3D)
+    { // angle 3d too great
+      Step         = Step / 2.;
+      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
+      if (StepU < tolerance(1) && StepV < tolerance(2))
+        aStatus = IntWalk_ArretSurPoint;
+      else
+        aStatus = IntWalk_PasTropGrand;
+      return aStatus;
+    }
+    Cosi  = Du * sp.Direction2d().X() + Dv * sp.Direction2d().Y();
+    Cosi2 = Cosi * Cosi / Duv;
+    if (Cosi2 < CosRef2D || sp.Direction2d() * previousd2d < 0)
+    {
+      // angle 2d too great or change the side
+      Step         = Step / 2.;
+      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
+      if (StepU < tolerance(1) && StepV < tolerance(2))
+        aStatus = IntWalk_ArretSurPointPrecedent;
+      else
+        aStatus = IntWalk_PasTropGrand;
+      return aStatus;
+    }
+  }
+
+  if (!Finished)
+  {
+    if (aStatus == IntWalk_PointConfondu)
+    {
+      double StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
+             StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
+
+      double d2dx = std::abs(previousd2d.X());
+      double d2dy = std::abs(previousd2d.Y());
+
+      if (d2dx < tolerance(1))
+      {
+        Step = StepV / d2dy;
+      }
+      else if (d2dy < tolerance(2))
+      {
+        Step = StepU / d2dx;
+      }
+      else
+      {
+        Step = std::min(StepU / d2dx, StepV / d2dy);
+      }
+    }
+    else
+    {
+      //   estimate the current vector.
+      //   if vector/2<=current vector<= vector it is considered that the criterion
+      //   is observed.
+      //   otherwise adjust the step depending on the previous step
+
+      // Direct calculation :
+      // POnCurv=(((p1+p2)/2.+(p2+p3)/2.)/2. + ((p2+p3)/2.+(p3+P4)/2.)/2.)/2.
+      // either POnCurv = p1/8. + 3.p2/8. + 3.p3/8. + p4/8.
+      // Or p2 = p1 + lambda*d1 et p3 = p4 - lambda*d4
+      // So POnCurv = (p1 + p4)/2. + 3.*(lambda d1 - lambda d4)/8.
+      // Calculate the deviation with (p1+p4)/2. . So it is just necessary to calculate
+      // the norm (square) of 3.*lambda (d1 - d4)/8.
+      // either the norm of :
+      //    3.*(std::sqrt(Norme)/3.)*StepSign*(d1-d4)/8.
+      // which produces, taking the square :
+      //         Norme * (d1-d4).SquareMagnitude()/64.
+
+      double FlecheCourante =
+        (previousd3d.Normalized().XYZ() - sp.Direction3d().Normalized().XYZ()).SquareModulus()
+        * Norme / 64.;
+
+      //      if (FlecheCourante <= 0.5*fleche) {
+      if (FlecheCourante <= 0.25 * fleche * fleche)
+      {
+        double d2dx = std::abs(sp.Direction2d().X());
+        double d2dy = std::abs(sp.Direction2d().Y());
+
+        double StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
+               StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
+
+        if (d2dx < tolerance(1))
+        {
+          Step = StepV / d2dy;
+        }
+        else if (d2dy < tolerance(2))
+        {
+          Step = StepU / d2dx;
+        }
+        else
+        {
+          Step = std::min(StepU / d2dx, StepV / d2dy);
+        }
+      }
+      else
+      {
+        // if (FlecheCourante > fleche) {  // step too great
+        if (FlecheCourante > fleche * fleche)
+        { // step too great
+          Step         = Step / 2.;
+          double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
+
+          if (StepU < tolerance(1) && StepV < tolerance(2))
+            aStatus = IntWalk_ArretSurPointPrecedent;
+          else
+            aStatus = IntWalk_PasTropGrand;
+        }
+        else
+        {
+          double d2dx = std::abs(sp.Direction2d().X());
+          double d2dy = std::abs(sp.Direction2d().Y());
+
+          double StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
+                 StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
+
+          if (d2dx < tolerance(1))
+          {
+            Step = std::min(Step, StepV / d2dy);
+          }
+          else if (d2dy < tolerance(2))
+          {
+            Step = std::min(Step, StepU / d2dx);
+          }
+          else
+          {
+            Step = std::min(Step, std::min(StepU / d2dx, StepV / d2dy));
+          }
+        }
+      }
+    }
+  }
+  return aStatus;
+}
+
+//-- IntWalk_IWalking_6.gxx
+
+#ifndef OCCT_DEBUG
+  #define No_Standard_RangeError
+  #define No_Standard_OutOfRange
+#endif
+
+void IntWalk_IWalking::AddPointInCurrentLine(
+  const int                             N,
+  const ThePointOfPath&                 PathPnt,
+  const occ::handle<IntWalk_TheIWLine>& CurrentLine) const
+{
+  IntSurf_PntOn2S Psol;
+  Psol.SetValue(ThePointOfPathTool::Value3d(PathPnt), reversed, wd1[N].ustart, wd1[N].vstart);
+  CurrentLine->AddPoint(Psol);
+}
+
+void IntWalk_IWalking::MakeWalkingPoint(const int        Case,
+                                        const double     U,
+                                        const double     V,
+                                        TheIWFunction&   sp,
+                                        IntSurf_PntOn2S& Psol)
+
+{
+  // Case == 1      : make a WalkinkPoint.
+  // Case == 2      : make a WalkinkPoint.
+  //                  The computation of the tangency on is done
+  // Case == 10 + i : make a WalkinkPoint according to i.
+  //                  but F is updated according to U and V
+  // Case == other  : the exception Standard_Failure is raised.
+
+  if ((Case == 1) || (Case == 2))
+  {
+    Psol.SetValue(sp.Point(), reversed, U, V);
+  }
+  else if (Case == 11 || Case == 12)
+  {
+    double      aUV[2] = {}, aFF[1] = {}, aDD[1][2] = {};
+    math_Vector UV(aUV, 1, 2);
+    math_Vector FF(aFF, 1, 1);
+    math_Matrix DD(aDD, 1, 1, 1, 2);
+    UV(1) = U;
+    UV(2) = V;
+    sp.Values(UV, FF, DD);
+    MakeWalkingPoint(Case - 10, U, V, sp, Psol);
+  }
+  else
+  {
+    throw Standard_ConstructionError();
+  }
+}
+
+void IntWalk_IWalking::OpenLine(const int                             N,
+                                const IntSurf_PntOn2S&                Psol,
+                                const ThePOPIterator&                 Pnts1,
+                                TheIWFunction&                        sp,
+                                const occ::handle<IntWalk_TheIWLine>& Line)
+// **************** open the line and restart in the other direction********
+
+{
+  ThePointOfPath PathPnt;
+
+  double      aUV[2], aFF[1], aDD[1][2];
+  math_Vector UV(aUV, 1, 2);
+  math_Vector FF(aFF, 1, 1);
+  math_Matrix DD(aDD, 1, 1, 1, 2);
+
+  previousPoint = Line->Value(1);
+  if (!reversed)
+  {
+    previousPoint.ParametersOnS2(UV(1), UV(2));
+  }
+  else
+  {
+    previousPoint.ParametersOnS1(UV(1), UV(2));
+  }
+  sp.Values(UV, FF, DD);
+  previousd3d = sp.Direction3d();
+  previousd2d = sp.Direction2d();
+
+  if (N > 0)
+  { // departure point given at input
+    PathPnt = Pnts1.Value(N);
+    // mark the line as open with a given stop point
+    Line->AddStatusFirst(false, true, N, PathPnt);
+
+    AddPointInCurrentLine(N, PathPnt, Line);
+  }
+  else
+  {
+    if (N < 0)
+      Line->AddPoint(Psol);
+    Line->AddStatusFirst(false, false);
+    // mark the line as open without given stop point
+  }
+  Line->Reverse(); // inverser la ligne
+  Line->SetTangentVector(previousd3d.Reversed(), Line->NbPoints());
+}
+
+bool IntWalk_IWalking::IsValidEndPoint(const int IndOfPoint, const int IndOfLine)
+{
+  if (PointLineLine.IsEmpty())
+    return true;
+
+  NCollection_List<int>::Iterator itl(PointLineLine(IndOfPoint));
+  for (; itl.More(); itl.Next())
+    if (itl.Value() == IndOfLine)
+    {
+      PointLineLine(IndOfPoint).Remove(itl);
+      return true;
+    }
+  return false;
+}
+
+void IntWalk_IWalking::RemoveTwoEndPoints(const int IndOfPoint)
+{
+  if (PointLineLine.IsBound(IndOfPoint))
+  {
+    int Line1 = PointLineLine(IndOfPoint).First();
+    int Line2 = PointLineLine(IndOfPoint).Last();
+    for (int iseq = 1; iseq <= seqAlone.Length(); iseq++)
+    {
+      if (seqAlone(iseq) == Line1 || seqAlone(iseq) == Line2)
+        seqAlone.Remove(iseq--);
+    }
+  }
+}
+
+bool IntWalk_IWalking::IsPointOnLine(const gp_Pnt2d& theP2d, const int Irang)
+{
+  const occ::handle<IntWalk_TheIWLine>& aLine = lines.Value(std::abs(Irang));
+  for (int i = 1; i <= aLine->NbPoints(); i++)
+  {
+    gp_Pnt2d P2d1 = aLine->Value(i).ValueOnSurface(reversed);
+    if (std::abs(P2d1.X() - theP2d.X()) <= tolerance(1)
+        && std::abs(P2d1.Y() - theP2d.Y()) <= tolerance(2))
+      return true;
+    if (i < aLine->NbPoints())
+    {
+      gp_Pnt2d P2d2 = aLine->Value(i + 1).ValueOnSurface(reversed);
+      gp_Vec2d PP1(theP2d, P2d1);
+      gp_Vec2d PP2(theP2d, P2d2);
+      if (PP1 * PP2 < 0)
+        return true;
+    }
+  }
+  return false;
+}
+
+//==================================================================================
+// function : IsPointOnLine
+// purpose  : Projects thePOn2S on the nearest segment of the already computed line.
+//           The retrieved projection point (aPa) is refined using theSolver.
+//            After the refinement, we will obtain a point aPb.
+//            If thePOn2S is quite far from aPb then thePOn2S is not
+//            in the line.
+//           Every already computed line is checked.
+//==================================================================================
+bool IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S,
+                                     const math_Vector&     theInfBounds,
+                                     const math_Vector&     theSupBounds,
+                                     math_FunctionSetRoot&  theSolver,
+                                     TheIWFunction&         theFunc)
+{
+  const double  eps  = Epsilon(1.);
+  const gp_Pnt& aP3d = thePOn2S.Value();
+
+  for (int aLIdx = 1; aLIdx <= lines.Length(); aLIdx++)
+  {
+    const occ::handle<IntSurf_LineOn2S>& aL = lines(aLIdx)->Line();
+
+    if (aL->IsOutBox(aP3d))
+      continue;
+
+    // Look for the nearest segment
+    double aUMin = 0.0, aVMin = 0.0;
+    double aMinSqDist = RealLast();
+    for (int aPtIdx = 1; aPtIdx < aL->NbPoints(); aPtIdx++)
+    {
+      const gp_Pnt& aP1 = aL->Value(aPtIdx).Value();
+      const gp_Pnt& aP2 = aL->Value(aPtIdx + 1).Value();
+
+      const gp_XYZ aP1P(aP3d.XYZ() - aP1.XYZ());
+      const gp_XYZ aP1P2(aP2.XYZ() - aP1.XYZ());
+
+      const double aSq12 = aP1P2.SquareModulus();
+
+      if (aSq12 < gp::Resolution())
+        continue;
+
+      const double aDP = aP1P.Dot(aP1P2);
+
+      double aSqD = RealLast();
+      if (aDP < 0.0)
+      {
+        continue;
+      }
+      else if (aDP > aSq12)
+      {
+        continue;
+      }
+      else
+      {
+        aSqD = aP1P.CrossSquareMagnitude(aP1P2) / aSq12;
+      }
+
+      if (aSqD < aMinSqDist)
+      {
+        aMinSqDist = aSqD;
+
+        const double aL1 = aDP / aSq12;
+        const double aL2 = 1.0 - aL1;
+
+        if (aL1 < eps || aL2 < eps)
+        {
+          return true;
+        }
+
+        double aU1, aV1, aU2, aV2;
+        aL->Value(aPtIdx).ParametersOnSurface(reversed, aU1, aV1);
+        aL->Value(aPtIdx + 1).ParametersOnSurface(reversed, aU2, aV2);
+
+        aUMin = aL1 * aU2 + aL2 * aU1;
+        aVMin = aL1 * aV2 + aL2 * aV1;
+      }
+    }
+
+    if (aMinSqDist > Precision::Infinite())
+      continue;
+
+    math_Vector aVecPrms(1, 2);
+    aVecPrms(1) = aUMin;
+    aVecPrms(2) = aVMin;
+    theSolver.Perform(theFunc, aVecPrms, theInfBounds, theSupBounds);
+    if (!theSolver.IsDone())
+      continue;
+
+    theSolver.Root(aVecPrms);
+
+    const gp_Pnt aPa(theFunc.PSurface()->Value(aUMin, aVMin)),
+      aPb(theFunc.PSurface()->Value(aVecPrms(1), aVecPrms(2)));
+    const double aSqD1 = aPb.SquareDistance(aP3d);
+    const double aSqD2 = aPa.SquareDistance(aPb);
+
+    if (aSqD1 < 4.0 * aSqD2)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}

@@ -1,0 +1,51 @@
+puts "==========="
+puts "OCC24224: Suspicious logics in changing clipping planets at OpenGL_Structure"
+puts "==========="
+puts ""
+
+## centre rectangle
+set x1_coord 150
+set y1_coord 250
+
+## right rectangle
+set x2_coord 255
+set y2_coord 320
+
+## left rectangle
+set x3_coord 73
+set y3_coord 150
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+box b1 0 0 0 10 10 10
+box b2 30 0 0 10 40 10
+box b3 -30 0 0 20 20 20
+vsetdispmode 1
+vdisplay b1 b2 b3
+vfit
+
+## test view-level clipping
+vclipplane create pln1
+vclipplane change pln1 equation 0 1 0 -5
+vclipplane change pln1 capping on
+vclipplane change pln1 capping color 0.9 0.9 0.9
+vclipplane set pln1 view Driver1/Viewer1/View1
+
+checkcolor $x1_coord $y1_coord 0.9 0.9 0.9
+checkcolor $x2_coord $y2_coord 0.9 0.9 0.9
+
+## test sharing of planes between view and object
+vclipplane set pln1 object b1
+
+## test object-level clipping
+vclipplane create pln2
+vclipplane change pln2 equation -0.707 0.707 0 -25
+vclipplane change pln2 capping on
+vclipplane change pln2 capping color 0.5 0.5 0.9
+vclipplane change pln2 capping hatch on
+vclipplane set pln2 object b3
+
+checkcolor $x3_coord $y3_coord 0.5 0.5 0.9
+
+vdump $imagedir/${casename}.png

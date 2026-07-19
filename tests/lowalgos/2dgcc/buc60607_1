@@ -1,0 +1,12 @@
+puts "======================="
+puts "BUC60607"
+puts "It takes visual check for this BUC"
+puts "======================="
+
+set len_ch 2513
+
+point p 1600 300
+line l 0 500 2000 500
+cirtang c -p p -c l -r 400
+checklength c_1 -l 2513.2741228718346
+checklength c_2 -l 2513.2741228718346

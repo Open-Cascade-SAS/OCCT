@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC25491"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakeOffset algorithm crashes on customer's shape and big value of offset
+#######################################################################
+
+restore [locate_data_file bug25491_offset_lines_2.brep] a
+
+if [catch { mkoffset resoffset a 1 -35 i } ] {
+  puts "Error : mkoffset is wrong"
+} else {
+  renamevar resoffset_1 result
+
+  checkprops result -l 120 
+checkshape result 
+checksection result
+
+  checknbshapes result -vertex 5 -edge 5 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 11
+}
+
+smallview
+display a
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

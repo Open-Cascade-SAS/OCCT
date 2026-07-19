@@ -1,0 +1,7 @@
+restore [locate_data_file bug25926_unit_cell_grid.brep] s
+
+OFFSETSHAPE 30 {} $calcul $type
+
+checkprops result -v 4.67244e+008
+
+checknbshapes result -shell 1

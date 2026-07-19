@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC26957"
+puts "============"
+puts ""
+###########################################################
+## Unify same domain operation is slow for multiple shells
+###########################################################
+
+restore [locate_data_file bug26957-w-700.brep] a1
+
+nbshapes a1
+regexp {([-0-9.+eE]+)} [time {unifysamedom r1 a1}] full t1
+puts "t1=$t1"
+
+sewing a2 0.0 a1
+
+puts ""
+nbshapes a2
+regexp {([-0-9.+eE]+)} [time {unifysamedom r2 a2}] full t2
+puts "t2=$t2"
+
+set tol_rel 0.1
+if { [expr (${t1}*1. - ${t2}) / ${t2}] > ${tol_rel}} {
+   puts "Error: Unify same domain operation is slow for multiple shells"
+}

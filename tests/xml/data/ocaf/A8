@@ -1,0 +1,53 @@
+set aTestName "caf001-H3"
+puts ${aTestName}
+
+set aTokList { :,}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+line aLine1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aDumpLine1 [dump aLine1]
+
+regexp {Origin[ \t]*:([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} ${aDumpLine1} full anOriginX_Line1 anOriginY_Line1 anOriginZ_Line1
+regexp {Axis[ \t]*:([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} ${aDumpLine1} full anAxisDX_Line1 anAxisDY_Line1 anAxisDZ_Line1
+
+set aLabel 0:2
+SetAxis D ${aLabel} aLine1
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {GetAxis DD ${aLabel} anAxis3} aResult]
+if { ${IsDone} != 0 } {
+	puts "Error : Get a value of TDataStd_Axis attribute from restoring document"
+} else {
+
+    set aDumpAxis3 [dump anAxis3]
+    regexp {Origin[ \t]*:([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} ${aDumpAxis3} full anOriginX_Line3 anOriginY_Line3 anOriginZ_Line3
+    regexp {Axis[ \t]*:([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} ${aDumpAxis3} full anAxisDX_Line3 anAxisDY_Line3 anAxisDZ_Line3
+
+    if { ${anOriginX_Line1} != ${anOriginX_Line3} || 
+     ${anOriginY_Line1} != ${anOriginY_Line3} || 
+     ${anOriginZ_Line1} != ${anOriginZ_Line3} || 
+     ${anAxisDX_Line1} != ${anAxisDX_Line3} || 
+     ${anAxisDY_Line1} != ${anAxisDY_Line3} || 
+     ${anAxisDZ_Line1} != ${anAxisDZ_Line3} } {
+	puts "Error : Get a value of TDataStd_Axis attribute from restoring document"
+    }
+}

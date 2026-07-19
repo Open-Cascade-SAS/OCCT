@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename 1stdraw.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 72  ( 1081 )  Summary  = 72  ( 1081 )
+CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1628  ( 1628 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1628  ( 1628 )   FreeWire = 16  ( 17 ) 
+TOLERANCE   : MaxTol   =   0.9993613167  (   0.9993613167 )  AvgTol   =   0.01637963521  (   0.01644107279 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 1642  ( 5023 )  N2Labels = 0  ( 0 )   TotalLabels = 1645  ( 5026 )   NameLabels = 1632  ( 2034 )   ColorLabels = 1642  ( 5025 )   LayerLabels = 1630  ( 5025 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 4 )
+COLORS      : Colors   = BLUE GREEN MAGENTA  ( BLUE GREEN MAGENTA RED )
+NLAYERS     : NLayers  = 6  ( 7 )
+LAYERS      : Layers   = 1 10 15 18 20 30  ( 1 10 13 15 18 20 30 )
+
+}

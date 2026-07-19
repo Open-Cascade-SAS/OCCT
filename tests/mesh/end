@@ -1,0 +1,190 @@
+# Get name of shape
+
+if { [string compare ${TheFileName} ""] != 0 } {
+    set is_brep [regexp "\.brep" $TheFileName]
+    if {$is_brep == 0} {
+        set is_brep [regexp "\.rle" $TheFileName]
+    }
+    if {$is_brep == 1} {
+        puts [brestore [locate_data_file $TheFileName] res]
+    } else {
+        if { [array get Draw_Groups "DE: STEP"] == "" } {
+	    pload XDE
+        }
+        
+        stepread [locate_data_file ${TheFileName}] a *
+        tpcompound res
+    }
+}
+
+puts [checkshape res]
+
+tclean res
+
+if { [string compare $command "shading"] == 0 } {
+    vinit View1
+    # prefer vertex shading
+    vrenderparams -shadingModel VERT
+    vdisplay -noupdate -redisplay res
+    vsetdispmode res 1
+    vfit
+}
+
+if { [string compare $command "incmesh"] == 0 } {
+    if { [string compare $parallel "1"] != 0 || [info exists count_parallel] == 0 } {
+        set count_parallel 1
+    }
+    for {set i 1} {$i <= $count_parallel} {incr i} {
+        tclean res
+        puts "i = $i"
+        incmesh res ${Deflection} -parallel ${parallel}
+    }
+}
+
+# Collect TODO for area
+if { [string compare $bug_area ""] != 0 } {
+# The difference between the area of a geometry surface and the area of mesh triangles should be less than rel_tol value.
+# If rel_tol is 100 we suppose that the mesh cannot be created.
+    if { $rel_tol == 100 } {
+	puts "TODO $bug_area All:^\\s*Error  : The meshing algo cannot create mesh.\\s*$"
+    } else {
+	puts "TODO ?$bug_area All: Error: area difference = .* is not equal to expected"
+    }
+}
+
+# Collect TODO for number of triangles without mesh
+if { [string compare $bug_withouttri ""] != 0 } {
+# It may be different for different OS
+    foreach os_withouttri [array names nbwithouttri] {
+	if { $nbwithouttri($os_withouttri) != 0 } { 
+	    puts "TODO $bug_withouttri $os_withouttri:^\\s*Error: Faces without triangulation: $nbwithouttri($os_withouttri)\\b\\s*"
+	}
+    }
+}
+
+# Collect TODO for number of free links
+if { [string compare $bug_freelinks ""] != 0 } {
+# It may be different for different OS
+    foreach os_freelinks [array names nbfree] {
+	if { $nbfree($os_freelinks) != 0 } { 
+	    puts "TODO $bug_freelinks $os_freelinks:^\\s*Error: Free links"
+	}
+    }
+}
+
+# Collect TODO for number of cross faces
+if { [string compare $bug_cross ""] != 0 } {
+# It may be different for different OS
+    foreach os_cross [array names nbcross] {
+	if { $nbcross($os_cross) != 0 } { 
+	    puts "TODO $bug_cross $os_cross:Error: Cross face errors"
+	}
+    }
+}
+
+# Collect TODO for number of async edges
+if { [string compare $bug_async ""] != 0 } {
+# It may be different for different OS
+    foreach os_async [array names nbasync] {
+	if { $nbasync($os_async) != 0 } { 
+	    puts "TODO $bug_async $os_async:^\\s*Error: Async edges: $nbasync($os_async)\\b\\s*"
+	}
+    }
+}
+
+# Collect TODO for number of free nodes
+if { [string compare $bug_freenodes ""] != 0 } {
+# It may be different for different OS
+    foreach os_freenodes [array names nbfreenodes] {
+	if { $nbfreenodes($os_freenodes) != 0 } { 
+	    puts "TODO $bug_freenodes $os_freenodes:Error: Free nodes"
+	}
+    }
+}
+
+# Number of triangles
+set tri 0
+# Number of nodes
+set nod 0
+# Deflection
+set def 0
+
+# Collect number of triangles, number of nodes and deflection.
+
+set full [trinfo res]
+regexp "(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*deflection +(\[0-9\]|\.+)" $full reg_out tri nod def
+
+if { $tri == 0 || $nod == 0 } {                                                                     
+    puts " "
+    puts "Error  : The meshing algo cannot create mesh."    
+}             
+
+puts " "
+puts "XML property: triangles $tri"
+puts "XML property: nodes $nod"
+puts " "
+
+# Check if area of triangles is valid
+proc CheckTriArea {shape {eps 0}} {
+  upvar #0 $shape a
+  set area [triarea a $eps]
+  set t_area [lindex $area 0]
+  set g_area [expr abs([lindex $area 1])]
+  puts "area by triangles: $t_area"
+  puts "area by geometry:  $g_area"
+  expr ($t_area - $g_area) / $g_area * 100
+}
+
+puts "\nChecking triangulation area (triarea command)..."
+set rel_err [expr abs([CheckTriArea res $area_eps])]
+if { [info exists max_rel_tol_diff] && $max_rel_tol_diff > 0 } {
+  checkreal "area difference" $rel_err $rel_tol $max_rel_tol_diff 0
+}
+
+# Check if topology of mesh is valid
+puts "\nChecking mesh topology (tricheck command)..."
+set l [tricheck res]
+if {$l != ""} {
+    puts $l
+    set withouttri [regsub -all "face \[0-9\]+ has no triangulation" $l "FOUND" ll]
+    if { $withouttri != 0 } {
+	puts "Error: Faces without triangulation: $withouttri"
+    }
+    if { [regexp "Free_links +(\[0-9\]+) +Cross_face_errors +(\[0-9\]+) +Async_edges +(\[0-9\]+) +Free_nodes +(\[0-9\]+)" $l full freelinks crossfaces asyncedges freenodes] } {
+	if { $freelinks != 0 } {
+	    puts "Error: Free links: $freelinks"
+	}
+	if { $crossfaces != 0 } {
+	    puts "Error: Cross face errors: $crossfaces"
+	}
+	if { $asyncedges != 0 } {
+	    puts "Error: Async edges: $asyncedges"
+	}
+	if { $freenodes != 0 } {
+	    puts "Error: Free nodes: $freenodes"
+	}
+    }
+}
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}
+
+if { [string compare $command "shading"] == 0 } {
+    vglinfo
+    vdump $imagedir/${test_image}.png
+} else {
+    isos 0
+    smallview
+    donly res
+    fit
+    triangles res
+    xwd $imagedir/${test_image}.png
+}
+
+puts ""
+puts "TEST COMPLETED" 
+puts ""

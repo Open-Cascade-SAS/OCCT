@@ -1,0 +1,17 @@
+puts "PRO15203"
+puts "Fuse"
+puts ""
+
+
+restore [locate_data_file pro15203b.rle] c1
+restore [locate_data_file pro15203c.rle] c2
+########################mod by pkv f
+explode c1 f
+copy c1_1 c1
+explode c2 f
+copy c2_1 c2
+########################mod by pkv t
+bfuse result c1 c2
+
+checkprops result -s 570.047
+checkview -display result -2d -otherwise { c1 c2 } -s -path ${imagedir}/${test_image}.png

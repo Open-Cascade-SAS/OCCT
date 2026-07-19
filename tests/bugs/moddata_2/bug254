@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC254"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC254-1.brep] shape1 
+checkshape shape1
+ 
+restore [locate_data_file OCC254-3.brep] shape3
+checkshape shape3
+ 
+bsection result shape1 shape3
+checkshape result
+
+checkprops result -l 1194.29 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

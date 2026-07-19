@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC21670"
+puts "========"
+puts ""
+###################################
+# BOP section produces bad result
+###################################
+
+smallview
+
+restore [locate_data_file bug21633_SECC19_1_IZQ.brep] a
+
+explode a f
+mksurface s a_1
+mkface f s
+
+restore [locate_data_file bug21670-bug_prj_wire.brep] w
+
+explode w
+prism p w_1 0 0 -1
+
+donly f p
+fit
+
+puts "Checking f: [bopcheck f] [checkshape f] [tolerance f]"
+puts "Checking p: [bopcheck p] [checkshape p] [tolerance p]"
+
+bsection result f p
+
+set bug_info [explode result]
+if {[llength $bug_info] != 1} {
+  puts "ERROR: OCC21670 is reproduced. Result of bsection command is set of shapes."
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

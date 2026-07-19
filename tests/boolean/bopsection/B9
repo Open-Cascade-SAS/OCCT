@@ -1,0 +1,11 @@
+restore [locate_data_file CTO908_topo100.brep] m
+
+explode m
+renamevar m_3 coque
+
+bop coque m_2
+bopsection result
+
+checkprops result -l 83.7197
+checksection result
+checkview -display result -2d -otherwise { coque m_2 } -l -path ${imagedir}/${test_image}.png

@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename USA60023-2.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 1 )  Warnings = 0  ( 16 )  Summary  = 0  ( 17 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   FreeWire = 16  ( 16 ) 
+TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
+LABELS      : N0Labels = 4160  ( 4160 )  N1Labels = 302  ( 562 )  N2Labels = 0  ( 0 )   TotalLabels = 4462  ( 4722 )   NameLabels = 4160  ( 4160 )   ColorLabels = 3056  ( 3061 )   LayerLabels = 4382  ( 4402 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = BLUE CYAN GREEN MAGENTA RED YELLOW  ( BLUE CYAN GREEN MAGENTA RED YELLOW )
+NLAYERS     : NLayers  = 36  ( 36 )
+LAYERS      : Layers   = 1 10 104 106 107 11 12 14 17 2 20 200 21 22 24 3 30 31 4 41 44 5 50 52 60 61 62 64 7 70 71 72 80 81 82 9  ( 1 10 104 106 107 11 12 14 17 2 20 200 21 22 24 3 30 31 4 41 44 5 50 52 60 61 62 64 7 70 71 72 80 81 82 9 )
+
+}

@@ -1,0 +1,6 @@
+if {[string compare $command "SplitAngle"] == 0 } {
+  puts "TODO OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_"
+}
+
+restore [locate_data_file METABO3.brep] a
+

@@ -1,0 +1,31 @@
+set aTestName "caf001-J3"
+puts ${aTestName}
+
+# Add an attribute to a data framework
+set aSetAttr1 "c73bd075-22ee-11d2-acde-080009dc4422"
+set aLabel 0:2
+SetUAttribute D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {GetUAttribute DD ${aLabel} ${aSetAttr1}} aResult]
+if { ${IsDone} != 0 } {
+    puts "Error : Get a value of TDataStd_UAttribute attribute from restoring document"
+} else {
+    set aGetAttr3 [GetUAttribute DD ${aLabel} ${aSetAttr1}]
+
+    if { ${aSetAttr1}!=${aGetAttr3} } {
+	puts "Error : Get a value of TDataStd_UAttribute attribute from restoring document"
+    }
+}

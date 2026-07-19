@@ -1,0 +1,14 @@
+puts "=================================================="
+puts "BOP common produces one face instead of a solid"
+puts "=================================================="
+
+restore [locate_data_file bug23405_Box_1.brep] bb
+restore [locate_data_file bug23405_Rotation_1.brep] rr
+
+bop bb rr
+bopcommon result
+
+checkprops result -s 2435.25
+checkview -display result -2d -otherwise { bb rr } -s -path ${imagedir}/${test_image}.png
+
+

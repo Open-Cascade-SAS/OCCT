@@ -1,0 +1,26 @@
+restore [locate_data_file $chamf_shape] sh
+if { [dval SCALE] != 0 } {
+   tscale sh 0 0 0 SCALE
+}
+explode sh F
+renamevar sh Ed
+explode Ed E
+
+if { [string compare $group "dist_angle"] == 0 } {
+   set chamf_type A
+   set chamf_parameters $chamf_dist_angle
+}
+if { [string compare $group "dist_dist"] == 0 } {
+   set chamf_type ""
+   set chamf_parameters $chamf_dist_dist
+}
+if { [string compare $group "equal_dist"] == 0 } {
+   set chamf_type ""
+   set chamf_parameters $chamf_equal_dist
+}
+
+compute_chamf result Ed sh
+
+catch { puts [checkshape result] }
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+puts "TEST COMPLETED"

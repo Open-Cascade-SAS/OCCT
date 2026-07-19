@@ -1,0 +1,22 @@
+puts "==========="
+puts "0031920: Application Framework - speed up methods of getting label by entry and vice versa"
+puts "==========="
+
+NewDocument D
+set entry 0:2
+set value 5
+SetInteger D $entry 5
+set checkvalue1 [GetInteger D $entry]
+if { $value != $checkvalue1 } {
+  puts "Set a value of TDataStd_Integer attribute: Error"
+  return
+}
+
+SetAccessByEntry D 1
+set checkvalue2 [GetInteger D $entry]
+if { $value != $checkvalue2 } {
+  puts "Fast access to label by entry: Error"
+  return
+}
+
+puts "Fast access to label by entry: OK"

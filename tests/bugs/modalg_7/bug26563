@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC26563"
+puts "========"
+puts ""
+#################################################################################
+# Boolean cut operation in new API multi-tool mode performs fuse instead of cut
+#################################################################################
+
+restore [locate_data_file bug26563_BodyShape.brep] bodyshape
+restore [locate_data_file bug26563_CutShape.brep] cutshape
+
+bclearobjects
+bcleartools
+baddobjects bodyshape
+baddtools cutshape
+bfuzzyvalue 1e-5
+bapibop result 2
+
+checkshape result
+checkprops result -v 1.52043e+7
+checknbshapes result -vertex 234 -edge 354 -wire 122 -face 121 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 834
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

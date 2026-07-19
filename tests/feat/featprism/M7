@@ -1,0 +1,10 @@
+# Original bug : cts20196
+# Date : 12 Oct 98
+
+restore [locate_data_file CFE900_cts20gan.rle] base
+restore [locate_data_file cts20196_face.rle] cont
+
+featprism base cont cont 0 1 0 0 1
+featperformval prism result 20
+
+checkprops result -s 250288

@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC27151"
+puts "========"
+puts ""
+#########################################################################################
+# Exception is raised during performing command "splitshape" in the Test Harness
+#########################################################################################
+
+restore [locate_data_file bug27151.brep] a
+explode a 
+renamevar a_1 f1
+renamevar a_2 w0
+explode f1 e
+explode w0 e
+wire w1 w0_2 w0_3
+splitshape rs f1 f1 w1 @ f1_4 w0_1
+fixshape res rs 1.e-07 1
+checkprops res -s 173.371
+checknbshapes res -face 2
+
+checkview -display res -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,11 @@
+puts "# ======================================================================"
+puts "# 0029399: Optimize reading of floating point values from text strings "
+puts "# ======================================================================"
+puts ""
+puts "# Test to monitor performance of reading large BREP file"
+
+set file [locate_data_file OCC54.brep]
+
+dchrono s restart
+restore $file a
+dchrono s stop counter "restore"

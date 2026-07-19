@@ -1,0 +1,17 @@
+puts "ID160065"
+puts "Fuse"
+puts ""
+
+restore [locate_data_file CFE900_id260gao.rle] base
+restore [locate_data_file id260065_face2.rle] cont2
+
+prism tool2 cont2 -86.60254 50 0
+
+bcut rcut2 tool2 base
+
+explode rcut2
+
+bfuse result base rcut2_2
+
+checkprops result -s 13822.2
+checkview -display result -2d -otherwise { base rcut2_2 } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,75 @@
+// Created on: 1995-10-21
+// Created by: Andre LIEUTIER
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+
+inline double Plate_Plate::Polm(const gp_XY& point2d,
+                                const int    iu,
+                                const int    iv,
+                                const int    idu,
+                                const int    idv) const
+{
+  if (idu > iu)
+    return 0;
+  if (idv > iv)
+    return 0;
+  double u = point2d.X();
+  double v = point2d.Y();
+
+  double value = 1;
+
+  int degu = iu - idu;
+  int i;
+  for (i = 0; i < degu; i++)
+    value *= u;
+  for (i = iu; i > degu; i--)
+    value *= i;
+
+  int degv = iv - idv;
+  for (i = 0; i < degv; i++)
+    value *= v;
+  for (i = iv; i > degv; i--)
+    value *= i;
+
+  // le produit par ddu[iu]*ddv[iv] n'est pas indispensable !! (il change
+  // les valeurs claculles pour la partie coef polynomiaux de Sol
+  // de telle facon que les methodes Evaluate et EvaluateDerivative donnent
+  // en theorie les memes valeurs. Toutefois, il nous semble que ce produit
+  // ameliore le conditionnmenet de la matrice
+  return value * ddu[iu] * ddv[iv];
+  // return value;
+}
+
+inline int& Plate_Plate::Deru(const int index) const
+{
+  return ((int*)deru)[index];
+}
+
+inline int& Plate_Plate::Derv(const int index) const
+{
+  return ((int*)derv)[index];
+}
+
+inline gp_XYZ& Plate_Plate::Solution(const int index) const
+{
+  return ((gp_XYZ*)solution)[index];
+}
+
+inline gp_XY& Plate_Plate::Points(const int index) const
+{
+  return ((gp_XY*)points)[index];
+}

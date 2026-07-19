@@ -1,0 +1,33 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "================"
+puts "OCC31"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC31.brep] sh 
+checkshape sh
+
+explode sh f
+
+explode sh_2 e
+
+chamf res1 sh sh_2_1 sh_2 7 7 
+checkshape res1
+
+explode res1 f
+
+explode res1_5 e
+
+chamf res2 res1 res1_5_4 res1_5 7 7
+checkshape res2
+
+explode res2 f
+
+explode res2_4 e
+
+chamf result res2 res2_4_1 res2_4 7 7
+checkshape result
+
+checkprops result -s 107634
+checkview -display result -2d -path ${imagedir}/${test_image}.png

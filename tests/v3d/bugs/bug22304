@@ -1,0 +1,16 @@
+puts "==========="
+puts "OCC22304: Incorrect triangulation on face of the attached file"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC22304-face_976_badvisu.brep] result
+
+tclean result
+vinit View1
+vdisplay result
+vfit
+vsetdispmode 1
+
+checktrinfo result -tri -nod
+vdump $imagedir/${casename}.png

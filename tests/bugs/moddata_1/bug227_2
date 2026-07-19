@@ -1,0 +1,25 @@
+
+puts "========"
+puts "OCC227"
+puts "(case 2)"
+puts "========"
+
+##############################################################
+##Incorrect result with missing faces after a fuse operation between the box and the wedge.
+###############################################################
+
+restore [locate_data_file OCC227a.brep] a 
+fsameparameter a
+updatetolerance a
+checkshape a
+
+restore [locate_data_file OCC227b.brep] b
+fsameparameter b
+updatetolerance b
+checkshape b
+
+bfuse result b a 
+checkshape result
+
+checkprops result -s 1583.92
+checkview -display result -2d -path ${imagedir}/${test_image}.png

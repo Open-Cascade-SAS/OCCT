@@ -1,0 +1,640 @@
+// Created on: 1995-04-05
+// Created by: Christophe MARION
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <HLRTest.hxx>
+
+#include <DBRep.hxx>
+#include <Draw_Appli.hxx>
+#include <HLRAppli_ReflectLines.hxx>
+#include <HLRBRep_Algo.hxx>
+#include <HLRBRep_HLRToShape.hxx>
+#include <HLRTest_OutLiner.hxx>
+#include <HLRTest_Projector.hxx>
+#include <HLRTopoBRep_OutLiner.hxx>
+#include <TopoDS_Shape.hxx>
+#include <BRep_Builder.hxx>
+
+static occ::handle<HLRBRep_Algo> hider;
+#ifdef _WIN32
+Standard_IMPORT Draw_Viewer dout;
+#endif
+
+#include <BRepTopAdaptor_Tool.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+
+//=================================================================================================
+
+void HLRTest::Set(const char* const Name, const HLRAlgo_Projector& P)
+{
+  Draw::Set(Name, new HLRTest_Projector(P));
+}
+
+//=================================================================================================
+
+bool HLRTest::GetProjector(const char*& Name, HLRAlgo_Projector& P)
+{
+  occ::handle<HLRTest_Projector> HP = occ::down_cast<HLRTest_Projector>(Draw::Get(Name));
+  if (HP.IsNull())
+  {
+    return false;
+  }
+  P = HP->Projector();
+  return true;
+}
+
+//=================================================================================================
+
+void HLRTest::Set(const char* const Name, const TopoDS_Shape& S)
+{
+  Draw::Set(Name, new HLRTest_OutLiner(S));
+}
+
+//=================================================================================================
+
+occ::handle<HLRTopoBRep_OutLiner> HLRTest::GetOutLiner(const char*& Name)
+{
+  occ::handle<Draw_Drawable3D>  D  = Draw::Get(Name);
+  occ::handle<HLRTest_OutLiner> HS = occ::down_cast<HLRTest_OutLiner>(D);
+  if (!HS.IsNull())
+  {
+    return HS->OutLiner();
+  }
+  occ::handle<HLRTopoBRep_OutLiner> HO;
+  return HO;
+}
+
+//=================================================================================================
+
+static int hprj(Draw_Interpretor&, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+  //
+  gp_Ax2 anAx2 = gp::XOY();
+  if (n == 11)
+  {
+    double x = Draw::Atof(a[2]);
+    double y = Draw::Atof(a[3]);
+    double z = Draw::Atof(a[4]);
+
+    double dx = Draw::Atof(a[5]);
+    double dy = Draw::Atof(a[6]);
+    double dz = Draw::Atof(a[7]);
+
+    double dx1 = Draw::Atof(a[8]);
+    double dy1 = Draw::Atof(a[9]);
+    double dz1 = Draw::Atof(a[10]);
+
+    gp_Pnt anOrigin(x, y, z);
+    gp_Dir aNormal(dx, dy, dz);
+    gp_Dir aDX(dx1, dy1, dz1);
+    anAx2 = gp_Ax2(anOrigin, aNormal, aDX);
+  }
+
+  HLRAlgo_Projector P(anAx2);
+  HLRTest::Set(a[1], P);
+  return 0;
+}
+
+//=================================================================================================
+
+static int hout(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+  const char*  name = a[2];
+  TopoDS_Shape S    = DBRep::Get(name);
+  if (S.IsNull())
+  {
+    di << name << " is not a shape.\n";
+    return 1;
+  }
+  HLRTest::Set(a[1], S);
+  return 0;
+}
+
+//=================================================================================================
+
+static int hfil(Draw_Interpretor& di, int n, const char** a)
+{
+  int nbIso = 0;
+  if (n < 3)
+  {
+    return 1;
+  }
+  if (n > 3)
+  {
+    nbIso = Draw::Atoi(a[3]);
+  }
+  const char*                       name1 = a[1];
+  occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name1);
+  if (HS.IsNull())
+  {
+    di << name1 << " is not an OutLiner.\n";
+    return 1;
+  }
+  const char*       name2 = a[2];
+  HLRAlgo_Projector P;
+  if (!HLRTest::GetProjector(name2, P))
+  {
+    di << name2 << " is not a projector.\n";
+    return 1;
+  }
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher> MST;
+  HS->Fill(P, MST, nbIso);
+  return 0;
+}
+
+//=================================================================================================
+
+static int sori(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 3)
+  {
+    return 1;
+  }
+  const char*                       name1 = a[1];
+  const char*                       name2 = a[2];
+  occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name2);
+  if (HS.IsNull())
+  {
+    di << name2 << " is not an OutLiner.\n";
+    return 1;
+  }
+  DBRep::Set(name1, HS->OriginalShape());
+  return 0;
+}
+
+//=================================================================================================
+
+static int sout(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 3)
+  {
+    return 1;
+  }
+  const char*                       name1 = a[1];
+  const char*                       name2 = a[2];
+  occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name2);
+  if (HS.IsNull())
+  {
+    di << name2 << " is not an OutLiner.\n";
+    return 1;
+  }
+  if (HS->OutLinedShape().IsNull())
+  {
+    di << name2 << " has no OutLinedShape.\n";
+    return 1;
+  }
+  DBRep::Set(name1, HS->OutLinedShape());
+  return 0;
+}
+
+//=================================================================================================
+
+static int hloa(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+  const char*                       name1 = a[1];
+  occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name1);
+  if (HS.IsNull())
+  {
+    di << name1 << " is not an OutLiner.\n";
+    return 1;
+  }
+  hider->Load(HS);
+  return 0;
+}
+
+//=================================================================================================
+
+static int hrem(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n > 1)
+  {
+    const char*                       name = a[1];
+    int                               index;
+    occ::handle<HLRTopoBRep_OutLiner> HS = HLRTest::GetOutLiner(name);
+    if (HS.IsNull())
+    {
+      TopoDS_Shape S = DBRep::Get(name);
+      if (S.IsNull())
+      {
+        di << name << " is not an OutLiner and not a shape.\n";
+        return 1;
+      }
+      else
+      {
+        index = hider->Index(S);
+        if (index == 0)
+        {
+          di << name << " not loaded shape.\n";
+          return 1;
+        }
+      }
+    }
+    else
+    {
+      index = hider->Index(HS->OriginalShape());
+      if (index == 0)
+      {
+        di << name << " not loaded outliner.\n";
+        return 1;
+      }
+    }
+    hider->Remove(index);
+    di << name << " removed\n";
+  }
+  else
+  {
+    while (hider->NbShapes() > 0)
+    {
+      hider->Remove(1);
+    }
+    di << " all shapes removed\n";
+  }
+  return 0;
+}
+
+//=================================================================================================
+
+static int sprj(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+  const char*       name = a[1];
+  HLRAlgo_Projector P;
+  if (!HLRTest::GetProjector(name, P))
+  {
+    di << name << " is not a projector.\n";
+    return 1;
+  }
+  hider->Projector(P);
+  return 0;
+}
+
+//=================================================================================================
+
+static int upda(Draw_Interpretor&, int, const char**)
+{
+  hider->Update();
+  return 0;
+}
+
+//=================================================================================================
+
+static int hide(Draw_Interpretor&, int, const char**)
+{
+  hider->Hide();
+  return 0;
+}
+
+//=================================================================================================
+
+static int show(Draw_Interpretor&, int, const char**)
+{
+  hider->ShowAll();
+  return 0;
+}
+
+//=================================================================================================
+
+static int hdbg(Draw_Interpretor& di, int, const char**)
+{
+  hider->Debug(!hider->Debug());
+  if (hider->Debug())
+  {
+    di << "debug\n";
+  }
+  else
+  {
+    di << "no debug\n";
+  }
+  return 0;
+}
+
+//=================================================================================================
+
+static int hnul(Draw_Interpretor&, int, const char**)
+{
+  hider->OutLinedShapeNullify();
+  return 0;
+}
+
+//=================================================================================================
+
+static int hres(Draw_Interpretor&, int n, const char** a)
+{
+  TopoDS_Shape S, V, V1, VN, VO, VI, H, H1, HN, HO, HI;
+  if (n > 1)
+  {
+    const char* name = a[1];
+    S                = DBRep::Get(name);
+  }
+  HLRBRep_HLRToShape HS(hider);
+
+  if (S.IsNull())
+  {
+    V  = HS.VCompound();
+    V1 = HS.Rg1LineVCompound();
+    VN = HS.RgNLineVCompound();
+    VO = HS.OutLineVCompound();
+    VI = HS.IsoLineVCompound();
+    H  = HS.HCompound();
+    H1 = HS.Rg1LineHCompound();
+    HN = HS.RgNLineHCompound();
+    HO = HS.OutLineHCompound();
+    HI = HS.IsoLineHCompound();
+  }
+  else
+  {
+    V  = HS.VCompound(S);
+    V1 = HS.Rg1LineVCompound(S);
+    VN = HS.RgNLineVCompound(S);
+    VO = HS.OutLineVCompound(S);
+    VI = HS.IsoLineVCompound(S);
+    H  = HS.HCompound(S);
+    H1 = HS.Rg1LineHCompound(S);
+    HN = HS.RgNLineHCompound(S);
+    HO = HS.OutLineHCompound(S);
+    HI = HS.IsoLineHCompound(S);
+  }
+  if (!V.IsNull())
+  {
+    DBRep::Set("vl", V);
+  }
+  if (!V1.IsNull())
+  {
+    DBRep::Set("v1l", V1);
+  }
+  if (!VN.IsNull())
+  {
+    DBRep::Set("vnl", VN);
+  }
+  if (!VO.IsNull())
+  {
+    DBRep::Set("vol", VO);
+  }
+  if (!VI.IsNull())
+  {
+    DBRep::Set("vil", VI);
+  }
+  if (!H.IsNull())
+  {
+    DBRep::Set("hl", H);
+  }
+  if (!H1.IsNull())
+  {
+    DBRep::Set("h1l", H1);
+  }
+  if (!HN.IsNull())
+  {
+    DBRep::Set("hnl", HN);
+  }
+  if (!HO.IsNull())
+  {
+    DBRep::Set("hol", HO);
+  }
+  if (!HI.IsNull())
+  {
+    DBRep::Set("hil", HI);
+  }
+  return 0;
+}
+
+//=================================================================================================
+
+static int reflectlines(Draw_Interpretor&, int n, const char** a)
+{
+  if (n < 6)
+  {
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    return 1;
+  }
+
+  double anAISViewProjX = atof(a[3]);
+  double anAISViewProjY = atof(a[4]);
+  double anAISViewProjZ = atof(a[5]);
+
+  gp_Pnt anOrigin(0., 0., 0.);
+  gp_Dir aNormal(anAISViewProjX, anAISViewProjY, anAISViewProjZ);
+  gp_Ax2 theAxes(anOrigin, aNormal);
+  gp_Dir aDX = theAxes.XDirection();
+
+  HLRAppli_ReflectLines Reflector(aShape);
+
+  Reflector.SetAxes(aNormal.X(),
+                    aNormal.Y(),
+                    aNormal.Z(),
+                    anOrigin.X(),
+                    anOrigin.Y(),
+                    anOrigin.Z(),
+                    aDX.X(),
+                    aDX.Y(),
+                    aDX.Z());
+
+  Reflector.Perform();
+
+  TopoDS_Shape Result = Reflector.GetResult();
+  DBRep::Set(a[1], Result);
+
+  return 0;
+}
+
+//=================================================================================================
+
+static int hlrin3d(Draw_Interpretor&, int n, const char** a)
+{
+  if (n < 6)
+  {
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    return 1;
+  }
+
+  double anAISViewProjX = atof(a[3]);
+  double anAISViewProjY = atof(a[4]);
+  double anAISViewProjZ = atof(a[5]);
+
+  gp_Pnt anOrigin(0., 0., 0.);
+  gp_Dir aNormal(anAISViewProjX, anAISViewProjY, anAISViewProjZ);
+  gp_Ax2 theAxes(anOrigin, aNormal);
+  gp_Dir aDX = theAxes.XDirection();
+
+  HLRAppli_ReflectLines Reflector(aShape);
+
+  Reflector.SetAxes(aNormal.X(),
+                    aNormal.Y(),
+                    aNormal.Z(),
+                    anOrigin.X(),
+                    anOrigin.Y(),
+                    anOrigin.Z(),
+                    aDX.X(),
+                    aDX.Y(),
+                    aDX.Z());
+
+  Reflector.Perform();
+
+  TopoDS_Compound Result;
+  BRep_Builder    BB;
+  BB.MakeCompound(Result);
+
+  TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, true, true);
+  if (!SharpEdges.IsNull())
+  {
+    BB.Add(Result, SharpEdges);
+  }
+  TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, true, true);
+  if (!OutLines.IsNull())
+  {
+    BB.Add(Result, OutLines);
+  }
+  TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, true, true);
+  if (!SmoothEdges.IsNull())
+  {
+    BB.Add(Result, SmoothEdges);
+  }
+
+  DBRep::Set(a[1], Result);
+
+  return 0;
+}
+
+//=================================================================================================
+
+static int hlrin2d(Draw_Interpretor&, int n, const char** a)
+{
+  if (n < 9)
+  {
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    return 1;
+  }
+
+  double anAISViewProjX = atof(a[3]);
+  double anAISViewProjY = atof(a[4]);
+  double anAISViewProjZ = atof(a[5]);
+
+  double Eye_X = atof(a[6]);
+  double Eye_Y = atof(a[7]);
+  double Eye_Z = atof(a[8]);
+
+  gp_Pnt anOrigin(0., 0., 0.);
+  gp_Dir aNormal(anAISViewProjX, anAISViewProjY, anAISViewProjZ);
+  gp_Dir aDX(Eye_X, Eye_Y, Eye_Z);
+
+  HLRAppli_ReflectLines Reflector(aShape);
+
+  Reflector.SetAxes(aNormal.X(),
+                    aNormal.Y(),
+                    aNormal.Z(),
+                    anOrigin.X(),
+                    anOrigin.Y(),
+                    anOrigin.Z(),
+                    aDX.X(),
+                    aDX.Y(),
+                    aDX.Z());
+
+  Reflector.Perform();
+
+  TopoDS_Compound Result;
+  BRep_Builder    BB;
+  BB.MakeCompound(Result);
+
+  TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, true, false);
+  if (!SharpEdges.IsNull())
+  {
+    BB.Add(Result, SharpEdges);
+  }
+  TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, true, false);
+  if (!OutLines.IsNull())
+  {
+    BB.Add(Result, OutLines);
+  }
+  TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, true, false);
+  if (!SmoothEdges.IsNull())
+  {
+    BB.Add(Result, SmoothEdges);
+  }
+
+  DBRep::Set(a[1], Result);
+
+  return 0;
+}
+
+//=================================================================================================
+
+void HLRTest::Commands(Draw_Interpretor& theCommands)
+{
+  // Register save/restore tool
+  HLRTest_Projector::RegisterFactory();
+
+  const char* g = "ADVALGOS HLR Commands";
+
+  theCommands.Add("hprj", "hprj name [view-id = 1]", __FILE__, hprj, g);
+  theCommands.Add("houtl", "houtl name shape", __FILE__, hout, g);
+  theCommands.Add("hfill", "hfill name proj [nbIso]", __FILE__, hfil, g);
+  theCommands.Add("hsin", "hsin name outliner", __FILE__, sori, g);
+  theCommands.Add("hsout", "hsout name outliner", __FILE__, sout, g);
+  theCommands.Add("hload", "hload outliner", __FILE__, hloa, g);
+  theCommands.Add("hremove", "hremove [name]", __FILE__, hrem, g);
+  theCommands.Add("hsetprj", "hsetprj [name]", __FILE__, sprj, g);
+  theCommands.Add("hupdate", "hupdate", __FILE__, upda, g);
+  theCommands.Add("hhide", "hhide", __FILE__, hide, g);
+  theCommands.Add("hshowall", "hshowall", __FILE__, show, g);
+  theCommands.Add("hdebug", "hdebug", __FILE__, hdbg, g);
+  theCommands.Add("hnullify", "hnullify", __FILE__, hnul, g);
+  theCommands.Add("hres2d", "hres2d", __FILE__, hres, g);
+
+  theCommands.Add("reflectlines",
+                  "reflectlines res shape proj_X proj_Y proj_Z",
+                  __FILE__,
+                  reflectlines,
+                  g);
+
+  theCommands.Add("hlrin3d", "hlrin3d res shape proj_X proj_Y proj_Z", __FILE__, hlrin3d, g);
+
+  theCommands.Add("hlrin2d",
+                  "hlrin2d res shape proj_X proj_Y proj_Z eye_x eye_y eye_z",
+                  __FILE__,
+                  hlrin2d,
+                  g);
+
+  hider = new HLRBRep_Algo();
+}

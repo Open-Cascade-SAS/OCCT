@@ -1,0 +1,9 @@
+#A2-----------------------------------------------------
+box bx 10 20 30 
+nexplode bx e
+blend bx bx 2 bx_6 3 bx_7
+nexplode bx f
+depouille result bx 1 0 0 bx_3 10 0 0 0 1 0 0 \
+bx_6 5 0 0 0 1 0 0
+
+checkprops result -s 2011.72

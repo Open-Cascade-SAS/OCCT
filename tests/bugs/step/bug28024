@@ -1,0 +1,47 @@
+puts "============"
+puts "OCC28024 Data Exchange, Configuration - revise XSTEPResource initialization"
+puts "============"
+puts ""
+#####################################################
+# Testing the mechanism for changing options of ShapeHealing
+# from DRAW
+#####################################################
+
+pload MODELING XDE
+
+if { [info exists imagedir] == 0 } {
+   set imagedir ../bug28024
+   if {![file exists ${imagedir}]} {
+       file mkdir ${imagedir}
+   }
+}
+set step_file ${imagedir}/inv_triangle.stp
+
+# Make simple triangle with INNER wire
+vertex v1 0 0 0
+vertex v2 1 0 0
+vertex v3 0 1 0
+edge e1 v2 v1
+edge e2 v3 v2
+edge e3 v1 v3
+wire w1 e1 e3 e2
+plane p1
+mkface f1 p1 w1 norient
+
+# Save to STEP
+testwritestep ${step_file} f1
+
+# Empty resource file name to take params from InterfaceStatic
+param "read.step.resource.name" "\"\""
+# Turn off FixOrientation procedure
+param "FromSTEP.FixShape.FixOrientationMode" 0
+
+# Read from STEP without shape healing
+stepread ${step_file} r *
+explode r_1 f
+
+# The area of triangle must be negative
+checkarea r_1_1 -0.5 1e-6 0.001
+
+param "read.step.resource.name" "STEP"
+param "FromSTEP.FixShape.FixOrientationMode" -1

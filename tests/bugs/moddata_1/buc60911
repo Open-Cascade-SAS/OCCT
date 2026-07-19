@@ -1,0 +1,14 @@
+
+puts "============"
+puts "BUC60911"
+puts "============"
+
+#####################################################
+## Bad value of the volume of the shape. 
+#####################################################
+
+restore [locate_data_file BUC60911.brep] result
+invert result
+
+checkprops result -s 16353.8
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,10 @@
+#B1----------------------------------------------
+pcylinder p 10 20
+trotate p 0 0 0 0 1 0 90
+box bx 5 -5 0 10 10 20
+bfuse f p bx
+nexplode f f
+depouille result f 0 0 1 f_3 5 0 0 20 0 0 1 \
+f_7 3 0 0 20 0 0 1
+
+checkprops result -s 2323.25

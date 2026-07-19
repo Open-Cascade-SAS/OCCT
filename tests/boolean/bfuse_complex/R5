@@ -1,0 +1,14 @@
+#pro16255
+puts "PRO16255"
+puts "Fuse"
+puts ""
+
+restore [locate_data_file CTO909_part3bis.brep] s
+restore [locate_data_file CTO909_part5-with-fillet.brep] u
+updatetolerance s 1
+updatetolerance u 1
+
+bfuse result s u
+
+checkprops result -s 22999.2
+checkview -display result -2d -otherwise { s u } -s -path ${imagedir}/${test_image}.png

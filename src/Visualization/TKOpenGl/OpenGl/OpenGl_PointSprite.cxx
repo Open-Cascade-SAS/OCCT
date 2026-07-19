@@ -1,0 +1,82 @@
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2013-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <OpenGl_PointSprite.hxx>
+
+#include <Graphic3d_TextureParams.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_Sampler.hxx>
+#include <Standard_Assert.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PointSprite, OpenGl_Texture)
+
+//=================================================================================================
+
+OpenGl_PointSprite::OpenGl_PointSprite(const TCollection_AsciiString& theResourceId)
+    : OpenGl_Texture(theResourceId, occ::handle<Graphic3d_TextureParams>()),
+      myBitmapList(0)
+{
+  // mySampler->Parameters()->SetFilter (Graphic3d_TOTF_NEAREST);
+  mySampler->Parameters()->SetModulate(false);
+  mySampler->Parameters()->SetGenMode(Graphic3d_TOTM_SPRITE,
+                                      NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f),
+                                      NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
+}
+
+//=================================================================================================
+
+OpenGl_PointSprite::~OpenGl_PointSprite()
+{
+  Release(nullptr);
+}
+
+//=================================================================================================
+
+void OpenGl_PointSprite::Release(OpenGl_Context* theGlCtx)
+{
+  if (myBitmapList != 0)
+  {
+    Standard_ASSERT_RETURN(
+      theGlCtx != nullptr,
+      "OpenGl_PointSprite destroyed without GL context! Possible GPU memory leakage...",
+      Standard_VOID_RETURN);
+
+    if (theGlCtx->IsValid())
+    {
+      theGlCtx->core11ffp->glDeleteLists(myBitmapList, 1);
+    }
+    myBitmapList = 0;
+  }
+
+  OpenGl_Texture::Release(theGlCtx);
+}
+
+//=================================================================================================
+
+void OpenGl_PointSprite::SetDisplayList(const occ::handle<OpenGl_Context>& theCtx,
+                                        const GLuint                       theBitmapList)
+{
+  Release(theCtx.operator->());
+  myBitmapList = theBitmapList;
+}
+
+//=================================================================================================
+
+void OpenGl_PointSprite::DrawBitmap(const occ::handle<OpenGl_Context>& theCtx) const
+{
+  if (myBitmapList != 0)
+  {
+    theCtx->core11ffp->glCallList(myBitmapList);
+  }
+}

@@ -1,0 +1,28 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+puts "========="
+puts " OCC935 "
+puts "(case 2)"
+puts "========="
+puts ""
+###############################
+## instability in checkshape in KAS:dev version.
+###############################
+
+restore [locate_data_file OCC935_2.brep] result
+
+set err [checkshape result]
+
+set j 1
+repeat 25 {
+    restore [locate_data_file OCC935_2.brep] result 
+    set err1 [checkshape result]
+    if { $err != $err1 } {
+	puts [format " Faulty OCC935 (case 2): function CHECKSHAPE works wrongly on %s time" $j]
+	break
+    } else {
+	puts [format " OCC935 (case 2)  OK: function CHECKSHAPE works properly %s time" $j]
+    }
+    incr j
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

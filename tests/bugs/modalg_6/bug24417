@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC24417"
+puts "============"
+puts ""
+#######################################################################
+# BRepAlgoAPI_Section fails on attached shapes
+#######################################################################
+
+restore [locate_data_file bug24417_circle.brep] a
+restore [locate_data_file bug24417_face.brep] b
+
+checkshape a
+checkshape b
+
+bop a b
+bopsection result
+
+checkprops result -l 19.8372
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX : 2
+ EDGE : 1
+ WIRE : 0
+ FACE : 0
+ SHELL : 0
+ SOLID : 0
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 4
+
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result of BRepAlgoAPI_Section"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

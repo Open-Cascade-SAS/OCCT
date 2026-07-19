@@ -1,0 +1,23 @@
+
+puts "========"
+puts "OCC779"
+puts "========"
+puts ""
+################################
+## Common operation produces invalid shape
+################################
+
+restore [locate_data_file OCC779_s1.brep] s1 
+checkshape s1
+restore [locate_data_file OCC779_s2.brep] s2 
+checkshape s2
+
+ttranslate s1 0 0 -30
+prism s1p s1 0 0 70
+checkshape s1p
+
+bcommon result s1p s2
+
+checkprops result -s 64191.2 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

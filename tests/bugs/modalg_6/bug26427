@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC26427"
+puts "============"
+puts ""
+###############################
+##  Draft angle algorithm produces wrong shape
+###############################
+
+restore [locate_data_file OCC26426-prism_shape.brep] b1
+
+explode b1 f
+
+depouille result b1 0 0 -1 b1_1 -10 0 0 -40 0 0 1
+
+set square 2245.39
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 16
+ EDGE      : 24
+ WIRE      : 10
+ FACE      : 10
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 62
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Shape produced by Draft angle algorithm"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,18 @@
+# Original bug : BUC40188
+# Date : 20mar98
+
+box mb -0.5 -0.5 -0.5 1 1 1 
+explode mb F 
+
+prism pryz mb_1 1 0 0 SemiInf
+box ab 0 -1 -1 2 2 2
+
+#pkv f
+# do not try to obtain valid [Semi]Infinite solid.
+# It will be not closed by the definition
+#bcut result ab pryz 
+bcut result ab pryz 
+#pkv t
+
+checkprops result -s 30
+checkview -display result -2d -s -otherwise { ab pryz } -path ${imagedir}/${test_image}.png

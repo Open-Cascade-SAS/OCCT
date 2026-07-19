@@ -1,0 +1,18 @@
+
+puts "========================"
+puts " OCC183 "
+puts "(case 2)"
+puts "========================"
+puts ""
+
+restore [locate_data_file so1] b1 
+checkshape b1
+
+restore [locate_data_file so4] b2
+checkshape b2
+
+bfuse result b1 b2
+checkshape result
+
+checkprops result -s 942.478
+checkview -display result -2d -path ${imagedir}/${test_image}.png

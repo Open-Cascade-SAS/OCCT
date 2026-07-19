@@ -1,0 +1,20 @@
+
+puts "================"
+puts "OCC37"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC37.brep] sh 
+explode sh
+checkshape sh_1
+checkshape sh_2
+
+bfuse result sh_1 sh_2
+checkshape result
+
+checkprops result -s 665013
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+

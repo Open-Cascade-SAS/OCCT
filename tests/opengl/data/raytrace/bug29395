@@ -1,0 +1,26 @@
+puts "=================="
+puts "0029395: Visualization, V3d_View - Grid disappears forever after enabling RayTracing"
+puts "=================="
+puts ""
+
+pload VISUALIZATION
+
+# Rectangular Grid
+vclear
+vinit View1
+vraytrace 0
+vgrid -type rectangular
+vraytrace 1
+checkcolor 198 197 0.5 0.5 0.5
+vdump $imagedir/${casename}_rectangular.png
+vclose
+
+# Circular Grid
+vclear
+vinit View1
+vraytrace 0
+vgrid -type circular
+vraytrace 1
+checkcolor 198 197 0.5 0.5 0.5
+vdump $imagedir/${casename}_circular.png
+vclose

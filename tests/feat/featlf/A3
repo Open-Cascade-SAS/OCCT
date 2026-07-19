@@ -1,0 +1,16 @@
+
+box b 1 1 1
+vertex v1 0.3 0.5 1
+vertex v2 0.7 0.5 1
+vertex v3 0.5 0.5 1.5
+edge e1 v2 v3 
+edge e2 v3 v1
+wire w e1 e2
+
+plane pl 0.5 0.5 1 0 -1 0
+featlf b w pl 0 0.3 0 0 0 0 1 1
+featperform lf result 
+
+
+
+checkprops result -s 6.40311

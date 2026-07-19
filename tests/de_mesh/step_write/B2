@@ -1,0 +1,13 @@
+
+# simple meshed box with void (mesh + brep)
+
+box b1 -min -5 -5 -5 -max 5 5 5
+box b2 -min -3 -3 -3 -max 3 3 3
+
+bcut S b1 b2
+
+incmesh S 0.1
+
+set nb_faces     12
+set nb_nodes     48
+set nb_triangles 24

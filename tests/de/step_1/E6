@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+
+
+set filename trj4_s1-ai-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 54 )  Warnings = 0  ( 0 )  Summary  = 0  ( 54 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 6  ( 53 )  Summary  = 6  ( 53 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 104  ( 104 ) 
+STATSHAPE   : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 104  ( 104 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =    0.949881784  ( 0.002238556699 )  AvgTol   =   0.05811636349  (  3.300213579e-005 )
+LABELS      : N0Labels = 9  ( 9 )  N1Labels = 8  ( 8 )  N2Labels = 0  ( 0 )   TotalLabels = 17  ( 17 )   NameLabels = 17  ( 17 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

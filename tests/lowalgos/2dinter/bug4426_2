@@ -1,0 +1,21 @@
+puts "================"
+puts "OCC4426"
+puts "================"
+puts ""
+#######################################################################################
+# Incorrect result of intersection in 2D between circle and line
+#######################################################################################
+
+smallview -2D-
+line ll1 0 0 0.3 0.7
+line ll2 0 0 0.37 0.63
+trim tll1 ll1 -0.00001 0.00001
+trim tll2 ll2 -0.00001 0.00001
+donly tll1 tll2
+2dintersect tll1 tll2
+2dfit
+
+puts "ATTENTION! Check following:"
+puts "There is the intersection point (green X) on center of grid axis"
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

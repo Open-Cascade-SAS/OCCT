@@ -1,0 +1,33 @@
+puts "========"
+puts "0032580: Data Exchange, STL - add option splitting nodes at sharp corners"
+puts "Test trmergenodes with various parameters"
+puts "========" 
+
+pload XDE VISUALIZATION MODELING
+testreadstep [locate_data_file as1-oc-214-mat.stp] ss
+incmesh ss 1.0
+
+vinit View1
+vdisplay -dispMode 1 ss
+vaspects ss -faceBoundaryDraw 1
+vfit
+vdump ${imagedir}/${casename}_stp.png
+
+trmergenodes ss -angle 0  -oneFace m0
+trmergenodes ss -angle 45 -oneFace m45
+trmergenodes ss -angle 90 -oneFace m90
+
+vclear
+vdisplay -dispMode 1 m0
+vaspects m0 -faceBoundaryDraw 1
+vdump ${imagedir}/${casename}_m0.png
+
+vclear
+vdisplay -dispMode 1 m45
+vaspects m45 -faceBoundaryDraw 1
+vdump ${imagedir}/${casename}_m45.png
+
+vclear
+vdisplay -dispMode 1 m90
+vaspects m90 -faceBoundaryDraw 1
+vdump ${imagedir}/${casename}_m90.png

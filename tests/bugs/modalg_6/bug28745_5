@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC28745"
+puts "========"
+puts ""
+####################################################################
+# Wrong results of Boolean operations on hemisphere solids
+####################################################################
+
+restore [locate_data_file bug28745_case5_cut.brep] b
+explode b
+bclearobjects
+bcleartools
+baddobjects b_1
+baddtools b_2
+bfillds
+bbop result 2
+
+checkshape result
+checkprops result -s 6.71804e+006 -v 1.39439e+009
+checknbshapes result -face 3 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

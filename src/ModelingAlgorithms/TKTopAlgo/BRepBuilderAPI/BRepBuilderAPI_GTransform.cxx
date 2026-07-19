@@ -1,0 +1,99 @@
+// Created on: 1996-12-30
+// Created by: Stagiaire Mary FABIEN
+// Copyright (c) 1996-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_GTransform.hxx>
+#include <BRepBuilderAPI_NurbsConvert.hxx>
+#include <BRepTools_GTrsfModification.hxx>
+#include <BRepTools_NurbsConvertModification.hxx>
+#include <gp_GTrsf.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+
+//=================================================================================================
+
+BRepBuilderAPI_GTransform::BRepBuilderAPI_GTransform(const gp_GTrsf& T)
+    : myGTrsf(T)
+{
+  myModification = new BRepTools_GTrsfModification(T);
+}
+
+//=================================================================================================
+
+BRepBuilderAPI_GTransform::BRepBuilderAPI_GTransform(const TopoDS_Shape& S,
+                                                     const gp_GTrsf&     T,
+                                                     const bool          Copy)
+    : myGTrsf(T)
+{
+  myModification = new BRepTools_GTrsfModification(T);
+  Perform(S, Copy);
+}
+
+//=================================================================================================
+
+void BRepBuilderAPI_GTransform::Perform(const TopoDS_Shape& S, const bool Copy)
+{
+  BRepBuilderAPI_NurbsConvert nc;
+  nc.Perform(S, Copy);
+  myHist.Add(S, nc);
+  TopoDS_Shape                             Slocal = nc.Shape();
+  occ::handle<BRepTools_GTrsfModification> theModif =
+    occ::down_cast<BRepTools_GTrsfModification>(myModification);
+  theModif->GTrsf() = myGTrsf;
+  DoModif(Slocal, myModification);
+  //  myHist.Filter (Shape());
+}
+
+//=================================================================================================
+
+const NCollection_List<TopoDS_Shape>& BRepBuilderAPI_GTransform::Modified(const TopoDS_Shape& F)
+{
+  myGenerated.Clear();
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    M = myHist.Modification();
+  if (M.IsBound(F))
+  {
+    NCollection_List<TopoDS_Shape>           Li;
+    NCollection_List<TopoDS_Shape>::Iterator itL(M(F));
+    for (; itL.More(); itL.Next())
+    {
+      Li.Assign(BRepBuilderAPI_ModifyShape::Modified(itL.Value()));
+    }
+  }
+  return myGenerated;
+}
+
+//=================================================================================================
+
+TopoDS_Shape BRepBuilderAPI_GTransform::ModifiedShape(const TopoDS_Shape& S) const
+{
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+               aMapModif = myHist.Modification();
+  TopoDS_Shape aShape    = S;
+
+  if (aMapModif.IsBound(S))
+  {
+    const NCollection_List<TopoDS_Shape>& aListModShape = aMapModif(S);
+    int                                   aNbShapes     = aListModShape.Extent();
+
+    if (aNbShapes > 0)
+    {
+      aShape = aListModShape.First();
+    }
+  }
+
+  return BRepBuilderAPI_ModifyShape::ModifiedShape(aShape);
+}

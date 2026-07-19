@@ -1,0 +1,3 @@
+# OpenGL ES 2.0
+
+THIRDPARTY_PRODUCT("GLES2" "GLES2/gl2.h" "CSF_OpenGlesLibs" "")

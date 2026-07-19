@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC23876"
+puts "============"
+puts ""
+###############################################################################################
+# New Boolean Operation algorithm works incorrect with cylinder made by revolution and torus
+###############################################################################################
+
+vertex v1 10 0 0
+vertex v2 20 0 0
+vertex v3 10 0 50
+vertex v4 20 0 50
+edge e1 v1 v3
+edge e2 v3 v4
+edge e3 v2 v4
+edge e4 v2 v1
+wire w e1 e2 e3 e4
+mkplane f w
+revol b1 f 0 0 0 0 0 1 360
+don b1
+ptorus b2 15 5
+ttranslate b2 0 0 50
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s 2422.92 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

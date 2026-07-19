@@ -1,0 +1,179 @@
+// Created on: 1994-03-24
+// Created by: model
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Adaptor3d_TopolTool_HeaderFile
+#define _Adaptor3d_TopolTool_HeaderFile
+
+#include <Adaptor2d_Line2d.hxx>
+#include <Adaptor3d_HVertex.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TopAbs_State.hxx>
+#include <TopAbs_Orientation.hxx>
+
+class Adaptor3d_HVertex;
+
+//! This class provides a default topological tool,
+//! based on the Umin,Vmin,Umax,Vmax of an HSurface from Adaptor3d.
+//! All methods and fields may be redefined when inheriting from this class.
+//! This class is used to instantiate algorithms as Intersection, outlines,...
+class Adaptor3d_TopolTool : public Standard_Transient
+{
+
+public:
+  Standard_EXPORT Adaptor3d_TopolTool();
+
+  Standard_EXPORT Adaptor3d_TopolTool(const occ::handle<Adaptor3d_Surface>& Surface);
+
+  Standard_EXPORT virtual void Initialize();
+
+  Standard_EXPORT virtual void Initialize(const occ::handle<Adaptor3d_Surface>& S);
+
+  Standard_EXPORT virtual void Initialize(const occ::handle<Adaptor2d_Curve2d>& Curve);
+
+  Standard_EXPORT virtual void Init();
+
+  Standard_EXPORT virtual bool More();
+
+  Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> Value();
+
+  Standard_EXPORT virtual void Next();
+
+  Standard_EXPORT virtual void InitVertexIterator();
+
+  Standard_EXPORT virtual bool MoreVertex();
+
+  Standard_EXPORT virtual occ::handle<Adaptor3d_HVertex> Vertex();
+
+  Standard_EXPORT virtual void NextVertex();
+
+  Standard_EXPORT virtual TopAbs_State Classify(const gp_Pnt2d& P,
+                                                const double    Tol,
+                                                const bool      ReacdreOnPeriodic = true);
+
+  Standard_EXPORT virtual bool IsThePointOn(const gp_Pnt2d& P,
+                                            const double    Tol,
+                                            const bool      ReacdreOnPeriodic = true);
+
+  //! If the function returns the orientation of the arc.
+  //! If the orientation is FORWARD or REVERSED, the arc is
+  //! a "real" limit of the surface.
+  //! If the orientation is INTERNAL or EXTERNAL, the arc is
+  //! considered as an arc on the surface.
+  Standard_EXPORT virtual TopAbs_Orientation Orientation(const occ::handle<Adaptor2d_Curve2d>& C);
+
+  //! Returns the orientation of the vertex V.
+  //! The vertex has been found with an exploration on
+  //! a given arc. The orientation is the orientation
+  //! of the vertex on this arc.
+  Standard_EXPORT virtual TopAbs_Orientation Orientation(const occ::handle<Adaptor3d_HVertex>& V);
+
+  //! Returns True if the vertices V1 and V2 are identical.
+  //! This method does not take the orientation of the
+  //! vertices in account.
+  Standard_EXPORT virtual bool Identical(const occ::handle<Adaptor3d_HVertex>& V1,
+                                         const occ::handle<Adaptor3d_HVertex>& V2);
+
+  //! answers if arcs and vertices may have 3d representations,
+  //! so that we could use Tol3d and Pnt methods.
+  Standard_EXPORT virtual bool Has3d() const;
+
+  //! returns 3d tolerance of the arc C
+  Standard_EXPORT virtual double Tol3d(const occ::handle<Adaptor2d_Curve2d>& C) const;
+
+  //! returns 3d tolerance of the vertex V
+  Standard_EXPORT virtual double Tol3d(const occ::handle<Adaptor3d_HVertex>& V) const;
+
+  //! returns 3d point of the vertex V
+  Standard_EXPORT virtual gp_Pnt Pnt(const occ::handle<Adaptor3d_HVertex>& V) const;
+
+  Standard_EXPORT virtual void ComputeSamplePoints();
+
+  //! compute the sample-points for the intersections algorithms
+  Standard_EXPORT virtual int NbSamplesU();
+
+  //! compute the sample-points for the intersections algorithms
+  Standard_EXPORT virtual int NbSamplesV();
+
+  //! compute the sample-points for the intersections algorithms
+  Standard_EXPORT virtual int NbSamples();
+
+  //! return the set of U parameters on the surface
+  //! obtained by the method SamplePnts
+  Standard_EXPORT void UParameters(NCollection_Array1<double>& theArray) const;
+
+  //! return the set of V parameters on the surface
+  //! obtained by the method SamplePnts
+  Standard_EXPORT void VParameters(NCollection_Array1<double>& theArray) const;
+
+  Standard_EXPORT virtual void SamplePoint(const int Index, gp_Pnt2d& P2d, gp_Pnt& P3d);
+
+  Standard_EXPORT virtual bool DomainIsInfinite();
+
+  Standard_EXPORT virtual void* Edge() const;
+
+  //! Compute the sample-points for the intersections algorithms by adaptive algorithm for BSpline
+  //! surfaces. For other surfaces algorithm is the same as in method ComputeSamplePoints(), but
+  //! only fill arrays of U and V sample parameters;
+  //! @param[in] theDefl   a required deflection
+  //! @param[in] theNUmin  minimal nb points for U
+  //! @param[in] theNVmin  minimal nb points for V
+  Standard_EXPORT virtual void SamplePnts(const double theDefl,
+                                          const int    theNUmin,
+                                          const int    theNVmin);
+
+  //! Compute the sample-points for the intersections algorithms
+  //! by adaptive algorithm for BSpline surfaces - is used in SamplePnts
+  //! @param[in] theDefl   required deflection
+  //! @param[in] theNUmin  minimal nb points for U
+  //! @param[in] theNVmin  minimal nb points for V
+  Standard_EXPORT virtual void BSplSamplePnts(const double theDefl,
+                                              const int    theNUmin,
+                                              const int    theNVmin);
+
+  //! Returns true if provide uniform sampling of points.
+  Standard_EXPORT virtual bool IsUniformSampling() const;
+
+  //! Computes the cone's apex parameters.
+  //! @param[in] theC conical surface
+  //! @param[in] theU U parameter of cone's apex
+  //! @param[in] theV V parameter of cone's apex
+  Standard_EXPORT static void GetConeApexParam(const gp_Cone& theC, double& theU, double& theV);
+
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool, Standard_Transient)
+
+protected:
+  occ::handle<Adaptor3d_Surface>           myS;
+  int                                      myNbSamplesU;
+  int                                      myNbSamplesV;
+  occ::handle<NCollection_HArray1<double>> myUPars;
+  occ::handle<NCollection_HArray1<double>> myVPars;
+
+private:
+  int                            nbRestr;
+  int                            idRestr;
+  double                         Uinf;
+  double                         Usup;
+  double                         Vinf;
+  double                         Vsup;
+  occ::handle<Adaptor2d_Line2d>  myRestr[4];
+  int                            nbVtx;
+  int                            idVtx;
+  occ::handle<Adaptor3d_HVertex> myVtx[2];
+};
+
+#endif // _Adaptor3d_TopolTool_HeaderFile

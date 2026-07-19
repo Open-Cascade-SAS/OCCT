@@ -1,0 +1,32 @@
+puts "=========="
+puts "OCC29888"
+puts "=========="
+puts ""
+#########################################
+# XCAFDoc_Editor::Expand() removes names
+#########################################
+pload ALL
+
+XOpen [locate_data_file bug29888_part.xbf] D
+
+XExpand D 0
+
+set name_ref [GetName D 0:1:1:2:4]
+set name_part [GetName D 0:1:1:6]
+if {$name_ref != $name_part || $name_ref != "LanternPole_Body"} {
+  puts "Error: name has been lost"
+}
+
+set name_ref [GetName D 0:1:1:2:5]
+set name_part [GetName D 0:1:1:7]
+if {$name_ref != $name_part || $name_ref != "LanternPole_Chain"} {
+  puts "Error: name has been lost"
+}
+
+set name_ref [GetName D 0:1:1:2:6]
+set name_part [GetName D 0:1:1:8]
+if {$name_ref != $name_part || $name_ref != "LanternPole_Lantern"} {
+  puts "Error: name has been lost"
+}
+
+Close D

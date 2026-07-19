@@ -1,0 +1,24 @@
+puts "================"
+puts "OCC23845"
+puts "================"
+puts ""
+#######################################################################
+# New auxiliary method concatenating a wire into an edge based on C0-continuous curve.
+#######################################################################
+
+restore [locate_data_file bug23845_profil_0a.brep] a
+restore [locate_data_file bug23845_profil_1a.brep] b
+
+concatC0wire aa a
+concatC0wire bb b
+
+set CMP_TOL 1.e-6
+
+# 1
+checkshape aa
+checkmaxtol aa -min_tol ${CMP_TOL}
+
+# 2
+checkshape bb
+checkmaxtol bb -min_tol ${CMP_TOL}
+

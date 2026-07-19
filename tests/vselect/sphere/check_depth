@@ -1,0 +1,31 @@
+puts "================================="
+puts "0032182: Visualization - add Select3D_SensitiveSphere"
+puts "Tests depth value returned by Select3D_SenstiveSphere"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+psphere s 1
+vdisplay -dispMode 1 s
+vfit
+vtop
+set top [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+checkpoint top_p $top {0.0013453695513163666 -0.0090115971854718303 0.99995849333074871} 0.0001
+vbottom
+set bottom [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+checkpoint bottom_p $bottom {0.0013453695513163666 0.0090115971854718303 -0.99995849333074871} 0.0001
+vright
+set right [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+checkpoint right_p $right {0.99995849333074871 0.0013453695513163666 -0.0090115971854718268} 0.0001
+vfront
+set front [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+checkpoint front_p $front {0.0013453695513163666 -0.99995832904743187 -0.0090115971854718285} 0.01
+vleft
+set left [vmoveto 300 200]
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+checkpoint left_p $left {-0.99995817565020639 -0.0013453695513163666 -0.0090115971854718268} 0.0001

@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC24140"
+puts "============"
+puts ""
+######################################################
+# Endless loop in BRepAlgoAPI_Section
+######################################################
+
+pload XDE
+
+ReadStep D [locate_data_file bug24140_bug663.stp]
+XGetShape sh1 D 0:1:1:1
+XGetShape sh2 D 0:1:1:2
+
+bsection result sh1 sh2
+
+checkprops result -l 557.6 
+checkshape result 
+checksection result
+
+checknbshapes result -vertex 1 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3
+checkview -display result -2d -path ${imagedir}/${test_image}.png

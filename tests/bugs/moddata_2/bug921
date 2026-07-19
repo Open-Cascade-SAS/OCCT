@@ -1,0 +1,72 @@
+pload QAcommands
+
+puts "======="
+puts "OCC921"
+puts "======="
+puts ""
+############################################################
+## I have found that regresiion on file a054a.sat depends on changes in
+## BRepTools::AddUVBounds. The method BRepTools::UVBounds(F, u1, u2, v1, v2)
+## returns different values in C40 and in dev. It is because there are different
+## strings of code. BRepTools.cxx line 213 (in dev version)
+############################################################
+
+set good_u1 -0.14353846357954067
+set good_u2 4.8658600889104724
+set good_v1 -1.386764846506505
+set good_v2 7.6699722758333735
+
+set percent_max 0.1
+
+restore [locate_data_file OCC921.rle] a
+
+set BoundsList [OCC921 a]
+
+set u1 0
+set u2 0
+set v1 0
+set v2 0
+
+regexp {Bounds: *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+)} $BoundsList full u1 u2 v1 v2
+
+set u1_percent [expr abs(${u1} - ${good_u1}) / double(${good_u1}) * 100.]
+set u2_percent [expr abs(${u2} - ${good_u2}) / double(${good_u2}) * 100.]
+set v1_percent [expr abs(${v1} - ${good_v1}) / double(${good_v1}) * 100.]
+set v2_percent [expr abs(${v2} - ${good_v2}) / double(${good_v2}) * 100.]
+
+puts "u1 = ${u1}"
+puts "u2 = ${u2}"
+puts "v1 = ${v1}"
+puts "v2 = ${v2}"
+
+puts "u1_percent = ${u1_percent}"
+puts "u2_percent = ${u2_percent}"
+puts "v1_percent = ${v1_percent}"
+puts "v2_percent = ${v2_percent}"
+
+set status 0
+
+if {${u1_percent} > ${percent_max}} {
+  puts "OCC921: Error (case 1)"
+  set status 1
+}
+
+if {${u2_percent} > ${percent_max}} {
+  puts "OCC921: Error (case 2)"
+  set status 1
+}
+
+if {${v1_percent} > ${percent_max}} {
+  puts "OCC921: Error (case 3)"
+  set status 1
+}
+
+if {${v2_percent} > ${percent_max}} {
+  puts "OCC921: Error (case 4)"
+  set status 1
+}
+
+if {${status} == 0} {
+  puts "OCC921: OK"
+}
+

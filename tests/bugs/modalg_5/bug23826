@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC23826"
+puts "============"
+puts ""
+######################################################
+# Boolean Common between two soids fails
+######################################################
+
+restore [locate_data_file bug23826_Carte.brep] b1
+restore [locate_data_file bug23826_Use140.brep] b2
+
+bop b1 b2
+bopcommon result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

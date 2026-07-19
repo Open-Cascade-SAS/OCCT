@@ -1,0 +1,24 @@
+puts "============"
+puts "BUC60877"
+puts "OCC80"
+puts "============"
+puts ""
+##########################################################
+## The command "section" in Draw gives exception "attempt to access to null object " 
+##########################################################
+
+restore [locate_data_file BUC60877_lh.brep] sh 
+checkshape sh
+
+plane pl 820 198 140 -1e-06 0 1
+mkface f pl -1000 500 -300 100
+
+if [catch {bsection result sh f } catch_result] {
+    puts "Faulty BUC60877: function SECTION works wrongly"
+} else {
+    puts "BUC60877 OK: function SECTION works properly"
+}
+checkprops result -l 1358.63 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

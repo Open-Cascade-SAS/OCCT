@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC28388"
+puts "========"
+puts ""
+####################################################################
+# Boolean common of simple face and solid results in empty compound
+####################################################################
+
+restore [locate_data_file bug28388_extKO.brep] e
+
+explode e
+whatis e_1
+whatis e_2
+tolerance e_1
+tolerance e_2
+checkshape e_1
+checkshape e_2
+bopcheck e_1
+bopcheck e_2
+bopargcheck e_1 e_2 -O #F
+
+bop e_1 e_2
+bopcommon r
+
+whatis r
+explode r
+checkshape r_1
+nbshapes r_1
+
+checkview -display r_1 -2d -path ${imagedir}/${test_image}-2d.png
+checkview -display r_1 -3d -path ${imagedir}/${test_image}-3d.png

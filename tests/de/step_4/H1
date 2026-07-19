@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename Inventor_Engine.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 1  ( 0 )  Warnings = 455  ( 560 )  Summary  = 456  ( 560 )
+CHECKSHAPE  : Wires    = 6  ( 6 )  Faces    = 6  ( 6 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 47  ( 47 )  Shell    = 47  ( 47 )  Face     = 4454  ( 4454 ) 
+STATSHAPE   : Solid    = 80  ( 80 )  Shell    = 80  ( 80 )  Face     = 5356  ( 5356 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =    2.371238233  (    2.449305641 )  AvgTol   =  0.001672277308  (  0.002589629313 )
+LABELS      : N0Labels = 52  ( 52 )  N1Labels = 86  ( 86 )  N2Labels = 0  ( 0 )   TotalLabels = 138  ( 138 )   NameLabels = 136  ( 136 )   ColorLabels = 47  ( 47 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 11  ( 11 )
+COLORS      : Colors   = BISQUE3 DODGERBLUE2 GOLDENROD4 GRAY GRAY32 GRAY41 GRAY50 GRAY97 IVORY SLATEGRAY3 WHITE  ( BISQUE3 DODGERBLUE2 GOLDENROD4 GRAY GRAY32 GRAY41 GRAY50 GRAY97 IVORY SLATEGRAY3 WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

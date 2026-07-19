@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC591"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC591.brep] result
+tclean result
+vinit View1
+vdisplay result
+vfit
+vsetdispmode result 1
+vsettransparency result .5
+checkcolor 250 115 0.58 0.41 0.07
+if {$stat != 1} { puts "Error : Function VSETTRANSPARENCY works wrongly." }
+
+vdump $imagedir/${casename}.png

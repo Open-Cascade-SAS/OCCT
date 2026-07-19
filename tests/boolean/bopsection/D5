@@ -1,0 +1,11 @@
+puts "CTS22135"
+puts "Generation of micro-edges during section."
+puts ""
+restore [locate_data_file cts21135a.brep] o
+restore [locate_data_file cts21135b.brep] t
+bop o t
+bopsection result
+
+checkprops result -l 144.712
+checksection result
+checkview -display result -2d -otherwise { o t } -l -path ${imagedir}/${test_image}.png

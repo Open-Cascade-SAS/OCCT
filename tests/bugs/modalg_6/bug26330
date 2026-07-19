@@ -1,0 +1,20 @@
+puts "=========="
+puts "OCC26330"
+puts "=========="
+puts ""
+############################################################
+# BRepOffsetAPI_ThruSections creates invalid shape
+############################################################
+
+restore [locate_data_file bug26330_s1.brep] s1
+restore [locate_data_file bug26330_s2.brep] s2
+
+# both wires seem okay
+checkshape s1
+checkshape s2
+
+thrusections result 1 1 s1 s2
+
+# check subshapes
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

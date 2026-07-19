@@ -1,0 +1,33 @@
+puts "========================"
+puts "OCC170"
+puts "(case 3)"
+puts "========================"
+
+set docName    ${casename}
+set newDocName ${casename}_2
+set str1 "~!@#$%^&*():;'{}\|?/.>,<~!@#$%^&*():;'{}\|?/.>,<#$%#$%$%^&*():;'{}\|$%^&*(@#$%^&*():;'{}\|¦/"
+
+NewDocument $docName XmlOcaf
+Label $docName 0:2
+SetComment $docName 0:2 $str1
+
+file delete ${imagedir}/${docName}.xml
+file delete ${imagedir}/${newDocName}.xml
+
+if [ catch {SaveAs $docName ${imagedir}/${docName}.xml} ] {
+    puts "Error : (SaveAs)"
+} else {
+    puts "OK : (SaveAs)"
+}
+
+file copy ${imagedir}/${docName}.xml ${imagedir}/${newDocName}.xml
+
+Open ${imagedir}/${newDocName}.xml $newDocName
+
+# Retrieve string  from document and compare it with initial value
+set str2 [GetComment $newDocName 0:2]
+if {$str1 == $str2} {puts "OCC170 OK"} else {
+  puts "str1=${str1}"
+  puts "str2=${str2}"
+  puts "OCC170 Error"
+}

@@ -1,0 +1,46 @@
+puts "============"
+puts "OCC26718"
+puts "============"
+puts ""
+#############################################################################################
+## Big tolerance value of the edge in the result of General Fuse operation
+#############################################################################################
+
+restore [locate_data_file bug26718_w6_b1.brep] b1
+restore [locate_data_file bug26718_w6_b2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+
+bfillds
+bbuild result
+
+checkprops result -s 2.3834e+06 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 7
+ EDGE      : 11
+ WIRE      : 8
+ FACE      : 5
+ SHELL     : 2
+ SOLID     : 2
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 36
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by General Fuse operation"
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTolerance
+puts "MaxTolerance=$MaxTolerance"
+
+set expected_MaxTolerance 0.317915740714732
+set tol_abs_MaxTolerance 0.01
+set tol_rel_MaxTolerance 0.01
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

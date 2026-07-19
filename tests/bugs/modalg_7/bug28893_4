@@ -1,0 +1,25 @@
+puts "======="
+puts "OCC28893"
+puts "======="
+puts ""
+##################################################
+# BOP cut produces result with artifacts consisting of tools parts
+##################################################
+
+binrestore [locate_data_file bug28893_shape2.bin] b1
+binrestore [locate_data_file bug28893_tools2.bin] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild result
+
+checkshape result
+
+checknbshapes result -solid 7 -shell 7 -face 36 -wire 40
+checkprops result -s 1.11391e+006
+checkprops result -v 5.41362e+006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

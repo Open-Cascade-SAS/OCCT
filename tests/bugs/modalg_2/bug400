@@ -1,0 +1,22 @@
+puts "TODO OCC11111 ALL: Error: Number of triangles"
+puts "TODO OCC11111 ALL: Error: Number of nodes"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+
+puts "========================"
+puts " OCC400 "
+puts "========================"
+
+restore [locate_data_file OCC400.brep] result
+
+tclean result
+isos result 0
+
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+
+checktrinfo result -tri 66 -nod 70
+checkprops result -s 0 
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,20 @@
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
+#puts "TODO OCC12345 ALL: Error: Number of triangles"
+#puts "TODO OCC12345 ALL: Error: Number of nodes"
+
+puts "========================"
+puts " OCC287 "
+puts "========================"
+
+restore [locate_data_file shading_170.brep] result
+checkshape result
+
+tclean result
+isos result 0
+incmesh result .1
+triangles result
+
+checktrinfo result -tri !1315 -nod !784
+checkprops result -s 0 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

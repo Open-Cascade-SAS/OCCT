@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC25232"
+puts "============"
+puts ""
+#########################################################################
+# Functionality to create solids from set of shapes
+#########################################################################
+
+restore [locate_data_file bug25232_BUG3_SPHERE_4_mc122-SCM-4-4.brep] b
+explode b f
+mkvolume result b_3 b_4 b_2 b_5 -s
+# 8 solids created
+
+checkprops result -s 1.41057e+07 
+checkshape result
+
+checknbshapes result -vertex 12 -edge 25 -wire 18 -face 18 -shell 8 -solid 8 -compsolid 0 -compound 1 -shape 90
+checkview -display result -2d -path ${imagedir}/${test_image}.png

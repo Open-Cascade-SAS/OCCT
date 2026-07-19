@@ -1,0 +1,37 @@
+puts "================"
+puts "OCC659"
+puts "================"
+puts ""
+#############################################
+## Units are not taken into account while translating IGES surfaces
+#############################################
+
+param read.surfacecurve.mode -2
+
+set filepath [locate_data_file D44-11325-6.igs]
+if [catch { igesbrep $filepath a 6425 } res] {
+   puts "Faulty OCC659 first: here is reading problem"
+}
+
+renamevar a_1 a1
+
+param read.surfacecurve.mode -3
+
+if [catch { igesbrep . a 6425 } res] {
+   puts "Faulty OCC659 second: here is reading problem"
+}
+
+renamevar a_1 a2
+
+set size1 [ bounding a1 -save x1_a1 yy zz x2_a1 yy zz ]
+set size2 [ bounding a2 -save x1_a2 yy zz x2_a2 yy zz ]
+
+set dim2 [ dval x2_a2-x1_a2 ]
+set dim1 [ dval x2_a1-x1_a1 ]
+
+set siz [expr ${dim1} / ${dim2}]
+if { $siz > 25} {
+   puts "Faulty OCC659"
+} else {
+  puts " OCC659 OK"
+}

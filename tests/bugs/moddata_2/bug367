@@ -1,0 +1,25 @@
+pload QAcommands
+
+puts "================"
+puts "OCC367"
+puts "BUC61013"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC105.brep] result
+checkshape result
+
+set step 0.5
+set goodX -307.47165394
+set goodY -340.18073533
+set goodZ 0
+set percent_tolerance 0.01
+
+OCC367 result ${step} ${goodX} ${goodY} ${goodZ} ${percent_tolerance} 
+
+checkprops result -l 1760.13 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

@@ -1,0 +1,11 @@
+puts "========"
+puts "0027448: BOPTools_AlgoTools::IsMicroEdge does not correspond to shape validity criteria"
+puts "Problem with Boolean CUT operation"
+puts "========"
+puts ""
+
+restore [locate_data_file bug27448_gdml_ZF6.brep] b
+explode b
+if {![regexp "Warning" [bcut result b_1 b_2]]} {
+  puts "Error: WarningStatus has not been set"
+}

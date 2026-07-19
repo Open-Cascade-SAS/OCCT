@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC27878"
+puts "========"
+puts ""
+#################################################
+# Development of the Gluing operations based on the new Boolean component
+#################################################
+
+restore [locate_data_file bug28165_shapes3.brep] c
+
+# fuse the shapes
+bglue 1
+bclearobjects
+bcleartools
+baddobjects {*}[explode c so]
+bfillds -t
+
+# remove all internal faces to make only one solid
+bcbuild rx
+bcaddall result -m 1 -u
+
+checkshape result
+checknbshapes result -edge 1400 -face 506 -solid 1
+checkprops result -v 4.69342e+007 -s 1.38778e+006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

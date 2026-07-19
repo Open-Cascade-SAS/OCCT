@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC27704"
+puts "========"
+puts ""
+#################################################
+# Numeric inaccuracy due to huge extension of the offset faces
+#################################################
+
+# Input shell contains two planar faces with linear edges.
+# The result of offset operation is also expected to contain
+# only simple geometries (planes, lines, 2d lines).
+# Due to inaccuracy SameParameter can convert 2d lines
+# into 2d BSpline curves.
+
+restore [locate_data_file bug27704.brep] s
+offsetparameter 1e-7 p i
+offsetload s 1
+offsetperform result
+if {[regexp {BSpline} [dump result]]} {
+  puts "Error: BSpline is created"
+}
+

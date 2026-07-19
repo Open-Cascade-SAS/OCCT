@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC26516"
+puts "========"
+puts ""
+################################################
+# Creating revolved shapes fails in some cases
+################################################
+
+restore [locate_data_file bug26516_tmp.brep] a
+
+revol result a 0 0 0 1 0 0 45
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

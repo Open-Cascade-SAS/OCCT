@@ -1,0 +1,62 @@
+// Created on: 1994-08-31
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Draft_VertexInfo_HeaderFile
+#define _Draft_VertexInfo_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+
+#include <gp_Pnt.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Boolean.hxx>
+class TopoDS_Edge;
+
+class Draft_VertexInfo
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  Standard_EXPORT Draft_VertexInfo();
+
+  Standard_EXPORT void Add(const TopoDS_Edge& E);
+
+  Standard_EXPORT const gp_Pnt& Geometry() const;
+
+  Standard_EXPORT double Parameter(const TopoDS_Edge& E);
+
+  Standard_EXPORT void InitEdgeIterator();
+
+  Standard_EXPORT const TopoDS_Edge& Edge() const;
+
+  Standard_EXPORT void NextEdge();
+
+  Standard_EXPORT bool MoreEdge() const;
+
+  Standard_EXPORT gp_Pnt& ChangeGeometry();
+
+  Standard_EXPORT double& ChangeParameter(const TopoDS_Edge& E);
+
+private:
+  gp_Pnt                                   myGeom;
+  NCollection_List<TopoDS_Shape>           myEdges;
+  NCollection_List<double>                 myParams;
+  NCollection_List<TopoDS_Shape>::Iterator myItEd;
+};
+
+#endif // _Draft_VertexInfo_HeaderFile

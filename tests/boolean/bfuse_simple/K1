@@ -1,0 +1,11 @@
+# Original bug : 
+# Date : 16July98
+
+box b 200 200 100
+profile wr pl 1 0 0 0 0 1 o 50 0 0 f 50 -80 x 50 y 5 x 10 y -25 x -60 
+revol rv wr 50 100 50 0 0 1 360
+
+bfuse result b rv
+
+checkprops result -s 161571
+checkview -display result -2d -otherwise { b rv } -s -path ${imagedir}/${test_image}.png

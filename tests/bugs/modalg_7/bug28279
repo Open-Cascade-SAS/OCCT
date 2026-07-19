@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC28279"
+puts "========"
+puts ""
+###########################################################################################################
+# Greater oscillations and higher degree of resulting B-Spline in cylinder-cylinder intersections in 7.1.0
+###########################################################################################################
+
+restore [locate_data_file bug28279_surface1_draw.draw] s1
+restore [locate_data_file bug28279_surface2_draw.draw] s2
+
+intersect result s1 s2
+
+smallview
+
+point p121 -2.20000000000914, 4.42587047983305, 2.00000000001213
+point p11 -2.20245354854755, 4.52573922818428, 1.82990686981508
+donly p121 p11
+fit
+clear p121 p11
+
+display result_1 result_2 s1 s2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

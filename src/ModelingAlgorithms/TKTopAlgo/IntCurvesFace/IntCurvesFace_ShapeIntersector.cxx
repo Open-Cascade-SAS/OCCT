@@ -1,0 +1,209 @@
+// Created on: 1998-01-27
+// Created by: Laurent BUCHARD
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IntCurvesFace_ShapeIntersector.hxx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <Bnd_BoundSortBox.hxx>
+#include <gp_Lin.hxx>
+#include <IntCurvesFace_Intersector.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+
+IntCurvesFace_ShapeIntersector::IntCurvesFace_ShapeIntersector()
+    : myIsDone(false),
+      myNbFaces(0)
+{
+}
+
+void IntCurvesFace_ShapeIntersector::Load(const TopoDS_Shape& theShape, const double theTol)
+{
+  TopExp_Explorer Ex;
+  int             i;
+  for (myNbFaces = 0, i = 0, Ex.Init(theShape, TopAbs_FACE); Ex.More(); ++i, Ex.Next())
+  {
+    ++myNbFaces;
+    TopoDS_Face aCurrentFace = TopoDS::Face(Ex.Current());
+    myIntersector.Append(new IntCurvesFace_Intersector(aCurrentFace, theTol));
+  }
+}
+
+void IntCurvesFace_ShapeIntersector::Perform(const gp_Lin& theL,
+                                             const double  theParMin,
+                                             const double  theParMax)
+{
+  myIsDone = false;
+  for (int i = 1; i <= myNbFaces; ++i)
+  {
+    myIntersector.ChangeValue(i)->Perform(theL, theParMin, theParMax);
+  }
+  SortResult();
+}
+
+void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin& theL,
+                                                    const double  theParMin,
+                                                    const double  theParMax)
+{
+  int i = 0;
+  if (myNbFaces > 2)
+  {
+    if (myPtrNums.IsEmpty())
+    {
+      myPtrNums      = NCollection_HArray1<int>(0, myNbFaces - 1);
+      myPtrIndexNums = NCollection_HArray1<int>(0, myNbFaces - 1);
+      for (; i < myNbFaces; ++i)
+      {
+        myPtrNums.ChangeValue(i)      = 0;
+        myPtrIndexNums.ChangeValue(i) = i + 1;
+      }
+    }
+  }
+
+  int    anIndexFace = -1;
+  double aParMax     = theParMax;
+  myIsDone           = false;
+  for (int ii = 1; ii <= myNbFaces; ++ii)
+  {
+    if (!myPtrNums.IsEmpty())
+    {
+      i = myPtrIndexNums.Value(ii - 1);
+    }
+    else
+    {
+      i = ii;
+    }
+    occ::handle<IntCurvesFace_Intersector> anIntersector = myIntersector.ChangeValue(i);
+    if (theParMin < aParMax)
+    {
+      anIntersector->Perform(theL, theParMin, aParMax);
+      if (anIntersector->IsDone())
+      {
+        int n = anIntersector->NbPnt();
+        for (int j = 1; j <= n; ++j)
+        {
+          double w = anIntersector->WParameter(j);
+          if (w < aParMax)
+          {
+            aParMax     = w;
+            anIndexFace = ii - 1;
+          }
+        }
+      }
+      else
+      {
+        myIsDone = false;
+        return;
+      }
+    }
+  }
+  if (!myPtrNums.IsEmpty() && anIndexFace >= 0)
+  {
+    myPtrNums.ChangeValue(anIndexFace) += 1;
+    int im1;
+    for (im1 = anIndexFace - 1, i = anIndexFace;
+         i >= 1 && myPtrNums.Value(i) > myPtrNums.Value(im1);
+         --i, --im1)
+    {
+      std::swap(myPtrIndexNums.ChangeValue(i), myPtrIndexNums.ChangeValue(im1));
+      std::swap(myPtrNums.ChangeValue(i), myPtrNums.ChangeValue(im1));
+    }
+  }
+  SortResult();
+}
+
+void IntCurvesFace_ShapeIntersector::Perform(const occ::handle<Adaptor3d_Curve>& theHCurve,
+                                             const double                        theParMin,
+                                             const double                        theParMax)
+{
+  myIsDone = false;
+  for (int i = 1; i <= myNbFaces; ++i)
+  {
+    occ::handle<IntCurvesFace_Intersector> anIntersector = myIntersector.ChangeValue(i);
+    anIntersector->Perform(theHCurve, theParMin, theParMax);
+  }
+  SortResult();
+}
+
+//-- ================================================================================
+//-- myIntersector   : Sequence of the addresses
+//-- myIndexPt          : 1 2 3 .... n  Points before the sorting
+//-- myNumberFace       : Number of the face (of the intersector) of the point myIndexPt(i)
+//-- myNumberIntPnt     : Number of the point  myIndexPt(i) of the intersection
+// myNumberFace(myIndexPt(i))
+//-- myIndexPar         : Parameter W of point myIndexPt(i)
+//--
+//-- To sum up, for each point index of K = myIndexPt(i) on a
+//--      * the face to which it belongs                               : myNumberFace(K)
+//--      * the number of the point in the intersection for FaceCurve  : myNumberIntPnt(K)
+//--      * the parameter W of the point on the curve                  : myIndexPar(K)
+//--
+//-- SortResult Sorts the points in ascending order of W
+//-- (updating the index table TabPt(.))
+//--
+//-- ================================================================================
+void IntCurvesFace_ShapeIntersector::SortResult()
+{
+  myIsDone   = true;
+  int aNbPnt = 0;
+  myIndexPt.Clear();
+  myIndexFace.Clear();
+  myIndexIntPnt.Clear();
+  myIndexPar.Clear();
+
+  // Retrieval of the results
+  for (int f = 1; f <= myNbFaces; ++f)
+  {
+    occ::handle<IntCurvesFace_Intersector> anIntersector = myIntersector.ChangeValue(f);
+    if (anIntersector->IsDone())
+    {
+      int n = anIntersector->NbPnt();
+      for (int j = 1; j <= n; ++j)
+      {
+        myIndexPt.Append(++aNbPnt);
+        myIndexFace.Append(f);
+        myIndexIntPnt.Append(j);
+        myIndexPar.Append(anIntersector->WParameter(j));
+      }
+    }
+    else
+    {
+      myIsDone = false;
+      return;
+    }
+  }
+
+  // Sort according to parameter  w
+  bool isOK;
+  do
+  {
+    isOK = true;
+    for (int ind0 = 1; ind0 < aNbPnt; ind0++)
+    {
+      int ind   = myIndexPt(ind0);
+      int indp1 = myIndexPt(ind0 + 1);
+      if (myIndexPar(ind) > myIndexPar(indp1))
+      {
+        myIndexPt(ind0)     = indp1;
+        myIndexPt(ind0 + 1) = ind;
+        isOK                = false;
+      }
+    }
+  } while (!isOK);
+}
+
+IntCurvesFace_ShapeIntersector::~IntCurvesFace_ShapeIntersector() = default;

@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC24581"
+puts "========"
+puts ""
+######################################################################################################
+# BuildSweep fails to trim components of resulting shape at spine knuckles when parameter -C is used
+######################################################################################################
+
+restore [locate_data_file OCC24581_spine.brep] spine
+restore [locate_data_file OCC24581_profile.brep] profile
+
+mksweep spine
+addsweep profile
+
+buildsweep r -C -S
+
+checkprops r -s 314717
+checkprops r -v 3.12204e+006
+checknbshapes r -vertex 22 -edge 31 -wire 11 -face 11 -shell 1 -solid 1
+
+top
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

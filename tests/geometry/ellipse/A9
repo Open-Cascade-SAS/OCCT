@@ -1,0 +1,3 @@
+ellipse result 0 0 0 1 0 0 0 0 1 25 15
+checklength result -l 127.63499431699034
+checkview -display result -2d -path ${imagedir}/${test_image}.png

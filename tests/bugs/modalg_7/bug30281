@@ -1,0 +1,42 @@
+puts "========"
+puts "0030281: Regression to 7.2.0: Modeling Algorithms - Wrong result of CUT operation"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30281_shape.brep] s1
+restore [locate_data_file bug30281_tool.brep] s2
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+
+foreach r {r0 r1 r2 r3 r4} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the result of BOP is self-interfering shape"
+  }
+}
+
+checknbshapes r0 -wire 112 -face 88 -shell 4 -solid 4
+checkprops r0 -s 590506 -v 7.584e+006
+
+checknbshapes r1 -wire 58 -face 46 -shell 1 -solid 1
+checkprops r1 -s  976583 -v 2.24e+007
+
+checknbshapes r2 -wire 94 -face 82 -shell 1 -solid 1
+checkprops r2 -s 1.00882e+006 -v 1.4816e+007
+
+checknbshapes r3 -shell 0 -solid 0
+checkprops r3 -s empty -v empty
+
+checkprops r4 -l 9614.01
+
+checkview -display r2 -2d -path ${imagedir}/${test_image}.png

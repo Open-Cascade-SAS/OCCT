@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC26376"
+puts "========"
+puts ""
+##########################################################################
+# Imported STEP shape is partially wrong
+##########################################################################
+
+stepread [locate_data_file bug26376_valve-test-meters.step] a *
+tpcompound result
+
+checkprops result -s 150249 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 23
+ EDGE      : 35
+ WIRE      : 24
+ FACE      : 19
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 104
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Shape"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

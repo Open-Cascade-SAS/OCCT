@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC18541"
+puts "============"
+puts ""
+#######################################################################
+# Problem with GCPnts_UniformAbscissa class
+#######################################################################
+
+set BugNumber OCC18541
+
+set maxR 100
+set minR 50
+set NbPoints 10
+
+set ResList [uniformAbscissaEl ${maxR} ${minR} ${NbPoints}]
+
+if {[llength ${ResList}] > 15} {
+   set CasCurve_NbPoints [lindex ${ResList} 15]
+   puts "NbPoints = ${NbPoints}   CasCurve_NbPoints = ${CasCurve_NbPoints}"
+   if { ${CasCurve_NbPoints} != ${NbPoints} } {
+      puts "Faulty ${BugNumber}"
+   } else {
+      puts "OK ${BugNumber}"
+   }
+} else {
+   puts "Faulty ${BugNumber} : Bad draw command"
+}

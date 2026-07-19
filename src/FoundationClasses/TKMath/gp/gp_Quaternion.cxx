@@ -1,0 +1,471 @@
+// Created on: 2010-05-11
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2010-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Note: implementation is based on free samples from
+// http://www.gamedev.ru/code/articles/?id=4215&page=3
+// and maths found in Wikipedia and elsewhere
+
+#include <gp_Quaternion.hxx>
+
+#include <gp_Vec.hxx>
+#include <gp_Mat.hxx>
+
+//=================================================================================================
+
+bool gp_Quaternion::IsEqual(const gp_Quaternion& theOther) const
+{
+  if (this == &theOther)
+  {
+    return true;
+  }
+  return std::abs(x - theOther.x) <= gp::Resolution()
+         && std::abs(y - theOther.y) <= gp::Resolution()
+         && std::abs(z - theOther.z) <= gp::Resolution()
+         && std::abs(w - theOther.w) <= gp::Resolution();
+}
+
+//=================================================================================================
+
+void gp_Quaternion::SetRotation(const gp_Vec& theVecFrom, const gp_Vec& theVecTo)
+{
+  gp_Vec aVecCross(theVecFrom.Crossed(theVecTo));
+  Set(aVecCross.X(), aVecCross.Y(), aVecCross.Z(), theVecFrom.Dot(theVecTo));
+  Normalize();               // if "from" or "to" not unit, normalize quat
+  w += 1.0;                  // reducing angle to halfangle
+  if (w <= gp::Resolution()) // angle close to PI
+  {
+    if ((theVecFrom.Z() * theVecFrom.Z()) > (theVecFrom.X() * theVecFrom.X()))
+    {
+      Set(0.0, theVecFrom.Z(), -theVecFrom.Y(), w); // theVecFrom * gp_Vec(1,0,0)
+    }
+    else
+    {
+      Set(theVecFrom.Y(), -theVecFrom.X(), 0.0, w); // theVecFrom * gp_Vec(0,0,1)
+    }
+  }
+  Normalize();
+}
+
+//=================================================================================================
+
+void gp_Quaternion::SetRotation(const gp_Vec& theVecFrom,
+                                const gp_Vec& theVecTo,
+                                const gp_Vec& theHelpCrossVec)
+{
+  gp_Vec aVecCross(theVecFrom.Crossed(theVecTo));
+  Set(aVecCross.X(), aVecCross.Y(), aVecCross.Z(), theVecFrom.Dot(theVecTo));
+  Normalize();               // if "from" or "to" not unit, normalize quat
+  w += 1.0;                  // reducing angle to halfangle
+  if (w <= gp::Resolution()) // angle close to PI
+  {
+    gp_Vec theAxis = theVecFrom.Crossed(theHelpCrossVec);
+    Set(theAxis.X(), theAxis.Y(), theAxis.Z(), w);
+  }
+  Normalize();
+}
+
+//=================================================================================================
+
+void gp_Quaternion::SetVectorAndAngle(const gp_Vec& theAxis, const double theAngle)
+{
+  gp_Vec anAxis      = theAxis.Normalized();
+  double anAngleHalf = 0.5 * theAngle;
+  double sin_a       = std::sin(anAngleHalf);
+  Set(anAxis.X() * sin_a, anAxis.Y() * sin_a, anAxis.Z() * sin_a, std::cos(anAngleHalf));
+}
+
+//=================================================================================================
+
+void gp_Quaternion::GetVectorAndAngle(gp_Vec& theAxis, double& theAngle) const
+{
+  double vl = std::sqrt(x * x + y * y + z * z);
+  if (vl > gp::Resolution())
+  {
+    double ivl = 1.0 / vl;
+    theAxis.SetCoord(x * ivl, y * ivl, z * ivl);
+    if (w < 0.0)
+    {
+      theAngle = 2.0 * std::atan2(-vl, -w); // [-PI,  0]
+    }
+    else
+    {
+      theAngle = 2.0 * std::atan2(vl, w); // [  0, PI]
+    }
+  }
+  else
+  {
+    theAxis.SetCoord(0.0, 0.0, 1.0);
+    theAngle = 0.0;
+  }
+}
+
+//=================================================================================================
+
+void gp_Quaternion::SetMatrix(const gp_Mat& theMat)
+{
+  double tr = theMat(1, 1) + theMat(2, 2) + theMat(3, 3); // trace of martix
+  if (tr > 0.0)
+  { // if trace positive than "w" is biggest component
+    Set(theMat(3, 2) - theMat(2, 3),
+        theMat(1, 3) - theMat(3, 1),
+        theMat(2, 1) - theMat(1, 2),
+        tr + 1.0);
+    Scale(0.5 / std::sqrt(w)); // "w" contain the "norm * 4"
+  }
+  else if ((theMat(1, 1) > theMat(2, 2)) && (theMat(1, 1) > theMat(3, 3)))
+  { // Some of vector components is bigger
+    Set(1.0 + theMat(1, 1) - theMat(2, 2) - theMat(3, 3),
+        theMat(1, 2) + theMat(2, 1),
+        theMat(1, 3) + theMat(3, 1),
+        theMat(3, 2) - theMat(2, 3));
+    Scale(0.5 / std::sqrt(x));
+  }
+  else if (theMat(2, 2) > theMat(3, 3))
+  {
+    Set(theMat(1, 2) + theMat(2, 1),
+        1.0 + theMat(2, 2) - theMat(1, 1) - theMat(3, 3),
+        theMat(2, 3) + theMat(3, 2),
+        theMat(1, 3) - theMat(3, 1));
+    Scale(0.5 / std::sqrt(y));
+  }
+  else
+  {
+    Set(theMat(1, 3) + theMat(3, 1),
+        theMat(2, 3) + theMat(3, 2),
+        1.0 + theMat(3, 3) - theMat(1, 1) - theMat(2, 2),
+        theMat(2, 1) - theMat(1, 2));
+    Scale(0.5 / std::sqrt(z));
+  }
+}
+
+//=================================================================================================
+
+gp_Mat gp_Quaternion::GetMatrix() const
+{
+  double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+  double s = 2.0 / SquareNorm();
+  x2       = x * s;
+  y2       = y * s;
+  z2       = z * s;
+  xx       = x * x2;
+  xy       = x * y2;
+  xz       = x * z2;
+  yy       = y * y2;
+  yz       = y * z2;
+  zz       = z * z2;
+  wx       = w * x2;
+  wy       = w * y2;
+  wz       = w * z2;
+
+  gp_Mat aMat;
+
+  aMat(1, 1) = 1.0 - (yy + zz);
+  aMat(1, 2) = xy - wz;
+  aMat(1, 3) = xz + wy;
+
+  aMat(2, 1) = xy + wz;
+  aMat(2, 2) = 1.0 - (xx + zz);
+  aMat(2, 3) = yz - wx;
+
+  aMat(3, 1) = xz - wy;
+  aMat(3, 2) = yz + wx;
+  aMat(3, 3) = 1.0 - (xx + yy);
+  // 1 division    16 multiplications    15 addidtions    12 variables
+
+  return aMat;
+}
+
+namespace
+{ // anonymous namespace
+
+//=======================================================================
+// function : translateEulerSequence
+// purpose  :
+// Code supporting conversion between quaternion and generalized
+// Euler angles (sequence of three rotations) is based on
+// algorithm by Ken Shoemake, published in Graphics Gems IV, p. 222-22
+// http://tog.acm.org/resources/GraphicsGems/gemsiv/euler_angle/EulerAngles.c
+//=======================================================================
+
+struct gp_EulerSequence_Parameters
+{
+  int i;            // first rotation axis
+  int j;            // next axis of rotation
+  int k;            // third axis
+                    // clang-format off
+  bool isOdd;       // true if order of two first rotation axes is odd permutation, e.g. XZ
+                    // clang-format on
+  bool isTwoAxes;   // true if third rotation is about the same axis as first
+  bool isExtrinsic; // true if rotations are made around fixed axes
+
+  gp_EulerSequence_Parameters(int theAx1, bool theisOdd, bool theisTwoAxes, bool theisExtrinsic)
+      : i(theAx1),
+        j(1 + (theAx1 + (theisOdd ? 1 : 0)) % 3),
+        k(1 + (theAx1 + (theisOdd ? 0 : 1)) % 3),
+        isOdd(theisOdd),
+        isTwoAxes(theisTwoAxes),
+        isExtrinsic(theisExtrinsic)
+  {
+  }
+};
+
+gp_EulerSequence_Parameters translateEulerSequence(const gp_EulerSequence theSeq)
+{
+  typedef gp_EulerSequence_Parameters Params;
+  const bool                          F = false;
+  const bool                          T = true;
+
+  switch (theSeq)
+  {
+    case gp_Extrinsic_XYZ:
+      return Params(1, F, F, T);
+    case gp_Extrinsic_XZY:
+      return Params(1, T, F, T);
+    case gp_Extrinsic_YZX:
+      return Params(2, F, F, T);
+    case gp_Extrinsic_YXZ:
+      return Params(2, T, F, T);
+    case gp_Extrinsic_ZXY:
+      return Params(3, F, F, T);
+    case gp_Extrinsic_ZYX:
+      return Params(3, T, F, T);
+
+    // Conversion of intrinsic angles is made by the same code as for extrinsic,
+    // using equivalence rule: intrinsic rotation is equivalent to extrinsic
+    // rotation by the same angles but with inverted order of elemental rotations.
+    // Swapping of angles (Alpha <-> Gamma) is done inside conversion procedure;
+    // sequence of axes is inverted by setting appropriate parameters here.
+    // Note that proper Euler angles (last block below) are symmetric for sequence of axes.
+    case gp_Intrinsic_XYZ:
+      return Params(3, T, F, F);
+    case gp_Intrinsic_XZY:
+      return Params(2, F, F, F);
+    case gp_Intrinsic_YZX:
+      return Params(1, T, F, F);
+    case gp_Intrinsic_YXZ:
+      return Params(3, F, F, F);
+    case gp_Intrinsic_ZXY:
+      return Params(2, T, F, F);
+    case gp_Intrinsic_ZYX:
+      return Params(1, F, F, F);
+
+    case gp_Extrinsic_XYX:
+      return Params(1, F, T, T);
+    case gp_Extrinsic_XZX:
+      return Params(1, T, T, T);
+    case gp_Extrinsic_YZY:
+      return Params(2, F, T, T);
+    case gp_Extrinsic_YXY:
+      return Params(2, T, T, T);
+    case gp_Extrinsic_ZXZ:
+      return Params(3, F, T, T);
+    case gp_Extrinsic_ZYZ:
+      return Params(3, T, T, T);
+
+    case gp_Intrinsic_XYX:
+      return Params(1, F, T, F);
+    case gp_Intrinsic_XZX:
+      return Params(1, T, T, F);
+    case gp_Intrinsic_YZY:
+      return Params(2, F, T, F);
+    case gp_Intrinsic_YXY:
+      return Params(2, T, T, F);
+    case gp_Intrinsic_ZXZ:
+      return Params(3, F, T, F);
+    case gp_Intrinsic_ZYZ:
+      return Params(3, T, T, F);
+
+    default:
+    case gp_EulerAngles:
+      return Params(3, F, T, F); // = Intrinsic_ZXZ
+    case gp_YawPitchRoll:
+      return Params(1, F, F, F); // = Intrinsic_ZYX
+  };
+}
+
+} // anonymous namespace
+
+//=================================================================================================
+
+void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
+                                   const double           theAlpha,
+                                   const double           theBeta,
+                                   const double           theGamma)
+{
+  gp_EulerSequence_Parameters o = translateEulerSequence(theOrder);
+
+  double a = theAlpha, b = theBeta, c = theGamma;
+  if (!o.isExtrinsic)
+  {
+    a = theGamma;
+    c = theAlpha;
+  }
+  if (o.isOdd)
+  {
+    b = -b;
+  }
+
+  double ti = 0.5 * a;
+  double tj = 0.5 * b;
+  double th = 0.5 * c;
+  double ci = std::cos(ti);
+  double cj = std::cos(tj);
+  double ch = std::cos(th);
+  double si = std::sin(ti);
+  double sj = std::sin(tj);
+  double sh = std::sin(th);
+  double cc = ci * ch;
+  double cs = ci * sh;
+  double sc = si * ch;
+  double ss = si * sh;
+
+  double values[4]; // w, x, y, z
+  if (o.isTwoAxes)
+  {
+    values[o.i] = cj * (cs + sc);
+    values[o.j] = sj * (cc + ss);
+    values[o.k] = sj * (cs - sc);
+    values[0]   = cj * (cc - ss);
+  }
+  else
+  {
+    values[o.i] = cj * sc - sj * cs;
+    values[o.j] = cj * ss + sj * cc;
+    values[o.k] = cj * cs - sj * sc;
+    values[0]   = cj * cc + sj * ss;
+  }
+  if (o.isOdd)
+  {
+    values[o.j] = -values[o.j];
+  }
+
+  x = values[1];
+  y = values[2];
+  z = values[3];
+  w = values[0];
+}
+
+//=================================================================================================
+
+void gp_Quaternion::GetEulerAngles(const gp_EulerSequence theOrder,
+                                   double&                theAlpha,
+                                   double&                theBeta,
+                                   double&                theGamma) const
+{
+  gp_Mat M = GetMatrix();
+
+  gp_EulerSequence_Parameters o = translateEulerSequence(theOrder);
+  if (o.isTwoAxes)
+  {
+    double sy = sqrt(M(o.i, o.j) * M(o.i, o.j) + M(o.i, o.k) * M(o.i, o.k));
+    if (sy > 16 * DBL_EPSILON)
+    {
+      theAlpha = std::atan2(M(o.i, o.j), M(o.i, o.k));
+      theGamma = std::atan2(M(o.j, o.i), -M(o.k, o.i));
+    }
+    else
+    {
+      theAlpha = std::atan2(-M(o.j, o.k), M(o.j, o.j));
+      theGamma = 0.;
+    }
+    theBeta = std::atan2(sy, M(o.i, o.i));
+  }
+  else
+  {
+    double cy = sqrt(M(o.i, o.i) * M(o.i, o.i) + M(o.j, o.i) * M(o.j, o.i));
+    if (cy > 16 * DBL_EPSILON)
+    {
+      theAlpha = std::atan2(M(o.k, o.j), M(o.k, o.k));
+      theGamma = std::atan2(M(o.j, o.i), M(o.i, o.i));
+    }
+    else
+    {
+      theAlpha = std::atan2(-M(o.j, o.k), M(o.j, o.j));
+      theGamma = 0.;
+    }
+    theBeta = std::atan2(-M(o.k, o.i), cy);
+  }
+  if (o.isOdd)
+  {
+    theAlpha = -theAlpha;
+    theBeta  = -theBeta;
+    theGamma = -theGamma;
+  }
+  if (!o.isExtrinsic)
+  {
+    double aFirst = theAlpha;
+    theAlpha      = theGamma;
+    theGamma      = aFirst;
+  }
+}
+
+//=================================================================================================
+
+void gp_Quaternion::StabilizeLength()
+{
+  double cs = std::abs(x) + std::abs(y) + std::abs(z) + std::abs(w);
+  if (cs > 0.0)
+  {
+    x /= cs;
+    y /= cs;
+    z /= cs;
+    w /= cs;
+  }
+  else
+  {
+    SetIdent();
+  }
+}
+
+//=================================================================================================
+
+void gp_Quaternion::Normalize()
+{
+  double aMagn = Norm();
+  if (aMagn < gp::Resolution())
+  {
+    StabilizeLength();
+    aMagn = Norm();
+  }
+  Scale(1.0 / aMagn);
+}
+
+//=================================================================================================
+
+double gp_Quaternion::GetRotationAngle() const
+{
+  if (w < 0.0)
+  {
+    return 2.0 * std::atan2(-std::sqrt(x * x + y * y + z * z), -w);
+  }
+  else
+  {
+    return 2.0 * std::atan2(std::sqrt(x * x + y * y + z * z), w);
+  }
+}
+
+//=================================================================================================
+
+gp_Vec gp_Quaternion::Multiply(const gp_Vec& theVec) const
+{
+  gp_Quaternion theQ(theVec.X() * w + theVec.Z() * y - theVec.Y() * z,
+                     theVec.Y() * w + theVec.X() * z - theVec.Z() * x,
+                     theVec.Z() * w + theVec.Y() * x - theVec.X() * y,
+                     theVec.X() * x + theVec.Y() * y + theVec.Z() * z);
+  return gp_Vec(w * theQ.x + x * theQ.w + y * theQ.z - z * theQ.y,
+                w * theQ.y + y * theQ.w + z * theQ.x - x * theQ.z,
+                w * theQ.z + z * theQ.w + x * theQ.y - y * theQ.x)
+         * (1.0 / SquareNorm());
+}

@@ -1,0 +1,73 @@
+puts "============"
+puts "OCC24157"
+puts "============"
+puts ""
+############################################
+# Parallelization of assembly part of BO
+############################################
+
+set aN 5
+set aR1 10.
+set aR2 4.
+
+set aZ 0.
+for {set i 0} {$i < $aN} {incr i} {
+  set aA ${i}*2.*pi/${aN}
+  set aX ${aR1}*cos(${aA})
+  set aY ${aR1}*sin(${aA})
+  vertex v1_${i} ${aX} ${aY} ${aZ}
+
+  set aA ${aA}+pi/${aN}
+  set aX ${aR2}*cos(${aA})
+  set aY ${aR2}*sin(${aA})
+  vertex v2_${i} ${aX} ${aY} ${aZ}
+}
+copy v1_0  v1_${aN} 
+
+set q {}
+for {set i 0} {$i < $aN} {incr i} {
+  set j [expr $i + 1]
+  edge e1_${i} v1_${i} v2_${i}
+  lappend q  e1_${i} 
+  edge e2_${i} v2_${i} v1_${j} 
+  lappend q e2_${i} 
+}
+
+eval wire w $q
+mkplane bs w
+#----------------------------
+box b 700 820 1
+explode b f
+copy b_5 b1
+
+set N 41
+set q {}
+for {set i 1} {$i < $N} {incr i} {
+    for {set j 1} {$j < $N} {incr j} {
+	tcopy bs bs_${i}_{$j}
+	ttranslate bs_${i}_{$j} [expr $i * 17.] [expr $j * 20.] 0.  
+	lappend q bs_${i}_{$j}
+    }
+}
+eval compound $q b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddcompound b2
+bfillds
+
+regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
+
+if { [regexp {Debug mode} [dversion]] } {
+  set check_time 60
+} else {
+  set check_time 43
+}
+if { $tps_time > $check_time } {
+  puts "Error: low performance"
+} else {
+  puts "OK: high performance"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

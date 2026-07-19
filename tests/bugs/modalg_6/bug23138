@@ -1,0 +1,17 @@
+puts "=========="
+puts "OCC23138"
+puts "=========="
+puts ""
+###########################################
+# BRepAlgoAPI_Fuse produce invalid result
+###########################################
+
+restore [locate_data_file bug23138_body.brep] b
+restore [locate_data_file bug23138_thread.brep] t
+
+bop b t
+bopfuse result
+
+checkprops result -s 23233.2 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

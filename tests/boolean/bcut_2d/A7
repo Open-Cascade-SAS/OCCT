@@ -1,0 +1,9 @@
+restore [locate_data_file case_1_solid.brep] a
+restore [locate_data_file case_1_wire3.brep] b
+
+bcut result b a
+
+checkprops result -l empty
+checksection result
+checknbshapes result -vertex 0 -edge 0 -t
+

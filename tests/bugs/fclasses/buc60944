@@ -1,0 +1,8 @@
+puts "========"                                                                                                                                                 
+puts "BUC60944"                                                                                                                                                 
+puts "========"                                                                                                                                                 
+puts ""                           
+
+pload QAcommands
+
+BUC60944 "../../.."

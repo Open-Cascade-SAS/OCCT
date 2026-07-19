@@ -1,0 +1,15 @@
+
+puts "========"
+puts "BUC60842"
+puts "========"
+
+pload QAcommands
+vinit
+
+if [catch {BUC60842} catch_result] {
+    puts "Faulty BUC60842"
+} else {
+    puts "BUC60842 OK"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

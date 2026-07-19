@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC22733"
+puts "========"
+puts ""
+###########################################################
+# Empty result for the extrema between a circle and a line
+###########################################################
+
+set BugNumber OCC22733
+
+restore [locate_data_file bug22733_ez4.brep] ez4 
+restore [locate_data_file bug22733_ez17.brep] ez17 
+
+mkcurve c4 ez4
+mkcurve c17 ez17
+
+set extrema_res [extrema c4 c17]
+set extrema_length [llength ${extrema_res} ]
+
+if {${extrema_length} != 1 } {
+   puts "${BugNumber}: Faulty"
+} else {
+   puts "${BugNumber}: OK"
+}

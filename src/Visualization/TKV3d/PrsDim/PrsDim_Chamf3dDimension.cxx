@@ -1,0 +1,189 @@
+// Created on: 1996-12-05
+// Created by: Odile Olivier
+// Copyright (c) 1996-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <PrsDim_Chamf3dDimension.hxx>
+
+#include <PrsDim.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <DsgPrs_Chamf2dPresentation.hxx>
+#include <ElCLib.hxx>
+#include <Geom_Line.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <ProjLib.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Chamf3dDimension, PrsDim_Relation)
+
+//=================================================================================================
+
+PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
+                                                 const double                      aVal,
+                                                 const TCollection_ExtendedString& aText)
+
+{
+  myFShape            = aFShape;
+  myVal               = aVal;
+  myText              = aText;
+  mySymbolPrs         = DsgPrs_AS_LASTAR;
+  myAutomaticPosition = true;
+
+  myArrowSize = myVal / 100.;
+}
+
+//=================================================================================================
+
+PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
+                                                 const double                      aVal,
+                                                 const TCollection_ExtendedString& aText,
+                                                 const gp_Pnt&                     aPosition,
+                                                 const DsgPrs_ArrowSide            aSymbolPrs,
+                                                 const double                      anArrowSize)
+
+{
+  myFShape    = aFShape;
+  myVal       = aVal;
+  myText      = aText;
+  myPosition  = aPosition;
+  mySymbolPrs = aSymbolPrs;
+  SetArrowSize(anArrowSize);
+  myAutomaticPosition = false;
+}
+
+//=================================================================================================
+
+void PrsDim_Chamf3dDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                      const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const int)
+{
+  //----------------------------
+  // Calcul du centre de la face
+  //----------------------------
+  BRepAdaptor_Surface surfAlgo(TopoDS::Face(myFShape));
+  double              uFirst, uLast, vFirst, vLast;
+  uFirst      = surfAlgo.FirstUParameter();
+  uLast       = surfAlgo.LastUParameter();
+  vFirst      = surfAlgo.FirstVParameter();
+  vLast       = surfAlgo.LastVParameter();
+  double uMoy = (uFirst + uLast) / 2;
+  double vMoy = (vFirst + vLast) / 2;
+  gp_Pnt apos;
+  gp_Vec d1u, d1v;
+  surfAlgo.D1(uMoy, vMoy, apos, d1u, d1v);
+  myPntAttach = apos;
+
+  myDir = d1u ^ d1v;
+  //  myDir = surfAlgo.Plane().Axis().Direction();
+
+  //--------------------------------------------
+  // Calcul du point de positionnement du texte
+  //--------------------------------------------
+  gp_Pnt curpos;
+  if (myAutomaticPosition)
+  {
+    gp_Vec transVec(myDir);
+    transVec *= myVal;
+    curpos = myPntAttach.Translated(transVec);
+
+    if (myIsSetBndBox)
+    {
+      curpos = PrsDim::TranslatePointToBound(curpos, myDir, myBndBox);
+    }
+
+    myPosition = curpos;
+  }
+  else
+  {
+
+    occ::handle<Geom_Line> dimLin    = new Geom_Line(myPntAttach, myDir);
+    double                 parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
+    curpos                           = ElCLib::Value(parcurpos, dimLin->Lin());
+
+    if (curpos.Distance(myPntAttach) < 5.)
+    {
+      gp_Vec transVec(myDir);
+      transVec *= 5.;
+      curpos = myPntAttach.Translated(transVec);
+    }
+    myPosition = curpos;
+  }
+
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
+
+  //-------------------------------------------------
+  // Calcul de la boite englobante du component pour
+  // determiner la taille de la fleche
+  //-------------------------------------------------
+  if (!myArrowSizeIsDefined)
+  {
+    double arrsize = myArrowSize;
+    if ((myVal / 4) < arrsize)
+    {
+      arrsize = myVal / 4;
+    }
+    if (arrsize > 30.)
+    {
+      arrsize = 30.;
+    }
+    else if (arrsize < 8.)
+    {
+      arrsize = 8.;
+    }
+    myArrowSize = arrsize;
+  }
+  arr->SetLength(myArrowSize);
+
+  // Calcul de la presentation
+  DsgPrs_Chamf2dPresentation::Add(aPresentation,
+                                  myDrawer,
+                                  myPntAttach,
+                                  curpos,
+                                  myText,
+                                  mySymbolPrs);
+}
+
+//=================================================================================================
+
+void PrsDim_Chamf3dDimension::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                               const int)
+{
+  occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<Select3D_SensitiveSegment> seg =
+    new Select3D_SensitiveSegment(own, myPntAttach, myPosition);
+  aSelection->Add(seg);
+
+  // Text
+  double                             size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
+                                                                     myPosition.X(),
+                                                                     myPosition.Y(),
+                                                                     myPosition.Z(),
+                                                                     myPosition.X() + size,
+                                                                     myPosition.Y() + size,
+                                                                     myPosition.Z() + size);
+  aSelection->Add(box);
+}

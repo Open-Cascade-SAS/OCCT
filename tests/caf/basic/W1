@@ -1,0 +1,53 @@
+#INTERFACE CAF
+# Basic attributes
+# Std documents
+#
+# Testing support of std format: reading standard attributes 
+#                                BooleanArray, ByteArray, ExtStringArray, IntegerArray, RealArray, ReferenceArray
+#                                BooleanList, ExtStringList, IntegerList, RealList, ReferenceList
+#
+# Testing command:   Open,  GetBooleanArray, GetByteArray, GetExtStringArray, GetIntArray, GetRealArray, GetRefArray.
+# Testing command:   GetBooleanList, GetExtStringArray, GetIntegerList, GetRealList, GetReferenceList
+#
+
+puts "caf001-W1"
+set QA_DUP 0
+
+# Add an attribute to a data framework
+set aSetAttr1 {1 0 0 1 1}
+set aLabel 0:1
+set aFile [locate_data_file caf001_boolAr.std]
+#Open a document
+Open ${aFile} D
+
+# Get a value of the attribute
+set IsGood 1
+set aMessage1 "Add TDataStd_BooleanArray attribute: Error"
+set aGetAttr1 [GetBooleanArray D ${aLabel}]
+set aLenRead [llength ${aGetAttr1}]
+set aLenSet [llength ${aSetAttr1}]
+
+if { ${aLenRead} != ${aLenSet} } {
+   set IsGood 0
+   puts "aLenRead=${aLenRead}"
+   puts ${aMessage1}
+}
+
+if { ${IsGood} == 0}  return
+
+for {set i 0} {$i < $aLenRead} {incr i} {
+  set aGetAttr11 [lindex ${aGetAttr1} $i]
+  set aGetAttr21 [lindex ${aSetAttr1} $i]
+  if { ${aGetAttr11} != ${aGetAttr21} } {
+     set IsGood 0;puts "i=${i}"
+     puts "aGetAttr11=${aGetAttr11}"
+     puts "aGetAttr21=${aGetAttr21}"
+     break
+     }
+}
+
+if { ${IsGood} == 0} {
+  puts ${aMessage1}
+} else {
+  puts "Add TDataStd_BooleanArray attribute: OK"
+}

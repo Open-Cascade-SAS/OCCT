@@ -1,0 +1,7 @@
+polyline a 0 0 0  10 0 0  2 5 0   0 0 0
+mkplane a a
+
+DT_SplitByNumber result a 100
+
+checknbshapes result -t -face 118
+

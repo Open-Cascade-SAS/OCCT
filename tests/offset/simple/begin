@@ -1,0 +1,11 @@
+pload MODELING VISUALIZATION
+cpulimit 100
+
+# "A" letter 26528
+# "B" letter 26577
+# "C" letter 26578
+# "D" letter 26587, 27907, 27908, 27909, 27910, 27911, 27912, 27913
+# "E" letter SPE 2016_Oct pack
+
+# default tolerance for detecting singularities
+set SingularTol 1.e-7

@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC27721"
+puts "========"
+puts ""
+##############################################################################
+# Add possibility to read STEP file with invalid shape_representation entity.
+##############################################################################
+
+param read.step.all.shapes 1
+newmodel
+
+ReadStep D [locate_data_file bug27721.stp]
+
+XGetOneShape result D
+
+checknbshapes result -solid 1 -shell 2 -shape 43
+
+param read.step.all.shapes 0
+newmodel

@@ -1,0 +1,180 @@
+// Created on: 1993-08-24
+// Created by: Bruno DUMORTIER
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ElSLib.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <ProjLib_Cone.hxx>
+
+#include <cmath>
+
+//=================================================================================================
+
+ProjLib_Cone::ProjLib_Cone() = default;
+
+//=================================================================================================
+
+ProjLib_Cone::ProjLib_Cone(const gp_Cone& Co)
+{
+  Init(Co);
+}
+
+//=================================================================================================
+
+ProjLib_Cone::ProjLib_Cone(const gp_Cone& Co, const gp_Lin& L)
+{
+  Init(Co);
+  Project(L);
+}
+
+//=================================================================================================
+
+ProjLib_Cone::ProjLib_Cone(const gp_Cone& Co, const gp_Circ& C)
+{
+  Init(Co);
+  Project(C);
+}
+
+//=================================================================================================
+
+void ProjLib_Cone::Init(const gp_Cone& Co)
+{
+  myType       = GeomAbs_OtherCurve;
+  myCone       = Co;
+  myIsPeriodic = false;
+  isDone       = false;
+}
+
+//=================================================================================================
+
+void ProjLib_Cone::Project(const gp_Lin& L)
+{
+  gp_Pnt aPnt = L.Location(), anApex = myCone.Apex();
+
+  double aDeltaV = 0.0;
+
+  double U, V;
+  if (aPnt.IsEqual(anApex, Precision::Confusion()))
+  {
+    // Take another point in the line L, which does not coincide with the cone apex.
+    aPnt.Translate(L.Direction().XYZ());
+    aDeltaV = 1.0; // == ||L.Direction()|| == 1.0
+  }
+
+  ElSLib::ConeParameters(myCone.Position(), myCone.RefRadius(), myCone.SemiAngle(), aPnt, U, V);
+  //
+  gp_Pnt P;
+  gp_Vec Vu, Vv;
+
+  ElSLib::ConeD1(U, V, myCone.Position(), myCone.RefRadius(), myCone.SemiAngle(), P, Vu, Vv);
+
+  gp_Dir Dv(Vv);
+  if (Dv.IsParallel(L.Direction(), Precision::Angular()))
+  {
+    // L is parallel to U-isoline of the cone.
+    myType = GeomAbs_Line;
+
+    const double aSign = std::copysign(1.0, L.Direction().Dot(Dv));
+    gp_Pnt2d     P2d(U, V - aDeltaV * aSign);
+    gp_Dir2d     D2d(0., aSign);
+
+    myLin = gp_Lin2d(P2d, D2d);
+
+    isDone = true;
+  }
+}
+
+//=================================================================================================
+
+void ProjLib_Cone::Project(const gp_Circ& C)
+{
+  myType = GeomAbs_Line;
+
+  gp_Ax3 ConePos = myCone.Position();
+  gp_Ax3 CircPos = C.Position();
+  //
+  if (!ConePos.Direction().IsParallel(CircPos.Direction(), Precision::Angular()))
+  {
+    isDone = false;
+    return;
+  }
+  //
+  gp_Dir ZCone = ConePos.XDirection().Crossed(ConePos.YDirection());
+  gp_Dir ZCir  = CircPos.XDirection().Crossed(CircPos.YDirection());
+
+  double U, V;
+  double x = ConePos.XDirection().Dot(CircPos.XDirection());
+  double y = ConePos.YDirection().Dot(CircPos.XDirection());
+  double z = gp_Vec(myCone.Location(), C.Location()).Dot(ConePos.Direction());
+
+  // to find point U V, we use the code from ElSLib
+  // without applying the Trsf to the point (unnecessary round trip).
+  // x/y are direction cosines (dimensionless); use angular tolerance
+  // to avoid unstable atan2() around zero.
+  if (std::abs(x) <= Precision::Angular() && std::abs(y) <= Precision::Angular())
+  {
+    U = 0.;
+  }
+  else if (-myCone.RefRadius() > z * std::tan(myCone.SemiAngle()))
+  {
+    U = std::atan2(-y, -x);
+  }
+  else
+  {
+    U = std::atan2(y, x);
+  }
+  if (U < 0.)
+  {
+    U += 2 * M_PI;
+  }
+
+  V = z / std::cos(myCone.SemiAngle());
+
+  gp_Pnt2d P2d1(U, V);
+  gp_Dir2d D2d;
+  if (ZCone.Dot(ZCir) > 0.)
+  {
+    D2d.SetCoord(1., 0.);
+  }
+  else
+  {
+    D2d.SetCoord(-1., 0.);
+  }
+
+  myLin  = gp_Lin2d(P2d1, D2d);
+  isDone = true;
+}
+
+void ProjLib_Cone::Project(const gp_Elips& E)
+{
+  ProjLib_Projector::Project(E);
+}
+
+void ProjLib_Cone::Project(const gp_Parab& P)
+{
+  ProjLib_Projector::Project(P);
+}
+
+void ProjLib_Cone::Project(const gp_Hypr& H)
+{
+  ProjLib_Projector::Project(H);
+}

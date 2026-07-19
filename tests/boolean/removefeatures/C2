@@ -1,0 +1,29 @@
+restore [locate_data_file bug29481_ex2.brep] s
+explode s f
+
+# remove the gap 
+compound s_7 s_8 s_9 s_10 gap
+removefeatures res1 s gap
+checkshape res1
+checkprops res1 -s 624 -v 992
+checknbshapes res1 -vertex 16 -edge 24 -wire 12 -face 12 -shell 2 -solid 1
+CheckIsFeatureRemoved gap {v e f}
+
+
+# remove hole
+explode s
+removefeatures res2 s s_2
+checkshape res2
+checkprops res2 -s 608 -v 992
+checknbshapes res2 -vertex 16 -edge 24 -wire 10 -face 10 -shell 1 -solid 1
+CheckIsFeatureRemoved s_2 {v e f}
+
+
+# remove both gap and hole
+removefeatures result s gap s_2
+checkshape result
+checkprops result -s 600 -v 1000
+checknbshapes result -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+CheckIsFeatureRemoved gap {v e f}
+CheckIsFeatureRemoved s_2 {v e f}
+

@@ -1,0 +1,18 @@
+puts "========"
+puts "BUC60843"
+puts "========"
+puts ""
+####################################################################
+## code throws an exception as:  .. The exception is:0x5feff388 : StdFail_NotDone: 2d lin = lintan.
+## ThisSolution(); is not right.( the line is not tangent to circle and ellipse )
+####################################################################
+
+pload QAcommands
+
+set len_ch 4.0000000000000001e+100
+
+circle test_circle 0 0 50
+ellipse test_ellipse 460 0 150 100
+
+BUC60843 result test_circle test_ellipse 0.1
+checklength result -l 4.0000000000000001e+100

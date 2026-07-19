@@ -1,0 +1,20 @@
+puts "TODO OCC24156 MacOS: Tcl Exception"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+puts "========================"
+puts " OCC474 "
+puts "========================"
+puts ""
+##################################################
+## impossible to put a fillet to none of 5 edges sharing one vertrex
+##################################################
+
+restore [locate_data_file OCC474.brep] s 
+
+explode s e
+
+blend result s 100 s_16
+
+checkprops result -s 1.54883e+06 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

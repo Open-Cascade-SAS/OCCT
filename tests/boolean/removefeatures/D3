@@ -1,0 +1,12 @@
+restore [locate_data_file bug29481_ANC101.brep] s
+explode s f
+
+compound s_28 s_26 s_32 s_35 s_47 s_57 s_12 s_31 s_58 s_48 s_34 s_33 s_39 s_44 s_29 s_43 s_41 s_56 s_11 s_46 s_59 s_40 s_38 s_27 s_45 s_30 s_37 s_42 s_36 s_4 s_10 s_5 s_3 s_13 gaps
+
+removefeatures result s gaps
+checkshape result
+checkprops result -s 433947 -v 8.26107e+006 -deps 1.e-7
+checknbshapes result -vertex 71 -edge 107 -wire 80 -face 53 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved gaps {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

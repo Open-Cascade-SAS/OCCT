@@ -1,0 +1,14 @@
+# Original bug : pro10095
+
+restore [locate_data_file CTO904_pro10095a.rle] a
+restore [locate_data_file CTO904_pro10095b.rle] b
+
+shape fso so
+add b fso
+
+bop a fso
+bopsection result
+
+checkprops result -l 1244.52
+checksection result
+checkview -display result -2d -otherwise { a fso } -l -path ${imagedir}/${test_image}.png

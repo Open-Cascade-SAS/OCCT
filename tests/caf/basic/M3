@@ -1,0 +1,77 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC6493"
+puts "================"
+puts ""
+######################################################
+# No binary persistence for TDataStd_ExtStringArray attribute
+######################################################
+
+# Basic attributes
+#
+# Testing attribute: TDataStd_ExtStringArray
+#
+# Testing command:   SetExtStringArray
+# Testing command:   GetExtStringArray
+#
+
+puts "caf001-M3"
+set QA_DUP 0
+
+# Add an attribute to a data framework
+set aFrom1 1
+set aTo1 2
+set aLabel 0:2
+set aSetAttr11 "TDataStd"
+set aSetAttr12 "ExtStringArray"
+set isDelta 0
+SetExtStringArray D ${aLabel} ${isDelta} ${aFrom1} ${aTo1} ${aSetAttr11} ${aSetAttr12}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-M3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+   puts "There is not ${aFile} file; SaveAs command: Error"
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsGood 1
+set aMessage3 "Get a value of TDataStd_ExtStringArray attribute from restoring document: Error"
+set IsDone [catch {set aGetAttr3 [GetExtStringArray DD ${aLabel}]} aResult]
+if { ${IsDone} != 0 } {
+   set IsGood 0
+   puts ${aMessage3}
+}
+set aLen3 [llength ${aGetAttr3}]
+if { ${aLen3} != [expr ${aTo1} - ${aFrom1} + 1] } {
+   set IsGood 0
+   puts "aLen3=${aLen3}"
+   puts ${aMessage3}
+}
+set aGetAttr41 [lindex ${aGetAttr3} 0]
+if { ${aSetAttr11} != ${aGetAttr41} } {
+   set IsGood 0
+   puts "aGetAttr41=${aGetAttr41}"
+   puts ${aMessage3}
+}
+set aGetAttr42 [lindex ${aGetAttr3} 1]
+if { ${aSetAttr12} != ${aGetAttr42} } {
+   set IsGood 0
+   puts "aGetAttr42=${aGetAttr42}"
+   puts ${aMessage3}
+}
+
+if { ${IsGood} == 0} {
+  puts "OCC6493: Error"
+} else {
+  puts "OCC6493: OK"
+}

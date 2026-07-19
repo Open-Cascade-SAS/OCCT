@@ -1,0 +1,48 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_OutOfRange.hxx>
+
+//=================================================================================================
+
+inline bool CPnts_UniformDeflection::IsAllDone() const
+{
+  return myDone;
+}
+
+//=================================================================================================
+
+inline void CPnts_UniformDeflection::Next()
+{
+  Standard_OutOfRange_Raise_if(myIPoint >= myNbPoints,
+                               "CPnts_UniformDeflection::Next() - no more points available");
+  myIPoint++;
+}
+
+//=================================================================================================
+
+inline double CPnts_UniformDeflection::Value() const
+{
+  StdFail_NotDone_Raise_if(!myDone, "CPnts_UniformDeflection::Value() - no result");
+  return myParams[myIPoint + 1];
+}
+
+//=================================================================================================
+
+inline gp_Pnt CPnts_UniformDeflection::Point() const
+{
+  StdFail_NotDone_Raise_if(!myDone, "CPnts_UniformDeflection::Point() - no result");
+  return myPoints[myIPoint + 1];
+}

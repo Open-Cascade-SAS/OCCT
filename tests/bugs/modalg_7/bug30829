@@ -1,0 +1,20 @@
+puts "========"
+puts "0030829: BRepExtrema_ShapeProximity crashes with shape from STL/WRL"
+puts "========"
+puts ""
+
+pload XSDRAW STL
+
+box b 10 10 10
+pcylinder c 5 10
+incmesh b 0.1
+incmesh c 0.1
+
+writestl b ${imagedir}/${test_image}_b.stl
+writestl c ${imagedir}/${test_image}_c.stl
+readstl b ${imagedir}/${test_image}_b.stl
+readstl c ${imagedir}/${test_image}_c.stl
+file delete ${imagedir}/${test_image}_b.stl
+file delete ${imagedir}/${test_image}_c.stl
+
+proximity b c

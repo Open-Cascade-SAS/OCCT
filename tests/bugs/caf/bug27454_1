@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC27454"
+puts "========"
+puts ""
+###################################################
+## Application hangs while opening a non-OCAF XML file
+###################################################
+
+if [info exists D] {unset D}
+Open [locate_data_file bug27454_shape_tracking.ocaf.xml] D -stream
+
+if {[dtyp D] != "TDocStd_Document"} {
+  puts "Error: XML OCAF document read failure"
+}
+
+Close D

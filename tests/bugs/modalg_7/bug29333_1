@@ -1,0 +1,65 @@
+puts "========"
+puts "OCC29333"
+puts "========"
+puts ""
+#################################################
+# Boolean Operations - Prevent modification of the input shapes in case their sub-shapes have not been modified
+#################################################
+
+# create two touching faces
+plane p 0 0 0 0 0 1
+mkface f1 p -10 10 -10 10
+
+copy f1 f2
+ttranslate f2 20 0 0
+
+# fuse these faces
+bfuse s f1 f2
+
+# split one of these faces
+explode s f
+
+line l 0 0 0 1 0 0 
+mkedge e l
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools e
+bfillds
+bsplit s1_sp
+
+
+# fuse again
+bclearobjects
+bcleartools
+baddobjects s1_sp
+baddtools s_2
+bfillds
+bbuild result
+
+checkshape result
+checkprops result -s 800
+checknbshapes result -vertex 8 -edge 10 -wire 3 -face 3
+
+
+# check that non of the shapes from s1_sp is modified
+compound result s1_sp c
+checknbshapes c -vertex 8 -edge 10 -wire 3 -face 3
+
+
+# fuse with different order
+bclearobjects
+bcleartools
+baddobjects s_2
+baddtools s1_sp
+bfillds
+bbuild result
+
+checkshape result
+checkprops result -s 800
+checknbshapes result -vertex 8 -edge 10 -wire 3 -face 3
+
+
+# check that non of the shapes from s1_sp is modified
+compound result s1_sp c
+checknbshapes c -vertex 8 -edge 10 -wire 3 -face 3

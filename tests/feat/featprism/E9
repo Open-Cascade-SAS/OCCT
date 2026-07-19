@@ -1,0 +1,11 @@
+profile p x 4 y 1 x -3 y 3 x 3 y 1 x -4 y -5
+prism pr p 0 0 3
+profile pp x 1 y 1 x -1 y -1
+trotate pp 0 0 0 1 0 0 90
+ttranslate pp 3 1 1
+explode pr f
+
+featprism pr pp pr_3 0 1 0 1 1
+featperform prism result pr_5
+
+checkprops result -s 104

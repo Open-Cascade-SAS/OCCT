@@ -1,0 +1,18 @@
+puts "========================"
+puts "BUC60993"
+puts "OCC99"
+puts "OCC133"
+puts "========================"
+puts ""
+##############################################
+##Loading phase returns error status (though no exception raised).
+##############################################
+
+igesbrep [locate_data_file igsBF5.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

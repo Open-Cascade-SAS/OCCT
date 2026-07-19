@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC24496"
+puts "============"
+puts ""
+#################################
+# Crash on BRepAlgoAPI_Section
+#################################
+
+restore [locate_data_file bug24496_face1.brep] f1
+restore [locate_data_file bug24496_face2.brep] f2
+
+bsection result f1 f2
+
+if { [llength [explode result]] != 2 } {
+  puts "Error: wrong number of intersections. Should be result_1 and result_2"
+} else {
+  puts "OK: bsection works properly"
+}
+
+checkprops result -l 11.7031 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

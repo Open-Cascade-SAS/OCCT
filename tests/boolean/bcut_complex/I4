@@ -1,0 +1,13 @@
+# Original bug : cts20456
+# Date : 13Mai98
+
+restore [locate_data_file CTO902_cts20456a.rle] a
+restore [locate_data_file cts20456b.rle] b
+
+bfuse result a b
+
+box bb 0 0 0 100 100 -200
+
+bcut result result bb
+checkprops result -s 1.22443e+06
+checkview -display result -2d -s -otherwise { result bb } -path ${imagedir}/${test_image}.png

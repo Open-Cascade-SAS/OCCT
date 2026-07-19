@@ -1,0 +1,12 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : G1
+## Comment : from pro5477
+## ====================================
+
+restore [locate_data_file CFI_pro5477.rle] a
+tscale a 0 0 0 1000
+nexplode a e
+blend result a 10 a_13
+
+checkprops result -s 649289

@@ -1,0 +1,25 @@
+puts "========="
+puts "OCC25721"
+puts "========="
+puts ""
+###############################################
+# Wrong result obtained by Common operator.
+###############################################
+
+restore [locate_data_file bug25721_qf1] qf
+explode qf
+copy qf_1 b1
+copy qf_2 b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+
+bfillds
+bbop result 0
+
+checkprops result -s 181.203 
+checkshape result
+checknbshapes result -face 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

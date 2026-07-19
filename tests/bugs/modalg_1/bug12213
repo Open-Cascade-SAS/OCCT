@@ -1,0 +1,39 @@
+puts "============"
+puts "OCC12213"
+puts "============"
+puts ""
+#######################################################################
+# Invalid sweep was created by command "buildsweep" in DRAW in case circular path
+#######################################################################
+
+set BugNumber OCC12213
+
+circle c1 0 0 0 100
+trim cc1 c1 0 3.14
+mkedge e2 cc1
+wire w2 e2
+
+box a 95 -10 -5 10 10 10
+explode a w
+explode a_4 e
+wire w21 a_4_1 a_4_2 a_4_3 a_4_4
+
+box b -110 -10 -5 20 10 10
+explode b w
+explode b_4 e
+wire w22 b_4_1 b_4_2 b_4_3 b_4_4
+
+explode w2 v
+
+mksweep w2
+addsweep w21 w2_1
+addsweep w22 w2_2
+buildsweep result
+
+checkprops result -s 15708.8 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 8 -edge 12 -wire 4 -face 4 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 29
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,25 @@
+puts "TODO ?OCC24909 ALL: An exception was caught"
+puts "TODO ?OCC24909 ALL: TEST INCOMPLETE"
+puts "TODO ?OCC24909 ALL: Tcl Exception: Buildsweep : Not Done"
+
+puts "========"
+puts "0024909: S I G S E G V in buildsweep"
+puts "========"
+puts ""
+
+circle c1 0 0 0 40
+mkedge e1 c1
+wire w1 e1
+tcopy w1 Sketch002
+tcopy w1 Sketch001
+renamevar w1 Sketch
+trotate Sketch 0 0 0 0. 1. 0. 90
+ttranslate Sketch 0. 0. 75.
+trotate Sketch001 0 0 0 0. 1. 0. 90
+ttranslate Sketch001 0. 0. -75.
+ttranslate Sketch002 50. 0. 0.
+mksweep Sketch002
+setsweep -CF
+addsweep Sketch001
+addsweep Sketch
+buildsweep Sweep

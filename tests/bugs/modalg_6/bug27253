@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC27253"
+puts "============"
+puts ""
+#######################################################################
+# Boolean cut produces invalid result shape
+#######################################################################
+
+restore [locate_data_file bug27253_lhs_rhs.brep] a
+explode a
+
+bcut result a_1 a_2
+
+checkshape result
+checkprops result -v 6.05895e+006
+checkview -display result -2d -path ${imagedir}/${test_image}.png

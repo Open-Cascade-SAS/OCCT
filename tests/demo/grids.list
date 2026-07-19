@@ -1,0 +1,6 @@
+# This test group is aimed to demonstrate how test cases are created,
+# and test the test system itself
+
+001 testsystem
+002 draw
+003 samples

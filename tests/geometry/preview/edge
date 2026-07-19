@@ -1,0 +1,21 @@
+puts "=================================="
+puts "0031336: Modeling data - extend BRepPrimAPI_MakeBox with planar shape creation"
+puts "Check a creation preview if it is an edge"
+puts "=================================="
+
+pload TOPTEST
+           
+smallview +X+Y
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+             
+box edge1 0.0 0.0 0.0 10.0 0.0 0.0 -preview
+donly edge1
+fit                    
+checkview -screenshot -2d -path $anImage1
+
+box edge2 -min 30.0 0.0 0.0 -max 40.0 0.0 0.0 -preview
+donly edge2
+fit                    
+checkview -screenshot -2d -path $anImage2

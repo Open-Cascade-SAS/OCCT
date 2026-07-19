@@ -1,0 +1,15 @@
+puts "=========="
+puts "OCC21107"
+puts "=========="
+puts ""
+#######################################
+# The computed section is incomplete
+#######################################
+
+restore [locate_data_file bug21107_SectionShape1.brep] s1
+restore [locate_data_file bug21107_SectionShape2.brep] s2
+
+bsection result s1 s2
+
+checkprops result -l 476.275
+checkview -display result -2d -path ${imagedir}/${test_image}.png

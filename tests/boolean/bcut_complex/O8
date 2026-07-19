@@ -1,0 +1,47 @@
+puts "TODO #25319 ALL: Error : The area of result shape is"
+
+## cts20461
+
+restore [locate_data_file cts20461.rle] a
+nexplode a f
+mksurface surf a_26
+nexplode a_26 e
+wire wire a_26_3
+mkface face surf wire
+prism pz face 0 0 10
+
+## ttranslate pz 0 0 -5
+## essential step to avoid tangent faces
+
+tcopy pz p1
+tcopy pz p2
+tcopy pz p3
+tcopy pz p4
+tcopy pz p5
+tcopy pz p6
+
+trotate p1 p1 0 0 0 1 0 0 360/7
+trotate p2 p2 0 0 0 1 0 0 2*360/7
+trotate p3 p3 0 0 0 1 0 0 3*360/7
+trotate p4 p4 0 0 0 1 0 0 4*360/7
+trotate p5 p5 0 0 0 1 0 0 5*360/7
+trotate p6 p6 0 0 0 1 0 0 6*360/7
+
+#pkv f
+updatetolerance a  1
+updatetolerance p1 1
+updatetolerance p2 1
+updatetolerance p3 1
+updatetolerance p4 1
+updatetolerance p5 1
+updatetolerance p6 1
+#pkv t
+
+bcut r1 a p1
+bcut r2 r1 p2
+bcut r3 r2 p3
+bcut r4 r3 p4
+bcut r5 r4 p5
+bcut result r5 p6
+checkprops result -s 55910.6
+checkview -display result -2d -s -otherwise { r5 p6 } -path ${imagedir}/${test_image}.png

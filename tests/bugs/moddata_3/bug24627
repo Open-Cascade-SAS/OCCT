@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC24627"
+puts "========"
+puts ""
+######################################
+## Extrema 2d between an arc of circle and an ellipse crashes
+######################################
+
+# Make a planar face (for construction of 2 curves).
+plane p 0 0 0 0 0 1
+mkface f p -1000 1000 -1000 1000
+
+# Load an arc of circle and make a 2d arc.
+restore [locate_data_file bug24627_circle.brep] c
+explode c e
+mk2dcurve c2d c_1 f
+
+# Load a ellipse and make a 2d ellipse.
+restore [locate_data_file bug24627_ellipse.brep] e
+explode e e
+mk2dcurve e2d e_1 f
+
+# Compute extrema points for these two 2d curves.
+2dextrema c2d e2d

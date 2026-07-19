@@ -1,0 +1,3 @@
+source [locate_data_file 20000_et1_401-ta6029.prt.2.gdml.tcl]
+
+checkprops result -s 1.0285e+007

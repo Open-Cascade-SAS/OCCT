@@ -1,0 +1,21 @@
+
+puts "========================"
+puts " OCC183 "
+puts " CTS16184"
+puts "(case 6)"
+puts "========================"
+puts ""
+
+restore [locate_data_file CTO900_cts16184a.rle] a 
+checkshape a
+restore [locate_data_file cts16184b.brep] b
+checkshape b
+
+bop a b
+bopfuse result a b
+checkshape -top result
+
+checkprops result -s 0.0892544
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,140 @@
+// Created on: 2007-03-16
+// Created by: Michael SAZONOV
+// Copyright (c) 2007-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// The original implementation Copyright: (C) RINA S.p.A
+
+#ifndef TObj_TIntSparseArray_HeaderFile
+#define TObj_TIntSparseArray_HeaderFile
+
+#include <NCollection_SparseArray.hxx>
+#include <TDF_Label.hxx>
+
+class Standard_GUID;
+
+/**
+ * OCAF Attribute to store a set of positive integer values in the OCAF tree.
+ * Each value is identified by ID (positive integer).
+ * The supporting underlying data structure is NCollection_SparseArray of integers.
+ */
+
+class TObj_TIntSparseArray : public TDF_Attribute
+{
+public:
+  //! Empty constructor
+  Standard_EXPORT TObj_TIntSparseArray();
+
+  //! This method is used in implementation of ID()
+  static Standard_EXPORT const Standard_GUID& GetID();
+
+  //! Returns the ID of this attribute.
+  Standard_EXPORT const Standard_GUID& ID() const override;
+
+  //! Creates TObj_TIntSparseArray attribute on given label.
+  static Standard_EXPORT occ::handle<TObj_TIntSparseArray> Set(const TDF_Label& theLabel);
+
+public:
+  //! Methods for access to data
+
+  //! Returns the number of stored values in the set
+  size_t Size() const { return myVector.Size(); }
+
+  typedef NCollection_SparseArray<int>::ConstIterator Iterator;
+
+  //! Returns iterator on objects contained in the set
+  Iterator GetIterator() const { return Iterator(myVector); }
+
+  //! Returns true if the value with the given ID is present.
+  bool HasValue(const size_t theId) const { return myVector.HasValue(theId); }
+
+  //! Returns the value by its ID.
+  //! Raises an exception if no value is stored with this ID
+  int Value(const size_t theId) const { return myVector.Value(theId); }
+
+  //! Sets the value with the given ID.
+  //! Raises an exception if theId is not positive
+  Standard_EXPORT void SetValue(const size_t theId, const int theValue);
+
+  //! Unsets the value with the given ID.
+  //! Raises an exception if theId is not positive
+  Standard_EXPORT void UnsetValue(const size_t theId);
+
+  //! Clears the set
+  Standard_EXPORT void Clear();
+
+public:
+  //! Redefined OCAF abstract methods
+
+  //! Returns an new empty TObj_TIntSparseArray attribute. It is used by the
+  //! copy algorithm.
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
+
+  //! Moves this delta into a new other attribute.
+  Standard_EXPORT occ::handle<TDF_Attribute> BackupCopy() const override;
+
+  //! Restores the set using info saved in backup attribute theDelta.
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theDelta) override;
+
+  //! This method is used when copying an attribute from a source structure
+  //! into a target structure.
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
+
+  //! It is called just before Commit or Abort transaction
+  //! and does Backup() to create a delta
+  Standard_EXPORT void BeforeCommitTransaction() override;
+
+  //! Applies theDelta to this.
+  Standard_EXPORT void DeltaOnModification(
+    const occ::handle<TDF_DeltaOnModification>& theDelta) override;
+
+  //! Clears my modification delta; called after application of theDelta
+  Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
+                                 const bool                             toForce) override;
+
+public:
+  //! Methods to handle the modification delta
+
+  //! Sets the flag pointing to the necessity to maintain a modification delta.
+  //! It is called by the retrieval driver
+  void SetDoBackup(const bool toDo) { myDoBackup = toDo; }
+
+  void ClearDelta() { myOldMap.Clear(); }
+
+private:
+  //! Internal constant to recognize items in the backup array
+  //! correspondent to absent values
+  enum
+  {
+    AbsentValue = -1
+  };
+
+  //! backup one value
+  void backupValue(const size_t theId, const int theCurrValue, const int theNewValue);
+
+  NCollection_SparseArray<int> myVector;
+  NCollection_SparseArray<int> myOldMap;
+  bool                         myDoBackup;
+
+public:
+  //! CASCADE RTTI
+  DEFINE_STANDARD_RTTIEXT(TObj_TIntSparseArray, TDF_Attribute)
+};
+
+//! Define handle class for TObj_TIntSparseArray
+#endif
+
+#ifdef _MSC_VER
+#pragma once
+#endif

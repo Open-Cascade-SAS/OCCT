@@ -1,0 +1,40 @@
+puts "============"
+puts "CR24837_2: Visualization - revise design and implementation of connected Interactive Objects"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+box o1 -10 -10 -5 1 1 10
+box o2  10  10 -5 1 1 10
+box b1 0 0 0 1 2 3
+box b2 3 0 0 3 2 1
+vinit View1
+vclear
+vtop
+vsetdispmode 0
+vdisplay o1 o2
+vdisplay b1 b2
+vfit
+vdrawtext tb1  "b1"   -pos 0 -3 3 -color FF1919 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
+vdrawtext tb2  "b2"   -pos 3  0 3 -color 19FF19 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
+vdrawtext bc_1 "bc_1" -pos 0 -9 3 -color FFE1E1 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
+vdrawtext bc_2 "bc_2" -pos 3 -6 3 -color FFE1E1 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
+vsetdispmode 1
+set anImage ${imagedir}/${casename}_2_1.png
+vdump ${anImage}
+
+vsetmaterial b1 b2 plastic
+vsetcolor b1 tb1 RED
+vsetcolor b2 tb2 GREEN
+set anImage ${imagedir}/${casename}_2_2.png
+vdump ${anImage}
+
+vsetlocation b1 0 -3 0
+vconnect bc 0 -6 0 b1 b2 tb1 tb2
+set anImage ${imagedir}/${casename}_2_3.png
+vdump ${anImage}
+
+vsensdis
+vdump $imagedir/${casename}_sensitive.png

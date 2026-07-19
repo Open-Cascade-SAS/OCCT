@@ -1,0 +1,15 @@
+profile p1 x 3 y 1 x -2 y 2 x -1 y -3
+prism pr1 p1 0 0 1
+profile p2 x 0.5 y 0.5 x -0.5 y -0.5
+trotate p2 0 0 0 1 0 0 90
+ttranslate p2 1 4 0.25
+trotate p2 0 0 0 0 0 1 -15
+explode pr1 f
+
+compound pr1_1 pr1_6 ff
+compound pr1_3 pr1_4 fu
+
+featprism pr1 p2 p2 -2 -4 0 0 1
+featperform prism result ff fu
+
+checkprops result -s 24.0334

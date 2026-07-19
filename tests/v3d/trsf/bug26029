@@ -1,0 +1,54 @@
+puts "============"
+puts "0026029: Visualization - Poor performance of connected objects"
+puts "Time spent on computation of large number of connected objects"
+puts "should grow linearly with the number of objects"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+psphere s 0.5
+tclean  s
+incmesh s 0.1
+trinfo  s
+
+vinit View1
+vclear
+vaxo
+#vcaps -vbo 0
+vsetdispmode 1
+vdefaults -defl 1.0 -autoTriang off
+vdisplay s
+
+set aNb1 100
+
+# display 100x100 connected instances of single presentation
+puts "Creating [expr $aNb1*$aNb1] instances..."
+set t [time {for {set i 0} {$i < $aNb1} {incr i} {for {set j 0} {$j < $aNb1} {incr j} {vconnectto s_${i}_${j} ${i} ${j} 0 s -noupdate}}}]
+set d1 [lindex $t 0]
+puts "Done in $d1 microseconds!\n"
+vclear
+
+set aNb2 200
+
+# display 200x200 connected instances of single presentation
+puts "Creating [expr $aNb2*$aNb2] instances..."
+set t [time {for {set i 0} {$i < $aNb2} {incr i} {for {set j 0} {$j < $aNb2} {incr j} {vconnectto s_${i}_${j} ${i} ${j} 0 s -noupdate}}}]
+set d2 [lindex $t 0]
+puts "Done in $d2 microseconds!\n"
+vclear
+
+# compare two CPU times: the ratio should be quasi-linear
+set expected_ratio [expr double($aNb2 * $aNb2) / double($aNb1 * $aNb1)]
+set actual_ratio [expr double($d2) / double($d1)]
+puts "Comparing CPU time for the two test cases..."
+puts "============================================="
+puts "Expected ratio: $expected_ratio"
+puts "Actual ratio:   $actual_ratio"
+puts "============================================="
+
+# Allow 50% deviation from linear growth
+if {[expr $actual_ratio / $expected_ratio] > 1.5} {
+  puts "Error: non-linear time growth detected!"
+} else {
+  puts "Test passed!"
+}

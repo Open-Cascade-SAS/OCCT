@@ -1,0 +1,25 @@
+puts "================================="
+puts "0032182: Visualization - add Select3D_SensitiveSphere"
+puts "Tests selection of Select3D_SenstiveSphere"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+psphere s 1
+vdisplay -dispMode 1 s
+vfit
+vselect 300 200
+if { ![string match "*Selected*" [vstate s]] } { puts "Error: sphere should be selected" }
+vselect 195 110
+if { [string match "*Selected*" [vstate s]] } { puts "Error: sphere should be unselected" } 
+vselect 390 110
+if { [string match "*Selected*" [vstate s]] } { puts "Error: sphere should be unselected" }
+vselect 390 282
+if { [string match "*Selected*" [vstate s]] } { puts "Error: sphere should be unselected" }
+vselect 213 291
+if { [string match "*Selected*" [vstate s]] } { puts "Error: sphere should be unselected" }
+vselect 300 200 -allowoverlap 1
+if { ![string match "*Selected*" [vstate s]] } { puts "Error: sphere should be selected" }
+vselect 195 110 -allowoverlap 1
+if { [string match "*Selected*" [vstate s]] } { puts "Error: sphere should be unselected" } 

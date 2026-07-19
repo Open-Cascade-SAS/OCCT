@@ -1,0 +1,35 @@
+puts "TODO OCC12345 ALL: Faulty OCC604: Result of intersection operation is INcorrect !!!"
+
+puts "========================"
+puts " OCC604"
+puts "========================"
+puts ""
+############################
+## Wrong intersection between two tores.
+############################
+
+restore [locate_data_file OCC604a.draw] a 
+restore [locate_data_file OCC604b.draw] b 
+
+if { [catch { intersect result a b } catch_result] } {
+    puts "Faulty OCC604: function INTERSECTION works with exception"
+} else {
+    set nom 0
+    set j 1
+    repeat 10 {
+	set err [lindex [whatis res_$j] 5]
+    	if { $err != "curve"} {
+    	    break
+        } else {
+    	    set nom [expr $nom + 1]
+        }
+	incr j
+    }
+    if { $nom != 1 } {
+	puts "Faulty OCC604: Result of intersection operation is INcorrect !!!"
+    } else {
+	puts "OCC604 OK : Result of intersection operation is CORRECT !!! "
+    }
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,13 @@
+bsplinecurve b1 3 5 0 4 1 1 2 1 3 1 4 4  0 0 0 1  1 2 0 1   2 2 0 1   2 2 0 1  3 2 0 1  4 2 0 1   5 4 0 1 
+cvalue b1 2.0 x y z dx dy dz
+set delta 0.01
+set yvalue [dval y] 
+set zvalue [dval z] 
+repeat 100 {
+    cmovetangent b1 2.0  x $yvalue $zvalue dx dy dz 1
+    set yvalue [expr $yvalue + $delta ]
+    set zvalue [expr $zvalue + $delta ]
+    repaint
+}
+renamevar b1 result
+checklength result -l 8.3346946955628098

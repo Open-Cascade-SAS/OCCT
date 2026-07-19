@@ -1,0 +1,27 @@
+puts "TODO OCC27687 ALL: ERROR: OCC27687 is reproduced."
+
+puts "========"
+puts "OCC27687"
+puts "========"
+puts ""
+#########################################################
+# Section between shells of hull and deck is not closed
+#########################################################
+
+restore [locate_data_file bug27746_first.brep] f
+restore [locate_data_file bug27746_second.brep] s
+
+bsection result f s
+
+smallview
+clear
+display result
+fit
+
+set bug_info [string trim [checksection result]]
+set bug_info [string trim [string range $bug_info [expr {[string last ":" $bug_info] + 1}] [expr {[string length $bug_info] - 1}]]]
+if {$bug_info != 0} {
+  puts "ERROR: OCC27687 is reproduced. Section is not closed: Number of alone Vertices: ${bug_info}."
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

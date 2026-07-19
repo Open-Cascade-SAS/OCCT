@@ -1,0 +1,8 @@
+# load from mesh (XBF) format
+
+XOpen [locate_data_file "bug32666.xbf"] D1
+XGetOneShape S D1
+
+set nb_faces     3
+set nb_nodes     428
+set nb_triangles 372

@@ -1,0 +1,37 @@
+puts "========================"
+puts "OCC22804"
+puts "========================"
+puts ""
+#######################################################################
+# Sewing increases tolerance of vertices for redundant value.
+#######################################################################
+
+set BugNumber OCC22804
+
+catch {pload XDE}
+
+restore [locate_data_file OCC22804-sew_bug.brep] a 
+
+set tol 200
+sewing result ${tol} a
+
+set ToleranceList [tolerance result]
+regexp {Tolerance MAX=([-0-9.+eE]+)} $ToleranceList full oTolerance
+regexp {FACE[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full FaceTolerance
+regexp {EDGE[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full EdgeTolerance
+regexp {VERTEX[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full VertexTolerance
+
+set minTolerance ${EdgeTolerance}
+if { ${minTolerance}  > ${VertexTolerance} } {
+   set minTolerance ${VertexTolerance}
+}
+
+
+checkreal "Min tolerance" ${minTolerance} ${oTolerance} 0 0.001
+checkmaxtol result -ref 1699.9358291469857
+checknbshapes result -shell 1
+checkfreebounds result 5
+
+checkprops result -s 1.80934e+009
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

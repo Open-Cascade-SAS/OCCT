@@ -1,0 +1,13 @@
+puts "TODO CR27414 ALL: Error : The area of result shape is"
+puts "TODO CR27414 ALL: Error :  is WRONG because number of FACE entities in shape"
+
+restore [locate_data_file bug26917_M2_trim7_trim1.brep] s
+
+OFFSETSHAPE 15  {} $calcul $type
+
+checkprops result -v 1.00013e+006 -s 66432.5
+
+unifysamedom result_unif result
+checknbshapes result_unif -shell 1 -face 9
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC28284"
+puts "========"
+puts ""
+#################################################
+# Avoid classification of sub-shapes of arguments of BOPs relatively solids during Intersection phase
+#################################################
+
+restore [locate_data_file bug28284.brep] b1
+plane p 0 9000 0 0 1 0
+mkface f p -1.e+6 1.e+6 -1.e+6 1.e+6
+halfspace b2 f 0 0 0
+
+bop b1 b2
+
+bopcommon result1
+checkshape result1
+checknbshapes result1 -solid 1
+checkprops result1 -s 5.828e+007 -v 5.50235e+008
+
+bopcut result
+checkshape result
+checknbshapes result -solid 1
+checkprops result -s 247149 -v 1.81425e+006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC212"
+puts "========"
+################################################
+## Bug in Topological "Common" boolean operation
+################################################
+
+restore [locate_data_file OCC212-1.brep] S1 
+checkshape S1
+restore [locate_data_file OCC212-2.brep] S2
+checkshape S2
+
+bcommon result S1 S2
+
+checkprops result -s 314.301 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

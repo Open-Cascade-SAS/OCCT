@@ -1,0 +1,20 @@
+puts "========================"
+puts "OCC611"
+puts "SAM1564"
+puts "(case 1)"
+puts "========================"
+puts ""
+############################
+## No possibility to fuse the shapes. 
+############################
+
+restore [locate_data_file OCC611.brep] a
+explode a
+checkshape a_1
+checkshape a_2
+
+bfuse result a_2 a_1
+checkshape result
+
+checkprops result -s 531.197
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,19 @@
+
+puts "======="
+puts "OCC702"
+puts "SAM1541"
+puts "======="
+puts ""
+########################
+## No possibility to make a prism. 
+########################
+
+restore [locate_data_file OCC702.brep] a 
+
+if [ catch { prism result a 100 100 100 } catch_result ] {
+    puts "Faulty OCC702"
+}
+
+checkprops result -s 308957. 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

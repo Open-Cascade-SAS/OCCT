@@ -1,0 +1,9 @@
+# Original bug : ger60065
+# Date : 11mar98
+
+restore [locate_data_file CTO900_ger60065-part.rle] part
+restore [locate_data_file CTO900_ger60065-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 23168.2
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

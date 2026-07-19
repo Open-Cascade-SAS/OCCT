@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : H7
+## Comment : from
+## ====================================
+
+restore [locate_data_file CFI_cfi90fjc.rle] a
+nexplode a e
+blend result a 5 a_5 5 a_13 5 a_28
+
+checkprops result -s 66620.1

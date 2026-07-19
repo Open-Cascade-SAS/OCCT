@@ -1,0 +1,35 @@
+puts "TODO OCC12345 ALL: OCC257 - Error : xdelta= 3.6651128509496784"
+puts "TODO OCC12345 ALL: OCC257 - Error : ydelta= 5.840378793387278"
+puts "TODO OCC12345 ALL: OCC257 - Error : zdelta= 1.4898469085120623"
+
+puts "================"
+puts "OCC257"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC257.brep] result 
+checkshape result
+
+bounding result -save x1 y1 z1 x2 y2 z2
+
+set len    [ dval x2-x1]
+set width  [ dval y2-y1]
+set height [ dval z2-z1]
+
+set R 180
+
+set xdelta [expr abs(${len} - ${R}) / ${R} * 100]
+set ydelta [expr abs(${width}  - ${R}) / ${R} * 100]
+set zdelta [expr abs(${height} - ${R}) / ${R} * 100]
+
+set maxdelta 0.1
+
+if { ${xdelta} > ${maxdelta} } then {puts "OCC257 - Error : xdelta= ${xdelta}"}
+if { ${ydelta} > ${maxdelta} } then {puts "OCC257 - Error : ydelta= ${ydelta}"}
+if { ${zdelta} > ${maxdelta} } then {puts "OCC257 - Error : zdelta= ${zdelta}"}
+
+if { ${xdelta} <= ${maxdelta} && ${ydelta} <= ${maxdelta} && ${zdelta} <= ${maxdelta} } then {
+   puts "OCC257: OK"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

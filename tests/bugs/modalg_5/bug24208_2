@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC24208"
+puts "============"
+puts ""
+#######################################################################
+# Optimization of the edge-edge intersection algorithms
+#######################################################################
+
+restore [locate_data_file bug24673_HYDRO_occt_case_3_after.brep] b
+
+set objs [explode b]
+set nbObjs [llength ${objs}]
+
+bclearobjects
+bcleartools
+
+for {set i 0} {$i < $nbObjs} {incr i} {
+  baddobjects [lindex ${objs} ${i}]
+}
+
+bfillds
+bbuild result
+
+checkprops result -s 182532 
+checkshape result
+
+# Analysis of "nbshapes result"
+checknbshapes result -vertex 46 -edge 86 -wire 30 -face 26 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 189
+checkview -display result -2d -path ${imagedir}/${test_image}.png

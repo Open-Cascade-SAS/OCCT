@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC24157"
+puts "============"
+puts ""
+############################################
+# Parallelization of assembly part of BO
+############################################
+
+restore [locate_data_file bug24157_fstar] b1
+set qs {}
+
+set N 24
+for {set i 0} {$i < $N} {incr i} {
+  tcopy b1 b1_${i}
+  trotate b1_${i} 0. 0. 0. 0. 0. 1. [expr $i * 15.]  
+  lappend qs b1_${i}
+}
+eval compound $qs q
+
+bclearobjects
+bcleartools
+baddcompound q
+bfillds
+
+regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
+
+if { [regexp {Debug mode} [dversion]] } {
+  set check_time 280
+} else {
+  set check_time 100
+}
+if { $tps_time > $check_time } {
+  puts "Error: low performance"
+} else {
+  puts "OK: high performance"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,12 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : H5
+## Comment : from pro10391
+## ====================================
+
+restore [locate_data_file CFI_pro10391.rle] a
+explode a e
+erase a
+blend result a 10 a_3 5 a_4 10 a_2 5 a_13 5 a_11 10 a_14 5 a_15 10 a_12 5 a_6 5 a_9
+
+checkprops result -s 444610

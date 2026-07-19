@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC29858"
+puts "========"
+puts ""
+#################################################
+# Regression in GeomAPI_ExtremaCurveCurve
+#################################################
+
+# Read input
+restore [locate_data_file bug29858_02_e1.brep] e1
+restore [locate_data_file bug29858_02_e2.brep] e2
+
+# Extract geometry from topology
+mkcurve c1 e1
+mkcurve c2 e2
+
+# Run extrema
+set info [extrema c1 c2]
+
+# Check result
+regexp {Extrema 1 is point : +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $info full x y z
+# Point check
+set good_x 0.001
+set good_y 0.0073371170841145797
+set good_z -0.083369169789921913
+checkreal "Intersection point x:" ${x} ${good_x} 0.01 0.01
+checkreal "Intersection point y:" ${y} ${good_y} 0.01 0.01
+checkreal "Intersection point z:" ${z} ${good_z} 0.01 0.01

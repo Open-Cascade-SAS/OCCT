@@ -1,0 +1,13 @@
+## ======================================
+## Grid    : CCV003
+## Test    : A1
+## Comment : From CV tests serie page 68
+## ======================================
+
+restore [locate_data_file 3_base.rle] base
+mkplane fbase base
+restore [locate_data_file 3_A1.rle] profile
+
+pipe result profile fbase
+
+checkprops result -s 38226.4

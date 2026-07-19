@@ -1,0 +1,29 @@
+puts "============"
+puts "CR23409"
+puts "============"
+puts ""
+###################################################################################
+# Tricheck command doesn't report problem when triangulation has unexpected holes
+###################################################################################
+
+restore [locate_data_file bug23167_f397.brep] result
+vinit
+vsetdispmode 1
+vdisplay result
+axo
+fit
+isos result 0
+triangles result
+set info_bad [tricheck result]
+if { [regexp "Not connected mesh inside face 1" $info_bad] != 1 } {
+    puts "Error : Tricheck command doesn't report message"
+}
+
+tclean result
+incmesh result 0.01
+set info_good [tricheck result]
+if { [string compare $info_good "" ] != 0 } {
+    puts "Error : Tricheck command works incorrect when shape looks good"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC28216"
+puts "============"
+puts ""
+#####################################################################################################
+# Intersection of a face and a solid is broken up leading to empty result of Boolean common operation
+#####################################################################################################
+
+restore [locate_data_file bug28216_initSurf.brep] s
+restore [locate_data_file bug28216_solid.brep] o
+
+bop s o
+
+bopsection r_section
+checknbshapes r_section -vertex 4 -edge 4 -m "bopsection"
+bopcheck r_section
+
+bopcommon r_common
+checknbshapes r_common -vertex 4 -edge 4 -face 1 -m "bopcommon"
+bopcheck r_common
+
+checkview -display r_section -2d -path ${imagedir}/${test_image}-section.png
+checkview -display r_common -2d -path ${imagedir}/${test_image}-common.png

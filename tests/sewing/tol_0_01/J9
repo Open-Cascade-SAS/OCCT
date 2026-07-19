@@ -1,0 +1,8 @@
+restore [locate_data_file CCV_2_h1_gta.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 1.7996370773212498e-005
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

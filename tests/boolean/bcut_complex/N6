@@ -1,0 +1,11 @@
+# Original bug : pro14928
+# Date : 16July98
+
+restore [locate_data_file CIN900_pro14hma.rle] a 
+restore [locate_data_file pro14928b.rle] aface
+
+prism b aface 0 500 0
+explode b
+bcut result a b_1
+checkprops result -s 562034
+checkview -display result -2d -s -otherwise { a b_1 } -path ${imagedir}/${test_image}.png

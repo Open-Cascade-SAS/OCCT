@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC2442"
+puts "============"
+puts ""
+######################################################
+# Error in BRepClass3d_SolidClassifier
+######################################################
+
+restore [locate_data_file OCC2442-1.brep] a 
+restore [locate_data_file OCC2442-2.brep] b 
+
+distmini dm1 a b
+set dist1 [dval dm1_val]
+
+explode a
+explode b
+distmini dm2 a_1 b_1
+set dist2 [dval dm2_val]
+
+set good_dist 18.4816355578064
+
+set tol_abs 1.e-7
+set tol_rel 1.e-7
+
+checkreal "Distance 1 " ${dist1} ${good_dist} ${tol_abs} ${tol_rel}
+checkreal "Distance 2 " ${dist2} ${good_dist} ${tol_abs} ${tol_rel}
+
+bounding a -save x0 y0 z0 x1 y1 z1 -nodraw
+ttranslate a -x0 -y0 -z0
+ttranslate b -x0 -y0 -z0
+
+checkview -display a -with b -2d -path ${imagedir}/${test_image}.png

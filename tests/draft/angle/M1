@@ -1,0 +1,12 @@
+# Original bug : ger60805
+# Date : 26 Nov 98
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_2"
+
+restore [locate_data_file ger60805_base.brep] base
+
+fsameparameter base
+
+explode base face
+
+depouille result base 0 0 1 base_2 10 0 0 0 0 0 1
+checkprops result -s 278770

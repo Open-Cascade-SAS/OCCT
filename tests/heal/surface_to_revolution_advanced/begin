@@ -1,0 +1,3 @@
+set command ShapeConvertRev
+
+set rel_tol 0.01

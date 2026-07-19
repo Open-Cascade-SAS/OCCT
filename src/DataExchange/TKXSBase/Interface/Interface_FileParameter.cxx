@@ -1,0 +1,82 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Interface_FileParameter.hxx>
+#include <TCollection_AsciiString.hxx>
+
+//=================================================================================================
+
+Interface_FileParameter::Interface_FileParameter()
+{
+  thetype = Interface_ParamMisc;
+  thenum  = 0;
+}
+
+//=================================================================================================
+
+void Interface_FileParameter::Init(const TCollection_AsciiString& val,
+                                   const Interface_ParamType      typ)
+{
+  theval = new char[val.Length() + 1];
+  strcpy(theval, val.ToCString());
+  thetype = typ;
+  thenum  = 0;
+}
+
+//=================================================================================================
+
+void Interface_FileParameter::Init(const char* const val, const Interface_ParamType typ)
+{
+  theval  = (Standard_PCharacter)val; // Principle: Allocation managed by container (ParamSet)
+  thetype = typ;
+  thenum  = 0;
+}
+
+//=================================================================================================
+
+const char* Interface_FileParameter::CValue() const
+{
+  return theval;
+}
+
+//=================================================================================================
+
+Interface_ParamType Interface_FileParameter::ParamType() const
+{
+  return thetype;
+}
+
+//=================================================================================================
+
+void Interface_FileParameter::SetEntityNumber(const int num)
+{
+  thenum = num;
+}
+
+//=================================================================================================
+
+int Interface_FileParameter::EntityNumber() const
+{
+  return thenum;
+}
+
+//=================================================================================================
+
+void Interface_FileParameter::Clear()
+{
+  theval = nullptr;
+} // delete theval; not if managed by ParamSet
+
+//=================================================================================================
+
+void Interface_FileParameter::Destroy() {}

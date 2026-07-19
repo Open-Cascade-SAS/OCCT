@@ -1,0 +1,9 @@
+#ger60239
+
+restore [locate_data_file CTO900_ger60239a.rle] c
+restore [locate_data_file CTO900_ger60239b.rle] d
+
+bfuse result c d
+
+checkprops result -s 3468.6
+checkview -display result -2d -otherwise { c d } -s -path ${imagedir}/${test_image}.png

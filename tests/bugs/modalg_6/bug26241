@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC26241"
+puts "========"
+puts ""
+###########################################################
+# Sewing algorithm computes tolerance of joint vertex too rough
+###########################################################
+
+plane p 0 0 0 0 0 1 1 0 0
+mkface f1 p 0 10 0 10
+mkface f2 p 0 10 11 21
+settolerance f1 2
+settolerance f2 3
+sewing res 3 f1 f2
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance res] full MaxTolerance
+puts "MaxTolerance=$MaxTolerance"
+
+set expected_MaxTolerance 3.0
+set tol_abs_MaxTolerance 0.1
+set tol_rel_MaxTolerance 0.1
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}

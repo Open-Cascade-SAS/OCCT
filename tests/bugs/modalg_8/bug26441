@@ -1,0 +1,40 @@
+puts "============"
+puts "0026441: Modeling Algorithms - BRepOffset_MakeOffset affects original shape"
+puts "============"
+puts ""
+
+pload QAcommands
+restore [locate_data_file bug26440_plate.brep] sh
+
+tcopy sh sh_ref
+thickshell result sh 160
+
+checkprops result -s 2.40831e+07 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 196
+ EDGE      : 308
+ WIRE      : 110
+ FACE      : 110
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 726
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "solid construction"
+if { [info exist BadEdges] } {
+  unset BadEdges
+}
+if { [info exist BadVerts] } {
+  unset BadVerts
+}
+
+OCC26441 sh sh_ref 1.e-7 1
+
+if { [isdraw BadEdges] || [isdraw BadVerts]} {
+  puts "Error: tolerances of some subshapes of initial shape are changed"
+}
+

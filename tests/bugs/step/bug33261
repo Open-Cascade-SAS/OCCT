@@ -1,0 +1,17 @@
+puts "======="
+puts "0033261: Data Exchange, Step Import - Empty shape after reading process"
+puts "======="
+
+pload OCAF MODELING 
+
+# Read file
+ReadStep D [locate_data_file bug33261.stp] 
+
+# get document model as a single shape
+XGetOneShape S1 D 
+
+# check number of subshapes in the shape restored from STEP
+checknbshapes S1 -face 2025 -solid 24 -compound 100 
+
+Close D -silent 
+unset S1 

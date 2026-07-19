@@ -1,0 +1,45 @@
+puts "========="
+puts "OCC23948"
+puts "========="
+puts ""
+###########################################################
+# Wrong intersection between a surface of revolution and a plane.
+###########################################################
+
+set MaxTol 1.0e-6
+set NbCurv_OK 2
+
+restore [locate_data_file bug22766_f1] f1
+restore [locate_data_file bug22766_f2] f2
+
+set log [bopcurves f1 f2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${NbCurv} != ${NbCurv_OK}} {
+  puts "Error: ${NbCurv_OK} curve(s) expected, but ${NbCurv} found."
+}
+
+checkreal TolReached ${Toler} ${MaxTol} 0.0 0.1
+
+bclearobjects
+bcleartools
+
+for { set i 1 } { $i <= $NbCurv } { incr i } {
+  mkedge ee c_$i
+  baddobjects ee
+}
+
+if { $NbCurv > 1 } {
+  bfillds
+  bbuild rs
+  checksection rs -r 2
+  checkmaxtol rs -ref $MaxTol
+  checkprops rs -l 111.803
+}
+
+smallview
+don c_*
+fit
+disp f1 f2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

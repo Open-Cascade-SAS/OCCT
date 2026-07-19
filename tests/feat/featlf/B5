@@ -1,0 +1,17 @@
+box b 1 1 1
+nexplode b f
+profile pp x 0.6 y 0.6 x -0.6 y -0.6
+ttranslate pp 0.2 0.2 1
+featprism b pp b_4 0 0 -1 0 1
+featperformval prism r 0.8
+vertex v1 0.2 0.5 1
+vertex v2 0.8 0.5 1
+edge e1 v2 v1 
+wire w e1 
+
+plane pl 0.5 0.5 1 0 -1 0
+featlf r w pl 0 0.2 0 0 0 0 1 1
+featperform lf result 
+
+
+checkprops result -s 8.56

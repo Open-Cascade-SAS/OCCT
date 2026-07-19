@@ -1,0 +1,13 @@
+#box s1 0 0 0 10 10 10
+#box s2 0 0 0 3 4 7
+#ttranslate s2 9 -1 0
+#trotate s1 s2 0 0 0 0 0 1 10
+#fuse s s1 s2
+#save s B5678.draw 
+
+restore [locate_data_file CFI_b5678fif.rle] s
+tscale s 0 0 0 SCALE1
+explode s e
+blend result s 0.5*SCALE1 s_2 0.5*SCALE1 s_1 0.5*SCALE1 s_10
+
+checkprops result -s 65867.9

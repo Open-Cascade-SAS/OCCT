@@ -1,0 +1,21 @@
+puts "================"
+puts "OCC23511"
+puts "================"
+puts ""
+#########################################################################
+# The function BRepTools::UVBounds provides incorrect result for a face
+#########################################################################
+
+restore [locate_data_file bug23511_f1] result
+
+set info [xbounds result]
+
+set 2PI [expr 2 * 3.142]
+foreach bound ${info} {
+  puts "bound = ${bound}"
+  if { ${bound} < 0 || ${bound} > ${2PI} } {
+    puts "Error : bad bound ${bound}"
+  }
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

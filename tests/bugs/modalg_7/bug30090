@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC30090: Modeling Algorithms - BRepLib::FindValidRange does not find valid range for the edge"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30090_edge.brep] e
+if {[regexp {([-0-9.+eE]+) ([-0-9.+eE]+)} [validrange e] full first last]} {
+  checkreal First $first 0.043210875526017684 1.e-7 0
+  checkreal Last $last 0.98374162670821774 1.e-7 0
+} else {
+  puts "Error: valid range is not found"
+}

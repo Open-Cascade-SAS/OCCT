@@ -1,0 +1,156 @@
+puts "====================================="
+puts "AIS_Manipulator - translate an object"
+puts "====================================="
+
+pload MODELING VISUALIZATION
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+set anImage4 $imagedir/${casename}_4.png
+set anImage5 $imagedir/${casename}_5.png
+
+# -------------------------------------
+# create manipulated and helper objects
+# -------------------------------------
+
+pcylinder c1  5 10
+pcylinder c2 10 20
+ttranslate c1 100 0 20
+ttranslate c2 100 0 0
+trotate c1 100 0 25 0 1 0 90
+trotate c1 100 0 25 0 0 1 10
+
+# -------------------------------------
+# display manipulated objects (scene 1)
+# -------------------------------------
+
+vdisplay c1
+vdisplay c2
+vsetdispmode 1
+vaxo
+vfit
+
+# ------------------
+# attach manipulator
+# ------------------
+
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
+vmanipulator m -followRotation 1
+vmanipulator m -followTranslation 1
+vmanipulator m -part 0 4 0
+vmanipulator m -part 1 4 0
+vmanipulator m -part 2 4 0
+
+# ----------------------------------------------------
+# test x translation transform (world reference frame)
+# ----------------------------------------------------
+
+set mouse_pick {204 112}
+set mouse_drag {204 156}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage1
+
+# ----------------------------------------------------
+# test y translation transform (world reference frame)
+# ----------------------------------------------------
+
+set mouse_pick {215 160}
+set mouse_drag {265 132}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage2
+
+# ----------------------------------------------------
+# test z translation transform (world reference frame)
+# ----------------------------------------------------
+
+set mouse_pick {263 145}
+set mouse_drag {127 065}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage3
+
+# -------------------------------------
+# display manipulated objects (scene 2)
+# -------------------------------------
+
+vremove -all
+vdisplay c1
+vdisplay c2
+vsetdispmode 1
+vaxo
+vfit
+
+# -------------------------------------------
+# attach manipulator and rotate around z axis
+# -------------------------------------------
+
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
+vmanipulator m -followRotation 1
+vmanipulator m -followTranslation 1
+vmanipulator m -part 0 4 0
+vmanipulator m -part 1 4 0
+vmanipulator m -part 2 4 0
+
+set mouse_pick {223 144}
+set mouse_drag {181 140}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+
+# ----------------------------------------------------
+# test x translation transform (object reference frame)
+# ----------------------------------------------------
+
+set mouse_pick {199 131}
+set mouse_drag {175 168}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage4
+
+# ----------------------------------------------------
+# test y translation transform (object reference frame)
+# ----------------------------------------------------
+
+set mouse_pick {199 164}
+set mouse_drag {246 176}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $anImage5

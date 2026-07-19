@@ -1,0 +1,64 @@
+// Created on: 2009-05-07
+// Created by: Sergey ZARITCHNY <sergey.zaritchny@opencascade.com>
+// Copyright (c) 2009-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _DNaming_TransformationDriver_HeaderFile
+#define _DNaming_TransformationDriver_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
+
+#include <TFunction_Driver.hxx>
+#include <Standard_Integer.hxx>
+class TFunction_Logbook;
+class TDF_Label;
+class TNaming_NamedShape;
+class gp_Trsf;
+
+class DNaming_TransformationDriver : public TFunction_Driver
+{
+
+public:
+  //! Constructor
+  //! validation
+  //! ==========
+  Standard_EXPORT DNaming_TransformationDriver();
+
+  //! Validates labels of a function in <log>.
+  //! In regeneration mode this method must be called (by the
+  //! solver) even if the function is not executed, to build
+  //! the valid label scope.
+  //! execution of function
+  //! ======================
+  Standard_EXPORT void Validate(const occ::handle<TFunction_Logbook>& theLog) const override;
+
+  //! Analyse in <log> if the loaded function must be executed
+  //! (i.e.arguments are modified) or not.
+  //! If the Function label itself is modified, the function must
+  //! be executed.
+  Standard_EXPORT bool MustExecute(const occ::handle<TFunction_Logbook>& theLog) const override;
+
+  //! Execute the function and push in <log> the impacted
+  //! labels (see method SetImpacted).
+  Standard_EXPORT int Execute(occ::handle<TFunction_Logbook>& theLog) const override;
+
+  DEFINE_STANDARD_RTTIEXT(DNaming_TransformationDriver, TFunction_Driver)
+
+private:
+  Standard_EXPORT void LoadNamingDS(const TDF_Label&                       theResultLabel,
+                                    const occ::handle<TNaming_NamedShape>& theSourceNS,
+                                    const gp_Trsf&                         theTrsf) const;
+};
+
+#endif // _DNaming_TransformationDriver_HeaderFile

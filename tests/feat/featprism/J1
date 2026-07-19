@@ -1,0 +1,11 @@
+# Original bug : cts21199
+# Date : 12 Oct 98
+# Feature distance
+
+restore [locate_data_file cts21199_base.rle] base
+restore [locate_data_file cts21199_face.rle] cont
+
+featprism base cont cont 0 0 -1 1 1
+featperformval prism result 50
+
+checkprops result -s 18033.5

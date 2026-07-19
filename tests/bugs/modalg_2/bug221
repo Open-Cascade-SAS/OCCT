@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC221"
+puts "========"
+puts ""
+######################################################################
+##After loading attached file (one simple face) checkshape give a problem (Bad Orientation of SubShape)
+##  but I believe that this face is correct. Also I believe that face is vitiated during performing checkshape
+##  (perhaps - in BRepCheck_Face::ClassifyWire())
+######################################################################
+
+restore [locate_data_file OCC221.brep] result
+set che [checkshape result r]
+if { [regexp {OK} $che] != 1 } {
+    puts "Faulty OCC221 (checkshape) : Checkshape command works wrongly"
+} else {
+    puts "OCC221 OK (checkshape) : Checkshape command works properly"
+}
+puts ""
+set che [checkshape result]
+if { [regexp {Faulty} $che] == 1} {
+    puts "Faulty OCC221 (checkshape) : Checkshape command works wrongly"
+} else {
+    puts "OCC221 OK (checkshape) : Checkshape command works properly"
+}
+
+checkprops result -s 425.537 
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

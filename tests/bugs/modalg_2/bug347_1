@@ -1,0 +1,19 @@
+ 
+puts "========================"
+puts " BUC60959 "
+puts " OCC347 "
+puts " (case 1) "
+puts "========================"
+
+restore [locate_data_file OCC347a.brep] result
+checkshape result
+
+tclean result
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+
+checktrinfo result -tri 74 -nod 76
+checkprops result -s 314.159 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

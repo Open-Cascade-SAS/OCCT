@@ -1,0 +1,31 @@
+puts "=============================================="
+puts "0032861: Visualization - Separate rotate and move the object behavior in AIS_ViewController"
+puts "=============================================="
+puts ""
+
+pload MODELING VISUALIZATION
+
+vinit View1 -2d
+box b 10 10 10
+vdisplay b
+vaxo
+vfit
+vzoom 0.5
+vmanipulator m -attach b
+
+vdump $imagedir/${casename}_1.png
+
+set mouse_pick {231 207}
+set mouse_drag {311 258}
+
+# note: mouse events cannot be emulated here, so the original bug cannot be reproduced by this test case
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag
+vdump $imagedir/${casename}_2.png
+
+set aNewLoc [vlocation b -location]

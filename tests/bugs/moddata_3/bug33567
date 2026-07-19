@@ -1,0 +1,11 @@
+puts "==========================================================="
+puts "0033567: Modeling Data - GeomLib_IsPlanarSurface raises SIGFPE in Release mode"
+puts "==========================================================="
+
+puts "REQUIRED All: Conversion failed"
+
+pload MODELING
+
+restore [locate_data_file bug33567.brep] a
+mksurface s a
+tocanon r s 0.0005

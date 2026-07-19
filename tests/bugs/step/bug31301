@@ -1,0 +1,7 @@
+testreadstep [locate_data_file bug31301.stp] s
+set aTmpFile "$imagedir/${casename}.stp"
+testwritestep "$aTmpFile" s
+testreadstep  "$aTmpFile" s1
+file delete   "$aTmpFile"
+checkshape s1 f
+checkmaxtol s1 -ref 0.0078

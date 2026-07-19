@@ -1,0 +1,10 @@
+# Original bug : cts20483
+# Date : 13Mai98
+# B4
+
+restore [locate_data_file cts20483-part.rle] part
+restore [locate_data_file CTO902_cts20483-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 1539.48
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

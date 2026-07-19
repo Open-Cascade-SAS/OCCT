@@ -1,0 +1,7 @@
+restore [locate_data_file a65] a
+restore [locate_data_file b65] b
+bsection result a b
+
+checkprops result -l 0.885026
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

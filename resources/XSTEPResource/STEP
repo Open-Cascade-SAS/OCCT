@@ -1,0 +1,68 @@
+
+! Resource file for data exchange ...
+!
+! For meaning of parameters refer to the end of the file
+
+! ==============================================================================
+!
+
+ToSTEP.exec.op : SplitCommonVertex,DirectFaces
+
+FromSTEP.exec.op : FixShape
+
+FromSTEP.FixShape.Tolerance3d			: &Runtime.Tolerance
+FromSTEP.FixShape.MaxTolerance3d		: &Runtime.MaxTolerance
+FromSTEP.FixShape.MinTolerance3d		: 1.e-7
+FromSTEP.FixShape.FixFreeShellMode		: -1
+FromSTEP.FixShape.FixFreeFaceMode		: -1
+FromSTEP.FixShape.FixFreeWireMode		: -1
+FromSTEP.FixShape.FixSameParameterMode		: -1
+
+FromSTEP.FixShape.FixSolidMode			: -1
+FromSTEP.FixShape.FixShellOrientationMode	: -1
+FromSTEP.FixShape.CreateOpenSolidMode           :  0
+
+FromSTEP.FixShape.FixShellMode			: -1
+FromSTEP.FixShape.FixFaceOrientationMode	: -1
+
+FromSTEP.FixShape.FixFaceMode			: -1
+FromSTEP.FixShape.FixWireMode			: -1
+FromSTEP.FixShape.FixOrientationMode		: -1
+FromSTEP.FixShape.FixAddNaturalBoundMode	: -1
+FromSTEP.FixShape.FixMissingSeamMode		: -1
+FromSTEP.FixShape.FixSmallAreaWireMode		: -1
+FromSTEP.FixShape.RemoveSmallAreaFaceMode	: -1
+FromSTEP.FixShape.FixIntersectingWiresMode	: -1
+FromSTEP.FixShape.FixLoopWiresMode              : -1
+FromSTEP.FixShape.FixSplitFaceMode              : -1
+FromSTEP.FixShape.AutoCorrectPrecisionMode      :  1
+FromSTEP.FixShape.ModifyTopologyMode		:  0
+FromSTEP.FixShape.ModifyGeometryMode		:  1
+FromSTEP.FixShape.ClosedWireMode		:  1
+FromSTEP.FixShape.PreferencePCurveMode		:  1
+FromSTEP.FixShape.FixReorderMode		: -1
+FromSTEP.FixShape.FixSmallMode			: -1
+FromSTEP.FixShape.FixConnectedMode		: -1
+FromSTEP.FixShape.FixEdgeCurvesMode		: -1
+FromSTEP.FixShape.FixDegeneratedMode		: -1
+FromSTEP.FixShape.FixLackingMode		: -1
+FromSTEP.FixShape.FixSelfIntersectionMode	: -1
+FromSTEP.FixShape.RemoveLoopMode                : -1
+FromSTEP.FixShape.FixReversed2dMode		: -1
+FromSTEP.FixShape.FixRemovePCurveMode		: -1
+FromSTEP.FixShape.FixRemoveCurve3dMode		: -1
+FromSTEP.FixShape.FixAddPCurveMode		: -1
+FromSTEP.FixShape.FixAddCurve3dMode		: -1
+FromSTEP.FixShape.FixSeamMode			: -1
+FromSTEP.FixShape.FixShiftedMode		: -1
+FromSTEP.FixShape.FixEdgeSameParameterMode	:  0
+FromSTEP.FixShape.FixNotchedEdgesMode 		: -1
+FromSTEP.FixShape.FixTailMode : 0
+FromSTEP.FixShape.MaxTailAngle : 0
+FromSTEP.FixShape.MaxTailWidth : -1
+FromSTEP.FixShape.FixSelfIntersectingEdgeMode	: -1
+FromSTEP.FixShape.FixIntersectingEdgesMode	: -1
+FromSTEP.FixShape.FixNonAdjacentIntersectingEdgesMode : -1
+
+FromSTEP.FixShape.FixVertexPositionMode : 0
+FromSTEP.FixShape.FixVertexToleranceMode : -1

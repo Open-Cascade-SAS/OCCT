@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC22109"
+puts "============"
+puts ""
+#######################################################################
+# Boolean operation common fails. Appendix to the SALOME bug: 0021060 
+#######################################################################
+
+set BugNumber OCC22109
+
+puts "Load first shape ..."
+restore [locate_data_file bug22109_Solid_24.brep] b1 
+
+puts "Load second shape ..."
+restore [locate_data_file bug22109_tore.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopcommon result
+puts "Finish boolean operation ..."
+
+checknbshapes result -vertex 0 -edge 0 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

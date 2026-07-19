@@ -1,0 +1,5 @@
+set chamf_shape 8_B1.draw
+set chamf_edge_face  [list "  7    3" "   2    3"]
+set chamf_dist_angle [list "0.1   45" "0.12   45"]
+set chamf_dist_dist  [list "0.1 0.11" " 0.2 0.21"]
+set chamf_equal_dist [list "0.1     " " 0.2     "]

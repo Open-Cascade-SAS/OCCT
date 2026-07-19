@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename t_cat_424_002_sgi_hybdrw_vw_tuer_standard.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 733 )  Warnings = 68  ( 4336 )  Summary  = 68  ( 5069 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2263  ( 2263 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2263  ( 2263 )   FreeWire = 2854  ( 2907 ) 
+TOLERANCE   : MaxTol   =   0.7925892163  (   0.7925891552 )  AvgTol   =  0.001587386005  (  0.001648585553 )
+LABELS      : N0Labels = 28  ( 28 )  N1Labels = 16279  ( 19400 )  N2Labels = 0  ( 0 )   TotalLabels = 16307  ( 19428 )   NameLabels = 13464  ( 17443 )   ColorLabels = 16281  ( 19400 )   LayerLabels = 13440  ( 19344 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 18  ( 18 )
+COLORS      : Colors   = BLUE CYAN DARKKHAKI DARKSEAGREEN2 DEEPSKYBLUE2 DODGERBLUE2 GOLD3 GREEN GREEN4 KHAKI1 LIGHTPINK1 LIGHTSEAGREEN ORANGE PALEVIOLETRED4 PLUM1 RED WHITE YELLOW  ( BLUE CYAN DARKKHAKI DARKSEAGREEN2 DEEPSKYBLUE2 DODGERBLUE2 GOLD3 GREEN GREEN4 KHAKI1 LIGHTPINK1 LIGHTSEAGREEN ORANGE PALEVIOLETRED4 PLUM1 RED WHITE YELLOW )
+NLAYERS     : NLayers  = 45  ( 46 )
+LAYERS      : Layers   = 1 11 12 121 122 123 124 125 127 128 129 13 131 136 137 139 14 140 141 142 144 145 146 147 148 149 150 151 16 17 181 2 238 239 240 241 242 252 254 3 4 5 7 8 9  ( 1 11 12 121 122 123 124 125 127 128 129 13 131 136 137 139 14 140 141 142 144 145 146 147 148 149 150 151 16 17 181 2 238 239 240 241 242 250 252 254 3 4 5 7 8 9 )
+
+}

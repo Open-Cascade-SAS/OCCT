@@ -1,0 +1,29 @@
+puts "================"
+puts "OCC27175"
+puts "================"
+puts ""
+#######################################################################
+# Intersection algorithm with increased tolerance works incorrect with some shapes
+#######################################################################
+
+set ExpectTol 3.002046539399851e-006
+set GoodNbCurv 2
+
+plane pl 0.195808075898442 -0.229262227170656 4.05546403129991 0 0 1
+psphere s1 pl 0.03101752454
+restore [locate_data_file bug27128-Helix_Pipe.brep] s2
+
+explode s1 f
+explode s2 f
+
+settolerance s1_1 2.0e-6
+settolerance s2_2 2.0e-6
+bopcurves s1_1 s2_2 -2d
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves s1_1 s2_2 -2d] full Toler NbCurv
+
+checkreal "Tolerance Reached" ${Toler} ${ExpectTol} 0.0 0.1
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}

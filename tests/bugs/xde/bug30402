@@ -1,0 +1,47 @@
+puts "========="
+puts "OCC30402"
+puts "========="
+puts ""
+############################################################################
+# Data Exchange - exported VRML file has broken location information
+############################################################################
+
+set filename bug26657
+param xstep.cascade.unit MM
+ReadStep D [locate_data_file bug26657.stp]
+XGetOneShape a D
+incmesh a 0.001
+vinit Driver1/Viewer1/View1
+vdisplay a
+vfit
+vdump ${imagedir}/${test_image}_1.png
+
+file delete -force ${imagedir}/${filename}.wrl
+WriteVrml D ${imagedir}/${filename}.wrl
+loadvrml b ${imagedir}/${filename}.wrl
+vinit Driver1/Viewer2/View1
+vdisplay b
+vfit
+vdump ${imagedir}/${test_image}_2.png
+
+set sprops_a [sprops a]
+regexp {Mass\s*:\s*([0-9.e+-]+)} $sprops_a prop_s res_a_Area
+regexp {X += +([-0-9.+eE]+)} $sprops_a full res_a_X
+regexp {Y += +([-0-9.+eE]+)} $sprops_a full res_a_Y
+regexp {Z += +([-0-9.+eE]+)} $sprops_a full res_a_Z
+
+set sprops_b [sprops b]
+regexp {Mass\s*:\s*([0-9.e+-]+)} $sprops_b prop_s res_b_Area
+regexp {X += +([-0-9.+eE]+)} $sprops_b full res_b_X
+regexp {Y += +([-0-9.+eE]+)} $sprops_b full res_b_Y
+regexp {Z += +([-0-9.+eE]+)} $sprops_b full res_b_Z
+
+if { ([expr abs($res_a_Area - $res_b_Area)] > 1.e-4) } {
+  puts "Error: Bad area of face"
+}
+
+if { ([expr abs($res_a_X - $res_b_X)] > 1.e-4) ||
+  ([expr abs($res_a_Y - $res_b_Y)] > 1.e-4) ||
+  ([expr abs($res_a_Z - $res_b_Z)] > 1.e-4) } {
+  puts "Error: Location problem"
+}

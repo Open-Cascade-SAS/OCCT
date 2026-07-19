@@ -1,0 +1,19 @@
+# Original bug : fra60618
+# Date : 23 Mar 98
+
+restore [locate_data_file CTO900_fra60618-part.rle] base
+restore [locate_data_file fra60618-tool.rle] wire
+
+mkplane cont wire
+
+nexplode base face
+copy base_15 funtil
+
+## creation de face infinie support
+mksurface p15 base_15
+mkface f15 p15
+
+featprism base cont cont 0 0 -1 0 1
+featperform prism result f15
+
+checkprops result -s 16398.2

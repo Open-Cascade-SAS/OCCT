@@ -1,0 +1,22 @@
+puts "TODO OCC28523 ALL: Error: Bad area of face"
+
+puts "========"
+puts "OCC28523"
+puts "========"
+puts ""
+################################################
+## Fixshape reverses the orientation of the face
+################################################
+
+restore [locate_data_file bug28377_problemface.brep] f2
+
+fixshape newface f2
+
+checkshape newface ff1
+
+set prop [ sprops newface ]
+regexp {Mass\s*:\s*([0-9.e+-]+)} $prop prop_s Area
+
+if { ${Area} <= 0. } {
+   puts "Error: Bad area of face"
+}

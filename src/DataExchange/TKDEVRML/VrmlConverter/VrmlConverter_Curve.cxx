@@ -1,0 +1,285 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Adaptor3d_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Vrml_Coordinate3.hxx>
+#include <Vrml_IndexedLineSet.hxx>
+#include <Vrml_Material.hxx>
+#include <Vrml_Separator.hxx>
+#include <VrmlConverter_Curve.hxx>
+#include <VrmlConverter_Drawer.hxx>
+#include <VrmlConverter_LineAspect.hxx>
+
+//=================================================================================================
+
+static void FindLimits(const Adaptor3d_Curve& aCurve,
+                       const double           aLimit,
+                       double&                First,
+                       double&                Last)
+{
+  First         = aCurve.FirstParameter();
+  Last          = aCurve.LastParameter();
+  bool firstInf = Precision::IsNegativeInfinite(First);
+  bool lastInf  = Precision::IsPositiveInfinite(Last);
+
+  if (firstInf || lastInf)
+  {
+    gp_Pnt P1, P2;
+    double delta = 1;
+    if (firstInf && lastInf)
+    {
+      do
+      {
+        delta *= 2;
+        First = -delta;
+        Last  = delta;
+        aCurve.D0(First, P1);
+        aCurve.D0(Last, P2);
+      } while (P1.Distance(P2) < aLimit);
+    }
+    else if (firstInf)
+    {
+      aCurve.D0(Last, P2);
+      do
+      {
+        delta *= 2;
+        First = Last - delta;
+        aCurve.D0(First, P1);
+      } while (P1.Distance(P2) < aLimit);
+    }
+    else if (lastInf)
+    {
+      aCurve.D0(First, P1);
+      do
+      {
+        delta *= 2;
+        Last = First + delta;
+        aCurve.D0(Last, P2);
+      } while (P1.Distance(P2) < aLimit);
+    }
+  }
+}
+
+//=================================================================================================
+
+static void DrawCurve(const Adaptor3d_Curve&                   aCurve,
+                      const int                                NbP,
+                      const double                             U1,
+                      const double                             U2,
+                      const occ::handle<VrmlConverter_Drawer>& aDrawer, // for passing of LineAspect
+                      Standard_OStream&                        anOStream)
+{
+  int                                      nbintervals = 1, i;
+  occ::handle<NCollection_HArray1<gp_Vec>> HAV1;
+  occ::handle<NCollection_HArray1<int>>    HAI1;
+
+  if (aCurve.GetType() == GeomAbs_BSplineCurve)
+  {
+    nbintervals = aCurve.NbKnots() - 1;
+    //     std::cout << "NbKnots "<<aCurve.NbKnots() << std::endl;
+    nbintervals = std::max(1, nbintervals / 3);
+  }
+
+  switch (aCurve.GetType())
+  {
+    case GeomAbs_Line: {
+      gp_Vec V;
+      HAV1 = new NCollection_HArray1<gp_Vec>(1, 2);
+      // array of coordinates of line
+      gp_Pnt p = aCurve.Value(U1);
+      V.SetX(p.X());
+      V.SetY(p.Y());
+      V.SetZ(p.Z());
+      HAV1->SetValue(1, V);
+
+      p = aCurve.Value(U2);
+      V.SetX(p.X());
+      V.SetY(p.Y());
+      V.SetZ(p.Z());
+      HAV1->SetValue(2, V);
+
+      HAI1 = new NCollection_HArray1<int>(1, 3);
+      // array of indexes of line
+      HAI1->SetValue(1, 0);
+      HAI1->SetValue(2, 1);
+      HAI1->SetValue(3, -1);
+    }
+    break;
+    default: {
+
+      double U;
+      int    N = std::max(2, NbP * nbintervals);
+
+      //     std::cout << "nbintervals " << nbintervals << std::endl;
+      //     std::cout <<  "N " << N << std::endl;
+
+      gp_Vec V;
+      HAV1 = new NCollection_HArray1<gp_Vec>(1, N);
+      //      HAI1 = new NCollection_HArray1<int>(1,(N/2*3+N%2));
+      HAI1      = new NCollection_HArray1<int>(1, N + 1);
+      double DU = (U2 - U1) / (N - 1);
+      gp_Pnt p;
+
+      for (i = 1; i <= N; i++)
+      {
+        U = U1 + (i - 1) * DU;
+        p = aCurve.Value(U);
+
+        V.SetX(p.X());
+        V.SetY(p.Y());
+        V.SetZ(p.Z());
+        HAV1->SetValue(i, V);
+      }
+
+      //      int j=1,k;
+
+      //     for (i=HAI1->Lower(); i <= HAI1->Upper(); i++)
+      // 	{
+      // 	  k = i % 3;
+      // 	  if(k == 0)
+      // 	    {
+      // 	      HAI1->SetValue(i,-1);
+      // 	      j++;
+      // 	    }
+      // 	  else
+      // 	    {
+      // 	      HAI1->SetValue(i,i-j);
+      // 	    }
+      // 	}
+
+      for (i = HAI1->Lower(); i < HAI1->Upper(); i++)
+      {
+        HAI1->SetValue(i, i - 1);
+      }
+      HAI1->SetValue(HAI1->Upper(), -1);
+    }
+  }
+
+  //  std::cout  << " Array HAI1 - coordIndex " << std::endl;
+  //  for ( i=HAI1->Lower(); i <= HAI1->Upper(); i++ )
+  //    {
+  //      std::cout << HAI1->Value(i) << std::endl;
+  //       }
+
+  // creation of Vrml objects
+  occ::handle<VrmlConverter_LineAspect> LA = new VrmlConverter_LineAspect;
+  LA                                       = aDrawer->LineAspect();
+
+  //     std::cout << "LA->HasMaterial() = " << LA->HasMaterial()  << std::endl;
+
+  // Separator 1 {
+  Vrml_Separator SE1;
+  SE1.Print(anOStream);
+  // Material
+
+  if (LA->HasMaterial())
+  {
+
+    occ::handle<Vrml_Material> M;
+    M = LA->Material();
+
+    M->Print(anOStream);
+  }
+  // Coordinate3
+  occ::handle<Vrml_Coordinate3> C3 = new Vrml_Coordinate3(HAV1);
+  C3->Print(anOStream);
+  // IndexedLineSet
+  Vrml_IndexedLineSet ILS;
+  ILS.SetCoordIndex(HAI1);
+  ILS.Print(anOStream);
+  // Separator 1 }
+  SE1.Print(anOStream);
+}
+
+//=================================================================================================
+
+void VrmlConverter_Curve::Add(const Adaptor3d_Curve&                   aCurve,
+                              const occ::handle<VrmlConverter_Drawer>& aDrawer,
+                              Standard_OStream&                        anOStream)
+{
+
+  int    NbPoints = aDrawer->Discretisation();
+  double V1, V2;
+  double aLimit = aDrawer->MaximalParameterValue();
+  FindLimits(aCurve, aLimit, V1, V2);
+
+  //     std::cout << "V1 = "<< V1 << std::endl;
+  //     std::cout << "V2 = "<< V2 << std::endl;
+  //     std::cout << "NbPoints = "<< NbPoints << std::endl;
+  //     std::cout << "aLimit = "<< aLimit << std::endl;
+
+  DrawCurve(aCurve, NbPoints, V1, V2, aDrawer, anOStream);
+}
+
+//=================================================================================================
+
+void VrmlConverter_Curve::Add(const Adaptor3d_Curve&                   aCurve,
+                              const double                             U1,
+                              const double                             U2,
+                              const occ::handle<VrmlConverter_Drawer>& aDrawer,
+                              Standard_OStream&                        anOStream)
+{
+
+  int    NbPoints = aDrawer->Discretisation();
+  double V1       = U1;
+  double V2       = U2;
+
+  if (Precision::IsNegativeInfinite(V1))
+  {
+    V1 = -aDrawer->MaximalParameterValue();
+  }
+  if (Precision::IsPositiveInfinite(V2))
+  {
+    V2 = aDrawer->MaximalParameterValue();
+  }
+
+  //     std::cout << "V1 = "<< V1 << std::endl;
+  //     std::cout << "V2 = "<< V2 << std::endl;
+  //     std::cout << "NbPoints = "<< NbPoints << std::endl;
+
+  DrawCurve(aCurve, NbPoints, V1, V2, aDrawer, anOStream);
+}
+
+//=================================================================================================
+
+void VrmlConverter_Curve::Add(const Adaptor3d_Curve& aCurve,
+                              const double           U1,
+                              const double           U2,
+                              Standard_OStream&      anOStream,
+                              const int              aNbPoints)
+{
+  occ::handle<VrmlConverter_Drawer>     aDrawer = new VrmlConverter_Drawer;
+  occ::handle<VrmlConverter_LineAspect> la      = new VrmlConverter_LineAspect;
+  aDrawer->SetLineAspect(la);
+
+  double V1 = U1;
+  double V2 = U2;
+
+  if (Precision::IsNegativeInfinite(V1))
+  {
+    V1 = -aDrawer->MaximalParameterValue();
+  }
+  if (Precision::IsPositiveInfinite(V2))
+  {
+    V2 = aDrawer->MaximalParameterValue();
+  }
+
+  //     std::cout << "V1 = "<< V1 << std::endl;
+  //     std::cout << "V2 = "<< V2 << std::endl;
+  //     std::cout << "NbPoints = "<< aNbPoints << std::endl;
+
+  DrawCurve(aCurve, aNbPoints, V1, V2, aDrawer, anOStream);
+}

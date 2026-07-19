@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC25465"
+puts "========"
+puts ""
+################################################
+# Excess vertex in the result of CUT operation
+################################################
+
+restore [locate_data_file OCC25465_t_boite1.brep] b1
+restore [locate_data_file OCC25465_c_cyl.brep] b2
+
+explode b1 f
+explode b2 f
+set bug_info [bopcurves b1_6 b2_1]
+bop b1 b2
+bopcut result
+
+# It is strictly forbidden to change reference values of vertexes and edges (see OCC25465)
+checknbshapes result -vertex 13 -edge 20 -wire 11 -face 8 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 55
+if {[lindex $bug_info 2] != 2} {
+  puts "ERROR: OCC25465 is reproduced."
+}

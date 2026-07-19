@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC22652: No mesh for face (regression)"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+restore [locate_data_file OCC22652-faceNoMesh.brep] result
+vinit View1
+vdisplay result
+vfit
+
+vsetdispmode 1
+
+checktrinfo result -tri -nod
+vdump $imagedir/${casename}.png

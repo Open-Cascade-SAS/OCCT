@@ -1,0 +1,41 @@
+puts "========"
+puts "OCC25828"
+puts "========"
+puts ""
+##########################################
+## BRepAlgoAPI_Section fails for a solid and a face depending on order of arguments
+##########################################
+
+set BugNumber OCC25828
+
+restore [locate_data_file bug25828_intersectionproblem.brep] b
+
+explode b
+copy b_1 b1
+copy b_2 b2
+ 
+explode b1 f
+copy b1_1 b1
+explode b2 f
+copy b2_6 b2
+ 
+mksurface s1 b1
+mksurface s2 b2
+ 
+trim s2 s2 -31.464272161690925 31.464272161690968 -21.228551512037676 26.343858939611884
+ 
+set log [intersect rr s2 s1 2.0e-7]
+
+set ll [llength ${log}]
+
+if {${ll} == 1} {
+    puts "${BugNumber} OK"
+} else {
+    puts "Error ${BugNumber}"
+}
+
+smallview
+donly rr
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

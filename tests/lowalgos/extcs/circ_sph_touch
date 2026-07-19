@@ -1,0 +1,93 @@
+puts "======================="
+puts "Test for Circle/Sphere extrema algorithm"
+puts "Touch case (circle is just touching the sphere)"
+puts "======================="
+puts ""
+
+# Make sphere
+set x0 0.
+set y0 0.
+set z0 0.
+set sph_radius 10.
+sphere s $x0 $y0 $z0 $sph_radius
+
+# Initially the circle will be made at the same place as sphere with different radius
+# and will shifted many times to touch the sphere.
+# The distance should always be close to zero.
+
+# Number of different radius of initial circle
+set nb_radius 7
+# Number of circle's rotations 
+set nbstep 8
+set angle [expr 180. / $nbstep]
+
+# Iteration step
+set iStep 1
+
+for {set i 1} {$i < $nb_radius} {incr i} {
+  set circ_radius [expr $i*2.]
+  if {$circ_radius == $sph_radius} {
+    set circ_radius [expr $circ_radius + 0.1]
+  }
+  circle c $x0 $y0 $z0 0 0 1 $circ_radius
+
+  # Circle will be rotated around the line
+  line rotation_line $x0 $y0 $z0 1 0 0
+  # Line rotation
+  for {set j 1} {$j <= $nbstep} {incr j} {
+    rotate rotation_line $x0 $y0 $z0 0 0 1 $angle
+    
+    # Get direction for circle's rotation
+    regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump rotation_line] full dx dy dz
+    
+    # Circle rotation
+    copy c c_rotated
+    for {set k 1} {$k <= $nbstep} {incr k} {
+      rotate c_rotated $x0 $y0 $z0 $dx $dy $dz $angle
+      
+      # Get translation axis for the circle
+      regexp {XAxis  :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump c_rotated] full dxx dxy dxz
+      
+      # Get rotation plane for translation line
+      regexp {YAxis  :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump c_rotated] full dyx dyy dyz
+      
+      line translation_line $x0 $y0 $z0 $dxx $dxy $dxz
+      
+      for {set n 1} {$n <= $nbstep} {incr n} {
+        rotate translation_line $x0 $y0 $z0 $dyx $dyy $dyz $angle
+        
+        # Get direction for circle's translation
+        regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump translation_line] full dtx dty dtz
+        
+        # Circle's translation
+        copy c_rotated c_shifted
+        translate c_shifted $sph_radius*$dtx $sph_radius*$dty $sph_radius*$dtz 
+    
+        # Shift circle to touch sphere
+        set shift -1
+        repeat 2 {
+          copy c_shifted c_touch
+          translate c_touch $shift*$circ_radius*$dxx $shift*$circ_radius*$dxy $shift*$circ_radius*$dxz
+
+          set log [extrema c_touch s]
+
+          # save each circle if necessary
+          # copy c_touch c_$iStep
+
+          if {![regexp "ext_1" $log]} {
+            if {![regexp "Extrema 1 is point" $log]} {
+              puts "Error: Extrema has not detected the touching case on step $iStep"
+            } else {
+              puts "Check of Step $iStep, min distance  OK"
+            }              
+          } else {
+            set ext_dist [lindex [length ext_1] end]
+            checkreal "Step $iStep, min distance " $ext_dist 0 1.e-7 1.e-7
+          }
+          incr iStep
+          set shift 1
+        }
+      }
+    }
+  }
+}

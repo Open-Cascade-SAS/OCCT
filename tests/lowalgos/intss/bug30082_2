@@ -1,0 +1,67 @@
+puts "========"
+puts "0030082: Intersection algorithm returns curve with big tolerance value"
+puts "========"
+puts ""
+
+foreach a [directory res*] {unset $a}
+
+set aTol 1.0e-4
+set GoodNbCurves 4
+
+cylinder s1 -106.471129473161 -64.3442185874231 -19.25 1 0 0 0 0 -1 0.25
+cylinder s2 -124.971129473161 -67.0942185874231 -20.5 0 0 1 1 0 -0 3
+intersect res s1 s2 $aTol
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+bclearobjects
+bcleartools
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+    bounds res_$ic U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic s1 U1 U2 100 $aTol
+    xdistcs res_$ic s2 U1 U2 100 $aTol
+    
+    mkedge ee res_$ic
+    baddobjects ee
+    incr ic
+  }
+}
+
+incr ic -1
+
+if { $ic != $GoodNbCurves } {
+  puts "Error: $GoodNbCurves curves are expected but $ic ones are found"
+}
+
+bfillds
+bbuild result
+
+smallview
+don result
+fit
+
+# Check gaps between edges in ce
+checksection result -r 0
+checkmaxtol result -min_tol 2.0e-7
+
+checknbshapes result -edge 4 -vertex 3
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

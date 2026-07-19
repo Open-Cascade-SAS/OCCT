@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC25344"
+puts "========"
+puts ""
+#######################################################
+# Draw variables do not follow the scope of TCL level
+#######################################################
+
+proc setproc {} {
+  dset local_var 1.1
+  puts "in setproc scope: local_var=[dval local_var]"
+}
+
+setproc
+puts "in global scope: local_var=[dval local_var]"
+
+if {[dval local_var] != 0} {
+  puts "ERROR: local_var is set, but must not"
+  if {[lsearch [directory] local_var] == -1} {
+    puts "ERROR: as it is absent among TCL variables"
+  }
+}

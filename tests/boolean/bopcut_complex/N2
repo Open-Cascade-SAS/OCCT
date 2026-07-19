@@ -1,0 +1,14 @@
+## pro16129
+
+restore [locate_data_file CSRESULT-ORISHAPE.brep] a
+restore [locate_data_file CTO909_CSRESULT-PRISM.brep] c
+
+#pkv f
+btolx a
+#pkv t
+
+bop a c
+bopcut result
+
+checkprops result -s 97948.8
+checkview -display result -2d -otherwise { a c } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,83 @@
+#INTERFACE CAF
+# XLink attributes
+#
+# Testing attribute: TDocStd_XLink
+#
+# Testing command:   CopyWithLink
+#
+
+puts "caf004-CIN001_b5.rle"
+
+# Create two new documents Doc1, Doc2
+NewDocument Doc1 BinOcaf
+NewDocument Doc2 BinOcaf
+
+# Set UndoLimit for them
+UndoLimit Doc1 100
+UndoLimit Doc2 100
+
+# Set a shape in Doc1 to label 'SLabel'
+set aLabel1 0:2
+Label Doc1 ${aLabel1}
+SetName Doc1 ${aLabel1} SLabel
+
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+
+box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+bounding aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
+
+SetShape Doc1 ${aLabel1} aBox1
+
+# Create a new label 'TLabel1' in Doc2
+set aLabel2 0:3
+Label Doc2 ${aLabel2}
+SetName Doc2 ${aLabel2} TLabel1
+
+# Open transaction in Doc2
+NewCommand Doc2
+
+# Copy 'SLabel' to the label 'TLabel1' with link
+CopyWithLink Doc2 ${aLabel2} Doc1 ${aLabel1}
+
+# Close/Open transaction
+NewCommand Doc1
+
+# Set new shape in Doc1 to label 'SLabel'
+set aRadius 70
+psphere aSphere ${aRadius}
+SetShape Doc1 ${aLabel1} aSphere
+
+# Undo Doc1
+Undo Doc1
+
+# Redo Doc1
+Redo Doc1
+
+# Get a shape from 'TLabel1'
+GetShape Doc2 ${aLabel2} aBox2
+
+bounding aBox2 -save X1_Box2 Y1_Box2 Z1_Box2 X2_Box2 Y2_Box2 Z2_Box2
+
+if { [dval X1_Box1] != [dval X1_Box2] || 
+     [dval Y1_Box1] != [dval Y1_Box2] || 
+     [dval Z1_Box1] != [dval Z1_Box2] || 
+     [dval X2_Box1] != [dval X2_Box2] || 
+     [dval Y2_Box1] != [dval Y2_Box2] || 
+     [dval Z2_Box1] != [dval Z2_Box2] } {
+	puts "X1_Box1=[dval X1_Box1] X1_Box2=[dval X1_Box2]"
+	puts "Y1_Box1=[dval Y1_Box1] Y1_Box2=[dval Y1_Box2]"
+	puts "Z1_Box1=[dval Z1_Box1] Z1_Box2=[dval Z1_Box2]"
+	puts "X2_Box1=[dval X2_Box1] X2_Box2=[dval X2_Box2]"
+	puts "Y2_Box1=[dval Y2_Box1] Y2_Box2=[dval Y2_Box2]"
+	puts "Z2_Box1=[dval Z2_Box1] Z2_Box2=[dval Z2_Box2]"
+	puts "Set a link between attributes of the same document: Error"
+	return
+}
+
+puts "Set a link between attributes of the same document: OK"

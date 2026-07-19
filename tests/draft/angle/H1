@@ -1,0 +1,15 @@
+#G2----------------------------------------------
+beziersurf bs 4 4 \
+  0  0 0   5  0 0  10  0 0  15  0 0 \
+  0  5 0   5  5 2  10  5 0  15  5 0 \
+  0 10 0   5 10 0  10 10 1  15 10 0 \
+  0 15 0   5 15 0  10 15 0  15 15 0 
+mkface bs bs
+prism p bs 0 0 5
+plane pc 8 8 1 0 0 1
+pcylinder pc pc 5 10
+bfuse f p pc
+nexplode f f
+depouille result f 0 0 1 f_7 5 0 0 11 0 0 1
+
+checkprops result -s 926.278

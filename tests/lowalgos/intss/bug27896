@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC27896"
+puts "============"
+puts ""
+###############################
+## Prm-Prm intersection algo returns wrong result if it is called with start
+## intersection point, which lies in the domain boundary
+###############################
+
+set tol_abs_Tolerance_Reached 1.0e-7
+set tol_rel_Tolerance_Reached 0.1
+set GoodNbCurves 2
+
+restore [locate_data_file bug25319_S1.brep] b1
+restore [locate_data_file bug25319_S2.brep] b2
+explode b1 f
+explode b2 f
+
+# GOOD result before the fix
+set log1 [bopcurves b1_8 b2_17 -2d -p +1.09444207768950010000 +29.00000000000000000000 +0.17740001678466785000 +2.79671571032639710000 -p +0.00000000000000000000 +26.87779254288926400000 +0.17767342824312710000 +2.80622040022304510000]
+
+# BAD result before the fix
+set log2 [bopcurves b1_8 b2_17 -2d -p +1.09444207768949960000 +29.00000000000000000000 +0.17740001678466785000 +2.79671571032639750000 -p +0.00000000000000000000 +26.87779254288926400000 +0.17767342824312710000 +2.80622040022304510000]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log1} full Tolerance_Reached1 NbCurv1
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log2} full Tolerance_Reached2 NbCurv2
+
+set expected_Tolerance_Reached1 2.2611960020325053e-007
+set expected_Tolerance_Reached2 5.0364838664362801e-006
+
+checkreal "Tolerance Reached" ${Tolerance_Reached1} ${expected_Tolerance_Reached1} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}
+checkreal "Tolerance Reached" ${Tolerance_Reached2} ${expected_Tolerance_Reached2} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}
+
+if { $NbCurv1 != $GoodNbCurves } {
+  puts "Error in case 1: $GoodNbCurves curve(s) is expected but $NbCurv1 is found"
+}
+
+if { $NbCurv2 != $GoodNbCurves } {
+  puts "Error in case 2: $GoodNbCurves curve(s) is expected but $NbCurv2 is found"
+}

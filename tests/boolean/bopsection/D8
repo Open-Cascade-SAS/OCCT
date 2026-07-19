@@ -1,0 +1,20 @@
+#PRO12675
+puts "PRO12675"
+puts "Cut"
+puts ""
+
+# mod by pkv f
+restore [locate_data_file pro12675a.brep] obj
+restore [locate_data_file pro12675b.brep] out 
+#
+# mod by pkv f
+
+btolx obj
+btolx out
+
+bop obj out
+bopsection result
+
+checkprops result -l 1022.03
+checksection result
+checkview -display result -2d -otherwise { obj out } -l -path ${imagedir}/${test_image}.png

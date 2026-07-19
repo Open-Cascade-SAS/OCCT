@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC27481"
+puts "============"
+puts ""
+######################################################
+# Boolean CUT produces wrong result
+######################################################
+
+restore [locate_data_file bug27481_object.brep] obj
+restore [locate_data_file bug27481_tool.brep] tool
+
+bcut result obj tool
+
+checknbshapes result -solid 1
+
+checkshape result
+
+checkprops result -v 197909
+
+smallview; fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

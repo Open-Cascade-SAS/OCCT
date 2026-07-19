@@ -1,0 +1,15 @@
+puts "============"
+puts "CR24728: Test image dumping with software accelerated GL context"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+pload OPENGL
+vcaps -softMode 1 -ffp 1
+vinit View1
+
+box b 1 2 3
+vdisplay b
+vfit
+
+vdump $imagedir/${casename}.png

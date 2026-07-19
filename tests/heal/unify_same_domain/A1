@@ -1,0 +1,33 @@
+puts "=========="
+puts "OCC28228"
+puts "=========="
+puts ""
+######################################################################################################################
+# Provide possibility to keep the given edges during unification of faces in ShapeUpgrade_UnifySameDomain algorithm
+######################################################################################################################
+
+restore [locate_data_file bug28228_face.brep] a
+
+explode a f
+explode a_1 v
+explode a e
+
+unifysamedom result1 a a_1_3 a_1_5
+checknbshapes result1 -face 1 -edge 10 -vertex 10
+
+unifysamedom result2 a a_3 a_9
+checknbshapes result2 -face 3 -edge 14 -vertex 12
+
+unifysamedom result3 a a_3 a_9 a_1_9 a_1_10
+checknbshapes result3 -face 3 -edge 15 -vertex 13
+
+unifysamedom result4 a a_3 a_1_3 a_1_4
+checknbshapes result4 -face 2 -edge 12 -vertex 11
+
+unifysamedom result5 a a_3 a_1_3
+checknbshapes result5 -face 2 -edge 11 -vertex 10
+
+unifysamedom result a a_3 a_9 +i
+checknbshapes result -face 1 -edge 12 -vertex 12
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

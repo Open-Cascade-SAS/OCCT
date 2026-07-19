@@ -1,0 +1,19 @@
+puts "========"
+puts "CR24706"
+puts "========"
+puts ""
+#########################################
+## Solids produced by BOP do not have flag Closed set in shells
+#########################################
+
+box b 10 10 10
+psphere s 2
+bcut r b s
+
+explode r sh
+set info [whatis r_1]
+if { [regexp {Closed} ${info}] } {
+    puts "OK : Flag CLOSED is set for closed shells created during perform of Boolean Operation"
+} else {
+    puts "Faulty : Flag CLOSED is not set for closed shells created during perform of Boolean Operation"
+}

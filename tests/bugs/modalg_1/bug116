@@ -1,0 +1,20 @@
+puts "================"
+puts "OCC116"
+puts "================"
+puts ""
+#############################################
+## Creation of chamfer is impossible on attached shape.(SAM1201)
+#############################################
+
+restore [locate_data_file OCC116.brep] sh 
+checkshape sh
+ 
+explode sh f
+explode sh_6 e
+
+if [catch {chamf result sh sh_6_1 sh_6 A 2 45 sh_6_8 sh_6 A 2 45 } catch_result] {
+ } else {
+  checkprops result -s 48357.5 
+  checkshape result
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
+}

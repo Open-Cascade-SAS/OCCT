@@ -1,0 +1,11 @@
+puts "================"
+puts "OCC23976"
+puts "================"
+puts ""
+#######################################################################################
+# Extremely high memory consumption on boolean operation on 64 bits
+######################################################################################
+
+restore [locate_data_file bug23976_a_shape_1_pre.brep] s1
+restore [locate_data_file bug23976_a_shape_2_pre.brep] s2
+bop s1 s2

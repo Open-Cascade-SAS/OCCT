@@ -1,0 +1,17 @@
+puts "======="
+puts "0028913"
+puts "======="
+puts ""
+##################################################
+# UnifySameDomain crashes with error: "a shape is modified and removed simultaneously"
+##################################################
+
+brestore [locate_data_file bug28913_offset_zx1_result.brep] a
+
+unifysamedom result a
+
+checkshape result
+checknbshapes result -vertex 42 -edge 60 -wire 22 -face 21
+checkprops result -s 5.59084e+006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

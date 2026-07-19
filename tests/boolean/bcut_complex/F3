@@ -1,0 +1,9 @@
+# Original bug : cts18140
+# Date : 18mar98
+
+restore [locate_data_file CTO900_cts18140-part.rle] part
+restore [locate_data_file CTO900_cts18140-tool.rle] tool
+
+bcut result part tool
+checkprops result -s 92062.6
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

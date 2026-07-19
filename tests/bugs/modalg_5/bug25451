@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC25451"
+puts "========"
+puts ""
+###########################################################################################
+# BRepFilletAPI_MakeFillet fails on customer's shape when small radius of fillet is given
+###########################################################################################
+
+smallview
+
+restore [locate_data_file DoubleVoluteTest.brep] d
+
+explode d
+
+donly d_1 d_2
+fit
+
+blend r1 d_1 0.1 d_2
+fixshape res1 r1
+
+blend r2 d_1 0.2 d_2
+fixshape res2 r2
+
+blend r3 d_1 0.9 d_2
+fixshape res3 r3
+
+blend r4 d_1 1. d_2
+fixshape res4 r4
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

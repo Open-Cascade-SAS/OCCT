@@ -1,0 +1,15 @@
+#box b -20 -13 -20 40 25 20
+#ellipse w 0 0 0 15 10
+#mkedge w w
+#wire w w
+#mkplane w w
+#prism f w 2 0 30
+#fuse s f b
+#save s 6_F1234.draw
+
+restore [locate_data_file CFI_6_f12fhb.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 4*SCALE2 s_14
+
+checkprops result -s 6857.14

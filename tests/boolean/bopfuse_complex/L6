@@ -1,0 +1,16 @@
+# Original bug : pro15203
+###########################
+restore [locate_data_file pro15203a.rle] c1
+explode c1 f
+copy c1_1 c1
+restore [locate_data_file pro15203d.rle] c2
+
+explode c2 f
+
+copy c2_1 c2
+
+bop c1 c2
+bopfuse result
+
+checkprops result -s 570.047
+checkview -display result -2d -otherwise { c1 c2 } -s -path ${imagedir}/${test_image}.png

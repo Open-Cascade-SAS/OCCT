@@ -1,0 +1,50 @@
+puts "==================================================="
+puts "0031704: Visualization - add an interactive object AIS_LightSource representing a light source"
+puts "==================================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vlight -clear
+vbackground -color GRAY
+vrenderparams -shadingModel PHONG
+vlight amblight -type AMBIENT -color WHITE -intensity 0.1
+box b 0 0 0 30 30 30
+vdisplay b -dispMode 1
+vsetmaterial b Brass
+vfit
+vlight aSpotLight -type SPOTLIGHT -pos 15 -10 15 -dir 0 1 0 -color RED -display
+
+puts "=== Attach manipulator ==="
+vmanipulator m -attach aSpotLight -adjustPosition location 
+vdump $imagedir/${casename}_manip.png
+
+puts "=== Test manipulator - rotation ==="
+vmanipulator m -followRotation 1
+
+set mouse_pick_rotate {128 231}
+set mouse_drag_rotate {98 200}
+
+vmoveto {*}$mouse_pick_rotate
+vselect {*}$mouse_pick_rotate
+vmanipulator m -startTransform {*}$mouse_pick_rotate
+vmanipulator m -transform {*}$mouse_drag_rotate
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag_rotate
+vdump $imagedir/${casename}_rot.png
+
+puts "=== Test manipulator - translation ==="
+set mouse_pick_translate {87 315}
+set mouse_drag_translate {167 358}
+
+vmoveto {*}$mouse_pick_translate 
+vselect {*}$mouse_pick_translate 
+vmanipulator m -startTransform {*}$mouse_pick_translate 
+vmanipulator m -transform {*}$mouse_drag_translate 
+vmanipulator m -stopTransform
+vselect 0 0
+vmoveto {*}$mouse_drag_translate
+vmanipulator m -detach
+vremove aSpotLight
+vdump $imagedir/${casename}_trans.png

@@ -1,0 +1,60 @@
+# Check calculation of CIE Ddlta E 2000 color difference 
+
+pload VISUALIZATION
+
+# Reference data are obtained using online calculator
+# http://brucelindbloom.com/index.html?ColorDifferenceCalc.html
+# or
+# https://cielab.xyz/
+# Second one also shows color and reports if it is out of RGB gamut.
+#
+# Note that values out of RGB gamut would be amended during
+# conversion to RGB and thus the result would be different!
+#
+# Samples aimed at testing discontinuity of CIEDE2000
+# formula are very sensitive to accuracy, we need higher tolerance
+# because conversion is done via RGB floats and loses precision.
+#
+# Format: { {L1 a1 b1} {L2 a2 b2} expected_diff [tolerance] }
+set lab_diff_samples {
+  { # synthetic color pairs }
+  { {0 0 0} {50 0 0} 36.519268 }
+  { {50 0 0} {100 0 0} 36.519268 }
+  { {0 0 0} {100 0 0} 100. }
+  { {20 10 10} {80 10 10} 60. }
+  { {50 0 0} {50 0 50} 23.529412 }
+  { {50 60 60} {50 60 0} 28.016927 }
+  { {30 30 40} {30 30 -60} 44.606253 }
+
+  { # discontinuity of CIEDE2000 formula }
+  { {30 50.00 40} {20 -10 -8} 39.105394 0.001 }
+  { {30 50.01 40} {20 -10 -8} 43.53247 0.001 }
+  { {20 30.00 30.01} {60 -10 -10} 49.416742 0.05 }
+  { {20 30.01 30.00} {60 -10 -10} 52.448227 0.05 }
+
+  { # randomly generated data }
+  { {73.4450 34.9839 -24.6753} {87.6216 -18.4863 57.8838} 62.402500 }
+  { {93.6166 -27.3677 29.3893} {46.9191 12.3400 -27.5948} 54.640034 }
+  { {53.9062 61.0929 -51.7583} {65.5157 26.3376 -37.0512} 15.679046 }
+  { {83.6996 9.3358 -24.5571} {93.2268 -3.8589 3.5217} 23.158692 }
+  { {64.8053 -27.3177 -8.9602} {65.8225 37.3192 -38.1465} 34.670514 }
+  { {94.7633 -19.7915 69.2787} {90.9238 -16.7535 4.1936} 26.093024 }
+  { {85.4699 5.6078 -11.1083} {67.9455 -28.4536 7.8808} 31.115070 }
+  { {83.5473 -15.7170 8.3546} {81.3193 -37.2851 57.7090} 19.696753 }
+  { {75.7406 -12.0785 -12.3505} {80.0810 -54.8591 52.1739} 35.834099 }
+  { {62.8209 32.1209 16.9113} {82.1106 25.0843 -7.9416} 21.178519 }
+}
+
+foreach sample $lab_diff_samples {
+  set lab1 [lindex $sample 0]
+  if { $lab1 == "#" } continue
+  set lab2 [lindex $sample 1]
+  set dref [lindex $sample 2]
+  set diff [vcolordiff {*}[vcolorconvert from lab {*}$lab1] {*}[vcolorconvert from lab {*}$lab2]]
+
+  # use tolerance 1e-4 except if other value is defined in sample data
+  set tol [lindex $sample 3]
+  if { $tol == "" } { set tol 1e-4 }
+
+  checkreal "CIEDE2000 diff of Lab colors ($lab1) and ($lab2)" $diff $dref $tol 1e-6
+}

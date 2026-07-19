@@ -1,0 +1,79 @@
+puts "============"
+puts "OCC27929"
+puts "============"
+puts ""
+######################################################
+# Methods D0 and D1 for trimmed offset surface return different values if the surface has osculating surface
+######################################################
+
+set Toler 1.0e-14
+
+restore [locate_data_file bug27929_f1.brep] f1
+mksurface os1 f1
+svalue os1 0.5 0.5 x1 y1 z1
+svalue os1 0.5 0.5 x2 y2 z2 d1ux d1uy d1uz d1vx d1vy d1vz
+vertex v1 x1 y1 z1
+vertex v2 x2 y2 z2
+distmini di12 v1 v2
+
+if { [dval di12_val] > $Toler } {
+  puts "Error: Methods D0 and D1 return different result."
+} else {
+  puts "OK: Methods D0 and D1 return equal result."
+}
+
+smallview
+don f1 v1 v2
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+# Check result of D2 method
+svalue os1 0.5 0.5 x3 y3 z3 d2ux d2uy d2uz d2vx d2vy d2vz DD2UX DD2UY DD2UZ DD2VX DD2VY DD2VZ DD2UVX DD2UVY DD2UVZ
+vertex v3 x3 y3 z3
+distmini di13 v1 v3
+
+if { [dval di13_val] > $Toler } {
+  puts "Error: Methods D0 and D2 return different result."
+} else {
+  puts "OK: Methods D0 and D2 return equal result."
+}
+
+if { [expr abs([dval d1ux-d2ux])] > $Toler } {
+  puts "Error: Methods D1 and D2 return different result."
+} else {
+  puts "OK: Methods D1 and D2 return equal result."  
+}
+
+if { [expr abs([dval d1uy-d2uy])] > $Toler } {
+  puts "Error: Methods D1 and D2 return different result."
+} else {
+  puts "OK: Methods D1 and D2 return equal result."  
+}
+
+if { [expr abs([dval d1uz-d2uz])] > $Toler } {
+  puts "Error: Methods D1 and D2 return different result."
+} else {
+  puts "OK: Methods D1 and D2 return equal result."  
+}
+
+if { [expr abs([dval d1vx-d2vx])] > $Toler } {
+  puts "Error: Methods D1 and D2 return different result."
+} else {
+  puts "OK: Methods D1 and D2 return equal result."  
+}
+
+if { [expr abs([dval d1vy-d2vy])] > $Toler } {
+  puts "Error: Methods D1 and D2 return different result."
+} else {
+  puts "OK: Methods D1 and D2 return equal result."  
+}
+
+if { [expr abs([dval d1vz-d2vz])] > $Toler } {
+  puts "Error: Methods D1 and D2 return different result."
+} else {
+  puts "OK: Methods D1 and D2 return equal result."  
+}
+
+
+

@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC24988"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result done by projection algorithm
+#######################################################################
+
+restore [locate_data_file bug24988_s.draw] s
+restore [locate_data_file bug24988_c.draw] c3d
+
+project c2d c3d s
+
+set log [dump c2d]
+
+regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
+puts "Degree=${Degree}"
+puts "Poles=${Poles}"
+puts "KnotsPoles=${KnotsPoles}"
+puts ""
+
+set Pole ${Poles}
+set exp_string " +${Pole} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
+regexp ${exp_string} ${log} full U_end V_end
+
+puts "Pole=${Pole}"
+puts "U_end=${U_end}"
+puts "V_end=${V_end}"
+puts ""
+
+set tol_abs 1.e-7
+set tol_rel 0.01
+
+set expected_U_end 1.01988594864493
+checkreal "U_end" ${U_end} ${expected_U_end} ${tol_abs} ${tol_rel}
+
+set expected_V_end -1000.4963642098
+checkreal "V_end" ${V_end} ${expected_V_end} ${tol_abs} ${tol_rel}

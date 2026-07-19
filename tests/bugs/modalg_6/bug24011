@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC24011"
+puts "============"
+puts ""
+##################################
+# Can't offset a wire on face
+##################################
+
+restore [locate_data_file bug24011_offsetWireBug.brep] a
+
+mkoffset result a 1 0.04
+renamevar result_1 result
+
+checkprops result -l 43.0477 
+checkshape result 
+checksection result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

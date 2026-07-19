@@ -1,0 +1,19 @@
+puts "========================================="
+puts "0033193: Modeling Algorithms - Regression: UnifySameDomain raises SIGSEGV"
+puts "========================================="
+puts ""
+
+restore [locate_data_file bug33193.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -t -solid 1 -shell 1 -face 152 -wire 202 -edge 411 -vertex 273
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.26e-7} {
+   puts "Error: bad tolerance of result"
+}
+

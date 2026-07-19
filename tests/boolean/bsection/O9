@@ -1,0 +1,8 @@
+restore [locate_data_file buc60302.rle] a
+plane planz 0 0 0 0 0 1
+mkface fass planz -100 100 -100 100
+bsection result a fass
+
+checkprops result -l 25.708
+checksection result
+checkview -display result -2d -otherwise { a fass } -l -path ${imagedir}/${test_image}.png

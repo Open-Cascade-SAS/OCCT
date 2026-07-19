@@ -1,0 +1,12 @@
+puts "================================================================"
+puts "OCC30391: Improvement of the method BRepOffset_Tool::EnLargeFace"
+puts "================================================================"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug30391_face2.brep] a
+
+OCC30391 result a 0 10 10 0
+
+checkprops result -s 172862

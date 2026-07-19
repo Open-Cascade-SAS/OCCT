@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC29068"
+puts "========"
+puts ""
+##########################################################################
+# Invalid rotation of shape after import STEP file
+##########################################################################
+
+stepread [locate_data_file bug29068.stp] a *
+#stepread bug29068.stp a *
+
+checkshape a_1
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 2955
+ EDGE      : 4576
+ WIRE      : 1970
+ FACE      : 1793
+ SHELL     : 54
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 11349
+"
+checknbshapes a_1 -ref ${nbshapes_expected} -t -m "importing file"
+
+checkgravitycenter a_1 -v 36.7307 -14.513 0.0157913 0.001
+
+

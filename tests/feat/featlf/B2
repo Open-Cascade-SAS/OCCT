@@ -1,0 +1,13 @@
+
+profile pr x 2 y 4 x 1 y -4 x 2 y 5 x -5 y -5
+prism pr pr 0 0 3
+vertex v1 2 0 1
+vertex v2 3 0 1
+edge e v1 v2
+wire pp e
+plane pl 2.5 0.5 1 0 0 1
+
+featlf pr pp pl 0 0 0.2 0 0 0 1 1
+featperform lf result
+
+checkprops result -s 132.4

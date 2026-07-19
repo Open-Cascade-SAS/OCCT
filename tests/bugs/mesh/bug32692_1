@@ -1,0 +1,11 @@
+puts "========="
+puts "OCC32692: Crash when the input shape has some invalid topology"
+puts "========="
+puts ""
+
+puts "REQUIRED ALL: Meshing statuses: SelfIntersectingWire Failure"
+
+restore [locate_data_file bug32692.brep] s
+incmesh s 0.01 -parallel
+
+checktrinfo s -nod 7389 -tri 7419 -empty 9 -face 309

@@ -1,0 +1,28 @@
+puts "==========="
+puts "OCC22986"
+puts "==========="
+puts ""
+#######################################################################
+# Regression with OCCT652 on Windows. DRAWEXE crashes during featprism
+#######################################################################
+
+set BugNumber OCC22986
+
+#eval datadir ${CfeDir}/data/900
+
+restore [locate_data_file CFE900_cts21gbs.rle] base 
+restore [locate_data_file cts21322_face.rle] wire 
+
+explode base face
+copy base_6 fsketch
+
+splitshape result fsketch fsketch wire
+if { [llength [explode result f]] != 3 } {
+    puts "Faulty ${BugNumber} : The result of splitshape command is incorrect."
+} else {
+    puts "${BugNumber}  OK"
+}
+
+checkprops result -s 414 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

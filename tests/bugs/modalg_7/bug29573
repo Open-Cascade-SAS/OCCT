@@ -1,0 +1,14 @@
+puts "========"
+puts "0029573: ConcatenateWireC0 crashes on two edges wire"
+puts "========"
+puts ""
+
+restore [locate_data_file bug29573.brep] w
+
+explode w
+
+concatC0wire r1 w_1
+checknbshapes r1 -vertex 2 -edge 1
+
+concatC0wire r2 w_2
+checknbshapes r2 -vertex 2 -edge 1

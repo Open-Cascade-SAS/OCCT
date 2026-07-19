@@ -1,0 +1,23 @@
+puts "================================================================"
+puts "CR26159"
+puts "Visualization - revise tolerance implementation for selection."
+puts "================================================================"
+puts ""
+
+pload VISUALIZATION MODELING
+box b1 1 1 1 1 1 1
+box b2 3 3 3 1 1 1
+box b3 6 6 6 1 1 1
+vdisplay b1 b2 b3
+vfit
+
+# activate vertex selection
+vselmode b1 1 1
+
+# check selection tolerance
+vmoveto 58 324
+checkcolor 58 324 0 1 1
+
+# to print tolerance in case of failure:
+puts [vselprops -print]
+vdump $imagedir/${casename}.png

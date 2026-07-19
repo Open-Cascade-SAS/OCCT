@@ -1,0 +1,17 @@
+puts "==============================================="
+puts "0032055: Draw Harness, ViewerTest - add more vmanipulator position adjusting options"
+puts "==============================================="
+
+pload MODELING VISUALIZATION
+box b 0 0 0 1 2 3
+ttranslate b 1 0 0
+vclear
+vinit View1
+vdisplay -dispMode 1 b
+vlocation b -location 5 0 0 -rotate 5 0 0 0 0 1 30
+vpoint p 0 0 0
+vfit
+vmanipulator m -attach b -adjustPosition 0
+vmanipulator m -adjustPosition shapeLocation
+
+vdump $imagedir/${casename}.png

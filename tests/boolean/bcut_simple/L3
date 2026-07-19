@@ -1,0 +1,23 @@
+#cas rollex (chassis de montre)
+# fond de poche DIFFORIENTED FORWARD/FORWARD (autres faces en cause FORWARD)
+profile f1 c 60 360
+prism p1 f1 0 0 20
+
+profile f2 o 0 0 20 f 10 -20 c 40 360
+prism p2 f2 0 0 -6
+
+profile f3 p 0 0 -1 1 0 0 o 0 0 23 f 50 -10 c -30 360
+prism p3 f3 0 0 -9
+
+#explode p3 sh
+#orientation p3_1 FOR
+#shape p3r So
+#add p3_1 p3r
+
+bcut r1 p1 p2
+
+bcut result r1 p3
+#common result r1 p3r
+
+checkprops result -s 30153
+checkview -display result -2d -s -otherwise { r1 p3 } -path ${imagedir}/${test_image}.png

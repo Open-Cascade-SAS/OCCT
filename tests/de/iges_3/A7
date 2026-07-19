@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename t_cat_424_002_sgi_hybdrw_vw_dosenhalter_standard.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 569 )  Warnings = 154  ( 8440 )  Summary  = 154  ( 9009 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 9171  ( 9171 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 9171  ( 9171 )   FreeWire = 998  ( 1096 ) 
+TOLERANCE   : MaxTol   =   0.6305328468  (   0.6305328468 )  AvgTol   =  0.000377702607  (  0.0003780893559 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 32515  ( 54384 )  N2Labels = 0  ( 0 )   TotalLabels = 32516  ( 54385 )   NameLabels = 31523  ( 36679 )   ColorLabels = 32515  ( 54384 )   LayerLabels = 29174  ( 49746 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = GOLD3 MAGENTA WHITE YELLOW  ( GOLD3 MAGENTA WHITE YELLOW )
+NLAYERS     : NLayers  = 36  ( 36 )
+LAYERS      : Layers   = 1 101 102 103 104 105 106 107 108 110 111 112 113 116 117 118 123 190 192 2 200 22 229 241 253 3 34 50 51 52 54 55 56 57 58 59  ( 1 101 102 103 104 105 106 107 108 110 111 112 113 116 117 118 123 190 192 2 200 22 229 241 253 3 34 50 51 52 54 55 56 57 58 59 )
+
+}

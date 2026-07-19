@@ -1,0 +1,37 @@
+puts "========================"
+puts " OCC26848"
+puts " OCC600"
+puts "========================"
+## Result of BOPCOMMON operation is unclosed shape in spite of source solids are valid
+## Result of BO depends on arguments order
+############################################################
+cpulimit 1000
+restore [locate_data_file OCC600_1.brep] a 
+checkshape a
+restore [locate_data_file OCC600_2.brep] b 
+checkshape b
+bop a b
+
+bopcommon result
+
+set square 41970.8
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX : 55
+ EDGE : 93
+ WIRE : 40
+ FACE : 40
+ SHELL : 1
+ SOLID : 1
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 231
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result of Boolean operations"
+
+checkprops result -s 41970.8
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

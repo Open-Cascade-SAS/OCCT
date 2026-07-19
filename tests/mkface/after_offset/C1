@@ -1,0 +1,5 @@
+restore [locate_data_file bs_s_p_nr] a
+offset r a 3
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 6.3134781826794206e-07
+set MaxVTol 6.3134781826794227e-07

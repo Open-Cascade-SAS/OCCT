@@ -1,0 +1,53 @@
+restore [locate_data_file bug29481_ex3.brep] s
+explode s f
+
+# remove the gaps in each solid
+compound s_7 s_8 s_9 gap1
+compound s_11 s_12 s_17 gap2
+
+removefeatures res1 s gap1
+checkshape res1
+checkprops res1 -s 1200 -v 1875
+checknbshapes res1 -vertex 19 -edge 31 -wire 15 -face 15 -shell 2 -solid 2
+CheckIsFeatureRemoved gap1 {e f}
+
+# check that the common face is still shared
+if {![regexp "OK" [bopcheck res1]]} {
+  puts "Error: sharing is lost after removal"
+}
+
+# get history of the operation
+savehistory rf_hist
+
+# check modification of the common face
+modified m6 rf_hist s_6
+checkprops m6 -s 100
+
+# check modification of the solid 1
+explode s
+modified m1 rf_hist s_1
+checkprops m1 -s 600 -v 1000
+
+
+removefeatures res2 s gap2
+checkshape res2
+checkprops res2 -s 1200 -v 1875
+checknbshapes res2 -vertex 19 -edge 31 -wire 15 -face 15 -shell 2 -solid 2
+CheckIsFeatureRemoved gap2 {e f}
+
+# get history of the operation
+savehistory rf_hist2
+
+# check that the common face is still shared
+if {![regexp "OK" [bopcheck res2]]} {
+  puts "Error: sharing is lost after removal"
+}
+
+# check modification of the common face
+modified m6 rf_hist2 s_6
+checkprops m6 -s 100
+
+# check modification of the solid 1
+explode s
+modified m2 rf_hist2 s_2
+checkprops m2 -s 600 -v 1000

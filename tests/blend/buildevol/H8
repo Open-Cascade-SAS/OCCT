@@ -1,0 +1,15 @@
+#pcylinder s1 5 20
+#pcylinder s2 5 12 
+#ttranslate s2 5 0 3
+#ttranslate s1 s2 5 5 0
+#fuse s s1 s2
+#save s I5678.draw 
+
+restore [locate_data_file I5678.draw] s
+tscale s 0 0 0 SCALE1
+explode s e
+mkevol result s
+updatevol s_4 0 0.5*SCALE1 1 1*SCALE1 2 0.5*SCALE1
+buildevol
+
+checkprops result -s 100596

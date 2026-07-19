@@ -1,0 +1,9 @@
+profile p1 x 3 y 1 x -2 y 2 x -1 y -3
+prism pr p1 0 0 1
+profile p2 x 2 y 2 x -2 y -2
+ttranslate p2 1 1 0
+
+featprism pr p2 p2 0 0 1 1 1
+featperformval prism result 0.5
+
+checkprops result -s 30

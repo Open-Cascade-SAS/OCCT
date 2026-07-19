@@ -1,0 +1,47 @@
+puts "================"
+puts "OCC23162"
+puts "================"
+puts ""
+##############################################################################
+# BRepOffsetAPI_MakePipeShell works wrong
+##############################################################################
+
+set BugNumber OCC23162
+
+catch {pload XDE}
+
+set status 0
+
+set radius 100.
+puts "------------- Radius $radius"
+# make a ring quarter
+vertex v1 [expr $radius / 2] 0 0
+vertex v2 $radius 0 0
+edge e v1 v2
+revol rq e  0 0 0  0 0 1 45
+
+# make rq scaled and translated
+scaleshape rq2 rq 0.2
+ttranslate rq2 0 0 $radius
+
+# get wires of rq
+explode rq W
+explode rq2 W
+
+# make a spine
+vertex v1 0 0 0
+vertex v2 0 0 $radius
+edge e v1 v2
+wire spine e
+
+# make a pipe
+mksweep spine
+addsweep rq_1 v1
+addsweep rq2_1 v2
+buildsweep result
+
+# BUG: a pipe is invalid
+checkshape result -short
+
+checkprops result -s 14572.5 
+checkview -display result -3d -path ${imagedir}/${test_image}.png

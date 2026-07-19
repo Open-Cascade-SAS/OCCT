@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC26305"
+puts "========"
+puts ""
+###################################################
+# BRepFeat_MakePrism returns inconsistent results
+###################################################
+
+circle aCircle -10 -10 0 0 0 1 1 0 0 10
+mkedge anEdge aCircle
+wire aWire anEdge
+mkplane aCircle aWire 0
+
+plane aFromPlane 0 0 -10 0 0 1 1 0 0
+mkface aFromPlane aFromPlane
+plane aToPlane 0 0 10 0 0 1 1 0 0
+mkface aToPlane aToPlane
+
+featprism aCircle aCircle aCircle 0 0 1 2 1
+featperform prism aResult aFromPlane aToPlane
+
+checkshape aResult
+
+vinit
+vdisplay aResult
+vsetdispmode aResult 1
+vfit
+
+set bug_info [vreadpixel 300 340 name]
+if {$bug_info == "BLACK 0"} {
+  puts "ERROR: OCC26305 is reproduced. Prism is incorrect."
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

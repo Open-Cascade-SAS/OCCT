@@ -1,0 +1,45 @@
+puts "=========="
+puts "OCC21507"
+puts "=========="
+puts ""
+############################################################
+# Bug in BOP: bcut produces invalid result without notice 
+############################################################
+
+# Demonstrates bug in bcut command
+pload XDE
+
+# Load face
+puts "Loading face"
+restore [locate_data_file bug21507_bcut_bug_face.brep] face
+
+# Make tool - an elliptic cylinder
+puts "Constructing tool"
+ellipse c 10000 0 0 0 1 0 600 300
+mkedge e c
+wire w e
+tcopy w w1
+tcopy w w2
+ttranslate w1 0  5000 0
+ttranslate w2 0 -5000 0
+thrusections tool 1 1 w1 w2
+
+# Check validity of face and tool
+puts "Checking face: [checkshape face]; [lrange [tolerance face] 0 1]"
+puts "Checking tool: [checkshape tool]; [lrange [tolerance tool] 0 1]"
+bopcheck face
+bopcheck tool
+
+# Do cut
+puts "Running bcut"
+bcut result face tool
+
+# Evaluate result by number of faces (bcut)
+set rfaces [explode result f]
+if { [llength $rfaces] != 1 } {
+  puts "Error: [llength $rfaces] faces instead of 1"
+} else {
+  puts "Result is as expected"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

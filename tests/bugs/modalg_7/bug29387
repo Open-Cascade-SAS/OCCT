@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC29387"
+puts "========"
+puts ""
+#################################################
+# Incorrect result of cut a face with several shapes
+#################################################
+
+restore [locate_data_file bug29387_obj.brep] s
+restore [locate_data_file bug29387_tools.brep] t
+bclearobjects
+bcleartools
+baddobjects s
+baddctools t
+bfillds
+
+# perform GF operation
+bbuild rgf
+checkshape rgf
+checknbshapes rgf -wire 289 -face 288 -shell 14 -solid 14 -t
+checkprops rgf -s 529.587 -v 0.604529
+
+# perform CUT operation
+bbop result 2
+checkshape result
+checknbshapes result -wire 2 -face 1
+checkprops result -s 470.719
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,13 @@
+pcylinder s1 5 15 
+pcylinder s2 3 15 
+trotate s2 0 0 0 1 0 0 90
+ttranslate s2 0 7 7
+ttranslate s1 s2 5 5 0
+bcut s s1 s2
+tscale s 0 0 0 SCALE1
+nexplode s e
+mkevol result s
+updatevol s_4 0 0.3*SCALE1 1 0.5*SCALE1 2 0.3*SCALE1
+buildevol
+
+checkprops result -s 73347.5

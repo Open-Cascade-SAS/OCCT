@@ -1,0 +1,19 @@
+puts "hkg60159"
+puts "Fuse"
+puts ""
+dall
+
+restore [locate_data_file CFE900_hkg60gcr.rle] sh
+restore [locate_data_file hkg60159_face.rle] ct
+
+prism pr ct 0 -30 0
+bcut res pr sh
+
+explode res
+
+bfuse res2 sh res_3
+
+bfuse result sh res_2
+
+checkprops result -s 3734.83
+checkview -display result -2d -otherwise { sh res_2 } -s -path ${imagedir}/${test_image}.png

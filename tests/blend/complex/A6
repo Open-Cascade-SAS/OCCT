@@ -1,0 +1,19 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : C2
+## Comment : from original bug PRO4536
+## ====================================
+
+restore [locate_data_file CCH_blendhdp.rle] s_auth
+set radius 0.005
+set area 0.0355762
+foreach sc {0.1 1.0 10.0 100.0 1000.0} {
+  copy s_auth s
+  tscale s 0 0 0 $sc
+  explode s e
+  blend result s [expr $radius * $sc] s_6
+
+  checkprops result -s [expr $area * $sc * $sc]
+
+  unset s
+}

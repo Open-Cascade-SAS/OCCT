@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC24060"
+puts "================"
+puts ""
+#######################################################
+# Wrong result done by general fuse algorithm
+#######################################################
+
+polyline p 0 0 0 0 0 1 1 0 1 1 0 0 0 0 0
+mkplane b1 p
+vertex b2 0 0 1
+bclearobjects
+bcleartools
+baddobjects b1 b2
+bfillds
+bbuild result
+
+checknbshapes result -vertex 4
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

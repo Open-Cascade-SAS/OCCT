@@ -1,0 +1,121 @@
+puts "============="
+puts "0030484: Visualization - 2d persistent: order of detection doesn't coincide with order of objects creation"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit
+vselprops dynHighlight -dispMode 1 -color WHITE
+# Compare behaviour in a scene with a quad (2 triangles)
+# 4 segments on the edges and a circle on the center
+vpoint pt1 75 -250 0
+vpoint pt2 275 -250 0
+vpoint pt3 275 -50 0
+vpoint pt4 75 -50 0
+vtriangle tri1 pt1 pt2 pt3
+vtriangle tri2 pt3 pt4 pt1
+vdisplay tri1 -2d topLeft -top -dispmode 1
+vdisplay tri2 -2d topLeft -top -dispmode 1
+vsetmaterial tri1 PLASTIC
+vsetcolor tri1 ORANGE
+vsetmaterial tri2 PLASTIC
+vsetcolor tri2 ORANGE
+vremove pt1 pt2 pt3 pt4
+vaspects -update tri1 -faceBoundaryDraw 1
+vaspects -update tri2 -faceBoundaryDraw 1
+
+vdrawparray seg1 segments v 76 -249 0 c 1 0 0 v 274 -249 0 c 1 0 0 
+vdrawparray seg2 segments v 274 -249 0 c 1 0 0 v 274 -51 0 c 1 0 0
+vdrawparray seg3 segments v 274 -51 0 c 1 0 0 v 76 -51 0 c 1 0 0
+vdrawparray seg4 segments v 76 -51 0 c 1 0 0 v 76 -249 0 c 1 0 0
+vdisplay seg1 -2d topLeft -top -dispmode 1
+vdisplay seg2 -2d topLeft -top -dispmode 1
+vdisplay seg3 -2d topLeft -top -dispmode 1
+vdisplay seg4 -2d topLeft -top -dispmode 1
+vsetmaterial seg1 PLASTIC
+vsetmaterial seg2 PLASTIC
+vsetmaterial seg3 PLASTIC
+vsetmaterial seg4 PLASTIC
+vsetcolor seg1 RED
+vsetcolor seg2 RED
+vsetcolor seg3 RED
+vsetcolor seg4 RED
+
+vpoint pr1 170 -145 0
+vpoint pr2 180 -145 0
+vpoint pr3 180 -155 0
+vcircle circle1 pr1 pr2 pr3 1
+vdisplay circle1 -2d topLeft -top
+vsetmaterial circle1 PLASTIC
+vsetcolor circle1 BROWN3
+vremove pr1 pr2 pr3
+vaspects -update circle1 -faceBoundaryDraw 1
+
+# dump image
+vdump $imagedir/${casename}_quad_segments_circle.png
+# test selection with undefined behaviour
+vmoveto 75 150
+if { [vreadpixel 75 100 rgb name] != "WHITE" } { puts "Error: segment should be highlighted" }
+vdump $imagedir/${casename}_undefined_segmenthighlight.png
+vmoveto 100 150
+if { [vreadpixel 100 100 rgb name] != "WHITE" } { puts "Error: tri2 should be highlighted" }
+vdump $imagedir/${casename}_undefined_tri2highlight.png
+vmoveto 200 150
+if { [vreadpixel 200 200 rgb name] != "WHITE" } { puts "Error: tri1 should be highlighted" }
+vdump $imagedir/${casename}_undefined_tri1highlight.png
+vmoveto 175 150
+vdump $imagedir/${casename}_undefined_circle.png
+
+# change selection priority for each element and 
+# test selection priority focused selection
+vselectpriority tri1 6
+vselectpriority tri2 6
+vselectpriority seg1 4
+vselectpriority seg2 4
+vselectpriority seg3 4
+vselectpriority seg4 4
+vselectpriority circle1 4
+vmoveto 175 150
+if { [vreadpixel 200 200 rgb name] != "WHITE" } { puts "Error: tri1 should be highlighted" }
+# show image with display priority focused
+vdump $imagedir/${casename}_quad_focused1.png
+vmoveto 170 140
+if { [vreadpixel 100 100 rgb name] != "WHITE" } { puts "Error: tri2 should be highlighted" }
+# show image with display priority focused
+vdump $imagedir/${casename}_quad_focused2.png
+
+# test priority selection for circle
+vmoveto 0 0
+vselectpriority tri1 4
+vselectpriority tri2 4
+vselectpriority seg1 4
+vselectpriority seg2 4
+vselectpriority seg3 4
+vselectpriority seg4 4
+vselectpriority circle1 6
+# show image with priority focused
+vdump $imagedir/${casename}_circle_focused.png
+vmoveto 175 150
+vselect
+# show image with priority focused
+vdump $imagedir/${casename}_circle_selected.png
+
+# test priority selection for segments
+vmoveto 0 0
+vselect
+vselectpriority tri1 4
+vselectpriority tri2 4
+vselectpriority seg1 6
+vselectpriority seg2 6
+vselectpriority seg3 6
+vselectpriority seg4 6
+vselectpriority circle1 4
+
+vmoveto 175 250
+vdump $imagedir/${casename}_segment1_focused.png
+vmoveto 276 150
+vdump $imagedir/${casename}_segment2_focused.png
+vmoveto 175 49
+vdump $imagedir/${casename}_segment3_focused.png
+vmoveto 75 150
+vdump $imagedir/${casename}_segment4_focused.png

@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC27129"
+puts "============"
+puts ""
+###############################
+## BRepLib_CheckCurveOnSurface does not find the maximal distance
+###############################
+
+restore [locate_data_file bug27129_e.brep] e
+
+set log1 [checkcurveonsurf e]
+
+vertex v1 33.1645637744 33.5513655177474 0
+vertex v2 43.1644823619474 23.5514469302 0
+bclearobjects
+bcleartools
+baddobjects e
+baddtools v1 v2
+bfillds
+
+bbuild result
+
+set log2 [checkcurveonsurf result]
+
+if { [regexp {Invalid curves on surface:\n} ${log1} full ]} {
+  puts "OK. Source shape has invalid curve on surface"
+} else {
+  puts "Error. checkcurveonsurf command works wrong with source shape"
+}
+
+if { [regexp {Invalid curves on surface:\n} ${log1} full ]} {
+  puts "OK. Result has invalid curve on surface"
+} else {
+  puts "Error. checkcurveonsurf command works wrong with result"
+}

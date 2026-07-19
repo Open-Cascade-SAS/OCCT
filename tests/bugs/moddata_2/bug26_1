@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC26"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC26.brep] a 
+
+explode a
+
+settolerance a_1 0.000301
+settolerance a_2 0.000301
+
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2
+
+bfillds
+bbop result 1
+
+checkprops result -s 41539.9
+checkview -display result -2d -path ${imagedir}/${test_image}.png

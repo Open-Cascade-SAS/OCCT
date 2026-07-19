@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC23379"
+puts "================"
+puts ""
+#################################
+# Exporting single point into STEP produces a compound with two points
+#################################
+
+pload XDE
+
+set filedir ${imagedir}
+
+set Name bug23379_point
+set brepFileName ${Name}.brep
+set stepFileName ${imagedir}/${Name}.step
+
+restore [locate_data_file ${brepFileName}] point
+
+stepwrite 0 point ${stepFileName}
+stepread ${stepFileName} a *
+set L [llength [explode a_1]]
+puts "L=$L"
+
+if { ${L} == 1} {
+  puts "OK : Number of points is good"
+} else {
+  puts "Error : Number of points is bad"
+}
+
+catch {exec rm -f ${stepFileName}}

@@ -1,0 +1,9 @@
+puts "TODO CR25926 ALL: Error : The volume of result shape is"
+
+restore [locate_data_file bug25926_box_to_hole_valid.brep] s
+
+OFFSETSHAPE 2 {} $calcul $type
+
+checkprops result -v 0
+
+checknbshapes result -shell 1

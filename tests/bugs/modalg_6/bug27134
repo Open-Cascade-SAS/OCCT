@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC27134"
+puts "============"
+puts ""
+######################################################
+# Offset algorithm produces an invalid shape from a cone
+######################################################
+
+smallview
+
+set expected_MaxTolerance 1.02470e-007
+set tol_abs_MaxTolerance 1.e-08
+set tol_rel_MaxTolerance 1.e-08
+
+restore [locate_data_file bug27134_cone.brep] a
+explode a f
+donly a_1
+offsetshape res a_1 10
+fit
+
+checknbshapes res -vertex 5 -edge 7 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 17
+
+checkshape res
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance res] full MaxTolerance
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

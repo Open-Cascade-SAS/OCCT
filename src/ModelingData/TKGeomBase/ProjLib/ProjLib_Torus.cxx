@@ -1,0 +1,193 @@
+// Created on: 1993-08-24
+// Created by: Bruno DUMORTIER
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <gp.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <ProjLib_Torus.hxx>
+
+//=================================================================================================
+
+ProjLib_Torus::ProjLib_Torus() = default;
+
+//=================================================================================================
+
+ProjLib_Torus::ProjLib_Torus(const gp_Torus& To)
+{
+  Init(To);
+}
+
+//=================================================================================================
+
+ProjLib_Torus::ProjLib_Torus(const gp_Torus& To, const gp_Circ& C)
+{
+  Init(To);
+  Project(C);
+}
+
+//=================================================================================================
+
+void ProjLib_Torus::Init(const gp_Torus& To)
+{
+  myType       = GeomAbs_OtherCurve;
+  myTorus      = To;
+  myIsPeriodic = false;
+  isDone       = false;
+}
+
+//=================================================================================================
+
+static gp_Pnt2d EvalPnt2d(const gp_Vec& Ve, const gp_Torus& To)
+{
+  double X = Ve.Dot(gp_Vec(To.Position().XDirection()));
+  double Y = Ve.Dot(gp_Vec(To.Position().YDirection()));
+  double U, V;
+
+  if (std::abs(X) > Precision::PConfusion() || std::abs(Y) > Precision::PConfusion())
+  {
+    U = std::atan2(Y, X);
+  }
+  else
+  {
+    U = 0.;
+  }
+
+  V = 0.;
+
+  return gp_Pnt2d(U, V);
+}
+
+//=================================================================================================
+
+void ProjLib_Torus::Project(const gp_Circ& C)
+{
+  myType = GeomAbs_Line;
+
+  gp_Vec Xc(C.Position().XDirection());
+  gp_Vec Yc(C.Position().YDirection());
+  gp_Vec Xt(myTorus.Position().XDirection());
+  gp_Vec Yt(myTorus.Position().YDirection());
+  gp_Vec Zt(myTorus.Position().Direction());
+  gp_Vec OC(myTorus.Location(), C.Location());
+
+  //  if (OC.Magnitude() < Precision::Confusion()      ||
+  //      OC.IsParallel(myTorus.Position().Direction(),
+  //		    Precision::Angular())) {
+
+  if (OC.Magnitude() < Precision::Confusion()
+      || C.Position().Direction().IsParallel(myTorus.Position().Direction(), Precision::Angular()))
+  {
+    // Iso V
+    gp_Pnt2d P1 = EvalPnt2d(Xc, myTorus); // evaluate U1
+    gp_Pnt2d P2 = EvalPnt2d(Yc, myTorus); // evaluate U2
+    double   Z  = OC.Dot(myTorus.Position().Direction());
+    Z /= myTorus.MinorRadius();
+
+    double V;
+
+    if (Z > 1.)
+    {
+      V = M_PI / 2.; // simple protection
+    } // against calculation errors
+    else if (Z < -1.)
+    {                // it happens that Z is slightly
+      V = -M_PI / 2; // greater than 1.
+    }
+    else
+    {
+      V = std::asin(Z);
+    }
+
+    if (C.Radius() < myTorus.MajorRadius())
+    {
+      V = M_PI - V;
+    }
+    else if (V < 0.)
+    {
+      V += 2 * M_PI;
+    }
+    P1.SetY(V);
+    P2.SetY(V);
+    gp_Vec2d V2d(P1, P2);
+    // Normally std::abs( P1.X() - P2.X()) = PI/2
+    // If != PI/2, we crossed the period => Reverse the Direction
+    if (std::abs(P1.X() - P2.X()) > M_PI)
+    {
+      V2d.Reverse();
+    }
+
+    gp_Dir2d D2(V2d);
+    if (P1.X() < 0)
+    {
+      P1.SetX(2 * M_PI + P1.X());
+    }
+    myLin = gp_Lin2d(P1, D2);
+  }
+  else
+  {
+    // Iso U  -> U = angle( Xt, OC)
+    double U = Xt.AngleWithRef(OC, Xt ^ Yt);
+    if (U < 0.)
+    {
+      U += 2 * M_PI;
+    }
+
+    // Origin of the line
+    double V1 = OC.AngleWithRef(Xc, OC ^ Zt);
+    if (V1 < 0.)
+    {
+      V1 += 2 * M_PI;
+    }
+
+    gp_Pnt2d P1(U, V1);
+
+    // Direction of the line
+    gp_Dir2d D2 = gp::DY2d();
+    if (((OC ^ Zt) * (Xc ^ Yc)) < 0.)
+    {
+      D2.Reverse();
+    }
+
+    myLin = gp_Lin2d(P1, D2);
+  }
+  isDone = true;
+}
+
+void ProjLib_Torus::Project(const gp_Lin& L)
+{
+  ProjLib_Projector::Project(L);
+}
+
+void ProjLib_Torus::Project(const gp_Elips& E)
+{
+  ProjLib_Projector::Project(E);
+}
+
+void ProjLib_Torus::Project(const gp_Parab& P)
+{
+  ProjLib_Projector::Project(P);
+}
+
+void ProjLib_Torus::Project(const gp_Hypr& H)
+{
+  ProjLib_Projector::Project(H);
+}

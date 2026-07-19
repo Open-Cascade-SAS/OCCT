@@ -1,0 +1,12 @@
+# Original bug : pro16635
+# Date : 26 Nov 98
+
+restore [locate_data_file CFE903_pro16ggt.rle] base
+
+nexplode base face
+vertex v1 56.3468437194825 6.86845636367778 100
+
+depouille result base 0 0 -1 base_5 1 56.3468437194825 6.86845636367778 100 0 0 -1
+
+fsameparameter result
+checkprops result -s 39615.1

@@ -1,0 +1,2 @@
+source [locate_data_file 51308_CLAW-SBR.prt.1.gdml.tcl]
+

@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23201"
+puts "============"
+puts ""
+#######################################################################
+# Projection algorithm produces wrong results.
+#######################################################################
+
+restore [locate_data_file bug23201_Tool_1.brep] b2
+restore [locate_data_file bug23201_Tool_2.brep] b3
+
+explode b2 f
+mksurface s2 b2_1
+
+explode b3 f
+mksurface s3 b3_1
+
+explode b2 e
+mkcurve c2 b2_2
+
+explode b3 e
+mkcurve c3 b3_2
+
+project c23 c2 s3
+checklength c23 -l 3.1415926535897922
+
+project c32 c3 s2
+checklength c32 -l 3.1415926535897922

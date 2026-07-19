@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC951"
+puts "============"
+puts ""
+######################################################
+##BRepAlgoAPI_Section and BRepAlgoAPI_Common fail on given shapes
+######################################################
+## (old topology)
+## (common)
+## (section)
+######################################################
+
+restore [locate_data_file OCC951_1.brep] s1 
+restore [locate_data_file OCC951_2.brep] s2 
+
+checkshape s1
+checkshape s2
+
+bsection result s2 s1
+
+checkprops result -l 39.8616 
+checkshape result 
+checksection result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

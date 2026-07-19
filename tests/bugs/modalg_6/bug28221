@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC28221"
+puts "========"
+puts ""
+#################################################
+# General Fuse operation error
+#################################################
+
+restore [locate_data_file bug28221_shape.brep] a
+
+explode a
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -solid 10
+checkprops result -v 0.201442 -s 6.13063
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,22 @@
+puts "========================"
+puts " OCC472 "
+puts "(case 3)"
+puts "========================"
+puts ""
+#####################################################
+## Bad result of Fuse Operation (Cut&Common - bad too). SAM1470 (#2634) 
+#####################################################
+restore [locate_data_file OCC472a.brep] b1 
+checkshape b1
+
+restore [locate_data_file OCC472b.brep] b2
+checkshape b2
+
+bfuse result b1 b2
+
+checknbshapes result -shell 1 -solid 1
+
+checkprops result -v -111.22 -s 229.516 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

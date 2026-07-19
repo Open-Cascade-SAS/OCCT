@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC22723"
+puts "============"
+puts ""
+#######################################################################
+# Wrong intersection curve for the case of intersection between cylinder and plane
+#######################################################################
+
+set BugNumber OCC22723 
+
+restore [locate_data_file bug22723_fz44.brep] b1 
+restore [locate_data_file bug22723_fz7.brep] b2 
+mksurface s1 b1
+mksurface s2 b2
+intersect result s1 s2
+
+regexp {Parameters : ([-0-9.+eE]+) ([-0-9.+eE]+)} [dump result] full a1 a2
+set status 0
+
+if { ${a1}>=0 } {
+    if { ${a2}<6.29 } {
+	set status 1
+    }
+}
+
+if { ${status}==1 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,32 @@
+puts "========="
+puts " OCC1255 "
+puts "========="
+puts ""
+###############################################
+## Exception in command 'section'
+#  (This script tests new topology)
+###############################################
+
+restore [locate_data_file OCC1255.brep] a 
+checkshape a
+
+plane p1 0 -36.8067 0 0 1 0
+mkface f1 p1
+
+if { [catch {bop a f1 } ] } {
+    puts "Faulty OCC1255: BOP operation was made wrongly"
+} else {
+    bopsection result
+}
+
+checkprops result -l 5837.18
+checkshape result
+
+set chsec [checksection result]
+puts $chsec
+if {![regexp {nb alone Vertices : 0} $chsec]} { 
+  puts "Error: The section is not closed"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

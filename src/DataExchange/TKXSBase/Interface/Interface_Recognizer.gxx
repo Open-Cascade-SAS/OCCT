@@ -1,0 +1,73 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// #include <Interface_Recognizer.ixx>
+#include <Standard_NoSuchObject.hxx>
+
+//  WARNING: TransRecognizer has exactly the same code ...
+//  But produces a Transient instead of a Persistent
+
+// Principle: from a starting object (key), a Recognizer attempts to associate a
+// result. The Recognizer class provides the general mechanism managing this
+// Each particular class (once the instantiation is defined) must provide
+// a specific Eval method, which performs the correspondence
+// Eval considers the object by all appropriate means, and in case of success,
+// calls SetOK(result) then exits (return)
+// in case of failure, following the return from Eval, Recognizer knows that SetOK was not
+// called
+
+Interface_Recognizer::Interface_Recognizer()
+{
+  hasnext = false;
+}
+
+// thekey.Nullify();  useless, done by the constructor ...
+
+bool Interface_Recognizer::Evaluate(const TheKey& akey, occ::handle<TheResul>& res)
+{
+  theres.Nullify();
+  Eval(akey);
+  if (!theres.IsNull())
+  {
+    res = theres;
+    return true;
+  }
+  else if (hasnext)
+    return thenext->Evaluate(akey, res);
+  return false;
+}
+
+occ::handle<TheResul> Interface_Recognizer::Result() const
+{
+  if (!theres.IsNull())
+    return theres;
+  if (hasnext)
+    return thenext->Result();
+  throw Standard_NoSuchObject("Recognizer evaluation has failed");
+}
+
+void Interface_Recognizer::Add(const occ::handle<Interface_Recognizer>& reco)
+{
+  thenext = reco;
+  hasnext = true;
+}
+
+void Interface_Recognizer::SetOK(const occ::handle<TheResul>& aresult)
+{
+  theres = aresult;
+}
+
+void Interface_Recognizer::SetKO()
+{
+  theres.Nullify();
+}

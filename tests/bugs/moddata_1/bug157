@@ -1,0 +1,27 @@
+pload QAcommands
+
+puts "================"
+puts "OCC157"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC157.brep] wire 
+checkshape wire
+
+set Tolerance 100.
+set info_result [OCC157 result wire ${Tolerance}]
+
+set ll [llength ${info_result}]
+if {${ll} < 2} {
+    puts "length = ${ll}"
+    puts "OCC157: Error"
+} else {
+    if { [regexp {OK} $info_result] } {
+	puts "OCC157: OK"
+    } else {
+	puts "OCC157: Error"
+    }
+}
+checkprops result -s 2.11095e+06
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

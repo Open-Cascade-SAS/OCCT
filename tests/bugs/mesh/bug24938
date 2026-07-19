@@ -1,0 +1,19 @@
+puts "=========="
+puts "OCC24938: BRepMesh_IncrementalMesh hangs"
+puts "=========="
+puts ""
+
+cpulimit 100
+
+restore [locate_data_file bug24938_27773.brep] result
+
+tclean result
+incmesh result 1.5 -relative
+
+checktrinfo result -tri 8 -nod 10 -defl 3.3489133970888776e-05 -tol_abs_defl 1e-6
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

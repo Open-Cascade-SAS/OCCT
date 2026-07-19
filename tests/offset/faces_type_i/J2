@@ -1,0 +1,6 @@
+pcone s 9 4 15 90
+trotate s 0 0 0 0 0 1 90
+
+OFFSETSHAPE -1 {s_4 s_5} $calcul $type
+
+checkprops result -v 203.5

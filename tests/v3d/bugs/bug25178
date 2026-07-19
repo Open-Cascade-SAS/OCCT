@@ -1,0 +1,14 @@
+puts "======="
+puts "CR25178: Visualization - edges of the model are still clipped after vfit command"
+puts "======="
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug25179_nurbs-with-partial-seam.brep] a
+
+vinit View1
+vdisplay a
+vleft
+vfit
+
+vdump $imagedir/${casename}.png

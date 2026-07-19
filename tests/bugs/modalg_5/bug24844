@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC24844"
+puts "============"
+puts ""
+######################################################
+# Wrong result of Boolean Cut operation
+######################################################
+
+restore [locate_data_file bug24844_Comp.brep] c
+explode c
+
+bcut result c_1 c_2
+
+checkprops result -s 9.82018 
+checkshape result
+
+checknbshapes result -vertex 5 -edge 11 -wire 6 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 31
+checkview -display result -2d -path ${imagedir}/${test_image}.png

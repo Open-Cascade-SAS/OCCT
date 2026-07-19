@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC25344"
+puts "========"
+puts ""
+#######################################################
+# Draw variables do not follow the scope of TCL level
+#######################################################
+
+box a 1 1 1
+
+set filename "box file.brep"
+
+if [catch {save a $filename}] {
+  puts "ERROR: save failure"
+} else {
+  if ![file exists $filename] {
+    puts "ERROR: file \"$filename\" is not created"
+  } else {
+    if [catch {restore $filename b}] {
+      puts "ERROR: restore of file \"$filename\" is failure"
+    } else {
+      if {[dtyp a] != [dtyp b]} {
+        puts "ERROR: types of shape and its restored copy do not equal"
+      }
+    }
+    file delete $filename
+  }
+}

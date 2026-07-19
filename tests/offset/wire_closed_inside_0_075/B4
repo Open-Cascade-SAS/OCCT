@@ -1,0 +1,12 @@
+puts "TODO OCC23748 ALL: Error : result is NOT a closed wire"
+puts "TODO OCC23748 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC23748 ALL: Error : The length of result shape is"
+puts "TODO OCC23748 ALL: Error : The resulting shape is WRONG"
+
+restore [locate_data_file offset_wire_018.brep] s
+
+set length 0
+set nbsh_v 0
+set nbsh_e 0
+set nbsh_w 0
+

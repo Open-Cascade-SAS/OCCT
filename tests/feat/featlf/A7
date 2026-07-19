@@ -1,0 +1,11 @@
+# Original bug : cts21168
+# Date : 16 Nov 98
+
+restore [locate_data_file CFE901_cts21gfy.rle] base
+restore [locate_data_file cts21168_plan.rle] plan
+restore [locate_data_file cts21168_wire.rle] wire
+
+featlf base wire plan 0 10 0 0 -10 0 1 1 
+featperform lf result
+
+checkprops result -s 1.02307e+06

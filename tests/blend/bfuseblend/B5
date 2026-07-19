@@ -1,0 +1,10 @@
+pcylinder s1 3 10 
+pcylinder s2 4 16 
+trotate s2 0 0 0 1 0 0 80
+ttranslate s2 0 9 -3
+ttranslate s1 s2 5 5 0
+tscale s1 0 0 0 SCALE1
+tscale s2 0 0 0 SCALE1
+bfuseblend result s1 s2 0.5*SCALE1
+
+checkprops result -s 65305.3

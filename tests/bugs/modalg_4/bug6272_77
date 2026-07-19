@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC6272"
+puts "============"
+puts ""
+######################################################
+# Incorrect results of gluing operation
+######################################################
+
+set BugNumber OCC6272
+
+restore [locate_data_file OCC6272_bridge2.brep] a1 
+
+#
+# a1 is compound. It contains a_3, a_5, a_1, a_2, a_4, a_6 solids
+#
+
+explode a1 so
+
+bop a1_2 a1_4
+if { [catch { bopfuse result } ] } {
+    puts "Faulty ${BugNumber}"
+}
+
+checkprops result -s 922.7 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

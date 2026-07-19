@@ -1,0 +1,21 @@
+puts "=================================="
+puts "BUC60618"
+puts "=================================="
+puts "There was a problem filter of solutions. Several solutions were skipped."
+puts ""
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+
+circle c1 0 0 100 
+circle c2 500 -400 300 
+circle c3 300 200 200 
+cirtang result -c c1 -c c2 -c c3
+checklength result_1 -l 3568.9587306060739
+checklength result_2 -l 9964.7111736227271
+checklength result_3 -l 2082.9371204466097
+checklength result_4 -l 32696.069757517998
+checklength result_5 -l 1681.9298517645602
+checklength result_6 -l 3097.3731840080009
+checklength result_7 -l 1545.2428620020787
+checklength result_8 -l 772.26646380656518

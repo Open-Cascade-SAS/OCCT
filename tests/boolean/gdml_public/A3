@@ -1,0 +1,52 @@
+# test script for common01.prt.2.gdml file
+compound result
+
+# box 
+box sh4E8BEE0 -317.5 -304.80000000000001 -381 635 609.60000000000002 762
+
+# box 
+box sh4E8E870 -571.5 -457.19999999999999 -635 1143 914.39999999999998 1270
+
+# cylinder 
+plane pln_sh4E921C0 -0 -0 -635 0 0 1 1 0 0
+erase pln_sh4E921C0
+pcylinder sh4E921C0 pln_sh4E921C0 419.10000000000002 1270 360
+settolerance sh4E921C0 1.27e-005
+
+# copy shape
+copy sh4E921C0 sh4E921C0_copy
+
+# shape transformation
+trotate sh4E921C0_copy 0 0 0 0.70710678118654757 -4.329780281177467e-017 0.70710678118654757 180 
+ttranslate sh4E921C0_copy -12.699999999999974 0 0
+
+# shape transformation
+trotate sh4E921C0_copy 0 0 0 0 1 0 90 
+ttranslate sh4E921C0_copy 635 127 -139.69999999999999
+
+# copy shape
+copy sh4E8E870 sh4E8E870_copy
+
+# shape transformation
+trotate sh4E8E870_copy 0 0 0 0 -1 0 90 
+ttranslate sh4E8E870_copy -12.699999999999974 0 0
+
+# shape transformation
+trotate sh4E8E870_copy 0 0 0 0 1 0 90 
+ttranslate sh4E8E870_copy 635 127 -139.69999999999999
+
+# cut operation
+bcut sh4E85040 sh4E8E870_copy sh4E921C0_copy; copy sh4E85040 sh4E85040_copy 
+
+# copy shape
+copy sh4E8BEE0 sh4E8BEE0_copy
+
+# shape transformation
+trotate sh4E8BEE0_copy 0 0 0 0 1 0 90 
+ttranslate sh4E8BEE0_copy 635 127 -139.69999999999999
+
+# cut operation
+bcut sh4A708F0 sh4E8BEE0_copy sh4E85040_copy; copy sh4A708F0 sh4A708F0_copy 
+
+# result
+add sh4A708F0_copy result

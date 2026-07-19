@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC22796: Possibility to display multi-line text in 3D"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vdrawtext text0 "MyTest1\rHello,\tWor\vld!\nMyTest2\t\a\bMyTest3" -pos 0 0 0 -color WHITE -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vdump $imagedir/${casename}.png

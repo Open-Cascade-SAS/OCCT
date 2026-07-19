@@ -1,0 +1,51 @@
+box b1 10 10 10
+box b2 5 0 0 10 10 10
+
+# fuse boxes
+bfuse r b1 b2
+
+# save Fuse history
+savehistory fuse_hist
+
+# simplify result
+unifysamedom ru r
+
+# save USD history
+savehistory usd_hist
+
+
+# check modifications of the faces of the boxes in two histories
+explode b1 f
+explode b2 f
+
+foreach i {3 4 5 6} {
+  if {[regexp "The shape has not been modified." [modified m1 fuse_hist b1_$i]]} {
+    puts "Error: Incorrect history of Fuse";
+    continue;
+  }
+  checknbshapes m1 -face 2
+
+  if {[regexp "The shape has not been modified." [modified m2 fuse_hist b2_$i]]} {
+    puts "Error: Incorrect history of Fuse";
+    continue;
+  }
+  checknbshapes m2 -face 2
+
+  # each face of the m1 and m2 should have been modified into the same face during USD
+
+  compound usd_face
+
+  foreach f [join [list [explode m1 f] [explode m2 f] ] ] {
+    if {[regexp "The shape has not been modified." [modified u usd_hist $f]]} {
+      puts "Error: Incorrect history of USD";
+      continue;
+    }
+    checknbshapes u -vertex 4 -edge 4 -wire 1 -face 1
+    checkprops u -s 150
+    add u usd_face
+  }
+
+  checknbshapes usd_face -face 1
+  checkprops u -s 150 -skip
+  
+}

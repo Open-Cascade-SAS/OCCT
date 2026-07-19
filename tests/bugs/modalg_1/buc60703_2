@@ -1,0 +1,20 @@
+puts "========================"
+puts "BUC60703"
+puts "================================="
+puts "Action with models with CORRECT tolerance" 
+puts "================================="
+puts ""
+############################################
+## Crash during a fuse whilst two plans are tangent. 
+############################################
+
+restore [locate_data_file buc60703c.brep] a 
+restore [locate_data_file buc60703e.brep] b
+
+bfuse result a b
+
+checkshape result
+checkprops result -s 172.662 -v 129.604
+checknbshapes result -wire 10 -face 10 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

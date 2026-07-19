@@ -1,0 +1,15 @@
+name: 'Setup Ubuntu Dependencies'
+description: 'Install Ubuntu dependencies and rapidjson for OCCT builds'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y ninja-build tcl-dev tk-dev cmake clang gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev libjemalloc-dev
+      shell: bash
+
+    - name: Install rapidjson
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
+      shell: bash

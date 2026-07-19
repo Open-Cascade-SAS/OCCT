@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC609"
+puts "================"
+puts ""
+#################################
+## Impossible to write separate vertices to STEP 
+#################################
+
+restore [locate_data_file OCC609.brep] a1
+
+######################################################################
+file delete ${imagedir}/vertises.stp
+stepwrite a a1 ${imagedir}/vertises.stp
+
+dall
+
+stepread ${imagedir}/vertises.stp a2 *
+
+set tex [nbshapes a2_1]
+regexp {VERTEX +: +([-0-9.+eE]+)} $tex full ve
+
+if { $ve != 0 } {
+    puts  " OCC609 : vertexes were saved and restored properly"
+} else {
+    puts "Faulty OCC609: vertexes were saved and restored wrongly"
+}
+
+

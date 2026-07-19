@@ -1,0 +1,24 @@
+
+puts "================"
+puts "OCC100"
+puts "================"
+puts ""
+########################################
+## Draw is crashed during cut on Windows NT. SAM1185.
+########################################
+
+restore [locate_data_file OCC100_sp.brep] sh1 
+checkshape sh1
+
+restore [locate_data_file OCC100_cyl.brep] sh2
+checkshape sh2
+
+#OCC100 : on WNT result is crushed when we make the next command:
+
+bcut result sh1 sh2
+
+checkprops result -s 2130.25 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

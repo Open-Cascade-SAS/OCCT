@@ -1,0 +1,160 @@
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//: n7 abv 16.02.99: treatment of CARTESIAN_TRSF_OP_3D placed to StepGeom_MkTransformed3d
+// sln 23.10.2001. CTS23496: Verifying on error creation of directions is added
+// (StepToTopoDS_MakeTransformed::Compute(...) function)
+
+#include <Geom_Axis2Placement.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_TrsfForm.hxx>
+#include <StepData_Factors.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_MappedItem.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationMap.hxx>
+#include <StepToGeom.hxx>
+#include <StepToTopoDS_MakeTransformed.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
+
+//  + pour CartesianOperator3d
+//=================================================================================================
+
+StepToTopoDS_MakeTransformed::StepToTopoDS_MakeTransformed() = default;
+
+//=================================================================================================
+
+bool StepToTopoDS_MakeTransformed::Compute(const occ::handle<StepGeom_Axis2Placement3d>& Origin,
+                                           const occ::handle<StepGeom_Axis2Placement3d>& Target,
+                                           const StepData_Factors& theLocalFactors)
+{
+  theTrsf = gp_Trsf(); // reinit
+  if (Origin.IsNull() || Target.IsNull())
+  {
+    return false;
+  }
+
+  // sln 23.10.2001 : If the directions have not been created do nothing.
+  occ::handle<Geom_Axis2Placement> theOrig =
+    StepToGeom::MakeAxis2Placement(Origin, theLocalFactors);
+  if (theOrig.IsNull())
+  {
+    return false;
+  }
+  occ::handle<Geom_Axis2Placement> theTarg =
+    StepToGeom::MakeAxis2Placement(Target, theLocalFactors);
+  if (theTarg.IsNull())
+  {
+    return false;
+  }
+
+  const gp_Ax3 ax3Orig(theOrig->Ax2());
+  const gp_Ax3 ax3Targ(theTarg->Ax2());
+
+  //  ne pas se tromper de sens !
+  theTrsf.SetTransformation(ax3Targ, ax3Orig);
+  return true;
+}
+
+//=================================================================================================
+
+bool StepToTopoDS_MakeTransformed::Compute(
+  const occ::handle<StepGeom_CartesianTransformationOperator3d>& Operator,
+  const StepData_Factors&                                        theLocalFactors)
+{
+  return StepToGeom::MakeTransformation3d(Operator, theTrsf, theLocalFactors);
+}
+
+//=================================================================================================
+
+const gp_Trsf& StepToTopoDS_MakeTransformed::Transformation() const
+{
+  return theTrsf;
+}
+
+//=================================================================================================
+
+bool StepToTopoDS_MakeTransformed::Transform(TopoDS_Shape& shape) const
+{
+  if (theTrsf.Form() == gp_Identity)
+  {
+    return false;
+  }
+  TopLoc_Location theLoc(theTrsf);
+  shape.Move(theLoc);
+  return true;
+}
+
+//=================================================================================================
+
+TopoDS_Shape StepToTopoDS_MakeTransformed::TranslateMappedItem(
+  const occ::handle<StepRepr_MappedItem>&       mapit,
+  const occ::handle<Transfer_TransientProcess>& TP,
+  const StepData_Factors&                       theLocalFactors,
+  const Message_ProgressRange&                  theProgress)
+{
+  TopoDS_Shape theResult;
+
+  //  Positionnement : 2 formules
+  //  1/ Ax2 dans Source et comme Target  : passage de Source a Target
+  //  2/ CartesianOperator3d comme Target : on applique
+
+  occ::handle<StepGeom_Axis2Placement3d> Origin =
+    occ::down_cast<StepGeom_Axis2Placement3d>(mapit->MappingSource()->MappingOrigin());
+  occ::handle<StepGeom_Axis2Placement3d> Target =
+    occ::down_cast<StepGeom_Axis2Placement3d>(mapit->MappingTarget());
+
+  occ::handle<StepGeom_CartesianTransformationOperator3d> CartOp =
+    occ::down_cast<StepGeom_CartesianTransformationOperator3d>(mapit->MappingTarget());
+
+  bool ok = false;
+  if (!Origin.IsNull() && !Target.IsNull())
+  {
+    ok = Compute(Origin, Target, theLocalFactors);
+  }
+  else if (!CartOp.IsNull())
+  {
+    ok = Compute(CartOp, theLocalFactors);
+  }
+
+  if (!ok)
+  {
+    TP->AddWarning(mapit, "Mapped Item, case not recognized, location ignored");
+  }
+
+  //  La Shape, et la mise en position
+  occ::handle<StepRepr_Representation> maprep = mapit->MappingSource()->MappedRepresentation();
+  occ::handle<Transfer_Binder>         binder = TP->Find(maprep);
+  if (binder.IsNull())
+  {
+    binder = TP->Transferring(maprep, theProgress);
+  }
+  occ::handle<TransferBRep_ShapeBinder> shbinder = occ::down_cast<TransferBRep_ShapeBinder>(binder);
+  if (shbinder.IsNull())
+  {
+    TP->AddWarning(mapit, "No Shape Produced");
+  }
+  else
+  {
+    theResult = shbinder->Result();
+    Transform(theResult);
+  }
+
+  return theResult;
+}

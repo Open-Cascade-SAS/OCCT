@@ -1,0 +1,31 @@
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of "
+
+puts "================"
+puts "OCC4648"
+puts "================"
+puts ""
+#################################
+# Problems with writing to STEP
+#################################
+
+set BugNumber OCC4648
+
+igesbrep [locate_data_file annie_surf.igs] a *
+
+file delete ${imagedir}/annie
+stepwrite 0 a ${imagedir}/annie
+if { ![file exists ${imagedir}/annie] } {
+    puts "Faulty ${BugNumber} : There is not file"
+}
+catch {exec chmod 777 ${imagedir}/annie}
+
+if [catch { stepread ${imagedir}/annie b *} res] {
+    puts "Faulty ${BugNumber} : stepread is wrong"
+} else {
+    renamevar b_1 res
+    checknbshapes res -ref [nbshapes a]
+}
+
+file delete ${imagedir}/annie
+
+

@@ -1,0 +1,12 @@
+puts "================================="
+puts "CUT of OCC212-2.brep and  OCC212-1.brep"
+puts "================================="
+
+restore [locate_data_file OCC212-1.brep] a
+restore [locate_data_file OCC212-2.brep] b
+
+bop b a 
+bopcut result
+
+checkprops result -s 39685.7
+checkview -display result -2d -otherwise { b a  } -s -path ${imagedir}/${test_image}.png

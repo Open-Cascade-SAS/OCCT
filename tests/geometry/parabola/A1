@@ -1,0 +1,5 @@
+parabola para 0 0 0 0 0 1 2
+trim para para -1 1
+convert result para
+checklength result -l 2.0206422525934427
+checkview -display result -2d -path ${imagedir}/${test_image}.png

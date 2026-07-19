@@ -1,0 +1,7 @@
+set TheFileName OCC22188.brep
+set bug_area "OCC22687"
+if { [string compare $command "shading"] == 0 } {
+   set rel_tol 0.793
+} else {
+   set rel_tol 0.052
+}

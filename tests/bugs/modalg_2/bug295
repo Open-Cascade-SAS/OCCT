@@ -1,0 +1,38 @@
+pload QAcommands
+
+puts "================"
+puts "OCC295"
+puts "================"
+puts ""
+##############################################################
+## Exception is raised in the GeomConvert_CompCurveToBSplineCurve
+##Exception "Run-time exception error
+## current exception: xalloc. No handler for exception.
+## " is raised during merging to edges in DRAW with command "merge re e1 e2".
+##############################################################
+
+restore [locate_data_file OCC295-1.brep] e1 
+
+set che [checkshape e1]
+if { [regexp {Faulty} $che] == 1} {
+    puts "Faulty OCC295 (shape1): Source shape is invalid. It was detected by Checkshape command"
+    puts "Body of the script was NOT executed"
+    renamevar e1 result
+} else {
+    puts "OCC295 OK (shape1): Source shape is valid"
+    restore [locate_data_file OCC295-2.brep] e2
+    set che [checkshape e2]
+    if { [regexp {Faulty} $che] == 1} {
+	puts "Faulty OCC295 (shape2): Source shape is invalid. It was detected by Checkshape command"
+	puts "Body of the script was NOT executed"
+	renamevar e2 result
+    } else {
+	puts "OCC295 OK (shape2): Source shape is valid"
+	OCC295 result e1 e2
+    }
+}
+
+checkprops result -l 19.5611 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC3721"
+puts "============"
+puts ""
+######################################################
+# When using Boolean Operations exception is raised for some tolerance vals.
+######################################################
+## (new topology)
+## (boptuc)
+######################################################
+
+restore [locate_data_file OCC3721-1.brep] b1 
+restore [locate_data_file OCC3721-2.brep] b2 
+
+checkshape b1
+checkshape b2
+
+bop b2 b1
+if { [catch {boptuc result} catch_result] } {
+   puts "Faulty OCC3721"
+}
+
+checkshape result
+
+checkprops result -s 71185
+checkview -display result -3d -path ${imagedir}/${test_image}.png

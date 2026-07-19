@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: PROPS : Faulty" 
+
+
+set filename trj6_as1-td-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 28  ( 50 )  Summary  = 28  ( 50 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 5  ( 5 )  Shell    = 5  ( 5 )  Face     = 57  ( 57 ) 
+STATSHAPE   : Solid    = 18  ( 18 )  Shell    = 18  ( 18 )  Face     = 172  ( 172 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 7.326474254e-006  ( 7.326473916e-006 )  AvgTol   =  2.405026732e-006  (  2.435678917e-006 )
+LABELS      : N0Labels = 14  ( 14 )  N1Labels = 20  ( 20 )  N2Labels = 0  ( 0 )   TotalLabels = 34  ( 34 )   NameLabels = 32  ( 32 )   ColorLabels = 7  ( 7 )   LayerLabels = 5  ( 5 )
+PROPS       : Centroid = 11  ( 24 )  Volume   = 11  ( 11 )  Area     = 11  ( 11 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 000  ( 000 )
+
+}

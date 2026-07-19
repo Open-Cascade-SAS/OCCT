@@ -1,0 +1,10 @@
+# Original bug : cts21349
+# Date : 26Aout98
+
+restore [locate_data_file CTO904_cts21349.rle] a 
+encoderegularity a 1
+nexplode a e
+
+blend result a 4 a_5 4 a_1 4 a_6
+
+checkprops result -s 21444.7

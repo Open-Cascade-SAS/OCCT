@@ -1,0 +1,2 @@
+source [locate_data_file 20000_casemate_so.asm.2.gdml.tcl]
+checkprops result -s 5.97016e+006

@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC23839"
+puts "========"
+puts ""
+#######################################################################
+# Projection algorithm produces wrong results for set of data
+#######################################################################
+
+restore [locate_data_file bug23839_f8] f
+mksurface s f
+mkface ff s
+pcurve ff
+explode f e
+mkcurve c f_3
+
+project cx c s
+
+v2d
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+

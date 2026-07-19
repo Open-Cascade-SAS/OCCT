@@ -1,0 +1,8 @@
+restore [locate_data_file CCV_2_b1_gsu.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 0.00233614571364717
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

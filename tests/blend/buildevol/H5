@@ -1,0 +1,15 @@
+#pcylinder s1 5 7
+#pcylinder s2 5 10 
+#ttranslate s2 3 0 -1
+#ttranslate s1 s2 5 5 0
+#cut s s1 s2
+#save s CFI_h1234fiq.rle 
+
+restore [locate_data_file CFI_h1234fiq.rle] s
+tscale s 0 0 0 SCALE1
+explode s e
+mkevol result s
+updatevol s_3 0 0.5*SCALE1 1 1*SCALE1 2 0.5*SCALE1
+buildevol
+
+checkprops result -s 25582.7

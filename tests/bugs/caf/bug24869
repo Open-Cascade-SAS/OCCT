@@ -1,0 +1,66 @@
+puts "=========="
+puts "OCC24869"
+puts "=========="
+puts ""
+###################################################
+# OCAF testing framework extending
+###################################################
+
+NewDocument D BinOcaf
+
+#1 - create box1
+NewCommand D
+set B1 [AddObject D]
+set F1 [AddFunction D $B1 Box]
+BoxDX D $B1 100
+BoxDY D $B1 200
+BoxDZ D $B1 300
+InitLogBook D
+AddDriver D Box Section PTxyz
+ComputeFun D $F1
+GetShape D $F1:2 Box1
+
+#1 - create box2
+NewCommand D
+set B2 [AddObject D]
+set F2 [AddFunction D $B2 Box]
+BoxDX D $B2 150
+BoxDY D $B2 200
+BoxDZ D $B2 300
+ComputeFun D $F2
+
+NewCommand D
+set FTr2 [PTranslateDXYZ D $B2 30 40 50]
+ComputeFun D $FTr2
+# get modified result
+GetShape D $FTr2:2 Box2
+
+#3 Make Section Box1 Box2
+NewCommand D
+set CS [AddSection D $B1 $B2]
+ComputeFun D $CS
+erase
+GetShape D $CS:2 S
+
+# Check result
+NewCommand D
+erase
+ExploreShape D $CS:2:1 R
+
+# should be 12 edges and 6 vertices
+set l1 [llength [directory R_*] ]
+
+# should be 18 faces
+set l2 [llength [directory oldR_*] ]
+
+if { ${l1} == 18 } {
+  puts "OK: Good edge number"
+} else {
+  puts "Error: Bad edge number"
+}
+
+if { ${l2} == 18 } {
+  puts "OK: Good face number"
+} else {
+  puts "Error: Bad face number"
+}

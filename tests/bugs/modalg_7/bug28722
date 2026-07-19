@@ -1,0 +1,14 @@
+
+puts "========"
+puts "OCC28722"
+puts "========"
+puts ""
+########################################################################
+# Conversion of a spherical face to a spline produces an invalid shape
+########################################################################
+
+restore [locate_data_file bug28722_s.brep] s
+
+nurbsconvert r s
+
+checkshape r

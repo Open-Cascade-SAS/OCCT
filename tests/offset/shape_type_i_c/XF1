@@ -1,0 +1,10 @@
+restore [locate_data_file bug26917_dom-7724_trim9.brep] s
+
+OFFSETSHAPE 15 {} $calcul $type
+
+checkprops result -s 167920 -v 2.69245e+06
+
+unifysamedom result_unif result
+
+checknbshapes result_unif -wire 19 -face 19 -shell 1 -solid 1
+

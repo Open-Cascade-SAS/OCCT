@@ -1,0 +1,16 @@
+puts "======="
+puts "OCC872: E x c e p t i o n is raised during visualization attached shape."
+puts "SAM1660"
+puts "======="
+puts ""
+
+cpulimit 1000
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC872.brep] result
+
+vinit View1
+vdisplay result
+vfit
+vsetdispmode 1
+vdump $imagedir/${casename}.png

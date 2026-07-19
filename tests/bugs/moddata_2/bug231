@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC231"
+puts "========"
+puts ""
+
+#############################################
+##Incorrect work DRAW command "proj" in version dev
+## and receive such result:
+## in dev : ext_1 ext_2 ext_3
+## in C40 : ext_1 ext_2 ext_3 ext_4
+#############################################
+
+restore [locate_data_file OCC231.draw] result
+
+set str [proj result 1751.38 614.152 -180.331]
+set err [llength $str]
+
+if { $err < 4 } {
+    puts "Faulty OCC231: Projection was made wrongly"
+} else {
+    puts "OCC231 OK: Projection was made properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

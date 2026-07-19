@@ -1,0 +1,29 @@
+puts "========"
+puts "Per-pixel lighting using GLSL program (Phong shading)"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# create box
+box b 1 2 3
+
+# draw box
+vclear
+vclose ALL
+vinit View1
+vsetdispmode 1
+vaxo
+vdisplay b
+vfit
+vrotate 0.2 0.0 0.0
+
+# take snapshot with fixed pipeline
+vdump $::imagedir/${::casename}_OFF.png
+vshaderprog b phong
+vdump $::imagedir/${::casename}_ph1.png
+
+vclear
+vdisplay b
+vshaderprog b phong
+vdump $::imagedir/${::casename}_ph2.png
+vmoveto 250 250

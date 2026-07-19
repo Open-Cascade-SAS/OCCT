@@ -1,0 +1,18 @@
+
+puts "========================"
+puts "BUC60523"
+puts "========================"
+
+restore [locate_data_file buc60523a.brep] a
+checkshape a
+sewing result 1.e-7 a
+
+checkmaxtol result -ref 0.001
+checknbshapes result -shell 1
+checkfreebounds result 2
+
+checkprops result -s 156.919 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

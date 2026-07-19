@@ -1,0 +1,57 @@
+puts "============"
+puts "Visualization - allow vertex colors only on front-facing fragments"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+
+vclear
+vinit View1
+vbackground -color BLACK
+vrenderparams -shadingModel UNLIT
+
+set aSquare {
+  v -1 -1 0 n 0 0 1 c 1 0 0
+  v  1 -1 0 n 0 0 1 c 1 0 0
+  v  1  1 0 n 0 0 1 c 1 0 0
+  v -1 -1 0 n 0 0 1 c 1 0 0
+  v  1  1 0 n 0 0 1 c 1 0 0
+  v -1  1 0 n 0 0 1 c 1 0 0
+}
+
+vdrawparray p triangles {*}$aSquare
+vaspects p -color WHITE -backfaceColor BLUE -faceCulling doublesided -useVertexColorForBackFaces 1
+vviewparams -scale 3 -proj 0 0 1 -up 0 1 0 -at 0 0 0
+vfit
+
+if { [vreadpixel 200 200 rgb name] != "RED" } {
+  puts "Error: front face should use vertex color"
+}
+
+vviewparams -scale 3 -proj 0 0 -1 -up 0 1 0 -at 0 0 0
+vfit
+if { [vreadpixel 200 200 rgb name] != "RED" } {
+  puts "Error: back face should use vertex color by default"
+}
+
+vaspects p -useVertexColorForBackFaces 0
+vviewparams -scale 3 -proj 0 0 1 -up 0 1 0 -at 0 0 0
+vfit
+if { [vreadpixel 200 200 rgb name] != "RED" } {
+  puts "Error: front face should keep vertex color when back-face vertex color is disabled"
+}
+
+vviewparams -scale 3 -proj 0 0 -1 -up 0 1 0 -at 0 0 0
+vfit
+if { [vreadpixel 200 200 rgb name] != "BLUE" } {
+  puts "Error: back face should use uniform back color when back-face vertex color is disabled"
+}
+
+vdump ${imagedir}/${casename}_unlit.png
+
+vrenderparams -shadingModel PHONG
+set aPhongBackColor [vreadpixel 200 200 rgb]
+if { [lindex $aPhongBackColor 0] >= [lindex $aPhongBackColor 2] } {
+  puts "Error: PHONG back face should use back material color, not red vertex color"
+}
+vdump ${imagedir}/${casename}_phong.png

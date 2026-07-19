@@ -1,0 +1,163 @@
+// Created on: 1999-06-10
+// Created by: Vladislav ROMASHKO
+// Copyright (c) 1999-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TFunction_Function.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_Function, TDF_Attribute)
+
+//=================================================================================================
+
+const Standard_GUID& TFunction_Function::GetID()
+{
+  static Standard_GUID TFunction_FunctionID("5b35ca00-5b78-11d1-8940-080009dc3333");
+  return TFunction_FunctionID;
+}
+
+//=================================================================================================
+
+occ::handle<TFunction_Function> TFunction_Function::Set(const TDF_Label& L)
+{
+  occ::handle<TFunction_Function> F;
+  if (!L.FindAttribute(TFunction_Function::GetID(), F))
+  {
+    F = new TFunction_Function();
+    L.AddAttribute(F);
+  }
+  return F;
+}
+
+//=================================================================================================
+
+occ::handle<TFunction_Function> TFunction_Function::Set(const TDF_Label&     L,
+                                                        const Standard_GUID& DriverID)
+{
+  occ::handle<TFunction_Function> F;
+  if (!L.FindAttribute(TFunction_Function::GetID(), F))
+  {
+    F = new TFunction_Function();
+    L.AddAttribute(F);
+  }
+  F->SetDriverGUID(DriverID);
+  return F;
+}
+
+//=================================================================================================
+
+const Standard_GUID& TFunction_Function::ID() const
+{
+  return GetID();
+}
+
+//=================================================================================================
+
+// bool TFunction_Function::Find(const TDF_Label& L,
+// 					  occ::handle<TFunction_Function>& F)
+// {
+//   if (!L.FindAttribute(TFunction_Function::GetID(), F))
+//     return false;
+//   return true;
+// }
+
+//=================================================================================================
+
+TFunction_Function::TFunction_Function()
+    : myFailure(0)
+{
+}
+
+//=================================================================================================
+
+void TFunction_Function::SetDriverGUID(const Standard_GUID& guid)
+{
+  // OCC2932 correction
+  if (myDriverGUID == guid)
+  {
+    return;
+  }
+
+  Backup();
+  myDriverGUID = guid;
+}
+
+//=================================================================================================
+
+void TFunction_Function::SetFailure(const int mode)
+{
+  // OCC2932 correction
+  if (myFailure == mode)
+  {
+    return;
+  }
+
+  Backup();
+  myFailure = mode;
+}
+
+//=================================================================================================
+
+void TFunction_Function::Restore(const occ::handle<TDF_Attribute>& other)
+{
+  occ::handle<TFunction_Function> F = occ::down_cast<TFunction_Function>(other);
+  myFailure                         = F->myFailure;
+  myDriverGUID                      = F->myDriverGUID;
+}
+
+//=================================================================================================
+
+void TFunction_Function::Paste(const occ::handle<TDF_Attribute>& into,
+                               const occ::handle<TDF_RelocationTable>& /*RT*/) const
+{
+  occ::handle<TFunction_Function> intof = occ::down_cast<TFunction_Function>(into);
+  intof->SetFailure(myFailure);
+  intof->SetDriverGUID(myDriverGUID);
+}
+
+//=================================================================================================
+
+occ::handle<TDF_Attribute> TFunction_Function::NewEmpty() const
+{
+  return new TFunction_Function();
+}
+
+//=================================================================================================
+
+void TFunction_Function::References(const occ::handle<TDF_DataSet>& /*aDataSet*/) const {}
+
+//=================================================================================================
+
+Standard_OStream& TFunction_Function::Dump(Standard_OStream& anOS) const
+{
+  TDF_Attribute::Dump(anOS);
+  return anOS;
+}
+
+//=================================================================================================
+
+void TFunction_Function::DumpJson(Standard_OStream& theOStream, int theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_GUID(theOStream, myDriverGUID)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFailure)
+}

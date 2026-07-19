@@ -1,0 +1,37 @@
+puts "# ==================================================================="
+puts "# 0027618: Visualization - selection returns entity overlapped by another entity on border cases"
+puts "# ==================================================================="
+puts ""
+
+pload MODELING VISUALIZATION
+set s 0.001
+box bb  0*$s  0*$s  0*$s 100*$s 100*$s 50*$s
+box bt 50*$s 50*$s 25*$s  20*$s  20*$s 40*$s
+vclear
+vinit View1
+vpoint p0 0*$s   0*$s  0*$s
+vpoint p1 0*$s 100*$s 50*$s
+vdisplay -dispMode 1 -highMode 1 bb bt
+vsetcolor bt RED
+vaxo
+vfit
+
+vpoint pp 245 -190 0
+vdisplay -2d topLeft -topmost pp
+vselmode pp 0 0
+vmoveto 245 190
+
+if { [vreadpixel 235 140 rgb name] == "CYAN2" } { puts "Error: top should NOT be highlighted" }
+if { [vreadpixel 235 190 rgb name] != "CYAN2" } { puts "Error: bottom should be highlighted" }
+vseldump $imagedir/${casename}_sel_depth.png  -type depth
+vseldump $imagedir/${casename}_sel_entity.png -type entity
+
+vcamera -persp
+
+vmoveto 0 0
+vmoveto 245 190
+if { [vreadpixel 235 140 rgb name] == "CYAN2" } { puts "Error: top should NOT be highlighted" }
+if { [vreadpixel 235 190 rgb name] != "CYAN2" } { puts "Error: bottom should be highlighted" }
+
+vseldump $imagedir/${casename}_perps_sel_depth.png  -type depth
+vseldump $imagedir/${casename}_persp_sel_entity.png -type entity

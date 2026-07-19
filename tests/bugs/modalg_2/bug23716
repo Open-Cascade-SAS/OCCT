@@ -1,0 +1,17 @@
+puts "========"
+puts "CR23716"
+puts "========"
+########################################################
+## Boolean Fuse between two faces fails
+########################################################
+
+restore [locate_data_file bug23716_qf.brep] b
+explode b
+
+bop b_1 b_3
+bopfuse result
+
+checkprops result -s 45605.9 
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

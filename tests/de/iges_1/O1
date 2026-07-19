@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename TibTray_Size3.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 205  ( 315 )  Summary  = 205  ( 315 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 212  ( 212 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 212  ( 212 )   FreeWire = 6  ( 6 ) 
+TOLERANCE   : MaxTol   =   0.9221308818  (   0.9221308818 )  AvgTol   =   0.01482078545  (   0.01482175825 )
+LABELS      : N0Labels = 244  ( 244 )  N1Labels = 3  ( 1191 )  N2Labels = 0  ( 0 )   TotalLabels = 247  ( 1435 )   NameLabels = 244  ( 460 )   ColorLabels = 241  ( 1435 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = DEEPSKYBLUE2 MAGENTA ORANGE ORANGERED RED YELLOW  ( DEEPSKYBLUE2 MAGENTA ORANGE ORANGERED RED YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

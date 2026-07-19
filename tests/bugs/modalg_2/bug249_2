@@ -1,0 +1,23 @@
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of"
+
+puts "========================"
+puts " OCC249 "
+puts "========================"
+
+#################################################
+## puts "  BOPTUC      case_9_wire_a.brep and case_9_edge3.brep"
+#################################################
+ puts " " 
+restore [locate_data_file case_9_wire_a.brep] a
+restore [locate_data_file case_9_edge3.brep] b
+puts [bop a b]
+puts [boptuc result]
+
+checknbshapes result -vertex 4 -edge 2
+checkprops result -l 0 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+ 
+ 

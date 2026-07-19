@@ -1,0 +1,29 @@
+puts "================"
+puts "OCC22968"
+puts "================"
+puts ""
+######################################################################################
+# RebuildShape exchanges 2d-curves
+######################################################################################
+
+set BugNumber OCC22968
+
+pload XDE
+
+restore [locate_data_file OCC22968-cylface.brep] a 
+checkshape a f
+removeloc result a
+set info [ checkshape result f ]
+
+if { [regexp {The Shape result looks OK} $info] } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+checkprops result -s 3141.59 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+

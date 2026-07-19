@@ -1,0 +1,20 @@
+
+puts "========================"
+puts " OCC245 "
+puts "========================"
+
+#################################################
+##  puts "  BOPTUC      case_5_shell.brep and case_5_wire3.brep"
+#################################################
+ puts " " 
+restore [locate_data_file case_5_shell.brep] a
+restore [locate_data_file case_4_wire3.brep] b
+puts [bop a b]
+puts [boptuc result]
+
+checknbshapes result -vertex 3 -edge 2
+checkprops result -l 272.04 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+ 

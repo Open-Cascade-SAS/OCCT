@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC25555"
+puts "============"
+puts ""
+############################################################################
+# Wrong result of classification of a point relative to solid
+############################################################################
+
+restore [locate_data_file bug25555_p] p
+restore [locate_data_file bug25555_z] z
+
+set cls1 [bclassify z p]
+if { [regexp {OUT} $cls1] } {
+    puts "OK : Good result of classification of a point relative to solid"
+} else {
+    puts "Error : Wrong result of classification of a point relative to solid"
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

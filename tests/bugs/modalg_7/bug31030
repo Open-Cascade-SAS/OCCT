@@ -1,0 +1,23 @@
+puts "========================================================================"
+puts "OCC31030: BRepFilletAPI_MakeFillet algorithm fails on almost smooth edge"
+puts "========================================================================"
+puts ""
+
+brestore [locate_data_file bug31030_compfaces.brep] b
+
+sewing a 0.0001 b
+explode a e
+
+blend result a 0.1 a_3
+
+checkshape result
+
+checknbshapes result -shell 1 -face 4 -wire 4 -edge 5 -vertex 3
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.0003} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 1850.13

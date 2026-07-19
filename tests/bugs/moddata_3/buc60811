@@ -1,0 +1,11 @@
+puts "REQUIRED All: Error is 5"
+puts "========================"                                                 
+puts "BUC60811"                                                                 
+puts "========================"                                                 
+
+pload QAcommands
+
+vinit
+
+set List [BUC60811]
+

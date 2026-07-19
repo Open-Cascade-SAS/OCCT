@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC26910"
+puts "============"
+puts ""
+######################################################
+# General fuse does not find intersection between line and circle
+######################################################
+
+restore [locate_data_file bug26910.brep] a
+
+explode a
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2
+bfillds
+bbuild r
+set a 0
+foreach r [explode r v] {
+      set a [expr $a + 1]
+  }
+if { ${a} != 5 } {
+  puts "Error: ${a} intersections were not found between line and circle"
+} else {
+  puts "Found ${a} intersection between line and circle"
+}
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC29311"
+puts "========"
+puts ""
+#################################################
+# Implementation of the Oriented Bounding Boxes (OBB) functionality
+#################################################
+
+# Interferences of AABB
+
+box b1 300 300 300 
+box b2 200 200 200 111 222 333
+
+if { [regexp {NOT interfered by AABB} [ isbbinterf b1 b2 ] ] } {
+    puts "Error : Wrong check of AABBs interferences"
+} else {
+    puts "OK : check of AABBs interferences"
+}
+
+if { [regexp {NOT interfered by AABB} [ isbbinterf b2 b1 ] ] } {
+    puts "Error : Wrong check of AABBs interferences"
+} else {
+    puts "OK : check of AABBs interferences"
+}

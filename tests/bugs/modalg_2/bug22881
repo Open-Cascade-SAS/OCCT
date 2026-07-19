@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC22881"
+puts "================"
+puts ""
+#######################################################################################
+# Sewing does not sew edge to its copy
+######################################################################################
+
+set BugNumber OCC22881
+
+restore [locate_data_file OCC22881-sewing-pb.brep] a 
+
+sewing result a
+
+checkprops result -s 12.819 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 6 -wire 4 -face 4 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 19
+checkmaxtol result -ref 1.6856648382486999e-005
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

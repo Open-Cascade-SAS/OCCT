@@ -1,0 +1,36 @@
+puts "==========="
+puts "OCC24648"
+puts "==========="
+puts ""
+##############################################################
+# Different types of intersection curves between Cone and Torus with a different order of arguments
+##############################################################
+
+cone s1 60 0
+torus s2 30 20
+
+intersect i1 s1 s2
+set info1 [dump i1_1]
+
+intersect i2 s2 s1
+set info2 [dump i2_1]
+
+set type_of_curve "Circle"
+
+if { [regexp ${type_of_curve} ${info1}] != 1 } {
+    puts "Error : Wrong type of intersection curve #1"
+} else {
+    puts "OK : Good type of intersection curve #1"
+}
+
+if { [regexp ${type_of_curve} ${info2}] != 1 } {
+    puts "Error : Wrong type of intersection curve #2"
+} else {
+    puts "OK : Good type of intersection curve #2"
+}
+
+smallview
+donly i1_1 i2_1
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+

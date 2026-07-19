@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC23706"
+puts "============"
+puts ""
+#########################################################################
+# Cannot project point on curve
+#########################################################################
+
+cpulimit 1000
+
+bsplinecurve r9 2 6 1 3 2 1 3 1 4 1 5 1 6 3 4 -3 3 1 6 8 3 1 10 11 3 1 10 11 3 1 10 11 3 1 14 14 3 1 5 8 3 1
+bsplinecurve r10 2 6 2 3 2.5 1 3 1 3.5 1 4 1 4.5 3 5 20 3 1 8 15 3 1 12 18 3 1 12 18 3 1 12 18 3 1 16 21 3 1 7 12 3 1
+
+set info [extrema r9 r10]
+
+if { [llength $info] != 1 } {
+    puts "Error : Extrema is wrong"
+} else {
+    puts "OK: Extrema is valid"
+}

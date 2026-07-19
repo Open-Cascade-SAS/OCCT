@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC222"
+puts "========"
+puts ""
+
+#############################################
+##Regression in dev as compare C40 (bad tolerance after fixshape)
+#############################################
+
+stepread [locate_data_file trj3_s1-ac-214.stp] a *
+
+tpcompound result
+
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance result] full MaxFace
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance result] full MaxEdge
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance result] full MaxVertex
+
+if { $MaxFace > 1 || $MaxEdge > 1 || $MaxVertex > 1 } {
+   puts "Error : Tolerance of shape is more then 1.0"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC24499"
+puts "============"
+puts ""
+############################################################################
+# fixshape produces inverted solid
+############################################################################
+
+pload XSDRAW
+
+restore [locate_data_file bug24499_solid.brep] a
+point p 0 0 0
+
+set cls1 [bclassify a p]
+if { [regexp {OUT} $cls1] } {
+    puts "CORRECT classification of the 3D-point with the Solid"
+} else {
+    puts "Faulty : Wrong classification of the 3D-point with the Solid"
+}
+
+fixshape result a
+set cls2 [bclassify result p]
+if { [regexp {OUT} $cls2] } {
+    puts "CORRECT classification of the 3D-point with the Solid building by fixshape"
+} else {
+    puts "Faulty : Wrong classification of the 3D-point with the Solid building by fixshape"
+}

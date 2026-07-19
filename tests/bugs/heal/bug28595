@@ -1,0 +1,23 @@
+puts "TODO OCC28595 ALL: Faulty shapes in variables faulty_1"
+#puts "TODO OCC28595 ALL: Error: bad tolerance of fixshape"
+
+puts "========"
+puts "OCC28595"
+puts "========"
+puts ""
+##########################################################################
+## Shifting 2d curves for non-periodic surfaces leads to incorrect result.
+##########################################################################
+
+restore [locate_data_file bug28595_face.brep] f
+
+fixshape res f
+
+checkshape res
+
+regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance f]   full f_Tolerance
+regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance res] full res_Tolerance
+
+if { ${res_Tolerance} > ${f_Tolerance} } {
+   puts "Error: bad tolerance of fixshape"
+}

@@ -1,0 +1,18 @@
+puts "============"
+puts "CR24835: Graphic structure for highlighting is not erased if presentable object for highlight is deleted."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit v
+box b 1 1 1
+vdisplay b
+vfit
+vselmode b 1 1
+vmoveto 380 104 
+vmoveto 29 103
+vremove b
+vclose v 1
+vinit
+
+vdump $imagedir/${casename}.png

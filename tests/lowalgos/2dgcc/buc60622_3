@@ -1,0 +1,19 @@
+puts "=================================="
+puts "BUC60622"
+puts "=================================="
+puts "There was an infinity of solutions and also c1, c2 and c3 are solutions"
+puts ""
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+
+circle c3 500 3000 250
+circle c2 375 3000 125
+circle c1 625 3000 125
+cirtang result -c c1 -c c2 -c c3
+
+checklength result_1 -l 1570.7963267948965
+checklength result_2 -l 785.39816339744868
+checklength result_3 -l 785.39816339744823
+checklength result_4 -l 523.59877559829806
+checklength result_5 -l 523.59877559829806

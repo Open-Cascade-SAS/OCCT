@@ -1,0 +1,22 @@
+
+puts "========================"
+puts " OCC318 "
+puts "========================"
+puts ""
+##################################################
+## Checkshape works wrong with Semi-Infinite Prism (s)
+##################################################
+
+box mb -0.5 -0.5 -0.5 1 1 1 
+explode mb F 
+prism result mb_1 1 0 0 SemiInf 
+
+set che [checkshape result]
+if { [regexp {Faulty} $che] == 1} {
+    puts "Faulty OCC318: Result shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC318 OK: Result shape is valid"
+}
+
+checkprops result -s 8e+100 
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,8 @@
+restore [locate_data_file CTO900_ger60039a.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 4.7800000020000003e-005
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

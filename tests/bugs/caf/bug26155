@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC26155"
+puts "============"
+puts ""
+###################################################################################
+# TNaming, CurrentShape: order of shapes in Modification compound is unpredictable.
+###################################################################################
+
+pload QAcommands
+
+NewDocument D BinOcaf
+
+set x_ref 0.0
+set x_tol 0.1
+set result 1
+
+for {set i 1} {$i <= 50} {incr i} {
+  set lab $i:1
+
+  box b   0 0 0 10 10 10
+  box b_1 0 0 0  5 10 10
+  box b_2 5 0 0  5 10 10
+
+  BuildNamedShape D [set lab]:1 PRIMITIVE b
+  BuildNamedShape D [set lab]:1:1 MODIFY b b_1
+  BuildNamedShape D [set lab]:1:2 MODIFY b b_2
+  CurrentShape D "[set lab]:1" r
+  explode r so
+  regexp {X += +([-0-9.+eE]+)} [vprops r_1 $x_tol] full x_1
+
+  if { $x_ref == 0 } {
+    set x_ref $x_1
+  } elseif { [expr abs ($x_1 - $x_ref)] > $x_tol } {
+    puts "Error: order of components of modified shape compound is not permanent."
+    break
+  }
+}

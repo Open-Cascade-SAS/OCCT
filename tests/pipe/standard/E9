@@ -1,0 +1,10 @@
+bsplinecurve profile 2 3 0 3 1 1 2 3 0 30 -21 5 -30 -30 24  5 30 -30 24 5 0 30 -21 5
+mkedge profile profile 
+wire profile profile 
+mkplane profile profile
+beziercurve w 7 0 0 0 0 2000 50 0 1700 700 0 400 300 0 0 0 0 900 400 0 140 100
+mkedge w w
+wire w w
+pipe result w profile
+
+checkprops result -s 304960

@@ -1,0 +1,18 @@
+puts "================"
+puts "0022149: Strings with Japanese characters can not be displayed in 3D viewer"
+puts "================"
+puts ""
+
+pload VISUALIZATION
+dtracelevel trace
+vfont -verbose 1
+vfont add [locate_data_file bug22149_mona.ttf] Mona
+vclear
+vinit View1
+vaxo
+vdrawtext text0 HELLO -pos 0 0 0 -color GREEN -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular
+vdrawtext text1 [encoding convertfrom unicode \x42\x30] -pos 0 0 200 -color RED -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font Mona
+vdrawtext text2 [encoding convertfrom unicode \x42\x30] -pos 0 0 400 -color BLUE -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font cjk
+vdrawtext text3 [encoding convertfrom unicode \x5C\xD5\x6D\xAD\xB4\xC5] -pos 0 0 -200 -color MAGENTA -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font korean
+
+vdump $imagedir/${casename}.png

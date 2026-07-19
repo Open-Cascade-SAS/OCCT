@@ -1,0 +1,16 @@
+
+box b 10 10 10
+explode b
+explode b_1
+
+NewDocument D
+XAddShape D b
+XAddDimension D b_1_1
+#0:1:4:1
+XSetDimensionType D  0:1:4:1 15
+XSetDimensionValue D  0:1:4:1 2.5
+XSetDimensionQualifier D  0:1:4:1 2
+
+set c_value "2.5"
+set c_type "Size_Diameter"
+set c_qalif "Max"

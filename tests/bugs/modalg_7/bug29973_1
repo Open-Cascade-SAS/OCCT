@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC29973: Modeling Algorithms - access violation within BRepAlgoAPI_Cut on empty input shape"
+puts "========"
+puts ""
+
+
+pload QAcommands
+
+compound c
+box b 1 2 3
+if {![regexp "Test complete" [OCC25446 r b c 2]]} {
+  puts "Error: test incomplete"
+}
+
+compound b bc
+checknbshapes r -ref [nbshapes bc]
+checkprops r -equal bc

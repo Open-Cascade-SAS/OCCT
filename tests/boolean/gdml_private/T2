@@ -1,0 +1,2 @@
+source [locate_data_file 20000_salle-experience.asm.4.gdml.tcl]
+

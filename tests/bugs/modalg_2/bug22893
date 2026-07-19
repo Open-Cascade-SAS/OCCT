@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC22893"
+puts "============"
+puts ""
+#############################################################################
+# Possible regression is tessellation algorithm of OCCT 6.5.2 
+#############################################################################
+
+set BugNumber OCC22893
+
+catch {pload XDE}
+
+igesread [locate_data_file OCC22893-thread_22534_boing777.igs] result *
+
+checkprops result -s 26974.5 
+checkshape result
+
+checknbshapes result -vertex 4183 -edge 4191 -wire 653 -face 639 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 9667
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

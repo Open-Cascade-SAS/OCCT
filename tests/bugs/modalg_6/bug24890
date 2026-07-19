@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC24890"
+puts "============"
+puts ""
+##############################################################
+## Result of uniform scaling is invalid
+##############################################################
+
+restore [locate_data_file bug24890_f0.brep] f0
+
+setflags f0 locked
+nurbsconvert result f0
+
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

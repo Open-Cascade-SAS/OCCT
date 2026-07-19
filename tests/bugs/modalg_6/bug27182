@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC27182"
+puts "========"
+puts ""
+#################################
+# Wrong result of General Fuse operation for two spheres
+#################################
+
+
+restore [locate_data_file bug27182_Solid_417.brep] b1
+restore [locate_data_file bug27182_Solid_420.brep] b2
+bclearobjects
+bcleartools
+baddobjects b1 b2
+bfillds
+bbuild result
+
+checkprops result -s 5.69241e-005
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 5
+ EDGE      : 7
+ WIRE      : 6
+ FACE      : 4
+ SHELL     : 3
+ SOLID     : 3
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 29
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t

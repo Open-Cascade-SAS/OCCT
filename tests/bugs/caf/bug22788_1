@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC22788"
+puts "============"
+puts ""
+#######################################################################
+# 
+#######################################################################
+
+pload QAcommands
+
+set BugNumber OCC22788
+
+NewDocument D BinOcaf
+
+set aFile OCC22788.cbf
+
+Open [locate_data_file ${aFile}] D
+
+Close D
+
+return
+
+set log [OCC159 D]
+
+set list [split ${log}]
+set ll [llength ${list}]
+
+if { ${ll} < 13 } {
+    puts "OCC159: Error"
+} else {
+    set DocRefCount1 [lindex ${list} 2]
+    set DocOwner1    [lindex ${list} 5]
+    set DocOwner2    [lindex ${list} 8]
+    set DocRefCount2 [lindex ${list} 11]
+    set deltaRefCount [expr ${DocRefCount1} - ${DocRefCount2}]
+    if { ${DocOwner2} == "NULL" && ${deltaRefCount} >= 1 } then {
+	puts "OCC159: OK"
+    } else {
+	puts "OCC159: Error"
+    }
+}

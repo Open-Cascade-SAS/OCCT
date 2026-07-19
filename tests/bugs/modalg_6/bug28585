@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC28585"
+puts "========"
+puts ""
+#################################################
+# Wrong value of area computation
+#################################################
+
+# The face in Steps To Reproduce is based on infinite planar surface.
+# If we convert this surface to trimmed planar surface then
+# the area of obtained face will be significantly different from source one.
+
+restore [locate_data_file bug28589.brep] result
+mksurface ss result
+trim ss ss -1000 1000 -1000 1000
+explode result w
+mkface f1 ss result_1
+fixshape f1 f1
+
+
+# Before fix: 349.112
+checkprops result -s 253.417
+
+# Before fix: 253.417
+checkprops f1 -s 253.417
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC25124"
+puts "========"
+puts ""
+######################################################
+# Removal of continuity checks for offset geometries
+######################################################
+
+smallview
+
+restore [locate_data_file OCC25124_a_15592.draw] a2
+getsurfcontinuity a2
+offset o2 a2 20
+getsurfcontinuity o2
+
+set bug_info_1 [dump a2]
+set bug_info_1 [string range $bug_info_1 39 [expr {[string length $bug_info_1] -1}]]
+set bug_info_2 [dump o2]
+set bug_info_2 [string range $bug_info_2 39 [expr {[string length $bug_info_2] -1}]]
+if {[string compare $bug_info_1 $bug_info_2] == 0} {
+  puts "ERROR: OCC25124 is reproduced (a2 = o2)."
+}
+
+donly a2 o2
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

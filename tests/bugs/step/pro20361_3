@@ -1,0 +1,13 @@
+puts "================"
+puts "PRO20361"
+puts "case 3"
+puts "================"
+
+param read.step.product.mode OFF
+stepread [locate_data_file PRO20361-3.stp] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,17 @@
+puts "======="
+puts "0031461: Mesh - Add possibility to force the meshing of the shape"
+puts "======="
+puts ""
+
+psphere s 10
+
+incmesh s 0.01
+checktrinfo s -tri 10108 -nod 5106
+
+incmesh s 0.1 -decrease
+checktrinfo s -tri 978 -nod 507
+
+tclean -geom s
+incmesh s 0.01
+tclean s
+checktrinfo s -tri 978 -nod 507

@@ -1,0 +1,20 @@
+puts "======="
+puts "OCC26842"
+puts "======="
+puts ""
+##################################################
+# bopsection result does not contain any edges.
+##################################################
+
+restore [locate_data_file bug26842_s1.brep] s1
+restore [locate_data_file bug26842_plane.brep] plane
+
+bsection result s1 plane
+
+checkshape result
+checksection result
+
+checknbshapes result -vertex 2 -edge 1
+checkprops result -l 1765.01
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

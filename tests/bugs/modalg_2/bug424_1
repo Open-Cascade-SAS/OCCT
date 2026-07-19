@@ -1,0 +1,22 @@
+
+puts "========================"
+puts " OCC424 "
+puts "(case 1)"
+puts "========================"
+puts ""
+
+restore [locate_data_file CFE_e_lonfzx.rle] E 
+nexplode E f
+
+profile cont S E_10 F 50 -100 X 50 Y -100 X -50
+featdprism E cont E_10 10 1 1
+
+if [catch {featperform dprism result E_5 E_6 } catch_result] {
+    puts "Faulty OCC424 (case 1): function FEATPERFORM works wrongly"
+} else {
+    puts "OCC424 OK (case 1): function FEATPERFORM works properly"
+}
+
+checkprops result -s 978236. 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

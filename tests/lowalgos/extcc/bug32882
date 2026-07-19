@@ -1,0 +1,36 @@
+puts "========"
+puts "OCC32882: Modeling Data - Extrema curve/curve cannot find all solutions"
+puts "========"
+puts ""
+
+
+# Read input
+restore [locate_data_file bug32882.brep] cc
+explode cc
+
+# Extract geometry from topology
+mkcurve c1 cc_1
+mkcurve c2 cc_2
+mkcurve c3 cc_3
+
+# Run extrema c1/c3
+set info [extrema c1 c3]
+
+# Check number of solution
+if { [llength $info] != 3 } {
+   puts "Error: Invalid extrema number in extrema c1-c3 output"
+}
+
+# Check result
+checklength ext_1 -l 2.929642751e-14 -eps .01
+checklength ext_2 -l 3.480934286e-14 -eps .01
+checklength ext_3 -l 2.929642751054232-14 -eps .01
+
+# Run extrema c3/c2
+set info [extrema c3 c2]
+# Check number of solutions
+if { [llength $info] != 2 } {
+   puts "Error: Invalid extrema number in extrema c3-c2 output"
+}
+checklength ext_1 -l 5.684341886e-14 -eps .01
+checklength ext_2 -l 2.929642751e-14 -eps .01

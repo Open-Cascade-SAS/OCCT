@@ -1,0 +1,26 @@
+puts "========="
+puts " OCC210 "
+puts "========="
+puts ""
+##################################################
+# Improve FixShape to correct case of touching wires
+##################################################
+puts "TODO CR22598 ALL: Faulty shapes in variables faulty_1 to faulty_" 
+
+pload XDE
+
+cpulimit 1000
+
+set BugNumber OCC210
+
+set filepath [locate_data_file UKI60591.stp]
+if [catch { stepread $filepath a * } result] {
+    puts "Faulty ${BugNumber}: here is reading problem"
+} else {
+    puts "Reading ${BugNumber} OK"
+    tpcompound r
+    fixshape result r
+    checkshape result
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

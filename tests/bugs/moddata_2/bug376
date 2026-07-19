@@ -1,0 +1,19 @@
+
+puts "========================"
+puts "BUC61049"
+puts " OCC376 "
+puts "========================"
+puts ""
+####################################
+##. Offset can not be created on the attached surface
+####################################
+
+restore [locate_data_file OCC376.rle] s 
+
+offset r s 1
+
+mkface result s
+
+checkprops result -s 1256.64
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

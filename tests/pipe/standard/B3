@@ -1,0 +1,10 @@
+ellipse profile 20 0 0 0 1 1 5 2
+mkedge profile profile
+wire profile profile
+mkplane profile profile
+ellipse w 20 20 0 1 0 0 60 20
+mkedge w w
+wire w w
+pipe result w profile
+
+checkprops result -s 4755.96

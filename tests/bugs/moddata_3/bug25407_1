@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC25407"
+puts "================"
+puts ""
+#######################################################################
+# Exception in extrema operation.
+#######################################################################
+
+restore [locate_data_file bug25407_e2.brep] e
+restore [locate_data_file bug25407_f2.brep] f
+
+mkcurve c e
+mksurface s f
+
+extrema c s
+
+if { [isdraw ext_1] } {
+   set len [lindex [length ext_1] end]
+   checkreal "Extrema min distance" $len 1.88322e-11 1.e-7 1.e-7
+} else {
+   puts "Error: invalid result"
+}

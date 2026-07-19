@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC20807"
+puts "============"
+puts ""
+#######################################################################
+# Construction of pipe among a helix containing several convolutions fails
+#######################################################################
+
+set BugNumber OCC20807
+
+restore [locate_data_file bug20807_coil2.brep] spine 
+
+restore [locate_data_file bug20807_circ2.brep] profile 
+
+mksweep spine
+addsweep profile
+
+buildsweep result
+
+checkprops result -s 2933.11 
+checkshape result
+
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 8
+checkview -display result -2d -path ${imagedir}/${test_image}.png

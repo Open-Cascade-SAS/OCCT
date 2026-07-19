@@ -1,0 +1,23 @@
+puts "================"
+puts "CR24127"
+puts "================"
+puts ""
+###############################################
+## Mesh generated with BRepMesh_FastDiscret does not reflect a deflection setting
+###############################################
+
+bsplinesurf s 2 4 0.0 3 0.34 1 0.67 1 1.0 3 1 2 0.0 2 1.0 2 10 0 0 1 6 0 0 1 4 0 0 1 2 0 0 1 0 0 0 1 10 5 0 1 6 5 0 1 4 5 0 1 1.5 9 0 1 0 5 0 1
+
+mkface f s
+
+incmesh f 1
+
+trinfo f
+
+checktrinfo f -tri 20 -nod 21 -defl 0.70238336519888955 -tol_abs_defl 1.e-3 -tol_rel_defl 0.01
+
+vinit
+vdisplay f
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

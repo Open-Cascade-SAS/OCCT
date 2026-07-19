@@ -1,0 +1,86 @@
+#INTERFACE CAF
+# Tree construction attributes
+#
+# Testing attribute: TDataStd_TreeNode
+#
+# Testing command:   PrependNode
+#
+# Testing command:   SetNode
+# Testing command:   AppendNode
+# Testing command:   ChildNodeIterate
+#
+
+puts "caf005-E2"
+set QA_DUP 0
+
+# Add an attribute to a data framework
+set aLabel_Root 0:2
+set aName_Root Label_1
+Label D ${aLabel_Root}
+SetName D ${aLabel_Root} ${aName_Root}
+
+set aName1 Label_1_1
+###set aChild1 [NewChild D ${aLabel_Root}]
+set aChild1 0:2:1
+Label D ${aChild1}
+SetName D ${aChild1} ${aName1}
+
+set aName2 Label_1_2
+###set aChild2 [NewChild D ${aLabel_Root}]
+set aChild2 0:2:2
+Label D ${aChild2}
+SetName D ${aChild2} ${aName2}
+
+set aName3 Label_1_1_1
+###set aChild3 [NewChild D ${aLabel_Root}]
+set aChild3 0:2:3
+Label D ${aChild3}
+SetName D ${aChild3} ${aName3}
+
+SetNode D ${aLabel_Root}
+AppendNode D ${aLabel_Root} ${aChild1}
+PrependNode D ${aLabel_Root} ${aChild2}
+PrependNode D ${aLabel_Root} ${aChild3}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel_Root}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set IsDone [catch {set aListChildNodes [ChildNodeIterate D ${aLabel_Root} 1]} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Prepend TDataStd_TreeNode attribute: Error"
+	return
+}
+set aListChildNodesLength [llength ${aListChildNodes}]
+if { ${aListChildNodesLength}!=[expr 3 + 0]} {
+	puts "aListChildNodes=${aListChildNodes}"
+	puts "aListChildNodesLength=${aListChildNodesLength}"
+	puts "Prepend TDataStd_TreeNode attribute: Error"
+	return
+}
+set aFirstChildNode [lindex ${aListChildNodes} 0]
+set aSecondChildNode [lindex ${aListChildNodes} 1]
+set aThirdChildNode [lindex ${aListChildNodes} 2]
+if { ${aFirstChildNode}!=${aChild3} ||
+	${aSecondChildNode}!=${aChild2} ||
+	${aThirdChildNode}!=${aChild1}} {
+	puts "aFirstChildNode=${aFirstChildNode} aChild1=${aChild1}"
+	puts "aSecondChildNode=${aSecondChildNode} aChild2=${aChild2}"
+	puts "aThirdChildNode=${aThirdChildNode} aChild3=${aChild3}"
+	puts "Prepend TDataStd_TreeNode attribute: Error"
+	return
+}
+
+puts "Prepend TDataStd_TreeNode attribute: OK"

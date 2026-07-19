@@ -1,0 +1,16 @@
+restore [locate_data_file OCC100_sp.brep] a
+restore [locate_data_file OCC100_cyl.brep] b
+
+bclearobjects
+bcleartools
+baddobjects a b
+bfillds
+bcbuild rx
+
+# use Cells Builder to perform CUT Shell from the Solid
+bcadd result b 1 a 0
+
+checknbshapes result -shell 2 -solid 2 -face 5
+checkprops result -s 1309.65 -v 1256.64
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

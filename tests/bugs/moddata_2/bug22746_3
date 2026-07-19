@@ -1,0 +1,46 @@
+puts "============"
+puts "OCC22746"
+puts "============"
+puts ""
+###########################################################################
+# Progress indicator in ShapeHealing
+###########################################################################
+
+set BugNumber OCC22746
+
+set Min_ListLength 11
+
+catch { pload XSDRAW }
+
+restore [locate_data_file OCC22761-TransmissionTestModel5-notfixed.brep] a 
+vinit
+XProgress -t
+set List1 [fixshape result a]
+puts "----------------------"
+XProgress +t
+set List2 [fixshape result a]
+
+set status 0
+
+if { ${List1} != ${List2}} {
+    set status 0
+} else {
+    set status 1
+}
+
+if { [ regexp {Progress:} $List2 ] } {
+    puts "${BugNumber} OK"
+    set status 0
+} else {
+    puts "${BugNumber} Faulty"
+    set status 1
+}
+
+if { $status != 0 } {
+    puts  "Faulty $BugNumber"
+} else {
+    puts  "OK $BugNumber"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+checkprops result -s 7.46496e+06

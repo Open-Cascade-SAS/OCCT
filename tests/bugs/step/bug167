@@ -1,0 +1,10 @@
+puts "========"
+puts "OCC167"
+puts "========"
+
+stepread [locate_data_file OCC167.step] a *
+
+tpcompound result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

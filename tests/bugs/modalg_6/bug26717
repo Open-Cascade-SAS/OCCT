@@ -1,0 +1,46 @@
+puts "============"
+puts "OCC26717"
+puts "============"
+puts ""
+######################################################
+# Error in IntPatch_PrmPrmIntersection: change of local resolution leads to break of walking line
+######################################################
+
+smallview
+
+set expected_MaxTolerance 2.14e-05
+set tol_abs_MaxTolerance 1.e-06
+set tol_rel_MaxTolerance 1.e-06
+
+set FileName1 bug26717_xrf1_eval_fuselage.brep
+restore [locate_data_file ${FileName1}] a
+
+set FileName2 bug26717_xrf1_eval5_wing.brep
+restore [locate_data_file ${FileName2}] b
+
+bfuse r a b
+
+set aList [explode r]
+
+# check 1
+if { [llength ${aList}] == 1} {
+  puts "OK: Good explode of result"
+} else {
+  puts "Error: Bad explode of result"
+}
+
+# check2
+checknbshapes r -solid 1
+
+# check3
+checkshape r
+
+# check4
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance r] full MaxTolerance
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+clear
+donly r
+fit
+
+xwd ${imagedir}/${test_image}.png

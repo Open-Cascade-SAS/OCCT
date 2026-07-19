@@ -1,0 +1,39 @@
+puts "========"
+puts "0030198: Regression to 7.1.0: BRepAlgoAPI_Fuse unlimited memory usage"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30198_src.brep] b1
+restore [locate_data_file bug30198_tool.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+bapibop r0 0
+bapibop r1 1
+bapibop r2 2
+bapibop r3 3
+bapibop r4 4
+
+checkshape r0
+checknbshapes r0 -wire 33 -face 32 -shell 1 -solid 1
+checkprops r0 -s 46.2958 -v 11.2502
+
+checkshape r1
+checknbshapes r1 -wire 163 -face 151 -shell 1 -solid 1
+checkprops r1 -s  216.217 -v 62.6126
+
+checkshape r2
+checknbshapes r2 -wire 153 -face 142 -shell 2 -solid 2
+checkprops r2 -s 222.03 -v 47.9412
+
+checkshape r3
+checknbshapes r3 -wire 43 -face 41 -shell 1 -solid 1
+checkprops r3 -s 40.5104 -v 3.42122
+
+checksection r4 -r 0
+
+checkview -display r1 -2d -path ${imagedir}/${test_image}.png

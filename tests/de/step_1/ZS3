@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj3_t2-db-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 15 )  Warnings = 0  ( 10 )  Summary  = 0  ( 25 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 8 )  Summary  = 8  ( 8 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 16  ( 16 ) 
+STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 16  ( 16 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 2.387426923e-005  ( 2.441746656e-005 )  AvgTol   =  6.169442064e-006  (  6.250668193e-006 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 1  ( 1 )   LayerLabels = 1  ( 1 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 0  ( {  0} )
+
+}

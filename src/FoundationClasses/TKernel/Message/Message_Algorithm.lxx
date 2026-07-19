@@ -1,0 +1,74 @@
+// Created on: 2007-07-06
+// Created by: Pavel TELKOV
+// Copyright (c) 2007-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Message_Algorithm.hxx>
+#include <TCollection_HExtendedString.hxx>
+
+//=================================================================================================
+
+inline void Message_Algorithm::SetStatus(const Message_Status& theStat,
+                                         const char* const     theStr,
+                                         const bool            noRepetitions)
+{
+  SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
+}
+
+//=================================================================================================
+
+inline void Message_Algorithm::SetStatus(const Message_Status&          theStat,
+                                         const TCollection_AsciiString& theStr,
+                                         const bool                     noRepetitions)
+{
+  SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
+}
+
+//=================================================================================================
+
+inline void Message_Algorithm::SetStatus(const Message_Status&                        theStat,
+                                         const occ::handle<TCollection_HAsciiString>& theStr,
+                                         const bool                                   noRepetitions)
+{
+  SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
+}
+
+//=================================================================================================
+
+inline void Message_Algorithm::SetStatus(const Message_Status&             theStat,
+                                         const TCollection_ExtendedString& theStr,
+                                         const bool                        noRepetitions)
+{
+  SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
+}
+
+//=================================================================================================
+
+inline const Message_ExecStatus& Message_Algorithm::GetStatus() const
+{
+  return myStatus;
+}
+
+//=================================================================================================
+
+inline Message_ExecStatus& Message_Algorithm::ChangeStatus()
+{
+  return myStatus;
+}
+
+//=================================================================================================
+
+inline occ::handle<Message_Messenger> Message_Algorithm::GetMessenger() const
+{
+  return myMessenger;
+}

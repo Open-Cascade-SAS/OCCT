@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC17357"
+puts "============"
+puts ""
+#######################################################################
+# Any boolean operation is impossible between attached shapes
+#######################################################################
+
+restore [locate_data_file OCC17357-1.brep] b1
+restore [locate_data_file OCC17357-2.brep] b2
+
+bop b1 b2
+bopsection result
+
+checkprops result -l 3.84991 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,27 @@
+puts "========================"
+puts "OCC22368: AIS_Trihedron's highlight presentation isn't updated on trihedron relocation"
+puts "========================"
+puts ""
+
+pload VISUALIZATION QAcommands
+vclear
+vinit View1
+vtrihedron trihedron
+OCC74_set trihedron 3
+
+set x1 200
+set x2 220
+set x3 210
+
+set y 190
+
+vselect ${x3} ${y}
+
+vsetlocation trihedron 100 100 100
+
+set status 0
+for {set i ${x1} } {$i <= ${x2} } {incr i} {
+  checkcolor ${i} ${y} 0 0 0
+}
+
+vdump $imagedir/${casename}.png

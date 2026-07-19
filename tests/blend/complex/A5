@@ -1,0 +1,12 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : C1
+## Comment : from original bug PRO4536
+## ====================================
+
+restore [locate_data_file CCH_blendhdp.rle] s
+tscale s 0 0 0 1000
+explode s e
+blend result s 5 s_3
+
+checkprops result -s 35295.4

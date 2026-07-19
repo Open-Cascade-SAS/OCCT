@@ -1,0 +1,42 @@
+puts "============"
+puts "OCC26296"
+puts "============"
+puts ""
+#######################################################################
+# Errors in BRepOffsetAPI_MakeOffset: failure because of wrong direction of bisector.
+#######################################################################
+
+restore [locate_data_file bug26296_wrong1_face.brep] a
+
+smallview
+display a
+fit
+
+if [catch { mkoffset resoffset a 1 5. i } ] {
+  puts "Error : mkoffset is wrong"
+} else {
+  renamevar resoffset_1 result
+
+  checkprops result -l 559.215 
+checkshape result 
+checksection result
+
+  set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 5
+ EDGE      : 5
+ WIRE      : 1
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 11
+"
+  checknbshapes result -ref ${nbshapes_expected} -t -m "Offset"
+
+  display result
+  fit
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

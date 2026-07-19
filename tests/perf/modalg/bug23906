@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC23906"
+puts "============"
+puts ""
+###############################
+## Performance of the projection algorithm in some cases became lower after integration of the fix for the bug 0022610
+###############################
+
+restore [locate_data_file bug23906_f.brep] f
+
+point p 3.5527136788005e-015 100 100
+
+dchrono h restart
+
+projponf f p -min -t
+
+dchrono h stop counter projponf

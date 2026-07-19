@@ -1,0 +1,11 @@
+puts "========"
+puts "0028782: Shape sewing behavior not consistent for the same CAD file"
+puts "========"
+puts ""
+
+
+binrestore [locate_data_file bug28782.bbrep] a
+tcopy a a1
+sewing r 0.001 a
+sewing r1 0.001 a1
+checknbshapes r1 -ref [nbshapes r]

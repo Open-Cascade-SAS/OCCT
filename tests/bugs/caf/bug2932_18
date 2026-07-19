@@ -1,0 +1,115 @@
+puts "================"
+puts "OCC2932"
+puts "================"
+puts ""
+#######################################################################################
+# Create Attribute Delta depending on actual change of the attribute 
+#######################################################################################
+# Case 16 (TDataStd_Shape)
+#######################################################################################
+
+# Create a new document and set UndoLimit
+NewDocument D BinOcaf
+UndoLimit D 100
+
+# Create a label and set attributes
+NewCommand D
+set Label 0:2
+
+############################################
+# Create a box
+set X 10
+set Y 20
+set Z 30
+set DX 100
+set DY 200
+set DZ 300
+box Box ${X} ${Y} ${Z} ${DX} ${DY} ${DZ}
+############################################
+
+set Real1 300.
+set Real2 400.
+set modified_attribute TDataStd_Real
+
+############################################
+# Set TDataStd_Shape
+SetShape D ${Label} Box
+############################################
+
+SetReal D ${Label} ${Real1}
+set list [DumpCommand D]
+
+# Open a transaction
+NewCommand D
+set list [DumpCommand D]
+
+############################################
+# Set old value for TDataStd_Shape
+SetShape D ${Label} Box
+############################################
+
+# Set new value for TDataStd_Real
+SetReal D ${Label} ${Real2}
+set list [DumpCommand D]
+
+# Open a transaction
+NewCommand D
+set list [DumpCommand D]
+
+# Checking
+if { 1 == 2 } {
+set ll [llength ${list}]
+set good_length 17
+puts "length = ${ll}"
+puts "good_length = ${good_length}"
+
+if { ${ll} != ${good_length} } {
+  puts "OCC2932 Error (case 1)"
+} else {
+  set name_attribute [lindex ${list} [expr ${good_length} - 1]]
+  puts "name_attribute = ${name_attribute}"
+  puts "modified_attribute = ${modified_attribute}"
+  if {[string compare ${name_attribute} ${modified_attribute}] == 0} {
+    puts "OCC2932 OK"
+  } else {
+    puts "OCC2932 Error (case 2)"
+  }
+}
+}
+
+# NEW VERSION!!!!!
+set ll [llength ${list}]
+set good_length 20
+puts "length = ${ll}"
+puts "good_length = ${good_length}"
+
+if { ${ll} != ${good_length} } {
+  puts "OCC2932 Error (case 1)"
+} else {
+  set name_attribute1 [lindex ${list} [expr ${good_length} - 1]]
+  set name_attribute2 [lindex ${list} [expr ${good_length} - 4]]
+  set modified_attribute2 TNaming_NamedShape
+  puts "name_attribute1 = ${name_attribute1}"
+  puts "name_attribute2 = ${name_attribute2}"
+  puts "modified_attribute = ${modified_attribute}"
+  puts "modified_attribute2 = ${modified_attribute2}"
+
+  set Is_TDataStd_Real 0
+  set Is_TNaming_NamedShape 0
+  if {[string compare ${name_attribute1} ${modified_attribute}] == 0 ||
+      [string compare ${name_attribute2} ${modified_attribute}] == 0 } {
+    set Is_TDataStd_Real 1
+  }
+  if {[string compare ${name_attribute1} ${modified_attribute2}] == 0 ||
+      [string compare ${name_attribute2} ${modified_attribute2}] == 0 } {
+    set Is_TNaming_NamedShape 1
+  }
+
+
+  if { ${Is_TDataStd_Real} == 1 && ${Is_TNaming_NamedShape} == 1 } {
+    puts "OCC2932 OK"
+  } else {
+    puts "OCC2932 Error (case 2)"
+  }
+
+}

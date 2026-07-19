@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC27830"
+puts "============"
+puts ""
+######################################################
+# Infinite HLR looping
+######################################################
+
+restore [locate_data_file bug27830_body1.brep] result
+
+vinit
+vdisplay result
+vfit
+vhlr on
+vhlrtype algo result
+
+# no screenshot since the shape is a garbage, the test is just to check performance

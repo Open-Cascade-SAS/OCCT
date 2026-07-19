@@ -1,0 +1,44 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Comment
+#
+# Testing command:   SetComment
+# Testing command:   GetComment
+#
+
+puts "caf001-F3"
+
+# Add an attribute to a data framework
+set aSetAttr1 "New Attribute"
+set aLabel 0:2
+Label D ${aLabel}
+SetComment D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-F3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetAttr3 [GetComment DD ${aLabel}]} aResult]
+if { ${IsDone} != 0 ||
+	${aSetAttr1}!=${aGetAttr3} } {
+	puts ${aResult}
+	puts "aSetAttr1=${aSetAttr1} aGetAttr3=${aGetAttr3}"
+	puts "Get a value of TDataStd_Comment attribute from restoring document: Error"
+	return
+}
+puts "Get a value of TDataStd_Comment attribute from restoring document: OK"

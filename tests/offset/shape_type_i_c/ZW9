@@ -1,0 +1,11 @@
+restore [locate_data_file bug26917_dom8036.input_art5.brep] s
+
+OFFSETSHAPE 6 {} $calcul $type
+
+checkprops result -v 7543.63
+checkprops result -s 2359.85
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 13 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

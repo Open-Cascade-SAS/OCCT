@@ -1,0 +1,18 @@
+puts "================"
+puts "CR23614"
+puts "================"
+puts ""
+#####################################################################
+# BRepMesh creates incorrect triangulation on the attached models
+#####################################################################
+
+restore [locate_data_file bug23614_face1.brep] f1
+tclean f1
+incmesh f1 0.01
+
+checktrinfo f1 -tri -nod
+
+top
+fit
+triangles f1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

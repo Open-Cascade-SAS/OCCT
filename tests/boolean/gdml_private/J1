@@ -1,0 +1,2 @@
+source [locate_data_file 20000_et5_401-ta6156.prt.2.gdml.tcl]
+

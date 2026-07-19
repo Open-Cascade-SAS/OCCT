@@ -1,0 +1,12 @@
+#A6----------------------------------------------
+box b1 40 40 15
+profile p o 25 20 10 p 0 -1 0 1 0 0 l 10 t 0 30 \
+t -7 0  
+revol p p 20 20 0 0 0 1 330
+bfuse f b1 p
+nexplode f f
+#deouillep result f 0 0 1 f_10 1 0 0 40 0 0 1
+depouille result f 0 0 1 f_8 3 0 0 40 0 0 1 \
+f_7 5 0 0 40 0 0 1
+
+checkprops result -s 9087.81

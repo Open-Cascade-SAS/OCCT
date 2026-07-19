@@ -1,0 +1,22 @@
+puts "================================================================"
+puts "CR26792"
+puts "Visualization, Graphic3d - Z-fit support for transform persistence is missing after removing Visual3d_View"
+puts "================================================================"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+vaxo
+
+box b 50 50 50
+vdisplay b -trsfPers zoom
+vzoom 0.01
+vzfit
+
+checkcolor 204 184 1.0 1.0 0.0
+checkcolor 238 205 1.0 1.0 0.0
+checkcolor 275 182 1.0 1.0 0.0
+checkcolor 239 184 1.0 1.0 0.0
+
+vdump $imagedir/${casename}.png

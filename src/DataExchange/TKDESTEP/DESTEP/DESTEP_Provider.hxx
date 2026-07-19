@@ -1,0 +1,236 @@
+// Copyright (c) 2022 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _DESTEP_Provider_HeaderFile
+#define _DESTEP_Provider_HeaderFile
+
+#include <DESTEP_ConfigurationNode.hxx>
+#include <DE_Provider.hxx>
+
+//! The class to transfer STEP files.
+//! Reads and Writes any STEP files into/from OCCT.
+//! Each operation needs configuration node.
+//!
+//! Providers grouped by Vendor name and Format type.
+//! The Vendor name is "OCC"
+//! The Format type is "STEP"
+//! The import process is supported.
+//! The export process is supported.
+class DESTEP_Provider : public DE_Provider
+{
+public:
+  DEFINE_STANDARD_RTTIEXT(DESTEP_Provider, DE_Provider)
+
+public:
+  //! Default constructor
+  //! Configure translation process with global configuration
+  Standard_EXPORT DESTEP_Provider();
+
+  //! Configure translation process
+  //! @param[in] theNode object to copy
+  Standard_EXPORT DESTEP_Provider(const occ::handle<DE_ConfigurationNode>& theNode);
+
+public:
+  //! Reads a CAD file, according internal configuration
+  //! @param[in] thePath path to the import CAD file
+  //! @param[out] theDocument document to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    const TCollection_AsciiString&       thePath,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Writes a CAD file, according internal configuration
+  //! @param[in] thePath path to the export CAD file
+  //! @param[out] theDocument document to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    const TCollection_AsciiString&       thePath,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Reads a CAD file, according internal configuration
+  //! @param[in] thePath path to the import CAD file
+  //! @param[out] theDocument document to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    const TCollection_AsciiString&       thePath,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Writes a CAD file, according internal configuration
+  //! @param[in] thePath path to the export CAD file
+  //! @param[out] theDocument document to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    const TCollection_AsciiString&       thePath,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Reads a CAD file, according internal configuration
+  //! @param[in] thePath path to the import CAD file
+  //! @param[out] theShape shape to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    const TCollection_AsciiString&      thePath,
+    TopoDS_Shape&                       theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
+
+  //! Writes a CAD file, according internal configuration
+  //! @param[in] thePath path to the export CAD file
+  //! @param[out] theShape shape to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    const TCollection_AsciiString&      thePath,
+    const TopoDS_Shape&                 theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    WriteStreamList&                     theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    ReadStreamList&                     theStreams,
+    TopoDS_Shape&                       theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    WriteStreamList&                    theStreams,
+    const TopoDS_Shape&                 theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
+
+  //! Reads a CAD file, according internal configuration
+  //! @param[in] thePath path to the import CAD file
+  //! @param[out] theShape shape to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    const TCollection_AsciiString& thePath,
+    TopoDS_Shape&                  theShape,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
+
+  //! Writes a CAD file, according internal configuration
+  //! @param[in] thePath path to the export CAD file
+  //! @param[out] theShape shape to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    const TCollection_AsciiString& thePath,
+    const TopoDS_Shape&            theShape,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    WriteStreamList&                     theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT bool Read(
+    ReadStreamList&              theStreams,
+    TopoDS_Shape&                theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT bool Write(
+    WriteStreamList&             theStreams,
+    const TopoDS_Shape&          theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+
+public:
+  //! Gets CAD format name of associated provider
+  //! @return provider CAD format
+  Standard_EXPORT TCollection_AsciiString GetFormat() const override;
+
+  //! Gets provider's vendor name of associated provider
+  //! @return provider's vendor name
+  Standard_EXPORT TCollection_AsciiString GetVendor() const override;
+
+private:
+  //! Personizes work session with current format.
+  //! Creates new temporary session if current session is null
+  //! @param[in] theWS current work session
+  void personizeWS(occ::handle<XSControl_WorkSession>& theWS);
+};
+
+#endif // _DESTEP_Provider_HeaderFile

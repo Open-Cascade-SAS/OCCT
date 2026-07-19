@@ -1,0 +1,11 @@
+# Original bug : usa60111
+# Date : 18Mai98
+
+pcylinder c1 10 20
+pcylinder c2 5 20
+ttranslate c2 5 0 10
+
+bfuse result c1 c2
+
+checkprops result -s 2199.11
+checkview -display result -2d -otherwise { c1 c2 } -s -path ${imagedir}/${test_image}.png

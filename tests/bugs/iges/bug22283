@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC22283"
+puts "========"
+puts ""
+##########################################################################
+# Problem with reading of attached IGES file
+##########################################################################
+
+igesbrep [locate_data_file bug22283_Mtwz_Training_Part.iges] a *
+tpcompound result
+
+checkprops result -s 46235.4
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ EDGE      : 1380
+ WIRE      : 209
+ FACE      : 167
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "importing file"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

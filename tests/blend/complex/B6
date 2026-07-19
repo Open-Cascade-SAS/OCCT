@@ -1,0 +1,11 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : F1
+## Comment : from pro12881
+## ====================================
+
+restore [locate_data_file CTO900_pro12880c.rle] a
+explode a e
+blend result a 5 a_89
+
+checkprops result -s 199538

@@ -1,0 +1,30 @@
+puts "========================"
+puts "0032556: Data Exchange - A toroidal part of solid is corrupted while writing or reading STEP file"
+puts "========================"
+
+# Create fused shape
+ptorus a1 5 3
+plane pp 5 0 -5
+pcylinder a2 pp 2 10
+bfuse a a1 a2 
+
+# Write fused shape
+testwritestep ${imagedir}/${casename}.stp a
+# Read fused shape
+testreadstep ${imagedir}/${casename}.stp res
+
+file delete ${imagedir}/${casename}.stp
+
+# Check fused shape
+checkshape res f
+checknbshapes res -edge 12 -vertex 7
+checkprops res -s 649.9
+
+# Display result fused shape
+clear
+smallview
+donly res
+isos res 0
+fit
+isos res 2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

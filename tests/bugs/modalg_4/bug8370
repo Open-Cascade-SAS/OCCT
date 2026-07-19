@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC8370"
+puts "================"
+puts ""
+#######################################################################################
+# One face is not displayed in shading mode 
+######################################################################################
+
+set BugNumber OCC8370
+
+pload XDE
+
+igesread [locate_data_file OCC8370-part1.igs] result *
+
+checkprops result -s 25310.8 
+checkshape result
+
+checknbshapes result -vertex 5065 -edge 5105 -wire 416 -face 399 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10986
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

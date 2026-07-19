@@ -1,0 +1,30 @@
+puts "========="
+puts "OCC24247"
+puts "========="
+puts ""
+###########################################################
+# Wrong result obtained by General Fuse algorithm
+###########################################################
+
+restore [locate_data_file bug24247_Box.brep] b1
+restore [locate_data_file bug24247_InsideBox.brep] b2
+restore [locate_data_file bug24247_c1.brep] b3
+restore [locate_data_file bug24247_c2.brep] b4
+restore [locate_data_file bug24247_c3.brep] b5
+restore [locate_data_file bug24247_plane_1.brep] b6
+restore [locate_data_file bug24247_plane_2.brep] b7
+restore [locate_data_file bug24247_plane_3.brep] b8
+restore [locate_data_file bug24247_plane_4.brep] b9
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3 b4 b5 b6 b7 b8 b9
+
+bfillds
+bbuild result
+
+checkprops result -s 260611 
+checkshape result
+
+checknbshapes result -vertex 44 -edge 108 -wire 74 -face 74 -shell 17 -solid 17 -compsolid 0 -compound 1 -shape 335
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC24181 Render text as BRep (composite curve)"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+set THE_TEXT "The quick brown fox\njumps over the lazy dog!"
+set THE_FONT_NAME sans-serif
+set THE_FONT_SIZES {12 18 24}
+
+vinit View1
+vsetdispmode 1
+vtop
+
+dtracelevel trace
+vfont -verbose 1
+
+set aLine 0
+set aLineId 0
+foreach aSize $THE_FONT_SIZES {
+  set aText "\[$aSize\] $THE_TEXT"
+
+  vpoint aPnt_$aSize 0.0 $aLine 0.0
+  vdrawtext "Line_$aLineId" $aText -pos 0.0 $aLine 0.0 -color CYAN -halign left -valign top -angle 000 -zoom 1 -height $aSize -aspect bolditalic -font $THE_FONT_NAME
+
+  text2brep aBText_$aSize $aText -font $THE_FONT_NAME -height $aSize -aspect bolditalic -composite on -pos 0.0 $aLine 0.0 -valign topfirstline
+  vdisplay  aBText_$aSize
+  set aLine [expr $aLine - 4.0 * $aSize]
+  set aLineId [expr $aLineId + 1]
+}
+
+vfit
+vglinfo
+vdump $imagedir/${casename}.png

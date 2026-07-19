@@ -1,0 +1,8 @@
+puts "TODO OCC23068 ALL: Error : The volume of result shape "
+puts "TODO OCC25406 ALL: Error: bsection of the result and s is not equal to zero"
+
+psphere s 15 -90 60 270
+
+OFFSETSHAPE 1 {} $calcul $type
+
+checkprops result -v 0

@@ -1,0 +1,78 @@
+
+puts "================"
+puts "BUC61032"
+puts "OCC106"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC106-1.draw] sh1 
+####          checkshape sh1 # - not a topological shape
+restore [locate_data_file OCC106-2.draw] sh2
+####          checkshape sh2 # - not a topological shape
+
+trimv s1 sh1 -1000 1000
+trimv s2 sh2 -1000 1000
+
+if [catch {intersect res s1 s2} result] {
+set mistake 1
+} else {
+set  mistake 0
+}
+
+if { $mistake == 0 } {
+ puts ""
+ set nom 0
+   set j 1
+   repeat 10 {
+     set che [whatis res_$j]
+      set che1 [whatis res_$j]
+       set err [lindex $che [expr [llength $che] - 1]]
+        set err1 [lindex $che1 [expr [llength $che1] - 2]]
+
+          if { $err != "curve" && $err1 != "3d"} {
+          	break
+              } else {
+              set nom [expr $nom + 1]
+              }
+    incr j}
+ if { $nom == 0} {
+    puts "1) Faulty OCC106: Intersection was made WRONGLY"
+} else {
+  puts [format "1) OCC106 OK : Intersection command works properly: %s curves" $nom]
+  puts ""
+} 
+} else {
+    puts "1) Faulty OCC106: Intersection was made WRONGLY"
+}
+
+if [catch {intersect rrs sh1 sh2} result] {
+set mistake 1
+} else {
+set  mistake 0
+}
+
+if { $mistake == 0 } {
+ puts ""
+ set nom 0
+   set j 1
+   repeat 10 {
+     set che [whatis rrs_$j]
+      set che1 [whatis rrs_$j]
+       set err [lindex $che [expr [llength $che] - 1]]
+        set err1 [lindex $che1 [expr [llength $che1] - 2]]
+
+          if { $err != "curve" && $err1 != "3d"} {
+          	break
+              } else {
+              set nom [expr $nom + 1]
+              }
+    incr j}
+ if { $nom == 0} {
+    puts "2) Faulty OCC106: Intersection was made WRONGLY"
+} else {
+  puts [format "2) OCC106 OK : Intersection command works properly: %s curves" $nom]
+}
+} else {
+    puts "2) Faulty OCC106: Intersection was made WRONGLY"
+}
+

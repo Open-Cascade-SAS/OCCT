@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC17026"
+puts "============"
+puts ""
+########################################################################
+# Problem of reading IGES files
+########################################################################
+
+igesread [locate_data_file OCC17026-2.igs] a *
+tpcompound result
+
+checkprops result -s 8.80533e+09
+checkshape result
+checknbshapes result -vertex 8 -edge 12 -wire 4 -face 4 -shell 0 -solid 0 -compsolid 0 -compound 2 -shape 30
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

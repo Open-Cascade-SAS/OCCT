@@ -1,0 +1,7 @@
+# test for generating funny shape 
+source $env(CSF_OCCTResourcePath)/samples/tcl/Penrose.tcl
+
+# make a snapshot
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

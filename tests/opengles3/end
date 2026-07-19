@@ -1,0 +1,2 @@
+catch { vglinfo }
+puts "TEST COMPLETED"

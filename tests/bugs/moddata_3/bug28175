@@ -1,0 +1,48 @@
+puts "============"
+puts "CR28175"
+puts "==========="
+puts ""
+###############################################################################
+# Bad result of curve-curve extrema
+###############################################################################
+
+pload MODELING
+
+# Prepare curves.
+restore [locate_data_file bug28175_border.brep] b
+restore [locate_data_file bug28175_segment.brep] s
+explode b
+explode s
+mkcurve cb b_6
+mkcurve cs s_1
+
+# Check result of forward arguments order.
+extrema cb cs 1
+set info [length ext_1]
+regexp {The length ext_1 is +([-0-9.+eE]+)} $info full len1
+if { $len1 > 1e-7 } {
+  puts "Error: extrema finds distance $len1 (parameters [dval prm_1_1] and [dval prm_1_3]"
+  puts "while should be 4.5985092243989615e-008 (parameters 23.548772710035486
+ and 585.69374860054825"
+} else {
+ puts "OK: Correct extrema point is found for forward arguments order"
+}
+
+# Check result of reversed arguments order.
+extrema cs cb 1
+set info [length ext_1]
+regexp {The length ext_1 is +([-0-9.+eE]+)} $info full len2
+if { $len2 > 1e-7 } {
+  puts "Error: extrema finds distance $len2 (parameters [dval prm_1_1] and [dval prm_1_3]"
+  puts "while should be 4.5985092243989615e-008 (parameters 23.548772710035486
+ and 585.69374860054825"
+} else {
+  puts "OK: Correct extrema point is found for reversed arguments order"
+}
+
+# Check that order not influence minimum value.
+if { abs ($len1 - $len2) > 1e-4 * ($len1 + $len2) } {
+  puts "Error: distance between cb to cs ($len1) is not equal to distance between cs and cb ($len2)"
+} else {
+  puts "OK: Extrema values are equal for forward and reversed arguments order"
+}

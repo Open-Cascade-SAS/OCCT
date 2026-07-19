@@ -1,0 +1,11 @@
+
+puts "========"                                                                                                                                                 
+puts "BUC60967"                                                                                                                                                 
+puts "========"                                                                                                                                                 
+puts ""                                                                         
+
+restore [locate_data_file buc60967.draw] bs2 
+
+to3d result bs2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

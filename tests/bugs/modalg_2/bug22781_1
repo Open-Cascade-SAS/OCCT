@@ -1,0 +1,16 @@
+puts "================"
+puts "OCC22781"
+puts "================"
+puts ""
+#######################################################################################
+# Regression in GCPnts_TangentialDeflection
+######################################################################################
+
+set BugNumber OCC22781
+
+restore [locate_data_file OCC22781-BeforeCont.brep] result
+
+checkprops result -l 5.82393 
+checkshape result 
+checksection result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

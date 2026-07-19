@@ -1,0 +1,18 @@
+puts "============="
+puts "0030076: Visualization, TKV3d - API to update certain vertex attribute(s) without recomputing a presentation"
+puts "============="
+
+set c1 {c 1 0 0}
+set c2 {c 0 0 1}
+
+pload VISUALIZATION
+
+vclear
+vinit View1
+vdrawparray a        triangles -deinterleaved -mutable v 10 0 0 {*}$c1 v 11 0 0 {*}$c1 v 11 1 0 {*}$c1 v 11 1 0 {*}$c2 v 10 1 0 {*}$c2 v 10 0 0 {*}$c2
+vfit
+vdump $imagedir/${casename}_1.png
+vdrawparray a -patch triangles -deinterleaved -mutable v 10 0 0 {*}$c2 v 11 0 0 {*}$c2 v 11 1 0 {*}$c2 v 11 1 0 {*}$c1 v 10 1 0 {*}$c1 v 10 0 0 {*}$c1
+if { [vreadpixel 200 150 rgb name] != "RED2"  } { puts "Error: array was not updated" }
+if { [vreadpixel 200 250 rgb name] != "BLUE2" } { puts "Error: array was not updated" }
+vdump $imagedir/${casename}_2.png

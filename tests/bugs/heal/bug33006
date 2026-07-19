@@ -1,0 +1,22 @@
+puts "========================================="
+puts "OCC33006: UnifySameDomain raises exceptio"
+puts "========================================="
+puts ""
+
+restore [locate_data_file bug33006.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -t -solid 1 -shell 1 -face 3 -wire 4 -edge 11 -vertex 4
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.004416} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -s 77917.5 -v 195647
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

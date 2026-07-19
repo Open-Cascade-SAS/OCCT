@@ -1,0 +1,29 @@
+puts "REQUIRED All: 1	F: Syntax error in IGES file at line "
+puts "================"
+puts "OCC22165"
+puts "================"
+puts ""
+#######################################################################################
+# IGES translator does not produce any shape
+######################################################################################
+
+set BugNumber OCC22165
+
+catch { pload XDE }
+
+igesbrep [locate_data_file OCC22165-cub_spain.igs] result *
+
+set Log [data c]
+
+set LogLength [llength ${Log}]
+
+if { ${LogLength} < 21 } {
+    puts "Bad format of data-command"
+    puts "Faulty ${BugNumber}"
+} else {
+    regexp -all {1[ \t]*F: Syntax error in IGES file at line ([-0-9.+eE]+) in section ([A-Z]).} $Log full word1 word2
+    if { ${word1} != "204" || ${word2} != "P" } {
+	puts "Faulty ${BugNumber}"
+    }
+}
+

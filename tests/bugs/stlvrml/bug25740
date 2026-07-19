@@ -1,0 +1,43 @@
+puts "================"
+puts "OCC25740"
+puts "================"
+puts ""
+#######################################################################################
+# VrmlData_Scene::WriteArrIndex() writes extra point indices
+#######################################################################################
+
+set BugNumber OCC25740
+
+set aFile $imagedir/${test_image}.vrml
+
+ptorus p 10 8 0 90 120
+incmesh p 0.1
+
+explode p e
+
+writevrml p_3 ${aFile} 2 2
+
+set status 1
+if { ![file exists ${aFile}] } {
+  set status 0
+}
+
+# Check file size
+set filesize [ file size ${aFile} ]
+if { ${filesize} == 0 } {
+  set status 0
+}
+
+set fd0 [ open ${aFile} r ]
+set filecontent [ read ${fd0} ]
+close $fd0
+
+if { ![regexp {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, -1} ${filecontent} full] } {
+  set status 0 
+}
+
+if {$status == 1} {
+  puts "OK ${BugNumber}"
+} else {
+  puts "Faulty ${BugNumber}"
+}

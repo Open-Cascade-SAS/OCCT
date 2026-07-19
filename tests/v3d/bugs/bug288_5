@@ -1,0 +1,18 @@
+puts "============ OCC288 (case 5) ==============="
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC288e.brep] result 
+
+#Delete invalid (in terms of bug#25109) triangulation
+tclean result
+checkshape result
+
+vinit View1
+vdisplay result
+vsetdispmode result 1
+isos result 0
+triangles result
+vfit
+
+checktrinfo result -tri 8130 -nod 8288
+vdump $imagedir/${casename}.png

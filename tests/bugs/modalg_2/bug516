@@ -1,0 +1,24 @@
+
+puts "========"
+puts "OCC516"
+puts "========"
+puts ""
+#########################################
+## Wrong classification of the 3D-point with the Solid .
+#########################################
+
+point  p 14.99999878745701 5.52319672860377e-07 7.78393041
+vertex v 14.99999878745701 5.52319672860377e-07 7.78393041
+restore [locate_data_file OCC516.brep] result
+
+set cls [bclassify result p]
+
+if { [regexp {OUT} $cls] } {
+    puts "Faulty : Wrong classification of the 3D-point with the Solid"
+} else {
+    puts "CORRECT classification of the 3D-point with the Solid"
+}
+
+checkprops result -s 7752.98 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,14 @@
+#K4----------------------------------------------
+beziercurve cb 4  2 0 0  20 10 0  20 20 0  2 30 0 
+polyline pl 2 30 0  2 0 0
+mkedge ed cb
+wire ww ed pl
+mkplane ww ww
+revol rv ww 0 0 0 0 1 0 -180
+profile pf o -5 10 5 l 4 c 3 90 l 4 d -1 0 l 7
+prism pr pf 0 0 15
+bfuse f rv pr
+nexplode f f
+depouille result f 0 0 1 f_8 5 0 0 20 0 0 1
+
+checkprops result -s 2208.65

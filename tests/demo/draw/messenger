@@ -1,0 +1,28 @@
+puts "=================================="
+puts "0029451: Information Message Alert to debug an algorithm or object functionality"
+puts "=================================="
+pload MODELING
+
+#ostream printer
+PrintMessenger
+SendMessage "processing a text message in ostream" "information message" "test faulty message" "warning message"
+
+#report printer
+SetMessagePrinter -type report
+PrintMessenger
+SendMessage "processing a text message in report" "information message" "test faulty message" "warning message"
+
+PrintReport -dumpJson
+
+#report printer with metric
+ClearReport
+SetReportMetric 1 3
+CollectMetricMessages -activate 1
+SendMessage "processing metric report"
+CollectMetricMessages -activate 0
+
+PrintReport -dumpJson
+SetMessagePrinter -type report -state off
+PrintMessenger
+
+puts "TEST COMPLETED"

@@ -1,0 +1,48 @@
+puts "============"
+puts "CR26462: Visualization - selection does not adapt to line width change"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+vinit View1
+box b1 10 10 10
+box b2 10 10 10
+
+vdisplay b1 b2
+vsetlocation b1 10 10 0
+vfit
+
+vaspects b1 b2 -setWidth 3
+
+vselmode 2 1
+# try to select b1 and b2
+vselect 305 322 -xor
+vselect 103 322 -xor
+# check that both boxes were not selected with default tolerance value
+set aNbSelected [vnbselected]
+if {$aNbSelected != "0"} {
+  puts "ERROR: no boxes must be selected!"
+}
+
+puts "0029779: Visualization, SelectMgr_SelectableObject - sensitivity change for object not activated in given mode leads to crash"
+vaspects b1 -setSensitivity 3 4
+
+# increase tolerance for b1
+vaspects b1 -setSensitivity 2 4
+
+# select edge of b1
+vselect 305 322
+# check that b1's edge was selected
+set aNbSelected [vnbselected]
+if {$aNbSelected != "1"} {
+  puts "ERROR: b1 was not selected"
+}
+# try to select b2
+vselect 103 322 -xor
+# check that increase of tolerance for b1 doesn't influence
+# on b2
+set aNbSelected [vnbselected]
+if {$aNbSelected != "1"} { puts "ERROR: b2 is selected after b1's tolerance increased" }
+
+vdump ${imagedir}/${casename}.png

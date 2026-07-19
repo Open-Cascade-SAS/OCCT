@@ -1,0 +1,38 @@
+puts "========================"
+puts " OCC33028: Standard_ConstructionError while using ShapeUpgrade_UnifySameDomain"
+puts "========================"
+puts ""
+
+pload STEP
+
+stepread [locate_data_file bug33028_kalip.stp] s *
+
+set nbsBefore "
+Number of shapes in shape
+ VERTEX    : 543
+ EDGE      : 819
+ WIRE      : 359
+ FACE      : 289
+ SHELL     : 2
+ SOLID     : 2
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 2015
+"
+checknbshapes s_1 -ref ${nbsBefore} -t -m "result before attempt to simplify the model"
+
+unifysamedom result s_1
+
+set nbsAfter "
+Number of shapes in shape
+ VERTEX    : 515
+ EDGE      : 805
+ WIRE      : 359
+ FACE      : 289
+ SHELL     : 2
+ SOLID     : 2
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 1973
+"
+checknbshapes result -ref ${nbsAfter} -t -m "result after attempt to simplify the model"

@@ -1,0 +1,16 @@
+
+puts "================"
+puts "OCC315"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC315-1.brep] f1 
+restore [locate_data_file OCC315-2.brep] f2
+checkshape f1
+checkshape f2
+
+bcut result f1 f2
+
+checkprops result -s 58584.1 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

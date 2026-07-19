@@ -1,0 +1,26 @@
+puts "========"
+puts "AIS_Shape - displaying TopoDS_Face with NULL surface (test case checks there is no crash)"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+restore [locate_data_file bug27821_nullsurf.brep] s
+explode s F
+
+# check that sprops and vprops do not crash on NULL surface
+sprops s
+vprops s
+
+# check that AIS_Shape does not crash on NULL surface
+vclear
+vinit View1
+vaxo
+vdisplay -noupdate -dispMode 0 s
+vaspects s -subshapes s_1 -setcolor RED
+vdisplay -noupdate -dispMode 1 s
+vaspects s -unsetFaceBoundary
+vaspects s -setFaceBoundaryDraw 1 -setFaceBoundaryColor RED -setFaceBoundaryWidth 2
+vfit
+vselect 250 250
+
+vdump $imagedir/${casename}.png

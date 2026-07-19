@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC25982"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by General Fuse operator.
+###############################
+
+restore [locate_data_file bug25982_human_head_3.brep] b1
+
+tcopy b1 b2
+tmirror b2 0 0 0 1 0 0
+explode b1 f
+explode b2 f
+copy b1_4 b1
+copy b2_4 b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+ 
+bfillds
+bbuild result
+
+checknbshapes result -vertex 6 -edge 11 -wire 4 -face 2 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 24 -t -m "Result obtained by General Fuse operator"
+
+checkprops result -s 306.285 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

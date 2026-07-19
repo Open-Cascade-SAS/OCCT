@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC19811"
+puts "============"
+puts ""
+#######################################################################
+# Scaling problem. Appendix for NPAL19806 
+#######################################################################
+
+set BugNumber OCC19811
+
+puts "Load shape ..."
+restore [locate_data_file bug19811_VanneMP_supports_tiges_V3.brep] result
+
+puts "Scaling operation ..."
+if [catch { tscale result 0 0 0 0.5 } catch_result] {
+   puts "Faulty ${BugNumber} : Scaling is wrong"
+}
+
+checkprops result -s 1.6949e+06 
+checkshape result
+
+checknbshapes result -vertex 173 -edge 285 -wire 113 -face 113 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 686
+vinit
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

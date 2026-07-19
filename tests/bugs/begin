@@ -1,0 +1,105 @@
+# File : begin
+
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+    pload TOPTEST
+    pload VISUALIZATION
+}
+
+# to prevent loops limit to 16 minutes
+cpulimit 1000
+
+set rel_tol 0
+set max_rel_tol_diff 0
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image] == 0 } {
+   set test_image photo
+}
+
+# Procedure to check equality of two reals with tolerance (relative and absolute)
+help checkarea {shape area_expected tol_abs tol_rel}
+proc checkarea {shape area_expected tol_abs tol_rel} {
+    # compute area with half of the relative tolerance
+    # to be used in comparison; 0.001 is added to avoid zero value
+    set prop [uplevel sprops $shape [expr 0.5 * abs($tol_rel) + 0.001]]
+
+    # get the value
+    if { ! [regexp {Mass\s*:\s*([0-9.e+-]+)} $prop res area] } {
+        puts "Error: cannot get area of the shape $shape"
+        return
+    }
+
+    # compare with expected value
+    checkreal "area of $shape" $area $area_expected $tol_abs $tol_rel
+}
+
+# Check if area of triangles is valid
+proc CheckTriArea {shape {eps 0}} {
+  upvar #0 $shape result
+  set area [triarea result $eps]
+  set t_area [lindex $area 0]
+  set g_area [expr abs([lindex $area 1])]
+  puts "area by triangles: $t_area"
+  puts "area by geometry:  $g_area"
+  expr ($t_area - $g_area) / $g_area * 100
+}
+
+# Check expected time
+proc checktime {value expected tol_rel message} {
+   set t1 [expr ${value} - ${expected}]
+   set t2 [expr ${expected} * abs (${tol_rel})]
+
+   if { abs (${t1}) <= ${t2} } {                                         
+      puts "OK. ${message}, ${value} seconds, is equal to expected time - ${expected} seconds"
+   } elseif {${t1} > ${t2}} {
+      puts "Error. ${message}, ${value} seconds, is more than expected time - ${expected} seconds"
+   } else {
+      puts "Improvement. ${message}, ${value} seconds, is less than expected time - ${expected} seconds"
+   }
+}
+
+# Reads resource file, returns options from file as key-value dict
+proc parse_resource_file {theFileName} {
+    # Creating empty dictionary
+    set aDict [dict create];
+    # Check for resource file
+    if { [info exists theFileName] == 0 } {
+       puts "Error: resource file \"${theFileName}\" isn't found"
+       return $aDict
+   }
+   # Open a resource file
+   set aFD [open "${theFileName}" "rb"]
+   set aLineNo 0
+   # Read line by line
+   while {[gets $aFD aLine] !=-1 } {
+       incr aLineNo
+       # Clear the line from comment
+       if {[regexp {(^[^!]+)} $aLine match aClearLine]} {
+          # remove spaces
+          set aClearLine [string trim $aClearLine]
+          if {[string length $aClearLine] != 0} {
+             if {[regexp {(\S+)\s*:\s*(\S*)} $aClearLine match aKey aValue]} {
+                 dict set aDict $aKey $aValue
+             } else {
+                puts "Error: syntax error in resource file at line: ${aLineNo}"
+             }
+          }   
+       }
+   }
+   close $aFD
+   return $aDict
+}
+
+# Creates new resource file with options as key-value dict
+proc create_resource_file {theFileName theOptions} {
+   # Open a resource file
+   set aFD [open "${theFileName}" "wb"]
+   set aLineNo 0
+   # Write line by line
+   dict for {aKey aValue} $theOptions {
+       puts $aFD "${aKey} : ${aValue}"
+   }
+   close $aFD
+}

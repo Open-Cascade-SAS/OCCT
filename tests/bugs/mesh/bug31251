@@ -1,0 +1,30 @@
+puts "======="
+puts "0031251: Mesh - Add a parameter for IncrementalMesh to ignore face tolerance for face deflection"
+puts "======="
+puts ""
+
+pload XDE
+
+stepread [locate_data_file bug31251_Albatros_d2_elisa_a.STEP] a *
+renamevar a_1 result
+
+vinit
+vtop
+vsetdispmode 1
+vdefaults -autoTriang 0
+
+tclean result
+incmesh result 0.004 -a 14
+checktrinfo result -tri 72560 -nod 40946 -defl 0.24607185555570676 -tol_abs_defl 1e-6
+
+vdisplay result -redisplay
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}_default.png
+
+tclean result
+incmesh result 0.004 -a 14 -force_face_def
+checktrinfo result -tri 288010 -nod 148671 -defl 0.16388671063364907 -tol_abs_defl 1e-6
+
+vdisplay result -redisplay
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}_tightfit.png

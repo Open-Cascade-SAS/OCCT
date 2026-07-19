@@ -1,0 +1,12 @@
+pcylinder c1 2 5
+profile p x 2 y 2 x -2 y -2
+trotate p 0 0 0 1 0 0 90
+ttranslate p -1 -4 4
+explode c1 f
+mksurface f c1_1
+mkface f f
+
+featprism c1 p p 0 1 0 1 1
+featperform prism result f
+
+checkprops result -s 109.383

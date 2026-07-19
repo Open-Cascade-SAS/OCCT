@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC25820"
+puts "========"
+puts ""
+###################################################################
+# No Intersection Curves between surface of revolution and planes
+###################################################################
+
+restore [locate_data_file OCC25820-Revolution_5.brep] b1
+explode b1 f
+copy b1_4 b1
+
+restore [locate_data_file OCC25820-Translation_1.brep] b2
+explode b2 f
+copy b2_2 b2
+
+smallview
+clear
+display b1
+display b2
+fit
+
+set info [bopcurves b1 b2]
+regexp {Tolerance Reached=([-0-9.+eE]+)} $info full bug_info_tol
+regexp {([0-9]+) curve\(s\) found.} $info full bug_info_cur
+
+if {$bug_info_tol > 1.0e-7} {
+  puts "ERROR: OCC25820 is reproduced. Tolerance is to large ($bug_info_tol)."
+}
+
+if {$bug_info_cur != 1} {
+  puts "ERROR: OCC25820 is reproduced. Too many curves were found."
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

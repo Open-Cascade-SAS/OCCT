@@ -1,0 +1,20 @@
+puts "========"
+puts "0026338: STL export (especially binary) needs a lot of time if selected export path is not local"
+puts "========"
+puts ""
+
+# make sphere triangulated with 2M triangles
+sphere s 10
+tessellate result s 1000 1000
+trinfo result
+
+# write to binary STL
+chrono s restart
+writestl result $imagedir/${casename}-binary.stl 1
+chrono s stop counter writestl
+set aFileSize [file size $imagedir/${casename}-binary.stl]
+if {$aFileSize < 100000000} {
+  puts "Error: unexpected file size"
+} else {
+  file delete -force $imagedir/${casename}-binary.stl
+}

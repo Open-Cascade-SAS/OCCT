@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC15968"
+puts "============"
+puts ""
+#######################################################################
+# Result of checkshape command depends on order of subshapes in a shape 
+#######################################################################
+
+restore [locate_data_file OCC15968.brep] s
+
+explode s f
+
+# shell 2
+shape s2 sh
+add s_1 s2
+add s_2 s2
+renamevar s2 result
+
+checkprops result -s 164 
+checkshape result
+checknbshapes result -vertex 10 -edge 11 -wire 3 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 27
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,8 @@
+restore [locate_data_file CFE903_cts20ghb.rle] a
+
+sewing result $tol a
+
+checkmaxtol result -ref 0.119903315235504
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

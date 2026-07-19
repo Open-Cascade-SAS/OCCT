@@ -1,0 +1,42 @@
+puts "=================================================================================="
+puts "0030630: Visualization - wrong visualization of shape with mirrored transformation"
+puts "Check that solid with mirrored transformation is displayed as turned out"
+puts "=================================================================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+vrotate 3 0 0
+vcamera -persp
+
+# Simple box
+box b 1 1 1
+vdisplay -dispMode 1 b
+vaspects b -setBackFaceColor RED
+vfit
+vdump $imagedir/${casename}_simple.png
+verase b
+
+# Box with mirror transformation
+box a 1 1 1
+fmirror a 0 0 0 1 0 0
+vdisplay -dispMode 1 a
+vaspects a -setBackFaceColor RED
+vfit
+box aa -0.5 0.5 0.5 0.1 0.1 0.1
+vdisplay -dispMode 1 aa
+vsetcolor aa BLUE
+vdump $imagedir/${casename}_mirror.png
+if { [vreadpixel 195 220 rgb name] != "BLUE2" } { puts "Error: mirrored box should look inside out" }
+verase a
+
+# Box with mirror transformation and reversed face
+box c 1 1 1
+fmirror c 0 0 0 1 0 0
+orientation c R
+vdisplay -dispMode 1 c
+vaspects c -setBackFaceColor RED
+vfit
+vdump $imagedir/${casename}_mirrev.png
+if { [vreadpixel 195 220 rgb name] == "BLUE2" } { puts "Error: reversed mirrored box should NOT look inside out" }

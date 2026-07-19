@@ -1,0 +1,8 @@
+#A1----------------------------------------------
+box b1 40 40 10
+box b2 10 10 10 20 20 10
+bfuse f b1 b2
+nexplode f f
+depouille result f 0 0 1 f_10 5 20 20 20 0 0 1
+
+checkprops result -s 5592.02

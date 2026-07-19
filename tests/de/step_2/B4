@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename trj12_b3-tu-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 67 )  Summary  = 0  ( 67 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 696  ( 696 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 696  ( 696 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =  0.03072365531  (   0.3955378762 )  AvgTol   =  0.001233491805  (  0.004088996403 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 543  ( 548 )  N2Labels = 0  ( 0 )   TotalLabels = 546  ( 551 )   NameLabels = 5  ( 5 )   ColorLabels = 542  ( 394 )   LayerLabels = 542  ( 547 )
+PROPS       : Centroid = 2  ( 2 )  Volume   = 2  ( 2 )  Area     = 2  ( 2 )
+NCOLORS     : NColors  = 9  ( 9 )
+COLORS      : Colors   = CADETBLUE3 GOLDENROD3 HOTPINK3 LIGHTPINK3 MEDIUMSEAGREEN OLIVEDRAB4 STEELBLUE3 WHITE YELLOW  ( CADETBLUE3 GOLDENROD3 HOTPINK3 LIGHTPINK3 MEDIUMSEAGREEN OLIVEDRAB4 STEELBLUE3 WHITE YELLOW )
+NLAYERS     : NLayers  = 21  ( 21 )
+LAYERS      : Layers   = 001 011 012 013 014 015 016 017 018 019 020 021 022 023 024 026 027 028 029 031 051  ( 001 011 012 013 014 015 016 017 018 019 020 021 022 023 024 026 027 028 029 031 051 )
+
+}

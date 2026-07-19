@@ -1,0 +1,8 @@
+#C1----------------------------------------------
+psphere p 20 0 90
+box bx 5 .5 10 10 5 20
+bfuse f p bx
+nexplode f f
+depouille result f 0 0 1 f_5 5 0 0 30 0 0 1
+
+checkprops result -s 4173.36

@@ -1,0 +1,16 @@
+puts "============"
+puts "0025939: S I G S E G V in MakeThickSolid"
+puts "============"
+puts ""
+
+psphere Sphere 5
+pcylinder Cylinder 83 100
+ttranslate Cylinder -83 0 -50
+bcut Cut Sphere Cylinder
+explode Cut F
+
+offsetparameter 1e-7 p a
+offsetload Cut -2 Cut_4
+catch {offsetperform Thickness}
+
+checkview -display Thickness -2d -path ${imagedir}/${test_image}.png

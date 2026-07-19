@@ -1,0 +1,10 @@
+puts "============"
+puts "0031039: Visualization - add elliptical gradient background style"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+
+vbackground -gradient WHITE BLACK -gradientMode ELLIPTICAL
+vdump $imagedir/${casename}.png

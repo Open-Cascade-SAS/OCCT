@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC365"
+puts "========"
+puts ""
+
+igesbrep [locate_data_file BUC61004-4.igs] a *
+
+tpcompound result
+checkshape result
+checkshape result r
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

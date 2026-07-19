@@ -1,0 +1,12 @@
+puts "CTS20196"
+puts ""
+
+restore [locate_data_file CFE900_cts20gan.rle] base
+restore [locate_data_file cts20196_face.rle] cont
+
+# test ope. top.
+prism prism cont 0 20 0
+
+bcut result base prism
+checkprops result -s 250288
+checkview -display result -2d -s -otherwise { base prism } -path ${imagedir}/${test_image}.png

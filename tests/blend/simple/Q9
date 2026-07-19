@@ -1,0 +1,8 @@
+restore [locate_data_file 4_K1(hlacg01).draw] s
+tscale s 0 0 0 SCALE
+explode s E
+blend result s SCALE*0.0025 s_6
+explode result Sh
+renamevar result_1 result
+ 
+checkprops result -s 1497.77

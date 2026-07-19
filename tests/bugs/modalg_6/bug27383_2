@@ -1,0 +1,27 @@
+puts "========"
+puts "0027383: Modeling - improve handling of regularity on edges"
+puts "========"
+puts ""
+#################################################################
+# Check regularity setting on edges of cylinder split by angle
+#################################################################
+
+# split of cylinder
+pload MODELING
+pcylinder p 2 10
+DT_SplitAngle r p
+
+explode r f
+explode r_1 e
+getedgeregularity r_1_2 r_1 r_2 ;# returns C0: regularity is not set at all
+encoderegularity r
+if { ! [regexp "CN" [getedgeregularity r_1_2 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected CN"
+}
+
+# make image in HLR mode as illustration
+pload VISUALIZATION
+vdisplay r
+vfit
+vhlr on
+vdump ${imagedir}/${test_image}.png

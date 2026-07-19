@@ -1,0 +1,9 @@
+puts "TODO #25937 ALL: Faulty shapes in variables faulty_1"
+#puts "TODO #22911 ALL: Error : The $command is not valid. The area is 0."
+
+restore [locate_data_file CTO908_topo108-o.brep] obj
+restore [locate_data_file pro12903b.rle] out
+
+bcut result obj out
+checkprops result -s 281453
+checkview -display result -2d -s -otherwise { obj out } -path ${imagedir}/${test_image}.png

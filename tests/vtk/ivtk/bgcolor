@@ -1,0 +1,12 @@
+puts "============"
+puts "bgcolor: Tests changing of background color in the IVtk view"
+puts "============"
+puts ""
+
+pload VIS
+ivtkinit
+ivtkbgcolor 200 220 250
+ivtkdump $imagedir/${casename}_1.png
+
+ivtkbgcolor 10 30 80 255 255 255
+ivtkdump $imagedir/${casename}_2.png

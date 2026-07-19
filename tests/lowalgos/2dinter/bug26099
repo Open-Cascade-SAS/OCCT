@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC26099"
+puts "========"
+puts ""
+##################################################
+# Wrong result done by 2d intersection algorithm
+##################################################
+
+restore [locate_data_file OCC26099-f.brep] f
+explode f e
+pcurve c4 f_4 f
+pcurve c5 f_5 f
+set bug_info [2dintersect c4 c5]
+
+if {[regexp {fist: ([\-0-9.]*) .*second: ([\-0-9.]*)} $bug_info dummy par1 par2] == 0} {
+  puts "ERROR: OCC26099 is reproduced. No intersection."
+}
+
+set refpar1 0.98989794855663704
+set refpar2 0
+if {[expr abs($par1-$refpar1)] > 0.0001 || [expr abs($par2-$refpar2)] > 0.0001} {
+  puts "ERROR: OCC26099 is reproduced. Parameters are $par1 and $par2, expected $refpar1 and $refpar2"
+}

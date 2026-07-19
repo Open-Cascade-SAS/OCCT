@@ -1,0 +1,17 @@
+
+puts "========================"
+puts "BUC60623"
+puts "========================"
+
+restore [locate_data_file buc60623a.brep]  a 
+checkshape a
+restore [locate_data_file buc60623b.brep] b
+checkshape b
+
+bsection result b a
+# checksection res
+
+checkprops result -l 1475.98 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

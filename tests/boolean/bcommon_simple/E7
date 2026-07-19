@@ -1,0 +1,39 @@
+## Extension of /users/skv/testref/cd1/ED/cto/001/D1
+
+## inverted construction
+
+vertex v1 2 2 0
+vertex v2 4 2 0
+vertex v3 4 4 0
+vertex v4 2 4 0
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+
+wire wa e1 e2 e3 e4
+mkplane fa wa
+prism ba fa 0 0 4
+
+# prism from top
+
+vertex v5 2 0 4
+vertex v6 3 0 4
+vertex v7 3 3 4
+vertex v8 2 3 4
+
+edge e5 v5 v6
+edge e6 v6 v7
+edge e7 v7 v8
+edge e8 v8 v5
+
+wire wb e5 e6 e7 e8
+mkplane fb wb
+
+prism bb fb 0 0 -4
+
+bcommon result ba bb
+
+checkprops result -s 18
+checkview -display result -2d -s -otherwise { ba bb } -path ${imagedir}/${test_image}.png

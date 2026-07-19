@@ -1,0 +1,9 @@
+pcylinder b1 1 2
+dset r sqrt(2)/2
+box b2 -r -r 0 1.6 2*r 1
+
+bop b1 b2
+bopcommon result
+
+checkprops result -s 10.2206
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,27 @@
+# OCAF VISUALIZATION
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation & TDataXtd_Presentation
+#
+# Testing command:   standard set of commands
+#
+# The test checks compatibility with old format files. Old files: bug26290_oldformat1.cbf & bug26290_oldformat2.cbf
+pload OCAF VISUALIZATION
+set Lab1 0:1:1
+set Lab2 0:1:2
+
+Open [locate_data_file bug26290_oldformat1.cbf] D
+# DFBrowse D
+AISInitViewer D
+vsetdispmode 1
+vfit
+AISErase D $Lab1
+Close D
+
+Open [locate_data_file bug26290_oldformat2.cbf] D
+AISInitViewer D
+vsetdispmode 1
+vfit
+AISErase D $Lab1
+AISErase D $Lab2
+Close D

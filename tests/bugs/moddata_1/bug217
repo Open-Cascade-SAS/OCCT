@@ -1,0 +1,17 @@
+
+puts "========"
+puts "OCC217"
+puts "========"
+
+##########################################
+##nurbsconvert problem
+##########################################
+
+box b -5 -5 -5 10 10 10 
+psphere s 6 
+
+bfuse result s b 
+checkshape result
+
+checkprops result -s 618.85
+checkview -display result -2d -path ${imagedir}/${test_image}.png

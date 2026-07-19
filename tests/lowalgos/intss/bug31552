@@ -1,0 +1,48 @@
+puts "========="
+puts "0031552: Modeling Algorithms - Bad performance of intersection of cylindrical surfaces"
+puts "========="
+puts ""
+
+cpulimit 200
+
+cylinder s1 0 557.800010681152 0 0 0 1 0 1 0  347.850006103516
+trim s1 s1 3.2385 6.28319 -39.957 39.957
+
+cylinder s2 5.45639675193397 189.209310035068 0 -0.254420004160252 0.96709382248213 0 0.96709382248213 0.254420004160252 0 88.5
+trim s2 s2 6.19592 6.37045 0 10.0002
+
+dchrono z reset
+dchrono z start
+
+set ic 1
+while { $ic <= 100 } {
+  intersect res s1 s2 
+  incr ic
+}
+
+dchrono z stop counter Bug31552
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  puts "Error: only one curve"
+} 
+
+set che [whatis res_1]
+set ind [string first "3d curve" $che]
+if {${ind} < 0} {
+  puts "Error no first curve"
+}
+
+set che [whatis res_2]
+set ind [string first "3d curve" $che]
+if {${ind} < 0} {
+  puts "Error no second curve"
+}
+
+smallview AXON
+don res_1 res_2
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename UKI60107-5.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 12 )  Warnings = 0  ( 0 )  Summary  = 0  ( 12 )
+TPSTAT      : Faulties = 2  ( 0 )  Warnings = 218  ( 134 )  Summary  = 220  ( 134 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 93  ( 93 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 93  ( 93 )   FreeWire = 2  ( 2 ) 
+TOLERANCE   : MaxTol   =          1e-05  (          1e-05 )  AvgTol   =  4.819041503e-07  (  9.344523314e-06 )
+LABELS      : N0Labels = 513  ( 513 )  N1Labels = 2  ( 15 )  N2Labels = 0  ( 0 )   TotalLabels = 515  ( 528 )   NameLabels = 513  ( 513 )   ColorLabels = 404  ( 422 )   LayerLabels = 508  ( 528 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 5  ( 5 )
+COLORS      : Colors   = GREEN MAGENTA RED WHITE YELLOW  ( GREEN MAGENTA RED WHITE YELLOW )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = 50 51 7 9  ( 50 51 7 9 )
+
+}

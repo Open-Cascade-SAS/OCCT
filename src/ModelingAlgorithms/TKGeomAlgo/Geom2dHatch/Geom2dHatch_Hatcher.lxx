@@ -1,0 +1,257 @@
+// Created on: 1995-01-03
+// Created by: Laurent BUCHARD
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#define RAISE_IF_NOSUCHOBJECT 0
+#define TRACE 0
+
+#include <StdFail_NotDone.hxx>
+
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Intersector.hxx>
+#include <Geom2dHatch_Hatching.hxx>
+#include <Geom2dHatch_Element.hxx>
+
+//=======================================================================
+// Function : Intersector
+// Purpose  : Returns the associated intersector.
+//=======================================================================
+
+inline const Geom2dHatch_Intersector& Geom2dHatch_Hatcher::Intersector()
+{
+  return myIntersector;
+}
+
+//=======================================================================
+// Function : ChangeIntersector
+// Purpose  : Returns the associated intersector.
+//=======================================================================
+
+inline Geom2dHatch_Intersector& Geom2dHatch_Hatcher::ChangeIntersector()
+{
+  return myIntersector;
+}
+
+//=======================================================================
+// Function : Confusion2d
+// Purpose  : Returns the 2d confusion tolerance.
+//=======================================================================
+
+inline double Geom2dHatch_Hatcher::Confusion2d() const
+{
+  return myConfusion2d;
+}
+
+//=======================================================================
+// Function : Confusion3d
+// Purpose  : Returns the 3d confusion tolerance.
+//=======================================================================
+
+inline double Geom2dHatch_Hatcher::Confusion3d() const
+{
+  return myConfusion3d;
+}
+
+//=======================================================================
+// Function : KeepPoints
+// Purpose  : Returns the flag about the points consideration.
+//=======================================================================
+
+inline bool Geom2dHatch_Hatcher::KeepPoints() const
+{
+  return myKeepPoints;
+}
+
+//=======================================================================
+// Function : KeepSegments
+// Purpose  : Returns the flag about the segments consideration.
+//=======================================================================
+
+inline bool Geom2dHatch_Hatcher::KeepSegments() const
+{
+  return myKeepSegments;
+}
+
+//=======================================================================
+// Function : Clear
+// Purpose  : Removes all the hatchings and all the elements.
+//=======================================================================
+
+inline void Geom2dHatch_Hatcher::Clear()
+{
+  if (myNbHatchings != 0)
+    ClrHatchings();
+  if (myNbElements != 0)
+    ClrElements();
+}
+
+//=================================================================================================
+
+inline Geom2dHatch_Element& Geom2dHatch_Hatcher::Element(const int IndE)
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myElements.IsBound(IndE), "");
+#endif
+  Geom2dHatch_Element& Element = myElements.ChangeFind(IndE);
+  return Element;
+}
+
+//=======================================================================
+// Function : ElementCurve
+// Purpose  : Returns the curve associated to the IndE-th element.
+//=======================================================================
+
+inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::ElementCurve(const int IndE) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myElements.IsBound(IndE), "");
+#endif
+  const Geom2dHatch_Element& Element = myElements.Find(IndE);
+  return Element.Curve();
+}
+
+//=================================================================================================
+
+inline Geom2dHatch_Hatching& Geom2dHatch_Hatcher::Hatching(const int IndH)
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
+  return Hatching;
+}
+
+//=======================================================================
+// Function : HatchingCurve
+// Purpose  : Returns the curve associated to the IndH-th hatching.
+//=======================================================================
+
+inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::HatchingCurve(const int IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
+  return Hatching.Curve();
+}
+
+//=======================================================================
+// Function : NbPoints
+// Purpose  : Returns the number of intersection points of the IndH-th
+//            hatching.
+//=======================================================================
+
+inline int Geom2dHatch_Hatcher::NbPoints(const int IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
+  return Hatching.NbPoints();
+}
+
+//=======================================================================
+// Function : Point
+// Purpose  : Returns the IndP-th intersection point of the IndH-th
+//            hatching.
+//=======================================================================
+
+inline const HatchGen_PointOnHatching& Geom2dHatch_Hatcher::Point(const int IndH,
+                                                                  const int IndP) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_OutOfRange_Raise_if(IndP < 0 || IndP > Hatching.NbPoints(), "");
+#endif
+  const HatchGen_PointOnHatching& PntH = Hatching.Point(IndP);
+  return PntH;
+}
+
+//=======================================================================
+// Function : TrimDone
+// Purpose  : Returns the fact that all the intersections were computed
+//            for the IndH-th hatching.
+//=======================================================================
+
+inline bool Geom2dHatch_Hatcher::TrimDone(const int IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
+  return Hatching.TrimDone();
+}
+
+//=======================================================================
+// Function : TrimFailed
+// Purpose  : Returns the fact that all the intersections failed
+//            for the IndH-th hatching.
+//=======================================================================
+
+inline bool Geom2dHatch_Hatcher::TrimFailed(const int IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
+  return Hatching.TrimFailed();
+}
+
+//=======================================================================
+// Function : IsDone
+// Purpose  : Returns the fact that all the domains were computed
+//            for the IndH-th hatching.
+//=======================================================================
+
+inline bool Geom2dHatch_Hatcher::IsDone(const int IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
+  return Hatching.IsDone();
+}
+
+//=======================================================================
+// Function : Status
+// Purpose  : Returns the status about the IndH-th hatching.
+//=======================================================================
+
+inline HatchGen_ErrorStatus Geom2dHatch_Hatcher::Status(const int IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
+  return Hatching.Status();
+}
+
+//=======================================================================
+// Function : NbDomains
+// Purpose  : Returns the number of domains of the IndH-th hatching.
+//=======================================================================
+
+inline int Geom2dHatch_Hatcher::NbDomains(const int IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
+#endif
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
+  StdFail_NotDone_Raise_if(!Hatching.IsDone(), "Geom2dHatch_Hatcher::NbDomains");
+  return Hatching.NbDomains();
+}

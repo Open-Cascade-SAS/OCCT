@@ -1,0 +1,16 @@
+puts "================================"
+puts "0033104: Modeling Algorithms - Checking for canonical geometry: surface, close to a cylinder, is not recognized"
+puts "================================"
+
+restore [locate_data_file bug33104.brep] f
+
+getanasurf asurf f cyl  0.1
+if {[isdraw asurf]} {
+  set log [dump asurf]
+  if { [regexp {CylindricalSurface} $log ] != 1 } {
+     puts "Error: surface is not a cylindrical surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+

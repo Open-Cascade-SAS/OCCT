@@ -1,0 +1,223 @@
+// Created on: 1994-03-18
+// Created by: Bruno DUMORTIER
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Extrema_ExtCS.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomAPI_ExtremaCurveSurface.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+
+//=================================================================================================
+
+GeomAPI_ExtremaCurveSurface::GeomAPI_ExtremaCurveSurface()
+    : myIsDone(false),
+      myIndex(0)
+{
+}
+
+//=================================================================================================
+
+GeomAPI_ExtremaCurveSurface::GeomAPI_ExtremaCurveSurface(const occ::handle<Geom_Curve>&   Curve,
+                                                         const occ::handle<Geom_Surface>& Surface)
+{
+  Init(Curve, Surface);
+}
+
+//=================================================================================================
+
+GeomAPI_ExtremaCurveSurface::GeomAPI_ExtremaCurveSurface(const occ::handle<Geom_Curve>&   Curve,
+                                                         const occ::handle<Geom_Surface>& Surface,
+                                                         const double                     Wmin,
+                                                         const double                     Wmax,
+                                                         const double                     Umin,
+                                                         const double                     Umax,
+                                                         const double                     Vmin,
+                                                         const double                     Vmax)
+{
+  Init(Curve, Surface, Wmin, Wmax, Umin, Umax, Vmin, Vmax);
+}
+
+//=================================================================================================
+
+void GeomAPI_ExtremaCurveSurface::Init(const occ::handle<Geom_Curve>&   Curve,
+                                       const occ::handle<Geom_Surface>& Surface)
+{
+  GeomAdaptor_Curve   TheCurve(Curve);
+  GeomAdaptor_Surface TheSurface(Surface);
+
+  constexpr double Tol = Precision::PConfusion();
+  myExtCS.Initialize(TheSurface, Tol, Tol);
+  myExtCS.Perform(TheCurve, TheCurve.FirstParameter(), TheCurve.LastParameter());
+  myIsDone = myExtCS.IsDone() && (myExtCS.IsParallel() || myExtCS.NbExt() > 0);
+
+  if (myIsDone)
+  {
+
+    // evaluate the lower distance and its index;
+
+    double Dist2, Dist2Min = myExtCS.SquareDistance(1);
+    myIndex = 1;
+
+    for (int i = 2; i <= myExtCS.NbExt(); i++)
+    {
+      Dist2 = myExtCS.SquareDistance(i);
+      if (Dist2 < Dist2Min)
+      {
+        Dist2Min = Dist2;
+        myIndex  = i;
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+void GeomAPI_ExtremaCurveSurface::Init(const occ::handle<Geom_Curve>&   Curve,
+                                       const occ::handle<Geom_Surface>& Surface,
+                                       const double                     Wmin,
+                                       const double                     Wmax,
+                                       const double                     Umin,
+                                       const double                     Umax,
+                                       const double                     Vmin,
+                                       const double                     Vmax)
+{
+  GeomAdaptor_Curve   TheCurve(Curve, Wmin, Wmax);
+  GeomAdaptor_Surface TheSurface(Surface, Umin, Umax, Vmin, Vmax);
+
+  constexpr double Tol = Precision::PConfusion();
+  myExtCS.Initialize(TheSurface, Umin, Umax, Vmin, Vmax, Tol, Tol);
+  myExtCS.Perform(TheCurve, Wmin, Wmax);
+  myIsDone = myExtCS.IsDone() && (myExtCS.IsParallel() || myExtCS.NbExt() > 0);
+
+  if (myIsDone)
+  {
+
+    // evaluate the lower distance and its index;
+
+    double Dist2, Dist2Min = myExtCS.SquareDistance(1);
+    myIndex = 1;
+
+    for (int i = 2; i <= myExtCS.NbExt(); i++)
+    {
+      Dist2 = myExtCS.SquareDistance(i);
+      if (Dist2 < Dist2Min)
+      {
+        Dist2Min = Dist2;
+        myIndex  = i;
+      }
+    }
+  }
+}
+
+//=================================================================================================
+
+int GeomAPI_ExtremaCurveSurface::NbExtrema() const
+{
+  if (myIsDone)
+  {
+    return myExtCS.NbExt();
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+//=================================================================================================
+
+void GeomAPI_ExtremaCurveSurface::Points(const int Index, gp_Pnt& P1, gp_Pnt& P2) const
+{
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
+                               "GeomAPI_ExtremaCurveCurve::Points");
+
+  Extrema_POnCurv PC;
+  Extrema_POnSurf PS;
+  myExtCS.Points(Index, PC, PS);
+
+  P1 = PC.Value();
+  P2 = PS.Value();
+}
+
+//=================================================================================================
+
+void GeomAPI_ExtremaCurveSurface::Parameters(const int Index, double& W, double& U, double& V) const
+{
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
+                               "GeomAPI_ExtremaCurveCurve::Parameters");
+
+  Extrema_POnCurv PC;
+  Extrema_POnSurf PS;
+  myExtCS.Points(Index, PC, PS);
+
+  W = PC.Parameter();
+  PS.Parameter(U, V);
+}
+
+//=================================================================================================
+
+double GeomAPI_ExtremaCurveSurface::Distance(const int Index) const
+{
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
+                               "GeomAPI_ExtremaCurveCurve::Distance");
+
+  return sqrt(myExtCS.SquareDistance(Index));
+}
+
+//=================================================================================================
+
+void GeomAPI_ExtremaCurveSurface::NearestPoints(gp_Pnt& PC, gp_Pnt& PS) const
+{
+  StdFail_NotDone_Raise_if(!myIsDone, "GeomAPI_ExtremaCurveSurface::NearestPoints");
+
+  Points(myIndex, PC, PS);
+}
+
+//=================================================================================================
+
+void GeomAPI_ExtremaCurveSurface::LowerDistanceParameters(double& W, double& U, double& V) const
+{
+  StdFail_NotDone_Raise_if(!myIsDone, "GeomAPI_ExtremaCurveSurface::LowerDistanceParameters");
+
+  Parameters(myIndex, W, U, V);
+}
+
+//=================================================================================================
+
+double GeomAPI_ExtremaCurveSurface::LowerDistance() const
+{
+  StdFail_NotDone_Raise_if(!myIsDone, "GeomAPI_ExtremaCurveSurface::LowerDistance");
+
+  return sqrt(myExtCS.SquareDistance(myIndex));
+}
+
+//=================================================================================================
+
+GeomAPI_ExtremaCurveSurface::operator int() const
+{
+  return NbExtrema();
+}
+
+//=================================================================================================
+
+GeomAPI_ExtremaCurveSurface::operator double() const
+{
+  return LowerDistance();
+}

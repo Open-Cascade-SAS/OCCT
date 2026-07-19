@@ -1,0 +1,103 @@
+// Created on: 1998-10-27
+// Created by: Denis PASCAL
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <DPrsStd.hxx>
+
+#include <Draw_Appli.hxx>
+#include <Draw_Interpretor.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDocStd_Document.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_Data.hxx>
+#include <DDF.hxx>
+#include <DDocStd.hxx>
+#include <ViewerTest.hxx>
+#include <V3d_View.hxx>
+#include <TPrsStd_AISPresentation.hxx>
+#include <TPrsStd_AISViewer.hxx>
+#include <AIS_InteractiveContext.hxx>
+
+//=======================================================================
+// function : DPrsStd_AISInitViewer
+// purpose  : AISInitViewer (DOC)
+//=======================================================================
+
+static int DPrsStd_AISInitViewer(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 2)
+  {
+    std::cout << "DPrsStd_AISInitViewer : Error\n";
+    return 1;
+  }
+
+  occ::handle<TDocStd_Document> aDoc;
+  if (!DDocStd::GetDocument(theArgVec[1], aDoc))
+  {
+    return 1;
+  }
+
+  TDF_Label                      aRoot = aDoc->GetData()->Root();
+  occ::handle<TPrsStd_AISViewer> aDocViewer;
+  TCollection_AsciiString        aViewName =
+    TCollection_AsciiString("Driver1/Document_") + theArgVec[1] + "/View1";
+  if (!TPrsStd_AISViewer::Find(aRoot, aDocViewer))
+  {
+    ViewerTest::ViewerInit(aViewName);
+    aDocViewer = TPrsStd_AISViewer::New(aRoot, ViewerTest::GetAISContext());
+  }
+
+  DDF::ReturnLabel(theDI, aDocViewer->Label());
+  return 0;
+}
+
+//=================================================================================================
+
+static int DPrsStd_AISRepaint(Draw_Interpretor& di, int nb, const char** arg)
+{
+  if (nb == 2)
+  {
+    occ::handle<TDocStd_Document> D;
+    if (!DDocStd::GetDocument(arg[1], D))
+    {
+      return 1;
+    }
+    TDF_Label acces = D->GetData()->Root();
+    TPrsStd_AISViewer::Update(acces);
+    return 0;
+  }
+  di << "DPrsStd_AISRepaint : Error\n";
+  return 1;
+}
+
+//=================================================================================================
+
+void DPrsStd::AISViewerCommands(Draw_Interpretor& theCommands)
+{
+
+  static bool done = false;
+  if (done)
+  {
+    return;
+  }
+  done          = true;
+  const char* g = "DPrsStd : standard presentation commands";
+
+  // standard commands working on AISViewer
+
+  theCommands.Add("AISInitViewer", "AISInitViewer (DOC)", __FILE__, DPrsStd_AISInitViewer, g);
+
+  theCommands.Add("AISRepaint", "update the AIS viewer", __FILE__, DPrsStd_AISRepaint, g);
+}

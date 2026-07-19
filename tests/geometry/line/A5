@@ -1,0 +1,6 @@
+line lin1 0 0 1 0
+trim lin1 lin1 -1 1 
+convert result lin1
+2dcvalue result 0 x y dx dy d2x d2y
+checklength result -l 2
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

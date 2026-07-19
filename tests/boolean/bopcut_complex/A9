@@ -1,0 +1,8 @@
+restore [locate_data_file OCC3-1.brep] a
+restore [locate_data_file OCC3-2.brep] b
+
+bop  a b
+bopcut result
+
+checkprops result -s 7600
+checkview -display result -2d -otherwise {  a b } -s -path ${imagedir}/${test_image}.png

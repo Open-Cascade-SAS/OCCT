@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC12661"
+puts "================"
+puts ""
+#######################################################################################
+# Wrong calculation of bnd box for edge if edge has polygon of triangulation
+#######################################################################################
+
+set BugNumber OCC12661
+
+restore [locate_data_file OCC12661.brep] result
+bounding result -save x1 y1 z1 x2 y2 z2
+
+checkreal "x1" [dval x1] -6.3659273065258741 0 0.001
+checkreal "y1" [dval y1] 0.7051405053395956  0 0.001
+checkreal "z1" [dval z1] -2.5792617865186296 0 0.001
+checkreal "x2" [dval x2] 6.3659273065258795  0 0.001
+checkreal "y2" [dval y2] 7.6599592236605769  0 0.001
+checkreal "z2" [dval z2] 3.0815250146676485  0 0.001
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC25976"
+puts "========"
+puts ""
+##########################################################################################
+# Conversion of an offset face from a spline into a spline face hangs-up the application
+##########################################################################################
+
+smallview
+restore [locate_data_file OCC25976-copiedFace.brep] f
+setflags f locked
+nurbsconvert r f
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

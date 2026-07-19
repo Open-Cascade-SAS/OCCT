@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC27082"
+puts "============"
+puts ""
+###############################
+## UnifySameDomain must add internal edges where appropriate to resolve self-intersections
+###############################
+
+restore [locate_data_file bug27082_shapes3.brep] a
+unifysamedom result a +i
+
+don result
+smallview; l; fit
+bopcheck result
+checknbshapes result -m UnifySameDomain -face 225 -edge 576
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

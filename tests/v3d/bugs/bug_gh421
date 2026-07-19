@@ -1,0 +1,20 @@
+puts "============"
+puts "Visualization - Bounding box is not decreasing for mode 2 #421"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+
+box b 100 200 300
+vinit View1
+vdisplay b -dispMode 2
+# OK
+box b 10 200 300
+vdisplay b -dispMode 2
+
+vfit
+
+checkcolor 243 2 0 0 0
+
+vdump $::imagedir/${::casename}.png

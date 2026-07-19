@@ -1,0 +1,12 @@
+puts "===================================================="
+puts "0031172: Unexpected result of BRepTools::OuterWire()"
+puts "===================================================="
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug31172.brep] face
+BUC60652 face
+
+explode face W
+checkprops w -equal face_3

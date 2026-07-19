@@ -1,0 +1,52 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_UAttribute
+#
+# Testing command:   SetUAttribute
+# Testing command:   GetUAttribute
+# Testing command:   CopyLabel
+#
+
+puts "caf001-J5"
+
+# Add an attribute to a data framework
+set aSetAttr1 "c73bd075-22ee-11d2-acde-080009dc4422"
+set aLabel 0:2
+SetUAttribute D ${aLabel} ${aSetAttr1}
+
+# Add new ID to a label
+set aSetAttr2 "c73bd076-22ee-11d2-acde-080009dc4422"
+SetUAttribute D ${aLabel} ${aSetAttr2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Copy aLabel to new label
+set aTargetLabel 0:3
+CopyLabel D ${aLabel} ${aTargetLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Get a value of the attribute
+set aGetAttr1 [GetUAttribute D ${aTargetLabel} ${aSetAttr1}]
+if { ${aSetAttr1} != ${aGetAttr1} } {
+	puts "First ID:"
+	puts "aSetAttr1=${aSetAttr1}"
+	puts "aGetAttr1=${aGetAttr1}"
+	puts "Copy TDataStd_UAttribute attribute: Error"
+	return
+}
+
+# Get a value of the attribute
+set aGetAttr2 [GetUAttribute D ${aTargetLabel} ${aSetAttr2}]
+if { ${aSetAttr2} != ${aGetAttr2} } {
+	puts "Second ID:"
+	puts "aSetAttr2=${aSetAttr2}"
+	puts "aGetAttr2=${aGetAttr2}"
+	puts "Copy TDataStd_UAttribute attribute: Error"
+	return
+}
+
+puts "Copy TDataStd_UAttribute attribute: OK"

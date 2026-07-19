@@ -1,0 +1,44 @@
+puts "=========="
+puts "OCC29452"
+puts "=========="
+puts ""
+###################################################
+# XmlMDataStd_RealDriver: Failed to read an Ocaf XML document with 1.#QNAN value
+###################################################
+
+# Check for presence of warning message
+puts "REQUIRED ALL: Cannot retrieve real member for RealArray attribute"
+
+set BugNumber OCC29452
+set file [locate_data_file bug29452.xml]
+
+Close D -silent
+set res [Open $file D]
+
+set real [GetReal D 0:1]
+set rlst [GetRealList D 0:1]
+set rarr [GetRealArray D 0:1]
+set rarr2 [GetRealArray D 0:2]
+
+# Check for read values
+checkreal "Real value" [lindex $rlst 0] 1.1 0 1e-15
+checkreal "Real value" [lindex $rlst 2] 3.3 0 1e-15
+checkreal "Real value" [lindex $rarr 0] 0.111 0 1e-15
+checkreal "Real value" [lindex $rarr 3] 123. 0 1e-15
+checkreal "Real value" [lindex $rarr 4] 3.14e12 0 1e-15
+checkreal "Real value" [lindex $rarr2 0] 2 0 1e-15
+checkreal "Real value" [lindex $rarr2 1] 2.1219957909652723e-314 0 1e-15
+checkreal "Real value" [lindex $rarr2 2] 5 0 1e-15
+foreach inf [list $real [lindex $rlst 3]] {
+  if { [string compare "$inf" "inf"] && 
+       [string compare "$inf" "infinity"] && 
+       [string compare "$inf" "1.#INF"] } {
+    puts "Error: Real value is read as \"$inf\", expected infinity"
+  }
+}
+foreach nan [list [lindex $rlst 1] [lindex $rarr 1] [lindex $rarr 2]] {
+  if { [string compare "$nan" "nan"] && 
+       [string compare "$nan" "1.#QNAN"] } {
+    puts "Error: Real value is read as \"$nan\", expected NAN"
+  }
+}

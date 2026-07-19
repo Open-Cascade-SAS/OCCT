@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC29535"
+puts "========"
+puts ""
+#################################################
+# [Regression] BRepExtrema_DistShapeShape returns only one solution but the wires have two intersections .
+#################################################
+
+restore [locate_data_file bug29535_shapes.brep] s
+explode s
+distmini res s_1 s_2
+
+
+if { ([isdraw res] && [isdraw res2]) } {
+  checknbshapes res -vertex 1 -edge 0
+  checknbshapes res2 -vertex 1 -edge 0
+} else { puts "Error : result of distmini is wrong" }
+
+
+

@@ -1,0 +1,25 @@
+set mist 0
+# Read original file
+if { [string length $filename] > 1} {
+  set path_file [locate_data_file $filename]
+  if { [catch { ReadStep D_First $path_file } catch_result] } {
+    set err_msg "Error: First - file was not read - exception "
+    puts $err_msg
+    append todo_msg $todo_mask $err_msg $end_line
+    set mist 1
+  }
+} else {
+  set mist 1
+}
+
+# Get information about translation
+if { $mist < 1} {
+  set ref_list [split $ref_data \n]
+  puts [llength $ref_list]
+  for { set i 1 } { $i < [llength $ref_list] - 1 } { incr i } {
+    set ref [lindex $ref_list $i]
+    set res [OCC28389 {*}$ref]
+  }
+}
+
+puts "TEST COMPLETED"

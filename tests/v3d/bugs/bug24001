@@ -1,0 +1,38 @@
+puts "========"
+puts "OCC24001: Camera dump test"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vinit View1
+vdisplay b
+
+# initialize camera parameters 
+vcamera -fov 45 -iodType relative -iod 0.05 -zfocustype relative -zfocus 1.0
+
+# test vdump work
+# make sure that neither of 4 produced images match each other
+vcamera -ortho
+vfit
+set aTitle "ortho"
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512
+vcamera -persp
+vfit
+set aTitle "persp"
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512
+vcamera -stereo
+set aTitle "stereoR"
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512 -stereo R
+set aTitle "stereoL"
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512 -stereo L
+
+# test context stereo mode switching
+# if not supported by hardware it must not crash
+vstereo 1
+vclose all
+vinit
+vdisplay b
+vcamera -stereo
+vfit
+set aTitle "afterSwitch"
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512 -stereo R

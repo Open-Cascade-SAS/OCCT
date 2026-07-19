@@ -1,0 +1,29 @@
+puts "=========="
+puts "0029723: Modeling Data - Get rid of second writing format (additional save of UV points)"
+puts "=========="
+puts ""
+
+pload MODELING VISUALIZATION
+
+box testBox 10 20 30
+nurbsconvert nurbsBox testBox
+
+writebrep nurbsBox "${imagedir}/${casename}_topBox1.brep" -version 1
+readbrep "${imagedir}/${casename}_topBox1.brep" topBox1
+checkprops topBox1 -equal nurbsBox
+
+writebrep nurbsBox "${imagedir}/${casename}_topBox2.brep" -version 2
+readbrep "${imagedir}/${casename}_topBox2.brep" topBox2
+checkprops topBox2 -equal nurbsBox
+
+writebrep nurbsBox "${imagedir}/${casename}_topBox3.bbrep" -version 1 -binary on
+readbrep "${imagedir}/${casename}_topBox3.bbrep" topBox3
+checkprops topBox3 -equal nurbsBox
+
+writebrep nurbsBox "${imagedir}/${casename}_topBox4.bbrep" -version 2 -binary on
+readbrep "${imagedir}/${casename}_topBox4.bbrep" topBox4
+checkprops topBox4 -equal nurbsBox
+
+writebrep nurbsBox "${imagedir}/${casename}_topBox5.bbrep" -version 3 -binary on
+readbrep "${imagedir}/${casename}_topBox5.bbrep" topBox5
+checkprops topBox5 -equal nurbsBox

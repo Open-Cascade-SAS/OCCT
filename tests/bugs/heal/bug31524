@@ -1,0 +1,12 @@
+puts "TODO OCC31524 ALL: Faulty shapes in variables faulty_1"
+
+puts "==============================================================================================="
+puts "0031524: Modeling Algorithms - Unify same domain corrupts shape representing a cylindrical tube"
+puts "==============================================================================================="
+puts ""
+
+restore [locate_data_file bug31524.brep] shape
+
+unifysamedom res shape
+checkshape shape
+	

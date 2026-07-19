@@ -1,0 +1,44 @@
+puts "================"
+puts "OCC235"
+puts "================"
+puts ""
+#######################################################
+## Intersection algorithm finds two intersection curves. One curve is closed while
+## second is not (the distance between first and last points is 2e-5).
+#######################################################
+
+restore [locate_data_file OCC235a.rle] su1 
+############### checkshape su1 # is not a topological shape
+restore [locate_data_file OCC235b.rle] su2
+############### checkshape su2 # is not a topological shape
+
+intersect result su1 su2
+
+set dir [directory]
+set nb_result [regexp -all {result} $dir]
+if { $nb_result != 2 } {
+    puts "Faulty OCC235 (first checking): Intersection was made WRONGLY"
+} else {
+    puts "OCC235 OK (first checking) : Intersection command works properly"
+
+    regexp {nb +alone +Vertices +: +([-0-9.+eE]+)} [checksection result_1] full num_1
+    if { $num_1 != 0 } {
+	puts " Faulty OCC235 (second checking): Result result_1 is UNclosed !!! " 
+    } else {
+	puts " OCC235 OK (second checking): Result result_1 is closed !!! " 
+    }
+
+    regexp {nb +alone +Vertices +: +([-0-9.+eE]+)} [checksection result_2] full num_2
+    if { $num_2 != 0 } {
+	puts " Faulty OCC235 (second checking): Result result_2 is UNclosed !!! " 
+    }  else {
+	puts "  OCC235 OK (second checking): Result result_2 is closed !!! " 
+    }
+}
+
+smallview
+don result*
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+

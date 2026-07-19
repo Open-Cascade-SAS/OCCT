@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC859"
+puts "SAM1637"
+puts "================"
+puts ""
+#####################
+## Attached shape is not sewed.
+##################### 
+
+restore [locate_data_file OCC859.brep] a
+checkshape a
+
+sewing result a
+
+freebounds result 0.1
+
+set list [statshape result_o]
+
+if {[llength ${list}] > 4} {
+   puts "Faulty OCC859: here is sewing problem"
+}
+
+checkmaxtol result -ref 0.00025118948696105701
+checknbshapes result -shell 1
+checkfreebounds result 6
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

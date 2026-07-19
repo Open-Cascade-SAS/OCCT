@@ -1,0 +1,20 @@
+puts "============"
+puts "CR23410"
+puts "============"
+puts ""
+#######################################################################
+# QA commands don't work properly in new testing system
+#######################################################################
+pload QAcommands
+
+set x_coord 128
+set y_coord 235
+
+box result 100 100 100
+vdisplay result
+vsetdispmode 1
+vfit
+vsetcolor result GREEN
+
+checkcolor $x_coord $y_coord 0.00 0.83 0.00
+checkview -display result -3d -path ${imagedir}/${test_image}.png

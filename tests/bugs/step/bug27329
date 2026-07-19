@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC27329"
+puts "========"
+puts ""
+#########################
+# Export to STEP failure
+#########################
+
+restore [locate_data_file bug27329_phenix.brep] a
+
+param write.step.nonmanifold 1
+param read.step.nonmanifold 1
+newmodel
+
+stepwrite 0 a $imagedir/bug27329_temp.stp
+stepread $imagedir/bug27329_temp.stp b *
+renamevar b_1 result
+
+checknbshapes result -solid 1 -shell 5 -face 42
+
+param write.step.nonmanifold 0
+param read.step.nonmanifold 0
+newmodel

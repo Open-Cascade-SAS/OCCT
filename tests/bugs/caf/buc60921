@@ -1,0 +1,49 @@
+# This TCL script demonstrates memory leak in OCAF Undo/Redo
+#
+# The DRAW command TestOCAF (provided separately) just reads 
+# the specified brep file
+# and puts it into the document on a given label.
+# This operation is done and undone several times,
+# and the problem is that each time additional memory
+# (approximately equivalent to the size of shape)
+# is consumed.
+#
+# While obviously it should not be so: even if Undo keeps the 
+# shape in memory as delta on Redo, this delta should be cleared 
+# by the next operation!
+#
+# The bug persists with any setting of variables MMGT_OPT and MMGT_MMAP
+# (while with different initial size and step) and 
+#
+# It seems that either delta is not completely freed, or some
+# other data structures keep the shape memory
+
+puts "==========="
+puts "BUC60921"
+puts "BUC60954"
+puts "==========="
+
+pload QAcommands
+
+# see end of script!
+set BREP [locate_data_file BUC60921.brep]
+#set BREP [locate_data_file Bottom.brep]
+
+NewDocument D BinOcaf
+UndoLimit D 100
+
+set i_max 10
+set listmem {}
+for {set i 1} {$i <= ${i_max}} {incr i} {
+    CommitCommand D
+    OpenCommand D
+    BUC60921 D 0:1:1 $BREP
+
+    CommitCommand D
+    OpenCommand D
+    Undo D
+
+    # check memory usage (with tolerance equal to half page size)
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 512 "Memory leak detected"
+}

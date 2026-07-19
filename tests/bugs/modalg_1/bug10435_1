@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC10435"
+puts "============"
+puts ""
+#######################################################################
+# error in fillet after Cut of torus from box
+#######################################################################
+
+set BugNumber OCC10435
+
+restore [locate_data_file OCC10435.brep] a 
+
+checkshape a
+explode a e
+
+set radius 5.
+
+if { [catch {fillet result a ${radius} a_10 ${radius} a_15 ${radius} a_16 } catch_result] } {
+    puts "Faulty ${BugNumber} exception (case 1): Fillet operation fails on given shape "
+} else {
+    puts "${BugNumber} (case 1) OK: Fillet operation was made"
+
+    checkprops result -s 36455.2 
+checkshape result
+
+    # Analysis of "nbshapes res"
+    checknbshapes result -vertex 12 -edge 19 -wire 11 -face 10 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 55
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

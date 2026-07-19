@@ -1,0 +1,125 @@
+// Created by: Peter KURNEV
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BOPDS_Pair.hxx>
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfVV>& BOPDS_DS::InterfVV()
+{
+  return myInterfVV;
+}
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfVE>& BOPDS_DS::InterfVE()
+{
+  return myInterfVE;
+}
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfVF>& BOPDS_DS::InterfVF()
+{
+  return myInterfVF;
+} //=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfEE>& BOPDS_DS::InterfEE()
+{
+  return myInterfEE;
+}
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfEF>& BOPDS_DS::InterfEF()
+{
+  return myInterfEF;
+}
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfFF>& BOPDS_DS::InterfFF()
+{
+  return myInterfFF;
+}
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfVZ>& BOPDS_DS::InterfVZ()
+{
+  return myInterfVZ;
+}
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfEZ>& BOPDS_DS::InterfEZ()
+{
+  return myInterfEZ;
+}
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfFZ>& BOPDS_DS::InterfFZ()
+{
+  return myInterfFZ;
+}
+
+//=================================================================================================
+
+inline NCollection_DynamicArray<BOPDS_InterfZZ>& BOPDS_DS::InterfZZ()
+{
+  return myInterfZZ;
+}
+
+//=================================================================================================
+
+inline int BOPDS_DS::NbInterfTypes()
+{
+  return 10;
+}
+
+//=================================================================================================
+
+inline bool BOPDS_DS::AddInterf(const int theI1, const int theI2)
+{
+  if (myInterfTB.Add(BOPDS_Pair(theI1, theI2)))
+  {
+    myInterfered.Add(theI1);
+    myInterfered.Add(theI2);
+    return true;
+  }
+  return false;
+}
+
+//=================================================================================================
+
+inline bool BOPDS_DS::HasInterf(const int theI) const
+{
+  return myInterfered.Contains(theI);
+}
+
+//=================================================================================================
+
+inline bool BOPDS_DS::HasInterf(const int theI1, const int theI2) const
+{
+  BOPDS_Pair aPK(theI1, theI2);
+  return myInterfTB.Contains(aPK);
+}
+
+//=================================================================================================
+
+inline const NCollection_Map<BOPDS_Pair>& BOPDS_DS::Interferences() const
+{
+  return myInterfTB;
+}

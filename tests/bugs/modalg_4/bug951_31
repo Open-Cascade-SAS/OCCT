@@ -1,0 +1,43 @@
+puts "========="
+puts " OCC951 "
+puts "========="
+puts ""
+##################################################
+##BRepAlgoAPI_Section and BRepAlgoAPI_Common fail on given shapes
+##################################################
+## (old topology)
+## (common)
+## (section)
+######################################################
+
+restore [locate_data_file OCC951_1.brep] b 
+restore [locate_data_file OCC951_2.brep] a 
+
+checkshape b
+checkshape a
+
+bcommon result a b
+
+set nb_info [nbshapes result]
+
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full ve
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ed
+regexp {WIRE +: +([-0-9.+eE]+)} $nb_info full wi
+regexp {FACE +: +([-0-9.+eE]+)} $nb_info full fa
+regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full sh
+regexp {SOLID +: +([-0-9.+eE]+)} $nb_info full so
+regexp {COMPSOLID +: +([-0-9.+eE]+)} $nb_info full cm
+regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full co
+regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full shl
+
+if { $ve != 0 || $ed != 0 || $wi != 0 || $fa != 0 || $sh != 0 || $so != 0 || $cm != 0 || $co != 0 || $shl != 0 } {
+    puts  " OCC951 : COMMON operation was made PROPERLY"
+    puts ""
+} else {
+    puts "Faulty OCC951 : result of COMMON operation is EMPTY compound"
+    puts ""
+}
+
+checkprops result -s 560.908 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

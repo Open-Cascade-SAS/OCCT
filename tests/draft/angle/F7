@@ -1,0 +1,8 @@
+#E1----------------------------------------------
+ptorus p 25 20 90
+box bx 10 10 10 18 18 30 
+bfuse f bx p
+nexplode f f
+depouille result f 0 0 1 f_3 5 0 0 40 0 0 1
+
+checkprops result -s 9010.79

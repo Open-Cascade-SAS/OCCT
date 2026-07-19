@@ -1,0 +1,58 @@
+puts "======="
+puts "OCC5145"
+puts "======="
+puts ""
+#####################################################
+# Wrong result of projection of a circle on a sphere.
+#####################################################
+
+restore [locate_data_file bug5145_f1.brep] f1
+restore [locate_data_file bug5145_c.draw] c
+
+mksurface s f1
+
+trim c1 c 0 pi
+trim c2 c pi 2.*pi
+
+project c2d1 c1 s
+project c2d2 c2 s
+
+2dcvalue c2d1 0    x1 y1
+2dcvalue c2d1 pi   x2 y2
+2dcvalue c2d2 pi   x3 y3
+2dcvalue c2d2 2*pi x4 y4
+
+set tol 1.e-9
+
+if {[expr abs([dval x1]) - 4.7123885383825099] > $tol} {
+   puts "Error: Wrong projection in 2D"
+}
+if {[expr abs([dval y1]) - 1.5707963267948966] > $tol} {
+   puts "Error: Wrong projection in 2D"
+}
+if {[expr abs([dval x2]) - 6.2831853071795862] > $tol} {
+   puts "Error: Wrong projection in 2D"
+}
+if {[expr abs(-1.2217304763960311 - [dval y2])] > $tol} {
+   puts "Error: Wrong projection in 2D"
+}
+if {[expr abs([dval x3])] > $tol} {
+   puts "Error: Wrong projection in 2D"
+}
+if {[expr abs(-1.2217304763960311 - [dval y3])] > $tol} {
+   puts "Error: Wrong projection in 2D"
+}
+if {[expr abs([dval x4]) - 1.5707967687970734] > $tol} {
+   puts "Error: Wrong projection in 2D"
+}
+if {[expr abs([dval y4]) - 1.5707963267948948] > $tol} {
+   puts "Error: Wrong projection in 2D"
+}
+
+checklength c2d1 -l 3.68009
+checklength c2d2 -l 3.68009
+
+v2d
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

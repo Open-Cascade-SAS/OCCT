@@ -1,0 +1,94 @@
+puts "========"
+puts "BUC60857"
+puts "========"
+
+pload MODELING VISUALIZATION QAcommands
+vinit View1
+BUC60857
+vfit
+
+sewing BUC60857_BLUE  1e-7 BUC60857_BLUE
+sewing BUC60857_RED   1e-7 BUC60857_RED
+sewing BUC60857_GREEN 1e-7 BUC60857_GREEN
+
+set Property_BLUE [sprops BUC60857_BLUE]
+set area_BLUE [lindex ${Property_BLUE} 2]
+
+set Property_RED [sprops BUC60857_RED]
+set area_RED [lindex ${Property_RED} 2]
+
+set Property_GREEN [sprops BUC60857_GREEN]
+set area_GREEN [lindex ${Property_GREEN} 2]
+
+bounding BUC60857_BLUE -save xmin_BLUE ymin_BLUE zmin_BLUE xmax_BLUE ymax_BLUE zmax_BLUE -nodraw
+bounding BUC60857_RED -save xmin_RED ymin_RED zmin_RED xmax_RED ymax_RED zmax_RED -nodraw
+bounding BUC60857_GREEN -save xmin_GREEN ymin_GREEN zmin_GREEN xmax_GREEN ymax_GREEN zmax_GREEN -nodraw
+
+set delta_area_GB [expr abs(${area_GREEN} - ${area_BLUE}) / ${area_BLUE} * 100]
+set delta_area_BR [expr ${area_BLUE} / ${area_RED}]
+
+set delta_xmin_GB [expr abs([dval xmin_GREEN] - [dval xmin_BLUE]) / [dval xmin_BLUE] * 100]
+set delta_ymin_GB [expr abs([dval ymin_GREEN] - [dval ymin_BLUE]) / [dval ymin_BLUE] * 100]
+set delta_zmin_GB [expr abs([dval zmin_GREEN] - [dval zmin_BLUE]) / [dval zmin_BLUE] * 100]
+set delta_xmax_GB [expr abs([dval xmax_GREEN] - [dval xmax_BLUE]) / [dval xmax_BLUE] * 100]
+set delta_ymax_GB [expr abs([dval ymax_GREEN] - [dval ymax_BLUE]) / [dval ymax_BLUE] * 100]
+set delta_zmax_GB [expr abs([dval zmax_GREEN] - [dval zmax_BLUE]) / [dval zmax_BLUE] * 100]
+
+set delta_xmin_RB [expr abs([dval xmin_RED] - [dval xmin_BLUE]) / [dval xmin_BLUE] * 100]
+set delta_ymin_RB [expr abs([dval ymin_RED] - [dval ymin_BLUE]) / [dval ymin_BLUE] * 100]
+set delta_zmin_RB [expr abs([dval zmin_RED] - [dval zmin_BLUE]) / [dval zmin_BLUE] * 100]
+set delta_xmax_RB [expr abs([dval xmax_RED] - [dval xmax_BLUE]) / [dval xmax_BLUE] * 100]
+set delta_ymax_RB [expr abs([dval ymax_RED] - [dval ymax_BLUE]) / [dval ymax_BLUE] * 100]
+set delta_zmax_RB [expr abs([dval zmax_RED] - [dval zmax_BLUE]) / [dval zmax_BLUE] * 100]
+
+set H_BLUE [expr [dval zmax_BLUE] - [dval zmin_BLUE] ]
+set H_RED [expr [dval zmax_RED] - [dval zmin_RED] ]
+set delta_H_RB [expr abs(${H_RED} - ${H_BLUE}) / ${H_BLUE} * 100]
+
+set maxdelta 0.01
+
+if {${delta_area_GB} > ${maxdelta}} {
+   puts "delta_area_GB = ${delta_area_GB}"
+   puts "maxdelta = ${maxdelta}"
+   puts "BUC60857: ERROR (case 1)"
+} else {
+   puts "BUC60857: OK (case 1)"
+}
+
+if {${delta_area_BR} > 3.0 || \
+    ${delta_area_BR} < 2.9     } {
+   puts "delta_area_BR = ${delta_area_BR}"
+   puts "delta_area_BR = ${delta_area_BR}"
+   puts "BUC60857: ERROR (case 2)"
+} else {
+   puts "BUC60857: OK (case 2)"
+}
+
+if {${delta_xmin_GB} > ${maxdelta} || \
+    ${delta_ymin_GB} > ${maxdelta} || \
+    ${delta_zmin_GB} > ${maxdelta} || \
+    ${delta_xmax_GB} > ${maxdelta} || \
+    ${delta_ymax_GB} > ${maxdelta} || \
+    ${delta_zmax_GB} > ${maxdelta}     } {
+   puts "delta_xmin_GB = ${delta_xmin_GB}"
+   puts "delta_ymin_GB = ${delta_ymin_GB}"
+   puts "delta_zmin_GB = ${delta_zmin_GB}"
+   puts "delta_xmax_GB = ${delta_xmax_GB}"
+   puts "delta_ymax_GB = ${delta_ymax_GB}"
+   puts "delta_zmax_GB = ${delta_zmax_GB}"
+   puts "maxdelta = ${maxdelta}"
+   puts "BUC60857: ERROR (case 3)"
+} else {
+   puts "BUC60857: OK (case 3)"
+}
+
+set maxdelta_H 10
+if {${delta_H_RB} > ${maxdelta_H}} {
+   puts "delta_H_RB = ${delta_H_RB}"
+   puts "maxdelta_H = ${maxdelta_H}"
+   puts "BUC60857: ERROR (case 4)"
+} else {
+   puts "BUC60857: OK (case 4)"
+}
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,24 @@
+#puts "TODO OCC25917 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC25917 ALL: Error : The command is not valid. The area is"
+puts "TODO OCC25917 ALL: Error : The area of result shape is"
+
+puts "========================"
+puts " OCC472 "
+puts "(case 2)"
+puts "========================"
+puts ""
+#####################################################
+## Bad result of Fuse Operation (Cut&Common - bad too). SAM1470 (#2634) 
+#####################################################
+
+restore [locate_data_file OCC472a.brep] b1 
+checkshape b1
+
+restore [locate_data_file OCC472b.brep] b2
+checkshape b2
+
+bcommon result b1 b2
+
+checkprops result -s 0.01 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

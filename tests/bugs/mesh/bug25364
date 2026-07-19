@@ -1,0 +1,104 @@
+puts "============"
+puts "CR25364"
+puts "============"
+puts ""
+###################################################################################
+# BRepMesh is not able to triangulate the shape with fine deflection
+###################################################################################
+
+restore [locate_data_file bug25364_WT_Grundplatte.brep] result
+
+set mem_private_1 [meminfo private]
+set mem_swap_1 [meminfo swap]
+set mem_swappeak_1 [meminfo swappeak]
+set mem_wset_1 [meminfo wset]
+set mem_wsetpeak_1 [meminfo wsetpeak]
+set mem_virt_1 [meminfo virt]
+set mem_heap_1 [meminfo heap]
+
+incmesh result 0.002
+
+set mem_private_2 [meminfo private]
+set mem_swap_2 [meminfo swap]
+set mem_swappeak_2 [meminfo swappeak]
+set mem_wset_2 [meminfo wset]
+set mem_wsetpeak_2 [meminfo wsetpeak]
+set mem_virt_2 [meminfo virt]
+set mem_heap_2 [meminfo heap]
+
+if [catch { tricheck result } ] {
+  puts "Error : Problem of triangulation"
+} else {
+  puts "OK : Triangulation is good"
+}
+
+set mem_private_1 [expr ${mem_private_1}/(1024 * 1024)]
+set mem_swap_1 [expr ${mem_swap_1}/(1024 * 1024)]
+set mem_swappeak_1 [expr ${mem_swappeak_1}/(1024 * 1024)]
+set mem_wset_1 [expr ${mem_wset_1}/(1024 * 1024)]
+set mem_wsetpeak_1 [expr ${mem_wsetpeak_1}/(1024 * 1024)]
+set mem_virt_1 [expr ${mem_virt_1}/(1024 * 1024)]
+set mem_heap_1 [expr ${mem_heap_1}/(1024 * 1024)]
+
+puts "mem_private_1=${mem_private_1}"
+puts "mem_swap_1=${mem_swap_1}"
+puts "mem_swappeak_1=${mem_swappeak_1}"
+puts "mem_wset_1=${mem_wset_1}"
+puts "mem_wsetpeak_1=${mem_wsetpeak_1}"
+puts "mem_virt_1=${mem_virt_1}"
+puts "mem_heap_1=${mem_heap_1}"
+
+set mem_private_2 [expr ${mem_private_2}/(1024 * 1024)]
+set mem_swap_2 [expr ${mem_swap_2}/(1024 * 1024)]
+set mem_swappeak_2 [expr ${mem_swappeak_2}/(1024 * 1024)]
+set mem_wset_2 [expr ${mem_wset_2}/(1024 * 1024)]
+set mem_wsetpeak_2 [expr ${mem_wsetpeak_2}/(1024 * 1024)]
+set mem_virt_2 [expr ${mem_virt_2}/(1024 * 1024)]
+set mem_heap_2 [expr ${mem_heap_2}/(1024 * 1024)]
+
+puts "mem_private_2=${mem_private_2}"
+puts "mem_swap_2=${mem_swap_2}"
+puts "mem_swappeak_2=${mem_swappeak_2}"
+puts "mem_wset_2=${mem_wset_2}"
+puts "mem_wsetpeak_2=${mem_wsetpeak_2}"
+puts "mem_virt_2=${mem_virt_2}"
+puts "mem_heap_2=${mem_heap_2}"
+
+set mem_delta_private 200
+set mem_delta_swap 120
+set mem_delta_swappeak 250
+set mem_delta_wset 200
+set mem_delta_wsetpeak 300
+set mem_delta_virt 220
+set mem_delta_heap 80
+
+if { [regexp {Debug mode} [dversion]] } {
+   set mem_delta_swap 220
+   set mem_delta_swappeak 350
+   set mem_delta_wsetpeak 320
+   set mem_delta_virt 320
+}
+
+if { [expr ${mem_private_2} - ${mem_private_1}] > ${mem_delta_private}} {
+    puts "Error : there is memory problem (private)"
+}
+if { [expr ${mem_swap_2} - ${mem_swap_1}] > ${mem_delta_swap}} {
+    puts "Error : there is memory problem (swap)"
+}
+if { [expr ${mem_swappeak_2} - ${mem_swappeak_1}] > ${mem_delta_swappeak}} {
+    puts "Error : there is memory problem (swappeak)"
+}
+if { [expr ${mem_wset_2} - ${mem_wset_1}] > ${mem_delta_wset}} {
+    puts "Error : there is memory problem (wset)"
+}
+if { [expr ${mem_wsetpeak_2} - ${mem_wsetpeak_1}] > ${mem_delta_wsetpeak}} {
+    puts "Error : there is memory problem (wsetpeak)"
+}
+if { [expr ${mem_virt_2} - ${mem_virt_1}] > ${mem_delta_virt}} {
+    puts "Error : there is memory problem (virt)"
+}
+if { [expr ${mem_heap_2} - ${mem_heap_1}] > ${mem_delta_heap}} {
+    puts "Error : there is memory problem (heap)"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

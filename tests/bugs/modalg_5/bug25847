@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC25847"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by General Fuse operator.
+###############################
+
+restore [locate_data_file bug25847_face_96.brep ] b1
+restore [locate_data_file bug25847_face_294.brep] b2
+restore [locate_data_file bug25847_face_533.brep] b3
+restore [locate_data_file bug25847_face_535.brep] b4
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3 b4
+ 
+bfillds
+bbuild result
+
+checkprops result -s 3912.59 
+checkshape result
+
+checknbshapes result -vertex 100 -edge 108 -wire 10 -face 9 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 228 -t -m "Result obtained by General Fuse operator"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

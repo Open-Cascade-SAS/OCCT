@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC26464"
+puts "========"
+puts ""
+#######################################################
+# BRepOffset_MakeOffset does not provide valid output
+#######################################################
+
+smallview
+
+restore [locate_data_file OCC26464-extracted_Plate5520contour.brep] sh
+offsetparameter 1e-7 p i
+offsetload sh 60
+offsetperform r
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

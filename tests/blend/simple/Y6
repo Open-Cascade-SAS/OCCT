@@ -1,0 +1,14 @@
+## ===========================================
+## Grid    : CCV001
+## Test    : O3
+## Comment : From CV tests serie page 49
+## ===========================================
+
+# Is this test 02 or 03 ?
+restore [locate_data_file CCV_1_o12gsr.rle] tmp
+explode tmp E
+blend s tmp 5 tmp_5
+explode s E
+blend result  s 10 s_1 10 s_5 10 s_7
+
+checkprops result -s 6483.21

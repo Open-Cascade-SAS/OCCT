@@ -1,0 +1,85 @@
+puts "========"
+puts "Tiled image dump"
+puts "========"
+
+set aFontFile ""
+catch { set aFontFile [locate_data_file DejaVuSans.ttf] }
+
+pload MODELING VISUALIZATION
+box b 2 3 1
+box b2 50 20 30
+
+set aLabelFont "Arial"
+if { "$aFontFile" != "" } {
+  vfont add "$aFontFile" SansFont
+  set aLabelFont "SansFont"
+}
+
+vclear
+vclose ALL
+vinit View1
+vraytrace 0
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
+vsetdispmode 0
+vdisplay -dispMode 1 b
+vfit
+vrotate 0.5 0 0
+vzbufftrihedron
+
+catch { vzlayer del 1 }
+set aLayerId [vzlayer add]
+vzlayer $aLayerId -enable depthClear -disable rayTracing
+
+vtrihedron trh
+vdisplay  -noupdate trh -layer $aLayerId -trihedron topRight 100 100
+
+text2brep tcc "Center" -font $aLabelFont -height 30 -pos -40 0 0
+vdisplay  -noupdate tcc -2d center -layer $aLayerId -dispMode 1
+polyline  lcc -50 -50 0 -50 50 0 50 50 0 50 0 0 0 -50 0 -50 -50 0
+vdisplay  -noupdate lcc -2d center -layer $aLayerId
+vsetwidth -noupdate lcc 2
+
+text2brep tbl "Bottom-Left" -font $aLabelFont -height 30 -pos 0 3 5
+vdisplay  -noupdate tbl -2d bottomLeft -layer $aLayerId -dispMode 1
+polyline  lbl 0 0 0 0 100 0 100 100 0 100 50 0 50 0 0 0 0 0
+vdisplay  -noupdate lbl -2d bottomLeft -layer $aLayerId
+vsetwidth -noupdate lbl 2
+
+text2brep ttl "Top-Left" -font $aLabelFont -height 30 -pos 0 -30 0
+vdisplay  -noupdate ttl -2d topLeft -layer $aLayerId -dispMode 1
+polyline  ltl 0 -100 0 0 0 0 100 0 0 100 -50 0 50 -100 0 0 -100 0
+vdisplay  -noupdate ltl -2d topLeft -layer $aLayerId
+vsetwidth -noupdate ltl 2
+
+text2brep ttr "Top-Right" -font $aLabelFont -height 30 -pos -130 -30 0
+vdisplay  -noupdate ttr -2d topRight -layer $aLayerId -dispMode 1
+polyline  ltr -100 -100 0 -100 0 0 0 0 0 0 -50 0 -50 -100 0 -100 -100 0
+vdisplay  -noupdate ltr -2d topRight -layer $aLayerId
+vsetwidth -noupdate ltr 2
+
+text2brep tbr "Bottom-Right" -font $aLabelFont -height 30 -pos -180 3 0
+vdisplay  -noupdate tbr -2d bottomRight -layer $aLayerId -dispMode 1
+polyline  lbr -100 0 0 -100 100 0 0 100 0 0 50 0 -50 0 0 -100 0 0
+vdisplay  -noupdate lbr -2d bottomRight -layer $aLayerId
+vsetwidth -noupdate lbr 2
+
+vdrawtext t2 "Label" -pos 1 0 1 -font $aLabelFont
+vdisplay b2 -trsfPers zoom -trsfPersPos 1 0 1
+
+vdump $::imagedir/${::casename}_409x409_tile0.png
+vdump $::imagedir/${::casename}_409x409_tile128.png  -tileSize 128
+vdump $::imagedir/${::casename}_409x409_tile1024.png -tileSize 1024
+vdump $::imagedir/${::casename}_1920x1080_tile0.png    -width 1920 -height 1920
+vdump $::imagedir/${::casename}_1920x1080_tile128.png  -width 1920 -height 1920 -tileSize 128
+vdump $::imagedir/${::casename}_1920x1080_tile1024.png -width 1920 -height 1920 -tileSize 1024
+diffimage $::imagedir/${::casename}_409x409_tile0.png $::imagedir/${::casename}_409x409_tile128.png 0 0 0 $::imagedir/${::casename}_409x409_tile128diff.png
+
+# check dump with stereo
+vstereo anaglyph
+vdump $::imagedir/${::casename}_409x409_stereotile0.png      -stereo blend
+vdump $::imagedir/${::casename}_409x409_stereotile128.png    -stereo blend -tileSize 128
+vdump $::imagedir/${::casename}_409x409_stereotile1024.png   -stereo blend -tileSize 1024
+vdump $::imagedir/${::casename}_1920x1080_stereotile0.png    -width 1920 -height 1920 -stereo blend
+vdump $::imagedir/${::casename}_1920x1080_stereotile128.png  -width 1920 -height 1920 -stereo blend -tileSize 128
+vdump $::imagedir/${::casename}_1920x1080_stereotile1024.png -width 1920 -height 1920 -stereo blend -tileSize 1024
+diffimage $::imagedir/${::casename}_409x409_stereotile0.png $::imagedir/${::casename}_409x409_stereotile128.png 0 0 0 $::imagedir/${::casename}_409x409_stereotile128diff.png

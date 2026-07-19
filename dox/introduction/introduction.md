@@ -1,0 +1,601 @@
+Introduction {#mainpage}
+========
+
+@tableofcontents
+
+@htmlonly<center>@endhtmlonly 
+@figure{/resources/occt_logo.png}
+@htmlonly</center>@endhtmlonly
+
+Welcome to Open CASCADE Technology (OCCT), a software development platform 
+providing services for 3D surface and solid modeling, CAD data exchange, and 
+visualization. Most of OCCT functionality is available in the form of C++ 
+libraries. OCCT can be best applied in development of software dealing with 3D 
+modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
+
+@htmlonly<center>@endhtmlonly
+https://www.opencascade.com
+@figure{/resources/occ_logo.png}
+@htmlonly</center>@endhtmlonly
+
+@section intro_overview Overview
+
+Open CASCADE Technology (OCCT) is an object-oriented C++ class library designed for rapid production of sophisticated domain-specific CAD/CAM/CAE applications. 
+
+A typical application developed using OCCT deals with two or three-dimensional (2D or 3D) geometric modeling
+in general-purpose or specialized Computer Aided Design (CAD) systems, manufacturing
+or analysis applications, simulation applications, or even illustration tools. 
+
+OCCT library is designed to be truly modular and extensible, providing C++ classes for:
+  * Basic data structures (geometric modeling, visualization, interactive selection and application specific services); 
+  * Modeling algorithms; 
+  * Working with mesh (faceted) data; 
+  * Data interoperability with neutral formats (IGES, STEP); 
+
+The C++ classes and other types are grouped into packages. Packages are organized into toolkits (libraries), to which you can link your application. Finally, toolkits are grouped into seven modules.
+
+This modular structure is illustrated in the diagram below.
+
+@figure{/introduction/images/technical_overview_schema.png}
+
+* @ref intro_overview_fclasses  "Foundation Classes" module underlies all other OCCT classes; 
+* @ref intro_overview_moddata   "Modeling Data" module supplies data structures to represent 2D and 3D geometric primitives and their compositions into CAD models; 
+* @ref intro_overview_modalgo   "Modeling Algorithms" module contains a vast range of geometrical and topological algorithms;
+  * @ref intro_overview_mesh    "Mesh" toolkit from "Modeling Algorithms" module implements tessellated representations of objects;
+* @ref intro_overview_visu      "Visualization" module provides complex mechanisms for graphical data representation;
+* @ref intro_overview_de        "Data Exchange" module inter-operates with popular data formats and relies on @ref intro_overview_heal "Shape Healing" to improve compatibility between CAD software of different vendors;
+* @ref intro_overview_ocaf      "Application Framework" module offers ready-to-use solutions for handling application-specific data (user attributes) and commonly used functionality (save/restore, undo/redo, copy/paste, tracking CAD modifications, etc). 
+
+In addition, @ref intro_overview_draw "Open CASCADE DRAW Test Harness", also called Draw, provides an entry point to the library and can be used as a testing tool for its modules.
+
+@subsection intro_overview_fclasses Foundation Classes
+
+**Foundation Classes** module contains data structures and services used by higher-level Open CASCADE Technology classes:
+
+  * Standard C++ primitive types (`int`, `double`, `float`, `bool`, `char`);
+  * String classes that handle Unicode strings;
+  * Collection classes that handle statically or dynamically sized aggregates of data, such as arrays, lists, queues, sets and hash tables (data maps).
+  * Classes providing commonly used numerical algorithms and basic linear algebra calculations (addition, multiplication, transposition of vectors and matrices, solving linear systems etc).
+  * Fundamental types like color, date and time information;
+  * Primitive geometry types providing implementation of basic geometric and algebraic entities that define and manipulate elementary data structures. 
+  * Exception classes that describe situations, when the normal execution of program is abandoned;
+
+This module also provides a variety of general-purpose services, such as:
+  * Safe handling of dynamically created objects, ensuring automatic deletion of unreferenced objects (smart pointers);
+  * Standard and specialized memory allocators;
+  * Extended run-time type information (RTTI) mechanism maintaining a full type hierarchy and providing means to iterate over it;
+  * Encapsulation of C++ streams;
+  * Basic interpreter of expressions facilitating the creation of customized scripting tools, generic definition of expressions, etc.;
+  * Tools for dealing with configuration resource files and customizable message files facilitating multi-language support in applications;
+  * Progress indication and user break interfaces, giving a possibility even for low-level algorithms to communicate with the user in a universal and convenient way;
+  * and many others...
+
+See the details in @ref occt_user_guides__foundation_classes "Foundation Classes User's Guide"
+
+@subsection intro_overview_moddata Modeling Data
+
+**Modeling Data** supplies data structures to implement boundary representation (BRep) of objects in 3D.
+In BRep the shape is represented as an aggregation of geometry within topology.
+The geometry is understood as a mathematical description of a shape, e.g. as curves and surfaces (simple or canonical, Bezier, NURBS, etc).
+The topology is a data structure binding geometrical objects together.
+
+Geometry types and utilities provide geometric data structures and services for:
+ * Description of points, vectors, curves and surfaces:
+   * their positioning in 3D space using axis or coordinate systems, and
+   * their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
+ * Creation of parametric curves and surfaces by interpolation and approximation;
+ * Algorithms of direct construction; 
+ * Conversion of curves and surfaces to NURBS form;
+ * Computation of point coordinates on 2D and 3D curves; 
+ * Calculation of extrema between geometric objects. 
+  
+Topology defines relationships between simple geometric entities.
+A shape, which is a basic topological entity, can be divided into components (sub-shapes):
+ * Vertex -- a zero-dimensional shape corresponding to a point;
+ * Edge -- a shape corresponding to a curve and bounded by a vertex at each extremity;
+ * Wire -- a sequence of edges connected by their vertices;
+ * Face -- a part of a plane (in 2D) or a surface (in 3D) bounded by wires;
+ * Shell -- a collection of faces connected by edges of their wire boundaries;
+ * Solid -- a finite closed part of 3D space bounded by shells;
+ * Composite solid -- a collection of solids connected by faces of their shell boundaries;
+ * Compound -- a collection of shapes of arbitrary type.
+
+Complex shapes can be defined as assemblies (compounds) of simpler entities.
+
+See the details in @ref occt_user_guides__modeling_data "Modeling Data User's Guide"
+
+3D geometric models can be stored in OCCT native BREP format.
+See @ref specification__brep_format "BREP Format Description White Paper" for details on the format.
+
+@subsection intro_overview_modalgo Modeling Algorithms
+
+**Modeling Algorithms** module groups a wide range of topological and geometric algorithms used in geometric modeling.
+Basically, there are two groups of algorithms in Open CASCADE Technology:
+ * High-level modeling routines used in the real design;
+ * Low-level mathematical support functions used as a groundwork for the modeling API.
+
+Low-level *geometric tools* provide the algorithms, which:
+ * Calculate the intersection of two curves, surfaces, or a curve and a surface;
+ * Project points onto 2D and 3D curves, points onto surfaces and 3D curves onto surfaces;
+ * Construct lines and circles from constraints;
+ * Construct free-form curves and surfaces from constraints (interpolation, approximation, skinning, gap filling, etc).
+  
+Low-level *topological tools* provide the algorithms, which:
+ * Tessellate shapes;
+ * Check correct definition of shapes;
+ * Determine the local and global properties of shapes (derivatives, mass-inertia properties, etc);
+ * Perform affine transformations;
+ * Find planes on which edges are located;
+ * Convert shapes to NURBS geometry;
+ * Sew connected topologies (shells and wires) from separate topological elements (faces and edges).
+
+Top-level API provides the following functionality: 
+ * Construction of Primitives:
+   * Boxes;
+   * Prisms;
+   * Cylinders;
+   * Cones;
+   * Spheres;
+   * Toruses.
+ * Kinematic Modeling:
+   * Prisms -- linear sweeps;
+   * Revolutions -- rotational sweeps;
+   * Pipes -- general-form sweeps;
+   * Lofting.
+
+@figure{/introduction/images/0001.png,"Shapes containing pipes with variable radius produced by sweeping"}
+
+ * Boolean Operations, which allow creating new shapes from the combinations of source shapes. For two shapes *S1* and *S2*:
+   * *Common* contains all points that are in *S1* and *S2*;
+   * *Fuse* contains all points that are in *S1* or *S2*;
+   * *Cut* contains all points in that are in *S1* and not in *S2*.
+
+See @ref specification__boolean_operations "Boolean Operations" User's Guide for detailed documentation.
+
+ * Algorithms for local modifications such as:
+   * Hollowing;
+   * Shelling;
+   * Creation of tapered shapes using draft angles;
+   * Algorithms to make fillets and chamfers on shape edges, including those with variable radius (chord).
+
+ * Algorithms for creation of mechanical features, i.e. depressions, protrusions, ribs and grooves or slots along planar or revolution surfaces.
+
+@figure{/introduction/images/0004.png}
+ 
+See the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms User's Guide".
+
+@subsection intro_overview_mesh Mesh
+
+**Mesh** toolkit provides the functionality to work with tessellated representations of objects in form of triangular facets. This toolkit contains:
+- data structures to store surface mesh data associated to shapes and basic algorithms to handle them;
+- data structures and algorithms to build triangular surface mesh from *BRep* objects (shapes);
+- tools for displaying meshes with associated pre- and post-processor data (scalars or vectors).
+
+Open CASCADE SAS also offers Advanced Mesh Products (commercial product pages, URLs may change):
+- <a href="https://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
+- <a href="https://www.opencascade.com/content/express-mesh">Express Mesh</a>
+
+@figure{/introduction/images/0003.png}
+
+@subsection intro_overview_visu Visualization
+
+**Visualization** module provides ready-to-use algorithms to create graphic presentations from various objects: shapes, meshes, etc.
+
+In Open CASCADE Technology visualization is based on the separation of CAD data and its graphical presentation.
+The module also supports a fast and powerful interactive selection mechanism. 
+
+Visualization module relies on the following key toolkits:
+- *TKV3d* toolkit defines a high-level API called (Application Interactive Services* (AIS) for working with interactive objects.
+- *TKService* toolkit defines a low-level API for managing and creating presentations from primitive arrays.
+  This toolkit defines an abstraction layer for defining an arbitrary graphic driver responsible for actual rendering.
+- *TKOpenGl* toolkit implements the graphic driver using OpenGL and OpenGL ES libraries.
+
+While low-level API operates with primitive arrays (triangles, lines, points), the higher level includes services for building presentations for B-Rep shapes (shaded and wireframe).
+A comprehensive list of standard interactive objects includes topological shape, mesh presentation, various dimensions, manipulators and others.
+It provides a solid basis for rapid application development, while flexible and extensible API allows development of highly customized application-specific presentations.
+
+Here are a few examples of OCCT Visualization features:
+* Camera-driven view projection and orientation.
+  Perspective, orthographic and stereographic projections are supported.
+* Support of Common (diffuse/ambient/specular) and PBR metallic-roughness material models.
+* Possibility to flexibly adjust appearance of dimensions in a 3D view.
+  The 3D text object represents a given text string as a true 3D object in the model space.
+* Definition of clipping planes through the plane equation coefficients.
+  Ability to define visual attributes for cross-section at the level or individual clipping planes.
+  In the image below different parts of the rocket are clipped with different planes and hatched.
+@figure{/introduction/images/0008.png, "Display of shape cross-section and dimensions"}
+
+* Support of built-in and application-specific GLSL shaders.
+@figure{/introduction/images/0013.png, "Fragment shader implementing custom clipping surface"}
+
+* Optimization of rendering performance through the algorithms of:
+  * View frustum culling, which skips the presentation outside camera at the rendering stage;
+  * Back face culling, which reduces the rendered number of triangles and eliminates artifacts at shape boundaries.
+* Real-time ray tracing technique using recursive Whitted's algorithm and Bounded Volume Hierarchy effective optimization structure.
+@figure{/introduction/images/0002.png, "Real time visualization by ray tracing method"}
+@figure{/introduction/images/0012.png, "Simulation of a glass cover"}
+
+For more details, see @ref occt_user_guides__visualization "Visualization User's Guide".
+
+The visualization of OCCT topological shapes by means of VTK library provided by VIS component is described in a separate @ref occt_user_guides__vis "VTK Integration Services" User's Guide.
+
+@subsection intro_overview_de Data Exchange
+
+**Data Exchange** allows developing OCCT-based applications that can interact with other CAD systems by writing and reading CAD models to and from external data.
+
+@figure{/introduction/images/0014.png,"Shape imported from STEP"}
+
+**Data Exchange** is organized in a modular way as a set of interfaces that comply with various CAD formats: IGES, STEP, STL, VRML, etc.
+The interfaces allow software based on OCCT to exchange data with various CAD/PDM software packages, maintaining a good level of interoperability.
+This module handles various problems of interoperability between CAD systems, caused by differences in model validity criteria and requirements to internal representation.
+
+* **Standardized Data Exchange** interfaces allow querying and examining the input file, converting its contents to a CAD model and running validity checks on a fully translated shape.
+  The following formats are currently supported:
+  * @ref occt_user_guides__step "STEP" (AP203: Mechanical Design, this covers General 3D CAD; AP214: Automotive Design; AP242).
+  * @ref occt_iges_1 "IGES" (up to 5.3).
+  * **glTF** 2.0 reader and writer.
+  * **OBJ** mesh file reader and writer.
+  * **VRML** converter translates Open CASCADE shapes to VRML 1.0 files (Virtual Reality Modeling Language).
+  * **STL** converter translates Open CASCADE shapes to STL files.
+    STL (STtereoLithography) format is widely used for rapid prototyping (3D printing).
+* @ref occt_user_guides__xde "Extended data exchange" (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
+* <a href="https://occt3d.com/components/">Advanced Data Exchange Components</a>
+  are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref intro_overview_heal "Shape Healing") with CAD software using the following proprietary formats (commercial product pages, URLs may change):
+	* <a href="https://occt3d.com/components/acis-import-export-component/">ACIS SAT</a>
+	* <a href="https://occt3d.com/components/parasolid-import-component/">Parasolid</a>
+	* <a href="https://occt3d.com/components/dxf-import-export-component/">DXF</a>
+	* <a href="https://occt3d.com/components/ifc-import-component/">IFC</a>
+	* <a href="https://occt3d.com/components/jt-import-export-component/">JT</a>
+
+These components are based on the same architecture as interfaces with STEP and IGES.
+
+@subsection intro_overview_heal Shape Healing
+
+**Shape Healing** library provides algorithms to correct and adapt the geometry and topology of shapes imported to OCCT from other CAD systems. 
+
+Shape Healing algorithms include, but are not limited to, the following operations:
+ * Analyze shape characteristics and, in particular, identify the shapes that do not comply with OCCT geometry and topology validity rules by analyzing geometrical objects and topology:
+   - check edge and wire consistency;
+   - check edge order in a wire;
+   - check the orientation of face boundaries;
+   - analyze shape tolerances;
+   - identify closed and open wires in a boundary.
+ * Fix incorrect or incomplete shapes:
+   - provide consistency between a 3D curve and its corresponding parametric curve;
+   - repair defective wires;
+   - fit the shapes to a user-defined tolerance value;
+   - fill gaps between patches and edges.
+ * Upgrade and change shape characteristics:
+   - reduce curve and surface degree;
+   - split shapes to obtain C1 continuity;
+   - convert any type of curve or surface to Bezier or B-Spline form and back;
+   - split closed surfaces and revolution surfaces.
+
+Each sub-domain of Shape Healing has its own scope of functionality:
+
+| Sub-domain | Description | Impact on the shape |
+| :--- | :---- | :---- |
+| Analysis | Explores shape properties, computes shape features, detects violation of OCCT requirements. | The shape itself is not modified. |
+| Fixing  | Fixes the shape to meet the OCCT requirements. | The shape may change its original form: modification, removal or creation of sub-shapes, etc.) |
+| Upgrade | Improves the shape to fit some particular algorithms. | The shape is replaced with a new one, but geometrically they are the same. |
+| Customization | Modifies the shape representation to fit specific needs. | The shape is not modified, only the mathematical form of its internal representation is changed. |
+| Processing | Mechanism of shape modification via a user-editable resource file. | |
+
+For more details, refer to @ref occt_user_guides__shape_healing "Shape Healing User's guide".
+
+@subsection intro_overview_ocaf Application Framework
+
+**Open CASCADE Application Framework** (OCAF) handles Application Data basing on the Application/Document paradigm.
+It uses an associativity engine to simplify the development of a CAD application thanks to the following ready-to-use features and services:
+
+* Data attributes managing the application data, which can be organized according to the development needs; 
+* Data storage and persistence (open/save); 
+* Possibility to modify and recompute attributes in documents.
+  With OCAF it is easy to represent the history of modification and parametric dependencies within your model;
+* Possibility to manage multiple documents;  
+* Predefined attributes common to CAD/CAM/CAE applications (e.g. to store dimensions);
+* Undo-Redo and Copy-Paste functions.
+
+Since OCAF handles the application structure, the only development task is the creation of application-specific data and GUIs. 
+
+OCAF differs from any other CAD framework in the organization of application data, as there the data structures are based on reference keys rather than on shapes.
+In a model, such attributes as shape data, color and material are attached to an invariant structure, which is deeper than the shapes.
+A shape object becomes the value of *Shape* attribute, in the same way as an integer number is the value of *Integer* attribute and a string is the value of *Name* attribute.
+
+OCAF organizes and embeds these attributes in a document. OCAF documents, in their turn, are managed by an OCAF application.
+
+For more details, see @ref occt_user_guides__ocaf "OCAF User's Guide". 
+
+@subsection intro_overview_draw DRAW Test Harness
+
+**DRAW Test Harness** (or **Draw**) is a convenient testing tool for OCCT libraries.
+It can be used to test and prototype various algorithms before building an entire application.
+It includes:
+- A command interpreter based on the TCL language;
+- A number of 2D and 3D viewers;
+- A set of predefined commands.
+
+The viewers support operations such as zoom, pan, rotation and full-screen views.
+
+The basic commands provide general-purpose services such as:
+- Getting help;
+- Evaluating a script from a file;
+- Capturing commands in a file;
+- Managing views;
+- Displaying objects.
+
+In addition, **DRAW Test Harness** provides commands to create and manipulate curves and surfaces (geometry) and shapes, access visualization services, work with OCAF documents, perform data exchange, etc.
+
+You can add custom commands to test or demonstrate any new functionalities, which you develop.
+
+For more details, see @ref occt_user_guides__test_harness "Draw Test Harness Manual".
+
+@section intro_req Requirements
+
+Open CASCADE Technology is designed to be highly portable and is known to work on wide range of platforms.
+Current version is officially certified on Windows (x86-64), Linux (x86-64), macOS (x86-64, arm64), Android (arm64), and iOS (arm64) platforms.
+
+The tables below describe the recommended software configurations for which OCCT is certified to work.
+
+@subsection intro_req_cpp C++ Compiler / IDE
+
+| OS        | Compiler |
+| --------- | ----------- |
+| Windows   | Microsoft Visual Studio 2019 or 2022 (2022 preferred) <br> LLVM (ClangCL), GCC 7.3+ (MinGW-w64), Intel C++ 17.1.1+ |
+| Linux     | GCC 8.0+ <br> Clang 7.0+ <br> Intel C++ 17.1.1+ |
+| macOS | Xcode 11.0 or newer (Apple Clang 11.0+) |
+| Android   | NDK r19+, Clang |
+| Web       | Emscripten SDK 3.0 or newer (Clang) |
+
+1) Visual Studio 2022 (MSVC v143) 64-bit is used by the official CI for regular testing and for building binary packages on Windows.
+
+@subsection intro_req_libs Third-party libraries and tools
+
+The following third-party libraries and tools are not included in OCCT sources but are either required or can be optionally used for the indicated components of OCCT.
+They are not needed if relevant component is not needed - it is possible to build core OCCT modules without additional dependencies.
+
+Pre-built third-party archives are attached to the OCCT GitHub release pages at https://github.com/Open-Cascade-SAS/OCCT/releases. Alternatively, configure the build with `-DBUILD_USE_VCPKG=ON` and OCCT will pull and build the required packages via [vcpkg](https://vcpkg.io) automatically based on the enabled `USE_*` options.
+
+| Component | Where to find | Used for | Purpose |
+| --------- | ------------- | -------- | -------------------- |
+| CMake 3.10+ (3.16+ recommended) | https://cmake.org/ | Configuration | Build from sources |
+| Intel oneTBB 2021+ | https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0 | All | Parallelization of algorithms (alternative to built-in thread pool) |
+| OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required for using 3D Viewer |
+| OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | VR (Virtual Reality) support in 3D Viewer |
+| FreeType 2.10+ | https://www.freetype.org/download.html | Visualization | Text rendering in 3D Viewer |
+| FreeImage 3.17+ | https://sourceforge.net/projects/freeimage/files | Visualization | Reading/writing image files |
+| FFmpeg 3.1+ | https://www.ffmpeg.org/download.html | Visualization | Video recording |
+| VTK 6.1+ | https://www.vtk.org/download/ | IVtk | VTK integration module |
+| Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Updating STEP and ExprIntrp parsers |
+| RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Reading/writing glTF files |
+| Draco 1.4.1+ | https://github.com/google/draco | Data Exchange | Reading compressed glTF files |
+| Tcl/Tk 8.6.3+ | https://www.tcl.tk/software/tcltk/download.html | DRAW Test Harness | Tcl interpreter in Draw module |
+| Doxygen 1.8.4+ | https://www.doxygen.nl/download.html | Documentation | (Re)generating documentation |
+| Graphviz 2.38+ | https://graphviz.org/ | Documentation | Generating dependency graphs |
+
+@subsection intro_req_hw Hardware
+
+| Component | Requirement |
+| --------- | ----------- |
+| Minimum memory    | 512 MB, 1 GB recommended |
+| Free disk space (complete installation) | 2 GB approx. |
+
+On desktop, 3D viewer for optimal performance requires graphics processing unit (GPU) supporting OpenGL 3.3 or above. 
+Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with *GL_ARB_texture_buffer_object_rgb32* extension.
+Textures within ray tracing will be available only when *GL_ARB_bindless_texture extension* is provided by driver.
+
+On mobile platforms, OpenGL ES 2.0+ is required for 3D viewer (OpenGL ES 3.1+ is recommended).
+Ray tracing requires OpenGL ES 3.2.
+Some old hardware might be unable to execute complex GLSL programs (e.g. with high number of light sources, clipping planes).
+
+OCCT 3D Viewer, in general, supports wide range of graphics hardware - from very old to new.
+Therefore, if you observe some unexpected visual issues - first check for OpenGL driver update (or firmware update in case of mobile platforms);
+but beware that driver update might also come with new bugs.
+Don't forget to report these bugs to vendors.
+
+@section intro_install Download and Installation
+
+OCCT can be downloaded from https://dev.opencascade.org/release
+
+In most cases you would want to rebuild OCCT from sources on your platform (OS, compiler) before
+using it in your project, to ensure binary compatibility and appropriate configuration of the library.
+See @ref build_upgrade for instructions on building OCCT from sources on supported platforms.
+
+The following subsections describe how OCCT can be installed from ready-to-use packages on different platforms.
+
+@subsection intro_install_windows Windows
+
+On Windows, OCCT can be built from sources using CMake.
+Pre-built binary packages for Visual Studio are available from the
+[GitHub releases page](https://github.com/Open-Cascade-SAS/OCCT/releases).
+Third-party dependencies can be automatically resolved via vcpkg by configuring CMake with `-DBUILD_USE_VCPKG=ON`.
+
+The source tree obtained from a Git clone contains the following top-level directories:
+
+  * **adm**   Administration files for building and packaging OCCT;
+  * **data**  CAD files in various formats for testing OCCT functionality;
+  * **dox**   Documentation sources in Markdown format;
+  * **samples**  Sample applications;
+  * **src**   OCCT source files, organized by module/toolkit/package;
+  * **tests**  Draw Harness test scripts;
+
+@subsection intro_install_linux Linux
+
+OCCT is available as package "opencascade" in official repositories of many Linux distributions.
+
+See https://repology.org/project/opencascade-occt/versions for overview of available repositories.
+
+@subsection intro_install_mac macOS
+
+On macOS, OCCT is available in Homebrew (https://formulae.brew.sh/formula/opencascade)
+and MacPorts (https://ports.macports.org/port/opencascade/summary) repositories.
+
+@section intro_env Environment Variables
+
+To run any Open CASCADE Technology application you need to set the environment variables.
+
+### On any platform
+
+The environment script `env.sh` (or `env.bat` on Windows) is generated by CMake
+in the build directory. Source it to set up the environment for running OCCT applications:
+
+    source <build_dir>/env.sh
+
+The script defines environment variables such as `PATH`, `LD_LIBRARY_PATH` (on Linux),
+`DYLD_LIBRARY_PATH` (on macOS), and `CSF_*` configuration variables.
+ 
+### Description of system variables:
+
+  * **CASROOT** is used to define the root directory of Open CASCADE Technology;
+  * **PATH** is required to define the path to OCCT binaries and 3rdparty folder;
+  * **LD_LIBRARY_PATH** is required to define the path to OCCT libraries (on UNIX platforms only; **DYLD_LIBRARY_PATH** variable in case of macOS);
+  * **CSF_LANGUAGE** (optional) defines default language of messages;
+  * **CSF_DEBUG_BOP** (optional): if defined then it should specify directory where diagnostic data on problems occurred in Boolean operations will be saved;
+  * **CSF_MDTVTexturesDirectory** defines the directory for available textures when using texture mapping;
+  * **CSF_ShadersDirectory** (optional) defines the directory for GLSL programs for Ray Tracing renderer (embedded resources are used when variable is undefined);
+  * **CSF_ShadersDirectoryDump** (optional, development only): if defined then the GLSL source generated from OCCT shader programs will be written to this directory for debugging and inspection;
+  * **CSF_SHMessage** (optional) defines the path to the messages file for *ShapeHealing*;
+  * **CSF_XSMessage** (optional) defines the path to the messages file for **STEP** and **IGES** translators;
+  * **CSF_StandardDefaults**, **CSF_StandardLiteDefaults**, **CSF_XCAFDefaults**, and **CSF_PluginDefaults** define paths to directory where configuration files for OCAF persistence are located (required for open/save operations with OCAF documents);
+  * **CSF_IGESDefaults** and **CSF_STEPDefaults** (optional) define paths to directory where resource files of **IGES** and **STEP** translators are located;
+  * **CSF_XmlOcafResource** is required in order to set the path to **XSD** resources, which defines XML grammar.
+  * **CSF_MIGRATION_TYPES** is required in order to read documents that contain old data types, such as *TDataStd_Shape*;
+
+@note Variables following the pattern **CSF_\<name\>Defaults** (e.g. *CSF_PluginDefaults*, *CSF_IGESDefaults*, *CSF_STEPDefaults*, *CSF_DrawPluginDefaults*) are consumed through OCCT resource managers and plugin loaders via a dynamic composition pattern. They point to directories containing resource files (like *Plugin*, *IGES*, *STEP*); the application resolves these at runtime through the `Resource_Manager` and `TCollection_AsciiString` mechanisms rather than through direct string lookups. This design allows custom or third-party resource directories to be added without modifying OCCT source code.
+
+@section intro_license License
+
+Open CASCADE Technology and all materials, including this documentation, is 
+Copyright (c) 1999-2026 by OPEN CASCADE S.A.S. All rights reserved.
+
+Open CASCADE Technology is free software; you can redistribute it and / or modify it under the terms of the 
+@ref license_lgpl_21 "GNU Lesser General Public License (LGPL) version 2.1", with additional @ref occt_lgpl_exception "exception".
+
+Note that LGPL imposes some obligations on the application linked with Open CASCADE Technology.
+If you wish to use OCCT in a proprietary application, please pay a special attention to address the requirements of LGPL section 6.
+At minimum the following should be considered:
+1. Add the notice visible to the users of your application clearly stating that Open CASCADE Technology is used in this application, and that they have rights in this regard according to LGPL. 
+   Such notice can be added in About dialog box (this is mandatory if this box contains copyright statements) or a similar place and/or in the documentation. 
+   The text of LGPL license should be accessible to the user.
+2. Make the copy of OCCT sources used by the application available to its users, and if necessary provide instructions on how to build it in a way compatible with the application.
+3. Ensure that the user actually can exercise the right to run your application with a modified version of OCCT. 
+   If the application is distributed in a form that does not allow the user to modify OCCT part (e.g. the application is linked to OCCT statically or is distributed via AppStore on iOS, GooglePlay on Android, Windows Store, etc.), 
+   the application should be provided separately in a modifiable form, with all materials needed for the user to be able to run the application with a modified version of OCCT.
+
+If you want to use Open CASCADE Technology without being bound by LGPL requirements, 
+please <a href="https://dev.opencascade.org/webform/contact_us">contact Open CASCADE company</a> for a commercial license.
+
+Note that Open CASCADE Technology is provided on an "AS IS" basis, WITHOUT 
+WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and 
+materials is on you. See the @ref occt_public_license "license" text for formal 
+disclaimer.
+
+@section intro_acknowledge Acknowledgments
+
+The following parties are acknowledged for producing tools which are used within 
+Open CASCADE Technology libraries or for release preparation.
+
+You are hereby informed that all rights to the software listed below belong to its respective 
+authors and such software may not be freely available and/or be free of charge for any kind 
+of use or purpose. We strongly recommend that you carefully read the license of these products 
+and, in case you need any further information, directly contact their authors.
+
+**Tcl** is a high-level programming language. Tk is a graphical user interface (GUI) toolkit, 
+with buttons, menus, listboxes, scrollbars, and so on. Taken together Tcl and Tk provide a solution 
+to develop cross-platform graphical user interfaces with a native look and feel. Tcl/Tk is under copyright by 
+Scriptics Corp., Sun Microsystems, and other companies. However, Tcl/Tk is an open source, and 
+the copyright allows you to use, modify, and redistribute Tcl/Tk for any purpose, without an 
+explicit license agreement and without paying any license fees or royalties. 
+To use Tcl/Tk, refer to the Licensing Terms (https://www.tcl.tk/software/tcltk/license.html).
+
+**FreeType 2** is developed by Antoine Leca, David Turner, Werner Lemberg and others. 
+It is a software font engine that is designed to be small, efficient, highly customizable and 
+portable while capable of producing high-quality output (glyph images). This product 
+can be used in graphic libraries, display servers, font conversion tools, 
+text image generation tools, and many other products.
+FreeType 2 is released under two open-source licenses: BSD-like FreeType License and the GPL (https://www.freetype.org/license.html).
+
+**Intel(R) Threading Building Blocks (TBB)** offers a rich and complete approach to expressing parallelism in a C++ program. 
+It is a library that helps you to take advantage of multi-core processor performance without having to be a threading expert. 
+Threading Building Blocks is not just a threads-replacement library. It represents a higher-level, task-based parallelism that 
+abstracts platform details and threading mechanisms for scalability and performance. 
+Intel oneTBB 2021+ is available under Apache 2.0 license (https://github.com/oneapi-src/oneTBB/).
+
+**OpenGL** is an industry standard API for 3D graphics used by OCCT for 
+implementation of 3D viewer. OpenGL specification is developed by the
+Khronos group, https://www.khronos.org/opengl/. OCCT code includes header 
+file *glext.h* obtained from Khronos web site.
+
+**OpenVR** is an API and runtime that allows access to VR hardware from multiple vendors
+without requiring that applications have specific knowledge of the hardware they are targeting.
+OpenVR is optionally used by OCCT for VR support.
+OpenVR is released under BSD-like license (https://github.com/ValveSoftware/openvr/blob/master/LICENSE).
+
+**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization.
+OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library.
+If you need further information on VTK, refer to VTK Homepage https://www.vtk.org/.
+
+**Doxygen** developed by Dimitri van Heesch is open source documentation system for 
+C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
+for automatic creation of Technical Documentation from C++ header files. 
+If you need further information on Doxygen, refer to https://www.doxygen.nl/index.html.
+
+**Graphviz** is open source graph visualization software developed by John Ellson, Emden Gansner, Yifan Hu and Arif Bilgin. 
+Graph visualization is representation of structured information as diagrams of abstract graphs and networks.
+This product is used together with Doxygen in Open CASCADE Technology for automatic creation of Technical Documentation 
+(generation of dependency graphs). Current versions of Graphviz are licensed on an open source 
+basis under The Eclipse Public License (EPL) (https://www.graphviz.org/license/).
+
+**Inno Setup** is a free script-driven installation system created in CodeGear Delphi by Jordan Russell. 
+In OCCT Inno Setup is used to create Installation Wizard on Windows. 
+It is licensed under Inno Setup License (https://jrsoftware.org/files/is/license.txt).
+
+**FreeImage** is an Open Source library supporting popular graphics image formats, such as PNG, BMP, JPEG, TIFF, 
+and others used by multimedia applications. This library is developed by Hervé Drolon and Floris van den Berg. 
+FreeImage is easy to use, fast, multithreading safe, compatible with all 32-bit or 64-bit versions of Windows, 
+and cross-platform (works both with Linux and macOS). FreeImage is optionally used by OCCT to work
+with images, on conditions of the FreeImage Public License (FIPL) (https://freeimage.sourceforge.net/freeimage-license.txt).
+
+**FFmpeg** is an Open Source framework supporting various image, video and audio codecs.
+FFmpeg is optionally used by OCCT for video recording, on LGPL conditions (https://www.ffmpeg.org/legal.html).
+
+**David M. Gay's floating point routines** (dtoa.c) are used for fast reading of floating point values from text strings.
+These routines are available under MIT-like license (see https://www.netlib.org/fp/).
+
+**Flex** is a generator of lexical analyzers (scanners), available under BSD license (https://github.com/westes/flex).
+
+GNU **Bison** is a parser generator used (together with **Flex**) for implementation of reader of STEP file format and parser of expressions.
+It is available under GNU GPL v3 license (https://www.gnu.org/software/bison/).
+
+**Delabella** is an open-source, cross-platform implementation of the Newton Apple Wrapper algorithm producing 2D Delaunay triangulation. 
+Delabella is used by BRepMesh as one of alternative 2D triangulation algorithms. 
+Delabella is licensed under the MIT license (https://github.com/msokalski/delabella).
+
+**CMake** is an open-source, cross-platform family of tools designed to build, test and package software.
+CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice. 
+OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. 
+See more at https://cmake.org/
+
+**LaTeX** distribution (e.g. TeX Live, MikTeX, MacTeX) is used for generation of User and Developer Guides in PDF format.
+
+**RapidJSON** is an Open Source JSON parser and generator for C++.
+RapidJSON is optionally used by OCCT for reading glTF files (https://rapidjson.org/).
+
+**Draco** is an Open Source library for compressing and decompressing 3D geometric meshes and point clouds.
+Draco is optionally used by OCCT to decode glTF files that use the KHR_draco_mesh_compression extension (https://github.com/google/draco).
+Draco is available under Apache 2.0 license.
+
+**DejaVu** fonts are a font family based on the Vera Fonts under a permissive license (MIT-like, https://dejavu-fonts.github.io/License.html).
+DejaVu Sans (basic Latin sub-set) is used by OCCT as fallback font when no system font is available.
+
+Adobe Systems, Inc. provides **Adobe Reader**, which can be used to view files in Portable Document Format (PDF). 
+
+**CAS.CADE** and **Open CASCADE** are registered trademarks of OPEN CASCADE S.A.S.
+
+**Linux** is a registered trademark of Linus Torvalds.
+
+**Windows** is a registered trademark of Microsoft Corporation in the United States and other countries.
+
+**Mac**, **OS X**, **macOS**, and the Mac logo are trademarks of Apple Inc., registered in the U.S. and other countries.
+
+**Android** is a trademark of Google LLC.

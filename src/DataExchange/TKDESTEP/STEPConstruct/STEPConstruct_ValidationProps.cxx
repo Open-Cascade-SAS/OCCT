@@ -1,0 +1,830 @@
+// Created on: 1999-09-09
+// Created by: Andrey BETENEV
+// Copyright (c) 1999-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <APIHeaderSection_MakeHeader.hxx>
+#include <gp_Pnt.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <MoniTool_Macros.hxx>
+#include <Message.hxx>
+#include <StepBasic_DerivedUnit.hxx>
+#include <StepBasic_DerivedUnitElement.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_SiUnitAndLengthUnit.hxx>
+#include <STEPConstruct_UnitContext.hxx>
+#include <STEPConstruct_ValidationProps.hxx>
+#include <StepData_Factors.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepRepr_MeasureRepresentationItem.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepRepr_ShapeRepresentationRelationship.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_TransferWriter.hxx>
+#include <XSControl_WorkSession.hxx>
+
+//=================================================================================================
+
+STEPConstruct_ValidationProps::STEPConstruct_ValidationProps() = default;
+
+//=================================================================================================
+
+STEPConstruct_ValidationProps::STEPConstruct_ValidationProps(
+  const occ::handle<XSControl_WorkSession>& WS)
+    : STEPConstruct_Tool(WS)
+{
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::Init(const occ::handle<XSControl_WorkSession>& WS)
+{
+  return SetWS(WS);
+}
+
+//=================================================================================================
+
+static occ::handle<Transfer_SimpleBinderOfTransient> TransientResult(
+  const occ::handle<Standard_Transient>& res)
+{
+  occ::handle<Transfer_SimpleBinderOfTransient> binder;
+  if (res.IsNull())
+  {
+    return binder;
+  }
+  binder = new Transfer_SimpleBinderOfTransient;
+  binder->SetResult(res);
+  return binder;
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::FindTarget(const TopoDS_Shape&                          Shape,
+                                               StepRepr_CharacterizedDefinition&            target,
+                                               occ::handle<StepRepr_RepresentationContext>& Context,
+                                               const bool instance)
+{
+  // find the target STEP entity corresponding to a shape
+  occ::handle<TransferBRep_ShapeMapper> mapper = TransferBRep::ShapeMapper(FinderProcess(), Shape);
+  occ::handle<Transfer_Binder>          binder = FinderProcess()->Find(mapper);
+
+  // if requested, try to find instance of assembly
+  if (instance)
+  {
+    /*
+        occ::handle<StepRepr_NextAssemblyUsageOccurrence> NAUO;
+        bool found = myAssemblyPD.IsNull()?
+          FinderProcess()->FindTypedTransient
+    (mapper,STANDARD_TYPE(StepRepr_NextAssemblyUsageOccurrence), NAUO) : STEPConstruct::FindNAUO
+    (binder,myAssemblyPD,NAUO); if ( found ) {
+          //skl find CDSR using NAUO:
+          occ::handle<StepShape_ContextDependentShapeRepresentation> CDSR
+          Interface_EntityIterator subs1 = graph.Sharings(NAUO);
+          for (subs1.Start(); subs1.More(); subs1.Next()) {
+            occ::handle<StepRepr_ProductDefinitionShape> PDS =
+              occ::down_cast<StepRepr_ProductDefinitionShape>(subs1.Value());
+            if(PDS.IsNull()) continue;
+            //IsPDS=true;
+            Interface_EntityIterator subs2 = graph.Sharings(PDS);
+            for (subs2.Start(); CDSR.IsNull() && subs2.More(); subs2.Next()) {
+              CDSR = occ::down_cast<StepShape_ContextDependentShapeRepresentation>(subs2.Value());
+            }
+          }
+          if(!CDSR.IsNull()) {
+            target.SetValue ( CDSR->RepresentedProductRelation() );
+            Context = CDSR->RepresentationRelation()->Rep2()->ContextOfItems();
+          }
+    #ifdef OCCT_DEBUG
+          else std::cout << "INSTANCE: CDRS from NAUO NOT found" << std::endl;
+    #endif
+        }
+    #ifdef OCCT_DEBUG
+        else std::cout << "INSTANCE: NAUO NOT found" << std::endl;
+    #endif
+    */
+  }
+
+  // for Compounds, search for SDR
+  else if (Shape.ShapeType() == TopAbs_COMPOUND)
+  {
+    occ::handle<StepBasic_ProductDefinition> ProdDef;
+    if (FinderProcess()->FindTypedTransient(mapper,
+                                            STANDARD_TYPE(StepBasic_ProductDefinition),
+                                            ProdDef))
+    {
+      occ::handle<StepRepr_ProductDefinitionShape> PDS;
+      Interface_EntityIterator                     subs1 = Graph().Sharings(ProdDef);
+      for (subs1.Start(); PDS.IsNull() && subs1.More(); subs1.Next())
+      {
+        PDS = occ::down_cast<StepRepr_ProductDefinitionShape>(subs1.Value());
+      }
+      target.SetValue(PDS);
+#ifdef OCCT_DEBUG
+//      std::cout << "COMPOUND: SDR found: " << sdr->DynamicType()->Name() << std::endl;
+#endif
+    }
+    else
+    {
+#ifdef OCCT_DEBUG
+      std::cout << "COMPOUND: ProdDef NOT found" << std::endl;
+#endif
+      occ::handle<StepShape_ShapeRepresentation> SR;
+      if (FinderProcess()->FindTypedTransient(mapper,
+                                              STANDARD_TYPE(StepShape_ShapeRepresentation),
+                                              SR))
+      {
+        occ::handle<StepRepr_ProductDefinitionShape> PDS;
+        Interface_EntityIterator                     subs1 = Graph().Sharings(SR);
+        for (subs1.Start(); PDS.IsNull() && subs1.More(); subs1.Next())
+        {
+          occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+            occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs1.Value());
+          if (SDR.IsNull())
+          {
+            continue;
+          }
+          PDS =
+            occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().PropertyDefinition());
+        }
+        if (PDS.IsNull())
+        {
+          subs1 = Graph().Sharings(SR);
+          for (subs1.Start(); PDS.IsNull() && subs1.More(); subs1.Next())
+          {
+            occ::handle<StepRepr_RepresentationRelationship> RR =
+              occ::down_cast<StepRepr_RepresentationRelationship>(subs1.Value());
+            if (RR.IsNull())
+            {
+              continue;
+            }
+            occ::handle<StepShape_ShapeRepresentation> SR1;
+            if (RR->Rep1() == SR)
+            {
+              SR1 = occ::down_cast<StepShape_ShapeRepresentation>(RR->Rep2());
+            }
+            else
+            {
+              SR1 = occ::down_cast<StepShape_ShapeRepresentation>(RR->Rep1());
+            }
+            if (!SR1.IsNull())
+            {
+              Interface_EntityIterator subs2 = Graph().Sharings(SR1);
+              for (subs2.Start(); PDS.IsNull() && subs2.More(); subs2.Next())
+              {
+                occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+                  occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs2.Value());
+                if (SDR.IsNull())
+                {
+                  continue;
+                }
+                PDS = occ::down_cast<StepRepr_ProductDefinitionShape>(
+                  SDR->Definition().PropertyDefinition());
+              }
+            }
+          }
+        }
+        if (!PDS.IsNull())
+        {
+          target.SetValue(PDS);
+          Context = SR->ContextOfItems();
+        }
+      }
+    }
+  }
+
+  // for others, search for GEOMETRIC_REPRESENTATION_ITEM
+  else
+  {
+    occ::handle<StepGeom_GeometricRepresentationItem> item;
+    if (FinderProcess()->FindTypedTransient(mapper,
+                                            STANDARD_TYPE(StepGeom_GeometricRepresentationItem),
+                                            item))
+    {
+#ifdef OCCT_DEBUG
+//      std::cout << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem found: " <<
+//      item->DynamicType()->Name() << std::endl;
+#endif
+      // find PDS (GRI <- SR <- SDR -> PDS)
+      occ::handle<StepRepr_ProductDefinitionShape> PDS;
+      Interface_EntityIterator                     subs = Graph().Sharings(item);
+      for (subs.Start(); PDS.IsNull() && subs.More(); subs.Next())
+      {
+#ifdef OCCT_DEBUG
+//	std::cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << std::endl;
+#endif
+        if (!subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+        {
+          continue;
+        }
+        occ::handle<StepShape_ShapeRepresentation> sr =
+          occ::down_cast<StepShape_ShapeRepresentation>(subs.Value());
+        Context                       = sr->ContextOfItems();
+        Interface_EntityIterator sub2 = Graph().Sharings(subs.Value());
+        for (sub2.Start(); sub2.More(); sub2.Next())
+        {
+          if (!sub2.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+          {
+            continue;
+          }
+          occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
+            occ::down_cast<StepShape_ShapeDefinitionRepresentation>(sub2.Value());
+          PDS =
+            occ::down_cast<StepRepr_ProductDefinitionShape>(sdr->Definition().PropertyDefinition());
+        }
+      }
+      if (!PDS.IsNull())
+      {
+        // find SHAPE_ASPECT or create it with all associated info if not yet exists
+        occ::handle<StepRepr_ShapeAspect> aspect;
+        occ::handle<Transfer_Binder>      bbb = binder;
+        while (!bbb.IsNull())
+        {
+          occ::handle<Transfer_SimpleBinderOfTransient> bx =
+            occ::down_cast<Transfer_SimpleBinderOfTransient>(bbb);
+          if (!bx.IsNull())
+          {
+            occ::handle<StepRepr_ShapeAspect> asp =
+              occ::down_cast<StepRepr_ShapeAspect>(bx->Result());
+            if (!asp.IsNull() && asp->OfShape() == PDS)
+            {
+              aspect = asp;
+              break;
+            }
+          }
+          bbb = bbb->NextResult();
+        }
+        if (aspect.IsNull())
+        {
+//	if ( ! FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepRepr_ShapeAspect), aspect )
+//|| 	     aspect->OfShape() != PDS )
+#ifdef OCCT_DEBUG
+          std::cout << Shape.TShape()->DynamicType()->Name() << ": SHAPE_ASPECT NOT found, creating"
+                    << std::endl;
+#endif
+          // create aspect and all related data
+          occ::handle<TCollection_HAsciiString> AspectName  = new TCollection_HAsciiString("");
+          occ::handle<TCollection_HAsciiString> AspectDescr = new TCollection_HAsciiString("");
+          aspect                                            = new StepRepr_ShapeAspect;
+          aspect->Init(AspectName, AspectDescr, PDS, StepData_LFalse);
+
+          StepRepr_CharacterizedDefinition SA;
+          SA.SetValue(aspect);
+
+          occ::handle<TCollection_HAsciiString> PropDefName =
+            new TCollection_HAsciiString("shape with specific properties");
+          occ::handle<TCollection_HAsciiString> PropDefDescr =
+            new TCollection_HAsciiString("properties for subshape");
+          occ::handle<StepRepr_PropertyDefinition> propdef = new StepRepr_PropertyDefinition;
+          propdef->Init(PropDefName, true, PropDefDescr, SA);
+
+          occ::handle<TCollection_HAsciiString>      SRName = new TCollection_HAsciiString("");
+          occ::handle<StepShape_ShapeRepresentation> SR     = new StepShape_ShapeRepresentation;
+          occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> SRItems =
+            new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
+          SRItems->SetValue(1, item);
+          SR->Init(SRName, SRItems, Context);
+
+          occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+            new StepShape_ShapeDefinitionRepresentation;
+          StepRepr_RepresentedDefinition RD;
+          RD.SetValue(propdef);
+          SDR->Init(RD, SR);
+
+          // record SHAPE_ASPECT in the map
+          binder->AddResult(TransientResult(aspect));
+
+          // add SDR and all the data into model
+          Model()->AddWithRefs(SDR);
+        }
+        // SHAPE_ASPECT found, but we also need context: FIND IT !!!!
+        else
+        {
+#ifdef OCCT_DEBUG
+          std::cout << Shape.TShape()->DynamicType()->Name() << ": SHAPE_ASPECT found" << std::endl;
+#endif
+          occ::handle<StepRepr_ProductDefinitionShape> aPDS  = aspect->OfShape();
+          Interface_EntityIterator                     asubs = Graph().Sharings(aPDS);
+          for (asubs.Start(); Context.IsNull() && asubs.More(); asubs.Next())
+          {
+            if (!asubs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+            {
+              continue;
+            }
+            occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
+              occ::down_cast<StepShape_ShapeDefinitionRepresentation>(asubs.Value());
+            Context = sdr->UsedRepresentation()->ContextOfItems();
+          }
+        }
+
+        if (!aspect.IsNull())
+        {
+          target.SetValue(aspect);
+        }
+      }
+#ifdef OCCT_DEBUG
+      else
+        std::cout << Shape.TShape()->DynamicType()->Name()
+                  << ": PDS NOT found, fail to create SHAPE_ASPECT" << std::endl;
+#endif
+    }
+#ifdef OCCT_DEBUG
+    else
+      std::cout << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem NOT found" << std::endl;
+#endif
+  }
+
+  // if target not found and shape has location, try the same shape without location
+  return !target.IsNull();
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::AddProp(
+  const StepRepr_CharacterizedDefinition&            target,
+  const occ::handle<StepRepr_RepresentationContext>& Context,
+  const occ::handle<StepRepr_RepresentationItem>&    Prop,
+  const char* const                                  Descr)
+{
+  // FINALLY, create a structure of 5 entities describing a link between a shape and its property
+  occ::handle<TCollection_HAsciiString> PropDefName =
+    new TCollection_HAsciiString("geometric validation property");
+  occ::handle<TCollection_HAsciiString>    PropDefDescr = new TCollection_HAsciiString(Descr);
+  occ::handle<StepRepr_PropertyDefinition> propdef      = new StepRepr_PropertyDefinition;
+  propdef->Init(PropDefName, true, PropDefDescr, target);
+
+  occ::handle<TCollection_HAsciiString> SRName = new TCollection_HAsciiString(Descr);
+  occ::handle<StepRepr_Representation>  rep    = new StepRepr_Representation;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> SRItems =
+    new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
+  SRItems->SetValue(1, Prop);
+  rep->Init(SRName, SRItems, Context);
+
+  occ::handle<StepRepr_PropertyDefinitionRepresentation> PrDR =
+    new StepRepr_PropertyDefinitionRepresentation;
+  StepRepr_RepresentedDefinition RD;
+  RD.SetValue(propdef);
+  PrDR->Init(RD, rep);
+
+  // record SDR in order to have it written to the file
+  Model()->AddWithRefs(PrDR);
+
+  occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(Model());
+
+  // for AP203, add subschema name
+  if (aStepModel->InternalParameters.WriteSchema == 3)
+  {
+    APIHeaderSection_MakeHeader           mkHdr(aStepModel);
+    occ::handle<TCollection_HAsciiString> subSchema =
+      new TCollection_HAsciiString("GEOMETRIC_VALIDATION_PROPERTIES_MIM");
+    mkHdr.AddSchemaIdentifier(subSchema);
+  }
+
+  return true;
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::AddProp(const TopoDS_Shape&                             Shape,
+                                            const occ::handle<StepRepr_RepresentationItem>& Prop,
+                                            const char* const                               Descr,
+                                            const bool instance)
+{
+  StepRepr_CharacterizedDefinition            target;
+  occ::handle<StepRepr_RepresentationContext> Context;
+  if (!FindTarget(Shape, target, Context, instance))
+  {
+    return false;
+  }
+  return AddProp(target, Context, Prop, Descr);
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::AddVolume(const TopoDS_Shape& Shape, const double Vol)
+{
+  occ::handle<StepBasic_MeasureValueMember> Val = new StepBasic_MeasureValueMember;
+  Val->SetReal(Vol);
+  // Val->SetName ( "solid volume" );
+  Val->SetName("VOLUME_MEASURE");
+
+  // for volume unit, either take existing or create a new
+  if (volUnit.DerivedUnit().IsNull())
+  {
+    occ::handle<StepBasic_SiUnitAndLengthUnit> MM = new StepBasic_SiUnitAndLengthUnit;
+    MM->Init(true, StepBasic_spMilli, StepBasic_sunMetre);
+
+    occ::handle<StepBasic_DerivedUnitElement> DUE = new StepBasic_DerivedUnitElement;
+    DUE->Init(MM, 3.);
+
+    occ::handle<NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>> DUElems =
+      new NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>(1, 1);
+    DUElems->SetValue(1, DUE);
+
+    occ::handle<StepBasic_DerivedUnit> DU = new StepBasic_DerivedUnit;
+    DU->Init(DUElems);
+
+    volUnit.SetValue(DU);
+  }
+
+  occ::handle<TCollection_HAsciiString> MRIName = new TCollection_HAsciiString("volume measure");
+  occ::handle<StepRepr_MeasureRepresentationItem> MRI = new StepRepr_MeasureRepresentationItem;
+  MRI->Init(MRIName, Val, volUnit);
+
+  return AddProp(Shape, MRI, "volume");
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::AddArea(const TopoDS_Shape& Shape, const double Area)
+{
+  occ::handle<StepBasic_MeasureValueMember> Val = new StepBasic_MeasureValueMember;
+  Val->SetReal(Area);
+  // Val->SetName ( "surface area" );
+  Val->SetName("AREA_MEASURE");
+
+  // for area unit, either take existing or create a new
+  if (areaUnit.DerivedUnit().IsNull())
+  {
+    occ::handle<StepBasic_SiUnitAndLengthUnit> MM = new StepBasic_SiUnitAndLengthUnit;
+    MM->Init(true, StepBasic_spMilli, StepBasic_sunMetre);
+
+    occ::handle<StepBasic_DerivedUnitElement> DUE = new StepBasic_DerivedUnitElement;
+    DUE->Init(MM, 2.);
+
+    occ::handle<NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>> DUElems =
+      new NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>(1, 1);
+    DUElems->SetValue(1, DUE);
+
+    occ::handle<StepBasic_DerivedUnit> DU = new StepBasic_DerivedUnit;
+    DU->Init(DUElems);
+
+    areaUnit.SetValue(DU);
+  }
+
+  occ::handle<TCollection_HAsciiString> MRIName =
+    new TCollection_HAsciiString("surface area measure");
+  occ::handle<StepRepr_MeasureRepresentationItem> MRI = new StepRepr_MeasureRepresentationItem;
+  MRI->Init(MRIName, Val, areaUnit);
+
+  return AddProp(Shape, MRI, "surface area");
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::AddCentroid(const TopoDS_Shape& Shape,
+                                                const gp_Pnt&       Pnt,
+                                                const bool          instance)
+{
+  occ::handle<TCollection_HAsciiString> CPName = new TCollection_HAsciiString("centre point");
+  occ::handle<StepGeom_CartesianPoint>  CP     = new StepGeom_CartesianPoint;
+  CP->Init3D(CPName, Pnt.X(), Pnt.Y(), Pnt.Z());
+
+  return AddProp(Shape, CP, "centroid", instance);
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::LoadProps(
+  NCollection_Sequence<occ::handle<Standard_Transient>>& seq) const
+{
+  // parse on PropertyDefinitionRepresentations
+  int                        nb   = Model()->NbEntities();
+  occ::handle<Standard_Type> tPDR = STANDARD_TYPE(StepRepr_PropertyDefinitionRepresentation);
+  for (int i = 1; i <= nb; i++)
+  {
+    occ::handle<Standard_Transient> enti = Model()->Value(i);
+    if (!enti->IsKind(tPDR))
+    {
+      continue;
+    }
+
+    occ::handle<StepRepr_PropertyDefinitionRepresentation> PDR =
+      occ::down_cast<StepRepr_PropertyDefinitionRepresentation>(enti);
+
+    // Check that PDR is for validation props.
+    occ::handle<StepRepr_PropertyDefinition> PD = PDR->Definition().PropertyDefinition();
+    if (!PD.IsNull() && !PD->Name().IsNull())
+    {
+      // Note: according to "Recommended Practices for Geometric and Assembly Validation Properties"
+      // Release 4.4 as of Augist 17, 2016, item 4.6, the name of PropertyDefinition should be
+      // "geometric validation property" with words separated by spaces; however older versions of
+      // the same RP document used underscores. To be able to read files written using older
+      // convention, we convert all underscores to spaces for this check.
+      TCollection_AsciiString aName = PD->Name()->String();
+      aName.ChangeAll('_', ' ', false);
+      aName.LowerCase();
+      if (aName != "geometric validation property")
+      {
+        continue;
+      }
+    }
+
+    seq.Append(PDR);
+  }
+  return seq.Length() > 0;
+}
+
+//=================================================================================================
+
+occ::handle<StepBasic_ProductDefinition> STEPConstruct_ValidationProps::GetPropPD(
+  const occ::handle<StepRepr_PropertyDefinition>& PD) const
+{
+  StepRepr_CharacterizedDefinition CD = PD->Definition();
+
+  // detect target entity of valprop
+  occ::handle<StepBasic_ProductDefinition> ProdDef;
+  occ::handle<StepRepr_PropertyDefinition> PDS = CD.ProductDefinitionShape();
+  if (PDS.IsNull())
+  {
+    occ::handle<StepRepr_ShapeAspect> SA = CD.ShapeAspect();
+    if (SA.IsNull())
+    {
+#ifdef OCCT_DEBUG
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
+      sout << "Error: Cannot find target entity (SA) for geometric_validation_property ";
+      Model()->PrintLabel(PD, sout);
+      sout << std::endl;
+#endif
+      return ProdDef;
+    }
+    Interface_EntityIterator subs = Graph().Sharings(SA);
+    for (subs.Start(); subs.More(); subs.Next())
+    {
+      PDS = occ::down_cast<StepRepr_PropertyDefinition>(subs.Value());
+      if (PDS.IsNull())
+      {
+        return ProdDef;
+      }
+      Interface_EntityIterator subs1 = Graph().Shareds(PDS);
+      for (subs1.Start(); ProdDef.IsNull() && subs1.More(); subs1.Next())
+      {
+        ProdDef = occ::down_cast<StepBasic_ProductDefinition>(subs1.Value());
+      }
+    }
+  }
+  else
+  {
+    Interface_EntityIterator subs = Graph().Shareds(PDS);
+    for (subs.Start(); ProdDef.IsNull() && subs.More(); subs.Next())
+    {
+      ProdDef = occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
+    }
+  }
+#ifdef OCCT_DEBUG
+  if (ProdDef.IsNull())
+  {
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout << "Error: Cannot find target entity (SDR) for geometric_validation_property ";
+    Model()->PrintLabel(PD, sout);
+    sout << std::endl;
+  }
+#endif
+  return ProdDef;
+}
+
+//=================================================================================================
+
+occ::handle<StepRepr_NextAssemblyUsageOccurrence> STEPConstruct_ValidationProps::GetPropNAUO(
+  const occ::handle<StepRepr_PropertyDefinition>& PD) const
+{
+  StepRepr_CharacterizedDefinition CD = PD->Definition();
+
+  // detect target entity of valprop
+  occ::handle<StepRepr_NextAssemblyUsageOccurrence> NAUO;
+  occ::handle<StepRepr_PropertyDefinition>          PDS = CD.ProductDefinitionShape();
+  if (PDS.IsNull())
+  {
+    return NAUO; // not found
+  }
+  Interface_EntityIterator subs = Graph().Shareds(PDS);
+  for (subs.Start(); NAUO.IsNull() && subs.More(); subs.Next())
+  {
+    NAUO = occ::down_cast<StepRepr_NextAssemblyUsageOccurrence>(subs.Value());
+  }
+  return NAUO;
+}
+
+//=================================================================================================
+
+TopoDS_Shape STEPConstruct_ValidationProps::GetPropShape(
+  const occ::handle<StepBasic_ProductDefinition>& ProdDef) const
+{
+  // find target shape
+  TopoDS_Shape                 S;
+  occ::handle<Transfer_Binder> binder = TransientProcess()->Find(ProdDef);
+  if (!binder.IsNull() && binder->HasResult())
+  {
+    S = TransferBRep::ShapeResult(TransientProcess(), binder);
+  }
+  // if ( S.IsNull() ) { // for subshape (via shape_aspect)
+  //   occ::handle<StepRepr_Representation> rep = SDR->UsedRepresentation();
+  //   for ( int j=1; S.IsNull() && j <= rep->NbItems(); j++ ) {
+  //     binder = TransientProcess()->Find(rep->ItemsValue(j));
+  //     if ( ! binder.IsNull() && binder->HasResult() ) {
+  //	S = TransferBRep::ShapeResult ( TransientProcess(), binder );
+  //     }
+  //   }
+  // }
+#ifdef OCCT_DEBUG
+  if (S.IsNull())
+  {
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout << "Warning: Entity ";
+    Model()->PrintLabel(ProdDef, sout);
+    sout << " is not mapped to shape" << std::endl;
+  }
+#endif
+  return S;
+}
+
+//=================================================================================================
+
+TopoDS_Shape STEPConstruct_ValidationProps::GetPropShape(
+  const occ::handle<StepRepr_PropertyDefinition>& PD) const
+{
+  occ::handle<StepBasic_ProductDefinition> ProdDef = GetPropPD(PD);
+  TopoDS_Shape                             S;
+  if (!ProdDef.IsNull())
+  {
+    S = GetPropShape(ProdDef);
+  }
+  return S;
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::GetPropReal(
+  const occ::handle<StepRepr_RepresentationItem>& item,
+  double&                                         Val,
+  bool&                                           isArea,
+  const StepData_Factors&                         theLocalFactors) const
+{
+  // decode volume & area
+  if (!item->IsKind(STANDARD_TYPE(StepRepr_MeasureRepresentationItem)))
+  {
+    return false;
+  }
+
+  occ::handle<StepRepr_MeasureRepresentationItem> mri =
+    occ::down_cast<StepRepr_MeasureRepresentationItem>(item);
+
+  occ::handle<StepBasic_MeasureWithUnit> M    = mri->Measure();
+  TCollection_AsciiString                Name = M->ValueComponentMember()->Name();
+  StepBasic_Unit                         Unit = M->UnitComponent();
+
+  double                             scale = 1.;
+  occ::handle<StepBasic_DerivedUnit> DU    = Unit.DerivedUnit();
+  if (!DU.IsNull())
+  {
+    for (int ind = 1; ind <= DU->NbElements(); ind++)
+    {
+      occ::handle<StepBasic_DerivedUnitElement> DUE = DU->ElementsValue(ind);
+      double                                    exp = DUE->Exponent();
+      occ::handle<StepBasic_NamedUnit>          NU  = DUE->Unit();
+      STEPConstruct_UnitContext                 unit;
+      unit.ComputeFactors(NU, theLocalFactors);
+      if (unit.LengthDone())
+      {
+        double lengthFactor = unit.LengthFactor();
+        scale *= pow(lengthFactor, exp);
+      }
+    }
+  }
+  else
+  {
+    occ::handle<StepBasic_NamedUnit> NU = Unit.NamedUnit();
+    if (!NU.IsNull())
+    {
+      STEPConstruct_UnitContext unit;
+      unit.ComputeFactors(NU, theLocalFactors);
+      if (unit.AreaDone())
+      {
+        scale = unit.AreaFactor();
+      }
+      if (unit.VolumeDone())
+      {
+        scale = unit.VolumeFactor();
+      }
+    }
+  }
+
+  Val = M->ValueComponent() * scale;
+
+  if (Name == "AREA_MEASURE")
+  {
+    isArea = true;
+  }
+  else if (Name == "VOLUME_MEASURE")
+  {
+    isArea = false;
+  }
+  else
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "Warning: Measure " << Model()->StringLabel(M)->String()
+              << " is neither area not volume" << std::endl;
+#endif
+    return false;
+  }
+  return true;
+}
+
+//=================================================================================================
+
+bool STEPConstruct_ValidationProps::GetPropPnt(
+  const occ::handle<StepRepr_RepresentationItem>&    item,
+  const occ::handle<StepRepr_RepresentationContext>& Context,
+  gp_Pnt&                                            Pnt,
+  const StepData_Factors&                            theLocalFactors) const
+{
+  // centroid
+  if (!item->IsKind(STANDARD_TYPE(StepGeom_CartesianPoint)))
+  {
+    return false;
+  }
+
+  occ::handle<StepGeom_CartesianPoint> P = occ::down_cast<StepGeom_CartesianPoint>(item);
+  if (P.IsNull() || P->NbCoordinates() != 3)
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "Warning: Point " << Model()->StringLabel(P)->String()
+              << " is not valid for centroid" << std::endl;
+#endif
+    return false;
+  }
+
+  gp_Pnt pos(P->CoordinatesValue(1), P->CoordinatesValue(2), P->CoordinatesValue(3));
+
+  // scale according to units
+  if (!Context.IsNull())
+  {
+    occ::handle<StepRepr_GlobalUnitAssignedContext> theGUAC;
+    if (Context->IsKind(
+          STANDARD_TYPE(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)))
+    {
+      DeclareAndCast(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext,
+                     theGRCAGAUC,
+                     Context);
+      theGUAC = theGRCAGAUC->GlobalUnitAssignedContext();
+    }
+    else if (Context->IsKind(
+               STANDARD_TYPE(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)))
+    {
+      DeclareAndCast(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx,
+                     theGRCAGAUC,
+                     Context);
+      theGUAC = theGRCAGAUC->GlobalUnitAssignedContext();
+    }
+    if (!theGUAC.IsNull())
+    {
+      STEPConstruct_UnitContext UnitTool;
+      UnitTool.ComputeFactors(theGUAC, theLocalFactors);
+      gp_Pnt zero(0, 0, 0);
+      pos.Scale(zero, UnitTool.LengthFactor());
+    }
+  }
+  Pnt = pos;
+
+  return true;
+}
+
+//=================================================================================================
+
+void STEPConstruct_ValidationProps::SetAssemblyShape(const TopoDS_Shape& shape)
+{
+  occ::handle<TransferBRep_ShapeMapper> mapper = TransferBRep::ShapeMapper(FinderProcess(), shape);
+  FinderProcess()->FindTypedTransient(mapper,
+                                      STANDARD_TYPE(StepBasic_ProductDefinition),
+                                      myAssemblyPD);
+}

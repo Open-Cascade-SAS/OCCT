@@ -1,0 +1,17 @@
+# Original bug : pro16810
+# Date : 07 Dec 98
+
+restore [locate_data_file CFE900_pro16gfj.rle] base
+
+circle cercle 0 0 0 0 0 1 10
+mkedge edge cercle
+wire wire edge
+mkplane cont wire
+
+explode base face
+copy base_6 funtil
+
+featprism base cont cont 0 0 1 1 1
+featperform prism result funtil
+
+checkprops result -s 28559.8

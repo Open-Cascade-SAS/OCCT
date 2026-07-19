@@ -1,0 +1,8 @@
+#cts21588
+restore [locate_data_file CTO909_part_syb.brep] a
+restore [locate_data_file CTO909_tool_syb.brep] b
+
+bfuse result a b
+
+checkprops result -s 76217.4
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

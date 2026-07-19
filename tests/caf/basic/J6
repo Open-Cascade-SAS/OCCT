@@ -1,0 +1,70 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_UAttribute
+#
+# Testing command:   SetUAttribute
+# Testing command:   GetUAttribute
+#
+
+puts "caf001-J6"
+
+# Add an attribute to a data framework
+set aSetAttr1 "c73bd075-22ee-11d2-acde-080009dc4422"
+set aLabel 0:2
+SetUAttribute D ${aLabel} ${aSetAttr1}
+set aGetAttr1 [GetUAttribute D ${aLabel} ${aSetAttr1}]
+
+# Add new ID to a label
+set aSetAttr2 "c73bd076-22ee-11d2-acde-080009dc4422"
+SetUAttribute D ${aLabel} ${aSetAttr2}
+set aGetAttr2 [GetUAttribute D ${aLabel} ${aSetAttr2}]
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/caf001-J6.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+#catch {exec chmod 777 ${aFile}}
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of first ID
+set IsDone [catch {GetUAttribute DD ${aLabel} ${aSetAttr1}} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: Error"
+	return
+}
+if { ${aSetAttr1}!=${aGetAttr1} } {
+	puts "First ID:"
+	puts "aSetAttr1=${aSetAttr1}"
+	puts "aGetAttr1=${aGetAttr1}"
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: Error"
+	return
+}
+
+# Get a value of second ID
+set IsDone [catch {GetUAttribute DD ${aLabel} ${aSetAttr2}} aResult]
+if { ${IsDone} != 0 } {
+	puts ${aResult}
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: Error"
+	return
+}
+if { ${aSetAttr2}!=${aGetAttr2} } {
+	puts "Second ID:"
+	puts "aSetAttr2=${aSetAttr2}"
+	puts "aGetAttr2=${aGetAttr2}"
+	puts "Get a value of TDataStd_UAttribute attribute from restoring document: Error"
+	return
+}
+
+puts "Get a value of TDataStd_UAttribute attribute from restoring document: OK"

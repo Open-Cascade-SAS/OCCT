@@ -1,0 +1,38 @@
+# test annotation plane
+box b 10 10 10
+explode b e
+
+NewDocument D_init
+XAddShape D_init b
+XAddDimension D_init b_1
+#0:1:4:1
+XSetDimensionType D_init 0:1:4:1 14
+XSetDimensionValue D_init 0:1:4:1 10
+XSetGDTPosition D_init 0:1:4:1 -5 0 7 -1 0 0 0 1 0
+# Presentation
+line l -5 0 0 0 0 1
+mkedge prs l 0 10
+XSetGDTPresentation D_init 0:1:4:1 prs presentation
+# Export
+set isOK 1
+set filename $imagedir/${casename}_D_init.stp
+if { [catch { WriteStep D_init $filename } catch_result] } {
+  puts "Error: File was not written - exception"
+  set isOK 0
+  }
+# Import
+if {$isOK} {
+  if { [catch { ReadStep D $filename } catch_result] } {
+    puts "Error: File was not read - exception"
+    set isOK 0
+    }
+  }
+# Reference data
+if {$isOK} {
+set c_value "10"
+set c_type "Size_CurveLength"
+set c_pos {position: -5 0 7
+normal: -1 0 0
+x_direction: 0 1 0
+}
+}

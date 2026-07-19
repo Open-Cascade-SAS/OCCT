@@ -1,0 +1,27 @@
+puts ""
+puts "=========================================================================="
+puts "OCC31016: Projection of an ellipse or a circle is a B-spline in some cases"
+puts "=========================================================================="
+puts ""
+
+set startPar 1
+set endPar 4.5
+
+circle c 0 0 0  10
+trim c c $startPar $endPar
+plane p 0 0 0  1 0 1
+projonplane r c p 1
+
+if {![regexp {BSplineCurve} [dump r]]} {
+  puts "ERROR: Projected curve is not a B-spline curve"
+}
+
+if {[CheckProjectionToPlane 100 c $startPar $endPar r $startPar $endPar p {} 1.e-6]} {
+  puts ""
+  puts "OK: All sample points are projected correctly"
+  puts ""
+} else {
+  puts ""
+  puts "ERROR: Projection is incorrect for some points"
+  puts ""
+}

@@ -1,0 +1,15 @@
+puts "======="
+puts "0030234: BRepMesh_IncrementalMesh fail to discretize some zero-length free edges"
+puts "======="
+puts ""
+
+circle cc 0 0 0 0
+
+dump cc
+
+mkedge result cc
+checknbshapes result -edge 1 -vertex 1
+
+incmesh result 0.005 -relative
+
+checktrinfo result -tri 0 -nod 0

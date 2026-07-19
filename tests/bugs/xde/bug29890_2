@@ -1,0 +1,45 @@
+puts "=========="
+puts "OCC29890"
+puts "=========="
+puts ""
+##############################
+# Problem in Expand Compounds
+##############################
+pload ALL
+
+# Add subshape to assembly
+box b 1 1 1
+compound b comp
+XNewDoc D
+XAddShape D comp
+explode comp f
+set sub1 [XAddSubShape D comp_1 0:1:1:1]
+if {$sub1 != ""} {
+  puts "Error: inconsistent model after add subshape to assembly."
+}
+Close D
+
+# Add subshape to reference
+box b 1 1 1
+ttranslate b 1 0 0 
+XNewDoc D
+XAddShape D b
+explode b f
+set sub2 [XAddSubShape D b_1 0:1:1:1]
+if {$sub2 != ""} {
+  puts "Error: inconsistent model after add subshape to reference."
+}
+Close D
+
+# Add subshape to subshape
+box b 1 1 1
+XNewDoc D
+XAddShape D b
+explode b f
+XAddSubShape D b_1 0:1:1:1
+explode b_1 e
+set sub3 [XAddSubShape D b_1_1 0:1:1:1:1]
+if {$sub3 != ""} {
+  puts "Error: inconsistent model after add subshape to subshape."
+}
+Close D

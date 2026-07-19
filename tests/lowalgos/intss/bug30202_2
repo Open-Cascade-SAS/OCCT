@@ -1,0 +1,14 @@
+puts "========"
+puts "0030202: IntPatch_WLineTool::JoinWLines array out of bounds"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30202_src.brep] b1
+restore [locate_data_file bug30202_tool.brep] b2
+
+explode b1 f
+explode b2 f
+
+if {![regexp "no 3d curves\n has no 3d points" [bopcurves b1_5 b2_7 -2d]]} {
+  puts "Error: Expected intersection result is empty"
+}

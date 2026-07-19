@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC27035"
+puts "========"
+puts ""
+###########################################################################
+# General fuse algorithm loses face
+###########################################################################
+
+restore [locate_data_file bug27035_cmpd.brep] a
+
+explode a
+
+bclearobjects
+bcleartools
+
+baddobjects a_1 a_2
+
+bfillds
+bbuild result
+
+checknbshapes result -wire 2 -face 2 -t
+
+smallview 
+donly result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

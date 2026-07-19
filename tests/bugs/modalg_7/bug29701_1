@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC29701: BRepTools::Update(Face) unexpectedly updates UV points of pcurve"
+puts "========"
+puts ""
+
+brestore [locate_data_file bug29701_brepmesh_triangle_bad_collapsed.brep] s
+
+# mesh the face
+if {![regexp "NoError" [incmesh s 0.1]]} {
+  puts "Error: Unable to build triangulation"
+}
+
+if {![regexp "Reused" [incmesh s 0.1]]} {
+  puts "Error: Unable to build triangulation"
+}
+
+tcopy s copy
+
+# mesh the copy face
+if {![regexp "NoError" [incmesh copy 0.1]]} {
+  puts "Error: Unable to build triangulation on copy shape"
+}
+
+if {![regexp "Reused" [incmesh copy 0.1]]} {
+  puts "Error: Unable to build triangulation on copy shape"
+}
+
+fixshape fixed s
+
+# mesh the fixed face
+repeat 2 {
+  if {![regexp "Reused" [incmesh fixed 0.1]]} {
+    puts "Error: Unable to build triangulation on fixed shape"
+  }
+}

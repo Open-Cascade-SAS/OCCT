@@ -1,0 +1,68 @@
+puts "========"
+puts "BUC60963"
+puts "OCC88"
+puts "========"
+puts ""
+######################################################
+# BUC60963. can not project vertex to face
+######################################################
+
+restore [locate_data_file OCC88.brep] sh 
+
+set che [checkshape sh]
+
+explode sh f
+checkshape sh_1
+checkshape sh_2
+
+mksurface surf1 sh_1
+mksurface surf2 sh_2
+puts "Make line from pos(135; 11; 0) with dir (0;0;1) "
+line l 135 11 0 0 0 1
+
+intersect res1 l surf1
+intersect res2 l surf2
+#set first1 [whatis res1]
+#set second1 [whatis res2]
+
+puts "Try to intersect with (135;10.9995;0) (0;0;1)"
+line ll 135 10.9995 0 0 0 1
+intersect res_1 ll surf1
+intersect res_2 ll surf2
+#set first2 [whatis res_1]
+#set second2 [whatis res_2]
+
+set IsGood 1
+if {[info exists res1] == 0} {
+   puts "Faulty OCC88 (case 2)"
+   set IsGood 0
+}
+if {[info exists res2] == 1} {
+   puts "Faulty OCC88 (case 3)"
+   set IsGood 0
+}
+
+if {[info exists res_1] == 0} {
+   puts "Faulty OCC88 (case 4)"
+   set IsGood 0
+}
+if {[info exists res_2] == 1} {
+   puts "Faulty OCC88 (case 5)"
+   set IsGood 0
+}
+
+if {${IsGood} == 1} {
+   set dump_list1 [split [dump res1] " :,\n"]
+   set x1 [lindex ${dump_list1} 10]
+   set y1 [lindex ${dump_list1} 12]
+   set z1 [lindex ${dump_list1} 14]
+
+   set dump_list2 [split [dump res_1] " :,\n"]
+   set x2 [lindex ${dump_list2} 10]
+   set y2 [lindex ${dump_list2} 12]
+   set z2 [lindex ${dump_list2} 14]
+
+   checkreal "x1 case 6" ${x1} ${x2} 0 0.001
+   checkreal "y1 case 7" ${y1} ${y2} 0 0.001
+   checkreal "z1 case 8" ${z1} ${z2} 0 0.001
+}

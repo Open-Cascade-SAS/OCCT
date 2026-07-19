@@ -1,0 +1,7 @@
+# Auxiliary procedure to compare triplet of numbers
+# against reference values, with tolerance
+proc check3reals {name value1 value2 value3 ref1 ref2 ref3 tol} {
+  checkreal "${name}, component 1" $value1 $ref1 $tol 1e-6
+  checkreal "${name}, component 2" $value2 $ref2 $tol 1e-6
+  checkreal "${name}, component 3" $value3 $ref3 $tol 1e-6
+}

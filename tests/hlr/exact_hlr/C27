@@ -1,0 +1,5 @@
+set viewname "vback"
+set length 48596.2
+
+testreadstep [locate_data_file bug27341_conboom.stp] a
+COMPUTE_HLR $viewname $algotype

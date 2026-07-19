@@ -1,0 +1,36 @@
+puts "========"
+puts "CR26351"
+puts "========"
+puts ""
+#######################################################################
+# Wrong result found by the projection algorithm
+#######################################################################
+
+restore [locate_data_file bug26351_loire_e.brep] e
+
+# 1
+
+mkcurve c e
+
+set x 167.52026394441
+set y -1206.50315237977
+set z 0
+
+proj c $x $y $z
+checklength ext_12 -l 29.450809988644483
+
+# 2
+
+vertex v $x $y $z
+vertex vc 48135.477492688588 e
+
+distmini d v vc
+
+set distmin [dval d_val]
+
+# Check results
+
+set tol_abs 1.0e-07
+set tol_rel 0.01
+set expected_distmin 3.1958945321254297e-12
+checkreal "Minimal distance" ${distmin} ${expected_distmin} ${tol_abs} ${tol_rel}

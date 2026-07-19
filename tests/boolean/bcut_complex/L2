@@ -1,0 +1,9 @@
+# Original bug : cts20867
+# Date : 4June98
+
+restore [locate_data_file CTO904_cts20867-part.rle] a
+restore [locate_data_file cts20867-tool.rle] b
+
+bcut result a b
+checkprops result -s 2221.48
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

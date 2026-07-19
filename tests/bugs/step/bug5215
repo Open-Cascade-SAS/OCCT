@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC5215"
+puts "============"
+puts ""
+######################################################
+# Problem with splitting face
+######################################################
+
+stepread [locate_data_file trj4_k1_geo-md-203.stp] a *
+tpcompound result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

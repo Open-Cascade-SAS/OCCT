@@ -1,0 +1,230 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+        elementFormDefault="qualified">
+
+<annotation>
+  <documentation xml:lang="en">
+    Copyright (c) 2001-2014 OPEN CASCADE SAS
+
+    This file is part of Open CASCADE Technology software library.
+
+    This library is free software; you can redistribute it and/or modify it under
+    the terms of the GNU Lesser General Public License version 2.1 as published
+    by the Free Software Foundation, with special exception defined in the file
+    OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+    distribution for complete text of the license and disclaimer of any warranty.
+
+    Alternatively, this file may be used under the terms of Open CASCADE
+    commercial license or contractual agreement.
+
+    Open Cascade Application Framework: Definition of attributes from TDataStd
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_TDataStd.xsd
+  </documentation>
+</annotation>
+
+<element name="TDataStd_Position" type="ocaf:AbsList3RealAttributeType"
+         substitutionGroup="ocaf:AbstractList3RealAtt"/>
+
+<element name="TDataStd_Name"           type="ocaf:AbsStringAttributeType"
+         substitutionGroup="ocaf:AbstractStringAtt"/>
+
+<element name="TDataStd_Comment"        type="ocaf:AbsStringAttributeType"
+         substitutionGroup="ocaf:AbstractStringAtt"/>
+
+<element name="TDataStd_Integer"        type="ocaf:AbsIntegerAttributeType"
+         substitutionGroup="ocaf:AbstractIntegerAtt"/>
+
+<element name="TDataStd_Real"           type="ocaf:AbsRealAttributeType"
+         substitutionGroup="ocaf:AbstractRealAtt"/>
+
+<element name="TDataStd_Point"          type="ocaf:AbstractAttributeType"
+         substitutionGroup="ocaf:AbstractAttribute"/>
+
+<element name="TDataStd_Axis"           type="ocaf:AbstractAttributeType"
+         substitutionGroup="ocaf:AbstractAttribute"/>
+
+<element name="TDataStd_Plane"          type="ocaf:AbstractAttributeType"
+         substitutionGroup="ocaf:AbstractAttribute"/>
+
+<element name="TDataStd_Shape"          type="ocaf:AbstractAttributeType"
+         substitutionGroup="ocaf:AbstractAttribute"/>
+
+<element name="TDataStd_Directory"      type="ocaf:AbstractAttributeType"
+         substitutionGroup="ocaf:AbstractAttribute"/>
+
+<element name="TDataStd_IntegerArray" substitutionGroup="ocaf:AbstractListIntegerAtt">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbsListIntegerAttributeType">
+        <attribute name="first" type="int" default="1"/>
+        <attribute name="last" type="int" use="required"/>
+        <attribute name="delta" type="int" use="required"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_RealArray" substitutionGroup="ocaf:AbstractListRealAtt">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbsListRealAttributeType">
+        <attribute name="first" type="int" default="1"/>
+        <attribute name="last" type="int" use="required"/>
+        <attribute name="delta" type="int" use="required"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_UAttribute" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="guid" type="ocaf:GuidType" use="required"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_TreeNode" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="treeid" type="ocaf:GuidType" use="required"/>
+        <attribute name="children" type="ocaf:ListOfInteger"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_Geometry" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="geomtype" use="required">
+          <simpleType>
+            <restriction base="string">
+              <enumeration value="any"/>
+              <enumeration value="point"/>
+              <enumeration value="line"/>
+              <enumeration value="circle"/>
+              <enumeration value="ellipse"/>
+            </restriction>
+          </simpleType>
+        </attribute>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_Constraint" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="contype" use="required">
+          <simpleType>
+            <restriction base="string">
+              <enumeration value="radius"/>
+              <enumeration value="diameter"/>
+              <enumeration value="minorradius"/>
+              <enumeration value="majorradius"/>
+              <enumeration value="tangent"/>
+              <enumeration value="parallel"/>
+              <enumeration value="perpendicular"/>
+              <enumeration value="concentric"/>
+              <enumeration value="coincident"/>
+              <enumeration value="distance"/>
+              <enumeration value="angle"/>
+              <enumeration value="equalradius"/>
+              <enumeration value="symmetry"/>
+              <enumeration value="midpoint"/>
+              <enumeration value="equaldist"/>
+              <enumeration value="fix"/>
+              <enumeration value="rigid"/>
+              <enumeration value="from"/>
+              <enumeration value="axis"/>
+              <enumeration value="mate"/>
+              <enumeration value="alignfaces"/>
+              <enumeration value="alignaxes"/>
+              <enumeration value="axesangle"/>
+              <enumeration value="facesangle"/>
+              <enumeration value="round"/>
+              <enumeration value="offset"/>
+            </restriction>
+          </simpleType>
+        </attribute>
+        <attribute name="valueref" type="positiveInteger"/>
+        <attribute name="geometries">
+          <simpleType>
+            <restriction base="ocaf:ListOfInteger">
+              <minLength value="1"/>
+              <maxLength value="4"/>
+            </restriction>
+          </simpleType>
+        </attribute>
+        <attribute name="plane" type="positiveInteger"/>
+        <attribute name="flags" use="required">
+          <simpleType>
+            <restriction base="string">
+              <pattern value="[+-]{3}"/>
+            </restriction>
+          </simpleType>
+        </attribute>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_Variable" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="isconst" type="boolean" default="false"/>
+        <attribute name="unit" type="string" use="required"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_PatternStd" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="signature" type="int" use="required"/>
+        <attribute name="axis1reversed" type="boolean" default="false"/>
+        <attribute name="axis2reversed" type="boolean" default="false"/>
+        <attribute name="nbinstances1" type="positiveInteger"/>
+        <attribute name="value1ref" type="positiveInteger"/>
+        <attribute name="axis1" type="positiveInteger"/>
+        <attribute name="nbinstances2" type="positiveInteger"/>
+        <attribute name="value2ref" type="positiveInteger"/>
+        <attribute name="axis2" type="positiveInteger"/>
+        <attribute name="mirror" type="positiveInteger"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_Relation" substitutionGroup="ocaf:AbstractStringAtt">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbsStringAttributeType">
+        <attribute name="variables" type="ocaf:ListOfInteger"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+<element name="TDataStd_Expression" substitutionGroup="ocaf:AbstractStringAtt">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbsStringAttributeType">
+        <attribute name="variables" type="ocaf:ListOfInteger"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+</schema>

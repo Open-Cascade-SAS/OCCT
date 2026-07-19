@@ -1,0 +1,14 @@
+#J1----------------------------------------------
+beziersurf bz1 3 3 \
+0 0 0  0 10 0   0 20 0   10 0 0   10 10 0 \
+10 20 0   20 0 0   20 10 0   20 20 0
+mkface f1 bz1
+prism rr f1 0 0 12
+offsetcompshape rr rr -1
+fsameparameter rr 0.001
+box bx 5 5 10 10 10 10
+bfuse f rr bx
+nexplode f f
+depouille result f 0 0 1 f_4 2 20 20 20 0 0 1
+
+checkprops result -s 1727.74

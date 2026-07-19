@@ -1,0 +1,8 @@
+puts "============"
+puts "0027063: BRepGProps raises  e x c e p t i o n  on edge with no curves"
+puts "============"
+
+restore [locate_data_file bug27063_emptyedge.brep] result
+
+puts "Check that lprops does not crash on empty edge"
+lprops result

@@ -1,0 +1,10 @@
+#C1----------------------------------------------
+plane p -10 0 0 1 0 0 
+pcone pn p 5 10 20
+box bx -5 -5 0 10 10 15
+bfuse f bx pn
+nexplode f f
+depouille result f 0 0 1 f_7 5 0 0 15 0 0 1 \
+f_3 4 0 0 15 0 0 1
+
+checkprops result -s 1703.96

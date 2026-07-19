@@ -1,0 +1,412 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// lpa, le 11/09/91
+
+// Application of the corrected gradient method to minimize
+// F  = sum(||C(ui, Poles(ui)) - ptli||2.
+// The conjugate gradient method is implemented in the mathematical
+// library: math_BFGS.
+
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+
+#include <AppParCurves_Constraint.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <math_BFGS.hxx>
+#include <StdFail_NotDone.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
+
+static AppParCurves_Constraint FirstConstraint(
+  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+  const int                                                              FirstPoint)
+{
+  int                           i, myindex;
+  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint       Cons = AppParCurves_NoConstraint;
+
+  for (i = low; i <= upp; i++)
+  {
+    mycouple = TheConstraints->Value(i);
+    Cons     = mycouple.Constraint();
+    myindex  = mycouple.Index();
+    if (myindex == FirstPoint)
+    {
+      break;
+    }
+  }
+  return Cons;
+}
+
+static AppParCurves_Constraint LastConstraint(
+  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+  const int                                                              LastPoint)
+{
+  int                           i, myindex;
+  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint       Cons = AppParCurves_NoConstraint;
+
+  for (i = low; i <= upp; i++)
+  {
+    mycouple = TheConstraints->Value(i);
+    Cons     = mycouple.Constraint();
+    myindex  = mycouple.Index();
+    if (myindex == LastPoint)
+    {
+      break;
+    }
+  }
+  return Cons;
+}
+
+AppParCurves_BSpGradient::AppParCurves_BSpGradient(
+  const MultiLine&                                                       SSP,
+  const int                                                              FirstPoint,
+  const int                                                              LastPoint,
+  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+  math_Vector&                                                           Parameters,
+  const NCollection_Array1<double>&                                      Knots,
+  const NCollection_Array1<int>&                                         Mults,
+  const int                                                              Deg,
+  const double                                                           Tol3d,
+  const double                                                           Tol2d,
+  const int                                                              NbIterations)
+    : ParError(FirstPoint, LastPoint, 0.0),
+      mylambda1(0.0),
+      mylambda2(0.0),
+      myIsLambdaDefined(false)
+{
+  Perform(SSP,
+          FirstPoint,
+          LastPoint,
+          TheConstraints,
+          Parameters,
+          Knots,
+          Mults,
+          Deg,
+          Tol3d,
+          Tol2d,
+          NbIterations);
+}
+
+AppParCurves_BSpGradient::AppParCurves_BSpGradient(
+  const MultiLine&                                                       SSP,
+  const int                                                              FirstPoint,
+  const int                                                              LastPoint,
+  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+  math_Vector&                                                           Parameters,
+  const NCollection_Array1<double>&                                      Knots,
+  const NCollection_Array1<int>&                                         Mults,
+  const int                                                              Deg,
+  const double                                                           Tol3d,
+  const double                                                           Tol2d,
+  const int                                                              NbIterations,
+  const double                                                           lambda1,
+  const double                                                           lambda2)
+    : ParError(FirstPoint, LastPoint, 0.0),
+      mylambda1(lambda1),
+      mylambda2(lambda2),
+      myIsLambdaDefined(true)
+{
+  Perform(SSP,
+          FirstPoint,
+          LastPoint,
+          TheConstraints,
+          Parameters,
+          Knots,
+          Mults,
+          Deg,
+          Tol3d,
+          Tol2d,
+          NbIterations);
+}
+
+void AppParCurves_BSpGradient::Perform(
+  const MultiLine&                                                       SSP,
+  const int                                                              FirstPoint,
+  const int                                                              LastPoint,
+  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+  math_Vector&                                                           Parameters,
+  const NCollection_Array1<double>&                                      Knots,
+  const NCollection_Array1<int>&                                         Mults,
+  const int                                                              Deg,
+  const double                                                           Tol3d,
+  const double                                                           Tol2d,
+  const int                                                              NbIterations)
+{
+
+  //  bool grad = true;
+  int    i, j, k, i2, l;
+  double UF, DU, Fval = 0.0, FU, DFU;
+  int    nbP3d   = ToolLine::NbP3d(SSP);
+  int    nbP2d   = ToolLine::NbP2d(SSP);
+  int    mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int    nbP = nbP3d + nbP2d;
+  //  gp_Pnt Pt, P1, P2;
+  gp_Pnt Pt;
+  //  gp_Pnt2d Pt2d, P12d, P22d;
+  gp_Pnt2d Pt2d;
+  //  gp_Vec V1, V2, MyV;
+  gp_Vec V1, MyV;
+  //  gp_Vec2d V12d, V22d, MyV2d;
+  gp_Vec2d V12d, MyV2d;
+  Done = false;
+
+  if (nbP3d == 0)
+    mynbP3d = 1;
+  if (nbP2d == 0)
+    mynbP2d = 1;
+  NCollection_Array1<gp_Pnt>   TabP(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> TabP2d(1, mynbP2d);
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
+
+  // Calculation of the function F= sum(||C(ui)-Ptli||2):
+  // Call to a function inheriting from MultipleVarFunctionWithGradient
+  // to compute F and grad_F.
+  // ================================================================
+
+  int nbpoles = -Deg - 1;
+  for (i = Mults.Lower(); i <= Mults.Upper(); i++)
+  {
+    nbpoles += Mults(i);
+  }
+
+  NCollection_Array1<gp_Pnt>   TabPole(1, nbpoles);
+  NCollection_Array1<gp_Pnt2d> TabPole2d(1, nbpoles);
+  NCollection_Array1<gp_Pnt>   ThePoles(1, (nbpoles)*mynbP3d);
+  NCollection_Array1<gp_Pnt2d> ThePoles2d(1, (nbpoles)*mynbP2d);
+
+  AppParCurves_Constraint FirstCons = FirstConstraint(TheConstraints, FirstPoint),
+                          LastCons  = LastConstraint(TheConstraints, LastPoint);
+
+  AppParCurves_BSpParFunction
+    MyF(SSP, FirstPoint, LastPoint, TheConstraints, Parameters, Knots, Mults, nbpoles);
+
+  if (FirstCons >= AppParCurves_TangencyPoint || LastCons >= AppParCurves_TangencyPoint)
+  {
+
+    if (!myIsLambdaDefined)
+    {
+      AppParCurves_BSpParLeastSquare
+        thefitt(SSP, Knots, Mults, FirstPoint, LastPoint, FirstCons, LastCons, Parameters, nbpoles);
+      if (FirstCons >= AppParCurves_TangencyPoint)
+      {
+        mylambda1 = thefitt.FirstLambda();
+        MyF.SetFirstLambda(mylambda1);
+      }
+      if (LastCons >= AppParCurves_TangencyPoint)
+      {
+        mylambda2 = thefitt.LastLambda();
+        MyF.SetLastLambda(mylambda2);
+      }
+    }
+    else
+    {
+      MyF.SetFirstLambda(mylambda1);
+      MyF.SetLastLambda(mylambda2);
+    }
+  }
+
+  MyF.Value(Parameters, Fval);
+  MError3d = MyF.MaxError3d();
+  MError2d = MyF.MaxError2d();
+  SCU      = MyF.CurveValue();
+
+  if (MError3d > Tol3d || MError2d > Tol2d)
+  {
+
+    // Storage of curve poles for projection:
+    // ============================================
+    i2 = 0;
+    for (k = 1; k <= nbP3d; k++)
+    {
+      SCU.Curve(k, TabPole);
+      for (j = 1; j <= nbpoles; j++)
+        ThePoles(j + i2) = TabPole(j);
+      i2 += nbpoles;
+    }
+    i2 = 0;
+    for (k = 1; k <= nbP2d; k++)
+    {
+      SCU.Curve(nbP3d + k, TabPole2d);
+      for (j = 1; j <= nbpoles; j++)
+        ThePoles2d(j + i2) = TabPole2d(j);
+      i2 += nbpoles;
+    }
+
+    //  Une iteration rapide de projection est faite par la methode de
+    //  Rogers & Fog 89, methode equivalente a Hoschek 88 qui ne necessite pas
+    //  le calcul de D2.
+
+    const math_Matrix&        A     = MyF.FunctionMatrix();
+    const math_Matrix&        DA    = MyF.DerivativeFunctionMatrix();
+    const math_IntegerVector& Index = MyF.Index();
+    double                    aa, da, a, b, c, d, e, f, px, py, pz;
+    int                       indexdeb, indexfin;
+
+    for (j = FirstPoint + 1; j <= LastPoint - 1; j++)
+    {
+
+      UF = Parameters(j);
+      if (nbP3d != 0 && nbP2d != 0)
+        ToolLine::Value(SSP, j, TabP, TabP2d);
+      else if (nbP2d != 0)
+        ToolLine::Value(SSP, j, TabP2d);
+      else
+        ToolLine::Value(SSP, j, TabP);
+
+      FU  = 0.0;
+      DFU = 0.0;
+      i2  = 0;
+
+      indexdeb = Index(j) + 1;
+      indexfin = indexdeb + Deg;
+
+      for (k = 1; k <= nbP3d; k++)
+      {
+        a = b = c = d = e = f = 0.0;
+        for (l = indexdeb; l <= indexfin; l++)
+        {
+          Pt = ThePoles(l + i2);
+          px = Pt.X();
+          py = Pt.Y();
+          pz = Pt.Z();
+          aa = A(j, l);
+          da = DA(j, l);
+          a += aa * px;
+          d += da * px;
+          b += aa * py;
+          e += da * py;
+          c += aa * pz;
+          f += da * pz;
+        }
+        Pt.SetCoord(a, b, c);
+        V1.SetCoord(d, e, f);
+        i2 += nbpoles;
+
+        MyV = gp_Vec(Pt, TabP(k));
+        FU += MyV * V1;
+        DFU += V1.SquareMagnitude();
+      }
+      i2 = 0;
+      for (k = 1; k <= nbP2d; k++)
+      {
+        a = b = d = e = 0.0;
+        for (l = indexdeb; l <= indexfin; l++)
+        {
+          Pt2d = ThePoles2d(l + i2);
+          px   = Pt2d.X();
+          py   = Pt2d.Y();
+          aa   = A(j, l);
+          da   = DA(j, l);
+          a += aa * px;
+          d += da * px;
+          b += aa * py;
+          e += da * py;
+        }
+        Pt2d.SetCoord(a, b);
+        V12d.SetCoord(d, e);
+        i2 += nbpoles;
+
+        MyV2d = gp_Vec2d(Pt2d, TabP2d(k));
+        FU += MyV2d * V12d;
+        DFU += V12d.SquareMagnitude();
+      }
+
+      if (DFU >= RealEpsilon())
+      {
+        DU = FU / DFU;
+        DU = std::copysign(std::min(5.e-02, std::abs(DU)), DU);
+        UF += DU;
+        Parameters(j) = UF;
+      }
+    }
+
+    MyF.Value(Parameters, Fval);
+    MError3d = MyF.MaxError3d();
+    MError2d = MyF.MaxError2d();
+  }
+
+  if (MError3d <= Tol3d && MError2d <= Tol2d)
+  {
+    Done = true;
+  }
+  else if (NbIterations != 0)
+  {
+    // NbIterations de gradient conjugue:
+    // =================================
+    double                        Eps = 1.e-07;
+    AppParCurves_BSpGradient_BFGS FResol(MyF, Parameters, Tol3d, Tol2d, Eps, NbIterations);
+  }
+
+  SCU = MyF.CurveValue();
+
+  AvError = 0.;
+  for (j = FirstPoint; j <= LastPoint; j++)
+  {
+    Parameters(j) = MyF.NewParameters()(j);
+    // Recherche des erreurs maxi et moyenne a un index donne:
+    for (k = 1; k <= nbP; k++)
+    {
+      ParError(j) = std::max(ParError(j), MyF.Error(j, k));
+    }
+    AvError += ParError(j);
+  }
+  AvError = AvError / (LastPoint - FirstPoint + 1);
+
+  MError3d = MyF.MaxError3d();
+  MError2d = MyF.MaxError2d();
+  if (MError3d <= Tol3d && MError2d <= Tol2d)
+  {
+    Done = true;
+  }
+}
+
+AppParCurves_MultiBSpCurve AppParCurves_BSpGradient::Value() const
+{
+  return SCU;
+}
+
+bool AppParCurves_BSpGradient::IsDone() const
+{
+  return Done;
+}
+
+double AppParCurves_BSpGradient::Error(const int Index) const
+{
+  return ParError(Index);
+}
+
+double AppParCurves_BSpGradient::AverageError() const
+{
+  return AvError;
+}
+
+double AppParCurves_BSpGradient::MaxError3d() const
+{
+  return MError3d;
+}
+
+double AppParCurves_BSpGradient::MaxError2d() const
+{
+  return MError2d;
+}

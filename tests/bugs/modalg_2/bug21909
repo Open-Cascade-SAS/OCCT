@@ -1,0 +1,61 @@
+pload QAcommands
+
+puts "============"
+puts "OCC21909"
+puts "============"
+puts ""
+#######################################################################
+# The surface is visualized with rendering errors
+#######################################################################
+
+set BugNumber OCC21909
+
+# Data
+
+set scale    57.547428234801195
+set proj_X   -0.25567048788070679
+set proj_Y   -0.92769843339920044
+set proj_Z   0.27204453945159912
+set up_X     0.43156850337982178
+set up_Y     0.14228194952011108
+set up_Z     0.89078855514526367
+set at_X     16.2722331487924
+set at_Y     -19.463212261103
+set at_Z     -16.4505465814645
+
+set x1 190
+
+set y1 216
+set y2 228
+
+#
+restore [locate_data_file OCC21909-render_error.brep] result
+
+vinit
+vdefaults -angDefl 7
+vdisplay result
+vfit
+
+vsetdispmode 1
+vfit
+
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+vmoveto ${x1} ${y1}
+vmoveto ${x1} ${y1}
+
+set status 0
+for {set i ${y1} } {$i <= ${y2} } {incr i} {
+    if { "[vreadpixel ${x1} ${i} rgb name]" == "BLACK" } {
+      incr status
+      puts "Error : rendering  x = ${x1}  y = ${i}"
+    }
+}
+
+if { ${status} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

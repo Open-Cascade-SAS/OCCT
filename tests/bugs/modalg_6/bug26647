@@ -1,0 +1,17 @@
+puts "##################################################"
+puts "0026647: BRepTools::UVBounds() computes zero range by V"
+puts "##################################################"
+
+# load and check faces
+restore [locate_data_file bug26627_face1.brep] f
+tolerance f
+checkshape f
+
+# get UV bounds
+set bounds [xbounds f]
+
+# check for expected result
+set expected [list {UMin -9.} {UMax 9.} {VMin -9.} {VMax 0.}]
+for {set i 0} {$i < 4} {incr i} {
+  checkreal "[lindex $expected $i 0]" [lindex $bounds $i] [lindex $expected $i 1] 1e-9 0.
+}

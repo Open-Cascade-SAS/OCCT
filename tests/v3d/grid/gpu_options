@@ -1,0 +1,30 @@
+puts "=================================================================="
+puts "0030979: vgrid -type gpu keeps step, mode, rotation and disc/wedge"
+puts "=================================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1 w=400 h=400
+vaxo
+
+box b 2 2 0.2
+vdisplay b -dispMode 1
+vfit
+vzoom 0.25
+
+# Step-driven anisotropic spacing and rotation must survive the final GridDisplay
+# override; the override path used to clobber draw mode and rotation when
+# the GPU grid was selected.
+vgrid -type gpu -step 0.5 1.0 -rotAngle 0.4
+vdump $imagedir/${casename}_rotated.png
+
+# Points mode flows through the same override path.
+vgrid -type gpu -step 0.5 1.0 -mode points
+vdump $imagedir/${casename}_points.png
+
+# Radius/arc clip the GPU rectangular grid to a disc sector.
+vgrid -type gpu -step 0.5 0.5 -radius 2.0 -arc 0 1.5707
+vdump $imagedir/${casename}_sector.png
+
+vgrid off

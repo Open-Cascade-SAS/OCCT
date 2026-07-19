@@ -1,0 +1,884 @@
+// Created on: 1994-06-20
+// Created by: Modeling
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BRepTest.hxx>
+#include <BRepTest_Objects.hxx>
+#include <DBRep.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Draw_Appli.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <BiTgte_Blend.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS.hxx>
+#include <TopExp_Explorer.hxx>
+
+#include <BOPAlgo_PaveFiller.hxx>
+
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+
+#include <FilletSurf_Builder.hxx>
+#include <ChFi3d_FilletShape.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <NCollection_List.hxx>
+#include <FilletSurf_StatusType.hxx>
+#include <FilletSurf_ErrorTypeStatus.hxx>
+#include <DrawTrSurf.hxx>
+#include <Message.hxx>
+#include <Draw_ProgressIndicator.hxx>
+
+#include <cstdio>
+
+static double        tesp       = 1.0e-4;
+static double        t3d        = 1.e-4;
+static double        t2d        = 1.e-5;
+static double        ta         = 1.e-2;
+static double        fl         = 1.e-3;
+static double        tapp_angle = 1.e-2;
+static GeomAbs_Shape blend_cont = GeomAbs_C1;
+
+static BRepFilletAPI_MakeFillet* Rakk = nullptr;
+static BRepFilletAPI_MakeFillet* Rake = nullptr;
+static char                      name[100];
+
+static int contblend(Draw_Interpretor& di, int narg, const char** a)
+{
+  if (narg == 1)
+  {
+    // std::cout<<"tolerance angular of approximation  : "<< tapp_angle <<std::endl;
+    // std::cout<<"internal continuity                 : ";
+    di << "tolerance angular of approximation  : " << tapp_angle << "\n";
+    di << "internal continuity                 : ";
+    switch (blend_cont)
+    {
+      case GeomAbs_C0:
+        // std::cout << ""<<std::endl;
+        di << "C0\n";
+        break;
+      case GeomAbs_C1:
+        // std::cout << "C1"<<std::endl;
+        di << "C1\n";
+        break;
+      case GeomAbs_C2:
+        // std::cout << "C2"<<std::endl;
+        di << "C2\n";
+        break;
+      default:
+        break;
+    }
+    return 0;
+  }
+  else
+  {
+    if (narg > 3)
+    {
+      return 1;
+    }
+    if (narg == 3)
+    {
+      tapp_angle = std::abs(Draw::Atof(a[2]));
+    }
+    char c = a[1][1];
+    switch (c)
+    {
+      case '0':
+        blend_cont = GeomAbs_C0;
+        break;
+      case '2':
+        blend_cont = GeomAbs_C2;
+        break;
+      default:
+        blend_cont = GeomAbs_C1;
+    }
+    return 0;
+  }
+}
+
+static void printtolblend(Draw_Interpretor& di)
+{
+  // std::cout<<"tolerance ang : "<<ta<<std::endl;
+  // std::cout<<"tolerance 3d  : "<<t3d<<std::endl;
+  // std::cout<<"tolerance 2d  : "<<t2d<<std::endl;
+  // std::cout<<"fleche        : "<<fl<<std::endl;
+
+  // std::cout<<"tolblend "<<ta<<" "<<t3d<<" "<<t2d<<" "<<fl<<std::endl;
+
+  di << "tolerance ang : " << ta << "\n";
+  di << "tolerance 3d  : " << t3d << "\n";
+  di << "tolerance 2d  : " << t2d << "\n";
+  di << "fleche        : " << fl << "\n";
+
+  di << "tolblend " << ta << " " << t3d << " " << t2d << " " << fl << "\n";
+}
+
+static int tolblend(Draw_Interpretor& di, int narg, const char** a)
+{
+  if (narg == 1)
+  {
+    printtolblend(di);
+    return 0;
+  }
+  else if (narg == 5)
+  {
+    ta  = Draw::Atof(a[1]);
+    t3d = Draw::Atof(a[2]);
+    t2d = Draw::Atof(a[3]);
+    fl  = Draw::Atof(a[4]);
+    return 0;
+  }
+  return 1;
+}
+
+static int BLEND(Draw_Interpretor& di, int narg, const char** a)
+{
+  delete Rakk;
+  Rakk = nullptr;
+  printtolblend(di);
+  if (narg < 5)
+  {
+    return 1;
+  }
+  TopoDS_Shape V = DBRep::Get(a[2]);
+  if (V.IsNull())
+  {
+    return 1;
+  }
+  ChFi3d_FilletShape FSh = ChFi3d_Rational;
+  if (narg % 2 == 0)
+  {
+    if (!strcasecmp(a[narg - 1], "Q"))
+    {
+      FSh = ChFi3d_QuasiAngular;
+    }
+    else if (!strcasecmp(a[narg - 1], "P"))
+    {
+      FSh = ChFi3d_Polynomial;
+    }
+  }
+  Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
+  Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
+  Rakk->SetContinuity(blend_cont, tapp_angle);
+  double      Rad;
+  TopoDS_Edge E;
+  int         nbedge = 0;
+  for (int ii = 1; ii < (narg - 1) / 2; ii++)
+  {
+    Rad = Draw::Atof(a[2 * ii + 1]);
+    TopoDS_Shape aLocalEdge(DBRep::Get(a[(2 * ii + 2)], TopAbs_EDGE));
+    E = TopoDS::Edge(aLocalEdge);
+    //    E = TopoDS::Edge(DBRep::Get(a[(2*ii+2)],TopAbs_EDGE));
+    if (!E.IsNull())
+    {
+      Rakk->Add(Rad, E);
+      nbedge++;
+    }
+  }
+  if (!nbedge)
+  {
+    return 1;
+  }
+  Rakk->Build();
+  if (!Rakk->IsDone())
+  {
+    return 1;
+  }
+
+  // Save history for fillet
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    NCollection_List<TopoDS_Shape> anArg;
+    anArg.Append(V);
+    BRepTest_Objects::SetHistory(anArg, *Rakk);
+  }
+
+  TopoDS_Shape res = Rakk->Shape();
+  DBRep::Set(a[1], res);
+  return 0;
+}
+
+static void PrintHist(const TopoDS_Shape&                       S,
+                      NCollection_List<TopoDS_Shape>::Iterator& It,
+                      int&                                      nbgen)
+{
+  TopoDS_Compound C;
+  BRep_Builder    B;
+  B.MakeCompound(C);
+  B.Add(C, S);
+  char localname[100];
+  if (nbgen < 10)
+  {
+    Sprintf(localname, "generated_00%d", nbgen++);
+  }
+  else if (nbgen < 100)
+  {
+    Sprintf(localname, "generated_0%d", nbgen++);
+  }
+  else
+  {
+    Sprintf(localname, "generated_%d", nbgen++);
+  }
+  for (; It.More(); It.Next())
+  {
+    B.Add(C, It.Value());
+  }
+  DBRep::Set(localname, C);
+}
+
+static int CheckHist(Draw_Interpretor& di, int, const char**)
+{
+  if (Rakk == nullptr)
+  {
+    // std::cout<<"No active Builder"<<std::endl;
+    di << "No active Builder\n";
+    return 1;
+  }
+  if (!Rakk->IsDone())
+  {
+    // std::cout<<"Active Builder Not Done"<<std::endl;
+    di << "Active Builder Not Done\n";
+    return 1;
+  }
+  int                                      nbc   = Rakk->NbContours();
+  int                                      nbgen = 0;
+  NCollection_List<TopoDS_Shape>::Iterator It;
+  TopoDS_Shape                             curshape;
+  for (int i = 1; i <= nbc; i++)
+  {
+    curshape = Rakk->FirstVertex(i);
+    It.Initialize(Rakk->Generated(curshape));
+    PrintHist(curshape, It, nbgen);
+    int nbe = Rakk->NbEdges(i);
+    for (int j = 1; j <= nbe; j++)
+    {
+      curshape = Rakk->Edge(i, j);
+      It.Initialize(Rakk->Generated(curshape));
+      PrintHist(curshape, It, nbgen);
+    }
+    curshape = Rakk->LastVertex(i);
+    It.Initialize(Rakk->Generated(curshape));
+    PrintHist(curshape, It, nbgen);
+  }
+  // std::cout<<"foreach g [lsort [dir gen*]] { wclick; puts [dname $g]; donl $g; }"<<std::endl;
+  di << "foreach g [lsort [dir gen*]] { wclick; puts [dname $g]; donl $g; }\n";
+  return 0;
+}
+
+static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
+{
+  delete Rake;
+  Rake = nullptr;
+  printtolblend(di);
+  if (narg < 3)
+  {
+    return 1;
+  }
+  TopoDS_Shape V = DBRep::Get(a[2]);
+  Rake           = new BRepFilletAPI_MakeFillet(V);
+  Rake->SetParams(ta, tesp, t2d, t3d, t2d, fl);
+  Rake->SetContinuity(blend_cont, tapp_angle);
+  if (narg == 4)
+  {
+    ChFi3d_FilletShape FSh = ChFi3d_Rational;
+    if (!strcasecmp(a[3], "Q"))
+    {
+      FSh = ChFi3d_QuasiAngular;
+    }
+    else if (!strcasecmp(a[3], "P"))
+    {
+      FSh = ChFi3d_Polynomial;
+    }
+    Rake->SetFilletShape(FSh);
+  }
+  strcpy(name, a[1]);
+  return 0;
+}
+
+static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
+{
+  if (Rake == nullptr)
+  {
+    // std::cout << "MakeFillet not initialized"<<std::endl;
+    di << "MakeFillet not initialized\n";
+    return 1;
+  }
+  if (narg % 2 != 0 || narg < 4)
+  {
+    return 1;
+  }
+  NCollection_Array1<gp_Pnt2d> uandr(1, (narg / 2) - 1);
+  double                       Rad, Par;
+  TopoDS_Shape                 aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
+  TopoDS_Edge                  E = TopoDS::Edge(aLocalEdge);
+  //  TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[1],TopAbs_EDGE));
+  for (int ii = 1; ii <= (narg / 2) - 1; ii++)
+  {
+    Par = Draw::Atof(a[2 * ii]);
+    Rad = Draw::Atof(a[2 * ii + 1]);
+    uandr.ChangeValue(ii).SetCoord(Par, Rad);
+  }
+  Rake->Add(uandr, E);
+  return 0;
+}
+
+static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
+{
+  if (Rake == nullptr)
+  {
+    // std::cout << "MakeFillet not initialized"<<std::endl;
+    di << "MakeFillet not initialized\n";
+    return 1;
+  }
+  Rake->Build();
+  if (Rake->IsDone())
+  {
+    TopoDS_Shape result = Rake->Shape();
+    DBRep::Set(name, result);
+    delete Rake;
+    Rake = nullptr;
+    return 0;
+  }
+  delete Rake;
+  Rake = nullptr;
+  return 1;
+}
+
+//**********************************************
+// bfuse or bcut and then blend the section
+//**********************************************
+
+int boptopoblend(Draw_Interpretor& di, int narg, const char** a)
+{
+  printtolblend(di);
+  if (narg < 5)
+  {
+    Message::SendFail() << "Use <command name> result shape1 shape2 radius [-d]";
+    return 1;
+  }
+
+  bool         fuse = !strcmp(a[0], "bfuseblend");
+  TopoDS_Shape S1   = DBRep::Get(a[2]);
+  TopoDS_Shape S2   = DBRep::Get(a[3]);
+  if (S1.IsNull() || S2.IsNull())
+  {
+    Message::SendFail() << " Null shapes are not allowed";
+    return 1;
+  }
+  double Rad     = Draw::Atof(a[4]);
+  bool   isDebug = false;
+
+  if (narg == 6)
+  {
+    if (!strcmp(a[5], "-d"))
+    {
+      isDebug = true;
+    }
+  }
+
+  BOPAlgo_PaveFiller                  theDSFiller;
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
+  Message_ProgressScope               aPS(aProgress->Start(), nullptr, 10);
+  NCollection_List<TopoDS_Shape>      aLS;
+  aLS.Append(S1);
+  aLS.Append(S2);
+  theDSFiller.SetArguments(aLS);
+  //
+  theDSFiller.Perform(aPS.Next(8));
+  if (theDSFiller.HasErrors())
+  {
+    Message::SendFail() << "Check types of the arguments, please";
+    return 1;
+  }
+
+  BRepAlgoAPI_BooleanOperation* pBuilder = nullptr;
+  if (fuse)
+  {
+    pBuilder = new BRepAlgoAPI_Fuse(S1, S2, theDSFiller, aPS.Next(2));
+  }
+  else
+  {
+    pBuilder = new BRepAlgoAPI_Cut(S1, S2, theDSFiller, true, aPS.Next(2));
+  }
+
+  bool anIsDone = pBuilder->IsDone();
+  if (!anIsDone)
+  {
+    Message::SendFail() << "boolean operation not done HasErrors()=" << pBuilder->HasErrors();
+    return 1;
+  }
+
+  TopoDS_Shape ResultOfBop = pBuilder->Shape();
+
+  delete pBuilder;
+
+  const int aStrLen = 1000;
+  char      aBuff[aStrLen];
+
+  if (isDebug)
+  {
+    strcpy(aBuff, a[1]);
+    DBRep::Set(strcat(aBuff, "_bop"), ResultOfBop);
+
+    di << "Intermediate result of BOP-operation is saved to \"" << aBuff << "\" variable\n";
+  }
+
+  pBuilder                = new BRepAlgoAPI_Section(S1, S2, theDSFiller);
+  TopoDS_Shape theSection = pBuilder->Shape();
+
+  if (isDebug)
+  {
+    strcpy(aBuff, a[1]);
+    DBRep::Set(strcat(aBuff, "_sec"), theSection);
+    di << "Intermediate bopsection result is saved to \"" << aBuff << "\" variable\n";
+  }
+
+  TopoDS_Compound result;
+  BRep_Builder    BB;
+  BB.MakeCompound(result);
+
+  TopExp_Explorer Explo(ResultOfBop, TopAbs_SOLID);
+  for (; Explo.More(); Explo.Next())
+  {
+    const TopoDS_Shape& aSolid = Explo.Current();
+
+    BRepFilletAPI_MakeFillet Blender(aSolid);
+    Blender.SetParams(ta, tesp, t2d, t3d, t2d, fl);
+    Blender.SetContinuity(blend_cont, tapp_angle);
+
+    TopExp_Explorer expsec(theSection, TopAbs_EDGE);
+    for (; expsec.More(); expsec.Next())
+    {
+      TopoDS_Edge anEdge = TopoDS::Edge(expsec.Current());
+      Blender.Add(Rad, anEdge);
+    }
+
+    Blender.Build();
+    if (Blender.IsDone())
+    {
+      BB.Add(result, Blender.Shape());
+    }
+    else
+    {
+      di << "Error: Cannot find the result of BLEND-operation."
+            " The result of BOP operation will be returned.\n";
+      BB.Add(result, aSolid);
+    }
+  }
+
+  delete pBuilder;
+  DBRep::Set(a[1], result);
+  return 0;
+}
+
+static int blend1(Draw_Interpretor& di, int narg, const char** a)
+{
+  if (narg < 5)
+  {
+    return 1;
+  }
+  TopoDS_Shape V = DBRep::Get(a[2]);
+  if (V.IsNull())
+  {
+    return 1;
+  }
+  int         nb, i;
+  double      Rad;
+  bool        simul = false;
+  const char* ns0   = (a[1]);
+  Rad               = Draw::Atof(a[3]);
+  NCollection_List<TopoDS_Shape> E;
+  for (i = 4; i <= (narg - 1); i++)
+  {
+    TopoDS_Shape edge = DBRep::Get(a[i], TopAbs_EDGE);
+    if (edge.IsNull())
+    {
+      return 1;
+    }
+    if (edge.ShapeType() != TopAbs_EDGE)
+    {
+      return 1;
+    }
+    E.Append(edge);
+  }
+  FilletSurf_Builder aRakk(V, E, Rad);
+  if (simul)
+  {
+    aRakk.Simulate();
+  }
+  else
+  {
+    aRakk.Perform();
+  }
+
+  // if (Rakk.IsDone()==FilletSurf_IsNotOk)
+  //  { FilletSurf_ErrorTypeStatus err=Rakk.StatusError();
+  //    if (err==FilletSurf_EmptyList) std::cout<< "StatusError=EmptyList"<<std::endl;
+  //    else if (err==FilletSurf_EdgeNotG1) std::cout<< "StatusError=NotG1"<<std::endl;
+  //    else if (err==FilletSurf_FacesNotG1) std::cout<< "StatusError=facesNotG1"<<std::endl;
+  //    else if (err==FilletSurf_EdgeNotOnShape)
+  //    std::cout<< "StatusError=edgenotonshape"<<std::endl;
+  //    else if (err==FilletSurf_NotSharpEdge ) std::cout<< "StatusError=notsharpedge"<<std::endl;
+  //    else if (err==FilletSurf_PbFilletCompute) std::cout <<"StatusError=PBFillet"<<std::endl;
+  //  }
+  //  else {
+  //   if (Rakk.IsDone()==FilletSurf_IsPartial) std::cout <<"resultat partiel"<<std::endl;
+  if (aRakk.IsDone() == FilletSurf_IsNotOk)
+  {
+    FilletSurf_ErrorTypeStatus err = aRakk.StatusError();
+    if (err == FilletSurf_EmptyList)
+    {
+      di << "StatusError=EmptyList\n";
+    }
+    else if (err == FilletSurf_EdgeNotG1)
+    {
+      di << "StatusError=NotG1\n";
+    }
+    else if (err == FilletSurf_FacesNotG1)
+    {
+      di << "StatusError=facesNotG1\n";
+    }
+    else if (err == FilletSurf_EdgeNotOnShape)
+    {
+      di << "StatusError=edgenotonshape\n";
+    }
+    else if (err == FilletSurf_NotSharpEdge)
+    {
+      di << "StatusError=notsharpedge\n";
+    }
+    else if (err == FilletSurf_PbFilletCompute)
+    {
+      di << "StatusError=PBFillet\n";
+    }
+  }
+  else
+  {
+    if (aRakk.IsDone() == FilletSurf_IsPartial)
+    {
+      di << "partial result\n";
+    }
+
+    nb = aRakk.NbSurface();
+    char  localname[100];
+    char* temp;
+
+    // affichage du type d'arret
+
+    if (!simul)
+    {
+      // if (Rakk.StartSectionStatus()==FilletSurf_NoExtremityOnEdge)
+      //   {std::cout<<" type deb conges = WLBLOUT"<<std::endl;}
+      // else if (Rakk.StartSectionStatus()==FilletSurf_OneExtremityOnEdge )
+      //   { std::cout<<" type deb conges = WLBLSTOP"<<std::endl;}
+      // else if (Rakk.StartSectionStatus()==FilletSurf_TwoExtremityOnEdge)
+      //   {std::cout<<" type deb conges = WLBLEND"<<std::endl;}
+      if (aRakk.StartSectionStatus() == FilletSurf_NoExtremityOnEdge)
+      {
+        di << " type start fillets = WLBLOUT\n";
+      }
+      else if (aRakk.StartSectionStatus() == FilletSurf_OneExtremityOnEdge)
+      {
+        di << " type start fillets = WLBLSTOP\n";
+      }
+      else if (aRakk.StartSectionStatus() == FilletSurf_TwoExtremityOnEdge)
+      {
+        di << " type start fillets = WLBLEND\n";
+      }
+
+      // if (Rakk.EndSectionStatus()==FilletSurf_NoExtremityOnEdge)
+      //   {std::cout<<" type fin  conges = WLBLOUT"<<std::endl;}
+      // else if (Rakk.EndSectionStatus()==FilletSurf_OneExtremityOnEdge)
+      //   {std::cout<<" type fin  conges = WLBLSTOP"<<std::endl;}
+      // else if (Rakk.EndSectionStatus()==FilletSurf_TwoExtremityOnEdge)
+      //   { std::cout<<" type fin  conges = WLBLEND"<<std::endl;}
+      if (aRakk.EndSectionStatus() == FilletSurf_NoExtremityOnEdge)
+      {
+        di << " type end fillets = WLBLOUT\n";
+      }
+      else if (aRakk.EndSectionStatus() == FilletSurf_OneExtremityOnEdge)
+      {
+        di << " type end fillets = WLBLSTOP\n";
+      }
+      else if (aRakk.EndSectionStatus() == FilletSurf_TwoExtremityOnEdge)
+      {
+        di << " type end fillets = WLBLEND\n";
+      }
+      double f, l;
+      f = aRakk.FirstParameter();
+      l = aRakk.LastParameter();
+      // std::cout<<"parameter on edge start : "<<f<<std::endl;
+      // std::cout<<"parameter on edge end   : "<<l<<std::endl;
+      di << "parametre on edge start : " << f << "\n";
+      di << "parametre on edge end   : " << l << "\n";
+      for (i = 1; i <= nb; i++)
+      {
+        // precision
+        // std::cout<<"precision "<< i << "= "<<Rakk.TolApp3d(i)<<std::endl;
+        di << "precision " << i << "= " << aRakk.TolApp3d(i) << "\n";
+
+        // display resulting surfaces
+        Sprintf(localname, "%s%d", ns0, i);
+        temp = localname;
+        DrawTrSurf::Set(temp, aRakk.SurfaceFillet(i));
+        di << localname << " ";
+
+        // display curves 3d
+        Sprintf(localname, "%s%d", "courb1", i);
+        temp = localname;
+        DrawTrSurf::Set(temp, aRakk.CurveOnFace1(i));
+        di << localname << " ";
+        Sprintf(localname, "%s%d", "courb2", i);
+        temp = localname;
+        DrawTrSurf::Set(temp, aRakk.CurveOnFace2(i));
+        di << localname << " ";
+
+        // display supports
+        Sprintf(localname, "%s%d", "face1", i);
+        temp = localname;
+        DBRep::Set(temp, aRakk.SupportFace1(i));
+        di << localname << " ";
+        Sprintf(localname, "%s%d", "face2", i);
+        temp = localname;
+        DBRep::Set(temp, aRakk.SupportFace2(i));
+        di << localname << " ";
+
+        // display Pcurves on faces
+        Sprintf(localname, "%s%d", "pcurveonface1", i);
+        temp = localname;
+        DrawTrSurf::Set(temp, aRakk.PCurveOnFace1(i));
+        di << localname << " ";
+        Sprintf(localname, "%s%d", "pcurveonface2", i);
+        temp = localname;
+        DrawTrSurf::Set(temp, aRakk.PCurveOnFace2(i));
+        di << localname << " ";
+
+        // display Pcurves on the fillet
+        Sprintf(localname, "%s%d", "pcurveonconge1", i);
+        temp = localname;
+        DrawTrSurf::Set(temp, aRakk.PCurve1OnFillet(i));
+        di << localname << " ";
+        Sprintf(localname, "%s%d", "pcurveonconge2", i);
+        temp = localname;
+        DrawTrSurf::Set(temp, aRakk.PCurve2OnFillet(i));
+        di << localname << " ";
+      }
+    }
+    else
+    {
+      int j;
+
+      for (i = 1; i <= nb; i++)
+      {
+        int s = aRakk.NbSection(i);
+        for (j = 1; j <= s; j++)
+        {
+          const occ::handle<Geom_TrimmedCurve> Sec = aRakk.Section(i, j);
+          Sprintf(localname, "%s%d%d", "sec", i, j);
+          temp = localname;
+          DrawTrSurf::Set(temp, Sec);
+          di << localname << " ";
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+//=================================================================================================
+
+int rollingball(Draw_Interpretor& di, int n, const char** a)
+{
+  if (n < 2)
+  {
+    return 1;
+  }
+
+  TopoDS_Shape S = DBRep::Get(a[2]);
+  if (S.IsNull())
+  {
+    return 1;
+  }
+  double Rad = Draw::Atof(a[3]);
+
+  double Tol = t3d; // the same as blend ! 1.e-7;
+
+  BiTgte_Blend Roll;
+  Roll.Init(S, Rad, Tol, false);
+
+  int Nb = 0;
+  for (int i = 4; i <= n - 1; i++)
+  {
+    if (!strcmp(a[i], "@"))
+    {
+      Nb++;
+      continue;
+    }
+
+    if (Nb == 0)
+    { // return stop faces.
+      TopoDS_Shape aLocalFace(DBRep::Get(a[i], TopAbs_FACE));
+      TopoDS_Face  F1 = TopoDS::Face(aLocalFace);
+      //      TopoDS_Face F1 = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
+      if (F1.IsNull())
+      {
+        // std::cout << " Stop face not referenced." << std::endl;
+        di << " Stop face not referenced.\n";
+        return 1;
+      }
+      Roll.SetStoppingFace(F1);
+    }
+    else if (Nb == 1)
+    { // return faces on which the ball rotates
+      TopoDS_Shape aLocalFace(DBRep::Get(a[i], TopAbs_FACE));
+      TopoDS_Face  F1 = TopoDS::Face(aLocalFace);
+      //      TopoDS_Face F1 = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
+      i++;
+      if (!strcmp(a[i], "@"))
+      {
+        // std::cout << " Even number of ball support faces is required " << std::endl;
+        di << " Even number of ball support faces is required \n";
+        return 1;
+      }
+      aLocalFace     = DBRep::Get(a[i], TopAbs_FACE);
+      TopoDS_Face F2 = TopoDS::Face(aLocalFace);
+      //      TopoDS_Face F2 = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
+      if (F1.IsNull() || F2.IsNull())
+      {
+        // std::cout << " Support face not referenced." << std::endl;
+        di << " Support face not referenced.\n";
+        return 1;
+      }
+      Roll.SetFaces(F1, F2);
+    }
+    else if (Nb == 2)
+    { // return the edge on which the ball rotates
+      TopoDS_Shape aLocalShape(DBRep::Get(a[i], TopAbs_EDGE));
+      TopoDS_Edge  E = TopoDS::Edge(aLocalShape);
+      //      TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
+      if (E.IsNull())
+      {
+        // std::cout << " Edge not referenced." << std::endl;
+        di << " Edge not referenced.\n";
+        return 1;
+      }
+      Roll.SetEdge(E);
+    }
+  }
+  bool BuildShape = (!strcmp(a[0], "brollingball"));
+
+  Roll.Perform(BuildShape);
+
+  bool ComputeBranches = (!strcmp(a[0], "trollingball"));
+  char localname[100];
+  if (ComputeBranches)
+  {
+    int NbBranches = Roll.NbBranches();
+    for (int i = 1; i <= NbBranches; i++)
+    {
+      int From, To;
+      Roll.IndicesOfBranche(i, From, To);
+      // std::cout << " Indexes of the " << i << "th Branch : ";
+      // std::cout << "   " << From << "     " << To << std::endl;
+      di << " Indexes of the " << i << "th Branch : ";
+      di << "   " << From << "     " << To << "\n";
+      for (int j = From; j <= To; j++)
+      {
+        const TopoDS_Shape& CurF = Roll.Face(j);
+        Sprintf(localname, "%s_%d_%d", a[1], i, j);
+        DBRep::Set(localname, CurF);
+      }
+    }
+  }
+  else
+  {
+    DBRep::Set(a[1], Roll.Shape());
+  }
+
+  return 0;
+}
+
+//=================================================================================================
+
+void BRepTest::FilletCommands(Draw_Interpretor& theCommands)
+{
+  static bool done = false;
+  if (done)
+  {
+    return;
+  }
+  done = true;
+
+  DBRep::BasicCommands(theCommands);
+
+  const char* g = "TOPOLOGY Fillet construction commands";
+
+  theCommands.Add("continuityblend", "continuityblend C0/C1/C2  [tangle]", __FILE__, contblend, g);
+
+  theCommands.Add("tolblend", "tolblend [ta t3d t2d fl]", __FILE__, tolblend, g);
+
+  theCommands.Add("blend", "blend result object rad1 ed1 rad2 ed2 ... [R/Q/P]", __FILE__, BLEND, g);
+
+  theCommands.Add("checkhist", "checkhist", __FILE__, CheckHist, g);
+
+  theCommands.Add("mkevol",
+                  "mkevol result object (then use updatevol) [R/Q/P]",
+                  __FILE__,
+                  MKEVOL,
+                  g);
+
+  theCommands.Add("updatevol", "updatevol edge u1 rad1 u2 rad2 ...", __FILE__, UPDATEVOL, g);
+
+  theCommands.Add("buildevol",
+                  "buildevol end of the evol fillet computation",
+                  __FILE__,
+                  BUILDEVOL,
+                  g);
+
+  theCommands.Add("bfuseblend",
+                  "bfuseblend result shape1 shape2 radius [-d]",
+                  __FILE__,
+                  boptopoblend,
+                  g);
+
+  theCommands.Add("bcutblend",
+                  "bcutblend result shape1 tool radius [-d]",
+                  __FILE__,
+                  boptopoblend,
+                  g);
+
+  theCommands.Add("blend1", "blend1 result object rad ed1  ed2 ...", __FILE__, blend1, g);
+
+  theCommands.Add("rollingball",
+                  "rollingball  r S radius [stopf1 ..] @ [f1 f2 ..] @ [e1 ..]",
+                  __FILE__,
+                  rollingball,
+                  g);
+
+  theCommands.Add("brollingball",
+                  "brollingball r S radius [stopf1 ..] @ [f1 f2 ..] @ [e1 ..]",
+                  __FILE__,
+                  rollingball,
+                  g);
+
+  theCommands.Add("trollingball",
+                  "trollingball r S radius [stopf1 ..] @ [f1 f2 ..] @ [e1 ..]",
+                  __FILE__,
+                  rollingball,
+                  g);
+}

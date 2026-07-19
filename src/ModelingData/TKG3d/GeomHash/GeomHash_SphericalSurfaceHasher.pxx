@@ -1,0 +1,59 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomHash_SphericalSurfaceHasher_HeaderFile
+#define _GeomHash_SphericalSurfaceHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <GeomHash_AxisPlacement.pxx>
+#include <cmath>
+#include <Precision.hxx>
+
+//! OCCT-style hasher for Geom_SphericalSurface.
+//! Used for geometry deduplication.
+struct GeomHash_SphericalSurfaceHasher
+{
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_SphericalSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                                  double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
+  // Hashes the sphere by its position and radius.
+  std::size_t operator()(const occ::handle<Geom_SphericalSurface>& theSphere) const noexcept
+  {
+    const double aFactor = 1.0 / HashTolerance;
+
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
+    const std::size_t            aHashes[2] = {
+      anAxisHasher(theSphere->Position().Ax2()),
+      opencascade::hash(static_cast<int64_t>(std::round(theSphere->Radius() * aFactor)))};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two spheres by their positions and radii.
+  bool operator()(const occ::handle<Geom_SphericalSurface>& theSphere1,
+                  const occ::handle<Geom_SphericalSurface>& theSphere2) const noexcept
+  {
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
+    return anAxisHasher(theSphere1->Position().Ax2(), theSphere2->Position().Ax2())
+           && std::abs(theSphere1->Radius() - theSphere2->Radius()) <= CompTolerance;
+  }
+};
+
+#endif // _GeomHash_SphericalSurfaceHasher_HeaderFile

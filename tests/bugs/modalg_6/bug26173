@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC26173"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result of ChFi3d_ChBuilder algorithm: incorrect processing of G1 junctions at vertex
+#######################################################################
+
+restore [locate_data_file bug26173_lim1.brep] b
+
+explode b e
+copy b_10 e
+explode b f
+copy b_3 f1
+
+smallview
+donly b f1 e
+fit
+xwd $imagedir/${test_image}_1.png
+
+chamf result b e f1 1 1
+
+donly result
+fit
+xwd $imagedir/${test_image}_2.png
+
+checkprops result -s 662.657 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 22
+ EDGE      : 33
+ WIRE      : 15
+ FACE      : 14
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 87
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result of ChFi3d_ChBuilder algorithm"

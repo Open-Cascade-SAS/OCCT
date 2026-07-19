@@ -1,0 +1,19 @@
+puts "========"
+puts "0025775: Default Gradient Background in V3d_Viewer has no effect in new created V3d_View"
+puts "========"
+puts ""
+
+pload VISUALIZATION
+vbackground -default -gradient BLACK GRAY25 -gradientMode HORIZONTAL
+vinit View1 w=400 h=400
+if { [vreadpixel 399 100 -rgb -name] != "GRAY25" } { puts "Error: bug with default gradient color is reproduced." }
+vdump $imagedir/${casename}_v1.png
+
+vinit View2 w=400 h=400
+if { [vreadpixel 399 100 -rgb -name] != "GRAY25" } { puts "Error: bug with default gradient color is reproduced." }
+vdump $imagedir/${casename}_v2.png
+
+vbackground -default -color GRAY50
+vinit View3
+if { [vreadpixel 100 100 -rgb -name] != "GRAY50" } { puts "Error: bug with default background color is reproduced." }
+vdump $imagedir/${casename}_v3.png

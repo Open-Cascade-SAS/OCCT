@@ -1,0 +1,8 @@
+set chamf_shape 8_J1.draw
+set chamf_edge_face  [list "   4   1" "   3   2" "   9   2"]
+set chamf_dist_angle [list " 0.1  30" " 0.1  30" " 0.1  30"]
+set chamf_dist_dist  [list " 0.1 0.2" " 0.2 0.2" " 0.2 0.2"]
+set chamf_equal_dist [list "0.06    " "0.08    " "0.08    "]
+if { [string compare $command chamf_sequence] == 0 && [string compare $group dist_dist] == 0 } {
+  puts "TODO OCC22909 All: compute of chamfer failed"
+}

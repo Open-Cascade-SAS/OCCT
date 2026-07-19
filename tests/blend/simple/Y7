@@ -1,0 +1,13 @@
+## ===========================================
+## Grid    : CCV001
+## Test    : R1
+## Comment : From CV tests serie page 53
+## ===========================================
+
+puts "TODO OCC22739 All:TEST INCOMPLETE"
+
+restore [locate_data_file CCV_1_r1_gss.rle] s
+explode s E
+blend result s 12 s_5
+
+checkprops result -s 0

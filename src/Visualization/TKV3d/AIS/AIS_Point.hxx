@@ -1,0 +1,91 @@
+// Created on: 1995-08-09
+// Created by: Arnaud BOUZY
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _AIS_Point_HeaderFile
+#define _AIS_Point_HeaderFile
+
+#include <AIS_InteractiveObject.hxx>
+
+class Geom_Point;
+class TopoDS_Vertex;
+
+//! Constructs point datums to be used in construction of
+//! composite shapes. The datum is displayed as the plus marker +.
+class AIS_Point : public AIS_InteractiveObject
+{
+  DEFINE_STANDARD_RTTIEXT(AIS_Point, AIS_InteractiveObject)
+public:
+  //! Initializes the point aComponent from which the point
+  //! datum will be built.
+  Standard_EXPORT AIS_Point(const occ::handle<Geom_Point>& aComponent);
+
+  //! Returns index 1, the default index for a point.
+  int Signature() const override { return 1; }
+
+  //! Indicates that a point is a datum.
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+
+  //! Returns the component specified in SetComponent.
+  Standard_EXPORT occ::handle<Geom_Point> Component();
+
+  //! Constructs an instance of the point aComponent.
+  Standard_EXPORT void SetComponent(const occ::handle<Geom_Point>& aComponent);
+
+  //! Returns true if the display mode selected is valid for point datums.
+  Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
+
+  //! Allows you to provide settings for the Color.
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
+
+  //! Allows you to remove color settings.
+  Standard_EXPORT void UnsetColor() override;
+
+  //! Allows you to provide settings for a marker. These include
+  //! -   type of marker,
+  //! -   marker color,
+  //! -   scale factor.
+  Standard_EXPORT void SetMarker(const Aspect_TypeOfMarker aType);
+
+  //! Removes the marker settings.
+  Standard_EXPORT void UnsetMarker();
+
+  //! Returns true if the point datum has a marker.
+  bool HasMarker() const { return myHasTOM; }
+
+  //! Converts a point into a vertex.
+  Standard_EXPORT TopoDS_Vertex Vertex() const;
+
+protected:
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
+
+private:
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                        const int                               aMode) override;
+
+  Standard_EXPORT void UpdatePointValues();
+
+  //! Replace aspects of already computed groups with the new value.
+  void replaceWithNewPointAspect(const occ::handle<Prs3d_PointAspect>& theAspect);
+
+private:
+  occ::handle<Geom_Point> myComponent;
+  bool                    myHasTOM;
+  Aspect_TypeOfMarker     myTOM;
+};
+
+#endif // _AIS_Point_HeaderFile

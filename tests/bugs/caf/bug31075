@@ -1,0 +1,17 @@
+puts "============"
+puts "0031075: Application Framework - reading STEP file into TDocStd_Document leads to memory leaks"
+puts "============"
+
+pload XDE
+
+puts "Create a new document outside of application, add a shape an release all variables in cycle to see if allocated heap memory grows"
+set listmem {}
+for {set i 1} {$i < 100} {incr i} {
+  NewDocument D
+  box aBox 10 10 10
+  XAddShape D aBox
+  unset aBox
+  unset D
+  lappend listmem [meminfo h]
+  checktrend $listmem 0 0 "Memory leak"
+}

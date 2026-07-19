@@ -1,0 +1,24 @@
+puts "========"
+puts "0028089: Mesh - New algorithm for triangulation of 2d polygons"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file terrain.brep] t1
+tclean t1
+#tscale t1 0 0 0 0.01
+tcopy t1 t2
+ttranslate t1 0 0 0
+ttranslate t2 8000 0 0
+incmesh t1 1000 -algo 0 -a 50
+trinfo  t1
+incmesh t2 1000 -algo 1 -a 50
+trinfo  t2
+vclear
+vinit View1
+vtop
+vdefaults -autotriang 0
+vdisplay -dispMode 1 t1 t2
+vfit
+vaspects t1 -drawEdges 1
+vaspects t2 -drawEdges 1

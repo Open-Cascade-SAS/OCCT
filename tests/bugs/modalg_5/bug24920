@@ -1,0 +1,15 @@
+puts "=========="
+puts "OCC24920"
+puts "=========="
+puts ""
+#########################################
+# Invalid result of Pipe construction
+#########################################
+
+restore [locate_data_file bug24920_Comp.brep] c
+
+explode c
+pipe result c_1 c_2
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

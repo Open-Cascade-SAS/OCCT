@@ -1,0 +1,27 @@
+puts "TODO OCC12345 ALL: Error : OCC537"
+
+puts "======="
+puts "OCC537"
+puts "======="
+puts ""
+#######################################################################
+##Application do something in intersection operation for long time and eat much memory (This may be the
+##  reason of BUS ERROR that happens in application). Intersection operation invokes for conical and plane
+## surfaces.
+#######################################################################
+
+restore [locate_data_file OCC537_CONE.draw] c 
+restore [locate_data_file OCC537_PLANE.draw] p 
+
+intersect result c p
+
+set wt_is [whatis result]
+
+if { [regexp {WIRE} ${wt_is}] } {
+    puts " OCC537 OK"
+} else {
+    puts "Error : OCC537"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,7 @@
+
+restore [locate_data_file buc60290a.rle] sol1
+restore [locate_data_file buc60290b.rle] sol2
+
+bcut result sol2 sol1
+checkprops result -s 1.06741e+06
+checkview -display result -2d -s -otherwise { sol2 sol1 } -path ${imagedir}/${test_image}.png

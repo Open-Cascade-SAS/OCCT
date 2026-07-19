@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC29544"
+puts "========"
+puts ""
+#################################################
+# Regression vs 7.2.0: ShapeUpgrade_UnifySameDomain fails to merge linear edges
+#################################################
+
+restore [locate_data_file bug29544_edges.brep] ce
+unifysamedom result ce
+
+checkshape result
+checkprops result -equal ce
+checknbshapes result -vertex 4 -edge 2
+

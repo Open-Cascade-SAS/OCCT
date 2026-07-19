@@ -1,0 +1,3 @@
+dset SCALE 1000.
+dset SCALE1 5
+tolblend 0.01 1e-04 1e-05 1e-03

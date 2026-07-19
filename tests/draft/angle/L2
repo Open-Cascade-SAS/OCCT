@@ -1,0 +1,12 @@
+# Original bug : cts21764
+# Date : 23 Nov 98
+
+restore [locate_data_file CFE903_cts21ggr.rle] base
+
+explode base face
+copy base_14 facdep
+vertex v1 12.9980200374864 -13 16.2268812577167
+
+# 2 degrees
+depouille result base 0 -1 0 facdep 2 12.9980200374864 -13 16.2268812577167 0 -1 0
+checkprops result -s 8004.37

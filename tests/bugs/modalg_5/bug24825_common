@@ -1,0 +1,50 @@
+puts "========="
+puts "OCC24825"
+puts "========="
+puts ""
+###########################################################
+# Fit Boolean Operation Algorithm to treat multiple arguments.
+###########################################################
+
+restore [locate_data_file bug24825_steering-wheel-ring1.brep] b1
+restore [locate_data_file bug24825_steering-wheel-ring2.brep] b2
+restore [locate_data_file bug24825_steering-wheel-drum.brep] b4
+restore [locate_data_file bug24825_steering-wheel-handle.brep] hb
+
+set qs {}
+
+set N 10
+set N1 [expr 360. / $N ]
+ 
+for {set i 0} {$i < $N} {incr i} {
+  tcopy hb hb_${i}
+  trotate hb_${i} 0. 0. 0. 0. 0. 1. [expr $i * $N1 ]  
+  lappend qs hb_${i}
+}
+eval compound $qs b3
+
+tcopy b1 b5
+ttranslate b5 0 0 100
+
+tcopy b2 b6
+ttranslate b6 0 0 100
+
+tcopy b3 b7
+ttranslate b7 0 0 100
+
+#-common-#
+
+bclearobjects
+bcleartools
+baddobjects b2 b6 b4 b1 b5 
+baddctools b3
+baddctools b7
+
+bfillds
+bbop result 0
+
+checkprops result -s 10008.9 
+checkshape result
+
+checknbshapes result -vertex 86 -edge 132 -wire 126 -face 126 -shell 40 -solid 40 -compsolid 0 -compound 1 -shape 551
+checkview -display result -2d -path ${imagedir}/${test_image}.png

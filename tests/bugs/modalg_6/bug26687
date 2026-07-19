@@ -1,0 +1,21 @@
+puts "REQUIRED ALL: Error. mkplane has been finished with \"Not Planar\" status."
+
+puts "========"
+puts "OCC26687"
+puts "========"
+puts ""
+#################################################
+# 0026687: SIGSEGV in BRepBuilderAPI_MakeFace
+#################################################
+
+restore [locate_data_file bug26687_w.brep] w
+
+#It is impossible to create a plane there is no any surface
+#which every edge has its p-curve in.  
+
+mkplane f w
+
+smallview
+donly f
+fit
+xwd ${imagedir}/${test_image}.png

@@ -1,0 +1,5 @@
+set filename bug28315_part_step-pmi.stp
+
+set ref_data {
+D_First 0:1:7:1 0 27 0 "Nynější pohled modelu" parallel 13.0973082 1.62908566 -570.319287 0.0 0.0 -1.0 0 1 0 0.0 342.494354 342.494354
+}

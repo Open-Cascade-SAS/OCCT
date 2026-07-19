@@ -1,0 +1,14 @@
+puts "================"
+puts "OCC25494"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result obtained by projection algorithm
+#######################################################################
+
+restore [locate_data_file bug25494_s.draw] s
+restore [locate_data_file bug25494_c.draw] c
+
+project c2d c s
+
+dump c2d

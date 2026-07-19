@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC23903"
+puts "============"
+puts ""
+#######################################################################
+# Invalid result of pipe operation on closed path
+#######################################################################
+
+restore [locate_data_file bug23903_base.brep] sh 
+restore [locate_data_file bug23903_path.brep] w 
+
+pipe result w sh
+
+checknbshapes result -vertex 2 -edge 5 -wire 3 -face 3 -shell 2 -solid 2 -compsolid 0 -compound 1 -shape 18
+checkview -display result -2d -path ${imagedir}/${test_image}.png

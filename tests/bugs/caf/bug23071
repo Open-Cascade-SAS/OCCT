@@ -1,0 +1,82 @@
+puts "================"
+puts "OCC23071"
+puts "================"
+puts ""
+###################################################################################################
+# Comparison of file extension is case sensitive
+###################################################################################################
+
+set BugNumber OCC23071
+
+set FileName $imagedir/${test_image}.CBF
+set FileName2 $imagedir/${test_image}.cbf
+set FileName3 ${FileName}.cbf
+
+set status 0
+
+file delete ${FileName}
+if [file exists ${FileName}] {
+  puts "There is temporary ${FileName} file"
+  set status 1
+}
+file delete ${FileName2}
+if [file exists ${FileName2}] {
+  puts "There is temporary ${FileName2} file"
+  set status 1
+}
+file delete ${FileName3}
+if [file exists ${FileName3}] {
+  puts "There is temporary ${FileName3} file"
+  set status 1
+}
+
+catch { NewDocument D BinOcaf }
+
+if [catch {SaveAs D ${FileName} }] {
+  puts "Faulty ${BugNumber} ; SaveAs command: Error"
+  set status 1
+} else {
+
+#  if [file exists ${WorkDirectory}/${FileName}] {
+#    puts "There is ${FileName} file"
+#  } else {
+#    puts "There is not ${FileName} file"
+#  }
+
+  if [file exists ${FileName2}] {
+    puts "There is ${FileName2} file"
+  } else {
+    puts "There is not ${FileName2} file"
+    #
+    
+    if { [checkplatform -windows] } {
+      puts "OS = Windows NT"
+      set status 1
+    }
+    #
+  }
+
+  if [file exists ${FileName3}] {
+    puts "There is ${FileName3} file"
+  } else {
+    puts "There is not ${FileName3} file"
+    #
+    if { [checkplatform -windows] } {
+      puts "OS = Windows NT"
+    } else {
+      puts "OS = Unix"
+      set status 1
+    }
+  }
+
+}
+
+# Resume
+puts ""
+if { ${status} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+

@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC29234"
+puts "========"
+puts ""
+#################################################
+# BRepOffsetAPI_NormalProjection produces INTERNAL edges and vertices
+#################################################
+
+restore [locate_data_file bug29234_cyl_n_wire.brep] a
+explode a
+renamevar a_1 f
+renamevar a_2 w
+nproject r w f
+foreach e [explode r e] {
+  if [regexp "INTERNAL" [dtyp $e]] {
+    puts "Error: projection result contains edges oriented INTERNAL"
+    break
+  }
+} 
+don r
+fit
+checknbshapes r -m "projection result" -edge 4
+checkview -display r -2d -path ${imagedir}/${test_image}_1.png
+
+bcommon r1 f r
+foreach e [explode r1 e] {
+  if [regexp "INTERNAL" [dtyp $e]] {
+    puts "Error: result of common between face and edge contains edges oriented INTERNAL"
+    break
+  }
+} 

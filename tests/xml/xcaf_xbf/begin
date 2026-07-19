@@ -1,0 +1,12 @@
+pload XDE
+
+set FileSuffix "xbf"
+
+# Create a new document and set UndoLimit
+NewDocument D BinXCAF
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+set subgroup "xcaf_xbf"

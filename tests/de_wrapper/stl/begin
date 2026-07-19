@@ -1,0 +1,4 @@
+# File: begin
+
+pload MODELING
+set filename [locate_data_file "model_stl_001.stl"]

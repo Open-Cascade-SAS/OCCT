@@ -1,0 +1,10 @@
+restore [locate_data_file CTO900_cts18754-part.rle] s
+explode s f
+restore [locate_data_file cts18754-tool.rle] w
+mkplane w w
+
+featprism s w w 0 1 0 1 1
+featperform prism result s_1
+
+
+checkprops result -s 1.36014e+06

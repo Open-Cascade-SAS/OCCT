@@ -1,0 +1,20 @@
+puts "ITA60531"
+puts "Fuse"
+puts ""
+
+
+restore [locate_data_file ita60531a.rle] b
+restore [locate_data_file ita60531b.rle] f
+
+# Operation booleenne -> shape pas valide
+prism tool f 0 0 1
+
+#pkv f
+btolx b
+btolx tool
+#pkv t
+
+bfuse result b tool
+
+checkprops result -s 26012
+checkview -display result -2d -otherwise { b tool } -s -path ${imagedir}/${test_image}.png

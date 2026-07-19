@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC213"
+puts "========"
+################################################
+## Bug in Topological "fuse" boolean operation
+################################################
+
+restore [locate_data_file OCC213-1.brep] S1 
+checkshape S1
+restore [locate_data_file OCC213-2.brep] S2
+checkshape S2
+
+bfuse result S1 S2 
+checkprops result -s 4835.45 
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

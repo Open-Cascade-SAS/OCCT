@@ -1,0 +1,74 @@
+puts "============"
+puts "OCC26576"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by intersection algorithm.
+###############################
+
+set GoodNbCurv 2
+
+circle cc 1.5 3.125 0 0 0 1 1 0 0 0.25
+trim cc cc 0 3.14159265358979
+revsurf ss1 cc 1.5 3.125 0 -1 0 0
+
+plane ss2 3.48352775473762 1.7282347013387 0 0 0 -1 -1 0 0
+
+set IntCurv [intersect intres ss1 ss2]
+set NbIntCurv [llength ${IntCurv}]
+
+if { ${NbIntCurv} != ${GoodNbCurv} } {
+    puts "Error in geometric intersection: ${GoodNbCurv} curves are expected but ${NbIntCurv} are found!"
+} else {
+    puts "OK : Geometric intersection is good."
+}
+
+# For getting tolerance value
+mkface b1 ss1
+mkface b2 ss2
+donly b1
+
+set log [bopcurves b1 b2 -2d]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Tolerance_Reached NbCurv
+
+set expected_Tolerance_Reached 1.9321146113460029e-008
+set tol_abs_Tolerance_Reached 1.0e-7
+set tol_rel_Tolerance_Reached 0.0
+checkreal "Tolerance Reached" ${Tolerance_Reached} ${expected_Tolerance_Reached} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: ${GoodNbCurv} curves are expected but ${NbCurv} are found!"
+}
+
+#Overlapping intersection curves.
+
+if { $Tolerance_Reached < 1.0e-7 } { set Tolerance_Reached 1.0e-7 }
+
+for {set i 1} {$i < ${NbCurv}} {incr i} {
+  for {set j [expr $i+1]} {$j <= $NbCurv} {incr j} {
+    mkedge eb1 c_$i
+    mkedge eb2 c_$j
+    
+    mkedge ei1 intres_$i
+    mkedge ei2 intres_$j
+
+    set coeb [checkoverlapedges eb1 eb2 $Tolerance_Reached]
+    set coei [checkoverlapedges ei1 ei2 $Tolerance_Reached]    
+
+    puts "$i<->$j: $coeb"
+    puts "$i<->$j: $coei"
+    if { [regexp "Edges are not overlapped" $coeb] != 1 } {
+      puts "Error: c_$i and c_$j are overlapped"
+    }
+    
+    if { [regexp "Edges are not overlapped" $coei] != 1 } {
+      puts "Error: intres_$i and intres_$j are overlapped"
+    }
+    
+    erase eb1 eb2 ei1 ei2
+  }
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

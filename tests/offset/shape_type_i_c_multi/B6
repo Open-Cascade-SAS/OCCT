@@ -1,0 +1,85 @@
+puts "========"
+puts "0031148: Offset adjacent co-planar faces with different offset values"
+puts "========"
+puts ""
+
+pload MODELING
+
+# unset draw variables for all offset values
+foreach val {0 1} {
+  foreach x [directory r${val}*_unif] {
+    unset $x
+  }
+}
+
+restore [locate_data_file bug31148_plate_split.brep] s
+
+perform_offset_multi_with_ref r0_01 s 0 {10} {3} {428 204 18 18} 1 
+perform_offset_multi_with_ref r0_02 s 0 {10} {4} {432 212 18 18} 1 
+perform_offset_multi_with_ref r0_03 s 0 {10} {5} {432 212 18 18} 1
+perform_offset_multi_with_ref r0_04 s 0 {6 14} {1 1} {464 220 18 18} 1
+perform_offset_multi_with_ref r0_05 s 0 {6 10 14} {1 2 1} {464 236 26 26} 1
+perform_offset_multi_with_ref r0_06 s 0 {6 10 14} {1 3 1} {464 240 26 26} 1
+perform_offset_multi_with_ref r0_07 s 0 {6 10 14} {1 4 1} {464 244 26 26} 1
+
+perform_offset_multi_with_ref r0_08 s 0 {9 11} {3 3} {440 228 22 22} 1 
+perform_offset_multi_with_ref r0_09 s 0 {9 11} {4 4} {448 244 24 23} 1 
+perform_offset_multi_with_ref r0_10 s 0 {6 9 11 14} {1 2 2 1} {464 252 34 34} 1 
+perform_offset_multi_with_ref r0_11 s 0 {6 9 11 14} {1 3 3 1} {464 260 34 34} 1 
+perform_offset_multi_with_ref r0_12 s 0 {6 9 11 14} {1 4 4 1} {464 268 36 35} 1 
+
+perform_offset_multi_with_ref r0_13 s 0 {8 10 12} {3 3 3} {452 252 22 22} 1
+perform_offset_multi_with_ref r0_14 s 0 {8 10 12} {4 4 4} {464 276 22 20} 1
+perform_offset_multi_with_ref r0_15 s 0 {6 8 10 12 14 } {1 3 3 3 1} {464 280 30 30} 1
+perform_offset_multi_with_ref r0_16 s 0 {6 8 10 12 14 } {1 4 3 4 1} {464 288 28 27} 1
+perform_offset_multi_with_ref r0_17 s 0 {6 8 10 12 14 } {1 3 4 3 1} {464 284 30 30} 1
+perform_offset_multi_with_ref r0_18 s 0 {6 8 10 12 14 } {1 4 4 4 1} {464 292 30 28} 1
+
+perform_offset_multi_with_ref r0_19 s 0 {7 10 13} {1 2 1} {424 228 22 22} 1
+perform_offset_multi_with_ref r0_20 s 0 {7 10 13} {1 3 1} {424 228 22 22} 1; # Questionable result: shouldn't s_10 material cover s_7 and s_13?
+perform_offset_multi_with_ref r0_21 s 0 {7 9 11 13} {1 2 2 1} {424 236 28 27} 1
+perform_offset_multi_with_ref r0_22 s 0 {7 8 10 12 13} {1 2 2 2 1} {424 244 26 24} 1
+
+perform_offset_multi_with_ref r0_23 s 0 {8 9 10 11 12} {1 2 3 4 4} {392 292 18 18} 1
+
+
+perform_offset_multi_with_ref r1_01 s 1 {10} {3} {672 728 18 18} 1 
+perform_offset_multi_with_ref r1_02 s 1 {10} {5} {672 736 18 18} 1 
+perform_offset_multi_with_ref r1_03 s 1 {10} {6} {672 736 18 18} 1
+
+perform_offset_multi_with_ref r1_04 s 1 {6 14} {1.5 1.5} {702 756 18 18} 1
+perform_offset_multi_with_ref r1_05 s 1 {6 10 14} {1.5 2 1.5} {698 760 26 26} 1
+perform_offset_multi_with_ref r1_06 s 1 {6 10 14} {1.5 3 1.5} {696 762 26 26} 1
+perform_offset_multi_with_ref r1_07 s 1 {6 10 14} {1.5 5 1.5} {692 766 26 26} 1
+
+perform_offset_multi_with_ref r1_08 s 1 {9 11} {3 3} {672 736 22 22} 1 
+perform_offset_multi_with_ref r1_09 s 1 {9 11} {5 5} {672 752 24 23} 1 
+perform_offset_multi_with_ref r1_10 s 1 {6 9 11 14} {1.5 2 2 1.5} {694 764 34 34} 1 
+perform_offset_multi_with_ref r1_11 s 1 {6 9 11 14} {1.5 4 4 1.5} {686 772 34 34} 1 
+perform_offset_multi_with_ref r1_12 s 1 {6 9 11 14} {1.5 5 5 1.5} {682 776 36 35} 1 
+
+perform_offset_multi_with_ref r1_13 s 1 {8 10 12} {3 3 3} {664 752 22 22} 1
+perform_offset_multi_with_ref r1_14 s 1 {8 10 12} {5 5 5} {656 784 22 20} 1
+perform_offset_multi_with_ref r1_15 s 1 {6 8 10 12 14 } {1.5 3 3 3 1.5} {672 780 30 30} 1
+perform_offset_multi_with_ref r1_16 s 1 {6 8 10 12 14 } {1.5 5 4 5 1.5} {654 794 28 27} 1
+perform_offset_multi_with_ref r1_17 s 1 {6 8 10 12 14 } {1.5 4 5 4 1.5} {660 790 30 30} 1
+perform_offset_multi_with_ref r1_18 s 1 {6 8 10 12 14 } {1.5 5 5 5 1.5} {652 796 30 28} 1
+
+perform_offset_multi_with_ref r1_19 s 1 {6 10 14} {0 2 0} {660 652 22 22} 1
+perform_offset_multi_with_ref r1_20 s 1 {6 10 14} {0 3 0} {660 652 22 22} 1
+perform_offset_multi_with_ref r1_21 s 1 {6 9 11 14} {0 2 2 0} {660 656 28 27} 1
+perform_offset_multi_with_ref r1_22 s 1 {7 8 10 12 13} {1.5 2 2 2 1.5} {664 740 26 24} 1
+
+perform_offset_multi_with_ref r1_23 s 1 {8 9 10 11 12} {1 2 3 4 5} {640 768 20 20} 1
+
+# display all created shapes
+foreach val {0 1} {
+  foreach x [directory r${val}*_unif] {
+    if {[isdraw $x]} {
+      checkview -display $x -2d -path ${imagedir}/${test_image}_$x.png
+    }
+  }
+}
+
+copy r0_01 result
+copy r0_01_unif result_unif

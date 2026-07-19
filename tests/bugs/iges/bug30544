@@ -1,0 +1,9 @@
+puts "============"
+puts "0030544: Data Exchange - IGES import  f a i l s  on specific file"
+puts "============"
+
+igesbrep [locate_data_file bug30544_deferry_normal.igs] a *
+
+checkshape a
+checkmaxtol a -ref 0.072
+checknbshapes a -face 18

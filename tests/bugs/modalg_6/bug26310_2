@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC26310"
+puts "========"
+puts ""
+#################################################
+# Very slow boolean cut operations on cylinders
+#################################################
+
+restore [locate_data_file OCC26310-b1.brep] b1 
+restore [locate_data_file OCC26310-b2.brep] b2 
+
+bsection result b1 b2
+
+smallview
+donly result
+
+set log [checksection result]
+
+if { [string compare -nocase $log " nb alone Vertices : 0\n\n"] } {
+  puts "ERROR: the section is not closed"
+} else {
+  puts "The section is OK"
+}
+
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

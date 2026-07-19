@@ -1,0 +1,11 @@
+#box b -30 -30 -30 60 60 30
+#ptorus s 20 5 0 90
+#fuse s s b
+#save s 6_D1234.draw 
+
+restore [locate_data_file CFI_6_d12fgx.rle] s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 10*SCALE2 s_8
+
+checkprops result -s 14622.4

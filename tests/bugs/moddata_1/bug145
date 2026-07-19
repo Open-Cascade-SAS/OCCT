@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC145"
+puts "========"
+
+pload QAcommands
+
+set shape_path [locate_data_file OCC145.brep]
+
+set listmem {}
+
+for {set i 1} {$i < 10} {incr i} {
+    OCC145 ${shape_path} 10
+
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 1 "Memory leak detected"
+}

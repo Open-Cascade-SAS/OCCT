@@ -1,0 +1,30 @@
+puts "========"
+puts "0032849: Modeling Algorithms - Intersection algorithm returns incomplete result"
+puts "========"
+puts ""
+
+restore [locate_data_file bug32849_s1] s1
+restore [locate_data_file bug32849_s2] s2
+
+mkface f1 s1;
+mkface f2 s2;
+
+set log [bopcurves f1 f2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} $log full Toler NbCurv
+
+if {$NbCurv != 2} {
+  puts "Error: Number of curves is wrong"
+}
+
+if { $Toler > 1.0e-8} {
+  puts "Error: Big tolerance value"  
+}
+
+
+
+
+
+ 
+
+

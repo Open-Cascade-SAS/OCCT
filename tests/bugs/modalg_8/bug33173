@@ -1,0 +1,15 @@
+puts "========"
+puts "0033173: Modeling Algorithms - Regression in BRepExtrema_DistShapeShape causing Standard_OutOfRange"
+puts "========"
+puts ""
+
+set MinDistExpected 7.049107166484117e-07
+restore [locate_data_file bug33173.brep] s
+explode s
+distmini dm s_1 s_2
+if {[isdraw dm]} {
+  checkreal MinDist $MinDistExpected [dval dm_val] 1.e-7 .01
+} else {
+  puts "Error: distmini failed"
+}
+

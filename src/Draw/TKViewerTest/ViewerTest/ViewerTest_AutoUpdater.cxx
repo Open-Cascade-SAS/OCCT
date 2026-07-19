@@ -1,0 +1,112 @@
+// Created on: 2014-04-24
+// Created by: Kirill Gavrilov
+// Copyright (c) 2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <ViewerTest_AutoUpdater.hxx>
+
+//=================================================================================================
+
+ViewerTest_AutoUpdater::ViewerTest_AutoUpdater(
+  const occ::handle<AIS_InteractiveContext>& theContext,
+  const occ::handle<V3d_View>&               theView)
+    : myContext(theContext),
+      myView(theView),
+      myToUpdate(RedrawMode_Auto),
+      myWasAutoUpdate(false)
+{
+  if (!theView.IsNull())
+  {
+    myWasAutoUpdate = theView->SetImmediateUpdate(false);
+  }
+}
+
+//=================================================================================================
+
+ViewerTest_AutoUpdater::~ViewerTest_AutoUpdater()
+{
+  Update();
+}
+
+//=================================================================================================
+
+bool ViewerTest_AutoUpdater::parseRedrawMode(const TCollection_AsciiString& theArg)
+{
+  TCollection_AsciiString anArgCase(theArg);
+  anArgCase.LowerCase();
+  if (anArgCase == "-update" || anArgCase == "-redraw")
+  {
+    myToUpdate = RedrawMode_Forced;
+    return true;
+  }
+  else if (anArgCase == "-noupdate" || anArgCase == "-noredraw")
+  {
+    myToUpdate = RedrawMode_Suppressed;
+    return true;
+  }
+  return false;
+}
+
+//=================================================================================================
+
+void ViewerTest_AutoUpdater::Invalidate()
+{
+  myToUpdate = ViewerTest_AutoUpdater::RedrawMode_Suppressed;
+  if (myWasAutoUpdate && !myView.IsNull())
+  {
+    myView->SetImmediateUpdate(myWasAutoUpdate);
+  }
+}
+
+//=================================================================================================
+
+void ViewerTest_AutoUpdater::Update()
+{
+  if (!myView.IsNull())
+  {
+    myView->SetImmediateUpdate(myWasAutoUpdate);
+  }
+
+  switch (myToUpdate)
+  {
+    case ViewerTest_AutoUpdater::RedrawMode_Suppressed: {
+      return;
+    }
+    case ViewerTest_AutoUpdater::RedrawMode_Auto: {
+      if (!myWasAutoUpdate)
+      {
+        return;
+      }
+    }
+      [[fallthrough]];
+    case ViewerTest_AutoUpdater::RedrawMode_Forced: {
+      if (!myContext.IsNull())
+      {
+        myContext->UpdateCurrentViewer();
+        if (!myView.IsNull() && myView->IsSubview()
+            && myView->ParentView()->Viewer() != myContext->CurrentViewer())
+        {
+          myView->ParentView()->RedrawImmediate();
+        }
+      }
+      else if (!myView.IsNull())
+      {
+        myView->Redraw();
+        if (myView->IsSubview())
+        {
+          myView->ParentView()->RedrawImmediate();
+        }
+      }
+    }
+  }
+}

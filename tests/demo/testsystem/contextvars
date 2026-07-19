@@ -1,0 +1,30 @@
+puts "# Check presence and consistency of global variables that define context for the test"
+
+puts ""
+puts "dirname = $::dirname"
+puts "groupname = $::groupname"
+puts "gridname = $::gridname"
+puts "casename = $::casename"
+puts "imagedir = $::imagedir"
+puts ""
+
+puts "# 1. Check that variables dirname, groupname, gridname, casename are defined correctly"
+
+set path_var $::dirname/$::groupname/$::gridname/$casename
+set path_act [info script]
+if { [file normalize $path_var] != [file normalize $path_act] } {
+    puts "Error: path to this script ($path_act) is not recovered correctly ($path_var)"
+}
+
+puts "# 2. Check that path to data file is correctly recovered"
+set path_data $::dirname/$::groupname/$::gridname/tests_data/file4.empty
+if { ! [file exists $path_data] } {
+    puts "Error: cannot find data file at expected location ($path_data)"
+}
+
+puts "# 3. Check that directory indicated by imagedir is writable"
+if { ! [file isdirectory $::imagedir] || ! [file writable $::imagedir] } {
+    puts "Error: imagedir variable ($::imagedir) does not point to writable directory"
+}
+
+puts "TEST COMPLETED"

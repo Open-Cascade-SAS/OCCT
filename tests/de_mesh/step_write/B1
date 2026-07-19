@@ -1,0 +1,9 @@
+
+# simple meshed box (mesh + brep)
+
+box S 1 1 1
+incmesh S 0.1
+
+set nb_faces     6
+set nb_nodes     24
+set nb_triangles 12

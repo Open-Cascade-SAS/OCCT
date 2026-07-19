@@ -1,0 +1,8 @@
+circle profile 0 0 0 1 1 1 5
+mkedge profile profile
+wire profile profile
+mkplane profile profile
+polyline w 10 0 0 0 30 30 0 70 70
+pipe result w profile
+
+checkprops result -s 2925.22

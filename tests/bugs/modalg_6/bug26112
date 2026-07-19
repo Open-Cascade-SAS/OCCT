@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC26112"
+puts "============"
+puts ""
+###############################
+## Exception is raised during perform of General Fuse operation
+###############################
+
+restore [locate_data_file bug26112_c.brep ] c
+
+explode c
+
+bclearobjects
+bcleartools
+baddobjects c_1
+baddtools c_2
+
+bfillds
+bbuild result
+
+checkprops result -s 122.7 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 7
+ EDGE      : 10
+ WIRE      : 5
+ FACE      : 4
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 27
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by General Fuse operator"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

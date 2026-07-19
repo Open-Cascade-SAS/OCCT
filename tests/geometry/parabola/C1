@@ -1,0 +1,4 @@
+parabola result 70 1  0  1 10
+2dpmirror result 0 0
+checkdump result -name {Center Axis XAxis YAxis Focal} -ref {{-70 -1} {-0 -1} {-0 -1} {1 -0} {10}} -eps 0.01
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

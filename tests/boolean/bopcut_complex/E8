@@ -1,0 +1,16 @@
+restore [locate_data_file BUC60931.brep] sh
+explode sh
+
+bclearobjects
+bcleartools
+baddobjects sh_1 sh_2
+bfillds
+bcbuild rx
+
+# use Cells Builder to perform CUT Shell from the Solid
+bcadd result sh_2 1 sh_1 0
+
+checknbshapes result -solid 2 -shell 2 -face 457
+checkprops result -s 1.53759e+006 -v 5.02658e+006
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

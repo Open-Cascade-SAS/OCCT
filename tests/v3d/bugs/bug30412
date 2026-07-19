@@ -1,0 +1,33 @@
+puts "============="
+puts "0030412: Visualization, TKV3d - add presentation of camera frustum"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+vfront
+vcamera -persp
+
+set THE_NB_BOXES 5
+puts "Creating [expr $THE_NB_BOXES * $THE_NB_BOXES * $THE_NB_BOXES] boxes..."
+for {set i 0} {$i < $THE_NB_BOXES} {incr i} {
+  for {set j 0} {$j < $THE_NB_BOXES} {incr j} {
+    for {set k 0} {$k < $THE_NB_BOXES} {incr k} {
+      box b$i$j$k 3.*$i 3.*$j 3.*$k 1 1 1
+      vdisplay -noupdate -dispMode 1 b$i$j$k
+    }
+  }
+}
+
+vfit
+vzoom 1.5
+vcamera cam
+
+vright
+vfit
+vdump $::imagedir/${::casename}_cam_right.png
+
+vaxo
+vfit
+vdump $::imagedir/${::casename}_cam_axo.png

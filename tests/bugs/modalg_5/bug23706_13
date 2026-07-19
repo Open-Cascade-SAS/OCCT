@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC23706"
+puts "============"
+puts ""
+#########################################################################
+# Cannot project point on curve
+#########################################################################
+
+cpulimit 1000
+
+2dbsplinecurve b3 2 6 1 3 2 1 3 1 4 1 5 1 6 3 2 5 1 3 7 1 4 8 1 4 8 1 4 8 1 5 9 1 9 7 1
+2dbsplinecurve b4 2 6 2 3 2.5 1 3 1 3.5 1 4 1 4.5 3 -1 2 1 1 11 1 3 9 1 3 9 1 3 9 1 5 7 1 7 4 1
+
+set info [2dextrema b3 b4]
+set status 0
+    regexp "dist 1: +(\[-0-9.+eE\]+)" $info full pp
+    if { $pp > 1.0e-7 } {
+       puts "Error : Extrema is wrong"
+       set status 1
+    }
+
+if { $status != 0 } {
+    puts "Error : Extrema is wrong"
+} else {
+    puts "OK: Extrema is valid"
+}

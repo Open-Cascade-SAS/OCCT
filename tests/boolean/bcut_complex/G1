@@ -1,0 +1,9 @@
+# Original bug : hkg60163
+# Date : 18sept98
+
+restore [locate_data_file CTO900_hkg60163c.rle] base
+restore [locate_data_file CTO900_hkg60163d.rle] prism
+
+bcut result base prism
+checkprops result -s 93761.7
+checkview -display result -2d -s -otherwise { base prism } -path ${imagedir}/${test_image}.png

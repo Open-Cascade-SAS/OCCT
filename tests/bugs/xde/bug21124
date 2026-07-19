@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC21124"
+puts "========"
+puts ""
+######################################################
+# Mapping between IGES entinties and result shapes is lost on attached file.
+######################################################
+
+set BugNumber OCC21124
+
+set filepath [locate_data_file OCC21124.igs]
+if [catch { igesbrep $filepath a *} catch_result] {
+  puts "Error ${BugNumber}: there is reading problem"
+} else {
+  whatis a
+  explode a
+  whatis a_91
+  explode a_91
+  set l [fromshape a_91_3]
+  regexp {type : +([-0-9.+eE]+)} $l full type
+  if { ${type} != 408 } {
+    puts "Faulty ${BugNumber}"
+  } else {
+    puts "OK ${BugNumber}"
+  }
+}
+renamevar a_91_3 result
+checkprops result -s 74027 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

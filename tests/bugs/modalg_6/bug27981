@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC27981"
+puts "========"
+puts ""
+#################################################
+# BRepExtrema_DistShapeShape returns not null distance on interfered shapes
+#################################################
+
+restore [locate_data_file bug27981_a.brep] a
+restore [locate_data_file bug27981_b.brep] b
+
+distmini dd a b
+set dist [dval dd_val]
+if {$dist > 1.e-7} {
+  puts "\nError: invalid distance.\n"
+}
+

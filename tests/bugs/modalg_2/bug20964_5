@@ -1,0 +1,52 @@
+puts "============"
+puts "OCC20964 Wrong result of cut operation for given shapes"
+puts "============"
+puts ""
+
+restore [locate_data_file OCC20964_revsolid.brep] b1 
+restore [locate_data_file OCC20964_sphere.brep] b2 
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+# CUT 2-1
+bbop result 3
+
+checkprops result -s 12102.9
+checkshape result
+
+set NbShapesRef "
+Number of shapes in .*
+ VERTEX : 6
+ EDGE : 9
+ WIRE : 7
+ FACE : 7
+ SHELL : 2
+ SOLID : 2
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 34
+"
+
+checknbshapes result -ref $NbShapesRef
+
+checkmaxtol result -ref 2.0849512334752456e-05
+
+checkview -display result -2d -path ${imagedir}/${test_image}_axo.png
+
+vdisplay result
+vsetdispmode 1
+vsetcolor result red
+vdisplay b1
+vsettransparency b1 0.5
+
+vviewparams -scale 11.5636 -proj 0.296876 -0.306332 0.904447 -up -0.63687 0.642216 0.426562 -at 120.352 250.434 3.97104e-006 -eye 147.307 222.621 82.1187
+
+if { [string compare "" [tricheck result] ] } {
+  puts "Error in triangulation"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}_shade.png

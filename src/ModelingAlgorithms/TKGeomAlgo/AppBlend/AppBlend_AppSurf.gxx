@@ -1,0 +1,1134 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <AppDef_MultiLine.hxx>
+#include <AppDef_MultiPointConstraint.hxx>
+#include <AppParCurves_MultiBSpCurve.hxx>
+#include <AppParCurves_MultiCurve.hxx>
+#include <AppDef_BSplineCompute.hxx>
+#include <AppDef_Compute.hxx>
+#include <AppParCurves_Constraint.hxx>
+#include <Approx_MCurvesToBSpCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_Vector.hxx>
+#include <BSplCLib.hxx>
+
+#include <StdFail_NotDone.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_HArray1.hxx>
+#include <AppDef_Variational.hxx>
+
+static bool scal = 1;
+
+Standard_EXPORT bool AppBlend_GetContextSplineApprox();
+Standard_EXPORT bool AppBlend_GetContextApproxWithNoTgt();
+
+//  modified by EAP (Edward AGAPOV) Fri Jan 4 2002, bug OCC9
+//  --- keep pipe parametrized like path
+
+//=================================================================================================
+
+AppBlend_AppSurf::AppBlend_AppSurf()
+    : done(false),
+      dmin(0),
+      dmax(0),
+      tol3d(0.0),
+      tol2d(0.0),
+      nbit(0),
+      udeg(0),
+      vdeg(0),
+      knownp(false),
+      tol3dreached(0.0),
+      tol2dreached(0.0),
+      paramtype(Approx_ChordLength),
+      continuity(GeomAbs_C2)
+{
+  critweights[0] = 0.4;
+  critweights[1] = 0.2;
+  critweights[2] = 0.4;
+}
+
+//=================================================================================================
+
+AppBlend_AppSurf::AppBlend_AppSurf(const int    Degmin,
+                                   const int    Degmax,
+                                   const double Tol3d,
+                                   const double Tol2d,
+                                   const int    NbIt,
+                                   const bool   KnownParameters)
+    : done(false),
+      dmin(Degmin),
+      dmax(Degmax),
+      tol3d(Tol3d),
+      tol2d(Tol2d),
+      nbit(NbIt),
+      udeg(0),
+      vdeg(0),
+      knownp(KnownParameters),
+      tol3dreached(0.0),
+      tol2dreached(0.0),
+      paramtype(Approx_ChordLength),
+      continuity(GeomAbs_C2)
+{
+  critweights[0] = 0.4;
+  critweights[1] = 0.2;
+  critweights[2] = 0.4;
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::Init(const int    Degmin,
+                            const int    Degmax,
+                            const double Tol3d,
+                            const double Tol2d,
+                            const int    NbIt,
+                            const bool   KnownParameters)
+{
+  done           = false;
+  dmin           = Degmin;
+  dmax           = Degmax;
+  tol3d          = Tol3d;
+  tol2d          = Tol2d;
+  nbit           = NbIt;
+  knownp         = KnownParameters;
+  continuity     = GeomAbs_C2;
+  paramtype      = Approx_ChordLength;
+  critweights[0] = 0.4;
+  critweights[1] = 0.2;
+  critweights[2] = 0.4;
+}
+
+//=======================================================================
+// function : CriteriumWeight
+// purpose  : returns the Weights associed  to the criterium used in
+//           the  optimization.
+//=======================================================================
+//
+void AppBlend_AppSurf::CriteriumWeight(double& W1, double& W2, double& W3) const
+{
+  W1 = critweights[0];
+  W2 = critweights[1];
+  W3 = critweights[2];
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::SetCriteriumWeight(const double W1, const double W2, const double W3)
+{
+  if (W1 < 0 || W2 < 0 || W3 < 0)
+    throw Standard_DomainError();
+  critweights[0] = W1;
+  critweights[1] = W2;
+  critweights[2] = W3;
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::SetContinuity(const GeomAbs_Shape TheCont)
+{
+  continuity = TheCont;
+}
+
+//=================================================================================================
+
+GeomAbs_Shape AppBlend_AppSurf::Continuity() const
+{
+  return continuity;
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::SetParType(const Approx_ParametrizationType ParType)
+{
+  paramtype = ParType;
+}
+
+//=================================================================================================
+
+Approx_ParametrizationType AppBlend_AppSurf::ParType() const
+{
+  return paramtype;
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
+                               TheSectionGenerator&        F,
+                               const bool                  SpApprox)
+
+{
+  InternalPerform(Lin, F, SpApprox, false);
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::PerformSmoothing(const occ::handle<TheLine>& Lin, TheSectionGenerator& F)
+
+{
+  InternalPerform(Lin, F, true, true);
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
+                                       TheSectionGenerator&        F,
+                                       const bool                  SpApprox,
+                                       const bool                  UseSmoothing)
+
+{
+  done = false;
+  if (Lin.IsNull())
+  {
+    return;
+  }
+  int                     i, j, k, NbPoint;
+  int                     NbUPoles, NbUKnots, NbPoles2d, NbVPoles;
+  bool                    withderiv;
+  AppParCurves_Constraint Cfirst, Clast;
+
+  double mytol3d, mytol2d;
+  gp_XYZ newDv;
+
+  seqPoles2d.Clear();
+
+  NbPoint = Lin->NbPoints();
+  AppDef_MultiPointConstraint multP;
+  AppDef_MultiLine            multL(NbPoint);
+
+  F.GetShape(NbUPoles, NbUKnots, udeg, NbPoles2d);
+
+  tabUKnots = new NCollection_HArray1<double>(1, NbUKnots);
+  tabUMults = new NCollection_HArray1<int>(1, NbUKnots);
+
+  F.Knots(tabUKnots->ChangeArray1());
+  F.Mults(tabUMults->ChangeArray1());
+
+  NCollection_Array1<gp_Pnt> tabAppP(1, NbUPoles);
+  NCollection_Array1<gp_Vec> tabAppV(1, NbUPoles);
+
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, std::max(1, NbPoles2d));
+  NCollection_Array1<gp_Vec2d> tabV2d(1, std::max(1, NbPoles2d));
+
+  NCollection_Array1<double> tabW(1, NbUPoles), tabDW(1, NbUPoles);
+
+  NCollection_Array1<gp_Pnt2d> tabAppP2d(1, NbPoles2d + NbUPoles); // points2d + poids
+  NCollection_Array1<gp_Vec2d> tabAppV2d(1, NbPoles2d + NbUPoles);
+
+  AppParCurves_MultiBSpCurve multC;
+
+  //  bool SpApprox = false;
+
+  withderiv = F.Section(Lin->Point(1), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
+
+  if (AppBlend_GetContextApproxWithNoTgt())
+    withderiv = false;
+
+  for (j = 1; j <= NbPoles2d; j++)
+  {
+    tabAppP2d(j) = tabP2d(j);
+    if (withderiv)
+    {
+      tabAppV2d(j) = tabV2d(j);
+    }
+  }
+  for (j = 1; j <= NbUPoles; j++)
+  {
+    // pour les courbes rationnelles il faut multiplier les poles par
+    // leurs poids respectifs
+    if (withderiv)
+    {
+      tabAppV2d(NbPoles2d + j).SetCoord(tabDW(j), 0.);
+      newDv.SetLinearForm(tabDW(j), tabAppP(j).XYZ(), tabW(j), tabAppV(j).XYZ());
+      tabAppV(j).SetXYZ(newDv);
+    }
+    tabAppP(j).SetXYZ(tabAppP(j).XYZ() * tabW(j));
+    tabAppP2d(NbPoles2d + j).SetCoord(tabW(j), 0.);
+  }
+
+  if (withderiv)
+  {
+    multP  = AppDef_MultiPointConstraint(tabAppP, tabAppP2d, tabAppV, tabAppV2d);
+    Cfirst = AppParCurves_TangencyPoint;
+  }
+  else
+  {
+    multP  = AppDef_MultiPointConstraint(tabAppP, tabAppP2d);
+    Cfirst = AppParCurves_PassPoint;
+  }
+  multL.SetValue(1, multP);
+
+  for (i = 2; i <= NbPoint - 1; i++)
+  {
+    if (SpApprox)
+    {
+      F.Section(Lin->Point(i), tabAppP, tabP2d, tabW);
+      for (j = 1; j <= NbPoles2d; j++)
+      {
+        tabAppP2d(j) = tabP2d(j);
+      }
+      for (j = 1; j <= NbUPoles; j++)
+      {
+        // pour les courbes rationnelles il faut multiplier les poles par
+        // leurs poids respectifs
+        tabAppP(j).SetXYZ(tabAppP(j).XYZ() * tabW(j));
+        tabAppP2d(NbPoles2d + j).SetCoord(tabW(j), 0.);
+      }
+      multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d);
+      multL.SetValue(i, multP);
+    }
+    // ***********************
+    else
+    {
+      withderiv = F.Section(Lin->Point(i), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
+      if (AppBlend_GetContextApproxWithNoTgt())
+        withderiv = false;
+
+      for (j = 1; j <= NbPoles2d; j++)
+      {
+        tabAppP2d(j) = tabP2d(j);
+        if (withderiv)
+        {
+          tabAppV2d(j) = tabV2d(j);
+        }
+      }
+      for (j = 1; j <= NbUPoles; j++)
+      {
+        // pour les courbes rationnelles il faut multiplier les poles par
+        // leurs poids respectifs
+        if (withderiv)
+        {
+          tabAppV2d(NbPoles2d + j).SetCoord(tabDW(j), 0.);
+          newDv.SetLinearForm(tabDW(j), tabAppP(j).XYZ(), tabW(j), tabAppV(j).XYZ());
+          tabAppV(j).SetXYZ(newDv);
+        }
+        tabAppP(j).SetXYZ(tabAppP(j).XYZ() * tabW(j));
+        tabAppP2d(NbPoles2d + j).SetCoord(tabW(j), 0.);
+      }
+      if (withderiv)
+      {
+        multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d, tabAppV, tabAppV2d);
+      }
+      else
+      {
+        multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d);
+      }
+      multL.SetValue(i, multP);
+    }
+    // ******************************
+  }
+
+  withderiv = F.Section(Lin->Point(NbPoint), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
+  if (AppBlend_GetContextApproxWithNoTgt())
+    withderiv = false;
+
+  for (j = 1; j <= NbPoles2d; j++)
+  {
+    tabAppP2d(j) = tabP2d(j);
+    if (withderiv)
+    {
+      tabAppV2d(j) = tabV2d(j);
+    }
+  }
+  for (j = 1; j <= NbUPoles; j++)
+  {
+    // pour les courbes rationnelles il faut multiplier les poles par
+    // leurs poids respectifs
+    if (withderiv)
+    {
+      tabAppV2d(NbPoles2d + j).SetCoord(tabDW(j), 0.);
+      newDv.SetLinearForm(tabDW(j), tabAppP(j).XYZ(), tabW(j), tabAppV(j).XYZ());
+      tabAppV(j).SetXYZ(newDv);
+    }
+    tabAppP(j).SetXYZ(tabAppP(j).XYZ() * tabW(j));
+    tabAppP2d(NbPoles2d + j).SetCoord(tabW(j), 0.);
+  }
+
+  if (withderiv)
+  {
+    multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d, tabAppV, tabAppV2d);
+    Clast = AppParCurves_TangencyPoint;
+  }
+  else
+  {
+    multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d);
+    Clast = AppParCurves_PassPoint;
+  }
+  multL.SetValue(NbPoint, multP);
+
+  // IFV 04.06.07 occ13904
+  if (NbPoint == 2)
+  {
+    dmin = 1;
+    if (Cfirst == AppParCurves_PassPoint && Clast == AppParCurves_PassPoint)
+    {
+      dmax = 1;
+    }
+  }
+
+  if (!SpApprox)
+  {
+    AppDef_Compute theapprox(dmin, dmax, tol3d, tol2d, nbit, true, paramtype);
+    if (knownp)
+    {
+      math_Vector theParams(1, NbPoint);
+
+      // On recale les parametres entre 0 et 1.
+      theParams(1)       = 0.;
+      theParams(NbPoint) = 1.;
+      double Uf          = F.Parameter(Lin->Point(1));
+      double Ul          = F.Parameter(Lin->Point(NbPoint)) - Uf;
+      for (i = 2; i < NbPoint; i++)
+      {
+        theParams(i) = (F.Parameter(Lin->Point(i)) - Uf) / Ul;
+      }
+      AppDef_Compute theAppDef(theParams, dmin, dmax, tol3d, tol2d, nbit, true, true);
+      theapprox = theAppDef;
+    }
+    theapprox.SetConstraints(Cfirst, Clast);
+    theapprox.Perform(multL);
+
+    double TheTol3d, TheTol2d;
+    mytol3d = mytol2d = 0.0;
+    for (int Index = 1; Index <= theapprox.NbMultiCurves(); Index++)
+    {
+      theapprox.Error(Index, TheTol3d, TheTol2d);
+      mytol3d = std::max(TheTol3d, mytol3d);
+      mytol2d = std::max(TheTol2d, mytol2d);
+    }
+#ifdef OCCT_DEBUG
+    std::cout << " Tolerances obtenues  --> 3d : " << mytol3d << std::endl;
+    std::cout << "                      --> 2d : " << mytol2d << std::endl;
+#endif
+    multC = theapprox.SplineValue();
+  }
+
+  else
+  {
+    if (!UseSmoothing)
+    {
+      bool UseSquares = false;
+      if (nbit == 0)
+        UseSquares = true;
+      AppDef_BSplineCompute theapprox(dmin, dmax, tol3d, tol2d, nbit, true, paramtype, UseSquares);
+      if (continuity == GeomAbs_C0)
+      {
+        theapprox.SetContinuity(0);
+      }
+      if (continuity == GeomAbs_C1)
+      {
+        theapprox.SetContinuity(1);
+      }
+      else if (continuity == GeomAbs_C2)
+      {
+        theapprox.SetContinuity(2);
+      }
+      else
+      {
+        theapprox.SetContinuity(3);
+      }
+
+      theapprox.SetConstraints(Cfirst, Clast);
+
+      if (knownp)
+      {
+        math_Vector theParams(1, NbPoint);
+        // On recale les parametres entre 0 et 1.
+        theParams(1)       = 0.;
+        theParams(NbPoint) = 1.;
+        double Uf          = F.Parameter(Lin->Point(1));
+        double Ul          = F.Parameter(Lin->Point(NbPoint)) - Uf;
+        for (i = 2; i < NbPoint; i++)
+        {
+          theParams(i) = (F.Parameter(Lin->Point(i)) - Uf) / Ul;
+        }
+
+        theapprox.Init(dmin, dmax, tol3d, tol2d, nbit, true, Approx_IsoParametric, true);
+        theapprox.SetParameters(theParams);
+      }
+      theapprox.Perform(multL);
+      theapprox.Error(mytol3d, mytol2d);
+#ifdef OCCT_DEBUG
+      std::cout << " Tolerances obtenues  --> 3d : " << mytol3d << std::endl;
+      std::cout << "                      --> 2d : " << mytol2d << std::endl;
+#endif
+      tol3dreached = mytol3d;
+      tol2dreached = mytol2d;
+      multC        = theapprox.Value();
+    }
+    else
+    {
+      // Variational algo
+      occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> TABofCC =
+        new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, NbPoint);
+      AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
+
+      for (i = 1; i <= NbPoint; ++i)
+      {
+        AppParCurves_ConstraintCouple ACC(i, Constraint);
+        TABofCC->SetValue(i, ACC);
+      }
+
+      TABofCC->ChangeValue(1).SetConstraint(Cfirst);
+      TABofCC->ChangeValue(NbPoint).SetConstraint(Clast);
+
+      AppDef_Variational Variation(multL, 1, NbPoint, TABofCC);
+
+      //===================================
+      int  theMaxSegments = 1000;
+      bool theWithMinMax  = false;
+      bool theWithCutting = true;
+      //===================================
+
+      Variation.SetMaxDegree(dmax);
+      Variation.SetContinuity(continuity);
+      Variation.SetMaxSegment(theMaxSegments);
+
+      Variation.SetTolerance(tol3d);
+      Variation.SetWithMinMax(theWithMinMax);
+      Variation.SetWithCutting(theWithCutting);
+      Variation.SetNbIterations(nbit);
+
+      Variation.SetCriteriumWeight(critweights[0], critweights[1], critweights[2]);
+
+      if (!Variation.IsCreated())
+      {
+        return;
+      }
+
+      if (Variation.IsOverConstrained())
+      {
+        return;
+      }
+
+      try
+      {
+        Variation.Approximate();
+      }
+      catch (Standard_Failure const&)
+      {
+        return;
+      }
+
+      if (!Variation.IsDone())
+      {
+        return;
+      }
+
+      mytol3d = Variation.MaxError();
+      mytol2d = 0.;
+#ifdef OCCT_DEBUG
+      std::cout << " Tolerances obtenues  --> 3d : " << mytol3d << std::endl;
+      std::cout << "                      --> 2d : " << mytol2d << std::endl;
+#endif
+      tol3dreached = mytol3d;
+      tol2dreached = mytol2d;
+      multC        = Variation.Value();
+    }
+  }
+
+  vdeg     = multC.Degree();
+  NbVPoles = multC.NbPoles();
+
+  tabPoles   = new NCollection_HArray2<gp_Pnt>(1, NbUPoles, 1, NbVPoles);
+  tabWeights = new NCollection_HArray2<double>(1, NbUPoles, 1, NbVPoles);
+  tabVKnots  = new NCollection_HArray1<double>(multC.Knots().Lower(), multC.Knots().Upper());
+  tabVKnots->ChangeArray1() = multC.Knots();
+
+  if (knownp && !UseSmoothing)
+  {
+    BSplCLib::Reparametrize(F.Parameter(Lin->Point(1)),
+                            F.Parameter(Lin->Point(NbPoint)),
+                            tabVKnots->ChangeArray1());
+  }
+
+  tabVMults =
+    new NCollection_HArray1<int>(multC.Multiplicities().Lower(), multC.Multiplicities().Upper());
+  tabVMults->ChangeArray1() = multC.Multiplicities();
+
+  NCollection_Array1<gp_Pnt>                 newtabP(1, NbVPoles);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> newtabP2d =
+    new NCollection_HArray1<gp_Pnt2d>(1, NbVPoles);
+  for (j = 1; j <= NbUPoles; j++)
+  {
+    multC.Curve(j, newtabP);
+    multC.Curve(j + NbUPoles + NbPoles2d, newtabP2d->ChangeArray1());
+    for (k = 1; k <= NbVPoles; k++)
+    {
+      // pour les courbes rationnelles il faut maintenant diviser
+      // les poles par leurs poids respectifs
+      tabPoles->ChangeValue(j, k).SetXYZ(newtabP(k).XYZ() / newtabP2d->Value(k).X());
+      double aWeight = newtabP2d->Value(k).X();
+      if (aWeight < gp::Resolution())
+      {
+        done = false;
+        return;
+      }
+      tabWeights->SetValue(j, k, aWeight);
+    }
+  }
+
+  for (j = 1; j <= NbPoles2d; j++)
+  {
+    newtabP2d = new NCollection_HArray1<gp_Pnt2d>(1, NbVPoles);
+    multC.Curve(NbUPoles + j, newtabP2d->ChangeArray1());
+    seqPoles2d.Append(newtabP2d);
+  }
+
+  done = true;
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
+                               TheSectionGenerator&        F,
+                               const int                   NbMaxP)
+{
+  done = false;
+  if (Lin.IsNull())
+  {
+    return;
+  }
+  int                     i, j, k;
+  int                     NbUPoles, NbUKnots, NbPoles2d, NbVPoles;
+  bool                    withderiv;
+  AppParCurves_Constraint Cfirst = AppParCurves_NoConstraint, Clast = AppParCurves_NoConstraint;
+
+  double mytol3d = 0.0, mytol2d = 0.0;
+  gp_XYZ newDv;
+
+  seqPoles2d.Clear();
+
+  int NbPointTot = Lin->NbPoints();
+
+  F.GetShape(NbUPoles, NbUKnots, udeg, NbPoles2d);
+
+  tabUKnots = new NCollection_HArray1<double>(1, NbUKnots);
+  tabUMults = new NCollection_HArray1<int>(1, NbUKnots);
+
+  F.Knots(tabUKnots->ChangeArray1());
+  F.Mults(tabUMults->ChangeArray1());
+
+  NCollection_Array1<gp_Pnt> tabAppP(1, NbUPoles);
+  NCollection_Array1<gp_Vec> tabAppV(1, NbUPoles);
+  double                     X, Y, Z, DX, DY, DZ;
+  X = Y = Z = RealLast();
+  DX = DY = DZ = RealFirst();
+
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, std::max(1, NbPoles2d));
+  NCollection_Array1<gp_Vec2d> tabV2d(1, std::max(1, NbPoles2d));
+  NCollection_Array1<double>   X2d(1, std::max(1, NbPoles2d));
+  X2d.Init(RealLast());
+  NCollection_Array1<double> Y2d(1, std::max(1, NbPoles2d));
+  Y2d.Init(RealLast());
+  NCollection_Array1<double> DX2d(1, std::max(1, NbPoles2d));
+  DX2d.Init(RealFirst());
+  NCollection_Array1<double> DY2d(1, std::max(1, NbPoles2d));
+  DY2d.Init(RealFirst());
+
+  NCollection_Array1<double> tabW(1, NbUPoles), tabDW(1, NbUPoles);
+
+  NCollection_Array1<gp_Pnt2d> tabAppP2d(1, NbPoles2d + NbUPoles); // points2d + poids
+  NCollection_Array1<gp_Vec2d> tabAppV2d(1, NbPoles2d + NbUPoles);
+
+  // On calcule les boites de chaque ligne (box for all lines)
+  for (i = 1; i <= NbPointTot; i++)
+  {
+    F.Section(Lin->Point(i), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
+    double x, y, z;
+    for (j = 1; j <= NbUPoles; j++)
+    {
+      tabAppP(j).Coord(x, y, z);
+      if (x < X)
+      {
+        X = x;
+      }
+      if (x > DX)
+      {
+        DX = x;
+      }
+      if (y < Y)
+      {
+        Y = y;
+      }
+      if (y > DY)
+      {
+        DY = y;
+      }
+      if (z < Z)
+      {
+        Z = z;
+      }
+      if (z > DZ)
+      {
+        DZ = z;
+      }
+    }
+    for (j = 1; j <= NbPoles2d; j++)
+    {
+      tabP2d(j).Coord(x, y);
+      if (x < X2d(j))
+      {
+        X2d(j) = x;
+      }
+      if (x > DX2d(j))
+      {
+        DX2d(j) = x;
+      }
+      if (y < Y2d(j))
+      {
+        Y2d(j) = y;
+      }
+      if (y > DY2d(j))
+      {
+        DY2d(j) = y;
+      }
+    }
+  }
+  // On calcule pour chaque ligne la transformation vers 0 1.
+  double seuil   = 1000. * tol3d;
+  double seuil2d = 1000. * tol2d;
+  if ((DX - X) < seuil)
+  {
+    DX = 1.;
+    X  = 0.;
+  }
+  else
+  {
+    DX = 1. / (DX - X);
+    X *= -DX;
+  }
+  if ((DY - Y) < seuil)
+  {
+    DY = 1.;
+    Y  = 0.;
+  }
+  else
+  {
+    DY = 1. / (DY - Y);
+    Y *= -DY;
+  }
+  if ((DZ - Z) < seuil)
+  {
+    DZ = 1.;
+    Z  = 0.;
+  }
+  else
+  {
+    DZ = 1. / (DZ - Z);
+    Z *= -DZ;
+  }
+  for (j = 1; j <= NbPoles2d; j++)
+  {
+    if ((DX2d(j) - X2d(j)) < seuil2d)
+    {
+      DX2d(j) = 1.;
+      X2d(j)  = 0.;
+    }
+    else
+    {
+      DX2d(j) = 1. / (DX2d(j) - X2d(j));
+      X2d(j) *= -DX2d(j);
+    }
+    if ((DY2d(j) - Y2d(j)) < seuil2d)
+    {
+      DY2d(j) = 1.;
+      Y2d(j)  = 0.;
+    }
+    else
+    {
+      DY2d(j) = 1. / (DY2d(j) - Y2d(j));
+      Y2d(j) *= -DY2d(j);
+    }
+  }
+  if (!scal)
+  {
+    DX = 1.;
+    X  = 0.;
+    DY = 1.;
+    Y  = 0.;
+    DZ = 1.;
+    Z  = 0.;
+    for (j = 1; j <= NbPoles2d; j++)
+    {
+      DX2d(j) = 1.;
+      X2d(j)  = 0.;
+      DY2d(j) = 1.;
+      Y2d(j)  = 0.;
+    }
+  }
+  //  modified by eap Thu Jan  3 14:45:22 2002 ___BEGIN___
+  // Keep "inter-troncons" parameters, not only first and last
+  //  double Ufirst=0,Ulast=0;
+  NCollection_Sequence<double> aParamSeq;
+  if (knownp)
+  {
+    //     Ufirst = F.Parameter(Lin->Point(1));
+    //     Ulast = F.Parameter(Lin->Point(NbPointTot));
+    aParamSeq.Append(F.Parameter(Lin->Point(1)));
+  }
+  //  modified by EAP Thu Jan  3 14:45:41 2002 ___END___
+
+  Approx_MCurvesToBSpCurve concat;
+
+  // On calcule le nombre de troncons.
+  int nbtronc = NbPointTot / NbMaxP;
+  int reste   = NbPointTot - (nbtronc * NbMaxP);
+  // On regarde si il faut prendre un troncon de plus.
+  int nmax = NbMaxP;
+  if (nbtronc > 0 && reste > 0)
+  {
+    nmax = NbPointTot / (nbtronc + 1);
+    if (nmax > (2 * NbMaxP) / 3)
+    {
+      nbtronc++;
+      reste = NbPointTot - (nbtronc * nmax);
+    }
+    else
+      nmax = NbMaxP;
+  }
+  else if (nbtronc == 0)
+  {
+    nbtronc = 1;
+    nmax    = reste;
+    reste   = 0;
+  }
+
+  // Approximate each "troncon" with nb of Bezier's using AppDef_Compute
+  // and concat them into BSpline with Approx_MCurvesToBSpCurve
+
+  NCollection_Array1<int> troncsize(1, nbtronc);
+  NCollection_Array1<int> troncstart(1, nbtronc);
+
+  int rab   = reste / nbtronc + 1;
+  int start = 1;
+  int itronc;
+  for (itronc = 1; itronc <= nbtronc; itronc++)
+  {
+    troncstart(itronc) = start;
+    int rabrab         = std::min(rab, reste);
+    if (reste > 0)
+    {
+      reste -= rabrab;
+    }
+    troncsize(itronc) = nmax + rabrab + 1;
+    start += (nmax + rabrab);
+  }
+  troncsize(nbtronc) = troncsize(nbtronc) - 1;
+  for (itronc = 1; itronc <= nbtronc; itronc++)
+  {
+    int                         NbPoint = troncsize(itronc);
+    int                         StPoint = troncstart(itronc);
+    AppDef_MultiPointConstraint multP;
+    AppDef_MultiLine            multL(NbPoint);
+
+    for (i = 1; i <= NbPoint; i++)
+    {
+      int    iLin = StPoint + i - 1;
+      double x, y, z;
+      withderiv = F.Section(Lin->Point(iLin), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
+      if (AppBlend_GetContextApproxWithNoTgt())
+        withderiv = false;
+
+      for (j = 1; j <= NbPoles2d; j++)
+      {
+        tabP2d(j).Coord(x, y);
+        tabAppP2d(j).SetCoord(DX2d(j) * x + X2d(j), DY2d(j) * y + Y2d(j));
+        if (withderiv)
+        {
+          tabV2d(j).Coord(x, y);
+          tabAppV2d(j).SetCoord(DX2d(j) * x, DY2d(j) * y);
+        }
+      }
+      for (j = 1; j <= NbUPoles; j++)
+      {
+        // pour les courbes rationnelles il faut multiplier les poles par
+        // leurs poids respectifs
+        if (withderiv)
+        {
+          tabAppV2d(NbPoles2d + j).SetCoord(tabDW(j), 0.);
+          newDv.SetLinearForm(tabDW(j), tabAppP(j).XYZ(), tabW(j), tabAppV(j).XYZ());
+          tabAppV(j).SetCoord(DX * newDv.X(), DY * newDv.Y(), DZ * newDv.Z());
+        }
+        tabAppP(j).SetXYZ(tabAppP(j).XYZ() * tabW(j));
+        tabAppP2d(NbPoles2d + j).SetCoord(tabW(j), 0.);
+        tabAppP(j).Coord(x, y, z);
+        tabAppP(j).SetCoord(DX * x + X, DY * y + Y, DZ * z + Z);
+      }
+      if (withderiv)
+      {
+        multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d, tabAppV, tabAppV2d);
+        if (i == 1)
+          Cfirst = AppParCurves_TangencyPoint;
+        else if (i == NbPoint)
+          Clast = AppParCurves_TangencyPoint;
+      }
+      else
+      {
+        multP = AppDef_MultiPointConstraint(tabAppP, tabAppP2d);
+        if (i == 1)
+          Cfirst = AppParCurves_PassPoint;
+        else if (i == NbPoint)
+          Clast = AppParCurves_PassPoint;
+      }
+      multL.SetValue(i, multP);
+    }
+
+    // IFV 04.06.07 occ13904
+    if (NbPoint == 2)
+    {
+      dmin = 1;
+      if (Cfirst == AppParCurves_PassPoint && Clast == AppParCurves_PassPoint)
+      {
+        dmax = 1;
+      }
+    }
+
+    //  modified by EAP Thu Jan  3 15:44:13 2002 ___BEGIN___
+    double         Ufloc = 0., Ulloc = 0.;
+    AppDef_Compute theapprox(dmin, dmax, tol3d, tol2d, nbit);
+    if (knownp)
+    {
+      math_Vector theParams(1, NbPoint);
+      // On recale les parametres entre 0 et 1.
+      /*double*/ Ufloc = F.Parameter(Lin->Point(StPoint));
+      /*double*/ Ulloc = F.Parameter(Lin->Point(StPoint + NbPoint - 1));
+      //  modified by EAP Thu Jan  3 15:45:17 2002 ___END___
+      for (i = 1; i <= NbPoint; i++)
+      {
+        int iLin     = StPoint + i - 1;
+        theParams(i) = (F.Parameter(Lin->Point(iLin)) - Ufloc) / (Ulloc - Ufloc);
+      }
+      AppDef_Compute theAppDef1(theParams, dmin, dmax, tol3d, tol2d, nbit, true, true);
+      theapprox = theAppDef1;
+    }
+    theapprox.SetConstraints(Cfirst, Clast);
+    theapprox.Perform(multL);
+
+    //  modified by EAP Thu Jan  3 16:00:43 2002 ___BEGIN___
+    // To know internal parameters if multicurve is approximated by several Bezier's
+    NCollection_Sequence<double> aPoleDistSeq;
+    double                       aWholeDist = 0;
+    //  modified by EAP Thu Jan  3 16:45:48 2002 ___END___
+    double TheTol3d, TheTol2d;
+    for (int Index = 1; Index <= theapprox.NbMultiCurves(); Index++)
+    {
+      AppParCurves_MultiCurve& mucu = theapprox.ChangeValue(Index);
+      theapprox.Error(Index, TheTol3d, TheTol2d);
+      mytol3d = std::max(TheTol3d / DX, mytol3d);
+      mytol3d = std::max(TheTol3d / DY, mytol3d);
+      mytol3d = std::max(TheTol3d / DZ, mytol3d);
+      for (j = 1; j <= NbUPoles; j++)
+      {
+        mucu.Transform(j, -X / DX, 1. / DX, -Y / DY, 1. / DY, -Z / DZ, 1. / DZ);
+      }
+      for (j = 1; j <= NbPoles2d; j++)
+      {
+        mucu.Transform2d(j + NbUPoles,
+                         -X2d(j) / DX2d(j),
+                         1. / DX2d(j),
+                         -Y2d(j) / DY2d(j),
+                         1. / DY2d(j));
+        mytol2d = std::max(TheTol2d / DX2d(j), mytol2d);
+        mytol2d = std::max(TheTol2d / DY2d(j), mytol2d);
+      }
+      concat.Append(mucu);
+
+      //  modified by EAP Thu Jan  3 15:45:23 2002 ___BEGIN___
+      if (knownp && theapprox.NbMultiCurves() > 1)
+      {
+        gp_Pnt aFirstPole = mucu.Pole(Index, 1);
+        gp_Pnt aLastPole  = mucu.Pole(Index, mucu.NbPoles());
+        aPoleDistSeq.Append(aFirstPole.Distance(aLastPole));
+        aWholeDist += aPoleDistSeq.Last();
+      }
+    }
+    if (knownp)
+    {
+      int    iDist;
+      double iU = Ufloc;
+      for (iDist = 1; iDist < aPoleDistSeq.Length(); iDist++)
+      {
+        iU += aPoleDistSeq(iDist) / aWholeDist * (Ulloc - Ufloc);
+        // cout << "Internal: " << iU << endl;
+        aParamSeq.Append(iU);
+      }
+      aParamSeq.Append(Ulloc);
+    }
+    //  modified by EAP Thu Jan  3 15:45:27 2002 ___END___
+  }
+#ifdef OCCT_DEBUG
+  std::cout << "   Tolerances obtenues  --> 3d : " << mytol3d << std::endl;
+  std::cout << "                        --> 2d : " << mytol2d << std::endl;
+#endif
+  tol3dreached = mytol3d;
+  tol2dreached = mytol2d;
+  concat.Perform();
+  const AppParCurves_MultiBSpCurve& multC = concat.Value();
+  vdeg                                    = multC.Degree();
+  NbVPoles                                = multC.NbPoles();
+
+  tabPoles   = new NCollection_HArray2<gp_Pnt>(1, NbUPoles, 1, NbVPoles);
+  tabWeights = new NCollection_HArray2<double>(1, NbUPoles, 1, NbVPoles);
+  tabVKnots  = new NCollection_HArray1<double>(multC.Knots().Lower(), multC.Knots().Upper());
+  tabVKnots->ChangeArray1() = multC.Knots();
+
+  if (knownp)
+  {
+    //  modified by EAP Fri Jan  4 12:07:30 2002 ___BEGIN___
+    if (aParamSeq.Length() != tabVKnots->Length())
+    {
+      BSplCLib::Reparametrize(F.Parameter(Lin->Point(1)),
+                              F.Parameter(Lin->Point(Lin->NbPoints())),
+                              tabVKnots->ChangeArray1());
+#ifdef OCCT_DEBUG
+      std::cout << "Warning: AppBlend_AppSurf::Perform(), bad length of aParamSeq: "
+                << aParamSeq.Length() << " instead of " << tabVKnots->Length() << std::endl;
+#endif
+    }
+    else
+    {
+      int iKnot, iTabKnot = tabVKnots->Lower();
+      for (iKnot = 1; iKnot <= aParamSeq.Length(); iKnot++, iTabKnot++)
+      {
+        // cout << "Replace " << tabVKnots->Value(iTabKnot) << " with " << aParamSeq(iKnot) << endl;
+        tabVKnots->SetValue(iTabKnot, aParamSeq(iKnot));
+      }
+    }
+    //  modified by EAP Fri Jan  4 12:07:35 2002 ___END___
+  }
+
+  tabVMults =
+    new NCollection_HArray1<int>(multC.Multiplicities().Lower(), multC.Multiplicities().Upper());
+  tabVMults->ChangeArray1() = multC.Multiplicities();
+
+  NCollection_Array1<gp_Pnt>                 newtabP(1, NbVPoles);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> newtabP2d =
+    new NCollection_HArray1<gp_Pnt2d>(1, NbVPoles);
+  for (j = 1; j <= NbUPoles; j++)
+  {
+    multC.Curve(j, newtabP);
+    multC.Curve(j + NbUPoles + NbPoles2d, newtabP2d->ChangeArray1());
+    for (k = 1; k <= NbVPoles; k++)
+    {
+      // pour les courbes rationnelles il faut maintenant diviser
+      // les poles par leurs poids respectifs
+      tabPoles->ChangeValue(j, k).SetXYZ(newtabP(k).XYZ() / newtabP2d->Value(k).X());
+      double aWeight = newtabP2d->Value(k).X();
+      if (aWeight < gp::Resolution())
+      {
+        done = false;
+        return;
+      }
+      tabWeights->SetValue(j, k, aWeight);
+    }
+  }
+
+  for (j = 1; j <= NbPoles2d; j++)
+  {
+    newtabP2d = new NCollection_HArray1<gp_Pnt2d>(1, NbVPoles);
+    multC.Curve(NbUPoles + j, newtabP2d->ChangeArray1());
+    seqPoles2d.Append(newtabP2d);
+  }
+
+  done = true;
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::SurfShape(int& UDegree,
+                                 int& VDegree,
+                                 int& NbUPoles,
+                                 int& NbVPoles,
+                                 int& NbUKnots,
+                                 int& NbVKnots) const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  UDegree  = udeg;
+  VDegree  = vdeg;
+  NbUPoles = tabPoles->ColLength();
+  NbVPoles = tabPoles->RowLength();
+  NbUKnots = tabUKnots->Length();
+  NbVKnots = tabVKnots->Length();
+}
+
+void AppBlend_AppSurf::Surface(NCollection_Array2<gp_Pnt>& TPoles,
+                               NCollection_Array2<double>& TWeights,
+                               NCollection_Array1<double>& TUKnots,
+                               NCollection_Array1<double>& TVKnots,
+                               NCollection_Array1<int>&    TUMults,
+                               NCollection_Array1<int>&    TVMults) const
+
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  TPoles   = tabPoles->Array2();
+  TWeights = tabWeights->Array2();
+  TUKnots  = tabUKnots->Array1();
+  TUMults  = tabUMults->Array1();
+  TVKnots  = tabVKnots->Array1();
+  TVMults  = tabVMults->Array1();
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
+  Degree  = vdeg;
+  NbPoles = tabPoles->ColLength();
+  NbKnots = tabVKnots->Length();
+}
+
+//=================================================================================================
+
+void AppBlend_AppSurf::Curve2d(const int                     Index,
+                               NCollection_Array1<gp_Pnt2d>& TPoles,
+                               NCollection_Array1<double>&   TKnots,
+                               NCollection_Array1<int>&      TMults) const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
+  TPoles = seqPoles2d(Index)->Array1();
+  TKnots = tabVKnots->Array1();
+  TMults = tabVMults->Array1();
+}
+
+//=================================================================================================
+
+double AppBlend_AppSurf::TolCurveOnSurf(const int) const
+{
+  return tol3dreached; // On ne s'embete pas !!
+}

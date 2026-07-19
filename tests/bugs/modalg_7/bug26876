@@ -1,0 +1,40 @@
+puts "============================================================================"
+puts "0026876: Modeling Algorithms - Boolean algorithm fails or produce faulty shape"
+puts "============================================================================"
+puts ""
+
+restore [locate_data_file bug26883_object.brep] o
+restore [locate_data_file bug26883_fuse_tool1.brep] ft1
+restore [locate_data_file bug26883_fuse_tool2.brep] ft2
+restore [locate_data_file bug26876_cut_tool1.brep] ct1
+restore [locate_data_file bug26876_cut_tool2.brep] ct2
+
+bclearobjects
+bcleartools
+baddobjects o
+baddtools ft1 ft2
+bfillds
+bbop result_fuse 1
+
+checkshape result_fuse
+if {![regexp "OK" [bopcheck result_fuse]]} {
+  puts "Error: the result of FUSE operation is a self-interfering shape"
+}
+checkprops result_fuse -s 2117 -v 607.602
+checknbshapes result_fuse -wire 52 -face 44 -shell 3 -solid 1 -t
+
+bclearobjects
+bcleartools
+baddobjects result_fuse
+baddtools ct1 ct2
+bfillds
+bbop result 2
+
+checkshape result
+if {![regexp "OK" [bopcheck result]]} {
+  puts "Error: the result of CUT operation is a self-interfering shape"
+}
+checkprops result -s 2112.67 -v 607.132
+checknbshapes result -wire 50 -face 42 -shell 2 -solid 1 -t
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

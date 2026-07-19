@@ -1,0 +1,814 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef NCollection_FlatMap_HeaderFile
+#define NCollection_FlatMap_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <NCollection_DefaultHasher.hxx>
+
+#include <functional>
+#include <new>
+#include <optional>
+#include <type_traits>
+#include <utility>
+
+/**
+ * @brief High-performance hash set using open addressing with Robin Hood hashing.
+ *
+ * NCollection_FlatMap is an alternative to NCollection_Map that provides
+ * better cache locality and reduced memory allocation overhead by storing all
+ * keys inline in a contiguous array.
+ *
+ * Key features:
+ * - Open addressing with linear probing (better cache locality)
+ * - Robin Hood hashing (reduces probe sequence variance)
+ * - Power-of-2 sizing for fast modulo operations
+ * - No per-element allocations
+ *
+ * Typical faster usage patterns:
+ * - POD or small key types
+ * - Performance-critical code paths
+ * - Lookup-heavy workloads (Contains()/Seek())
+ * - Full traversal / iteration-heavy workloads
+ * - Stable-size maps with Reserve() called once before bulk insert
+ *
+ * Container-specific implementation notes:
+ * - Remove() keeps probe clusters consistent using backward-shift compaction.
+ *
+ * Relative to NCollection_Map:
+ * - Add()/Remove() can be faster in many workloads thanks to contiguous storage and
+ *   no per-element node allocation.
+ * - Iteration is often faster due to contiguous slot scanning and reduced pointer chasing.
+ *
+ * Limitations:
+ * - Keys must be movable
+ * - Higher memory usage at low load factors
+ * - Iteration order is not insertion order
+ * - Probe distance grows with collisions (bounded by table capacity)
+ *
+ * @note This class is NOT thread-safe. External synchronization is required
+ *       for concurrent access from multiple threads.
+ *
+ * @tparam TheKeyType Type of keys
+ * @tparam Hasher     Hash and equality functor (default: NCollection_DefaultHasher)
+ */
+template <class TheKeyType, class Hasher = NCollection_DefaultHasher<TheKeyType>>
+class NCollection_FlatMap
+{
+public:
+  //! STL-compliant type alias for key type
+  using key_type = TheKeyType;
+
+private:
+  //! Default initial capacity (must be power of 2)
+  static constexpr size_t THE_DEFAULT_CAPACITY = 8;
+  //! Maximum load factor numerator (13/16 = 81.25%).
+  static constexpr size_t THE_MAX_LOAD_NUMERATOR = 13;
+  //! Maximum load factor denominator.
+  static constexpr size_t THE_MAX_LOAD_DENOMINATOR = 16;
+
+  //! Internal slot structure holding key and metadata.
+  //! Key storage is uninitialized until state becomes Used.
+  struct Slot
+  {
+    alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)]; //!< Uninitialized key storage
+    size_t myHash;                                             //!< Cached hash code
+    //! Distance from ideal bucket plus one; 0 means Empty, otherwise Used.
+    size_t myProbeDistancePlus1;
+
+    Slot() noexcept
+        : myHash(0),
+          myProbeDistancePlus1(0)
+    {
+      // Key is NOT constructed - myKeyStorage is uninitialized
+    }
+
+    //! Access the key (only valid when IsUsed() == true)
+    TheKeyType& Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage); }
+
+    const TheKeyType& Key() const noexcept
+    {
+      return *reinterpret_cast<const TheKeyType*>(myKeyStorage);
+    }
+
+    bool IsEmpty() const noexcept { return myProbeDistancePlus1 == 0; }
+
+    bool IsUsed() const noexcept { return myProbeDistancePlus1 != 0; }
+
+    size_t ProbeDistance() const noexcept { return myProbeDistancePlus1 - 1; }
+
+    void SetProbeDistance(const size_t theProbeDistance) noexcept
+    {
+      myProbeDistancePlus1 = theProbeDistance + 1;
+    }
+
+    void SetEmpty() noexcept { myProbeDistancePlus1 = 0; }
+  };
+
+public:
+  // **************** Iterator interface ****************
+
+  //! Forward iterator for NCollection_FlatMap
+  class Iterator
+  {
+  public:
+    //! Empty constructor
+    Iterator() noexcept
+        : mySlots(nullptr),
+          myCapacity(0),
+          myIndex(0)
+    {
+    }
+
+    //! Constructor from map
+    Iterator(const NCollection_FlatMap& theMap) noexcept
+        : mySlots(theMap.mySlots),
+          myCapacity(theMap.myCapacity),
+          myIndex(0)
+    {
+      // Find first used slot
+      while (myIndex < myCapacity && !mySlots[myIndex].IsUsed())
+      {
+        ++myIndex;
+      }
+    }
+
+    //! Check if there are more elements
+    bool More() const noexcept { return myIndex < myCapacity; }
+
+    //! Move to next element
+    void Next() noexcept
+    {
+      ++myIndex;
+      while (myIndex < myCapacity && !mySlots[myIndex].IsUsed())
+      {
+        ++myIndex;
+      }
+    }
+
+    //! Get current key
+    const TheKeyType& Key() const
+    {
+      Standard_OutOfRange_Raise_if(!More(), "NCollection_FlatMap::Iterator::Key");
+      return mySlots[myIndex].Key();
+    }
+
+    //! Get current value (alias for Key for compatibility)
+    const TheKeyType& Value() const { return Key(); }
+
+    //! Performs comparison of two iterators.
+    bool IsEqual(const Iterator& theOther) const noexcept
+    {
+      return mySlots == theOther.mySlots && myIndex == theOther.myIndex;
+    }
+
+  private:
+    const Slot* mySlots;
+    size_t      myCapacity;
+    size_t      myIndex;
+  };
+
+public:
+  // **************** Constructors and destructor ****************
+
+  //! Default constructor
+  NCollection_FlatMap()
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0)
+  {
+  }
+
+  //! Constructor with initial capacity hint
+  explicit NCollection_FlatMap(const size_t theNbBuckets)
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0)
+  {
+    if (theNbBuckets > 0)
+    {
+      reserve(static_cast<size_t>(theNbBuckets));
+    }
+  }
+
+  //! Constructor with custom hasher (copy).
+  //! @param theHasher custom hasher instance
+  //! @param theNbBuckets initial capacity hint
+  explicit NCollection_FlatMap(const Hasher& theHasher, const size_t theNbBuckets = 0)
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0),
+        myHasher(theHasher)
+  {
+    if (theNbBuckets > 0)
+    {
+      reserve(static_cast<size_t>(theNbBuckets));
+    }
+  }
+
+  //! Constructor with custom hasher (move).
+  //! @param theHasher custom hasher instance (moved)
+  //! @param theNbBuckets initial capacity hint
+  explicit NCollection_FlatMap(Hasher&& theHasher, const size_t theNbBuckets = 0)
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0),
+        myHasher(std::move(theHasher))
+  {
+    if (theNbBuckets > 0)
+    {
+      reserve(static_cast<size_t>(theNbBuckets));
+    }
+  }
+
+  //! Copy constructor
+  NCollection_FlatMap(const NCollection_FlatMap& theOther)
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0),
+        myHasher(theOther.myHasher)
+  {
+    if (theOther.mySize > 0)
+    {
+      // Allocate same capacity as the source (not through reserve which may change capacity)
+      mySlots = static_cast<Slot*>(Standard::Allocate(theOther.myCapacity * sizeof(Slot)));
+      for (size_t i = 0; i < theOther.myCapacity; ++i)
+      {
+        new (&mySlots[i]) Slot();
+      }
+      myCapacity = theOther.myCapacity;
+
+      for (size_t i = 0; i < theOther.myCapacity; ++i)
+      {
+        if (theOther.mySlots[i].IsUsed())
+        {
+          new (&mySlots[i].Key()) TheKeyType(theOther.mySlots[i].Key());
+          mySlots[i].myHash               = theOther.mySlots[i].myHash;
+          mySlots[i].myProbeDistancePlus1 = theOther.mySlots[i].myProbeDistancePlus1;
+        }
+      }
+      mySize = theOther.mySize;
+    }
+  }
+
+  //! Move constructor
+  NCollection_FlatMap(NCollection_FlatMap&& theOther) noexcept
+      : mySlots(theOther.mySlots),
+        myCapacity(theOther.myCapacity),
+        mySize(theOther.mySize),
+        myHasher(std::move(theOther.myHasher))
+  {
+    theOther.mySlots    = nullptr;
+    theOther.myCapacity = 0;
+    theOther.mySize     = 0;
+  }
+
+  //! Destructor
+  ~NCollection_FlatMap() { Clear(true); }
+
+  //! Copy assignment
+  NCollection_FlatMap& operator=(const NCollection_FlatMap& theOther)
+  {
+    if (this != &theOther)
+    {
+      Clear(true);
+      myHasher = theOther.myHasher;
+      if (theOther.mySize > 0)
+      {
+        // Allocate same capacity as the source (not through reserve which may change capacity)
+        mySlots = static_cast<Slot*>(Standard::Allocate(theOther.myCapacity * sizeof(Slot)));
+        for (size_t i = 0; i < theOther.myCapacity; ++i)
+        {
+          new (&mySlots[i]) Slot();
+        }
+        myCapacity = theOther.myCapacity;
+
+        for (size_t i = 0; i < theOther.myCapacity; ++i)
+        {
+          if (theOther.mySlots[i].IsUsed())
+          {
+            new (&mySlots[i].Key()) TheKeyType(theOther.mySlots[i].Key());
+            mySlots[i].myHash               = theOther.mySlots[i].myHash;
+            mySlots[i].myProbeDistancePlus1 = theOther.mySlots[i].myProbeDistancePlus1;
+          }
+        }
+        mySize = theOther.mySize;
+      }
+    }
+    return *this;
+  }
+
+  //! Move assignment
+  NCollection_FlatMap& operator=(NCollection_FlatMap&& theOther) noexcept
+  {
+    if (this != &theOther)
+    {
+      Clear(true);
+      mySlots             = theOther.mySlots;
+      myCapacity          = theOther.myCapacity;
+      mySize              = theOther.mySize;
+      myHasher            = std::move(theOther.myHasher);
+      theOther.mySlots    = nullptr;
+      theOther.myCapacity = 0;
+      theOther.mySize     = 0;
+    }
+    return *this;
+  }
+
+public:
+  // **************** Query methods ****************
+
+  //! Returns number of elements.
+  size_t Size() const noexcept { return mySize; }
+
+  //! Returns true if map is empty
+  bool IsEmpty() const noexcept { return mySize == 0; }
+
+  //! Returns current capacity
+  size_t Capacity() const noexcept { return myCapacity; }
+
+  //! Check if key exists
+  bool Contains(const TheKeyType& theKey) const
+  {
+    if (mySize == 0)
+      return false;
+    size_t anIndex = 0;
+    return findSlotIndex(theKey, anIndex);
+  }
+
+  //! Contained returns optional const reference to the key in the map.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::reference_wrapper<const TheKeyType>> Contained(const TheKeyType& theKey) const
+  {
+    if (mySize == 0)
+      return std::nullopt;
+    size_t aIdx = 0;
+    if (!findSlotIndex(theKey, aIdx))
+      return std::nullopt;
+    return std::cref(mySlots[aIdx].Key());
+  }
+
+  //! Seek returns pointer to key in map. Returns NULL if not found.
+  const TheKeyType* Seek(const TheKeyType& theKey) const
+  {
+    if (mySize == 0)
+      return nullptr;
+    size_t aIdx = 0;
+    if (!findSlotIndex(theKey, aIdx))
+      return nullptr;
+    return &mySlots[aIdx].Key();
+  }
+
+  //! ChangeSeek returns modifiable pointer to key in map. Returns NULL if not found.
+  TheKeyType* ChangeSeek(const TheKeyType& theKey)
+  {
+    if (mySize == 0)
+      return nullptr;
+    size_t aIdx = 0;
+    if (!findSlotIndex(theKey, aIdx))
+      return nullptr;
+    return &mySlots[aIdx].Key();
+  }
+
+public:
+  // **************** Modification methods ****************
+
+  //! Add key to set
+  //! @return true if key was newly added, false if already present
+  bool Add(const TheKeyType& theKey)
+  {
+    ensureCapacity();
+    return insertImpl(theKey);
+  }
+
+  //! Add key to set (move semantics)
+  bool Add(TheKeyType&& theKey)
+  {
+    ensureCapacity();
+    return insertImpl(std::forward<TheKeyType>(theKey));
+  }
+
+  //! Added: add a new key if not yet in the map, and return
+  //! reference to either newly added or previously existing key.
+  //! @param theKey key to add
+  //! @return const reference to the key in the map
+  const TheKeyType& Added(const TheKeyType& theKey)
+  {
+    ensureCapacity();
+    return insertRefImpl(theKey, std::false_type{});
+  }
+
+  //! Added: add a new key if not yet in the map, and return
+  //! reference to either newly added or previously existing key.
+  //! @param theKey key to add
+  //! @return const reference to the key in the map
+  const TheKeyType& Added(TheKeyType&& theKey)
+  {
+    ensureCapacity();
+    return insertRefImpl(std::move(theKey), std::false_type{});
+  }
+
+  //! Emplace constructs key in-place; if key exists, overwrites.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return true if key was newly added, false if key already existed
+  template <typename... Args>
+  bool Emplace(Args&&... theArgs)
+  {
+    ensureCapacity();
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::move(aTempKey), std::false_type{}, std::false_type{});
+  }
+
+  //! Emplaced constructs key in-place; if key exists, overwrites.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return const reference to the key in the map
+  template <typename... Args>
+  const TheKeyType& Emplaced(Args&&... theArgs)
+  {
+    ensureCapacity();
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::move(aTempKey), std::false_type{}, std::true_type{});
+  }
+
+  //! TryEmplace constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return true if key was newly added, false if key already existed
+  template <typename... Args>
+  bool TryEmplace(Args&&... theArgs)
+  {
+    ensureCapacity();
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::move(aTempKey), std::true_type{}, std::false_type{});
+  }
+
+  //! TryEmplaced constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return const reference to the key (existing or newly added)
+  template <typename... Args>
+  const TheKeyType& TryEmplaced(Args&&... theArgs)
+  {
+    ensureCapacity();
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::move(aTempKey), std::true_type{}, std::true_type{});
+  }
+
+  //! Remove key from set
+  //! @return true if key was found and removed
+  bool Remove(const TheKeyType& theKey)
+  {
+    if (mySize == 0)
+      return false;
+
+    size_t aFoundIndex = 0;
+    if (!findSlotIndex(theKey, aFoundIndex))
+    {
+      return false;
+    }
+
+    const size_t aIndex = aFoundIndex;
+
+    // Destroy key
+    mySlots[aIndex].Key().~TheKeyType();
+    mySlots[aIndex].SetEmpty();
+    --mySize;
+
+    // Backward shift delete
+    backwardShiftDelete(aIndex);
+
+    return true;
+  }
+
+  //! Clear all elements
+  void Clear(bool doReleaseMemory = false)
+  {
+    if (mySlots != nullptr)
+    {
+      for (size_t i = 0; i < myCapacity; ++i)
+      {
+        if (mySlots[i].IsUsed())
+        {
+          mySlots[i].Key().~TheKeyType();
+          mySlots[i].SetEmpty();
+        }
+      }
+      mySize = 0;
+
+      if (doReleaseMemory)
+      {
+        Standard::Free(mySlots);
+        mySlots    = nullptr;
+        myCapacity = 0;
+      }
+    }
+  }
+
+  //! Exchange content with another map
+  void Exchange(NCollection_FlatMap& theOther) noexcept
+  {
+    std::swap(mySlots, theOther.mySlots);
+    std::swap(myCapacity, theOther.myCapacity);
+    std::swap(mySize, theOther.mySize);
+    std::swap(myHasher, theOther.myHasher);
+  }
+
+  //! Returns const reference to the hasher.
+  const Hasher& GetHasher() const noexcept { return myHasher; }
+
+  //! Reserve capacity for at least theN elements
+  void reserve(size_t theN)
+  {
+    const size_t aMinCapacity =
+      (theN * THE_MAX_LOAD_DENOMINATOR + THE_MAX_LOAD_NUMERATOR - 1) / THE_MAX_LOAD_NUMERATOR;
+    size_t aNewCapacity = nextPowerOf2(aMinCapacity);
+    if (aNewCapacity > myCapacity)
+    {
+      rehash(aNewCapacity);
+    }
+  }
+
+  //! Reserve capacity for at least theN elements
+  void Reserve(const size_t theN) { reserve(theN); }
+
+public:
+  // **************** Iterator access ****************
+
+  Iterator begin() const noexcept { return Iterator(*this); }
+
+  Iterator end() const noexcept { return Iterator(); }
+
+  Iterator cbegin() const noexcept { return Iterator(*this); }
+
+  Iterator cend() const noexcept { return Iterator(); }
+
+private:
+  // **************** Internal implementation ****************
+
+  static size_t nextPowerOf2(size_t n) noexcept
+  {
+    if (n == 0)
+      return THE_DEFAULT_CAPACITY;
+    --n;
+    n |= n >> 1;
+    n |= n >> 2;
+    n |= n >> 4;
+    n |= n >> 8;
+    n |= n >> 16;
+    if constexpr (sizeof(size_t) > 4)
+    {
+      n |= n >> 32;
+    }
+    return n + 1;
+  }
+
+  void ensureCapacity()
+  {
+    // Grow at ~81.25% load factor.
+    if (myCapacity == 0
+        || (mySize + 1) * THE_MAX_LOAD_DENOMINATOR > myCapacity * THE_MAX_LOAD_NUMERATOR)
+    {
+      size_t aNewCapacity = myCapacity == 0 ? THE_DEFAULT_CAPACITY : myCapacity * 2;
+      rehash(aNewCapacity);
+    }
+  }
+
+  void rehash(size_t theNewCapacity)
+  {
+    Slot*  aOldSlots    = mySlots;
+    size_t aOldCapacity = myCapacity;
+
+    mySlots = static_cast<Slot*>(Standard::Allocate(theNewCapacity * sizeof(Slot)));
+    for (size_t i = 0; i < theNewCapacity; ++i)
+    {
+      new (&mySlots[i]) Slot();
+    }
+    myCapacity = theNewCapacity;
+    mySize     = 0;
+
+    if (aOldSlots != nullptr)
+    {
+      for (size_t i = 0; i < aOldCapacity; ++i)
+      {
+        if (aOldSlots[i].IsUsed())
+        {
+          insertRehashedImpl(std::move(aOldSlots[i].Key()), aOldSlots[i].myHash);
+          aOldSlots[i].Key().~TheKeyType();
+        }
+      }
+      Standard::Free(aOldSlots);
+    }
+  }
+
+  //! Find slot containing key.
+  //! @param theKey key to find
+  //! @param[out] theIndex found index
+  //! @return true if key was found
+  bool findSlotIndex(const TheKeyType& theKey, size_t& theIndex) const
+  {
+    const size_t aHash  = myHasher(theKey);
+    const size_t aMask  = myCapacity - 1;
+    size_t       aIndex = aHash & aMask;
+
+    while (true)
+    {
+      const Slot& aSlot = mySlots[aIndex];
+
+      if (aSlot.IsEmpty())
+      {
+        return false;
+      }
+
+      if (aSlot.myHash == aHash && myHasher(aSlot.Key(), theKey))
+      {
+        theIndex = aIndex;
+        return true;
+      }
+      aIndex = (aIndex + 1) & aMask;
+    }
+  }
+
+  template <typename K, bool CheckExisting>
+  bool insertRehashedImpl(K&&          theKey,
+                          const size_t theHash,
+                          std::bool_constant<CheckExisting>,
+                          size_t* theInsertedIndex = nullptr)
+  {
+    const size_t aMask             = myCapacity - 1;
+    size_t       aIndex            = theHash & aMask;
+    size_t       aProbe            = 0;
+    size_t       anInsertedIndex   = 0;
+    bool         aHasInsertedIndex = false;
+
+    TheKeyType aKeyToInsert  = std::forward<K>(theKey);
+    size_t     aHashToInsert = theHash;
+
+    while (true)
+    {
+      Slot& aSlot = mySlots[aIndex];
+      if (aSlot.IsEmpty())
+      {
+        new (&aSlot.Key()) TheKeyType(std::move(aKeyToInsert));
+        aSlot.myHash = aHashToInsert;
+        aSlot.SetProbeDistance(aProbe);
+        ++mySize;
+        if (theInsertedIndex != nullptr)
+        {
+          *theInsertedIndex = aHasInsertedIndex ? anInsertedIndex : aIndex;
+        }
+        return true;
+      }
+
+      if constexpr (CheckExisting)
+      {
+        if (aSlot.myHash == aHashToInsert && myHasher(aSlot.Key(), aKeyToInsert))
+        {
+          if (theInsertedIndex != nullptr)
+          {
+            *theInsertedIndex = aIndex;
+          }
+          return false;
+        }
+      }
+
+      if (aProbe > aSlot.ProbeDistance())
+      {
+        std::swap(aKeyToInsert, aSlot.Key());
+        std::swap(aHashToInsert, aSlot.myHash);
+        const size_t aTmp = aProbe;
+        aProbe            = aSlot.ProbeDistance();
+        aSlot.SetProbeDistance(aTmp);
+        if (!aHasInsertedIndex)
+        {
+          anInsertedIndex   = aIndex;
+          aHasInsertedIndex = true;
+        }
+      }
+
+      ++aProbe;
+      aIndex = (aIndex + 1) & aMask;
+    }
+  }
+
+  template <typename K>
+  void insertRehashedImpl(K&& theKey, const size_t theHash)
+  {
+    (void)insertRehashedImpl(std::forward<K>(theKey), theHash, std::false_type{});
+  }
+
+  template <typename K>
+  bool insertImpl(K&& theKey)
+  {
+    const size_t aHash = myHasher(theKey);
+    return insertRehashedImpl(std::forward<K>(theKey), aHash, std::true_type{});
+  }
+
+  //! Insert key and return reference to it (for Added method)
+  //! @tparam IsTry if true, does not modify existing (not used for key-only map)
+  template <typename K, bool IsTry>
+  const TheKeyType& insertRefImpl(K&& theKey, std::bool_constant<IsTry>)
+  {
+    const size_t aHash  = myHasher(theKey);
+    size_t       aIndex = 0;
+    (void)insertRehashedImpl(std::forward<K>(theKey), aHash, std::true_type{}, &aIndex);
+    return mySlots[aIndex].Key();
+  }
+
+  //! Implementation helper for Emplace/Emplaced.
+  //! @tparam IsTry if true, does not modify existing; if false, overwrites
+  //! @tparam ReturnRef if true, returns reference; if false, returns bool
+  template <bool IsTry, bool ReturnRef>
+  auto emplaceImpl(TheKeyType&& theKey, std::bool_constant<IsTry>, std::bool_constant<ReturnRef>)
+    -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
+  {
+    const size_t aHash  = myHasher(theKey);
+    const size_t aMask  = myCapacity - 1;
+    size_t       aIndex = aHash & aMask;
+    size_t       aProbe = 0;
+
+    TheKeyType aKeyToInsert  = std::move(theKey);
+    size_t     aHashToInsert = aHash;
+
+    while (true)
+    {
+      Slot& aSlot = mySlots[aIndex];
+
+      if (aSlot.IsEmpty())
+      {
+        new (&aSlot.Key()) TheKeyType(std::move(aKeyToInsert));
+        aSlot.myHash = aHashToInsert;
+        aSlot.SetProbeDistance(aProbe);
+        ++mySize;
+        if constexpr (ReturnRef)
+          return aSlot.Key();
+        else
+          return true;
+      }
+
+      if (aSlot.myHash == aHashToInsert && myHasher(aSlot.Key(), aKeyToInsert))
+      {
+        if constexpr (!IsTry)
+          aSlot.Key() = std::move(aKeyToInsert);
+        if constexpr (ReturnRef)
+          return aSlot.Key();
+        else
+          return false;
+      }
+
+      if (aProbe > aSlot.ProbeDistance())
+      {
+        std::swap(aKeyToInsert, aSlot.Key());
+        std::swap(aHashToInsert, aSlot.myHash);
+        const size_t aTmp = aProbe;
+        aProbe            = aSlot.ProbeDistance();
+        aSlot.SetProbeDistance(aTmp);
+      }
+
+      ++aProbe;
+      aIndex = (aIndex + 1) & aMask;
+    }
+  }
+
+  void backwardShiftDelete(size_t theIndex)
+  {
+    const size_t aMask    = myCapacity - 1;
+    size_t       aCurrent = theIndex;
+    size_t       aNext    = (aCurrent + 1) & aMask;
+
+    while (mySlots[aNext].IsUsed() && mySlots[aNext].ProbeDistance() > 0)
+    {
+      // Construct key at aCurrent (which was destroyed or never had a key)
+      new (&mySlots[aCurrent].Key()) TheKeyType(std::move(mySlots[aNext].Key()));
+      mySlots[aCurrent].myHash = mySlots[aNext].myHash;
+      mySlots[aCurrent].SetProbeDistance(mySlots[aNext].ProbeDistance() - 1);
+
+      // Destroy the moved-from key at aNext
+      mySlots[aNext].Key().~TheKeyType();
+
+      aCurrent = aNext;
+      aNext    = (aNext + 1) & aMask;
+    }
+
+    // Mark final slot as Empty (removes tombstone; either original deleted slot or last
+    // shifted-from slot)
+    mySlots[aCurrent].SetEmpty();
+  }
+
+private:
+  Slot*  mySlots;
+  size_t myCapacity;
+  size_t mySize;
+  Hasher myHasher;
+};
+
+#endif // NCollection_FlatMap_HeaderFile

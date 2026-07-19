@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename db_as1-B.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 28  ( 28 )  Summary  = 28  ( 28 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 5  ( 5 )  Shell    = 5  ( 5 )  Face     = 53  ( 53 ) 
+STATSHAPE   : Solid    = 12  ( 12 )  Shell    = 12  ( 12 )  Face     = 112  ( 112 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 7.326475979e-006  ( 7.326473944e-006 )  AvgTol   =  3.154609581e-006  (  3.189268057e-006 )
+LABELS      : N0Labels = 6  ( 6 )  N1Labels = 12  ( 12 )  N2Labels = 0  ( 0 )   TotalLabels = 18  ( 18 )   NameLabels = 18  ( 18 )   ColorLabels = 5  ( 5 )   LayerLabels = 5  ( 17 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 1  ( 2 )
+LAYERS      : Layers   = 1  ( {  1} 255 )
+
+}

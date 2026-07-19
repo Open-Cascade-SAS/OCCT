@@ -1,0 +1,50 @@
+GUIDs defined here:
+
+5b896afe-3adf-11d4-b9b7-0060b0ee281b: TreeNode for Shape Reference
+5b896afd-3adf-11d4-b9b7-0060b0ee281b
+5b896aff-3adf-11d4-b9b7-0060b0ee281b: UAttribute indicating invisibility of object
+5b896b00-3adf-11d4-b9b7-0060b0ee281b: UAttribute indicating Assembly
+6b896b01-3adf-11d4-b9b7-0060b0ee281b: UAttribute extern reference
+
+e9439b64-6dfd-11d4-b9c8-0060b0ee281b
+e9439b65-6dfd-11d4-b9c8-0060b0ee281b
+e9439b66-6dfd-11d4-b9c8-0060b0ee281b
+e9439b67-6dfd-11d4-b9c8-0060b0ee281b
+e9439b68-6dfd-11d4-b9c8-0060b0ee281b
+e9439b69-6dfd-11d4-b9c8-0060b0ee281b
+e9439b6a-6dfd-11d4-b9c8-0060b0ee281b
+e9439b6b-6dfd-11d4-b9c8-0060b0ee281b
+e9439b6c-6dfd-11d4-b9c8-0060b0ee281b
+e9439b6d-6dfd-11d4-b9c8-0060b0ee281b
+e9439b6e-6dfd-11d4-b9c8-0060b0ee281b
+e9439b6f-6dfd-11d4-b9c8-0060b0ee281b
+e9439b70-6dfd-11d4-b9c8-0060b0ee281b
+e9439b71-6dfd-11d4-b9c8-0060b0ee281b
+e9439b72-6dfd-11d4-b9c8-0060b0ee281b
+e9439b73-6dfd-11d4-b9c8-0060b0ee281b
+e9439b74-6dfd-11d4-b9c8-0060b0ee281b
+e9439b75-6dfd-11d4-b9c8-0060b0ee281b
+e9439b76-6dfd-11d4-b9c8-0060b0ee281b
+e9439b77-6dfd-11d4-b9c8-0060b0ee281b
+
+efd212e4-6dfd-11d4-b9c8-0060b0ee281b: TreeNode for Color Reference
+efd212e5-6dfd-11d4-b9c8-0060b0ee281b: TreeNode for Surface Color Reference
+efd212e6-6dfd-11d4-b9c8-0060b0ee281b: TreeNode for Curve Color Reference
+efd212e7-6dfd-11d4-b9c8-0060b0ee281b: 
+efd212e8-6dfd-11d4-b9c8-0060b0ee281b: GraphNode for Layer Reference
+efd212e9-6dfd-11d4-b9c8-0060b0ee281b
+efd212ea-6dfd-11d4-b9c8-0060b0ee281b: GraphNode for Specified Higher Usage Occurrenace
+efd212eb-6dfd-11d4-b9c8-0060b0ee281b: TreeNode for DocumentTool
+efd212ec-6dfd-11d4-b9c8-0060b0ee281b: DocumentTool attribute
+efd212ed-6dfd-11d4-b9c8-0060b0ee281b: ColorTool attribute
+efd212ee-6dfd-11d4-b9c8-0060b0ee281b: ShapeTool attribute
+efd212ef-6dfd-11d4-b9c8-0060b0ee281b: Location attribute 
+efd212f0-6dfd-11d4-b9c8-0060b0ee281b: Color attribute
+efd212f1-6dfd-11d4-b9c8-0060b0ee281b: Volume attribute
+efd212f2-6dfd-11d4-b9c8-0060b0ee281b: Area attribute
+efd212f3-6dfd-11d4-b9c8-0060b0ee281b: Centroid attribute
+efd212f4-6dfd-11d4-b9c8-0060b0ee281b: LayerTool attribute
+efd212f5-6dfd-11d4-b9c8-0060b0ee281b: GraphNode attribute
+efd212f6-6dfd-11d4-b9c8-0060b0ee281b
+efd212f7-6dfd-11d4-b9c8-0060b0ee281b
+efd212f8-6dfd-11d4-b9c8-0060b0ee281b: LengthUnit attribute

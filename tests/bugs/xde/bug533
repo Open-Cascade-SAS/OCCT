@@ -1,0 +1,16 @@
+puts "========="
+puts "OCC533: XmlOcaf-Document is not stored in XDEDRAWEXE although stored in TCAF"
+puts "========="
+puts ""
+
+set aTmpFile ${imagedir}/${casename}.xml
+
+set res 0
+catch { NewDocument A XmlOcaf }
+if [catch {SaveAs A $aTmpFile}] {
+  puts "OCC533 FAULTY"
+} else {
+  puts "OCC533 OK"
+}
+
+file delete -force $aTmpFile

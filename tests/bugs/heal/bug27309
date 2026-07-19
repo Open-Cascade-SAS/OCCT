@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC27309"
+puts "============"
+puts ""
+###############################
+## Result of UnifySameDomain has InvalidMultiConnexity error
+###############################
+
+restore [locate_data_file bug27309_shape.brep] a
+unifysamedom result a
+
+don result
+smallview; l; fit
+checkshape result
+checknbshapes result -m UnifySameDomain -face 28 -edge 66
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

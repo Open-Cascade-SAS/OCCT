@@ -1,0 +1,7 @@
+source [locate_data_file 52109_shapiro.prt.gdml.tcl]
+
+set bcheck [bopcheck result]
+puts $bcheck
+if {![regexp {This shape seems to be OK.} $bcheck]} {
+  puts "Error: bopcheck failed"
+}

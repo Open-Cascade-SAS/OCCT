@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC23706"
+puts "============"
+puts ""
+#########################################################################
+# Cannot project point on curve
+#########################################################################
+
+bsplinecurve r3 2 6 1 3 2 1 3 1 4 1 5 1 6 3 2 5 3 1 3 7 3 1 4 8 3 1 4 8 3 1 4 8 3 1 5 9 3 1 9 7 3 1
+bsplinecurve r4 2 6 2 3 2.5 1 3 1 3.5 1 4 1 4.5 3 -1 2 3 1 1 11 3 1 3 9 3 1 3 9 3 1 3 9 3 1 5 7 3 1 7 4 3 1
+
+set info [extrema r3 r4] 
+
+if {[regexp "ext_1" $info]} {
+  set dist [lindex [length ext_1] end]
+  if { $dist > 5.0e-11 } {
+    puts "Error: Extrema distance is too big"
+  }
+} else {
+  puts "Error: Extrema is not found"
+}

@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC26775"
+puts "============"
+puts ""
+###############################
+## Bad result of section algorithm
+###############################
+
+restore [locate_data_file bug26775_a.brep] a
+restore [locate_data_file bug26775_b.brep] b
+
+bsection result a b
+
+checkprops result -l 1400.02
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 2
+ EDGE      : 1
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 4
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Section curve"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

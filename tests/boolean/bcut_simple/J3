@@ -1,0 +1,21 @@
+# DIFFORIENTED fond de poche FORWARD REVERSED FORWARD (toutes les faces en causes sont FORWARD)
+
+profile p1 o 0 0 40 x 175 y 250 x -175
+prism pr1 p1 0 0 -40
+
+profile p2 o 0 0 50 f 25 25 y 75 x 50 y -75
+prism pr2 p2 0 0 -30
+
+profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 100 -150 y -75 x 50 y 75
+prism pr3 p3 0 0 -30
+
+bcut po1 pr1 pr2
+bcut po2 po1 pr3
+
+profile p4 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 x 75 y -100 x -75
+prism pr4 p4 0 0 -30
+ttranslate pr4 -10 0 0
+
+bcut result po2 pr4
+checkprops result -s 134500
+checkview -display result -2d -s -otherwise { po2 pr4 } -path ${imagedir}/${test_image}.png

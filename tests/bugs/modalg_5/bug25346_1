@@ -1,0 +1,24 @@
+puts "=========="
+puts "OCC25346"
+puts "=========="
+puts ""
+##########################################
+# Wrong result of General Fuse operation
+##########################################
+
+restore [locate_data_file CTO902_pro14235a.rle] b1
+restore [locate_data_file CTO902_pro14235b.rle] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds -s
+bbuild result
+
+checkprops result -s 470659 
+checkshape result
+
+checknbshapes result -solid 3
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

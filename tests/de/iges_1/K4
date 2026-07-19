@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename GER60736.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 630  ( 814 )  Summary  = 630  ( 814 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 406  ( 406 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 406  ( 406 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =          1e-05  (          1e-05 )  AvgTol   =  6.331036165e-07  (  9.442558346e-06 )
+LABELS      : N0Labels = 406  ( 406 )  N1Labels = 0  ( 282 )  N2Labels = 0  ( 0 )   TotalLabels = 406  ( 688 )   NameLabels = 406  ( 406 )   ColorLabels = 406  ( 688 )   LayerLabels = 406  ( 688 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = CYAN GREEN MAGENTA RED WHITE YELLOW  ( CYAN GREEN MAGENTA RED WHITE YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}

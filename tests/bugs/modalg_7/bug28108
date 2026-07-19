@@ -1,0 +1,18 @@
+puts "TODO OCC28108 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC28108"
+puts "========"
+puts ""
+######################################
+# Sweep fails in "Right Corner" mode
+######################################
+
+restore [locate_data_file bug28108_sweep.brep] sweep
+
+explode sweep w
+mksweep sweep_2
+addsweep sweep_1
+buildsweep result -C
+
+checkshape result

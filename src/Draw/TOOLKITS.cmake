@@ -1,0 +1,24 @@
+# Auto-generated list of toolkits for Draw module
+set(OCCT_Draw_LIST_OF_TOOLKITS
+  TKDraw
+  TKTopTest
+  TKOpenGlTest
+  TKOpenGlesTest
+  TKD3DHostTest
+  TKViewerTest
+  TKXSDRAW
+  TKDCAF
+  TKXDEDRAW
+  TKTObjDRAW
+  TKQADraw
+  TKIVtkDraw
+  DRAWEXE
+  TKXSDRAWDE
+  TKXSDRAWGLTF
+  TKXSDRAWIGES
+  TKXSDRAWOBJ
+  TKXSDRAWPLY
+  TKXSDRAWSTEP
+  TKXSDRAWSTL
+  TKXSDRAWVRML
+)

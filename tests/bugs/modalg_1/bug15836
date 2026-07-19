@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC15836"
+puts "============"
+puts ""
+#######################################################################
+# Wrong visualization of filleted shape on IRIX32 platform
+#######################################################################
+
+restore [locate_data_file OCC15836.brep] f
+explode f e
+
+fillet result f 10 f_8 15 f_9 20 f_11 25 f_17 30 f_21 35 f_29
+
+checkprops result -s 42816.6 
+checkshape result
+checknbshapes result -vertex 31 -edge 50 -wire 21 -face 21 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 126
+checkview -display result -2d -path ${imagedir}/${test_image}.png

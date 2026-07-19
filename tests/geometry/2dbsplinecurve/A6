@@ -1,0 +1,8 @@
+2dbsplinecurve result  3 2  -1.0 4   1.0 4  0 0  1   1 0  1   2 0  1   3 0 1
+incdeg result 10
+2dtranslate result 0 -4
+set i 1
+repeat 100 {cmovepoint result 0.3 0. 0.05; incr i 1; repaint}
+set i 1
+repeat 100 {cmovepoint result 0.3 0. -0.05; incr i 1; repaint}
+checklength result -l 2.9999999999999996

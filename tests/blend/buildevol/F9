@@ -1,0 +1,8 @@
+restore [locate_data_file CFI_2_o12ffq.rle] s
+explode s e
+
+mkevol result s
+updatevol s_5 0 2*SCALE1 1 1*SCALE1 2 2*SCALE1
+buildevol
+
+checkprops result -s 5.34396e+06

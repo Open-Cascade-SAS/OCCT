@@ -1,0 +1,15 @@
+puts "========"
+puts "0031031: Incorrect result is returned from BRepPrimAPI_MakePrism::Generated()"
+puts "========"
+puts ""
+
+pload MODELING 
+
+vertex v1 0 0 0
+prism r1 v1 0 0 2 
+savehistory h1
+set s1 [dump h1]
+if { !([regexp "0 Deleted" $s1] && [regexp "1 Generated" $s1])} {
+  puts "Error: wrong history h1"
+}
+

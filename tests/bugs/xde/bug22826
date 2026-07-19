@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC22826"
+puts "============"
+puts ""
+#######################################################################
+# Increasiong of performance of fixes applied during translation of STEP files.
+#######################################################################
+
+set BugNumber OCC22826
+
+restore [locate_data_file bug22610_f1.brep] a 
+mksurface s1 a
+
+proj s1 1500 1500 500 g
+renamevar ext_2 res
+proj s1 1500 1500 500 t
+
+checklength res -l -equal ext_1

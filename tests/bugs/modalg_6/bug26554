@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC26554"
+puts "============"
+puts ""
+#######################################################################
+# Error in IntPatch_PrmPrmIntersection: initial step for walking line is not related with actual tolerance
+#######################################################################
+
+restore [locate_data_file bug26554_a.brep] a
+restore [locate_data_file bug26554_b.brep] b
+
+bop a b
+bopsection result
+
+checkprops result -l 0.00502025 
+checkshape result 
+checksection result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX : 2
+ EDGE : 1
+ WIRE : 0
+ FACE : 0
+ SHELL : 0
+ SOLID : 0
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 4
+
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

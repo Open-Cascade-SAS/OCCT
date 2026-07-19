@@ -1,0 +1,147 @@
+# Mode - Complete
+set calcul "c"
+# Join type - Intersection
+set type "i"
+
+proc compare_prop_values {prop m_res m_ref} {
+  if { ($m_ref != 0 && abs (($m_ref - $m_res) / double($m_ref)) > 1.e-2) || ($m_res == 0 && $m_ref != 0) } {
+    puts "Error: The $prop of result shape is $m_res, expected $m_ref"
+    return 0
+  } else {
+    puts "OK: The $prop of result shape is as expected"
+    return 1
+  }
+}
+
+proc compare_nbs {entity nb_res nb_ref} {
+  if {$nb_res != $nb_ref} {
+    puts "Error: number of $entity entities in the result shape is $nb_res, expected $nb_ref"
+    return 0
+  } else {
+    puts "OK: number of $entity entities in the result shape is as expected"
+    return 1
+  }
+}
+
+proc perform_offset {theShape theValue} {
+  upvar $theShape TheShape
+  
+  global r${theValue}
+  global r${theValue}_unif
+
+  tcopy TheShape sx
+  offsetparameter 1.e-7 c i r
+  offsetload sx ${theValue}
+  offsetperform r${theValue}
+  
+  if {![catch { checkshape r${theValue} } ] } {
+    unifysamedom r${theValue}_unif r${theValue}
+    return 1
+  }
+  return 0
+}
+
+proc perform_offsets {theShape theOffsetValues theRefValues} {
+
+  upvar $theShape TheShape
+  
+  set nbRefValues [llength $theRefValues]
+  
+  set failed_operations {}
+  set statistics {}
+
+  set i 0
+  
+  foreach offset $theOffsetValues { 
+    
+    global r${offset}
+    global r${offset}_unif
+
+    set operation_done [perform_offset TheShape ${offset}]
+    
+    # stats
+    set area_value 0
+    set volume_value 0
+    set nbwires_value 0
+    set nbfaces_value 0
+    
+    set checks_res {}
+    
+    if { $operation_done } {
+   
+      set area_value [lindex [sprops r${offset}] 2]
+      set volume_value [lindex [vprops r${offset}] 2]
+      
+      set check 0
+      set refs {}
+      
+      if { $nbRefValues > $i } {
+        set refs [lindex $theRefValues $i]
+        if { [llength $refs] == 4} {
+          set check 1
+        }
+      }
+      
+      if { $check } {
+        lappend checks_res [compare_prop_values "area" ${area_value} [lindex $refs 0]]
+        lappend checks_res [compare_prop_values "volume" ${volume_value} [lindex $refs 1]]
+      }
+
+      set nbshapes_value [nbshapes r${offset}_unif]
+      set nbwires_value [lindex $nbshapes_value 13]
+      set nbfaces_value [lindex $nbshapes_value 16]
+      set nbshells_value [lindex $nbshapes_value 19]
+      set nbsolids_value [lindex $nbshapes_value 22]
+    
+      if { $check } {
+        lappend checks_res [compare_nbs "wire" $nbwires_value [lindex $refs 2]]
+        lappend checks_res [compare_nbs "face" $nbfaces_value [lindex $refs 3]]
+      }
+      
+      lappend checks_res [compare_nbs "shell" $nbshells_value 1]
+      lappend checks_res [compare_nbs "solid" $nbsolids_value 1]
+    }
+
+    set OK $operation_done
+    
+    if {$OK == 1} {
+      foreach x $checks_res {
+        if {$x == 0} {
+          set OK 0
+          break
+        }
+      }
+    }
+    
+    set status "OK"
+    if { $OK == 0 } {
+      puts "Error: operation with offset value ${offset} has failed"
+      
+      lappend failed_operations ${offset}
+      set status "KO"
+    }
+    
+    lappend statistics "Offset value ${offset} - $status: area - ${area_value};\t volume - ${volume_value};\t wires - ${nbwires_value};\t faces - ${nbfaces_value}"
+    incr i
+  }
+  
+  if {[llength $failed_operations] > 0} {
+    puts "Operations with following offset values have failed: $failed_operations"
+  }
+  
+  puts "Statistics:"
+  foreach str $statistics { puts "\t$str" }
+}
+
+proc perform_offset_increasing {theShape theMinVal theStopVal theStep theRefValues} {
+
+  upvar $theShape TheShape
+
+  set values {}
+  
+  for {set i $theMinVal} {$i <= $theStopVal} {set i [expr $i + $theStep]} {
+    lappend values $i
+  }
+  
+  perform_offsets TheShape $values $theRefValues
+}

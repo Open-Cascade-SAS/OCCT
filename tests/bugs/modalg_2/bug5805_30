@@ -1,0 +1,55 @@
+puts "TODO OCC25925 ALL: Error : The area of result shape is"
+
+puts "============"
+puts "OCC5805"
+puts "============"
+
+#######################################################################
+# BRepOffsetAPI_MakeThickSolid behaves unstably and produces very different results.
+#######################################################################
+
+set BugNumber OCC5805
+
+set z1 10
+set z2 -10
+
+# circle1
+circle c1 0 0 ${z1} 5
+mkedge ec1 c1
+wire UpCover ec1
+
+# circle2
+circle c2 0 0 ${z2} 30
+mkedge ec2 c2
+wire BottomCover ec2
+
+set issolid 1
+set isruled 1
+if [catch { thrusections s ${issolid} ${isruled} UpCover BottomCover } catch_result] {
+   puts "Faulty ${BugNumber} : thrusections is wrong"
+   
+}
+
+set distance -0.5
+catch { OFFSETSHAPE $distance {s_2} $calcul $type }
+
+
+checkprops result -s 1336.75 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 6 -wire 6 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 23
+
+set index [lsearch [whatis s] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : s is not Closed shape"
+  
+}
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,13 @@
+## =========================================
+## Grid    : CCV002
+## Test    : C1
+## Comment : From CV tests serie page 58/59
+## ==========================================
+
+puts "TODO ?OCC23068 ALL:Error\\s*:\\s*.*The volume"
+puts "TODO ?OCC23068 ALL:Faulty shapes in variables faulty_1 to faulty_"
+restore [locate_data_file CCV_2_c1_gsv.rle] s
+explode s F
+catch {offsetcompshape result s -10 s_8 s_10}
+
+checkprops result -v 3.0764e+06

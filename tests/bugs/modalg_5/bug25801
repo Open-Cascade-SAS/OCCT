@@ -1,0 +1,16 @@
+puts "========="
+puts "CR25801"
+puts "========="
+puts ""
+#########################################################################################
+## Some of the commands in BOPTest packages show the execution time without -t key
+#########################################################################################
+
+box b1 10 10 10
+set Log1 [bopcheck b1]
+
+if { [regexp {Elapsed time} ${Log1}] } {
+   puts "Error: bopcheck show the execution time without -t key"
+} else {
+   puts "OK: bopcheck does not show the execution time without -t key"
+}

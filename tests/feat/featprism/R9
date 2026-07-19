@@ -1,0 +1,10 @@
+# Original bug : spo0139
+# Date : 12June98
+
+restore [locate_data_file spo0139a.rle] a 
+restore [locate_data_file spo0139b.rle] b
+
+featprism b a a 0 1 0 0 1
+featperform prism result
+
+checkprops result -s 129086

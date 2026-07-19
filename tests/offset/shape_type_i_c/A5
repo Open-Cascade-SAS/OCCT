@@ -1,0 +1,7 @@
+restore [locate_data_file bug25926_box_cut_4boxes.brep] s
+
+OFFSETSHAPE 1.2 {} $calcul $type
+
+checkprops result -v 1817.34
+
+checknbshapes result -shell 1

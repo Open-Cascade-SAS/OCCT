@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC25557"
+puts "========"
+puts ""
+##########################################################################################################
+# Draw command "openoffset" fails on customer's shape with big values of offset
+##########################################################################################################
+
+restore [locate_data_file bug25557_offset_lines_option.brep] a
+
+smallview
+
+openoffset res a 1 -5
+renamevar res_1 result
+
+fit
+
+checkprops result -l 97.766 
+checkshape result 
+checksection result
+
+checknbshapes result -vertex 3 -edge 2 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 6
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

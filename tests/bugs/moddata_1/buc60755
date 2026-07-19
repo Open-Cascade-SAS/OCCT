@@ -1,0 +1,22 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========================"
+puts "BUC60755"
+puts "========================"
+
+restore [locate_data_file buc60755a.brep] a 
+checkshape a
+
+#########################################
+# "tcopy" command of a valid shape give a no-valid shape. 
+#########################################
+
+tcopy a result
+checkshape result
+
+checkprops result -s 623.832
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+

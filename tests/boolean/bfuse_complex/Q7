@@ -1,0 +1,16 @@
+puts "GER60806"
+puts "Fuse doesn't give the waiting result."
+puts ""
+
+restore [locate_data_file CFE900_ger60gdc.rle] base
+restore [locate_data_file ger60806b.rle] tool
+
+# ope. top. -> KO
+bcut res1 tool base
+
+explode res1 So
+
+bfuse result base res1_1
+
+checkprops result -s 181990
+checkview -display result -2d -otherwise { base res1_1 } -s -path ${imagedir}/${test_image}.png

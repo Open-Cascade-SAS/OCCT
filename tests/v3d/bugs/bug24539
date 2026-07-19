@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC24539: Visualization (new camera) - small objects displayed with visual artifacts"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 0.001 0.001 0.001
+vinit View1
+vclear
+vsetdispmode 1
+vdisplay b
+vfit
+
+vdump $imagedir/${casename}_with_lines.png

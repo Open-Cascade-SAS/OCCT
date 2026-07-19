@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename CEA_cuve-V5.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 6 )  Warnings = 1  ( 6 )  Summary  = 1  ( 12 )
+CHECKSHAPE  : Wires    = 6  ( 3 )  Faces    = 6  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 114  ( 114 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 114  ( 114 )   FreeWire = 2  ( 2 ) 
+TOLERANCE   : MaxTol   =    1380.000139  ( 0.0004988991064 )  AvgTol   =      2.59888767  (  2.124164932e-05 )
+LABELS      : N0Labels = 122  ( 122 )  N1Labels = 1  ( 1 )  N2Labels = 0  ( 0 )   TotalLabels = 123  ( 123 )   NameLabels = 122  ( 122 )   ColorLabels = 121  ( 123 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = BLACK LIGHTSTEELBLUE1 PALEGOLDENROD WHITE  ( BLACK LIGHTSTEELBLUE1 PALEGOLDENROD WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

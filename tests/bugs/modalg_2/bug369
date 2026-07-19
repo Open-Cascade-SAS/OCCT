@@ -1,0 +1,21 @@
+pload QAcommands
+
+puts "========"
+puts "OCC369"
+puts "BUC61031"
+puts "========"
+puts ""
+#################################################################
+## BndLib_Add3dCurve raised an exception on edges which range is out of the domain of the curve.
+#################################################################
+
+restore [locate_data_file OCC369.brep] result 
+OCC369 result
+
+checkprops result -s 0.077223 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+

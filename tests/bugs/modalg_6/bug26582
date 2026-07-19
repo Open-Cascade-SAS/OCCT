@@ -1,0 +1,39 @@
+puts "============"
+puts "OCC26582"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by Common operator.
+###############################
+
+restore [locate_data_file bug26582_bx.brep] bx
+
+explode bx 
+copy bx_1 b1
+copy bx_2 b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+
+bfillds
+bbop result 0
+
+checkprops result -s 39.1778 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 5
+ EDGE      : 7
+ WIRE      : 3
+ FACE      : 3
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 19
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result obtained by Common operator"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC17194"
+puts "============"
+puts ""
+#######################################################################
+# Incorrect section of a face got by extrusion of an arc of circle
+#######################################################################
+
+set BugNumber OCC17194
+
+circle f 0 0 0 0 0 1 1 0 0 20
+mkedge f f -pi/2 pi/2
+prism f f 50 0 30
+plane pl 10 0 10 1 0 4
+mkface pl pl
+bsection result f pl
+
+checknbshapes result -vertex 2 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 4
+checkprops result -l 54.6122 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

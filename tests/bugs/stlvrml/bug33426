@@ -1,0 +1,7 @@
+puts "========"
+puts "0033426: Data Exchange, VRML - Impossible to import VRML V1"
+puts "========"
+puts ""
+
+loadvrml sh [locate_data_file bug33426.vrml]
+checknbshapes sh -vertex 0 -edge 6 -wire 6 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 5 -shape 18

@@ -1,0 +1,16 @@
+box b 3 3 3
+profile p c 0.5 360
+ttranslate p 1.5 1 0
+
+featprism b p p 0 0 1 0 1
+featperformval prism bb 5
+
+profile pp x 0.5 y 0.5 x -0.5 y -0.5
+trotate pp 0 0 0 1 0 0 90
+trotate pp 0 0 0 0 0 1 90
+ttranslate pp 1.5 1.5 1
+
+featrevol bb pp pp 1.5 1.5 1 0 0 1 1 1
+featperform revol result
+
+checkprops result -s 61.854

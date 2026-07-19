@@ -1,0 +1,5 @@
+cpulimit 300
+
+pload VISUALIZATION TOPTEST
+
+if { [info exists imagedir] == 0 } { set imagedir . }

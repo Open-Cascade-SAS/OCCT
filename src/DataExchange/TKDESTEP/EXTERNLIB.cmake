@@ -1,0 +1,26 @@
+# External dependencies for TKDESTEP
+set(OCCT_TKDESTEP_EXTERNAL_LIBS
+  TKDE
+  TKBRep
+  TKernel
+  TKMath
+  TKXSBase
+  TKTopAlgo
+  TKG2d
+  TKCAF
+  TKCDF
+  TKLCAF
+  TKG3d
+  TKXCAF
+  TKShHealing
+  TKernel
+  TKBRep
+  TKMath
+  TKG2d
+  TKShHealing
+  TKTopAlgo
+  TKG3d
+  TKGeomBase
+  TKGeomAlgo
+  TKXSBase
+)

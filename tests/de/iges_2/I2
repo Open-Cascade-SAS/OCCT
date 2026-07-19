@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename igsBF1.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 10  ( 24 )  Summary  = 10  ( 24 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 12  ( 12 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 12  ( 12 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =          1e-05  (          1e-05 )  AvgTol   =  3.011594576e-07  (  4.295805207e-06 )
+LABELS      : N0Labels = 212  ( 212 )  N1Labels = 0  ( 72 )  N2Labels = 0  ( 0 )   TotalLabels = 212  ( 284 )   NameLabels = 212  ( 212 )   ColorLabels = 211  ( 284 )   LayerLabels = 211  ( 284 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 5 )
+COLORS      : Colors   = BLUE CYAN GREEN WHITE  ( BLUE CYAN GREEN MAGENTA WHITE )
+NLAYERS     : NLayers  = 1  ( 2 )
+LAYERS      : Layers   = 1  ( 1 220 )
+
+}

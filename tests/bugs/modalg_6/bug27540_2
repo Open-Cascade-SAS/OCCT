@@ -1,0 +1,67 @@
+puts "=========================================================="
+puts "0027540: Run-to-run differences in the 3D Offset algorithm"
+puts "=========================================================="
+puts ""
+
+pload MODELING
+
+restore [locate_data_file bug27540_shapes2.brep] s
+explode s
+
+# make offset operations on two shapes
+# first shape
+offsetparameter 1e-7 c i
+# set offset 30 for top faces (normal direction 0 0 1), 10 for all other faces
+offsetload s_1 10
+set faces [explode s_1 f]
+foreach f $faces {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found && abs($z - 1) < 1.e-7} {
+    offsetonface $f 30
+  }
+}
+offsetperform result1
+checkprops result1 -s 3.76166e+006
+checkprops result1 -v 1.74521e+008
+checknbshapes result1 -vertex 36 -edge 54 -wire 22 -face 21 -shell 1 -solid 1
+
+
+# second shape
+offsetparameter 1e-7 c i
+# set offset 30 for top faces (normal direction 0 0 1), 10 for all other faces
+offsetload s_2 10
+set faces [explode s_2 f]
+foreach f $faces {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found && abs($z - 1) < 1.e-7} {
+    offsetonface $f 30
+  }
+}
+offsetperform result2
+checkprops result2 -s 3.76166e+006
+checkprops result2 -v 1.74521e+008
+checknbshapes result2 -vertex 36 -edge 54 -wire 22 -face 21 -shell 1 -solid 1
+
+
+# compare the results
+set vertices1 [nexplode result1 v]
+set vertices2 [nexplode result2 v]
+
+set nbv1 [llength $vertices1]
+
+for {set i 0} {$i < $nbv1} {incr i} {
+  set v1 [lindex $vertices1 $i]
+  set v2 [lindex $vertices2 $i]
+
+  mkpoint px $v1
+  set dump_v1 [dump px]
+  
+  mkpoint px $v2
+  set dump_v2 [dump px]
+
+  if {$dump_v1 != $dump_v2} {
+    puts "Error: the results are not the same - $v1 and $v2"
+  }
+}

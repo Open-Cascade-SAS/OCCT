@@ -1,0 +1,17 @@
+puts "=========="
+puts "OCC21875"
+puts "=========="
+puts ""
+##################################################
+# Section of face by plane produces invalid result
+##################################################
+
+restore [locate_data_file bug21875_face.brep] a
+plane p 0 0 1.844 0 0 1
+mkface f p -10 10 -10 10
+
+bsection result a f
+
+checknbshapes result -edge 5
+checkprops result -l 2.14222
+checkview -display result -2d -path ${imagedir}/${test_image}.png

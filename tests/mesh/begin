@@ -1,0 +1,25 @@
+set Deflection 0.1
+set percent_max 5.
+
+# relative tolerance (%)
+set rel_tol 1
+set max_rel_tol_diff 0
+
+set area_eps 0
+
+cpulimit 1000
+
+set nbwithouttri(All) 0
+set nbfree(All) 0
+set nbcross(All) 0
+set nbasync(All) 0
+set nbfreenodes(All) 0
+
+set bug_area ""
+set bug_withouttri ""
+set bug_freelinks ""
+set bug_cross ""
+set bug_async ""
+set bug_freenodes ""
+
+pload TOPTEST VISUALIZATION

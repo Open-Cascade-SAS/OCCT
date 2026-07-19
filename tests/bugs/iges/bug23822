@@ -1,0 +1,10 @@
+puts "========"
+puts "CR23822: S I G S E G V 'segmentation v i o l a t i o n' during writing IGES"
+puts "========"
+puts ""
+
+ReadIges D [locate_data_file ball_bearing.igs]
+
+set aTmpFile ${imagedir}/${casename}.igs
+WriteIges D $aTmpFile
+file delete -force $aTmpFile

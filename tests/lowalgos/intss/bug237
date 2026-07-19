@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC237"
+puts "================"
+puts ""
+#######################################################
+## Hang-ups during the intersection of attached surfaces
+#######################################################
+
+restore [locate_data_file OCC236b.rle] su1 
+############### checkshape su1 # is not a topological shape
+restore [locate_data_file OCC237b.rle] su2
+############### checkshape su2 # is not a topological shape
+
+if [catch {intersect result su1 su2 }] {
+    set mistake 1
+} else {
+    set mistake 0
+}
+
+if { $mistake != 0} {
+    puts "Faulty OCC237: Intersection was made WRONGLY"
+} else {
+    puts "OCC237 OK  : Intersection command works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

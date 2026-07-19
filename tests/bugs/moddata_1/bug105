@@ -1,0 +1,19 @@
+
+puts "================"
+puts "BUC61026"
+puts "OCC105"
+puts "================"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file OCC105.brep] result
+checkshape result
+
+if [catch { OCC105 result} ] {
+  puts "Error : BUC61032"
+} else {
+  puts "BUC61032: OK"
+}
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png

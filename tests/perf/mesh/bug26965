@@ -1,0 +1,19 @@
+puts "=========="
+puts "0026965: BRepMesh_IncrementalMesh hangs, and consumes infinite memory"
+puts "=========="
+puts ""
+
+restore [locate_data_file bug26965_mesh_hang.brep] a
+tclean a
+vinit
+vsetdispmode 1
+
+dchrono h restart
+vdisplay a
+dchrono h stop counter DisplayBug26965
+dchrono h 
+
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+checktrinfo a -tri 15564 -nod 7987 -defl 0.25696012112765304 -tol_abs_defl 1e-6

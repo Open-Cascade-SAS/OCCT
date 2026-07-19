@@ -1,0 +1,80 @@
+// Created on: 1992-08-26
+// Created by: Remi GILET
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _gce_MakeLin_HeaderFile
+#define _gce_MakeLin_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+
+#include <gp_Lin.hxx>
+#include <gce_Root.hxx>
+class gp_Ax1;
+class gp_Pnt;
+class gp_Dir;
+
+//! This class implements construction algorithms for `gp_Lin`.
+//! Supported constructions include:
+//! - line from axis placement;
+//! - line from point and direction;
+//! - parallel line through point;
+//! - line through two points.
+class gce_MakeLin : public gce_Root
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Creates a line located along the axis A1.
+  //! @note The location of `A1` is the line origin.
+  //! @param[in] A1 axis placement
+  Standard_EXPORT gce_MakeLin(const gp_Ax1& A1);
+
+  //! <P> is the location point (origin) of the line and
+  //! <V> is the direction of the line.
+  //! @param[in] P point
+  //! @param[in] V direction vector
+  Standard_EXPORT gce_MakeLin(const gp_Pnt& P, const gp_Dir& V);
+
+  //! Creates a line parallel to input line and passing through a point.
+  //! @param[in] Lin source line
+  //! @param[in] Point reference point
+  Standard_EXPORT gce_MakeLin(const gp_Lin& Lin, const gp_Pnt& Point);
+
+  //! Creates a line passing through two points.
+  //! @note Construction fails with `gce_ConfusedPoints` if points are coincident.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  Standard_EXPORT gce_MakeLin(const gp_Pnt& P1, const gp_Pnt& P2);
+
+  //! Returns the constructed line.
+  //! Exceptions StdFail_NotDone is raised if no line is constructed.
+  //! @return resulting line
+  Standard_EXPORT const gp_Lin& Value() const;
+
+  //! Alias for Value() returning a copy.
+  //! @return resulting object
+  gp_Lin Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Lin() const { return Operator(); }
+
+private:
+  gp_Lin TheLin;
+};
+
+#endif // _gce_MakeLin_HeaderFile

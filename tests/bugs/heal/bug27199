@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC27199"
+puts "========"
+puts ""
+##############################################
+# Unifysamedomain regression issue in OCCT 7
+##############################################
+
+restore [locate_data_file bug27199_i1_i2.brep] sh
+
+explode sh
+bop sh_1 sh_2
+bopfuse r
+unifysamedom result r
+checkshape result
+
+checknbshapes result -face 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

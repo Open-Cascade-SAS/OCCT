@@ -1,0 +1,42 @@
+puts "============"
+puts "OCC21448"
+puts "============"
+puts ""
+#######################################################################
+# Invalid result of BRepOffsetAPI_MakePipeShell
+#######################################################################
+
+set BugNumber OCC21448
+
+puts "Load first shape ..."
+restore [locate_data_file bug21448_base_1.brep] base1 
+
+puts "Load second shape ..."
+restore [locate_data_file bug21448_Invert_2.brep] Invert_2 
+
+puts "Load third shape ..."
+restore [locate_data_file bug21448_chemin.brep] chemin 
+
+puts "Prepare shapes ..."
+wire w1 chemin
+explode base1 W
+explode Invert_2 W
+explode chemin V
+
+puts "Start Make pipe ..."
+mksweep w1
+addsweep base1_1 chemin_1 -R
+addsweep Invert_2_1 chemin_2 -R
+buildsweep result
+puts "Finish Make pipe ..."
+
+checkprops result -s 1040.94 
+checkshape result
+
+checknbshapes result -vertex 4 -edge 6 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 15
+vinit
+vsetdispmode 0
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

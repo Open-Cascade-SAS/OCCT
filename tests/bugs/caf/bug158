@@ -1,0 +1,12 @@
+puts "=============="
+puts "OCC158"
+puts "=============="
+
+NewDocument D BinOcaf
+
+set aTmpFile ${imagedir}/${casename}.cbf
+if { [catch {set res [SaveAs D ${aTmpFile}] }] != 0 } {
+  puts "OCC158: Error"
+}
+
+file delete -force $aTmpFile

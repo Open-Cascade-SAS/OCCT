@@ -1,0 +1,9 @@
+#buc60326
+
+restore [locate_data_file CTO909_1.brep] a
+restore [locate_data_file CTO909_2.brep] b
+
+bfuse result a b
+
+checkprops result -s 21190.7
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC25292"
+puts "================"
+puts ""
+#######################################################################
+# Face/Face intersection algorithm gives different results for different order of the arguments
+#######################################################################
+
+# Boolean operations
+
+restore [locate_data_file bug25292_Input_0.brep] b1
+restore [locate_data_file bug25292_Input_1.brep] b2
+
+bclearobjects
+bcleartools
+
+#################
+baddobjects b1 b2
+#################
+
+bfillds
+bbuild result
+
+checkprops result -s 289.348 
+checkshape result
+
+checknbshapes result -vertex 9 -edge 15 -wire 10 -face 10 -shell 3 -solid 3 -compsolid 0 -compound 1 -shape 51
+checkview -display result -3d -path ${imagedir}/${test_image}.png

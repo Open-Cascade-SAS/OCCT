@@ -1,0 +1,18 @@
+puts "==========="
+puts "OCC28428: BinMNaming_NamedShapeDriver f a i l s if there are no nodes in NamedShape"
+puts "==========="
+puts ""
+
+pload QAcommands
+
+NewDocument D1 BinOcaf
+# Create TNaming_Builder on a label without putthing shapes
+BuildNamedShape D1 0:1 P
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D1 $aTmpFile
+Close D1
+# This produced a NamedShape driver failure with catching by general driver
+# and output a failure message (caught by parse.rules)
+Open $aTmpFile D2
+Close D2
+file delete -force $aTmpFile

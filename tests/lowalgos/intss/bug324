@@ -1,0 +1,21 @@
+puts "========================"
+puts " OCC324 "
+puts "========================"
+puts ""
+#################################################################
+## The command "intersect" applied to the given arguments "s1" (plane) and "s2" (cylinder) leads 
+## to the program hang-up.
+#################################################################
+
+restore [locate_data_file OCC324a.draw] s1 
+restore [locate_data_file OCC324b.draw] s2
+
+if [catch {intersect result s1 s2} catch_result] {
+    puts "Faulty OCC324: function INTERSECT works wrongly"
+} else {
+    puts "OCC324 OK: function INTERSECT works properly"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

@@ -1,0 +1,26 @@
+puts "============"
+puts "CR28175"
+puts "==========="
+puts ""
+###############################################################################
+# Bad result of curve-curve extrema
+###############################################################################
+
+# Set signals on.
+pload MODELING
+dsetsignal 1
+
+# Prepare input data.
+restore [locate_data_file bug28175_2.brep] c
+explode c
+
+# Compute minimal distance
+distmini d c_1 c_2
+set dist [dval d_val]
+
+# Check extrema distance
+if { $dist > 1e-7 } {
+  puts "ERROR: Extrema distance is too big"
+} else {
+  puts "OK: Correct extrema distance"
+}

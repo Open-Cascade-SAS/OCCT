@@ -1,0 +1,16 @@
+#PRO12675
+puts "PRO12675"
+puts "Section"
+puts ""
+
+restore [locate_data_file pro12675a.brep] obj
+restore [locate_data_file pro12675b.brep] out 
+updatetolerance obj 1
+updatetolerance out 1
+
+#problemes de baillement sur les partie haute de le ligne de section
+bsection result obj out
+
+checkprops result -l 1022.03
+checksection result
+checkview -display result -2d -otherwise { obj out } -l -path ${imagedir}/${test_image}.png

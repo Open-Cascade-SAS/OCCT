@@ -1,0 +1,32 @@
+puts "============================================================================================="
+puts "0031662: Modeling Algorithms - Incomplete result of section operation"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug31662_Surface_0.brep] s0
+restore [locate_data_file bug31662_Surface_1.brep] s1
+
+bclearobjects
+bcleartools
+baddobjects s0
+baddtools s1
+bfillds
+
+bbop r4 4
+
+checkshape r4
+checksection r4 -r 0
+checkprops r4 -l 70.3856
+
+bbuild rgf
+
+checkshape rgf
+checknbshapes rgf -shell 2 -solid 0
+
+mkvolume result rgf -ni
+
+checkshape result
+checknbshapes result -shell 1 -solid 1
+checkprops result -s 668.352 -v 774.749
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

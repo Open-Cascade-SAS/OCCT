@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC27701: C r a s h when export empty solid to STEP"
+puts "========"
+puts ""
+
+pload OCAF
+
+restore [locate_data_file bug27701.brep] s
+
+NewDocument D
+XAddShape D s
+XSetColor D 0:1:1:1 1 0 0 s
+
+set aTmpFile ${imagedir}/${casename}_tmp.stp
+WriteStep D $aTmpFile
+file delete -force $aTmpFile

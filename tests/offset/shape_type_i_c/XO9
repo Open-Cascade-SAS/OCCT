@@ -1,0 +1,10 @@
+restore [locate_data_file bug29135_offset.input.fail_1_trim.brep] s
+
+OFFSETSHAPE 5 {} $calcul $type
+
+checkprops result -v 1.22084e+006 -s 123525
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 50 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

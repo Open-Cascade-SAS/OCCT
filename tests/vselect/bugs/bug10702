@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC10702: MeshVS_NodalColorPrsBuilder does not take into account visibility of mesh elements"
+puts "============"
+puts ""
+
+set BugNumber OCC10702
+
+pload MODELING VISUALIZATION XDE
+
+vinit View1
+
+meshfromstl m [locate_data_file OMF6391_box.stl]
+
+set x_coord 180
+set y_coord 260
+
+vsetdispmode m 2
+puts "\nMesh displayed in shading mode"
+
+checkcolor $x_coord $y_coord 0 0 0.36
+
+vselmode m 8 1
+puts "\nSelection of elements is activated"
+
+vselect $x_coord $y_coord -xor
+
+meshhidesel m
+puts "\nSelected element is hidden"
+
+checkcolor $x_coord $y_coord 0 0 0.36
+
+meshcolors m nodal 0
+puts "\nDisplay nodal color presentation"
+
+checkcolor $x_coord $y_coord 0.72 0.72 0.70
+
+vdump $imagedir/${casename}.png

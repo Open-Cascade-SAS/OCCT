@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC25704"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakeOffset: some customer's cases are processed incorrect
+#######################################################################
+
+restore [locate_data_file bug25491_offset_lines_2.brep] a
+
+if [catch { mkoffset resoffset a 1 35. i } ] {
+  puts "Error : mkoffset is wrong"
+} else {
+  renamevar resoffset_1 result
+
+  checkprops result -l 730 
+checkshape result 
+checksection result
+
+  checknbshapes result -vertex 8 -edge 8 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 17
+}
+
+smallview
+display a
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

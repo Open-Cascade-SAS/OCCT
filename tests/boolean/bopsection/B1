@@ -1,0 +1,13 @@
+# Original bug : pro11615
+# Date : 25Mai98
+
+
+restore [locate_data_file pro11615a.rle] a
+restore [locate_data_file CTO904_pro11615b.rle] b
+
+bop a b
+bopsection result
+
+checkprops result -l 11.6
+checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png
