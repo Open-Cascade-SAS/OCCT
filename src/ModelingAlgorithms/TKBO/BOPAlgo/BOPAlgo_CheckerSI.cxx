@@ -48,6 +48,7 @@
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_LineConstructor.hxx>
+#include <Intf_Interference.hxx>
 #include <IntPatch_Intersection.hxx>
 #include <IntPatch_Point.hxx>
 #include <IntPatch_WLine.hxx>
@@ -310,7 +311,26 @@ void BOPAlgo_FaceSelfIntersect::Perform()
   const double          aDeflection = aSurface->GetType() == GeomAbs_BSplineSurface ? 0.01 : 0.1;
   IntPatch_Intersection anIntersection;
   anIntersection.SetTolerances(aTolerance, aTolerance, aMaxStep, aDeflection);
-  anIntersection.Perform(aSurface, aFirstDomain, aTolerance, aTolerance);
+  // Let the deadline of aPS interrupt the self-interference search itself, not just gate entry to
+  // it. Only when single-threaded: an exception from a worker thread of the parallel path would be
+  // unsafe.
+  if (!myRunParallel)
+  {
+    Intf_InterferenceBreakerScope aBreakerScope(&aPS);
+    try
+    {
+      anIntersection.Perform(aSurface, aFirstDomain, aTolerance, aTolerance);
+    }
+    catch (Standard_Failure const&)
+    {
+      // Aborted by the breaker: leave IsDone() false, as for any other unfinished check.
+      return;
+    }
+  }
+  else
+  {
+    anIntersection.Perform(aSurface, aFirstDomain, aTolerance, aTolerance);
+  }
   if (!anIntersection.IsDone() || UserBreak(aPS))
   {
     return;
