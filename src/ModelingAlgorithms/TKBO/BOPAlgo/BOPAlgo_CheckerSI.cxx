@@ -30,6 +30,7 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
+#include <Intf_Interference.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_FaceFace.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -81,7 +82,26 @@ public:
     {
       return;
     }
-    IntTools_FaceFace::Perform(myF, myF, myRunParallel);
+    // Let aPS's deadline interrupt the self-interference search itself, not
+    // just gate entry to it. Only when single-threaded: an exception from a
+    // worker thread of OSD_Parallel::For's parallel path would be unsafe.
+    if (!myRunParallel)
+    {
+      Intf_InterferenceBreakerScope aBreakerScope(&aPS);
+      try
+      {
+        IntTools_FaceFace::Perform(myF, myF, myRunParallel);
+      }
+      catch (Standard_Failure const&)
+      {
+        // Aborted by the breaker: leave IsDone() false, same as any other
+        // reason IntTools_FaceFace::Perform does not finish.
+      }
+    }
+    else
+    {
+      IntTools_FaceFace::Perform(myF, myF, myRunParallel);
+    }
   }
 
   //

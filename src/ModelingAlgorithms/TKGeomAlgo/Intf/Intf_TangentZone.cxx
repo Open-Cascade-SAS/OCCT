@@ -36,6 +36,7 @@ Intf_TangentZone::Intf_TangentZone()
 
 void Intf_TangentZone::Append(const Intf_SectionPoint& Pi)
 {
+  myPtsCacheValid = false;
   Result.Append(Pi);
   if (ParamOnFirstMin > Pi.ParamOnFirst())
   {
@@ -174,6 +175,7 @@ void Intf_TangentZone::PolygonInsert(const Intf_SectionPoint& Pi)
 
 void Intf_TangentZone::InsertAfter(const int Index, const Intf_SectionPoint& Pi)
 {
+  myPtsCacheValid = false;
   Result.InsertAfter(Index, Pi);
   if (ParamOnFirstMin > Pi.ParamOnFirst())
   {
@@ -198,6 +200,7 @@ void Intf_TangentZone::InsertAfter(const int Index, const Intf_SectionPoint& Pi)
 
 void Intf_TangentZone::InsertBefore(const int Index, const Intf_SectionPoint& Pi)
 {
+  myPtsCacheValid = false;
   Result.InsertBefore(Index, Pi);
   if (ParamOnFirstMin > Pi.ParamOnFirst())
   {
@@ -226,6 +229,28 @@ void Intf_TangentZone::InsertBefore(const int Index, const Intf_SectionPoint& Pi
 const Intf_SectionPoint& Intf_TangentZone::GetPoint(const int Index) const
 {
   return Result(Index);
+}
+
+//=================================================================================================
+
+const NCollection_Array1<Intf_SectionPoint>& Intf_TangentZone::Points() const
+{
+  if (!myPtsCacheValid)
+  {
+    const int aNb = Result.Length();
+    if (aNb > 0)
+    {
+      myPtsCache.Resize(1, aNb, false);
+      int i = 1;
+      for (NCollection_Sequence<Intf_SectionPoint>::Iterator anIt(Result); anIt.More();
+           anIt.Next(), ++i)
+      {
+        myPtsCache.SetValue(i, anIt.Value());
+      }
+    }
+    myPtsCacheValid = true;
+  }
+  return myPtsCache;
 }
 
 //=================================================================================================
