@@ -30,9 +30,6 @@
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <Standard_Handle.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
@@ -216,17 +213,17 @@ TEST(BRepGPropTest, LinearProperties_DegenerateEdgeWithBSplinePCurveNoCrash)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
 
-  TColgp_Array1OfPnt2d aPoles(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt2d(0.0, 0.0));
   aPoles.SetValue(2, gp_Pnt2d(0.1, 0.05));
   aPoles.SetValue(3, gp_Pnt2d(0.2, -0.05));
   aPoles.SetValue(4, gp_Pnt2d(0.3, 0.0));
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots.SetValue(1, 0.0);
   aKnots.SetValue(2, 1.0);
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults.SetValue(1, 4);
   aMults.SetValue(2, 4);
 
