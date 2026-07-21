@@ -153,6 +153,7 @@ Resource_Manager::Resource_Manager()
 //=================================================================================================
 
 Resource_Manager::Resource_Manager(const Resource_Manager& theOther)
+    : Standard_Transient()
 {
   std::lock_guard<std::recursive_mutex> aLock(theOther.myMutex);
   myName        = theOther.myName;
