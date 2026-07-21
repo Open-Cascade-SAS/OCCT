@@ -506,7 +506,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
     theStatusMessage = TCollection_ExtendedString("TDocStd_Application::SaveAs"
                                                   ": No such directory ")
                        + directory;
-    aStatus          = PCDM_SS_Failure;
+    aStatus = PCDM_SS_Failure;
   }
   return aStatus;
 }
