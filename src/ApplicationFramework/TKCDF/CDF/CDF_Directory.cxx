@@ -25,16 +25,23 @@ IMPLEMENT_STANDARD_RTTIEXT(CDF_Directory, Standard_Transient)
 
 CDF_Directory::CDF_Directory() = default;
 
+// myMutex-guarded; inlined instead of calling Contains() to avoid a recursive lock.
 void CDF_Directory::Add(const occ::handle<CDM_Document>& aDocument)
 {
-  if (!Contains(aDocument))
+  std::lock_guard<std::mutex> aLock(myMutex);
+  for (NCollection_List<occ::handle<CDM_Document>>::Iterator it(myDocuments); it.More(); it.Next())
   {
-    myDocuments.Append(aDocument);
+    if (aDocument == it.Value())
+    {
+      return;
+    }
   }
+  myDocuments.Append(aDocument);
 }
 
 void CDF_Directory::Remove(const occ::handle<CDM_Document>& aDocument)
 {
+  std::lock_guard<std::mutex> aLock(myMutex);
   for (NCollection_List<occ::handle<CDM_Document>>::Iterator it(myDocuments); it.More(); it.Next())
   {
     if (aDocument == it.Value())
@@ -47,6 +54,7 @@ void CDF_Directory::Remove(const occ::handle<CDM_Document>& aDocument)
 
 bool CDF_Directory::Contains(const occ::handle<CDM_Document>& aDocument) const
 {
+  std::lock_guard<std::mutex> aLock(myMutex);
   for (NCollection_List<occ::handle<CDM_Document>>::Iterator it(myDocuments); it.More(); it.Next())
   {
     if (aDocument == it.Value())
@@ -59,6 +67,7 @@ bool CDF_Directory::Contains(const occ::handle<CDM_Document>& aDocument) const
 
 int CDF_Directory::Length() const
 {
+  std::lock_guard<std::mutex> aLock(myMutex);
   return myDocuments.Extent();
 }
 
@@ -70,13 +79,15 @@ const NCollection_List<occ::handle<CDM_Document>>& CDF_Directory::List() const
 
 bool CDF_Directory::IsEmpty() const
 {
+  std::lock_guard<std::mutex> aLock(myMutex);
   return myDocuments.IsEmpty();
 }
 
 occ::handle<CDM_Document> CDF_Directory::Last()
 {
+  std::lock_guard<std::mutex> aLock(myMutex);
   Standard_NoSuchObject_Raise_if(
-    IsEmpty(),
+    myDocuments.IsEmpty(),
     "CDF_Directory::Last: the directory does not contain any document");
   return myDocuments.Last();
 }
