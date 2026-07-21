@@ -28,6 +28,7 @@
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
 #include <TDocStd_Document.hxx>
+#include <mutex>
 
 class Resource_Manager;
 class CDM_Document;
@@ -325,6 +326,7 @@ public:
 protected:
   occ::handle<Resource_Manager> myResources;
   bool                          myIsDriverLoaded;
+  mutable std::mutex            myResourcesMutex;
 };
 
 #endif // _TDocStd_Application_HeaderFile
