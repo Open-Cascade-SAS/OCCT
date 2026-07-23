@@ -41,7 +41,7 @@ CDF_Application::CDF_Application()
     : myRetrievableStatus(PCDM_RS_OK)
 {
   myDirectory      = new CDF_Directory();
-  myMetaDataDriver = new CDF_FWOSDriver(MetaDataLookUpTable());
+  myMetaDataDriver = new CDF_FWOSDriver(MetaDataLookUpTable(), MetaDataLookUpTableMutex());
 }
 
 //=================================================================================================
