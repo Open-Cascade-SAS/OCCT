@@ -288,7 +288,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
       TCollection_ExtendedString aMsg = TCollection_ExtendedString("error: wrong file version: ")
                                         + aDocVerStr + " while current is "
                                         + TDocStd_Document::CurrentStorageFormatVersion();
-      myReaderStatus                  = PCDM_RS_NoVersion;
+      myReaderStatus = PCDM_RS_NoVersion;
       if (!aMsgDriver.IsNull())
       {
         aMsgDriver->Send(aMsg.ToExtString(), Message_Fail);

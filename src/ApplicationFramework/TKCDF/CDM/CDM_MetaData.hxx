@@ -99,7 +99,8 @@ public:
     //! associates database information to a document which
     //! has been stored. The name of the document is now the
     //! name which has beenused to store the data.
-    Standard_EXPORT void      CDM_Document::SetMetaData(const occ::handle<CDM_MetaData>& aMetaData);
+    Standard_EXPORT void
+                              CDM_Document::SetMetaData(const occ::handle<CDM_MetaData>& aMetaData);
   friend Standard_EXPORT void CDM_Application::SetDocumentVersion(
     const occ::handle<CDM_Document>& aDocument,
     const occ::handle<CDM_MetaData>& aMetaData) const;
