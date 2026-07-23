@@ -22,6 +22,7 @@
 #include <CDF_MetaDataDriver.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
+#include <mutex>
 
 class TCollection_ExtendedString;
 class CDM_MetaData;
@@ -33,9 +34,11 @@ class CDF_FWOSDriver : public CDF_MetaDataDriver
 public:
   //! Initializes the MetaDatadriver connected to specified look-up table.
   //! Note that the created driver will keep reference to the table,
-  //! thus it must have life time longer than this object.
+  //! thus it must have life time longer than this object. theMutex must
+  //! guard theLookUpTable (CDM_Application::MetaDataLookUpTableMutex()).
   Standard_EXPORT CDF_FWOSDriver(
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable);
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+    std::mutex&                                                                 theMutex);
 
   //! indicate whether a file exists corresponding to the folder and the name
   Standard_EXPORT bool Find(const TCollection_ExtendedString& aFolder,
@@ -75,6 +78,7 @@ private:
 
 private:
   NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>* myLookUpTable;
+  std::mutex*                                                                 myMutex;
 };
 
 #endif // _CDF_FWOSDriver_HeaderFile

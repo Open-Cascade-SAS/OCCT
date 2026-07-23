@@ -19,6 +19,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+#include <mutex>
+
 TEST(CDF_FWOSDriverTest, ExistingReadableFile)
 {
   TCollection_AsciiString aFolder;
@@ -28,7 +30,8 @@ TEST(CDF_FWOSDriverTest, ExistingReadableFile)
   ASSERT_FALSE(aFileName.IsEmpty());
 
   NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>> aLookUpTable;
-  CDF_FWOSDriver                                                             aDriver(aLookUpTable);
+  std::mutex                                                                 aLookUpMutex;
+  CDF_FWOSDriver aDriver(aLookUpTable, aLookUpMutex);
 
   EXPECT_TRUE(aDriver.FindFolder(aFolder));
   EXPECT_TRUE(aDriver.Find(aFolder, aFileName, ""));
@@ -43,7 +46,8 @@ TEST(CDF_FWOSDriverTest, MissingFileIsNotReadable)
   ASSERT_FALSE(aFolder.IsEmpty());
 
   NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>> aLookUpTable;
-  CDF_FWOSDriver                                                             aDriver(aLookUpTable);
+  std::mutex                                                                 aLookUpMutex;
+  CDF_FWOSDriver aDriver(aLookUpTable, aLookUpMutex);
 
   const TCollection_ExtendedString aMissingName("CDF_FWOSDriver_missing_test_file");
   EXPECT_FALSE(aDriver.Find(aFolder, aMissingName, ""));

@@ -24,6 +24,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Message_ProgressRange.hxx>
+#include <mutex>
 
 class CDM_MetaData;
 class CDM_Document;
@@ -66,6 +67,9 @@ public:
                                               occ::handle<CDM_MetaData>>&
     MetaDataLookUpTable();
 
+  //! Guards MetaDataLookUpTable(), shared across threads/calls.
+  std::mutex& MetaDataLookUpTableMutex() const { return myMetaDataLookUpTableMutex; }
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
@@ -95,6 +99,7 @@ private:
 
   occ::handle<Message_Messenger>                                             myMessenger;
   NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>> myMetaDataLookUpTable;
+  mutable std::mutex myMetaDataLookUpTableMutex;
 };
 
 #endif // _CDM_Application_HeaderFile
