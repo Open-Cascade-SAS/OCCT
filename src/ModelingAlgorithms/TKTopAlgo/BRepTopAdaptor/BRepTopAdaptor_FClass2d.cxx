@@ -427,12 +427,12 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
               if (nbp > 2)
               {
                 const size_t ii = aRefinedPoints.Size();
-                gp_Lin2d Lin(aRefinedPoints[ii - 3],
+                gp_Lin2d     Lin(aRefinedPoints[ii - 3],
                              gp_Dir2d(gp_Vec2d(aRefinedPoints[ii - 3], aRefinedPoints[ii - 1])));
-                double   ul = ElCLib::Parameter(Lin, aRefinedPoints[ii - 2]);
-                gp_Pnt2d Pp = ElCLib::Value(ul, Lin);
-                double   dU = std::abs(Pp.X() - aRefinedPoints[ii - 2].X());
-                double   dV = std::abs(Pp.Y() - aRefinedPoints[ii - 2].Y());
+                double       ul = ElCLib::Parameter(Lin, aRefinedPoints[ii - 2]);
+                gp_Pnt2d     Pp = ElCLib::Value(ul, Lin);
+                double       dU = std::abs(Pp.X() - aRefinedPoints[ii - 2].X());
+                double       dV = std::abs(Pp.Y() - aRefinedPoints[ii - 2].Y());
                 if (dU > aRefinedFlecheU)
                 {
                   aRefinedFlecheU = dU;
