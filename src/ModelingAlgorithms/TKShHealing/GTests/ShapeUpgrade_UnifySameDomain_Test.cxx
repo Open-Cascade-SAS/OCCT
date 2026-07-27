@@ -20,9 +20,14 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <Geom_Plane.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom2d_Line.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -32,9 +37,238 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
 
+#include <cmath>
+
 //=================================================================================================
 // ShapeUpgrade_UnifySameDomain Tests
 //=================================================================================================
+
+namespace
+{
+struct MissingPCurveShape
+{
+  TopoDS_Shell Shell;
+  TopoDS_Face  ReferenceFace;
+  TopoDS_Edge  MissingPCurveEdge;
+  TopoDS_Edge  ValidPCurveEdge;
+};
+
+static TopoDS_Vertex makeVertex(BRep_Builder& theBuilder, const gp_Pnt& thePoint)
+{
+  TopoDS_Vertex aVertex;
+  theBuilder.MakeVertex(aVertex, thePoint, Precision::Confusion());
+  return aVertex;
+}
+
+static TopoDS_Edge makeEdge(BRep_Builder&                    theBuilder,
+                            const occ::handle<Geom_Surface>& theSurface,
+                            const TopLoc_Location&           theLocation,
+                            const TopoDS_Vertex&             theFirst,
+                            const TopoDS_Vertex&             theLast,
+                            const bool                       theAddPCurve)
+{
+  BRepBuilderAPI_MakeEdge anEdgeMaker(theFirst, theLast);
+  if (!anEdgeMaker.IsDone())
+  {
+    return TopoDS_Edge();
+  }
+
+  TopoDS_Edge anEdge = anEdgeMaker.Edge();
+  if (theAddPCurve)
+  {
+    const gp_Pnt&  aFirstPoint = BRep_Tool::Pnt(theFirst);
+    const gp_Pnt&  aLastPoint  = BRep_Tool::Pnt(theLast);
+    const gp_Pnt2d aFirstPoint2d(std::atan2(aFirstPoint.Y(), aFirstPoint.X()), aFirstPoint.Z());
+    const gp_Pnt2d aLastPoint2d(std::atan2(aLastPoint.Y(), aLastPoint.X()), aLastPoint.Z());
+    const gp_Vec2d aDirection(aFirstPoint2d, aLastPoint2d);
+    occ::handle<Geom2d_Curve> aPCurve = new Geom2d_Line(aFirstPoint2d, gp_Dir2d(aDirection));
+    theBuilder.UpdateEdge(anEdge, aPCurve, theSurface, theLocation, Precision::Confusion());
+    theBuilder.Range(anEdge, 0.0, aDirection.Magnitude());
+  }
+  return anEdge;
+}
+
+static MissingPCurveShape makeMissingPCurveShape(BRep_Builder& theBuilder)
+{
+  const occ::handle<Geom_CylindricalSurface> aSurface = new Geom_CylindricalSurface(gp::XOY(), 1.0);
+  const TopLoc_Location                      aLocation;
+  const TopoDS_Vertex aVertexA = makeVertex(theBuilder, aSurface->Value(0.0, 0.0));
+  const TopoDS_Vertex aVertexB = makeVertex(theBuilder, aSurface->Value(1.0, 0.0));
+  const TopoDS_Vertex aVertexC = makeVertex(theBuilder, aSurface->Value(1.0, 1.0));
+  const TopoDS_Vertex aVertexD = makeVertex(theBuilder, aSurface->Value(0.5, -1.0));
+  const TopoDS_Vertex aVertexE = makeVertex(theBuilder, aSurface->Value(0.5, 1.0));
+
+  const TopoDS_Edge aCommonEdge =
+    makeEdge(theBuilder, aSurface, aLocation, aVertexA, aVertexB, true);
+  const TopoDS_Edge anEdgeBC = makeEdge(theBuilder, aSurface, aLocation, aVertexB, aVertexC, false);
+  const TopoDS_Edge anEdgeCB = makeEdge(theBuilder, aSurface, aLocation, aVertexC, aVertexB, true);
+  const TopoDS_Edge anEdgeBD = makeEdge(theBuilder, aSurface, aLocation, aVertexB, aVertexD, true);
+  const TopoDS_Edge anEdgeDA = makeEdge(theBuilder, aSurface, aLocation, aVertexD, aVertexA, true);
+  const TopoDS_Edge anEdgeAE = makeEdge(theBuilder, aSurface, aLocation, aVertexA, aVertexE, true);
+  const TopoDS_Edge anEdgeEB = makeEdge(theBuilder, aSurface, aLocation, aVertexE, aVertexB, true);
+
+  TopoDS_Wire aSelfTouchingWire;
+  theBuilder.MakeWire(aSelfTouchingWire);
+  theBuilder.Add(aSelfTouchingWire, aCommonEdge);
+  theBuilder.Add(aSelfTouchingWire, anEdgeBC);
+  theBuilder.Add(aSelfTouchingWire, anEdgeCB);
+  theBuilder.Add(aSelfTouchingWire, anEdgeBD);
+  theBuilder.Add(aSelfTouchingWire, anEdgeDA);
+  aSelfTouchingWire.Closed(true);
+
+  TopoDS_Face aSelfTouchingFace;
+  theBuilder.MakeFace(aSelfTouchingFace, aSurface, aLocation, Precision::Confusion());
+  theBuilder.Add(aSelfTouchingFace, aSelfTouchingWire);
+
+  TopoDS_Edge aReversedCommonEdge = aCommonEdge;
+  aReversedCommonEdge.Reverse();
+  TopoDS_Wire aSecondWire;
+  theBuilder.MakeWire(aSecondWire);
+  theBuilder.Add(aSecondWire, aReversedCommonEdge);
+  theBuilder.Add(aSecondWire, anEdgeAE);
+  theBuilder.Add(aSecondWire, anEdgeEB);
+  aSecondWire.Closed(true);
+
+  TopoDS_Face aSecondFace;
+  theBuilder.MakeFace(aSecondFace, aSurface, aLocation, Precision::Confusion());
+  theBuilder.Add(aSecondFace, aSecondWire);
+
+  MissingPCurveShape aResult;
+  theBuilder.MakeShell(aResult.Shell);
+  theBuilder.Add(aResult.Shell, aSelfTouchingFace);
+  theBuilder.Add(aResult.Shell, aSecondFace);
+  aResult.ReferenceFace     = aSelfTouchingFace;
+  aResult.MissingPCurveEdge = anEdgeBC;
+  aResult.ValidPCurveEdge   = anEdgeBD;
+  return aResult;
+}
+
+static MissingPCurveShape makeMissingPCurveTransformationShape(BRep_Builder& theBuilder)
+{
+  const occ::handle<Geom_CylindricalSurface> aSurface = new Geom_CylindricalSurface(gp::XOY(), 1.0);
+  const TopLoc_Location                      aLocation;
+  const TopoDS_Vertex aVertexA = makeVertex(theBuilder, aSurface->Value(0.0, 0.0));
+  const TopoDS_Vertex aVertexB = makeVertex(theBuilder, aSurface->Value(0.5, 0.0));
+  const TopoDS_Vertex aVertexC = makeVertex(theBuilder, aSurface->Value(0.5, 1.0));
+  const TopoDS_Vertex aVertexD = makeVertex(theBuilder, aSurface->Value(0.0, 1.0));
+  const TopoDS_Vertex aVertexE = makeVertex(theBuilder, aSurface->Value(1.0, 0.0));
+  const TopoDS_Vertex aVertexF = makeVertex(theBuilder, aSurface->Value(1.0, 1.0));
+
+  const TopoDS_Edge anEdgeAB = makeEdge(theBuilder, aSurface, aLocation, aVertexA, aVertexB, true);
+  const TopoDS_Edge anEdgeBC = makeEdge(theBuilder, aSurface, aLocation, aVertexB, aVertexC, true);
+  const TopoDS_Edge anEdgeCD = makeEdge(theBuilder, aSurface, aLocation, aVertexC, aVertexD, true);
+  const TopoDS_Edge anEdgeDA = makeEdge(theBuilder, aSurface, aLocation, aVertexD, aVertexA, true);
+  const TopoDS_Edge anEdgeBE = makeEdge(theBuilder, aSurface, aLocation, aVertexB, aVertexE, false);
+  const TopoDS_Edge anEdgeEF = makeEdge(theBuilder, aSurface, aLocation, aVertexE, aVertexF, true);
+  const TopoDS_Edge anEdgeFC = makeEdge(theBuilder, aSurface, aLocation, aVertexF, aVertexC, true);
+
+  TopoDS_Wire aLeftWire;
+  theBuilder.MakeWire(aLeftWire);
+  theBuilder.Add(aLeftWire, anEdgeAB);
+  theBuilder.Add(aLeftWire, anEdgeBC);
+  theBuilder.Add(aLeftWire, anEdgeCD);
+  theBuilder.Add(aLeftWire, anEdgeDA);
+  aLeftWire.Closed(true);
+
+  TopoDS_Edge aReversedEdgeBC = anEdgeBC;
+  aReversedEdgeBC.Reverse();
+  TopoDS_Wire aRightWire;
+  theBuilder.MakeWire(aRightWire);
+  theBuilder.Add(aRightWire, anEdgeBE);
+  theBuilder.Add(aRightWire, anEdgeEF);
+  theBuilder.Add(aRightWire, anEdgeFC);
+  theBuilder.Add(aRightWire, aReversedEdgeBC);
+  aRightWire.Closed(true);
+
+  MissingPCurveShape aResult;
+  theBuilder.MakeFace(aResult.ReferenceFace, aSurface, aLocation, Precision::Confusion());
+  theBuilder.Add(aResult.ReferenceFace, aLeftWire);
+  TopoDS_Face aRightFace;
+  theBuilder.MakeFace(aRightFace, aSurface, aLocation, Precision::Confusion());
+  theBuilder.Add(aRightFace, aRightWire);
+  theBuilder.MakeShell(aResult.Shell);
+  theBuilder.Add(aResult.Shell, aResult.ReferenceFace);
+  theBuilder.Add(aResult.Shell, aRightFace);
+  aResult.MissingPCurveEdge = anEdgeBE;
+  aResult.ValidPCurveEdge   = anEdgeBC;
+  return aResult;
+}
+
+static bool addPlanarFacePair(BRep_Builder& theBuilder, TopoDS_Shell& theShell)
+{
+  const occ::handle<Geom_Surface> aNullSurface;
+  const TopLoc_Location           aLocation;
+  const TopoDS_Vertex             aVertex1 = makeVertex(theBuilder, gp_Pnt(3.0, 0.0, 0.0));
+  const TopoDS_Vertex             aVertex2 = makeVertex(theBuilder, gp_Pnt(4.0, 0.0, 0.0));
+  const TopoDS_Vertex             aVertex3 = makeVertex(theBuilder, gp_Pnt(4.0, 1.0, 0.0));
+  const TopoDS_Vertex             aVertex4 = makeVertex(theBuilder, gp_Pnt(3.0, 1.0, 0.0));
+  const TopoDS_Vertex             aVertex5 = makeVertex(theBuilder, gp_Pnt(5.0, 0.0, 0.0));
+  const TopoDS_Vertex             aVertex6 = makeVertex(theBuilder, gp_Pnt(5.0, 1.0, 0.0));
+
+  const TopoDS_Edge anEdge12 =
+    makeEdge(theBuilder, aNullSurface, aLocation, aVertex1, aVertex2, false);
+  const TopoDS_Edge anEdge23 =
+    makeEdge(theBuilder, aNullSurface, aLocation, aVertex2, aVertex3, false);
+  const TopoDS_Edge anEdge34 =
+    makeEdge(theBuilder, aNullSurface, aLocation, aVertex3, aVertex4, false);
+  const TopoDS_Edge anEdge41 =
+    makeEdge(theBuilder, aNullSurface, aLocation, aVertex4, aVertex1, false);
+  const TopoDS_Edge anEdge25 =
+    makeEdge(theBuilder, aNullSurface, aLocation, aVertex2, aVertex5, false);
+  const TopoDS_Edge anEdge56 =
+    makeEdge(theBuilder, aNullSurface, aLocation, aVertex5, aVertex6, false);
+  const TopoDS_Edge anEdge63 =
+    makeEdge(theBuilder, aNullSurface, aLocation, aVertex6, aVertex3, false);
+  if (anEdge12.IsNull() || anEdge23.IsNull() || anEdge34.IsNull() || anEdge41.IsNull()
+      || anEdge25.IsNull() || anEdge56.IsNull() || anEdge63.IsNull())
+  {
+    return false;
+  }
+
+  BRepBuilderAPI_MakeWire aLeftWireMaker;
+  aLeftWireMaker.Add(anEdge12);
+  aLeftWireMaker.Add(anEdge23);
+  aLeftWireMaker.Add(anEdge34);
+  aLeftWireMaker.Add(anEdge41);
+  if (!aLeftWireMaker.IsDone())
+  {
+    return false;
+  }
+
+  TopoDS_Edge aReversedEdge23 = anEdge23;
+  aReversedEdge23.Reverse();
+  BRepBuilderAPI_MakeWire aRightWireMaker;
+  aRightWireMaker.Add(aReversedEdge23);
+  aRightWireMaker.Add(anEdge25);
+  aRightWireMaker.Add(anEdge56);
+  aRightWireMaker.Add(anEdge63);
+  if (!aRightWireMaker.IsDone())
+  {
+    return false;
+  }
+
+  const gp_Pln            aPlanarSurface(gp::XOY());
+  BRepBuilderAPI_MakeFace aLeftFaceMaker(aPlanarSurface, aLeftWireMaker.Wire());
+  BRepBuilderAPI_MakeFace aRightFaceMaker(aPlanarSurface, aRightWireMaker.Wire());
+  if (!aLeftFaceMaker.IsDone() || !aRightFaceMaker.IsDone())
+  {
+    return false;
+  }
+  theBuilder.Add(theShell, aLeftFaceMaker.Face());
+  theBuilder.Add(theShell, aRightFaceMaker.Face());
+  return true;
+}
+
+static int countFaces(const TopoDS_Shape& theShape)
+{
+  int aFaceCount = 0;
+  for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    ++aFaceCount;
+  }
+  return aFaceCount;
+}
+} // namespace
 
 // Test for issue #925: Infinite loop when processing internal edges.
 // This test verifies that UnifySameDomain properly handles internal edges
@@ -305,4 +539,53 @@ TEST(ShapeUpgrade_UnifySameDomainTest, BasicBoxUnification)
     aFaceCount++;
   }
   EXPECT_EQ(aFaceCount, 6) << "Box should have 6 faces";
+}
+
+// Test that a missing pcurve neither causes a null dereference nor aborts unrelated face merging.
+TEST(ShapeUpgrade_UnifySameDomainTest, MissingPCurveDoesNotAbortShellProcessing)
+{
+  BRep_Builder       aBuilder;
+  MissingPCurveShape aTestShape = makeMissingPCurveShape(aBuilder);
+  ASSERT_FALSE(aTestShape.Shell.IsNull());
+  ASSERT_TRUE(addPlanarFacePair(aBuilder, aTestShape.Shell));
+
+  double aFirst = 0.0;
+  double aLast  = 0.0;
+  EXPECT_TRUE(
+    BRep_Tool::CurveOnSurface(aTestShape.MissingPCurveEdge, aTestShape.ReferenceFace, aFirst, aLast)
+      .IsNull());
+  ASSERT_FALSE(
+    BRep_Tool::CurveOnSurface(aTestShape.ValidPCurveEdge, aTestShape.ReferenceFace, aFirst, aLast)
+      .IsNull());
+
+  ShapeUpgrade_UnifySameDomain aUnifier(aTestShape.Shell, false, true, false);
+  aUnifier.AllowInternalEdges(true);
+  aUnifier.Build();
+
+  const TopoDS_Shape& aResult = aUnifier.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  EXPECT_EQ(countFaces(aResult), 3);
+}
+
+// Test that pcurve transformation skips an edge which has no source pcurve.
+TEST(ShapeUpgrade_UnifySameDomainTest, MissingSourcePCurveDuringTransformation)
+{
+  BRep_Builder       aBuilder;
+  MissingPCurveShape aTestShape = makeMissingPCurveTransformationShape(aBuilder);
+  ASSERT_FALSE(aTestShape.Shell.IsNull());
+
+  double aFirst = 0.0;
+  double aLast  = 0.0;
+  ASSERT_TRUE(
+    BRep_Tool::CurveOnSurface(aTestShape.MissingPCurveEdge, aTestShape.ReferenceFace, aFirst, aLast)
+      .IsNull());
+
+  ShapeUpgrade_UnifySameDomain aUnifier(aTestShape.Shell, false, true, false);
+  aUnifier.AllowInternalEdges(true);
+  aUnifier.Build();
+
+  const TopoDS_Shape& aResult = aUnifier.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+  EXPECT_EQ(countFaces(aResult), 2);
 }
