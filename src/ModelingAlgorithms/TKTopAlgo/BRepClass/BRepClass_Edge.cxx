@@ -24,7 +24,9 @@
 //=================================================================================================
 
 BRepClass_Edge::BRepClass_Edge()
-    : myMaxTolerance(Precision::Infinite()),
+    : myFirstParameter(0.0),
+      myLastParameter(0.0),
+      myMaxTolerance(Precision::Infinite()),
       myUseBndBox(false)
 {
 }
@@ -65,7 +67,22 @@ void BRepClass_Edge::SetNextEdge(
 BRepClass_Edge::BRepClass_Edge(const TopoDS_Edge& E, const TopoDS_Face& F)
     : myEdge(E),
       myFace(F),
+      myFirstParameter(0.0),
+      myLastParameter(0.0),
       myMaxTolerance(Precision::Infinite()),
       myUseBndBox(false)
 {
+}
+
+//=================================================================================================
+
+void BRepClass_Edge::SetCurve(const occ::handle<Geom2d_Curve>& theCurve,
+                              const double                     theFirst,
+                              const double                     theLast,
+                              const Bnd_Box2d&                 theBox)
+{
+  myCurve          = theCurve;
+  myFirstParameter = theFirst;
+  myLastParameter  = theLast;
+  myBoundingBox    = theBox;
 }

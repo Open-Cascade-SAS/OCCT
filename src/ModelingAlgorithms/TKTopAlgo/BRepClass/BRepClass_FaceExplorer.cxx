@@ -18,24 +18,58 @@
 //  Total rewriting of the method Segment; add the method OtherSegment.
 
 #include <BRep_Tool.hxx>
+#include <Bnd_Box2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
 #include <BRepClass_Edge.hxx>
 #include <BRepClass_FaceExplorer.hxx>
 #include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Precision.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <TopoDS.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 
 static const double Probing_Start = 0.123;
 static const double Probing_End   = 0.7;
 static const double Probing_Step  = 0.2111;
 
+namespace
+{
+
+constexpr size_t THE_MIN_EDGES_FOR_BOUNDING_BOX = 10;
+
+void cacheGeometry(BRepClass_Edge& theEdge)
+{
+  double                           aFirst = 0.0;
+  double                           aLast  = 0.0;
+  const occ::handle<Geom2d_Curve>& aCurve =
+    BRep_Tool::CurveOnSurface(theEdge.Edge(), theEdge.Face(), aFirst, aLast);
+  if (aCurve.IsNull())
+  {
+    return;
+  }
+
+  theEdge.SetCurve(aCurve, aFirst, aLast, Bnd_Box2d());
+}
+
+} // namespace
+
 //=================================================================================================
 
 BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F)
     : myFace(F),
-      myCurEdgeInd(1),
+      myCurrentWire(0),
+      myCurrentEdge(0),
+      myCurrentEdgeEnd(0),
+      myCurEdgeInd(0),
       myCurEdgePar(Probing_Start),
       myMaxTolerance(0.1),
       myUseBndBox(false),
@@ -46,6 +80,71 @@ BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F)
 
 {
   myFace.Orientation(TopAbs_FORWARD);
+
+  using EdgeIndices = NCollection_LinearVector<uint32_t>;
+  NCollection_DataMap<TopoDS_Shape, EdgeIndices, TopTools_ShapeMapHasher> anEdgeIndices;
+
+  for (TopExp_Explorer aWireExp(myFace, TopAbs_WIRE); aWireExp.More(); aWireExp.Next())
+  {
+    WireData aWire;
+    aWire.FirstEdge = static_cast<uint32_t>(myEdges.Size());
+
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      aMapVE;
+    TopExp::MapShapesAndAncestors(aWireExp.Current(), TopAbs_VERTEX, TopAbs_EDGE, aMapVE);
+    for (TopExp_Explorer anEdgeExp(aWireExp.Current(), TopAbs_EDGE); anEdgeExp.More();
+         anEdgeExp.Next())
+    {
+      BRepClass_Edge anEdge(TopoDS::Edge(anEdgeExp.Current()), myFace);
+      anEdge.SetNextEdge(aMapVE);
+      cacheGeometry(anEdge);
+      myEdges.Append(std::move(anEdge));
+      const uint32_t anEdgeIndex = static_cast<uint32_t>(myEdges.Size() - 1);
+      EdgeIndices*   anIndices   = anEdgeIndices.ChangeSeek(myEdges[anEdgeIndex].Edge());
+      if (anIndices == nullptr)
+      {
+        EdgeIndices aNewIndices;
+        aNewIndices.Append(anEdgeIndex);
+        anEdgeIndices.Bind(myEdges[anEdgeIndex].Edge(), std::move(aNewIndices));
+      }
+      else
+      {
+        anIndices->Append(anEdgeIndex);
+      }
+      ++aWire.NbEdges;
+    }
+    myWires.Append(aWire);
+  }
+
+  for (TopExp_Explorer anEdgeExp(myFace, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+  {
+    const TopoDS_Edge& anEdge      = TopoDS::Edge(anEdgeExp.Current());
+    const EdgeIndices* anIndices   = anEdgeIndices.Seek(anEdge);
+    uint32_t           anEdgeIndex = 0;
+    bool               isFound     = false;
+    if (anIndices != nullptr)
+    {
+      for (const uint32_t aCandidateIndex : *anIndices)
+      {
+        if (myEdges[aCandidateIndex].Edge().IsEqual(anEdge))
+        {
+          anEdgeIndex = aCandidateIndex;
+          isFound     = true;
+          break;
+        }
+      }
+    }
+    if (!isFound)
+    {
+      BRepClass_Edge anEdgeData(anEdge, myFace);
+      cacheGeometry(anEdgeData);
+      myEdges.Append(std::move(anEdgeData));
+      anEdgeIndex = static_cast<uint32_t>(myEdges.Size() - 1);
+    }
+    myProbeEdges.Append(anEdgeIndex);
+  }
 }
 
 //=================================================================================================
@@ -110,7 +209,7 @@ bool BRepClass_FaceExplorer::Reject(const gp_Pnt2d&) const
 
 bool BRepClass_FaceExplorer::Segment(const gp_Pnt2d& P, gp_Lin2d& L, double& Par)
 {
-  myCurEdgeInd = 1;
+  myCurEdgeInd = 0;
   myCurEdgePar = Probing_Start;
 
   return OtherSegment(P, L, Par);
@@ -120,30 +219,19 @@ bool BRepClass_FaceExplorer::Segment(const gp_Pnt2d& P, gp_Lin2d& L, double& Par
 
 bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double& Par)
 {
-  TopExp_Explorer           anExpF(myFace, TopAbs_EDGE);
-  int                       i;
-  double                    aFPar;
-  double                    aLPar;
-  occ::handle<Geom2d_Curve> aC2d;
-  constexpr double          aTolParConf2 = Precision::PConfusion() * Precision::PConfusion();
-  gp_Pnt2d                  aPOnC;
-  double                    aParamIn;
-
-  for (i = 1; anExpF.More(); anExpF.Next(), i++)
+  constexpr double aTolParConf2 = Precision::PConfusion() * Precision::PConfusion();
+  gp_Pnt2d         aPOnC;
+  while (myCurEdgeInd < myProbeEdges.Size())
   {
-    if (i != myCurEdgeInd)
-    {
-      continue;
-    }
-
-    const TopoDS_Shape&      aLocalShape   = anExpF.Current();
-    const TopAbs_Orientation anOrientation = aLocalShape.Orientation();
+    const BRepClass_Edge&    anEdgeData    = myEdges[myProbeEdges[myCurEdgeInd]];
+    const TopoDS_Edge&       anEdge        = anEdgeData.Edge();
+    const TopAbs_Orientation anOrientation = anEdge.Orientation();
 
     if (anOrientation == TopAbs_FORWARD || anOrientation == TopAbs_REVERSED)
     {
-      const TopoDS_Edge& anEdge = TopoDS::Edge(aLocalShape);
-
-      aC2d = BRep_Tool::CurveOnSurface(anEdge, myFace, aFPar, aLPar);
+      const occ::handle<Geom2d_Curve>& aC2d  = anEdgeData.Curve();
+      double                           aFPar = anEdgeData.FirstParameter();
+      double                           aLPar = anEdgeData.LastParameter();
 
       if (!aC2d.IsNull())
       {
@@ -167,7 +255,7 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
 
         for (; myCurEdgePar < Probing_End; myCurEdgePar += Probing_Step)
         {
-          aParamIn = myCurEdgePar * aFPar + (1. - myCurEdgePar) * aLPar;
+          const double aParamIn = myCurEdgePar * aFPar + (1. - myCurEdgePar) * aLPar;
 
           gp_Vec2d aTanVec;
           aC2d->D1(aParamIn, aPOnC, aTanVec);
@@ -254,7 +342,7 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
                 myCurEdgePar += Probing_Step;
                 if (myCurEdgePar >= Probing_End)
                 {
-                  myCurEdgeInd++;
+                  ++myCurEdgeInd;
                   myCurEdgePar = Probing_Start;
                 }
 
@@ -268,7 +356,7 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
     } // if (anOrientation == TopAbs_FORWARD ...
 
     // This curve is not valid for line construction. Go to another edge.
-    myCurEdgeInd++;
+    ++myCurEdgeInd;
     myCurEdgePar = Probing_Start;
   }
 
@@ -283,13 +371,15 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
 
 void BRepClass_FaceExplorer::InitWires()
 {
-  myWExplorer.Init(myFace, TopAbs_WIRE);
+  myCurrentWire = 0;
 }
 
 //=================================================================================================
 
-bool BRepClass_FaceExplorer::RejectWire(const gp_Lin2d&, const double) const
+bool BRepClass_FaceExplorer::RejectWire(const gp_Lin2d& theLine, const double theParameter) const
 {
+  (void)theLine;
+  (void)theParameter;
   return false;
 }
 
@@ -297,26 +387,92 @@ bool BRepClass_FaceExplorer::RejectWire(const gp_Lin2d&, const double) const
 
 void BRepClass_FaceExplorer::InitEdges()
 {
-  myEExplorer.Init(myWExplorer.Current(), TopAbs_EDGE);
-  myMapVE.Clear();
-  TopExp::MapShapesAndAncestors(myWExplorer.Current(), TopAbs_VERTEX, TopAbs_EDGE, myMapVE);
+  const WireData& aWire = myWires[myCurrentWire];
+  myCurrentEdge         = aWire.FirstEdge;
+  myCurrentEdgeEnd      = aWire.FirstEdge + aWire.NbEdges;
 }
 
 //=================================================================================================
 
-bool BRepClass_FaceExplorer::RejectEdge(const gp_Lin2d&, const double) const
+bool BRepClass_FaceExplorer::RejectEdge(const gp_Lin2d& theLine, const double theParameter) const
 {
+  (void)theLine;
+  (void)theParameter;
   return false;
+}
+
+//=================================================================================================
+
+void BRepClass_FaceExplorer::SetUseBndBox(const bool theValue)
+{
+  if (!theValue || myUseBndBox)
+  {
+    myUseBndBox = theValue;
+    return;
+  }
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+    for (const WireData& aWire : myWires)
+    {
+      for (uint32_t anEdgeIndex = aWire.FirstEdge; anEdgeIndex < aWire.FirstEdge + aWire.NbEdges;
+           ++anEdgeIndex)
+      {
+        BRepClass_Edge& anEdge = myEdges[anEdgeIndex];
+        if (!anEdge.Curve().IsNull() && anEdge.BoundingBox().IsVoid())
+        {
+          Bnd_Box2d aBox;
+          BndLib_Add2dCurve::Add(anEdge.Curve(),
+                                 anEdge.FirstParameter(),
+                                 anEdge.LastParameter(),
+                                 0.0,
+                                 aBox);
+          anEdge.SetCurve(anEdge.Curve(), anEdge.FirstParameter(), anEdge.LastParameter(), aBox);
+        }
+      }
+    }
+  }
+  catch (const Standard_Failure&)
+  {
+    myUseBndBox = false;
+    return;
+  }
+  myUseBndBox = true;
+}
+
+//=================================================================================================
+
+bool BRepClass_FaceExplorer::ShouldUseBndBox() const
+{
+  if (myEdges.Size() <= THE_MIN_EDGES_FOR_BOUNDING_BOX)
+  {
+    return false;
+  }
+
+  size_t aNbSplineEdges = 0;
+  for (const BRepClass_Edge& anEdge : myEdges)
+  {
+    if (anEdge.Curve().IsNull())
+    {
+      continue;
+    }
+    const GeomAbs_CurveType aType = Geom2dAdaptor_Curve(anEdge.Curve()).GetType();
+    if (aType == GeomAbs_BSplineCurve || aType == GeomAbs_BezierCurve
+        || aType == GeomAbs_OffsetCurve)
+    {
+      ++aNbSplineEdges;
+    }
+  }
+  return aNbSplineEdges * 2 >= myEdges.Size();
 }
 
 //=================================================================================================
 
 void BRepClass_FaceExplorer::CurrentEdge(BRepClass_Edge& E, TopAbs_Orientation& Or) const
 {
-  E.Edge() = TopoDS::Edge(myEExplorer.Current());
-  E.Face() = myFace;
-  Or       = E.Edge().Orientation();
-  E.SetNextEdge(myMapVE);
+  E  = myEdges[myCurrentEdge];
+  Or = E.Edge().Orientation();
   E.SetMaxTolerance(myMaxTolerance);
   E.SetUseBndBox(myUseBndBox);
 }

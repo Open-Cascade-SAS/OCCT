@@ -16,9 +16,12 @@
 
 #include <CSLib_Class2d.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 
+#include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace
 {
@@ -36,6 +39,13 @@ inline double transformToNormalized(const double theU, const double theUMin, con
   }
   return theU;
 }
+
+
+  //! Grid cache for O(1) classification of points far from polygon edges.
+  //! Construction is delayed until repeated queries amortize its cost.
+  static constexpr int    THE_GRID_SIZE       = 32; //!< Grid resolution per axis
+  static constexpr int    THE_GRID_MIN_POINTS = 24; //!< Small polygons stay on exact O(N) path
+  static constexpr size_t THE_GRID_BUILD_QUERY_COUNT = 64; //!< Queries before lazy construction
 } // namespace
 
 //=================================================================================================
@@ -138,6 +148,168 @@ CSLib_Class2d::CSLib_Class2d(const NCollection_DynamicArray<gp_Pnt2d>& thePnts2d
 
 //=================================================================================================
 
+CSLib_Class2d::CSLib_Class2d(const CSLib_Class2d& theOther)
+    : myPnts2dX(theOther.myPnts2dX),
+      myPnts2dY(theOther.myPnts2dY),
+      myTolU(theOther.myTolU),
+      myTolV(theOther.myTolV),
+      myPointsCount(theOther.myPointsCount),
+      myUMin(theOther.myUMin),
+      myVMin(theOther.myVMin),
+      myUMax(theOther.myUMax),
+      myVMax(theOther.myVMax),
+      myQueryCount(theOther.myQueryCount.load(std::memory_order_relaxed))
+{
+  if (theOther.myGridState.load(std::memory_order_acquire) == 2)
+  {
+    myGrid = theOther.myGrid;
+    myGridState.store(2, std::memory_order_relaxed);
+  }
+}
+
+//=================================================================================================
+
+CSLib_Class2d& CSLib_Class2d::operator=(const CSLib_Class2d& theOther)
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+  CSLib_Class2d aCopy(theOther);
+  *this = std::move(aCopy);
+  return *this;
+}
+
+//=================================================================================================
+
+void CSLib_Class2d::buildGridCache() const
+{
+  if (myPointsCount < THE_GRID_MIN_POINTS || myGridState.load(std::memory_order_acquire) == 2)
+  {
+    return;
+  }
+
+  unsigned char anExpectedState = 0;
+  if (!myGridState.compare_exchange_strong(anExpectedState,
+                                           static_cast<unsigned char>(1),
+                                           std::memory_order_acq_rel,
+                                           std::memory_order_acquire))
+  {
+    return;
+  }
+
+  try
+  {
+    const int aTotalCells = THE_GRID_SIZE * THE_GRID_SIZE;
+    myGrid.Resize(0, aTotalCells - 1, false);
+
+    const double                      aCellSize = 1.0 / THE_GRID_SIZE;
+    const double                      anEps     = 8.0 * std::numeric_limits<double>::epsilon();
+    const double*                     pX        = &myPnts2dX.First();
+    const double*                     pY        = &myPnts2dY.First();
+    NCollection_LinearVector<uint8_t> aBoundaryCells(static_cast<size_t>(aTotalCells), 0);
+
+    // Rasterize tolerance-expanded edge boxes into the fixed grid. This is
+    // equivalent to testing every cell box against every edge box, but avoids
+    // an O(grid cells * polygon edges) scan.
+    for (int anEdgeIdx = 0; anEdgeIdx < myPointsCount; ++anEdgeIdx)
+    {
+      const double aMinX = std::min(pX[anEdgeIdx], pX[anEdgeIdx + 1]) - myTolU - anEps;
+      const double aMaxX = std::max(pX[anEdgeIdx], pX[anEdgeIdx + 1]) + myTolU + anEps;
+      const double aMinY = std::min(pY[anEdgeIdx], pY[anEdgeIdx + 1]) - myTolV - anEps;
+      const double aMaxY = std::max(pY[anEdgeIdx], pY[anEdgeIdx + 1]) + myTolV + anEps;
+      if (aMaxX < 0.0 || aMinX > 1.0 || aMaxY < 0.0 || aMinY > 1.0)
+      {
+        continue;
+      }
+
+      const int aMinCellX =
+        std::clamp(static_cast<int>(std::ceil(aMinX * THE_GRID_SIZE)) - 1, 0, THE_GRID_SIZE - 1);
+      const int aMaxCellX =
+        std::clamp(static_cast<int>(std::floor(aMaxX * THE_GRID_SIZE)), 0, THE_GRID_SIZE - 1);
+      const int aMinCellY =
+        std::clamp(static_cast<int>(std::ceil(aMinY * THE_GRID_SIZE)) - 1, 0, THE_GRID_SIZE - 1);
+      const int aMaxCellY =
+        std::clamp(static_cast<int>(std::floor(aMaxY * THE_GRID_SIZE)), 0, THE_GRID_SIZE - 1);
+
+      for (int aCellY = aMinCellY; aCellY <= aMaxCellY; ++aCellY)
+      {
+        for (int aCellX = aMinCellX; aCellX <= aMaxCellX; ++aCellX)
+        {
+          const size_t aCellIndex    = static_cast<size_t>(aCellY * THE_GRID_SIZE + aCellX);
+          aBoundaryCells[aCellIndex] = 1;
+        }
+      }
+    }
+
+    // A polygon cannot change classification inside a connected set of cells
+    // that contains no boundary. Classify one center per component and flood
+    // the result through the remaining cells.
+    NCollection_LinearVector<uint8_t> aVisitedCells(static_cast<size_t>(aTotalCells), 0);
+    NCollection_LinearVector<int>     aCellQueue(static_cast<size_t>(aTotalCells));
+    for (int aCellIndex = 0; aCellIndex < aTotalCells; ++aCellIndex)
+    {
+      const size_t anIndex = static_cast<size_t>(aCellIndex);
+      if (aBoundaryCells[anIndex] != 0)
+      {
+        myGrid.SetValue(aCellIndex, GridCell_Boundary);
+        aVisitedCells[anIndex] = 1;
+        continue;
+      }
+      if (aVisitedCells[anIndex] != 0)
+      {
+        continue;
+      }
+
+      const int      aSeedX       = aCellIndex % THE_GRID_SIZE;
+      const int      aSeedY       = aCellIndex / THE_GRID_SIZE;
+      const double   aSeedCenterX = (static_cast<double>(aSeedX) + 0.5) * aCellSize;
+      const double   aSeedCenterY = (static_cast<double>(aSeedY) + 0.5) * aCellSize;
+      const GridCell aComponentValue =
+        internalSiDans(aSeedCenterX, aSeedCenterY) ? GridCell_Inside : GridCell_Outside;
+
+      aCellQueue.Clear();
+      aCellQueue.Append(aCellIndex);
+      aVisitedCells[anIndex] = 1;
+      for (size_t aQueueIndex = 0; aQueueIndex < aCellQueue.Size(); ++aQueueIndex)
+      {
+        const int aCurrentCell = aCellQueue[aQueueIndex];
+        myGrid.SetValue(aCurrentCell, aComponentValue);
+
+        const int aCurrentX         = aCurrentCell % THE_GRID_SIZE;
+        const int aCurrentY         = aCurrentCell / THE_GRID_SIZE;
+        const int aNeighborCells[4] = {aCurrentX > 0 ? aCurrentCell - 1 : -1,
+                                       aCurrentX + 1 < THE_GRID_SIZE ? aCurrentCell + 1 : -1,
+                                       aCurrentY > 0 ? aCurrentCell - THE_GRID_SIZE : -1,
+                                       aCurrentY + 1 < THE_GRID_SIZE ? aCurrentCell + THE_GRID_SIZE
+                                                                     : -1};
+        for (size_t aNeighborIndex = 0; aNeighborIndex < 4; ++aNeighborIndex)
+        {
+          const int aNeighborCell = aNeighborCells[aNeighborIndex];
+          if (aNeighborCell < 0)
+          {
+            continue;
+          }
+          const size_t aNeighbor = static_cast<size_t>(aNeighborCell);
+          if (aVisitedCells[aNeighbor] == 0 && aBoundaryCells[aNeighbor] == 0)
+          {
+            aVisitedCells[aNeighbor] = 1;
+            aCellQueue.Append(aNeighborCell);
+          }
+        }
+      }
+    }
+    myGridState.store(2, std::memory_order_release);
+  }
+  catch (...)
+  {
+    myGridState.store(0, std::memory_order_release);
+    throw;
+  }
+}
+
+//=================================================================================================
+
 CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
 {
   if (myPointsCount == 0)
@@ -162,6 +334,33 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
   // Transform to normalized coordinates.
   aX = transformToNormalized(aX, myUMin, myUMax - myUMin);
   aY = transformToNormalized(aY, myVMin, myVMax - myVMin);
+
+  // Build the acceleration grid only for sustained workloads. Short-lived
+  // classifiers and small polygons remain on the cheaper exact scan.
+  if (myGridState.load(std::memory_order_acquire) != 2 && myPointsCount >= THE_GRID_MIN_POINTS)
+  {
+    const size_t aQueryCount = myQueryCount.fetch_add(1, std::memory_order_relaxed) + 1;
+    if (aQueryCount >= THE_GRID_BUILD_QUERY_COUNT)
+    {
+      buildGridCache();
+    }
+  }
+
+  // Fast-path: conservative grid lookup (O(1) away from polygon edges).
+  if (aX >= 0.0 && aX <= 1.0 && aY >= 0.0 && aY <= 1.0
+      && myGridState.load(std::memory_order_acquire) == 2)
+  {
+    int aIX              = static_cast<int>(aX * THE_GRID_SIZE);
+    int aIY              = static_cast<int>(aY * THE_GRID_SIZE);
+    aIX                  = std::clamp(aIX, 0, THE_GRID_SIZE - 1);
+    aIY                  = std::clamp(aIY, 0, THE_GRID_SIZE - 1);
+    const GridCell aCell = myGrid.Value(aIY * THE_GRID_SIZE + aIX);
+    if (aCell == GridCell_Inside)
+      return Result_Inside;
+    if (aCell == GridCell_Outside)
+      return Result_Outside;
+    // GridCell_Boundary — fall through to exact classification.
+  }
 
   // Perform classification with ON detection.
   const Result aResult = internalSiDansOuOn(aX, aY);
@@ -234,16 +433,20 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans_OnMode(const gp_Pnt2d& thePoint,
 bool CSLib_Class2d::internalSiDans(const double thePx, const double thePy) const
 {
   // Ray-casting algorithm: count edge crossings with a horizontal ray from (Px, Py) to +infinity.
+  // Use raw pointers for cache-friendly sequential access and auto-vectorization.
+  const double* pX = &myPnts2dX.First();
+  const double* pY = &myPnts2dY.First();
+
   int aNbCrossings = 0;
 
-  double aPrevDx          = myPnts2dX.Value(0) - thePx;
-  double aPrevDy          = myPnts2dY.Value(0) - thePy;
+  double aPrevDx          = pX[0] - thePx;
+  double aPrevDy          = pY[0] - thePy;
   bool   aPrevYIsNegative = (aPrevDy < 0.0);
 
   for (int aNextIdx = 1; aNextIdx <= myPointsCount; ++aNextIdx)
   {
-    const double aCurrDx          = myPnts2dX.Value(aNextIdx) - thePx;
-    const double aCurrDy          = myPnts2dY.Value(aNextIdx) - thePy;
+    const double aCurrDx          = pX[aNextIdx] - thePx;
+    const double aCurrDy          = pY[aNextIdx] - thePy;
     const bool   aCurrYIsNegative = (aCurrDy < 0.0);
 
     // Check for edge crossing when Y changes sign.
@@ -280,17 +483,21 @@ CSLib_Class2d::Result CSLib_Class2d::internalSiDansOuOn(const double thePx,
                                                         const double thePy) const
 {
   // Ray-casting algorithm with ON detection.
+  // Use raw pointers for cache-friendly sequential access and auto-vectorization.
+  const double* pX = &myPnts2dX.First();
+  const double* pY = &myPnts2dY.First();
+
   int aNbCrossings = 0;
 
-  double aPrevDx          = myPnts2dX.Value(0) - thePx;
-  double aPrevDy          = myPnts2dY.Value(0) - thePy;
+  double aPrevDx          = pX[0] - thePx;
+  double aPrevDy          = pY[0] - thePy;
   bool   aPrevYIsNegative = (aPrevDy < 0.0);
 
   for (int aNextIdx = 1; aNextIdx <= myPointsCount; ++aNextIdx)
   {
     const int    aPrevIdx = aNextIdx - 1;
-    const double aCurrDx  = myPnts2dX.Value(aNextIdx) - thePx;
-    const double aCurrDy  = myPnts2dY.Value(aNextIdx) - thePy;
+    const double aCurrDx  = pX[aNextIdx] - thePx;
+    const double aCurrDy  = pY[aNextIdx] - thePy;
 
     // Check if point is very close to current vertex.
     if (aCurrDx < myTolU && aCurrDx > -myTolU && aCurrDy < myTolV && aCurrDy > -myTolV)
@@ -301,14 +508,11 @@ CSLib_Class2d::Result CSLib_Class2d::internalSiDansOuOn(const double thePx,
     // Check if point is ON the edge by computing Y at the test point's X.
     // Skip interpolation for nearly vertical edges to avoid division instability.
     // For vertical edges, the ON detection is handled by the tolerance check above.
-    const double aEdgeDx = myPnts2dX.Value(aNextIdx) - myPnts2dX.Value(aPrevIdx);
-    if ((myPnts2dX.Value(aPrevIdx) - thePx) * aCurrDx < 0.0
-        && std::abs(aEdgeDx) > Precision::PConfusion())
+    const double aEdgeDx = pX[aNextIdx] - pX[aPrevIdx];
+    if ((pX[aPrevIdx] - thePx) * aCurrDx < 0.0 && std::abs(aEdgeDx) > Precision::PConfusion())
     {
-      const double aInterpY =
-        myPnts2dY.Value(aNextIdx)
-        - (myPnts2dY.Value(aNextIdx) - myPnts2dY.Value(aPrevIdx)) / aEdgeDx * aCurrDx;
-      const double aDeltaY = aInterpY - thePy;
+      const double aInterpY = pY[aNextIdx] - (pY[aNextIdx] - pY[aPrevIdx]) / aEdgeDx * aCurrDx;
+      const double aDeltaY  = aInterpY - thePy;
       if (aDeltaY >= -myTolV && aDeltaY <= myTolV)
       {
         return Result_Uncertain; // ON boundary (on edge)

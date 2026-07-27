@@ -24,6 +24,8 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DynamicArray.hxx>
 
+#include <atomic>
+
 class gp_Pnt2d;
 
 //! Low-level algorithm for 2D point-in-polygon classification.
@@ -110,6 +112,12 @@ public:
                                 double                                    theUMax,
                                 double                                    theVMax);
 
+  //! Deep-copy constructor. The immutable polygon and a completed grid cache are copied.
+  Standard_EXPORT CSLib_Class2d(const CSLib_Class2d& theOther);
+
+  //! Deep-copy assignment. A grid under construction is intentionally not copied.
+  Standard_EXPORT CSLib_Class2d& operator=(const CSLib_Class2d& theOther);
+
   //! Move constructor.
   CSLib_Class2d(CSLib_Class2d&& theOther) noexcept
       : myPnts2dX(std::move(theOther.myPnts2dX)),
@@ -120,7 +128,10 @@ public:
         myUMin(theOther.myUMin),
         myVMin(theOther.myVMin),
         myUMax(theOther.myUMax),
-        myVMax(theOther.myVMax)
+        myVMax(theOther.myVMax),
+        myGrid(std::move(theOther.myGrid)),
+        myGridState(theOther.myGridState.load(std::memory_order_relaxed)),
+        myQueryCount(theOther.myQueryCount.load(std::memory_order_relaxed))
   {
   }
 
@@ -138,6 +149,11 @@ public:
       myVMin        = theOther.myVMin;
       myUMax        = theOther.myUMax;
       myVMax        = theOther.myVMax;
+      myGrid        = std::move(theOther.myGrid);
+      myGridState.store(theOther.myGridState.load(std::memory_order_relaxed),
+                        std::memory_order_relaxed);
+      myQueryCount.store(theOther.myQueryCount.load(std::memory_order_relaxed),
+                         std::memory_order_relaxed);
     }
     return *this;
   }
@@ -189,13 +205,20 @@ private:
             double                   theUMax,
             double                   theVMax);
 
-  //! Copy constructor is deleted.
-  CSLib_Class2d(const CSLib_Class2d&) = delete;
-
-  //! Copy assignment operator is deleted.
-  CSLib_Class2d& operator=(const CSLib_Class2d&) = delete;
+  //! Builds the grid cache for fast point classification on first sustained use.
+  //! Cells whose box overlaps a tolerance-expanded polygon-edge box remain on
+  //! the exact path; only provably boundary-free cells are classified/cached.
+  void buildGridCache() const;
 
 private:
+  //! Grid cell classification for the fast-path cache.
+  enum GridCell : signed char
+  {
+    GridCell_Inside   = 1,  //!< Cell is fully inside the polygon
+    GridCell_Outside  = -1, //!< Cell is fully outside the polygon
+    GridCell_Boundary = 0   //!< Cell straddles a polygon edge — needs exact test
+  };
+
   NCollection_Array1<double> myPnts2dX;           //!< X coordinates (normalized)
   NCollection_Array1<double> myPnts2dY;           //!< Y coordinates (normalized)
   double                     myTolU        = 0.0; //!< Tolerance in U direction (normalized)
@@ -205,6 +228,10 @@ private:
   double                     myVMin        = 0.0; //!< Original minimum V bound
   double                     myUMax        = 0.0; //!< Original maximum U bound
   double                     myVMax        = 0.0; //!< Original maximum V bound
+  mutable NCollection_Array1<GridCell> myGrid;             //!< Flat grid
+  //! 0 = not built, 1 = one thread building, 2 = immutable and readable.
+  mutable std::atomic<unsigned char> myGridState{0};
+  mutable std::atomic<size_t>        myQueryCount{0};
 };
 
 #endif // _CSLib_Class2d_HeaderFile

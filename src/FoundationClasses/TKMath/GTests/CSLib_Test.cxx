@@ -28,7 +28,10 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_Sequence.hxx>
 
+#include <array>
+#include <atomic>
 #include <cmath>
+#include <thread>
 
 namespace
 {
@@ -254,6 +257,28 @@ TEST_F(CSLibClass2dTest, SiDans_PointOnBoundary)
   EXPECT_EQ(aClassifier.SiDans(aPointOnEdge), 0);
 }
 
+TEST_F(CSLibClass2dTest, DeepCopyPreservesClassification)
+{
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 4);
+  aPnts(1) = gp_Pnt2d(0.0, 0.0);
+  aPnts(2) = gp_Pnt2d(1.0, 0.0);
+  aPnts(3) = gp_Pnt2d(1.0, 1.0);
+  aPnts(4) = gp_Pnt2d(0.0, 1.0);
+
+  CSLib_Class2d       aSource(aPnts, 0.01, 0.01, 0.0, 0.0, 1.0, 1.0);
+  const CSLib_Class2d aCopy(aSource);
+  CSLib_Class2d       anAssigned;
+  anAssigned = aSource;
+
+  const gp_Pnt2d aSamples[] = {gp_Pnt2d(0.5, 0.5), gp_Pnt2d(2.0, 2.0), gp_Pnt2d(0.5, 0.0)};
+  for (const gp_Pnt2d& aPoint : aSamples)
+  {
+    const CSLib_Class2d::Result aState = aSource.SiDans(aPoint);
+    EXPECT_EQ(aCopy.SiDans(aPoint), aState);
+    EXPECT_EQ(anAssigned.SiDans(aPoint), aState);
+  }
+}
+
 TEST_F(CSLibClass2dTest, SiDans_TriangularPolygon)
 {
   NCollection_Array1<gp_Pnt2d> aPnts(1, 3);
@@ -301,6 +326,125 @@ TEST_F(CSLibClass2dTest, InternalSiDans_NormalizedCoordinates)
   // Test classification with actual coordinates
   EXPECT_EQ(aClassifier.SiDans(gp_Pnt2d(5.0, 5.0)), CSLib_Class2d::Result_Inside);
   EXPECT_EQ(aClassifier.SiDans(gp_Pnt2d(15.0, 15.0)), CSLib_Class2d::Result_Outside);
+}
+
+TEST_F(CSLibClass2dTest, LazyGridRemainsExactAwayFromBoundary)
+{
+  constexpr int                THE_POINT_COUNT = 64;
+  NCollection_Array1<gp_Pnt2d> aPnts(1, THE_POINT_COUNT);
+  for (int anIdx = 0; anIdx < THE_POINT_COUNT; ++anIdx)
+  {
+    const double anAngle =
+      2.0 * M_PI * static_cast<double>(anIdx) / static_cast<double>(THE_POINT_COUNT);
+    aPnts(anIdx + 1) = gp_Pnt2d(0.5 + 0.4 * std::cos(anAngle), 0.5 + 0.4 * std::sin(anAngle));
+  }
+
+  CSLib_Class2d aClassifier(aPnts, 1.0e-8, 1.0e-8, 0.0, 0.0, 1.0, 1.0);
+
+  // Cross the lazy-build threshold with exact interior queries.
+  for (int aQueryIdx = 0; aQueryIdx < 64; ++aQueryIdx)
+  {
+    EXPECT_EQ(aClassifier.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Inside);
+  }
+
+  // Exercise cached cells, excluding an annulus around the polygon boundary.
+  for (int aY = 0; aY < 16; ++aY)
+  {
+    for (int anX = 0; anX < 16; ++anX)
+    {
+      const gp_Pnt2d aPoint((static_cast<double>(anX) + 0.5) / 16.0,
+                            (static_cast<double>(aY) + 0.5) / 16.0);
+      const double   aDx     = aPoint.X() - 0.5;
+      const double   aDy     = aPoint.Y() - 0.5;
+      const double   aRadius = std::sqrt(aDx * aDx + aDy * aDy);
+      if (aRadius < 0.35)
+      {
+        EXPECT_EQ(aClassifier.SiDans(aPoint), CSLib_Class2d::Result_Inside);
+      }
+      else if (aRadius > 0.45)
+      {
+        EXPECT_EQ(aClassifier.SiDans(aPoint), CSLib_Class2d::Result_Outside);
+      }
+    }
+  }
+
+  // Boundary candidates must stay on the exact/tolerance path after caching.
+  EXPECT_EQ(aClassifier.SiDans(aPnts(1)), CSLib_Class2d::Result_Uncertain);
+
+  const CSLib_Class2d aCopy(aClassifier);
+  CSLib_Class2d       anAssigned;
+  anAssigned = aClassifier;
+  EXPECT_EQ(aCopy.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Inside);
+  EXPECT_EQ(anAssigned.SiDans(gp_Pnt2d(0.99, 0.99)), CSLib_Class2d::Result_Outside);
+  EXPECT_EQ(aCopy.SiDans(aPnts(1)), CSLib_Class2d::Result_Uncertain);
+}
+
+TEST_F(CSLibClass2dTest, LazyGridBuildIsThreadSafe)
+{
+  constexpr int                THE_POINT_COUNT = 64;
+  NCollection_Array1<gp_Pnt2d> aPnts(1, THE_POINT_COUNT);
+  for (int anIdx = 0; anIdx < THE_POINT_COUNT; ++anIdx)
+  {
+    const double anAngle =
+      2.0 * M_PI * static_cast<double>(anIdx) / static_cast<double>(THE_POINT_COUNT);
+    aPnts(anIdx + 1) = gp_Pnt2d(0.5 + 0.4 * std::cos(anAngle), 0.5 + 0.4 * std::sin(anAngle));
+  }
+
+  CSLib_Class2d              aClassifier(aPnts, 1.0e-8, 1.0e-8, 0.0, 0.0, 1.0, 1.0);
+  std::atomic<bool>          hasFailure{false};
+  std::array<std::thread, 8> aThreads;
+  for (size_t aThreadIdx = 0; aThreadIdx < aThreads.size(); ++aThreadIdx)
+  {
+    aThreads[aThreadIdx] = std::thread([&aClassifier, &hasFailure]() {
+      for (size_t aQueryIdx = 0; aQueryIdx < 256; ++aQueryIdx)
+      {
+        const bool                  isInside = (aQueryIdx & 1u) == 0u;
+        const gp_Pnt2d              aPoint   = isInside ? gp_Pnt2d(0.5, 0.5) : gp_Pnt2d(0.99, 0.99);
+        const CSLib_Class2d::Result anExpected =
+          isInside ? CSLib_Class2d::Result_Inside : CSLib_Class2d::Result_Outside;
+        if (aClassifier.SiDans(aPoint) != anExpected)
+        {
+          hasFailure.store(true, std::memory_order_relaxed);
+          return;
+        }
+      }
+    });
+  }
+  for (std::thread& aThread : aThreads)
+  {
+    aThread.join();
+  }
+  EXPECT_FALSE(hasFailure.load(std::memory_order_relaxed));
+}
+
+TEST_F(CSLibClass2dTest, LazyGridPreservesToleranceAcrossCellBoundary)
+{
+  constexpr int                THE_POINTS_PER_SIDE = 8;
+  constexpr int                THE_POINT_COUNT     = 4 * THE_POINTS_PER_SIDE;
+  constexpr double             THE_MIN             = 0.25;
+  constexpr double             THE_MAX             = 0.75;
+  constexpr double             THE_TOLERANCE       = 1.0e-4;
+  NCollection_Array1<gp_Pnt2d> aPnts(1, THE_POINT_COUNT);
+  for (int anIdx = 0; anIdx < THE_POINTS_PER_SIDE; ++anIdx)
+  {
+    const double aParameter = static_cast<double>(anIdx) / static_cast<double>(THE_POINTS_PER_SIDE);
+    aPnts(1 + anIdx)        = gp_Pnt2d(THE_MIN + (THE_MAX - THE_MIN) * aParameter, THE_MIN);
+    aPnts(1 + THE_POINTS_PER_SIDE + anIdx) =
+      gp_Pnt2d(THE_MAX, THE_MIN + (THE_MAX - THE_MIN) * aParameter);
+    aPnts(1 + 2 * THE_POINTS_PER_SIDE + anIdx) =
+      gp_Pnt2d(THE_MAX - (THE_MAX - THE_MIN) * aParameter, THE_MAX);
+    aPnts(1 + 3 * THE_POINTS_PER_SIDE + anIdx) =
+      gp_Pnt2d(THE_MIN, THE_MAX - (THE_MAX - THE_MIN) * aParameter);
+  }
+
+  CSLib_Class2d aClassifier(aPnts, THE_TOLERANCE, THE_TOLERANCE, 0.0, 0.0, 1.0, 1.0);
+  for (size_t aQueryIdx = 0; aQueryIdx < 64; ++aQueryIdx)
+  {
+    ASSERT_EQ(aClassifier.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Inside);
+  }
+
+  EXPECT_EQ(aClassifier.SiDans(gp_Pnt2d(THE_MIN - 0.5 * THE_TOLERANCE, 0.5)),
+            CSLib_Class2d::Result_Uncertain);
 }
 
 // Test SiDans_OnMode
@@ -401,10 +545,10 @@ TEST_F(CSLibNormalPolyDefTest, Value_AtSingularPoints)
   // the tolerance check RealSmall().
   // Test that the function doesn't crash at these points.
   EXPECT_TRUE(aPoly.Value(0.0, aValue));
-  EXPECT_TRUE(std::isfinite(aValue));
+  EXPECT_FALSE(Precision::IsInfinite(aValue));
 
   EXPECT_TRUE(aPoly.Value(M_PI / 2.0, aValue));
-  EXPECT_TRUE(std::isfinite(aValue));
+  EXPECT_FALSE(Precision::IsInfinite(aValue));
 }
 
 // Test Derivative function

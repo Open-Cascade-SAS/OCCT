@@ -32,7 +32,7 @@
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -88,6 +88,10 @@ bool isDegenerated(const BRepAdaptor_Curve& theCurve,
 BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const double TolUV)
     : Toluv(TolUV),
       Face(aFace),
+      myIsUPeriodic(false),
+      myIsVPeriodic(false),
+      myUPeriod(0.0),
+      myVPeriod(0.0),
       U1(0.0),
       V1(0.0),
       U2(0.0),
@@ -98,6 +102,10 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
   Face.Orientation(TopAbs_FORWARD);
   occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
   surf->Initialize(aFace, false);
+  myIsUPeriodic = surf->IsUPeriodic();
+  myIsVPeriodic = surf->IsVPeriodic();
+  myUPeriod     = myIsUPeriodic ? surf->UPeriod() : 0.0;
+  myVPeriod     = myIsVPeriodic ? surf->VPeriod() : 0.0;
 
   TopoDS_Edge            edge;
   TopAbs_Orientation     Or;
@@ -112,13 +120,13 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
   for (TopExp_Explorer aFaceExplorer(Face, TopAbs_WIRE); (aFaceExplorer.More() && !anIsBadWire);
        aFaceExplorer.Next())
   {
-    int                            nbpnts = 0;
-    NCollection_Sequence<gp_Pnt2d> SeqPnt2d;
-    int                            firstpoint     = 1;
-    double                         FlecheU        = 0.0;
-    double                         FlecheV        = 0.0;
-    bool                           WireIsNotEmpty = false;
-    int                            NbEdges        = 0;
+    int                                nbpnts = 0;
+    NCollection_LinearVector<gp_Pnt2d> SeqPnt2d;
+    int                                firstpoint     = 1;
+    double                             FlecheU        = 0.0;
+    double                             FlecheV        = 0.0;
+    bool                               WireIsNotEmpty = false;
+    int                                NbEdges        = 0;
 
     TopExp_Explorer Explorer;
     for (Explorer.Init(aFaceExplorer.Current(), TopAbs_EDGE); Explorer.More(); Explorer.Next())
@@ -261,14 +269,14 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
           //",nbpnts,u,FlecheU,FlecheV,ii,Avant);
           // 		  if(ii>(Avant+4))
           //  Modified by Sergey KHROMOV - Fri Apr 19 09:46:12 2002 Begin
-          if (ii > (Avant + 4) && SeqPnt2d(ii - 2).SquareDistance(SeqPnt2d(ii)))
+          if (ii > (Avant + 4) && SeqPnt2d[ii - 3].SquareDistance(SeqPnt2d[ii - 1]))
           //  Modified by Sergey KHROMOV - Fri Apr 19 09:46:13 2002 End
           {
-            gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
-            double   ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
+            gp_Lin2d Lin(SeqPnt2d[ii - 3], gp_Dir2d(gp_Vec2d(SeqPnt2d[ii - 3], SeqPnt2d[ii - 1])));
+            double   ul = ElCLib::Parameter(Lin, SeqPnt2d[ii - 2]);
             gp_Pnt2d Pp = ElCLib::Value(ul, Lin);
-            double   dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
-            double   dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+            double   dU = std::abs(Pp.X() - SeqPnt2d[ii - 2].X());
+            double   dV = std::abs(Pp.Y() - SeqPnt2d[ii - 2].Y());
             //-- printf(" (du=%7.5g   dv=%7.5g)",dU,dV);
             if (dU > FlecheU)
             {
@@ -296,7 +304,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
       /////////////////////////////////////
       TabClass.Append(CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       anIsBadWire = true;
-      TabOrien.Append(-1);
+      TabOrien.Append(WireRole::Invalid);
     }
     else if (WireIsNotEmpty)
     {
@@ -318,8 +326,8 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         int im1 = nbpnts - 1;
         int im0 = 1;
         //	      PClass(im2)=SeqPnt2d.Value(im2);
-        PClass(im1)    = SeqPnt2d.Value(im1);
-        PClass(nbpnts) = SeqPnt2d.Value(nbpnts);
+        PClass(im1)    = SeqPnt2d[im1 - 1];
+        PClass(nbpnts) = SeqPnt2d[nbpnts - 1];
 
         double aPer = 0.;
         //	      for(int ii=1; ii<nbpnts; ii++,im0++,im1++,im2++)
@@ -330,7 +338,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
           {
             im1 = 1;
           }
-          PClass(ii) = SeqPnt2d.Value(ii);
+          PClass(ii) = SeqPnt2d[ii - 1];
           //		  gp_Vec2d A(PClass(im2),PClass(im1));
           //		  gp_Vec2d B(PClass(im1),PClass(im0));
           //		  double N = A.Magnitude() * B.Magnitude();
@@ -391,12 +399,13 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
               }
               if (nbp > 2)
               {
-                int      ii = SeqPnt2d.Length();
-                gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
-                double   ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
-                gp_Pnt2d Pp = ElCLib::Value(ul, Lin);
-                double   dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
-                double   dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+                const size_t ii = SeqPnt2d.Size();
+                gp_Lin2d     Lin(SeqPnt2d[ii - 3],
+                                 gp_Dir2d(gp_Vec2d(SeqPnt2d[ii - 3], SeqPnt2d[ii - 1])));
+                double       ul = ElCLib::Parameter(Lin, SeqPnt2d[ii - 2]);
+                gp_Pnt2d     Pp = ElCLib::Value(ul, Lin);
+                double       dU = std::abs(Pp.X() - SeqPnt2d[ii - 2].X());
+                double       dV = std::abs(Pp.Y() - SeqPnt2d[ii - 2].Y());
                 if (dU > FlecheU)
                 {
                   FlecheU = dU;
@@ -409,12 +418,12 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
               firstpoint = 2;
             }
           }
-          nbpnts = SeqPnt2d.Length();
+          nbpnts = static_cast<int>(SeqPnt2d.Size());
           PClass.Resize(1, nbpnts, false);
           im1            = nbpnts - 1;
           im0            = 1;
-          PClass(im1)    = SeqPnt2d.Value(im1);
-          PClass(nbpnts) = SeqPnt2d.Value(nbpnts);
+          PClass(im1)    = SeqPnt2d[im1 - 1];
+          PClass(nbpnts) = SeqPnt2d[nbpnts - 1];
           square         = 0.;
           aPer           = 0.;
           for (int ii = 1; ii < nbpnts; ii++, im0++, im1++)
@@ -423,7 +432,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
             {
               im1 = 1;
             }
-            PClass(ii) = SeqPnt2d.Value(ii);
+            PClass(ii) = SeqPnt2d[ii - 1];
             square +=
               (PClass(im0).X() - PClass(im1).X()) * (PClass(im0).Y() + PClass(im1).Y()) * .5;
             aPer += (PClass(im0).XY() - PClass(im1).XY()).Modulus();
@@ -438,11 +447,11 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         //-- FlecheV*=10.0;
         if (aNbE == 1 && FlecheU < eps && FlecheV < eps && std::abs(square) < eps)
         {
-          TabOrien.Append(1);
+          TabOrien.Append(WireRole::Outer);
         }
         else
         {
-          TabOrien.Append(((square < 0.0) ? 1 : 0));
+          TabOrien.Append(square < 0.0 ? WireRole::Outer : WireRole::Inner);
         }
 
         if (FlecheU < Toluv)
@@ -458,23 +467,23 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
       else
       {
         anIsBadWire = true;
-        TabOrien.Append(-1);
+        TabOrien.Append(WireRole::Invalid);
         NCollection_Array1<gp_Pnt2d> xPClass(1, 2);
-        xPClass(1) = SeqPnt2d(1);
-        xPClass(2) = SeqPnt2d(2);
+        xPClass(1) = SeqPnt2d[0];
+        xPClass(2) = SeqPnt2d[1];
         TabClass.Append(CSLib_Class2d(xPClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       }
     } // else if(WareIsNotEmpty
   } // for(FaceExplorer
 
-  int nbtabclass = TabClass.Length();
+  const size_t nbtabclass = TabClass.Size();
 
   if (nbtabclass > 0)
   {
     //-- If an error was detected on a wire: set all TabOrien to -1
     if (anIsBadWire)
     {
-      TabOrien(1) = -1;
+      TabOrien[0] = WireRole::Invalid;
     }
 
     if (surf->GetType() == GeomAbs_Cone || surf->GetType() == GeomAbs_Cylinder
@@ -512,6 +521,88 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
   }
 }
 
+//=================================================================================================
+
+BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const BRepTopAdaptor_FClass2d& theOther)
+    : TabClass(theOther.TabClass),
+      TabOrien(theOther.TabOrien),
+      Toluv(theOther.Toluv),
+      Face(theOther.Face),
+      myIsUPeriodic(theOther.myIsUPeriodic),
+      myIsVPeriodic(theOther.myIsVPeriodic),
+      myUPeriod(theOther.myUPeriod),
+      myVPeriod(theOther.myVPeriod),
+      U1(theOther.U1),
+      V1(theOther.V1),
+      U2(theOther.U2),
+      V2(theOther.V2),
+      Umin(theOther.Umin),
+      Umax(theOther.Umax),
+      Vmin(theOther.Vmin),
+      Vmax(theOther.Vmax)
+{
+  std::lock_guard<std::mutex> aLock(theOther.myExactMutex);
+  myExactExplorer = theOther.myExactExplorer;
+}
+
+//=================================================================================================
+
+BRepTopAdaptor_FClass2d& BRepTopAdaptor_FClass2d::operator=(const BRepTopAdaptor_FClass2d& theOther)
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+
+  BRepTopAdaptor_FClass2d aCopy(theOther);
+  return *this = std::move(aCopy);
+}
+
+//=================================================================================================
+
+BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(BRepTopAdaptor_FClass2d&& theOther) noexcept
+{
+  std::lock_guard<std::mutex> aLock(theOther.myExactMutex);
+  moveState(std::move(theOther));
+}
+
+//=================================================================================================
+
+BRepTopAdaptor_FClass2d& BRepTopAdaptor_FClass2d::operator=(
+  BRepTopAdaptor_FClass2d&& theOther) noexcept
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+  std::scoped_lock aLock(myExactMutex, theOther.myExactMutex);
+  moveState(std::move(theOther));
+  return *this;
+}
+
+//=================================================================================================
+
+void BRepTopAdaptor_FClass2d::moveState(BRepTopAdaptor_FClass2d&& theOther) noexcept
+{
+  TabClass        = std::move(theOther.TabClass);
+  TabOrien        = std::move(theOther.TabOrien);
+  Toluv           = theOther.Toluv;
+  Face            = std::move(theOther.Face);
+  myExactExplorer = std::move(theOther.myExactExplorer);
+  myIsUPeriodic   = theOther.myIsUPeriodic;
+  myIsVPeriodic   = theOther.myIsVPeriodic;
+  myUPeriod       = theOther.myUPeriod;
+  myVPeriod       = theOther.myVPeriod;
+  U1              = theOther.U1;
+  V1              = theOther.V1;
+  U2              = theOther.U2;
+  V2              = theOther.V2;
+  Umin            = theOther.Umin;
+  Umax            = theOther.Umax;
+  Vmin            = theOther.Vmin;
+  Vmax            = theOther.Vmax;
+}
+
 TopAbs_State BRepTopAdaptor_FClass2d::PerformInfinitePoint() const
 {
   if (Umax == -RealLast() || Vmax == -RealLast() || Umin == RealLast() || Vmin == RealLast())
@@ -522,11 +613,26 @@ TopAbs_State BRepTopAdaptor_FClass2d::PerformInfinitePoint() const
   return (Perform(P, false));
 }
 
+//=================================================================================================
+
+TopAbs_State BRepTopAdaptor_FClass2d::exactState(const gp_Pnt2d& thePoint,
+                                                 const double    theTolerance) const
+{
+  std::lock_guard<std::mutex> aLock(myExactMutex);
+  if (!myExactExplorer.has_value())
+  {
+    myExactExplorer.emplace(Face);
+    myExactExplorer->SetUseBndBox(myExactExplorer->ShouldUseBndBox());
+  }
+  BRepClass_FaceClassifier aClassifier(*myExactExplorer, thePoint, theTolerance);
+  return aClassifier.State();
+}
+
 TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
                                               const bool      RecadreOnPeriodic) const
 {
-  int dedans;
-  int nbtabclass = TabClass.Length();
+  int          dedans;
+  const size_t nbtabclass = TabClass.Size();
 
   if (nbtabclass == 0)
   {
@@ -538,12 +644,10 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
   double v  = _Puv.Y();
   double uu = u, vv = v;
 
-  occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
-  surf->Initialize(Face, false);
-  const bool   IsUPer   = surf->IsUPeriodic();
-  const bool   IsVPer   = surf->IsVPeriodic();
-  const double uperiod  = IsUPer ? surf->UPeriod() : 0.0;
-  const double vperiod  = IsVPer ? surf->VPeriod() : 0.0;
+  const bool   IsUPer   = myIsUPeriodic;
+  const bool   IsVPer   = myIsVPeriodic;
+  const double uperiod  = myUPeriod;
+  const double vperiod  = myVPeriod;
   TopAbs_State aStatus  = TopAbs_UNKNOWN;
   bool         urecadre = false, vrecadre = false;
 
@@ -592,14 +696,14 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
     dedans = 1;
     gp_Pnt2d Puv(u, v);
 
-    if (TabOrien(1) != -1)
+    if (TabOrien[0] != WireRole::Invalid)
     {
-      for (int n = 1; n <= nbtabclass; n++)
+      for (size_t n = 0; n < nbtabclass; ++n)
       {
-        int cur = TabClass(n).SiDans(Puv);
+        const int cur = TabClass[n].SiDans(Puv);
         if (cur == 1)
         {
-          if (TabOrien(n) == 0)
+          if (TabOrien[n] == WireRole::Inner)
           {
             dedans = -1;
             break;
@@ -607,7 +711,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
         }
         else if (cur == -1)
         {
-          if (TabOrien(n) == 1)
+          if (TabOrien[n] == WireRole::Outer)
           {
             dedans = -1;
             break;
@@ -621,11 +725,8 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
       }
       if (dedans == 0)
       {
-        BRepClass_FaceClassifier aClassifier;
-        double                   m_Toluv = (Toluv > 4.0) ? 4.0 : Toluv;
-        // aClassifier.Perform(Face,Puv,Toluv);
-        aClassifier.Perform(Face, Puv, m_Toluv);
-        aStatus = aClassifier.State();
+        const double m_Toluv = (Toluv > 4.0) ? 4.0 : Toluv;
+        aStatus              = exactState(Puv, m_Toluv);
       }
       if (dedans == 1)
       {
@@ -638,9 +739,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
     }
     else
     { //-- TabOrien(1)=-1    False Wire
-      BRepClass_FaceClassifier aClassifier;
-      aClassifier.Perform(Face, Puv, Toluv);
-      aStatus = aClassifier.State();
+      aStatus = exactState(Puv, Toluv);
     }
 
     if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
@@ -687,8 +786,8 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
                                                         const double    Tol,
                                                         const bool      RecadreOnPeriodic) const
 {
-  int dedans;
-  int nbtabclass = TabClass.Length();
+  int          dedans;
+  const size_t nbtabclass = TabClass.Size();
 
   if (nbtabclass == 0)
   {
@@ -700,12 +799,10 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
   double v  = _Puv.Y();
   double uu = u, vv = v;
 
-  occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
-  surf->Initialize(Face, false);
-  const bool   IsUPer   = surf->IsUPeriodic();
-  const bool   IsVPer   = surf->IsVPeriodic();
-  const double uperiod  = IsUPer ? surf->UPeriod() : 0.0;
-  const double vperiod  = IsVPer ? surf->VPeriod() : 0.0;
+  const bool   IsUPer   = myIsUPeriodic;
+  const bool   IsVPer   = myIsVPeriodic;
+  const double uperiod  = myUPeriod;
+  const double vperiod  = myVPeriod;
   TopAbs_State aStatus  = TopAbs_UNKNOWN;
   bool         urecadre = false, vrecadre = false;
 
@@ -754,14 +851,14 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
     dedans = 1;
     gp_Pnt2d Puv(u, v);
 
-    if (TabOrien(1) != -1)
+    if (TabOrien[0] != WireRole::Invalid)
     {
-      for (int n = 1; n <= nbtabclass; n++)
+      for (size_t n = 0; n < nbtabclass; ++n)
       {
-        int cur = TabClass(n).SiDans_OnMode(Puv, Tol);
+        const int cur = TabClass[n].SiDans_OnMode(Puv, Tol);
         if (cur == 1)
         {
-          if (TabOrien(n) == 0)
+          if (TabOrien[n] == WireRole::Inner)
           {
             dedans = -1;
             break;
@@ -769,7 +866,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
         }
         else if (cur == -1)
         {
-          if (TabOrien(n) == 1)
+          if (TabOrien[n] == WireRole::Outer)
           {
             dedans = -1;
             break;
@@ -796,9 +893,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
     }
     else
     { //-- TabOrien(1)=-1    False Wire
-      BRepClass_FaceClassifier aClassifier;
-      aClassifier.Perform(Face, Puv, Tol);
-      aStatus = aClassifier.State();
+      aStatus = exactState(Puv, Tol);
     }
 
     if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
@@ -843,17 +938,13 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
 
 void BRepTopAdaptor_FClass2d::Destroy()
 {
-  TabClass.Clear();
+  TabClass.Clear(true);
+  TabOrien.Clear(true);
+  myExactExplorer.reset();
 }
 
-#include <Standard_ConstructionError.hxx>
-
-// const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d&
-// Other) const {
-const BRepTopAdaptor_FClass2d& BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d&) const
+BRepTopAdaptor_FClass2d& BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d& theOther)
 {
-#ifdef OCCT_DEBUG
-  std::cerr << "Copy not allowed in BRepTopAdaptor_FClass2d" << std::endl;
-#endif
-  throw Standard_ConstructionError();
+  *this = theOther;
+  return *this;
 }

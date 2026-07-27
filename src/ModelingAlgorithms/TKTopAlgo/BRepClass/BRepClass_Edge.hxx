@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Bnd_Box2d.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
@@ -27,6 +28,8 @@
 
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+
+class Geom2d_Curve;
 
 //! This class is used to send the description of an
 //! Edge to the classifier. It contains an Edge and a
@@ -74,12 +77,34 @@ public:
   //! using boxes or not
   void SetUseBndBox(const bool theValue) { myUseBndBox = theValue; }
 
+  //! Sets immutable 2D geometry cached by the face explorer.
+  Standard_EXPORT void SetCurve(const occ::handle<Geom2d_Curve>& theCurve,
+                                const double                     theFirst,
+                                const double                     theLast,
+                                const Bnd_Box2d&                 theBox);
+
+  //! Returns cached pcurve, or null when it is unavailable.
+  const occ::handle<Geom2d_Curve>& Curve() const { return myCurve; }
+
+  //! Returns cached first pcurve parameter.
+  double FirstParameter() const { return myFirstParameter; }
+
+  //! Returns cached last pcurve parameter.
+  double LastParameter() const { return myLastParameter; }
+
+  //! Returns cached pcurve bounding box.
+  const Bnd_Box2d& BoundingBox() const { return myBoundingBox; }
+
 private:
-  TopoDS_Edge myEdge;
-  TopoDS_Face myFace;
-  TopoDS_Edge myNextEdge;
-  double      myMaxTolerance;
-  bool        myUseBndBox;
+  TopoDS_Edge               myEdge;
+  TopoDS_Face               myFace;
+  TopoDS_Edge               myNextEdge;
+  occ::handle<Geom2d_Curve> myCurve;
+  Bnd_Box2d                 myBoundingBox;
+  double                    myFirstParameter;
+  double                    myLastParameter;
+  double                    myMaxTolerance;
+  bool                      myUseBndBox;
 };
 
 #endif // _BRepClass_Edge_HeaderFile
