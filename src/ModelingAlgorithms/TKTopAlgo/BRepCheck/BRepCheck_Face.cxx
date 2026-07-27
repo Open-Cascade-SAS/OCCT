@@ -68,6 +68,10 @@ static bool IsInside(const TopoDS_Wire&             wir,
                      const BRepTopAdaptor_FClass2d& FClass2d,
                      const TopoDS_Face&             F);
 
+static bool ComputeWireUVBounds(const TopoDS_Face& theFace,
+                                const TopoDS_Wire& theWire,
+                                Bnd_Box2d&         theBox);
+
 static bool CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f);
 
 //=================================================================================================
@@ -348,64 +352,25 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
   TopExp_Explorer                exp1, exp2;
   NCollection_List<TopoDS_Shape> theListOfShape;
 
-  // Precompute a 2D parametric bounding box for every wire, the same
-  // pattern IntersectWires() already uses above. IsInside() classifies a
-  // single representative point of wir2 against wir1's region, so if the
-  // two wires' boxes don't overlap, that point can't be inside wir1's
-  // region and the classification test can be skipped. The loop below is
-  // still a pair over every wire, but each pair now costs an O(1) box
-  // check instead of a real classification, which is what actually
-  // matters for a plate with many non-overlapping holes.
-  Geom2dAdaptor_Curve aBoxCurveAdapt;
-  double              aBoxFirst, aBoxLast;
+  const TopoDS_Face   aForwardFace = TopoDS::Face(myShape.Oriented(TopAbs_FORWARD));
   DataMapOfShapeBox2d aWireBoxMap;
-  for (exp1.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp1.More(); exp1.Next())
+  // Precompute reliable UV bounds for cheap rejection of disjoint wire pairs.
+  for (exp1.Init(aForwardFace, TopAbs_WIRE); exp1.More(); exp1.Next())
   {
-    Bnd_Box2d aBoxW;
-    bool      isBoxReliable = true;
-    for (exp2.Init(exp1.Current(), TopAbs_EDGE); exp2.More(); exp2.Next())
+    const TopoDS_Wire& aWire = TopoDS::Wire(exp1.Current());
+    Bnd_Box2d          aBox;
+    if (ComputeWireUVBounds(aForwardFace, aWire, aBox))
     {
-      const TopoDS_Edge&        anEdge = TopoDS::Edge(exp2.Current());
-      occ::handle<Geom2d_Curve> aPCurve =
-        BRep_Tool::CurveOnSurface(anEdge, TopoDS::Face(myShape), aBoxFirst, aBoxLast);
-      if (aPCurve.IsNull())
-      {
-        continue;
-      }
-      aBoxCurveAdapt.Load(aPCurve);
-      double aF = aBoxFirst, aL = aBoxLast;
-      if (aBoxCurveAdapt.FirstParameter() > aF)
-      {
-        aF            = aBoxCurveAdapt.FirstParameter();
-        isBoxReliable = false;
-      }
-      if (aBoxCurveAdapt.LastParameter() < aL)
-      {
-        aL            = aBoxCurveAdapt.LastParameter();
-        isBoxReliable = false;
-      }
-      Bnd_Box2d aBoxE;
-      BndLib_Add2dCurve::Add(aBoxCurveAdapt, aF, aL, 0., aBoxE);
-      aBoxW.Add(aBoxE);
-    }
-    // IsInside() below picks its representative point using the edge's own
-    // (unclamped) parameter range, not the curve's own definition domain, so
-    // if any edge's trim range had to be clamped to build this box, the box
-    // may not actually contain the point IsInside() would evaluate. Skip the
-    // pre-filter for such a wire rather than risk a wrong answer.
-    if (isBoxReliable)
-    {
-      aWireBoxMap.Bind(exp1.Current(), aBoxW);
+      aWireBoxMap.Bind(aWire, aBox);
     }
   }
 
-  for (exp1.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp1.More(); exp1.Next())
+  for (exp1.Init(aForwardFace, TopAbs_WIRE); exp1.More(); exp1.Next())
   {
 
     const TopoDS_Wire& wir1        = TopoDS::Wire(exp1.Current());
     TopoDS_Shape       aLocalShape = myShape.EmptyCopied();
     TopoDS_Face        newFace     = TopoDS::Face(aLocalShape);
-    //    TopoDS_Face newFace = TopoDS::Face(myShape.EmptyCopied());
 
     newFace.Orientation(TopAbs_FORWARD);
     B.Add(newFace, wir1);
@@ -420,39 +385,25 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
       myMapImb.Bind(wir1.Reversed(), theListOfShape);
     }
 
-    Bnd_Box2d aBox1;
-    bool      hasBox1 =
-      aWireBoxMap.IsBound(exp1.Current()) && !(aBox1 = aWireBoxMap(exp1.Current())).IsVoid();
+    const Bnd_Box2d* aBox1 = aWireBoxMap.Seek(wir1);
 
-    for (exp2.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp2.More(); exp2.Next())
+    for (exp2.Init(aForwardFace, TopAbs_WIRE); exp2.More(); exp2.Next())
     {
       const TopoDS_Wire& wir2 = TopoDS::Wire(exp2.Current());
-      if (!wir2.IsSame(wir1))
+      if (wir2.IsSame(wir1))
       {
-        bool      isWire2Inside;
-        Bnd_Box2d aBox2;
-        bool      hasBox2 = hasBox1 && aWireBoxMap.IsBound(exp2.Current())
-                       && !(aBox2 = aWireBoxMap(exp2.Current())).IsVoid();
-        if (hasBox2 && aBox1.IsOut(aBox2))
-        {
-          // wir2's point falls outside wir1's box, so it's outside wir1's
-          // finite bounded region. If WireBienOriente is false, that
-          // finite region is exactly what IsInside() tests for, so the
-          // point is out. If WireBienOriente is true, IsInside() tests
-          // for the infinite complement of that region instead, and a
-          // point outside the finite region is inside the complement, so
-          // IsInside() returns false there too. Either way the answer is
-          // false.
-          isWire2Inside = false;
-        }
-        else
-        {
-          isWire2Inside = IsInside(wir2, WireBienOriente, FClass2d, newFace);
-        }
-        if (isWire2Inside)
-        {
-          myMapImb(wir1).Append(wir2);
-        }
+        continue;
+      }
+
+      const Bnd_Box2d* aBox2 = aWireBoxMap.Seek(wir2);
+      // Wires with disjoint UV bounds cannot contain one another.
+      if (aBox1 != nullptr && aBox2 != nullptr && aBox1->IsOut(*aBox2))
+      {
+        continue;
+      }
+      if (IsInside(wir2, WireBienOriente, FClass2d, newFace))
+      {
+        myMapImb(wir1).Append(wir2);
       }
     }
   }
@@ -870,6 +821,49 @@ static bool Intersect(const TopoDS_Wire&         wir1,
     }
   }
   return false;
+}
+
+//=================================================================================================
+
+static bool ComputeWireUVBounds(const TopoDS_Face& theFace,
+                                const TopoDS_Wire& theWire,
+                                Bnd_Box2d&         theBox)
+{
+  if (!BRep_Tool::IsClosed(theWire))
+  {
+    return false;
+  }
+
+  Bnd_Box2d aBox;
+  for (TopExp_Explorer anExp(theWire, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    double                          aFirst, aLast;
+    const TopoDS_Edge&              anEdge = TopoDS::Edge(anExp.Current());
+    const occ::handle<Geom2d_Curve> aPCurve =
+      BRep_Tool::CurveOnSurface(anEdge, theFace, aFirst, aLast);
+    if (aPCurve.IsNull())
+    {
+      return false;
+    }
+
+    const Geom2dAdaptor_Curve aCurveAdaptor(aPCurve);
+    // IsInside() uses the original edge range, so a clamped box cannot safely reject the wire.
+    if (Precision::IsInfinite(aFirst) || Precision::IsInfinite(aLast)
+        || aFirst < aCurveAdaptor.FirstParameter() || aLast > aCurveAdaptor.LastParameter())
+    {
+      return false;
+    }
+
+    BndLib_Add2dCurve::Add(aCurveAdaptor, aFirst, aLast, Precision::PConfusion(), aBox);
+  }
+  if (aBox.IsVoid() || aBox.IsOpenXmin() || aBox.IsOpenXmax() || aBox.IsOpenYmin()
+      || aBox.IsOpenYmax())
+  {
+    return false;
+  }
+
+  theBox = aBox;
+  return true;
 }
 
 //=================================================================================================

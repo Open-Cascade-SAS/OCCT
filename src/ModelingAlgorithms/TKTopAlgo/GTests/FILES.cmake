@@ -7,6 +7,7 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepBuilderAPI_MakeFace_Test.cxx
   BRepBuilderAPI_MakeWire_Test.cxx
   BRepBuilderAPI_Transform_Test.cxx
+  BRepCheck_Face_Test.cxx
   BRepClass3d_SolidClassifier_Test.cxx
   BRepExtrema_DistShapeShape_Test.cxx
   BRepGProp_Test.cxx
