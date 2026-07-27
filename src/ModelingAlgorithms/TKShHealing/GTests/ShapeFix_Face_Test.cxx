@@ -47,7 +47,7 @@ TopoDS_Face MakeFaceOnPeriodicConicalSingleWire(occ::handle<Geom_ConicalSurface>
     aPts->SetValue(i, theCone->Value(anU, aV));
   }
 
-  GeomAPI_Interpolate anInterp(aPts, Standard_True, 1e-6);
+  GeomAPI_Interpolate anInterp(aPts, true, 1e-6);
   anInterp.Perform();
   if (!anInterp.IsDone())
   {
@@ -67,7 +67,7 @@ TopoDS_Face MakeFaceOnPeriodicConicalSingleWire(occ::handle<Geom_ConicalSurface>
     return TopoDS_Face();
   }
 
-  BRepBuilderAPI_MakeFace aMakeFace(theCone, aMakeWire.Wire(), Standard_True);
+  BRepBuilderAPI_MakeFace aMakeFace(theCone, aMakeWire.Wire(), true);
   return aMakeFace.IsDone() ? aMakeFace.Face() : TopoDS_Face();
 }
 } // namespace
