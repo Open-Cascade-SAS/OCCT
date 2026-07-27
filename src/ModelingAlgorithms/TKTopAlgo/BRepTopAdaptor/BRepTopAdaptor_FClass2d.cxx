@@ -41,6 +41,7 @@
 #include <TopoDS_Face.hxx>
 
 #include <cmath>
+#include <limits>
 
 #ifdef _MSC_VER
   #include <stdio.h>
@@ -48,6 +49,13 @@
 
 namespace
 {
+//! Returns true for representable values, including OCCT's finite infinity sentinels.
+inline bool isRepresentableValue(const double theValue)
+{
+  constexpr double THE_MAX_VALUE = std::numeric_limits<double>::max();
+  return theValue >= -THE_MAX_VALUE && theValue <= THE_MAX_VALUE;
+}
+
 // Increments @p theValue by @p theIncrement towards @p theDirection, ensuring that the result is
 // different from @p theValue. For large values of theValue with small theIncrement the result of
 // theValue + theIncrement can be equal to theValue due to the limited resolution of double
@@ -120,15 +128,14 @@ PolygonMetrics polygonMetrics(const NCollection_LinearVector<gp_Pnt2d>& thePoint
 
 bool expectedThickness(const PolygonMetrics& theMetrics, double& theThickness)
 {
-  if (std::isnan(theMetrics.Area) || Precision::IsInfinite(theMetrics.Area)
-      || std::isnan(theMetrics.Perimeter) || Precision::IsInfinite(theMetrics.Perimeter)
+  if (!isRepresentableValue(theMetrics.Area) || !isRepresentableValue(theMetrics.Perimeter)
       || theMetrics.Perimeter <= 0.0)
   {
     return false;
   }
 
-  theThickness = std::max(2.0 * std::abs(theMetrics.Area) / theMetrics.Perimeter, 1.e-7);
-  return !std::isnan(theThickness) && !Precision::IsInfinite(theThickness);
+  theThickness = std::max(2.0 * (std::abs(theMetrics.Area) / theMetrics.Perimeter), 1.e-7);
+  return isRepresentableValue(theThickness);
 }
 } // namespace
 

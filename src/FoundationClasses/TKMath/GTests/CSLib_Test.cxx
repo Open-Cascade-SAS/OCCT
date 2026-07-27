@@ -534,7 +534,7 @@ TEST_F(CSLibClass2dTest, SiDansHandlesNegativeNonFiniteAndExtremeInputs)
     EXPECT_EQ(anExtremeTolerance.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Uncertain);
   }
 
-  const double                 aLimit = 0.1 * Precision::Infinite();
+  const double                 aLimit = Precision::Infinite();
   NCollection_Array1<gp_Pnt2d> anExtremePnts(1, 4);
   anExtremePnts(1) = gp_Pnt2d(-0.5 * aLimit, -0.5 * aLimit);
   anExtremePnts(2) = gp_Pnt2d(0.5 * aLimit, -0.5 * aLimit);

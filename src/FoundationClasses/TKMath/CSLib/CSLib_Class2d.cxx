@@ -29,10 +29,17 @@ namespace
 {
 constexpr double THE_MIN_NORMALIZATION_RANGE = 1.0e-10;
 
-//! Returns true for values that are finite according to OCCT precision conventions.
-inline bool isFiniteValue(const double theValue)
+//! Returns true when direct arithmetic cannot reach OCCT's geometric infinity range.
+inline bool isSafeForDirectArithmetic(const double theValue)
 {
   return !std::isnan(theValue) && !Precision::IsInfinite(theValue);
+}
+
+//! Returns true for representable values, including OCCT's finite infinity sentinels.
+inline bool isRepresentableValue(const double theValue)
+{
+  constexpr double THE_MAX_VALUE = std::numeric_limits<double>::max();
+  return theValue >= -THE_MAX_VALUE && theValue <= THE_MAX_VALUE;
 }
 
 //! Transforms a coordinate from original space to normalized [0,1] space.
@@ -46,7 +53,7 @@ inline double transformToNormalized(const double theU, const double theUMin, con
   if (aRange > THE_MIN_NORMALIZATION_RANGE)
   {
     const double aDifference = theU - theUMin;
-    if (isFiniteValue(aDifference) && isFiniteValue(aRange))
+    if (isSafeForDirectArithmetic(aDifference) && isSafeForDirectArithmetic(aRange))
     {
       return aDifference / aRange;
     }
@@ -64,7 +71,7 @@ inline double sanitizeTolerance(const double theTolerance)
   {
     return 0.0;
   }
-  return isFiniteValue(theTolerance) ? theTolerance : std::numeric_limits<double>::max();
+  return isRepresentableValue(theTolerance) ? theTolerance : std::numeric_limits<double>::max();
 }
 
 //! Normalizes a distance without overflowing when the finite bounds span more
@@ -79,7 +86,7 @@ inline double normalizeTolerance(const double theTolerance,
   {
     return aTolerance;
   }
-  if (isFiniteValue(aRange))
+  if (isSafeForDirectArithmetic(aRange))
   {
     return sanitizeTolerance(aTolerance / aRange);
   }
@@ -113,9 +120,9 @@ void CSLib_Class2d::init(const TCol_Containers2d& thePnts2d,
   myVMax = theVMax;
 
   // Validate input parameters.
-  if (!isFiniteValue(theUMin) || !isFiniteValue(theVMin) || !isFiniteValue(theUMax)
-      || !isFiniteValue(theVMax) || theUMax <= theUMin || theVMax <= theVMin
-      || thePnts2d.Length() < 3)
+  if (!isRepresentableValue(theUMin) || !isRepresentableValue(theVMin)
+      || !isRepresentableValue(theUMax) || !isRepresentableValue(theVMax) || theUMax <= theUMin
+      || theVMax <= theVMin || thePnts2d.Length() < 3)
   {
     myPointsCount = 0;
     return;
@@ -339,7 +346,7 @@ void CSLib_Class2d::buildGridCache() const
     }
     for (int aPointIdx = 0; aPointIdx < myPointsCount; ++aPointIdx)
     {
-      if (!isFiniteValue(pX[aPointIdx]) || !isFiniteValue(pY[aPointIdx]))
+      if (!isSafeForDirectArithmetic(pX[aPointIdx]) || !isSafeForDirectArithmetic(pY[aPointIdx]))
       {
         myGrid = NCollection_Array1<GridCell>();
         myGridState.store(GridState::Disabled, std::memory_order_release);
@@ -504,8 +511,8 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
   }
 
   // Fast-path: conservative grid lookup (O(1) away from polygon edges).
-  if (aGridState == GridState::Ready && isFiniteValue(aX) && isFiniteValue(aY) && aX >= 0.0
-      && aX <= 1.0 && aY >= 0.0 && aY <= 1.0)
+  if (aGridState == GridState::Ready && isSafeForDirectArithmetic(aX)
+      && isSafeForDirectArithmetic(aY) && aX >= 0.0 && aX <= 1.0 && aY >= 0.0 && aY <= 1.0)
   {
     int aIX              = static_cast<int>(aX * THE_GRID_SIZE);
     int aIY              = static_cast<int>(aY * THE_GRID_SIZE);
