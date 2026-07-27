@@ -3253,7 +3253,10 @@ bool ShapeFix_Face::FixPeriodicDegenerated()
 
   // Adjust the resulting state of the healing tool
   myResult = aNewFace;
-  Context()->Replace(myFace, myResult);
+  if (!Context().IsNull())
+  {
+    Context()->Replace(myFace, myResult);
+  }
 
   return true;
 }
