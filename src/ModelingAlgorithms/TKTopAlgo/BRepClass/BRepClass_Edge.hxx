@@ -17,15 +17,9 @@
 #ifndef _BRepClass_Edge_HeaderFile
 #define _BRepClass_Edge_HeaderFile
 
-#include <Standard.hxx>
+#include <Bnd_Box2d.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Bnd_Box2d.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_IndexedDataMap.hxx>
-
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
@@ -39,28 +33,38 @@ class BRepClass_Edge
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! State of the cached pcurve bounding box.
+  enum class BndBoxState
+  {
+    NotBuilt,
+    Ready,
+    Unavailable
+  };
+
   Standard_EXPORT BRepClass_Edge();
 
   Standard_EXPORT BRepClass_Edge(const TopoDS_Edge& E, const TopoDS_Face& F);
 
-  //! Returns the current Edge
-  TopoDS_Edge& Edge() { return myEdge; }
-
+  //! Returns the current edge.
   const TopoDS_Edge& Edge() const { return myEdge; }
 
-  //! Returns the Face for the current Edge
-  TopoDS_Face& Face() { return myFace; }
-
+  //! Returns the face for the current edge.
   const TopoDS_Face& Face() const { return myFace; }
+
+  //! Sets the current edge and invalidates topology-derived data.
+  //! @param[in] theEdge new edge
+  Standard_EXPORT void SetEdge(const TopoDS_Edge& theEdge);
+
+  //! Sets the face and invalidates topology-derived data.
+  //! @param[in] theFace new face
+  Standard_EXPORT void SetFace(const TopoDS_Face& theFace);
 
   //! Returns the next Edge
   const TopoDS_Edge& NextEdge() const { return myNextEdge; }
 
-  //! Finds and sets the next Edge for the current
-  Standard_EXPORT void SetNextEdge(
-    const NCollection_IndexedDataMap<TopoDS_Shape,
-                                     NCollection_List<TopoDS_Shape>,
-                                     TopTools_ShapeMapHasher>& theMapVE);
+  //! Sets the next edge at the last vertex of the current edge.
+  //! @param[in] theEdge next edge
+  void SetNextEdge(const TopoDS_Edge& theEdge) { myNextEdge = theEdge; }
 
   //! Returns the maximum tolerance
   double MaxTolerance() const { return myMaxTolerance; }
@@ -77,11 +81,20 @@ public:
   //! using boxes or not
   void SetUseBndBox(const bool theValue) { myUseBndBox = theValue; }
 
-  //! Sets immutable 2D geometry cached by the face explorer.
-  Standard_EXPORT void SetCurve(const occ::handle<Geom2d_Curve>& theCurve,
-                                const double                     theFirst,
-                                const double                     theLast,
-                                const Bnd_Box2d&                 theBox);
+  //! Sets cached 2D geometry and invalidates its bounding box.
+  //! @param[in] theCurve pcurve on the associated face
+  //! @param[in] theFirst first pcurve parameter
+  //! @param[in] theLast last pcurve parameter
+  Standard_EXPORT void SetGeometry(const occ::handle<Geom2d_Curve>& theCurve,
+                                   double                           theFirst,
+                                   double                           theLast);
+
+  //! Sets a successfully computed pcurve bounding box. A void box marks the box unavailable.
+  //! @param[in] theBox pcurve bounding box
+  Standard_EXPORT void SetBoundingBox(const Bnd_Box2d& theBox);
+
+  //! Marks the pcurve bounding box as unavailable after a failed build.
+  Standard_EXPORT void SetBoundingBoxUnavailable();
 
   //! Returns cached pcurve, or null when it is unavailable.
   const occ::handle<Geom2d_Curve>& Curve() const { return myCurve; }
@@ -95,6 +108,12 @@ public:
   //! Returns cached pcurve bounding box.
   const Bnd_Box2d& BoundingBox() const { return myBoundingBox; }
 
+  //! Returns the state of the cached pcurve bounding box.
+  BndBoxState BoundingBoxState() const { return myBoundingBoxState; }
+
+private:
+  void invalidateDerivedData();
+
 private:
   TopoDS_Edge               myEdge;
   TopoDS_Face               myFace;
@@ -104,6 +123,7 @@ private:
   double                    myFirstParameter;
   double                    myLastParameter;
   double                    myMaxTolerance;
+  BndBoxState               myBoundingBoxState;
   bool                      myUseBndBox;
 };
 

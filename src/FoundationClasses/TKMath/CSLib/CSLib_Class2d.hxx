@@ -119,44 +119,10 @@ public:
   Standard_EXPORT CSLib_Class2d& operator=(const CSLib_Class2d& theOther);
 
   //! Move constructor.
-  CSLib_Class2d(CSLib_Class2d&& theOther) noexcept
-      : myPnts2dX(std::move(theOther.myPnts2dX)),
-        myPnts2dY(std::move(theOther.myPnts2dY)),
-        myTolU(theOther.myTolU),
-        myTolV(theOther.myTolV),
-        myPointsCount(theOther.myPointsCount),
-        myUMin(theOther.myUMin),
-        myVMin(theOther.myVMin),
-        myUMax(theOther.myUMax),
-        myVMax(theOther.myVMax),
-        myGrid(std::move(theOther.myGrid)),
-        myGridState(theOther.myGridState.load(std::memory_order_relaxed)),
-        myQueryCount(theOther.myQueryCount.load(std::memory_order_relaxed))
-  {
-  }
+  Standard_EXPORT CSLib_Class2d(CSLib_Class2d&& theOther) noexcept;
 
   //! Move assignment operator.
-  CSLib_Class2d& operator=(CSLib_Class2d&& theOther) noexcept
-  {
-    if (this != &theOther)
-    {
-      myPnts2dX     = std::move(theOther.myPnts2dX);
-      myPnts2dY     = std::move(theOther.myPnts2dY);
-      myTolU        = theOther.myTolU;
-      myTolV        = theOther.myTolV;
-      myPointsCount = theOther.myPointsCount;
-      myUMin        = theOther.myUMin;
-      myVMin        = theOther.myVMin;
-      myUMax        = theOther.myUMax;
-      myVMax        = theOther.myVMax;
-      myGrid        = std::move(theOther.myGrid);
-      myGridState.store(theOther.myGridState.load(std::memory_order_relaxed),
-                        std::memory_order_relaxed);
-      myQueryCount.store(theOther.myQueryCount.load(std::memory_order_relaxed),
-                         std::memory_order_relaxed);
-    }
-    return *this;
-  }
+  Standard_EXPORT CSLib_Class2d& operator=(CSLib_Class2d&& theOther) noexcept;
 
   //! Classifies a point relative to the polygon.
   //!
@@ -189,10 +155,12 @@ private:
   //!
   //! Same as internalSiDans() but also detects if the point lies on the boundary.
   //!
-  //! @param[in] theX X coordinate in normalized space
-  //! @param[in] theY Y coordinate in normalized space
+  //! @param[in] theX    X coordinate in normalized space
+  //! @param[in] theY    Y coordinate in normalized space
+  //! @param[in] theTolU U tolerance in normalized space
+  //! @param[in] theTolV V tolerance in normalized space
   //! @return Classification result
-  Result internalSiDansOuOn(double theX, double theY) const;
+  Result internalSiDansOuOn(double theX, double theY, double theTolU, double theTolV) const;
 
   //! Initializes the classifier with polygon data.
   //! @tparam TCol_Containers2d Container type (Array1 or Sequence)
@@ -214,24 +182,35 @@ private:
   //! Grid cell classification for the fast-path cache.
   enum GridCell : signed char
   {
-    GridCell_Inside   = 1,  //!< Cell is fully inside the polygon
-    GridCell_Outside  = -1, //!< Cell is fully outside the polygon
-    GridCell_Boundary = 0   //!< Cell straddles a polygon edge — needs exact test
+    GridCell_Outside   = -1, //!< Cell is fully outside the polygon
+    GridCell_Boundary  = 0,  //!< Cell straddles a polygon edge and needs an exact test
+    GridCell_Inside    = 1,  //!< Cell is fully inside the polygon
+    GridCell_Unvisited = 2   //!< Boundary-free cell not yet assigned by flood fill
   };
 
-  NCollection_Array1<double> myPnts2dX;           //!< X coordinates (normalized)
-  NCollection_Array1<double> myPnts2dY;           //!< Y coordinates (normalized)
-  double                     myTolU        = 0.0; //!< Tolerance in U direction (normalized)
-  double                     myTolV        = 0.0; //!< Tolerance in V direction (normalized)
-  int                        myPointsCount = 0;   //!< Number of polygon vertices
-  double                     myUMin        = 0.0; //!< Original minimum U bound
-  double                     myVMin        = 0.0; //!< Original minimum V bound
-  double                     myUMax        = 0.0; //!< Original maximum U bound
-  double                     myVMax        = 0.0; //!< Original maximum V bound
-  mutable NCollection_Array1<GridCell> myGrid;             //!< Flat grid
-  //! 0 = not built, 1 = one thread building, 2 = immutable and readable.
-  mutable std::atomic<unsigned char> myGridState{0};
-  mutable std::atomic<size_t>        myQueryCount{0};
+  //! Lifecycle of the optional immutable grid cache.
+  enum class GridState : unsigned char
+  {
+    NotBuilt, //!< No cache, including after a transient allocation failure
+    Building, //!< One thread owns construction; other threads use the exact path
+    Ready,    //!< Grid is complete and immutable
+    Disabled  //!< Polygon or tolerance intrinsically cannot use a grid
+  };
+
+  NCollection_Array1<double>           myPnts2dX;            //!< X coordinates (normalized)
+  NCollection_Array1<double>           myPnts2dY;            //!< Y coordinates (normalized)
+  double                               myTolU         = 0.0; //!< U tolerance (normalized)
+  double                               myTolV         = 0.0; //!< V tolerance (normalized)
+  double                               myOriginalTolU = 0.0; //!< U tolerance in input coordinates
+  double                               myOriginalTolV = 0.0; //!< V tolerance in input coordinates
+  int                                  myPointsCount  = 0;   //!< Number of polygon vertices
+  double                               myUMin         = 0.0; //!< Original minimum U bound
+  double                               myVMin         = 0.0; //!< Original minimum V bound
+  double                               myUMax         = 0.0; //!< Original maximum U bound
+  double                               myVMax         = 0.0; //!< Original maximum V bound
+  mutable NCollection_Array1<GridCell> myGrid;               //!< Immutable when Ready
+  mutable std::atomic<GridState>       myGridState{GridState::NotBuilt};
+  mutable std::atomic<size_t>          myQueryCount{0};
 };
 
 #endif // _CSLib_Class2d_HeaderFile

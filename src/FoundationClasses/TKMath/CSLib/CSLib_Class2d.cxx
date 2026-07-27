@@ -18,34 +18,82 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
+#include <Standard_OutOfMemory.hxx>
 
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <new>
 
 namespace
 {
+constexpr double THE_MIN_NORMALIZATION_RANGE = 1.0e-10;
+
+//! Returns true for values that are finite according to OCCT precision conventions.
+inline bool isFiniteValue(const double theValue)
+{
+  return !std::isnan(theValue) && !Precision::IsInfinite(theValue);
+}
+
 //! Transforms a coordinate from original space to normalized [0,1] space.
 //! @param[in] theU       Original coordinate value
 //! @param[in] theUMin    Minimum bound of original range
-//! @param[in] theURange  Range of original domain (theUMax - theUMin)
+//! @param[in] theUMax    Maximum bound of original range
 //! @return Normalized coordinate in [0,1], or original value if range is too small
-inline double transformToNormalized(const double theU, const double theUMin, const double theURange)
+inline double transformToNormalized(const double theU, const double theUMin, const double theUMax)
 {
-  constexpr double THE_MIN_RANGE = 1e-10;
-  if (theURange > THE_MIN_RANGE)
+  const double aRange = theUMax - theUMin;
+  if (aRange > THE_MIN_NORMALIZATION_RANGE)
   {
-    return (theU - theUMin) / theURange;
+    const double aDifference = theU - theUMin;
+    if (isFiniteValue(aDifference) && isFiniteValue(aRange))
+    {
+      return aDifference / aRange;
+    }
+    const double aScale     = std::max(std::abs(theUMin), std::abs(theUMax));
+    const double aScaledMin = theUMin / aScale;
+    return (theU / aScale - aScaledMin) / (theUMax / aScale - aScaledMin);
   }
   return theU;
 }
 
+//! Converts an external tolerance to a finite, non-negative value.
+inline double sanitizeTolerance(const double theTolerance)
+{
+  if (std::isnan(theTolerance) || theTolerance <= 0.0)
+  {
+    return 0.0;
+  }
+  return isFiniteValue(theTolerance) ? theTolerance : std::numeric_limits<double>::max();
+}
 
-  //! Grid cache for O(1) classification of points far from polygon edges.
-  //! Construction is delayed until repeated queries amortize its cost.
-  static constexpr int    THE_GRID_SIZE       = 32; //!< Grid resolution per axis
-  static constexpr int    THE_GRID_MIN_POINTS = 24; //!< Small polygons stay on exact O(N) path
-  static constexpr size_t THE_GRID_BUILD_QUERY_COUNT = 64; //!< Queries before lazy construction
+//! Normalizes a distance without overflowing when the finite bounds span more
+//! than the representable double range.
+inline double normalizeTolerance(const double theTolerance,
+                                 const double theMin,
+                                 const double theMax)
+{
+  const double aTolerance = sanitizeTolerance(theTolerance);
+  const double aRange     = theMax - theMin;
+  if (!(aRange > THE_MIN_NORMALIZATION_RANGE))
+  {
+    return aTolerance;
+  }
+  if (isFiniteValue(aRange))
+  {
+    return sanitizeTolerance(aTolerance / aRange);
+  }
+
+  const double aScale       = std::max(std::abs(theMin), std::abs(theMax));
+  const double aScaledRange = theMax / aScale - theMin / aScale;
+  return sanitizeTolerance((aTolerance / aScale) / aScaledRange);
+}
+
+//! Grid cache for O(1) classification of points far from polygon edges.
+//! Construction is delayed until repeated queries amortize its cost.
+static constexpr int    THE_GRID_SIZE              = 32;
+static constexpr int    THE_GRID_MIN_POINTS        = 24;
+static constexpr size_t THE_GRID_BUILD_QUERY_COUNT = 64;
 } // namespace
 
 //=================================================================================================
@@ -65,46 +113,36 @@ void CSLib_Class2d::init(const TCol_Containers2d& thePnts2d,
   myVMax = theVMax;
 
   // Validate input parameters.
-  if (theUMax <= theUMin || theVMax <= theVMin || thePnts2d.Length() < 3)
+  if (!isFiniteValue(theUMin) || !isFiniteValue(theVMin) || !isFiniteValue(theUMax)
+      || !isFiniteValue(theVMax) || theUMax <= theUMin || theVMax <= theVMin
+      || thePnts2d.Length() < 3)
   {
     myPointsCount = 0;
     return;
   }
 
-  myPointsCount = thePnts2d.Length();
-  myTolU        = theTolU;
-  myTolV        = theTolV;
+  myPointsCount  = thePnts2d.Length();
+  myOriginalTolU = sanitizeTolerance(theTolU);
+  myOriginalTolV = sanitizeTolerance(theTolV);
+  myTolU         = normalizeTolerance(theTolU, theUMin, theUMax);
+  myTolV         = normalizeTolerance(theTolV, theVMin, theVMax);
 
   // Allocate arrays with one extra element for closing the polygon.
   myPnts2dX.Resize(0, myPointsCount, false);
   myPnts2dY.Resize(0, myPointsCount, false);
-
-  const double aDu = theUMax - theUMin;
-  const double aDv = theVMax - theVMin;
 
   // Transform points to normalized coordinates.
   const int aLower = thePnts2d.Lower();
   for (int i = 0; i < myPointsCount; ++i)
   {
     const gp_Pnt2d& aP2D     = thePnts2d(i + aLower);
-    myPnts2dX.ChangeValue(i) = transformToNormalized(aP2D.X(), theUMin, aDu);
-    myPnts2dY.ChangeValue(i) = transformToNormalized(aP2D.Y(), theVMin, aDv);
+    myPnts2dX.ChangeValue(i) = transformToNormalized(aP2D.X(), theUMin, theUMax);
+    myPnts2dY.ChangeValue(i) = transformToNormalized(aP2D.Y(), theVMin, theVMax);
   }
 
   // Close the polygon by copying first point to last position.
   myPnts2dX.ChangeLast() = myPnts2dX.First();
   myPnts2dY.ChangeLast() = myPnts2dY.First();
-
-  // Normalize tolerances.
-  constexpr double THE_MIN_RANGE = 1e-10;
-  if (aDu > THE_MIN_RANGE)
-  {
-    myTolU /= aDu;
-  }
-  if (aDv > THE_MIN_RANGE)
-  {
-    myTolV /= aDv;
-  }
 }
 
 //=================================================================================================
@@ -153,17 +191,26 @@ CSLib_Class2d::CSLib_Class2d(const CSLib_Class2d& theOther)
       myPnts2dY(theOther.myPnts2dY),
       myTolU(theOther.myTolU),
       myTolV(theOther.myTolV),
+      myOriginalTolU(theOther.myOriginalTolU),
+      myOriginalTolV(theOther.myOriginalTolV),
       myPointsCount(theOther.myPointsCount),
       myUMin(theOther.myUMin),
       myVMin(theOther.myVMin),
       myUMax(theOther.myUMax),
       myVMax(theOther.myVMax),
-      myQueryCount(theOther.myQueryCount.load(std::memory_order_relaxed))
+      myQueryCount(theOther.myGridState.load(std::memory_order_acquire) == GridState::Building
+                     ? 0
+                     : theOther.myQueryCount.load(std::memory_order_relaxed))
 {
-  if (theOther.myGridState.load(std::memory_order_acquire) == 2)
+  const GridState aState = theOther.myGridState.load(std::memory_order_acquire);
+  if (aState == GridState::Ready)
   {
     myGrid = theOther.myGrid;
-    myGridState.store(2, std::memory_order_relaxed);
+    myGridState.store(GridState::Ready, std::memory_order_relaxed);
+  }
+  else if (aState == GridState::Disabled)
+  {
+    myGridState.store(GridState::Disabled, std::memory_order_relaxed);
   }
 }
 
@@ -182,16 +229,88 @@ CSLib_Class2d& CSLib_Class2d::operator=(const CSLib_Class2d& theOther)
 
 //=================================================================================================
 
+CSLib_Class2d::CSLib_Class2d(CSLib_Class2d&& theOther) noexcept
+    : myPnts2dX(std::move(theOther.myPnts2dX)),
+      myPnts2dY(std::move(theOther.myPnts2dY)),
+      myTolU(theOther.myTolU),
+      myTolV(theOther.myTolV),
+      myOriginalTolU(theOther.myOriginalTolU),
+      myOriginalTolV(theOther.myOriginalTolV),
+      myPointsCount(theOther.myPointsCount),
+      myUMin(theOther.myUMin),
+      myVMin(theOther.myVMin),
+      myUMax(theOther.myUMax),
+      myVMax(theOther.myVMax),
+      myQueryCount(theOther.myGridState.load(std::memory_order_acquire) == GridState::Building
+                     ? 0
+                     : theOther.myQueryCount.load(std::memory_order_relaxed))
+{
+  const GridState aState = theOther.myGridState.load(std::memory_order_acquire);
+  if (aState == GridState::Ready)
+  {
+    myGrid = std::move(theOther.myGrid);
+    myGridState.store(GridState::Ready, std::memory_order_relaxed);
+  }
+  else if (aState == GridState::Disabled)
+  {
+    myGridState.store(GridState::Disabled, std::memory_order_relaxed);
+  }
+  theOther.myPointsCount = 0;
+  theOther.myGridState.store(GridState::Disabled, std::memory_order_release);
+}
+
+//=================================================================================================
+
+CSLib_Class2d& CSLib_Class2d::operator=(CSLib_Class2d&& theOther) noexcept
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+
+  const GridState aState = theOther.myGridState.load(std::memory_order_acquire);
+  myPnts2dX              = std::move(theOther.myPnts2dX);
+  myPnts2dY              = std::move(theOther.myPnts2dY);
+  myTolU                 = theOther.myTolU;
+  myTolV                 = theOther.myTolV;
+  myOriginalTolU         = theOther.myOriginalTolU;
+  myOriginalTolV         = theOther.myOriginalTolV;
+  myPointsCount          = theOther.myPointsCount;
+  myUMin                 = theOther.myUMin;
+  myVMin                 = theOther.myVMin;
+  myUMax                 = theOther.myUMax;
+  myVMax                 = theOther.myVMax;
+  myQueryCount.store(
+    aState == GridState::Building ? 0 : theOther.myQueryCount.load(std::memory_order_relaxed),
+    std::memory_order_relaxed);
+  myGrid = NCollection_Array1<GridCell>();
+  if (aState == GridState::Ready)
+  {
+    myGrid = std::move(theOther.myGrid);
+    myGridState.store(GridState::Ready, std::memory_order_relaxed);
+  }
+  else
+  {
+    myGridState.store(aState == GridState::Disabled ? GridState::Disabled : GridState::NotBuilt,
+                      std::memory_order_relaxed);
+  }
+  theOther.myPointsCount = 0;
+  theOther.myGridState.store(GridState::Disabled, std::memory_order_release);
+  return *this;
+}
+
+//=================================================================================================
+
 void CSLib_Class2d::buildGridCache() const
 {
-  if (myPointsCount < THE_GRID_MIN_POINTS || myGridState.load(std::memory_order_acquire) == 2)
+  if (myPointsCount < THE_GRID_MIN_POINTS)
   {
     return;
   }
 
-  unsigned char anExpectedState = 0;
+  GridState anExpectedState = GridState::NotBuilt;
   if (!myGridState.compare_exchange_strong(anExpectedState,
-                                           static_cast<unsigned char>(1),
+                                           GridState::Building,
                                            std::memory_order_acq_rel,
                                            std::memory_order_acquire))
   {
@@ -202,12 +321,31 @@ void CSLib_Class2d::buildGridCache() const
   {
     const int aTotalCells = THE_GRID_SIZE * THE_GRID_SIZE;
     myGrid.Resize(0, aTotalCells - 1, false);
+    myGrid.Init(GridCell_Unvisited);
 
-    const double                      aCellSize = 1.0 / THE_GRID_SIZE;
-    const double                      anEps     = 8.0 * std::numeric_limits<double>::epsilon();
-    const double*                     pX        = &myPnts2dX.First();
-    const double*                     pY        = &myPnts2dY.First();
-    NCollection_LinearVector<uint8_t> aBoundaryCells(static_cast<size_t>(aTotalCells), 0);
+    const double                  aCellSize = 1.0 / THE_GRID_SIZE;
+    const double                  anEps     = 8.0 * std::numeric_limits<double>::epsilon();
+    const double*                 pX        = &myPnts2dX.First();
+    const double*                 pY        = &myPnts2dY.First();
+    NCollection_LinearVector<int> aCellQueue(static_cast<size_t>(aTotalCells));
+
+    // Non-finite polygon data and domain-sized tolerances are valid for the
+    // exact path but cannot produce a useful, safely indexed cache.
+    if (myTolU >= 1.0 || myTolV >= 1.0)
+    {
+      myGrid = NCollection_Array1<GridCell>();
+      myGridState.store(GridState::Disabled, std::memory_order_release);
+      return;
+    }
+    for (int aPointIdx = 0; aPointIdx < myPointsCount; ++aPointIdx)
+    {
+      if (!isFiniteValue(pX[aPointIdx]) || !isFiniteValue(pY[aPointIdx]))
+      {
+        myGrid = NCollection_Array1<GridCell>();
+        myGridState.store(GridState::Disabled, std::memory_order_release);
+        return;
+      }
+    }
 
     // Rasterize tolerance-expanded edge boxes into the fixed grid. This is
     // equivalent to testing every cell box against every edge box, but avoids
@@ -223,21 +361,24 @@ void CSLib_Class2d::buildGridCache() const
         continue;
       }
 
-      const int aMinCellX =
-        std::clamp(static_cast<int>(std::ceil(aMinX * THE_GRID_SIZE)) - 1, 0, THE_GRID_SIZE - 1);
+      const double aClippedMinX = std::clamp(aMinX, 0.0, 1.0);
+      const double aClippedMaxX = std::clamp(aMaxX, 0.0, 1.0);
+      const double aClippedMinY = std::clamp(aMinY, 0.0, 1.0);
+      const double aClippedMaxY = std::clamp(aMaxY, 0.0, 1.0);
+      const int    aMinCellX =
+        std::max(static_cast<int>(std::ceil(aClippedMinX * THE_GRID_SIZE)) - 1, 0);
       const int aMaxCellX =
-        std::clamp(static_cast<int>(std::floor(aMaxX * THE_GRID_SIZE)), 0, THE_GRID_SIZE - 1);
+        std::min(static_cast<int>(std::floor(aClippedMaxX * THE_GRID_SIZE)), THE_GRID_SIZE - 1);
       const int aMinCellY =
-        std::clamp(static_cast<int>(std::ceil(aMinY * THE_GRID_SIZE)) - 1, 0, THE_GRID_SIZE - 1);
+        std::max(static_cast<int>(std::ceil(aClippedMinY * THE_GRID_SIZE)) - 1, 0);
       const int aMaxCellY =
-        std::clamp(static_cast<int>(std::floor(aMaxY * THE_GRID_SIZE)), 0, THE_GRID_SIZE - 1);
+        std::min(static_cast<int>(std::floor(aClippedMaxY * THE_GRID_SIZE)), THE_GRID_SIZE - 1);
 
       for (int aCellY = aMinCellY; aCellY <= aMaxCellY; ++aCellY)
       {
         for (int aCellX = aMinCellX; aCellX <= aMaxCellX; ++aCellX)
         {
-          const size_t aCellIndex    = static_cast<size_t>(aCellY * THE_GRID_SIZE + aCellX);
-          aBoundaryCells[aCellIndex] = 1;
+          myGrid.SetValue(aCellY * THE_GRID_SIZE + aCellX, GridCell_Boundary);
         }
       }
     }
@@ -245,18 +386,10 @@ void CSLib_Class2d::buildGridCache() const
     // A polygon cannot change classification inside a connected set of cells
     // that contains no boundary. Classify one center per component and flood
     // the result through the remaining cells.
-    NCollection_LinearVector<uint8_t> aVisitedCells(static_cast<size_t>(aTotalCells), 0);
-    NCollection_LinearVector<int>     aCellQueue(static_cast<size_t>(aTotalCells));
+    int aUsableCellCount = 0;
     for (int aCellIndex = 0; aCellIndex < aTotalCells; ++aCellIndex)
     {
-      const size_t anIndex = static_cast<size_t>(aCellIndex);
-      if (aBoundaryCells[anIndex] != 0)
-      {
-        myGrid.SetValue(aCellIndex, GridCell_Boundary);
-        aVisitedCells[anIndex] = 1;
-        continue;
-      }
-      if (aVisitedCells[anIndex] != 0)
+      if (myGrid.Value(aCellIndex) != GridCell_Unvisited)
       {
         continue;
       }
@@ -270,11 +403,11 @@ void CSLib_Class2d::buildGridCache() const
 
       aCellQueue.Clear();
       aCellQueue.Append(aCellIndex);
-      aVisitedCells[anIndex] = 1;
+      myGrid.SetValue(aCellIndex, aComponentValue);
       for (size_t aQueueIndex = 0; aQueueIndex < aCellQueue.Size(); ++aQueueIndex)
       {
         const int aCurrentCell = aCellQueue[aQueueIndex];
-        myGrid.SetValue(aCurrentCell, aComponentValue);
+        ++aUsableCellCount;
 
         const int aCurrentX         = aCurrentCell % THE_GRID_SIZE;
         const int aCurrentY         = aCurrentCell / THE_GRID_SIZE;
@@ -290,20 +423,42 @@ void CSLib_Class2d::buildGridCache() const
           {
             continue;
           }
-          const size_t aNeighbor = static_cast<size_t>(aNeighborCell);
-          if (aVisitedCells[aNeighbor] == 0 && aBoundaryCells[aNeighbor] == 0)
+          if (myGrid.Value(aNeighborCell) == GridCell_Unvisited)
           {
-            aVisitedCells[aNeighbor] = 1;
+            myGrid.SetValue(aNeighborCell, aComponentValue);
             aCellQueue.Append(aNeighborCell);
           }
         }
       }
     }
-    myGridState.store(2, std::memory_order_release);
+
+    // Even a partial cache is useful after the sustained-use threshold: a
+    // classified cell avoids an O(edges) scan, while boundary cells remain exact.
+    if (aUsableCellCount == 0)
+    {
+      myGrid = NCollection_Array1<GridCell>();
+      myGridState.store(GridState::Disabled, std::memory_order_release);
+      return;
+    }
+    myGridState.store(GridState::Ready, std::memory_order_release);
+  }
+  catch (const Standard_OutOfMemory&)
+  {
+    myGrid = NCollection_Array1<GridCell>();
+    myQueryCount.store(0, std::memory_order_relaxed);
+    myGridState.store(GridState::NotBuilt, std::memory_order_release);
+  }
+  catch (const std::bad_alloc&)
+  {
+    myGrid = NCollection_Array1<GridCell>();
+    myQueryCount.store(0, std::memory_order_relaxed);
+    myGridState.store(GridState::NotBuilt, std::memory_order_release);
   }
   catch (...)
   {
-    myGridState.store(0, std::memory_order_release);
+    myGrid = NCollection_Array1<GridCell>();
+    myQueryCount.store(0, std::memory_order_relaxed);
+    myGridState.store(GridState::NotBuilt, std::memory_order_release);
     throw;
   }
 }
@@ -321,8 +476,8 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
   double aY = thePoint.Y();
 
   // Compute tolerance in original coordinate space.
-  const double aTolU = myTolU * (myUMax - myUMin);
-  const double aTolV = myTolV * (myVMax - myVMin);
+  const double aTolU = myOriginalTolU;
+  const double aTolV = myOriginalTolV;
 
   // Quick rejection test for points clearly outside the bounding box.
   if (aX < (myUMin - aTolU) || aX > (myUMax + aTolU) || aY < (myVMin - aTolV)
@@ -332,23 +487,25 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
   }
 
   // Transform to normalized coordinates.
-  aX = transformToNormalized(aX, myUMin, myUMax - myUMin);
-  aY = transformToNormalized(aY, myVMin, myVMax - myVMin);
+  aX = transformToNormalized(aX, myUMin, myUMax);
+  aY = transformToNormalized(aY, myVMin, myVMax);
 
   // Build the acceleration grid only for sustained workloads. Short-lived
   // classifiers and small polygons remain on the cheaper exact scan.
-  if (myGridState.load(std::memory_order_acquire) != 2 && myPointsCount >= THE_GRID_MIN_POINTS)
+  GridState aGridState = myGridState.load(std::memory_order_acquire);
+  if (aGridState == GridState::NotBuilt && myPointsCount >= THE_GRID_MIN_POINTS)
   {
     const size_t aQueryCount = myQueryCount.fetch_add(1, std::memory_order_relaxed) + 1;
     if (aQueryCount >= THE_GRID_BUILD_QUERY_COUNT)
     {
       buildGridCache();
+      aGridState = myGridState.load(std::memory_order_acquire);
     }
   }
 
   // Fast-path: conservative grid lookup (O(1) away from polygon edges).
-  if (aX >= 0.0 && aX <= 1.0 && aY >= 0.0 && aY <= 1.0
-      && myGridState.load(std::memory_order_acquire) == 2)
+  if (aGridState == GridState::Ready && isFiniteValue(aX) && isFiniteValue(aY) && aX >= 0.0
+      && aX <= 1.0 && aY >= 0.0 && aY <= 1.0)
   {
     int aIX              = static_cast<int>(aX * THE_GRID_SIZE);
     int aIY              = static_cast<int>(aY * THE_GRID_SIZE);
@@ -356,14 +513,18 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
     aIY                  = std::clamp(aIY, 0, THE_GRID_SIZE - 1);
     const GridCell aCell = myGrid.Value(aIY * THE_GRID_SIZE + aIX);
     if (aCell == GridCell_Inside)
+    {
       return Result_Inside;
+    }
     if (aCell == GridCell_Outside)
+    {
       return Result_Outside;
-    // GridCell_Boundary — fall through to exact classification.
+    }
+    // Boundary cells fall through to exact classification.
   }
 
   // Perform classification with ON detection.
-  const Result aResult = internalSiDansOuOn(aX, aY);
+  const Result aResult = internalSiDansOuOn(aX, aY, myTolU, myTolV);
   if (aResult == Result_Uncertain)
   {
     return Result_Uncertain; // ON boundary
@@ -395,31 +556,34 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans_OnMode(const gp_Pnt2d& thePoint,
     return Result_Uncertain;
   }
 
-  double aX = thePoint.X();
-  double aY = thePoint.Y();
+  double       aX         = thePoint.X();
+  double       aY         = thePoint.Y();
+  const double aTolerance = sanitizeTolerance(theTol);
+  const double aTolU      = normalizeTolerance(aTolerance, myUMin, myUMax);
+  const double aTolV      = normalizeTolerance(aTolerance, myVMin, myVMax);
 
   // Quick rejection test.
-  if (aX < (myUMin - theTol) || aX > (myUMax + theTol) || aY < (myVMin - theTol)
-      || aY > (myVMax + theTol))
+  if (aX < (myUMin - aTolerance) || aX > (myUMax + aTolerance) || aY < (myVMin - aTolerance)
+      || aY > (myVMax + aTolerance))
   {
     return Result_Outside;
   }
 
   // Transform to normalized coordinates.
-  aX = transformToNormalized(aX, myUMin, myUMax - myUMin);
-  aY = transformToNormalized(aY, myVMin, myVMax - myVMin);
+  aX = transformToNormalized(aX, myUMin, myUMax);
+  aY = transformToNormalized(aY, myVMin, myVMax);
 
   // Perform classification with ON detection.
-  const Result aResult = internalSiDansOuOn(aX, aY);
+  const Result aResult = internalSiDansOuOn(aX, aY, aTolU, aTolV);
 
   // Check corner points with tolerance.
-  if (theTol > 0.0)
+  if (aTolU > 0.0 || aTolV > 0.0)
   {
     const bool isInside = (aResult == Result_Inside);
-    if (isInside != internalSiDans(aX - theTol, aY - theTol)
-        || isInside != internalSiDans(aX + theTol, aY - theTol)
-        || isInside != internalSiDans(aX - theTol, aY + theTol)
-        || isInside != internalSiDans(aX + theTol, aY + theTol))
+    if (isInside != internalSiDans(aX - aTolU, aY - aTolV)
+        || isInside != internalSiDans(aX + aTolU, aY - aTolV)
+        || isInside != internalSiDans(aX - aTolU, aY + aTolV)
+        || isInside != internalSiDans(aX + aTolU, aY + aTolV))
     {
       return Result_Uncertain;
     }
@@ -480,7 +644,9 @@ bool CSLib_Class2d::internalSiDans(const double thePx, const double thePy) const
 //=================================================================================================
 
 CSLib_Class2d::Result CSLib_Class2d::internalSiDansOuOn(const double thePx,
-                                                        const double thePy) const
+                                                        const double thePy,
+                                                        const double theTolU,
+                                                        const double theTolV) const
 {
   // Ray-casting algorithm with ON detection.
   // Use raw pointers for cache-friendly sequential access and auto-vectorization.
@@ -500,7 +666,7 @@ CSLib_Class2d::Result CSLib_Class2d::internalSiDansOuOn(const double thePx,
     const double aCurrDy  = pY[aNextIdx] - thePy;
 
     // Check if point is very close to current vertex.
-    if (aCurrDx < myTolU && aCurrDx > -myTolU && aCurrDy < myTolV && aCurrDy > -myTolV)
+    if (aCurrDx < theTolU && aCurrDx > -theTolU && aCurrDy < theTolV && aCurrDy > -theTolV)
     {
       return Result_Uncertain; // ON boundary (at vertex)
     }
@@ -513,7 +679,7 @@ CSLib_Class2d::Result CSLib_Class2d::internalSiDansOuOn(const double thePx,
     {
       const double aInterpY = pY[aNextIdx] - (pY[aNextIdx] - pY[aPrevIdx]) / aEdgeDx * aCurrDx;
       const double aDeltaY  = aInterpY - thePy;
-      if (aDeltaY >= -myTolV && aDeltaY <= myTolV)
+      if (aDeltaY >= -theTolV && aDeltaY <= theTolV)
       {
         return Result_Uncertain; // ON boundary (on edge)
       }

@@ -21,16 +21,16 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <CSLib_Class2d.hxx>
-#include <BRepClass_FaceExplorer.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopAbs_State.hxx>
 
 #include <mutex>
-#include <optional>
+#include <memory>
 #include <cstdint>
 
+class BRepClass_FaceExplorer;
 class gp_Pnt2d;
 
 class BRepTopAdaptor_FClass2d
@@ -40,10 +40,10 @@ public:
 
   Standard_EXPORT BRepTopAdaptor_FClass2d(const TopoDS_Face& F, const double Tol);
 
-  Standard_EXPORT BRepTopAdaptor_FClass2d(const BRepTopAdaptor_FClass2d& theOther);
-  Standard_EXPORT BRepTopAdaptor_FClass2d(BRepTopAdaptor_FClass2d&& theOther) noexcept;
-  Standard_EXPORT BRepTopAdaptor_FClass2d& operator=(const BRepTopAdaptor_FClass2d& theOther);
-  Standard_EXPORT BRepTopAdaptor_FClass2d& operator=(BRepTopAdaptor_FClass2d&& theOther) noexcept;
+  BRepTopAdaptor_FClass2d(const BRepTopAdaptor_FClass2d&)            = delete;
+  BRepTopAdaptor_FClass2d(BRepTopAdaptor_FClass2d&&)                 = delete;
+  BRepTopAdaptor_FClass2d& operator=(const BRepTopAdaptor_FClass2d&) = delete;
+  BRepTopAdaptor_FClass2d& operator=(BRepTopAdaptor_FClass2d&&)      = delete;
 
   Standard_EXPORT TopAbs_State PerformInfinitePoint() const;
 
@@ -52,9 +52,7 @@ public:
 
   Standard_EXPORT void Destroy();
 
-  ~BRepTopAdaptor_FClass2d() { Destroy(); }
-
-  Standard_EXPORT BRepTopAdaptor_FClass2d& Copy(const BRepTopAdaptor_FClass2d& Other);
+  Standard_EXPORT ~BRepTopAdaptor_FClass2d();
 
   //! Test a point with +- an offset (Tol) and returns
   //! On if some points are OUT an some are IN
@@ -64,6 +62,12 @@ public:
                                                  const bool      RecadreOnPeriodic = true) const;
 
 private:
+  enum class ClassificationMode : uint8_t
+  {
+    Perform,
+    OnRestriction
+  };
+
   enum class WireRole : int8_t
   {
     Invalid = -1,
@@ -73,27 +77,30 @@ private:
 
   TopAbs_State exactState(const gp_Pnt2d& thePoint, const double theTolerance) const;
 
-  void moveState(BRepTopAdaptor_FClass2d&& theOther) noexcept;
+  TopAbs_State classify(const gp_Pnt2d&          thePoint,
+                        const double             theTolerance,
+                        const bool               theRecadreOnPeriodic,
+                        const ClassificationMode theMode) const;
 
 private:
-  NCollection_LinearVector<CSLib_Class2d>       TabClass;
-  NCollection_LinearVector<WireRole>            TabOrien;
-  double                                        Toluv;
-  TopoDS_Face                                   Face;
-  mutable std::optional<BRepClass_FaceExplorer> myExactExplorer;
-  mutable std::mutex                            myExactMutex;
-  bool                                          myIsUPeriodic;
-  bool                                          myIsVPeriodic;
-  double                                        myUPeriod;
-  double                                        myVPeriod;
-  double                                        U1;
-  double                                        V1;
-  double                                        U2;
-  double                                        V2;
-  double                                        Umin;
-  double                                        Umax;
-  double                                        Vmin;
-  double                                        Vmax;
+  NCollection_LinearVector<CSLib_Class2d>         TabClass;
+  NCollection_LinearVector<WireRole>              TabOrien;
+  double                                          Toluv;
+  TopoDS_Face                                     Face;
+  mutable std::unique_ptr<BRepClass_FaceExplorer> myExactExplorer;
+  mutable std::mutex                              myExactMutex;
+  bool                                            myIsUPeriodic;
+  bool                                            myIsVPeriodic;
+  double                                          myUPeriod;
+  double                                          myVPeriod;
+  double                                          U1;
+  double                                          V1;
+  double                                          U2;
+  double                                          V2;
+  double                                          Umin;
+  double                                          Umax;
+  double                                          Vmin;
+  double                                          Vmax;
 };
 
 #endif // _BRepTopAdaptor_FClass2d_HeaderFile

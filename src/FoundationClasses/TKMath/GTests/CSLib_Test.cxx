@@ -31,6 +31,7 @@
 #include <array>
 #include <atomic>
 #include <cmath>
+#include <limits>
 #include <thread>
 
 namespace
@@ -379,9 +380,43 @@ TEST_F(CSLibClass2dTest, LazyGridRemainsExactAwayFromBoundary)
   EXPECT_EQ(aCopy.SiDans(aPnts(1)), CSLib_Class2d::Result_Uncertain);
 }
 
-TEST_F(CSLibClass2dTest, LazyGridBuildIsThreadSafe)
+TEST_F(CSLibClass2dTest, LazyGridMatchesExactPathForConcaveDiagonalPolygon)
 {
-  constexpr int                THE_POINT_COUNT = 64;
+  constexpr int                THE_POINT_COUNT = 32;
+  NCollection_Array1<gp_Pnt2d> aPnts(1, THE_POINT_COUNT);
+  for (int anIdx = 0; anIdx < THE_POINT_COUNT; ++anIdx)
+  {
+    const double anAngle =
+      2.0 * M_PI * static_cast<double>(anIdx) / static_cast<double>(THE_POINT_COUNT);
+    const double aRadius = (anIdx % 4 == 1) ? 0.22 : ((anIdx % 2 == 0) ? 0.46 : 0.34);
+    aPnts(anIdx + 1) =
+      gp_Pnt2d(0.5 + aRadius * std::cos(anAngle), 0.5 + aRadius * std::sin(anAngle));
+  }
+
+  CSLib_Class2d aCached(aPnts, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0);
+  CSLib_Class2d anExact(aPnts, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0);
+  for (size_t aQueryIdx = 0; aQueryIdx < 64; ++aQueryIdx)
+  {
+    ASSERT_EQ(aCached.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Inside);
+  }
+
+  for (int aY = 0; aY < 47; ++aY)
+  {
+    for (int anX = 0; anX < 47; ++anX)
+    {
+      const gp_Pnt2d aPoint((static_cast<double>(anX) + 0.37) / 47.0,
+                            (static_cast<double>(aY) + 0.61) / 47.0);
+      EXPECT_EQ(aCached.SiDans(aPoint), anExact.SiDans_OnMode(aPoint, 0.0))
+        << "sample (" << anX << ", " << aY << ")";
+    }
+  }
+}
+
+TEST_F(CSLibClass2dTest, LazyGridConcurrentBuildOverlapIsThreadSafe)
+{
+  // The large polygon keeps the designated build query active while synchronized
+  // readers exercise the exact fallback. Run this test under TSAN for race detection.
+  constexpr int                THE_POINT_COUNT = 32768;
   NCollection_Array1<gp_Pnt2d> aPnts(1, THE_POINT_COUNT);
   for (int anIdx = 0; anIdx < THE_POINT_COUNT; ++anIdx)
   {
@@ -390,14 +425,46 @@ TEST_F(CSLibClass2dTest, LazyGridBuildIsThreadSafe)
     aPnts(anIdx + 1) = gp_Pnt2d(0.5 + 0.4 * std::cos(anAngle), 0.5 + 0.4 * std::sin(anAngle));
   }
 
-  CSLib_Class2d              aClassifier(aPnts, 1.0e-8, 1.0e-8, 0.0, 0.0, 1.0, 1.0);
-  std::atomic<bool>          hasFailure{false};
-  std::array<std::thread, 8> aThreads;
-  for (size_t aThreadIdx = 0; aThreadIdx < aThreads.size(); ++aThreadIdx)
+  CSLib_Class2d aClassifier(aPnts, 1.0e-8, 1.0e-8, 0.0, 0.0, 1.0, 1.0);
+  for (size_t aQueryIdx = 0; aQueryIdx < 63; ++aQueryIdx)
   {
-    aThreads[aThreadIdx] = std::thread([&aClassifier, &hasFailure]() {
-      for (size_t aQueryIdx = 0; aQueryIdx < 256; ++aQueryIdx)
+    ASSERT_EQ(aClassifier.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Inside);
+  }
+
+  std::atomic<bool>   hasFailure{false};
+  std::atomic<bool>   canStart{false};
+  std::atomic<bool>   hasBuildQueryStarted{false};
+  std::atomic<bool>   hasBuildQueryFinished{false};
+  std::atomic<size_t> anOverlapQueryCount{0};
+  std::atomic<size_t> aReadyCount{0};
+  std::thread         aBuildThread([&]() {
+    while (!canStart.load(std::memory_order_acquire))
+    {
+      std::this_thread::yield();
+    }
+    hasBuildQueryStarted.store(true, std::memory_order_release);
+    if (aClassifier.SiDans(gp_Pnt2d(0.5, 0.5)) != CSLib_Class2d::Result_Inside)
+    {
+      hasFailure.store(true, std::memory_order_relaxed);
+    }
+    hasBuildQueryFinished.store(true, std::memory_order_release);
+  });
+
+  std::array<std::thread, 7> aReaderThreads;
+  for (size_t aThreadIdx = 0; aThreadIdx < aReaderThreads.size(); ++aThreadIdx)
+  {
+    aReaderThreads[aThreadIdx] = std::thread([&]() {
+      aReadyCount.fetch_add(1, std::memory_order_release);
+      while (!hasBuildQueryStarted.load(std::memory_order_acquire))
       {
+        std::this_thread::yield();
+      }
+      for (size_t aQueryIdx = 0; aQueryIdx < 8; ++aQueryIdx)
+      {
+        if (!hasBuildQueryFinished.load(std::memory_order_acquire))
+        {
+          anOverlapQueryCount.fetch_add(1, std::memory_order_relaxed);
+        }
         const bool                  isInside = (aQueryIdx & 1u) == 0u;
         const gp_Pnt2d              aPoint   = isInside ? gp_Pnt2d(0.5, 0.5) : gp_Pnt2d(0.99, 0.99);
         const CSLib_Class2d::Result anExpected =
@@ -410,11 +477,86 @@ TEST_F(CSLibClass2dTest, LazyGridBuildIsThreadSafe)
       }
     });
   }
-  for (std::thread& aThread : aThreads)
+  while (aReadyCount.load(std::memory_order_acquire) != aReaderThreads.size())
+  {
+    std::this_thread::yield();
+  }
+  canStart.store(true, std::memory_order_release);
+  while (!hasBuildQueryStarted.load(std::memory_order_acquire))
+  {
+    std::this_thread::yield();
+  }
+  if (!hasBuildQueryFinished.load(std::memory_order_acquire))
+  {
+    anOverlapQueryCount.fetch_add(1, std::memory_order_relaxed);
+    if (aClassifier.SiDans(gp_Pnt2d(0.99, 0.99)) != CSLib_Class2d::Result_Outside)
+    {
+      hasFailure.store(true, std::memory_order_relaxed);
+    }
+  }
+  aBuildThread.join();
+  for (std::thread& aThread : aReaderThreads)
   {
     aThread.join();
   }
   EXPECT_FALSE(hasFailure.load(std::memory_order_relaxed));
+  EXPECT_GT(anOverlapQueryCount.load(std::memory_order_relaxed), 0u);
+}
+
+TEST_F(CSLibClass2dTest, SiDansHandlesNegativeNonFiniteAndExtremeInputs)
+{
+  constexpr int                THE_POINT_COUNT     = 32;
+  constexpr int                THE_POINTS_PER_SIDE = THE_POINT_COUNT / 4;
+  NCollection_Array1<gp_Pnt2d> aPnts(1, THE_POINT_COUNT);
+  for (int anIdx = 0; anIdx < THE_POINTS_PER_SIDE; ++anIdx)
+  {
+    const double aParameter                    = static_cast<double>(anIdx) / THE_POINTS_PER_SIDE;
+    aPnts(1 + anIdx)                           = gp_Pnt2d(aParameter, 0.0);
+    aPnts(1 + THE_POINTS_PER_SIDE + anIdx)     = gp_Pnt2d(1.0, aParameter);
+    aPnts(1 + 2 * THE_POINTS_PER_SIDE + anIdx) = gp_Pnt2d(1.0 - aParameter, 1.0);
+    aPnts(1 + 3 * THE_POINTS_PER_SIDE + anIdx) = gp_Pnt2d(0.0, 1.0 - aParameter);
+  }
+
+  CSLib_Class2d
+    aNegative(aPnts, -1.0, -std::numeric_limits<double>::infinity(), 0.0, 0.0, 1.0, 1.0);
+  EXPECT_EQ(aNegative.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Inside);
+  EXPECT_EQ(aNegative.SiDans_OnMode(gp_Pnt2d(1.5, 0.5), -1.0), CSLib_Class2d::Result_Outside);
+
+  CSLib_Class2d anExtremeTolerance(aPnts,
+                                   std::numeric_limits<double>::infinity(),
+                                   std::numeric_limits<double>::max(),
+                                   0.0,
+                                   0.0,
+                                   1.0,
+                                   1.0);
+  for (size_t aQueryIdx = 0; aQueryIdx < 80; ++aQueryIdx)
+  {
+    EXPECT_EQ(anExtremeTolerance.SiDans(gp_Pnt2d(0.5, 0.5)), CSLib_Class2d::Result_Uncertain);
+  }
+
+  const double                 aLimit = 0.1 * Precision::Infinite();
+  NCollection_Array1<gp_Pnt2d> anExtremePnts(1, 4);
+  anExtremePnts(1) = gp_Pnt2d(-0.5 * aLimit, -0.5 * aLimit);
+  anExtremePnts(2) = gp_Pnt2d(0.5 * aLimit, -0.5 * aLimit);
+  anExtremePnts(3) = gp_Pnt2d(0.5 * aLimit, 0.5 * aLimit);
+  anExtremePnts(4) = gp_Pnt2d(-0.5 * aLimit, 0.5 * aLimit);
+  CSLib_Class2d anExtremeCoordinates(anExtremePnts, 0.0, 0.0, -aLimit, -aLimit, aLimit, aLimit);
+  EXPECT_EQ(anExtremeCoordinates.SiDans(gp_Pnt2d(0.0, 0.0)), CSLib_Class2d::Result_Inside);
+  EXPECT_EQ(anExtremeCoordinates.SiDans(gp_Pnt2d(0.75 * aLimit, 0.0)),
+            CSLib_Class2d::Result_Outside);
+
+  const double  aLargeTolerance = 0.1 * aLimit;
+  CSLib_Class2d aTolerantExtreme(anExtremePnts,
+                                 aLargeTolerance,
+                                 aLargeTolerance,
+                                 -aLimit,
+                                 -aLimit,
+                                 aLimit,
+                                 aLimit);
+  EXPECT_EQ(aTolerantExtreme.SiDans(gp_Pnt2d(0.55 * aLimit, 0.0)), CSLib_Class2d::Result_Uncertain);
+  EXPECT_EQ(aTolerantExtreme.SiDans(gp_Pnt2d(0.65 * aLimit, 0.0)), CSLib_Class2d::Result_Outside);
+  EXPECT_EQ(anExtremeCoordinates.SiDans_OnMode(gp_Pnt2d(0.0, 0.55 * aLimit), aLargeTolerance),
+            CSLib_Class2d::Result_Uncertain);
 }
 
 TEST_F(CSLibClass2dTest, LazyGridPreservesToleranceAcrossCellBoundary)
@@ -460,6 +602,25 @@ TEST_F(CSLibClass2dTest, SiDans_OnMode_PointInside)
 
   const gp_Pnt2d aPointInside(0.5, 0.5);
   EXPECT_EQ(aClassifier.SiDans_OnMode(aPointInside, 0.01), 1);
+}
+
+TEST_F(CSLibClass2dTest, SiDans_OnMode_NormalizesAndReplacesToleranceOnAnisotropicDomain)
+{
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 4);
+  aPnts(1) = gp_Pnt2d(20.0, -1.0);
+  aPnts(2) = gp_Pnt2d(80.0, -1.0);
+  aPnts(3) = gp_Pnt2d(80.0, 1.0);
+  aPnts(4) = gp_Pnt2d(20.0, 1.0);
+
+  // Constructor tolerances are deliberately larger than the explicit one.
+  CSLib_Class2d aClassifier(aPnts, 10.0, 1.0, 0.0, -2.0, 100.0, 2.0);
+  EXPECT_EQ(aClassifier.SiDans_OnMode(gp_Pnt2d(50.0, 1.5), 0.01), CSLib_Class2d::Result_Outside);
+
+  // The same original-space tolerance has different normalized U/V values.
+  EXPECT_EQ(aClassifier.SiDans_OnMode(gp_Pnt2d(19.75, 0.0), 0.5), CSLib_Class2d::Result_Uncertain);
+  EXPECT_EQ(aClassifier.SiDans_OnMode(gp_Pnt2d(19.0, 0.0), 0.5), CSLib_Class2d::Result_Outside);
+  EXPECT_EQ(aClassifier.SiDans_OnMode(gp_Pnt2d(50.0, 1.25), 0.5), CSLib_Class2d::Result_Uncertain);
+  EXPECT_EQ(aClassifier.SiDans_OnMode(gp_Pnt2d(50.0, 1.75), 0.5), CSLib_Class2d::Result_Outside);
 }
 
 // Test with degenerate polygon (less than 3 points effective)
@@ -545,9 +706,11 @@ TEST_F(CSLibNormalPolyDefTest, Value_AtSingularPoints)
   // the tolerance check RealSmall().
   // Test that the function doesn't crash at these points.
   EXPECT_TRUE(aPoly.Value(0.0, aValue));
+  EXPECT_FALSE(std::isnan(aValue));
   EXPECT_FALSE(Precision::IsInfinite(aValue));
 
   EXPECT_TRUE(aPoly.Value(M_PI / 2.0, aValue));
+  EXPECT_FALSE(std::isnan(aValue));
   EXPECT_FALSE(Precision::IsInfinite(aValue));
 }
 
@@ -565,7 +728,8 @@ TEST_F(CSLibNormalPolyDefTest, Derivative_AtRegularPoint)
   double aDeriv;
   EXPECT_TRUE(aPoly.Derivative(M_PI / 4.0, aDeriv));
   // Derivative should be computed without crash
-  EXPECT_TRUE(std::isfinite(aDeriv));
+  EXPECT_FALSE(std::isnan(aDeriv));
+  EXPECT_FALSE(Precision::IsInfinite(aDeriv));
 }
 
 TEST_F(CSLibNormalPolyDefTest, Derivative_AtSingularPoint)

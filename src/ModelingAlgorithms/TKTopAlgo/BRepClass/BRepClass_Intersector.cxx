@@ -356,16 +356,23 @@ void BRepClass_Intersector::Perform(const gp_Lin2d&       L,
   //
   Bnd_Box2d aBond;
   gp_Pnt2d  aPntF;
-  bool      anUseBndBox = E.UseBndBox();
-  if (anUseBndBox)
+  bool      anUseBndBox = false;
+  if (E.UseBndBox() && E.BoundingBoxState() != BRepClass_Edge::BndBoxState::Unavailable)
   {
-    aBond = E.BoundingBox();
-    if (aBond.IsVoid())
+    if (E.BoundingBoxState() == BRepClass_Edge::BndBoxState::Ready)
     {
-      BndLib_Add2dCurve::Add(aC2D, deb, fin, 0., aBond);
+      aBond = E.BoundingBox();
     }
-    aBond.SetGap(aTolZ);
-    aPntF = L.Location();
+    else
+    {
+      BndLib_Add2dCurve::Add(aC2D, deb, fin, 0.0, aBond);
+    }
+    anUseBndBox = !aBond.IsVoid();
+    if (anUseBndBox)
+    {
+      aBond.SetGap(aTolZ);
+      aPntF = L.Location();
+    }
   }
   //
   Geom2dAdaptor_Curve C(aC2D, deb, fin);

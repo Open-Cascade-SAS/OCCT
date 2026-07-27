@@ -17,24 +17,21 @@
 #ifndef _BRepClass_FaceExplorer_HeaderFile
 #define _BRepClass_FaceExplorer_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <BRepClass_Edge.hxx>
 #include <NCollection_LinearVector.hxx>
-
+#include <Standard_DefineAlloc.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Face.hxx>
-#include <Standard_Integer.hxx>
 
 #include <cstdint>
+
 class gp_Pnt2d;
 class gp_Lin2d;
-class BRepClass_Edge;
 
 //! Provide an exploration of a BRep Face for the
 //! classification. Return UV edges.
-//! The explored topology and pcurves form a snapshot; reconstruct the explorer after modifying
-//! the underlying face or its edge representations.
+//! The explored topology and pcurves form a snapshot. Reconstruct the explorer after modifying the
+//! underlying face or its edge representations.
 class BRepClass_FaceExplorer
 {
 public:
