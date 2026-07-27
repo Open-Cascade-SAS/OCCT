@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="1200"
-     height="380"
-     viewBox="0 0 1200 380"
+     width="465.60214"
+     height="182.46281"
+     viewBox="0 0 1200 470"
      role="img"
      aria-labelledby="title description">
   <title id="title">Bottle profile points</title>
@@ -22,44 +22,44 @@
     </marker>
   </defs>
 
-  <rect width="1200" height="380" fill="#ffffff"/>
+  <rect width="1200" height="470" fill="#ffffff"/>
 
   <g fill="none"
      stroke="#202124"
      stroke-width="2.5"
      stroke-linecap="round"
      marker-end="url(#arrow)">
-    <path d="M 25 110 H 1150"/>
-    <path d="M 600 350 V 20"/>
+    <path d="M 25 130 H 1150"/>
+    <path d="M 600 445 V 20"/>
   </g>
 
   <g fill="#202124" font-family="DejaVu Sans, Arial, sans-serif" font-size="20">
-    <text x="1170" y="117" font-style="italic">x</text>
+    <text x="1170" y="137" font-style="italic">x</text>
     <text x="609" y="20" font-style="italic">y</text>
   </g>
 
-  <circle cx="600" cy="110" r="5" fill="#d1495b"/>
+  <circle cx="600" cy="130" r="5" fill="#d1495b"/>
   <text x="610"
-        y="101"
+        y="121"
         fill="#6b7280"
         font-family="DejaVu Sans, Arial, sans-serif"
         font-size="15">origin (0, 0, 0)</text>
 
   <g fill="#1267d6" stroke="#ffffff" stroke-width="2">
-    <circle cx="170" cy="110" r="8"/>
-    <circle cx="170" cy="240" r="8"/>
-    <circle cx="600" cy="330" r="8"/>
-    <circle cx="1030" cy="240" r="8"/>
-    <circle cx="1030" cy="110" r="8"/>
+    <circle cx="170" cy="130" r="8"/>
+    <circle cx="170" cy="280" r="8"/>
+    <circle cx="600" cy="410" r="8"/>
+    <circle cx="1030" cy="280" r="8"/>
+    <circle cx="1030" cy="130" r="8"/>
   </g>
 
   <g fill="#111827"
-     font-family="DejaVu Sans Mono, Consolas, monospace"
-     font-size="16">
-    <text x="60" y="82">P1 (-myWidth / 2., 0, 0)</text>
-    <text x="30" y="280">P2 (-myWidth / 2., -myThickness / 4., 0)</text>
-    <text x="620" y="340">P3 (0, -myThickness / 2., 0)</text>
-    <text x="1170" y="280" text-anchor="end">P4 (myWidth / 2., -myThickness / 4., 0)</text>
-    <text x="1130" y="82" text-anchor="end">P5 (myWidth / 2., 0, 0)</text>
+     font-family="DejaVu Sans, Arial, sans-serif"
+     font-size="20">
+    <text x="60" y="95">P1 (-myWidth / 2., 0, 0)</text>
+    <text x="30" y="325">P2 (-myWidth / 2., -myThickness / 4., 0)</text>
+    <text x="620" y="420">P3 (0, -myThickness / 2., 0)</text>
+    <text x="1170" y="325" text-anchor="end">P4 (myWidth / 2., -myThickness / 4., 0)</text>
+    <text x="1130" y="95" text-anchor="end">P5 (myWidth / 2., 0, 0)</text>
   </g>
 </svg>
