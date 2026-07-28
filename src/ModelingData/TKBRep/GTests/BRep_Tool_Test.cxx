@@ -11,15 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -157,4 +162,114 @@ TEST(BRep_Tool_Test, Degenerated)
 
   const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
   EXPECT_FALSE(BRep_Tool::Degenerated(anEdge)) << "Box edges should not be degenerated";
+}
+
+TEST(BRep_Tool_Test, CurveOnPlane_RejectsEdgeRangeOutsideBoundedCurve)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  aPoles.SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles.SetValue(2, gp_Pnt(0.5, 0.25, 0.0));
+  aPoles.SetValue(3, gp_Pnt(1.0, 0.0, 0.0));
+  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles);
+
+  BRepBuilderAPI_MakeEdge anEdgeMaker(aCurve);
+  ASSERT_TRUE(anEdgeMaker.IsDone());
+  const TopoDS_Edge& anEdge = anEdgeMaker.Edge();
+
+  constexpr double THE_EDGE_FIRST = -0.000002673149646;
+  constexpr double THE_EDGE_LAST  = 0.999997326850354;
+  BRep_Builder().Range(anEdge, THE_EDGE_FIRST, THE_EDGE_LAST, true);
+
+  occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
+  occ::handle<Geom2d_Curve> aPCurve;
+  double                    aFirst    = 0.0;
+  double                    aLast     = 0.0;
+  bool                      isStored  = true;
+  EXPECT_NO_THROW(aPCurve = BRep_Tool::CurveOnSurface(anEdge,
+                                                       aPlane,
+                                                       TopLoc_Location(),
+                                                       aFirst,
+                                                       aLast,
+                                                       &isStored));
+
+  EXPECT_TRUE(aPCurve.IsNull());
+  EXPECT_FALSE(isStored);
+  EXPECT_DOUBLE_EQ(aFirst, THE_EDGE_FIRST);
+  EXPECT_DOUBLE_EQ(aLast, THE_EDGE_LAST);
+}
+
+TEST(BRep_Tool_Test, CurveOnPlane_ProjectsShiftedPeriodicRange)
+{
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), 1.0);
+  BRepBuilderAPI_MakeEdge  anEdgeMaker(aCircle);
+  ASSERT_TRUE(anEdgeMaker.IsDone());
+  const TopoDS_Edge& anEdge = anEdgeMaker.Edge();
+
+  const double aRangeFirst = aCircle->Period();
+  const double aRangeLast  = 2.0 * aCircle->Period();
+  BRep_Builder().Range(anEdge, aRangeFirst, aRangeLast, true);
+
+  occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
+  occ::handle<Geom2d_Curve> aPCurve;
+  double                    aFirst   = 0.0;
+  double                    aLast    = 0.0;
+  EXPECT_NO_THROW(aPCurve = BRep_Tool::CurveOnPlane(anEdge,
+                                                     aPlane,
+                                                     TopLoc_Location(),
+                                                     aFirst,
+                                                     aLast));
+
+  EXPECT_FALSE(aPCurve.IsNull());
+  EXPECT_DOUBLE_EQ(aFirst, aRangeFirst);
+  EXPECT_DOUBLE_EQ(aLast, aRangeLast);
+}
+
+TEST(BRep_Tool_Test, CurveOnPlane_ProjectsPeriodicEdgeBuiltFromEqualParameters)
+{
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), 1.0);
+  BRepBuilderAPI_MakeEdge  anEdgeMaker(aCircle, 0.0, 0.0);
+  ASSERT_TRUE(anEdgeMaker.IsDone());
+  const TopoDS_Edge& anEdge = anEdgeMaker.Edge();
+
+  double aEdgeFirst = 0.0;
+  double aEdgeLast  = 0.0;
+  BRep_Tool::Range(anEdge, aEdgeFirst, aEdgeLast);
+  EXPECT_NEAR(aEdgeLast - aEdgeFirst, aCircle->Period(), Precision::PConfusion());
+
+  occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
+  occ::handle<Geom2d_Curve> aPCurve;
+  double                    aFirst   = 0.0;
+  double                    aLast    = 0.0;
+  EXPECT_NO_THROW(aPCurve = BRep_Tool::CurveOnPlane(anEdge,
+                                                     aPlane,
+                                                     TopLoc_Location(),
+                                                     aFirst,
+                                                     aLast));
+
+  EXPECT_FALSE(aPCurve.IsNull());
+  EXPECT_DOUBLE_EQ(aFirst, aEdgeFirst);
+  EXPECT_DOUBLE_EQ(aLast, aEdgeLast);
+}
+
+TEST(BRep_Tool_Test, CurveOnPlane_RejectsEqualPeriodicRange)
+{
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), 1.0);
+  BRepBuilderAPI_MakeEdge  anEdgeMaker(aCircle);
+  ASSERT_TRUE(anEdgeMaker.IsDone());
+  const TopoDS_Edge& anEdge = anEdgeMaker.Edge();
+  BRep_Builder().Range(anEdge, 0.0, 0.0, true);
+
+  occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
+  occ::handle<Geom2d_Curve> aPCurve;
+  double                    aFirst   = 1.0;
+  double                    aLast    = 1.0;
+  EXPECT_NO_THROW(aPCurve = BRep_Tool::CurveOnPlane(anEdge,
+                                                     aPlane,
+                                                     TopLoc_Location(),
+                                                     aFirst,
+                                                     aLast));
+
+  EXPECT_TRUE(aPCurve.IsNull());
+  EXPECT_DOUBLE_EQ(aFirst, 0.0);
+  EXPECT_DOUBLE_EQ(aLast, 0.0);
 }
