@@ -13,8 +13,12 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <ShapeFix_Shape.hxx>
@@ -90,5 +94,32 @@ TEST(ShapeFix_ShapeTest, FixCompound)
   ASSERT_FALSE(aResult.IsNull());
 
   BRepCheck_Analyzer anAnalyzer(aResult);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+// Healing a prism built from a self-intersecting ("bowtie") face must not crash:
+// the cap is split into a compound and ShapeFix_Face must not cast it to a face.
+TEST(ShapeFix_ShapeTest, HealPrismFromSelfIntersectingFace)
+{
+  // Bowtie quad: vertices ordered so the two diagonals cross -> the wire self-intersects.
+  BRepBuilderAPI_MakePolygon aPoly;
+  aPoly.Add(gp_Pnt(0.0, 0.0, 0.0));
+  aPoly.Add(gp_Pnt(1.0, 1.0, 0.0));
+  aPoly.Add(gp_Pnt(1.0, 0.0, 0.0));
+  aPoly.Add(gp_Pnt(0.0, 1.0, 0.0));
+  aPoly.Close();
+  ASSERT_TRUE(aPoly.IsDone());
+
+  BRepBuilderAPI_MakeFace aMakeFace(aPoly.Wire(), true);
+  ASSERT_TRUE(aMakeFace.IsDone());
+
+  BRepPrimAPI_MakePrism aMakePrism(aMakeFace.Face(), gp_Vec(0.0, 0.0, 1.0));
+  ASSERT_TRUE(aMakePrism.IsDone());
+
+  occ::handle<ShapeFix_Shape> aFixer = new ShapeFix_Shape(aMakePrism.Shape());
+  aFixer->Perform();
+  ASSERT_FALSE(aFixer->Shape().IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aFixer->Shape());
   EXPECT_TRUE(anAnalyzer.IsValid());
 }

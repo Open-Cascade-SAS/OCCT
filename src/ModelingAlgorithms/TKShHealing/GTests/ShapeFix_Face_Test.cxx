@@ -11,19 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend_Status.hxx>
+#include <ShapeFix_Face.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepLib_MakeWire.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <gp_Ax3.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_HArray1.hxx>
-#include <ShapeBuild_ReShape.hxx>
-#include <ShapeFix_Face.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
@@ -32,6 +36,22 @@
 
 namespace
 {
+//! Creates a bounded planar face suitable for testing context replacements.
+//! Returns a null face if construction fails.
+TopoDS_Face makePlanarFace()
+{
+  BRepBuilderAPI_MakeFace aMakeFace(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
+                                    0.0,
+                                    1.0,
+                                    0.0,
+                                    1.0);
+  if (!aMakeFace.IsDone())
+  {
+    return TopoDS_Face();
+  }
+  return aMakeFace.Face();
+}
+
 // A closed edge belting a cone's full period (8 points sampled off the cone surface).
 TopoDS_Face MakeFaceOnPeriodicConicalSingleWire(occ::handle<Geom_ConicalSurface>& theCone)
 {
@@ -71,6 +91,42 @@ TopoDS_Face MakeFaceOnPeriodicConicalSingleWire(occ::handle<Geom_ConicalSurface>
   return aMakeFace.IsDone() ? aMakeFace.Face() : TopoDS_Face();
 }
 } // namespace
+
+TEST(ShapeFix_FaceTest, Perform_FaceReplacedByCompound_PreservesReplacement)
+{
+  const TopoDS_Face aFace = makePlanarFace();
+  ASSERT_FALSE(aFace.IsNull());
+
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  occ::handle<ShapeBuild_ReShape> aContext = new ShapeBuild_ReShape;
+  aContext->Replace(aFace, aCompound);
+
+  occ::handle<ShapeFix_Face> aFixer = new ShapeFix_Face(aFace);
+  aFixer->SetContext(aContext);
+
+  EXPECT_FALSE(aFixer->Perform());
+  EXPECT_TRUE(aFixer->Status(ShapeExtend_OK));
+  EXPECT_TRUE(aFixer->Result().IsSame(aCompound));
+}
+
+TEST(ShapeFix_FaceTest, Perform_RemovedFace_PreservesNullReplacement)
+{
+  const TopoDS_Face aFace = makePlanarFace();
+  ASSERT_FALSE(aFace.IsNull());
+
+  occ::handle<ShapeBuild_ReShape> aContext = new ShapeBuild_ReShape;
+  aContext->Remove(aFace);
+
+  occ::handle<ShapeFix_Face> aFixer = new ShapeFix_Face(aFace);
+  aFixer->SetContext(aContext);
+
+  EXPECT_FALSE(aFixer->Perform());
+  EXPECT_TRUE(aFixer->Status(ShapeExtend_OK));
+  EXPECT_TRUE(aFixer->Result().IsNull());
+}
 
 // No SetContext() call (the ordinary usage) -- used to SIGSEGV in FixPeriodicDegenerated().
 TEST(ShapeFix_FaceTest, NoCrashOnPeriodicConicalSingleWire)
