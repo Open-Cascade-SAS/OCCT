@@ -5,10 +5,12 @@
 name: Master Validation
 
 on:
+  pull_request:
+    branches:
+      - '**'
   push:
     branches:
-      - master
-  workflow_dispatch:
+       - '**'
 
 concurrency:
   group: ${{ github.workflow }}
