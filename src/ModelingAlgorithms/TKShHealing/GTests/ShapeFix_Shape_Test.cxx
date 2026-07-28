@@ -110,14 +110,16 @@ TEST(ShapeFix_ShapeTest, HealPrismFromSelfIntersectingFace)
   aPoly.Close();
   ASSERT_TRUE(aPoly.IsDone());
 
-  BRepBuilderAPI_MakeFace aMakeFace(aPoly.Wire(), Standard_True);
+  BRepBuilderAPI_MakeFace aMakeFace(aPoly.Wire(), true);
   ASSERT_TRUE(aMakeFace.IsDone());
 
   BRepPrimAPI_MakePrism aMakePrism(aMakeFace.Face(), gp_Vec(0.0, 0.0, 1.0));
-  aMakePrism.Build();
   ASSERT_TRUE(aMakePrism.IsDone());
 
   occ::handle<ShapeFix_Shape> aFixer = new ShapeFix_Shape(aMakePrism.Shape());
-  aFixer->Perform(); // must not crash
-  EXPECT_FALSE(aFixer->Shape().IsNull());
+  aFixer->Perform();
+  ASSERT_FALSE(aFixer->Shape().IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aFixer->Shape());
+  EXPECT_TRUE(anAnalyzer.IsValid());
 }

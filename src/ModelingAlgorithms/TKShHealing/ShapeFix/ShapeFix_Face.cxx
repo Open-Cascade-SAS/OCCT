@@ -352,12 +352,11 @@ bool ShapeFix_Face::Perform(const Message_ProgressRange& theProgress)
     return false;
   }
 
-  // Skip if an earlier fix already replaced this face with a non-face (e.g. a compound): the
-  // TopoDS::Face casts below would build an invalid handle over a non-face TShape.
+  // Skip if an earlier fix already removed this face or replaced it with a non-face.
   if (!Context().IsNull())
   {
     const TopoDS_Shape anApplied = Context()->Apply(myFace);
-    if (anApplied.ShapeType() != TopAbs_FACE)
+    if (anApplied.IsNull() || anApplied.ShapeType() != TopAbs_FACE)
     {
       myResult = anApplied;
       return false;
