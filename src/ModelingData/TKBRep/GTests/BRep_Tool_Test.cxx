@@ -182,15 +182,12 @@ TEST(BRep_Tool_Test, CurveOnPlane_RejectsEdgeRangeOutsideBoundedCurve)
 
   occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
   occ::handle<Geom2d_Curve> aPCurve;
-  double                    aFirst    = 0.0;
-  double                    aLast     = 0.0;
-  bool                      isStored  = true;
-  EXPECT_NO_THROW(aPCurve = BRep_Tool::CurveOnSurface(anEdge,
-                                                       aPlane,
-                                                       TopLoc_Location(),
-                                                       aFirst,
-                                                       aLast,
-                                                       &isStored));
+  double                    aFirst   = 0.0;
+  double                    aLast    = 0.0;
+  bool                      isStored = true;
+  EXPECT_NO_THROW(
+    aPCurve =
+      BRep_Tool::CurveOnSurface(anEdge, aPlane, TopLoc_Location(), aFirst, aLast, &isStored));
 
   EXPECT_TRUE(aPCurve.IsNull());
   EXPECT_FALSE(isStored);
@@ -211,13 +208,10 @@ TEST(BRep_Tool_Test, CurveOnPlane_ProjectsShiftedPeriodicRange)
 
   occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
   occ::handle<Geom2d_Curve> aPCurve;
-  double                    aFirst   = 0.0;
-  double                    aLast    = 0.0;
-  EXPECT_NO_THROW(aPCurve = BRep_Tool::CurveOnPlane(anEdge,
-                                                     aPlane,
-                                                     TopLoc_Location(),
-                                                     aFirst,
-                                                     aLast));
+  double                    aFirst = 0.0;
+  double                    aLast  = 0.0;
+  EXPECT_NO_THROW(aPCurve =
+                    BRep_Tool::CurveOnPlane(anEdge, aPlane, TopLoc_Location(), aFirst, aLast));
 
   EXPECT_FALSE(aPCurve.IsNull());
   EXPECT_DOUBLE_EQ(aFirst, aRangeFirst);
@@ -238,13 +232,10 @@ TEST(BRep_Tool_Test, CurveOnPlane_ProjectsPeriodicEdgeBuiltFromEqualParameters)
 
   occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
   occ::handle<Geom2d_Curve> aPCurve;
-  double                    aFirst   = 0.0;
-  double                    aLast    = 0.0;
-  EXPECT_NO_THROW(aPCurve = BRep_Tool::CurveOnPlane(anEdge,
-                                                     aPlane,
-                                                     TopLoc_Location(),
-                                                     aFirst,
-                                                     aLast));
+  double                    aFirst = 0.0;
+  double                    aLast  = 0.0;
+  EXPECT_NO_THROW(aPCurve =
+                    BRep_Tool::CurveOnPlane(anEdge, aPlane, TopLoc_Location(), aFirst, aLast));
 
   EXPECT_FALSE(aPCurve.IsNull());
   EXPECT_DOUBLE_EQ(aFirst, aEdgeFirst);
@@ -261,13 +252,10 @@ TEST(BRep_Tool_Test, CurveOnPlane_RejectsEqualPeriodicRange)
 
   occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
   occ::handle<Geom2d_Curve> aPCurve;
-  double                    aFirst   = 1.0;
-  double                    aLast    = 1.0;
-  EXPECT_NO_THROW(aPCurve = BRep_Tool::CurveOnPlane(anEdge,
-                                                     aPlane,
-                                                     TopLoc_Location(),
-                                                     aFirst,
-                                                     aLast));
+  double                    aFirst = 1.0;
+  double                    aLast  = 1.0;
+  EXPECT_NO_THROW(aPCurve =
+                    BRep_Tool::CurveOnPlane(anEdge, aPlane, TopLoc_Location(), aFirst, aLast));
 
   EXPECT_TRUE(aPCurve.IsNull());
   EXPECT_DOUBLE_EQ(aFirst, 0.0);

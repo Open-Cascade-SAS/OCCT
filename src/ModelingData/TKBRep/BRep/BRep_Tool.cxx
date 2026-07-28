@@ -466,15 +466,11 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&            
     return nullPCurve;
   }
 
-  occ::handle<Geom_TrimmedCurve> aTrimmedCurve =
-    new Geom_TrimmedCurve(C3D, f, l, true, false);
+  occ::handle<Geom_TrimmedCurve> aTrimmedCurve = new Geom_TrimmedCurve(C3D, f, l, true, false);
 
   // Perform projection
   occ::handle<Geom_Curve> ProjOnPlane =
-    GeomProjLib::ProjectOnPlane(aTrimmedCurve,
-                                GP,
-                                GP->Position().Direction(),
-                                true);
+    GeomProjLib::ProjectOnPlane(aTrimmedCurve, GP, GP->Position().Direction(), true);
 
   occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface(GP);
   occ::handle<GeomAdaptor_Curve>   HC = new GeomAdaptor_Curve(ProjOnPlane);
