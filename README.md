@@ -28,17 +28,17 @@ You can also find OCCT pre-installed on your system or install it from packages 
 
 Documentation is available at the following links:
 - [Latest version](https://dev.opencascade.org/doc/overview)
-- [Version 7.8](https://dev.opencascade.org/doc/occt-7.8.0/overview)
+- [Version 8.0](https://dev.opencascade.org/doc/occt-8.0.0/overview)
 
 Documentation can be part of the package. To preview documentation as part of the package, open the file `doc/html/index.html` to browse HTML documentation.
 
 If HTML documentation is not available in your package, you can:
 
 - **Generate it from sources:** You need to have Tcl and Doxygen 1.8.4 (or above) installed on your system and accessible in your environment (check the environment variable PATH). Use the batch file `adm/gendoc.bat` on Windows or the Bash script `adm/gendoc` on Linux or OS X to (re)generate documentation.
-- **Generate together with sources:** You need to have CMake and 1.8.4 (or above) installed on your system. Enable `BUILD_DOC_Overview` CMake parameter and set the path to Doxygen `3RDPARTY_DOXYGEN_EXECUTABLE`. Then build ALL or only `Overview`.
+- **Generate together with sources:** You need to have CMake and Doxygen 1.8.4 (or above) installed on your system. Enable `BUILD_DOC_Overview` CMake parameter and set the path to Doxygen `3RDPARTY_DOXYGEN_EXECUTABLE`. Then build ALL or only `Overview`.
 - **Read documentation in source plain text (Markdown) format** found in the subfolder `dox` or [GitHub Wiki](https://github.com/Open-Cascade-SAS/OCCT/wiki).
 
-See [dox/build/build_documentation/building_documentation.md](dox/build/build_documentation/building_documentation.md) or [Building Documentation](https://dev.opencascade.org/doc/occt-7.8.0/overview/html/build_upgrade__building_documentation.html) for details.
+See [dox/build/build_documentation/building_documentation.md](dox/build/build_documentation/building_documentation.md) or [Building Documentation](https://dev.opencascade.org/doc/occt-8.0.0/overview/html/build_upgrade__building_documentation.html) for details.
 
 ## Building
 
@@ -57,7 +57,7 @@ The current version of OCCT can be found in the file [`adm/cmake/version.cmake`]
 - [OCCT Tracker](https://tracker.dev.opencascade.org/)
 
 For information regarding OCCT code development, please consult the official OCCT Collaborative Development Portal:
-- [OCCT Development Portal](http://dev.opencascade.org)
+- [OCCT Development Portal](https://dev.opencascade.org)
 
 ### Forum and Discussions
 - [OCCT Forums](https://dev.opencascade.org/forums)

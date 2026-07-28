@@ -172,7 +172,7 @@ aCtx->Display (aPrs, 1, 0, true);
 @figure{images/ais_object_step1_bndbox.png,"@c Prs3d_BndBox presentation builder.",409} height=409px
 
 @c AIS disallows activating multiple display modes at the same time, so that these presentation modes should be alternatives to each other.
-But @c AIS may use non-active display mode for highlighting purposes - like wireframe (@c AIS_Wireframe) presentation displayed on top of shaded (@c AIS_Shaded) presentation for selected @c AIS_Shape objects.
+But @c AIS may use non-active display mode for highlighting purposes - like wireframe (@c AIS_WireFrame) presentation displayed on top of shaded (@c AIS_Shaded) presentation for selected @c AIS_Shape objects.
 
 Let's define a dedicated enumeration for display modes supported by our interactive object and setup the 1st (@c MyDispMode_Highlight) display mode for highlighting with help of @c PrsMgr_PresentableObject::SetHilightMode():
 
@@ -736,7 +736,7 @@ void MyAisOwner::HilightWithColor (const occ::handle<PrsMgr_PresentationManager>
     occ::handle<Graphic3d_Group> aGroup = aPrs->NewGroup();
     aGroup->SetGroupPrimitivesAspect (theStyle->ArrowAspect()->Aspect());
     gp_Trsf aTrsfInv = mySelectable->LocalTransformation().Inverted();
-    gp_Dir  aNorm (aPickPnt.Normal.X(), aPickPnt.Normal.Y(), aPickPnt.Normal.Z());
+    gp_Dir  aNorm (aPickPnt.Normal.x(), aPickPnt.Normal.y(), aPickPnt.Normal.z());
     occ::handle<Graphic3d_ArrayOfTriangles> aTris =
       Prs3d_Arrow::DrawShaded (gp_Ax1(aPickPnt.Point, aNorm).Transformed (aTrsfInv),
         1.0, 15.0,

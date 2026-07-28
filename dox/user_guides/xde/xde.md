@@ -137,7 +137,7 @@ XDE provides capabilities for adding, editing and removing clipping planes.
 
 XDE supports reading from STEP views.
 Views allow saving information about camera parameters (position, direction, zoom factor, etc.) and visible shapes, PMIs, used clipping planes and notes.
-Currently, XDE supports saving of clipping planes in XBF format only.
+Currently, XDE supports saving of views in XBF format only.
 
 XDE provides the following view management capabilities:
   * add/remove views;

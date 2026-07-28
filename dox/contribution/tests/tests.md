@@ -114,7 +114,7 @@ Example:
 ~~~~
 Draw[]> testgrid -outdir d:/occt/last_results -overwrite
 ~~~~
-In the output directory, a cumulative HTML report <i>summary.html</i> provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
+In the output directory, a cumulative HTML report <i>summary.html</i> provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in GitHub Actions or other continuous integration systems.
 
 To re-run the test cases, which were detected as regressions on the previous run, option <i>-regress dirname</i> should be used.
 <i>dirname</i> is a path to the directory containing the results of the previous run. Only the test cases with *FAILED* and *IMPROVEMENT* statuses will be tested.
@@ -567,7 +567,7 @@ During execution of a test, the following Tcl variables are defined on global le
 |-----------|-------|
 | dirname   | Path to the root directory of the current set of test scripts |
 | groupname | Name of the test group (subfolder of $dirname) |
-| gridname  | Name of the test grid (subfolder of $dirname/$gridname) |
+| gridname  | Name of the test grid (subfolder of $dirname/$groupname/$gridname) |
 | casename  | Name of the test |
 | imagedir  | Path to folder where test log and other artifacts are saved |
 
@@ -1088,7 +1088,7 @@ This group allows  testing extended data exchange packages.
 | Data Exchange | TKDESTL, TKDEVRML   | stlvrml |
 | Data Exchange | TKXSBase, TKXCAF, TKXmlXCAF, TKBinXCAF | xde |
 | Foundation Classes |  TKernel, TKMath | fclasses |
-| Modeling_algorithms | TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh | modalg |
+| ModelingAlgorithms | TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh | modalg |
 | Modeling Data | TKG2d, TKG3d, TKGeomBase, TKBRep  | moddata |
 | Visualization | TKService, TKV3d, TKOpenGl, TKMeshVS  | vis |
 

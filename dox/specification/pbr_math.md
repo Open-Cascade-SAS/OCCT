@@ -82,14 +82,14 @@ Going back to the BRDF the Cook-Torrance approach has the following expression:
 
 \f[f_s(v,l)=\frac{DGF}{4\cos\theta_l\cos\theta_v}\f]
 
-Three parts presented in nominator have its own meaning but can have different implementation with various levels of complexity and physical accuracy.
+Three parts presented in numerator have its own meaning but can have different implementation with various levels of complexity and physical accuracy.
 In that paper only one certain implementation is used. The \f$D\f$ component is responsible for **micro faces normals distribution**.
 It is the main instrument that controls reflection's shape and strength according to **roughness** \f$r\f$ parameter.
 The implementation with good visual results is **Trowbridge-Reitz GGX** approach used in Disney's RenderMan and Unreal Engine [@ref Karis13]:
 
 \f[D=\frac{\alpha^2}{\pi(\cos^2\theta_h(\alpha^2-1) + 1)^2}\f]
 
-Where \f$\alpha = r^2\f$. This square in needed only for smoother roughness parameter control.
+Where \f$\alpha = r^2\f$. This square is needed only for smoother roughness parameter control.
 Without it the visual appearance of surface becomes rough too quickly during the parameter's increasing.
 
 The second \f$G\f$ component is called **geometric shadowing** or attenuation factor.
@@ -208,7 +208,7 @@ But it can be relatively easy implemented in case of environment illumination vi
 
 The next goal after \f$L_{direct}\f$ calculation is to find \f$L_{indirect}\f$.
 And it would be easier if \f$L_i^{indirect}(l)\f$ was known for every \f$l\f$.
-That is the main assumption of **image based lightning** (**IBL**).
+That is the main assumption of **image based lighting** (**IBL**).
 In practice, it can be achieved using environment image map, which is a special image representing illumination from all possible directions.
 This image might be a photo capturing a real world environment (spherical 360 degrees panoramas) or generated image baking the 3D scene itself, including in that case reflections of other objects.
 Environment image might be packed in different ways - **cube maps** and equirectangular maps are the most commonly used.
@@ -336,7 +336,7 @@ All steps described above can be also done for hemisphere:
 
 \f[\theta = \arccos(1-u)\f]
 
-Mote-Carlo integration cannot guarantee exact estimation of convergence speed with using random generated samples.
+Monte-Carlo integration cannot guarantee exact estimation of convergence speed with using random generated samples.
 There is only probability estimation of it.
 But this algorithm is pretty universal and relatively simple to be applied to almost any function using at least uniform distributed points.
 Moreover special \f$p(l)\f$ can be chosen and special pseudo-random sequences can be designed in order to speed up convergence for some functions (following chapter talk about that in details).
@@ -585,7 +585,7 @@ Using less samples produces image noise due to discrete nature of Monte-Carlo ap
 But it can be slightly smoothed using some prefiltration.
 The idea is that for the directions with small PDF or in other words for rare directions the samples near of it is unlikely to be generated.
 So that this direction represents the averaged illumination from relatively big area on hemisphere but approximate it by just a constant.
-It wold be better to get from such direction already averaged over bigger area environment.
+It would be better to get from such direction already averaged over bigger area environment.
 It can be achieved using mip levels of origin \f$L_i^{indirect}\f$ whose pixels of one level is exact 4 averaged pixels from previous one.
 Also mip levels generation is build in most common graphic API so there are no problems with it.
 But first of all the area covered by one sample is needed to be found.
