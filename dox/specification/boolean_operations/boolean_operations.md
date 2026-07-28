@@ -255,19 +255,19 @@ For a vertex *Vi* and a solid *Zj* there is Vertex/Solid interference if the ver
 
 @figure{/specification/boolean_operations/images/operations_image060.png,"Vertex/Solid Interference",220}
 
-@subsubsection specification__boolean_3_1_8 Edge/Soild Interference
+@subsubsection specification__boolean_3_1_8 Edge/Solid Interference
 
 For an edge *Ei* and a solid *Zj* there is Edge/Solid interference if the edge *Ei* and its sub-shapes have no BRep interferences with any sub-shape of *Zj* and *Ei* is completely inside the solid *Zj*.
 
 @figure{/specification/boolean_operations/images/operations_image061.png,"Edge/Solid Interference",220}
 
-@subsubsection specification__boolean_3_1_9 Face/Soild Interference
+@subsubsection specification__boolean_3_1_9 Face/Solid Interference
 
 For a face *Fi* and a solid *Zj* there is Face/Solid interference if the face *Fi* and its sub-shapes have no BRep interferences with any sub-shape of *Zj* and *Fi* is completely inside the solid *Zj*. 
 
 @figure{/specification/boolean_operations/images/operations_image062.png,"Face/Solid Interference",220}
 
-@subsubsection specification__boolean_3_1_10  Solid/Soild Interference
+@subsubsection specification__boolean_3_1_10  Solid/Solid Interference
 
 For a solid *Zi* and a solid *Zj* there is Solid/Solid interference if the solid *Zi* and its sub-shapes have no BRep interferences with any sub-shape of *Zj* and *Zi* is completely inside the solid *Zj*. 
 
@@ -1632,11 +1632,11 @@ Let us consider two faces *F1* and *F2* that have a common edge:
 
 * The result of *Common* operation is an empty compound because the dimension (1) of the common part between *F1* and *F2* (edge)is less than the dimension of the arguments (2)
 
-* The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  The vertices are shown just to clarify the fact that the edges are spitted.
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  The vertices are shown just to clarify the fact that the edges are split.
 	
 @figure{/specification/boolean_operations/images/boolean_image038.png,"",230}
 	
-* The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*.  The vertices are shown just to clarify the fact that the edges are spitted.
+* The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*.  The vertices are shown just to clarify the fact that the edges are split.
 
 @figure{/specification/boolean_operations/images/boolean_image039.png,"",230}
 

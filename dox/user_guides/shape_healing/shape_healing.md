@@ -842,7 +842,7 @@ if (aCheckEdge.CheckOverlapping (theEdge1, theEdge2, aTolOverlap, theDomainDist)
 
 @subsubsection occt_shg_3_1_4 Analysis of presence of small faces
 
-Class *ShapeAnalysis_CheckSmallFace* class is intended for analyzing small faces from the shape using the following methods:
+*ShapeAnalysis_CheckSmallFace* class is intended for analyzing small faces from the shape using the following methods:
 * *CheckSpotFace()* checks if the size of the face is less than the given precision;
 * *CheckStripFace* checks if the size of the face in one dimension is less than the given precision.
 
@@ -1090,7 +1090,7 @@ aShDivCont.SetSurfaceCriterion(GeomAbs_C2);
 aShDivCont.Perform();
 
 // check the status and gets the result
-if (aShDivCont.Status (ShapeExtend_DONE)
+if (aShDivCont.Status (ShapeExtend_DONE))
 {
   TopoDS_Shape aResult = aShDivCont.GetResult();
 }
@@ -1157,7 +1157,7 @@ for (TopExp_Explorer anExp (anInitShape, TopAbs_FACE); anExp.More(); anExp.Next(
 Class *ShapeUpgrade_ShapeDivide* provides shape splitting and converting according to the given criteria.
 It performs these operations for each face with the given tool for face splitting (*ShapeUpgrade_FaceDivide* by default).
 
-This tool provides access to the tool for dividing faces with the help of the methods *SetSplitFaceTool* and *GetSpliFaceTool.*
+This tool allows setting the tool for dividing faces with the help of the method *SetSplitFaceTool*.
 
 @subsubsection occt_shg_4_2_2 General tool for face splitting
 
@@ -1183,7 +1183,7 @@ If the 3D curve is split then the 2D curve on the face is split as well, and vic
 The original shape is not modified. Modifications made are recorded in the context (*ShapeBuild_ReShape*).
 
 This tool provides access to the tool for dividing and splitting 3D and 2D curves by means of the following methods:
-* *SetEdgeDivdeTool*,
+* *SetEdgeDivideTool*,
 * *GetEdgeDivideTool*,
 * *SetSplitCurve3dTool*,
 * *GetSplitCurve3dTool*,
@@ -1594,7 +1594,7 @@ aTool->Perform (theSeqShapes);
 // when method Perform is carried out on whole shape
 aTool->Perform();
 // check status set after method Perform
-if (aTool->Status (ShapeExtend_FAIL)
+if (aTool->Status (ShapeExtend_FAIL))
 {
   std::cout << "Operation failed\n";
   return;
@@ -1973,8 +1973,8 @@ This operator can be called with the following parameters:
 * *Boolean : Curve2dMode* allows considering the 2d curves;
 * *Real : Tolerance3d* defines 3d tolerance to be used in computation;
 * *Real : Tolerance2d* defines 2d tolerance to be used when computing 2d curves;
-* *GeomAbs_Shape (C0 G1 C1 G2 C2 CN) : Continuity3d* is the continuity required in 2d;
-* *GeomAbs_Shape (C0 G1 C1 G2 C2 CN) : Continuity2d* is the continuity required in 3d;
+* *GeomAbs_Shape (C0 G1 C1 G2 C2 CN) : Continuity3d* is the continuity required in 3d;
+* *GeomAbs_Shape (C0 G1 C1 G2 C2 CN) : Continuity2d* is the continuity required in 2d;
 * *Integer : RequiredDegree* gives the required degree;
 * *Integer : RequiredNbSegments* gives the required number of segments;
 * *Boolean : PreferDegree* if true, *RequiredDegree* has a priority, else *RequiredNbSegments* has a priority;

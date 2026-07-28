@@ -1672,10 +1672,10 @@ TColStd_Array1OfReal anArr;                                    NCollection_Array
 TColgp_SequenceOfPnt aSeq;                                     NCollection_Sequence<gp_Pnt> aSeq;
 ~~~~
 
-Two package typedef wrappers have been removed entirely (no backward-compatible aliases): `TColGeom` and `TColGeom2d`. Replace with `NCollection_Array1<occ::handle<Geom_Curve>>` and the equivalent `Geom2d_*` form:
+The `TColGeom_*` and `TColGeom2d_*` collection typedefs have been deprecated (backward-compatible aliases are preserved with deprecation warnings). They will be removed in a future release. Replace them with the corresponding `NCollection_*` template instantiations, such as `NCollection_Array1<occ::handle<Geom_Curve>>`:
 
 ~~~~{.cpp}
-// Before (removed)                                           // After
+// Before (deprecated)                                        // After
 #include <TColGeom_Array1OfCurve.hxx>                          #include <NCollection_Array1.hxx>
 TColGeom_Array1OfCurve aCurves;                                #include <Geom_Curve.hxx>
                                                                NCollection_Array1<occ::handle<Geom_Curve>> aCurves;
