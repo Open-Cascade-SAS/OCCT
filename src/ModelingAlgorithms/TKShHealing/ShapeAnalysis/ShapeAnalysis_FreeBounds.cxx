@@ -207,6 +207,7 @@ static void connectWiresToWiresImpl(
 {
   if (iwires.IsNull() || !iwires->Length())
   {
+    owires = new NCollection_HSequence<TopoDS_Shape>; // was left null, later crashed Append
     return;
   }
   occ::handle<NCollection_HArray1<TopoDS_Shape>> arrwires =
