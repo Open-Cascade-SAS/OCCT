@@ -86,40 +86,59 @@ bool BRepMesh_BaseMeshAlgo::initDataStructure()
 
     for (int aEdgeIt = 0; aEdgeIt < aDWire->EdgesNb(); ++aEdgeIt)
     {
-      const IMeshData::IEdgeHandle    aDEdge         = aDWire->GetEdge(aEdgeIt);
-      const IMeshData::ICurveHandle&  aCurve         = aDEdge->GetCurve();
-      const IMeshData::ListOfInteger& aListOfPCurves = aDEdge->GetPCurves(myDFace.get());
+      const IMeshData::IEdgeHandle   aDEdge = aDWire->GetEdge(aEdgeIt);
+      const IMeshData::ICurveHandle& aCurve = aDEdge->GetCurve();
+      // A wire defines one topological occurrence of an edge. Registering every
+      // pcurve attached to its face would create duplicate constraints at a periodic seam.
+      const IMeshData::IPCurveHandle& aPCurve =
+        aDEdge->GetPCurve(myDFace.get(), aDWire->GetEdgeOrientation(aEdgeIt));
+      const TopAbs_Orientation aOri = fixSeamEdgeOrientation(aDEdge, aPCurve);
 
+      int       aPrevNodeIndex = -1;
+      const int aLastPoint     = aPCurve->ParametersNb() - 1;
+      for (int aPointIndex = 0; aPointIndex <= aLastPoint; ++aPointIndex)
+      {
+        const int aNodeIndex = registerNode(aCurve->GetPoint(aPointIndex),
+                                            aPCurve->GetPoint(aPointIndex),
+                                            BRepMesh_Frontier,
+                                            false);
+
+        aPCurve->GetIndex(aPointIndex) = aNodeIndex;
+
+        if (aPrevNodeIndex != -1 && aPrevNodeIndex != aNodeIndex)
+        {
+          const int aLinksNb   = myStructure->NbLinks();
+          const int aLinkIndex = addLinkToMesh(aPrevNodeIndex, aNodeIndex, aOri);
+          if (aWireIt != 0 && aLinkIndex <= aLinksNb)
+          {
+            // Prevent holes around wire of zero area.
+            BRepMesh_Edge& aLink = const_cast<BRepMesh_Edge&>(myStructure->GetLink(aLinkIndex));
+            aLink.SetMovability(BRepMesh_Fixed);
+          }
+        }
+
+        aPrevNodeIndex = aNodeIndex;
+      }
+
+      // Every pcurve needs node indices for Poly_PolygonOnTriangulation, but only
+      // the pcurve belonging to this wire occurrence defines a mesh constraint.
+      const IMeshData::ListOfInteger& aListOfPCurves = aDEdge->GetPCurves(myDFace.get());
       for (IMeshData::ListOfInteger::Iterator aPCurveIt(aListOfPCurves); aPCurveIt.More();
            aPCurveIt.Next())
       {
-        const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(aPCurveIt.Value());
-        const TopAbs_Orientation        aOri    = fixSeamEdgeOrientation(aDEdge, aPCurve);
-
-        int       aPrevNodeIndex = -1;
-        const int aLastPoint     = aPCurve->ParametersNb() - 1;
-        for (int aPointIndex = 0; aPointIndex <= aLastPoint; ++aPointIndex)
+        const IMeshData::IPCurveHandle& anOtherPCurve = aDEdge->GetPCurve(aPCurveIt.Value());
+        if (anOtherPCurve == aPCurve)
         {
-          const int aNodeIndex = registerNode(aCurve->GetPoint(aPointIndex),
-                                              aPCurve->GetPoint(aPointIndex),
-                                              BRepMesh_Frontier,
-                                              false);
+          continue;
+        }
 
-          aPCurve->GetIndex(aPointIndex) = aNodeIndex;
-
-          if (aPrevNodeIndex != -1 && aPrevNodeIndex != aNodeIndex)
-          {
-            const int aLinksNb   = myStructure->NbLinks();
-            const int aLinkIndex = addLinkToMesh(aPrevNodeIndex, aNodeIndex, aOri);
-            if (aWireIt != 0 && aLinkIndex <= aLinksNb)
-            {
-              // Prevent holes around wire of zero area.
-              BRepMesh_Edge& aLink = const_cast<BRepMesh_Edge&>(myStructure->GetLink(aLinkIndex));
-              aLink.SetMovability(BRepMesh_Fixed);
-            }
-          }
-
-          aPrevNodeIndex = aNodeIndex;
+        const int anOtherLastPoint = anOtherPCurve->ParametersNb() - 1;
+        for (int aPointIndex = 0; aPointIndex <= anOtherLastPoint; ++aPointIndex)
+        {
+          anOtherPCurve->GetIndex(aPointIndex) = registerNode(aCurve->GetPoint(aPointIndex),
+                                                              anOtherPCurve->GetPoint(aPointIndex),
+                                                              BRepMesh_Frontier,
+                                                              false);
         }
       }
     }

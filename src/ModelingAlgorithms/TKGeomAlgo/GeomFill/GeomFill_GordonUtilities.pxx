@@ -768,10 +768,71 @@ double orderedContactScore(const Contact& theContact,
                            const double   theGuideParam,
                            const double   theProfileTarget,
                            const double   theGuideTarget,
+                           const double   thePreviousProfileParam,
+                           const double   thePreviousGuideParam,
+                           const double   thePreviousProfileTarget,
+                           const double   thePreviousGuideTarget,
+                           const bool     theHasPreviousProfile,
+                           const bool     theHasPreviousGuide,
                            const double   theTolerance)
 {
-  return theContact.Gap / std::max(theTolerance, Precision::Confusion())
-         + std::abs(theProfileParam - theProfileTarget) + std::abs(theGuideParam - theGuideTarget);
+  double aScore = theContact.Gap / std::max(theTolerance, Precision::Confusion())
+                  + std::abs(theProfileParam - theProfileTarget)
+                  + std::abs(theGuideParam - theGuideTarget);
+  if (theHasPreviousProfile)
+  {
+    // Favor branches with a smooth advance along the current profile.
+    aScore += std::abs((theProfileParam - thePreviousProfileParam)
+                       - (theProfileTarget - thePreviousProfileTarget));
+  }
+  if (theHasPreviousGuide)
+  {
+    // Favor branches with a smooth advance along the current guide.
+    aScore +=
+      std::abs((theGuideParam - thePreviousGuideParam) - (theGuideTarget - thePreviousGuideTarget));
+  }
+  return aScore;
+}
+
+//! Returns the tangent mismatch between two parameters in the requested curve orientation.
+bool seamTangentMismatch(const occ::handle<Geom_BSplineCurve>& theCurve,
+                         const double                          theFirstParameter,
+                         const double                          theLastParameter,
+                         const bool                            theIsForward,
+                         const double                          theTolerance,
+                         double&                               theMismatch)
+{
+  const double aFirstRawParameter =
+    theIsForward ? theFirstParameter
+                 : theCurve->FirstParameter() + theCurve->LastParameter() - theFirstParameter;
+  const double aLastRawParameter =
+    theIsForward ? theLastParameter
+                 : theCurve->FirstParameter() + theCurve->LastParameter() - theLastParameter;
+  const Geom_Curve::ResD1 aFirstD1 = theCurve->EvalD1(aFirstRawParameter);
+  const Geom_Curve::ResD1 aLastD1  = theCurve->EvalD1(aLastRawParameter);
+  if (aFirstD1.Point.Distance(aLastD1.Point) > std::max(theTolerance, Precision::Confusion()))
+  {
+    return false;
+  }
+
+  gp_Vec aFirstTangent = aFirstD1.D1;
+  gp_Vec aLastTangent  = aLastD1.D1;
+  if (!theIsForward)
+  {
+    aFirstTangent.Reverse();
+    aLastTangent.Reverse();
+  }
+  const double aFirstMagnitude = aFirstTangent.Magnitude();
+  const double aLastMagnitude  = aLastTangent.Magnitude();
+  if (aFirstMagnitude <= gp::Resolution() || aLastMagnitude <= gp::Resolution())
+  {
+    return false;
+  }
+
+  theMismatch =
+    1.0
+    - std::clamp(aFirstTangent.Dot(aLastTangent) / (aFirstMagnitude * aLastMagnitude), -1.0, 1.0);
+  return true;
 }
 
 //! Selects one contact compatible with already selected row/column predecessors.
@@ -786,11 +847,18 @@ bool chooseOrderedContact(const ContactSet&                     theContacts,
                           const double                          thePreviousGuideParam,
                           const bool                            theHasPreviousProfile,
                           const bool                            theHasPreviousGuide,
+                          const double                          thePreviousProfileTarget,
+                          const double                          thePreviousGuideTarget,
+                          const double                          theFirstProfileParam,
+                          const double                          theFirstGuideParam,
+                          const bool                            theIsProfileSeam,
+                          const bool                            theIsGuideSeam,
                           const double                          theTolerance,
                           Contact&                              theSelected)
 {
-  const double aParamTol = parameterResolution(0.0, 1.0);
-  double       aBest     = RealLast();
+  const double aParamTol            = parameterResolution(0.0, 1.0);
+  double       aBestTangentMismatch = RealLast();
+  double       aBest                = RealLast();
   for (size_t aCandidateIdx = 0; aCandidateIdx < theContacts.Candidates.Size(); ++aCandidateIdx)
   {
     const Contact& aCandidate = theContacts.Candidates.Value(aCandidateIdx);
@@ -803,14 +871,56 @@ bool chooseOrderedContact(const ContactSet&                     theContacts,
       continue;
     }
 
-    const double aScore = orderedContactScore(aCandidate,
+    const double aScore           = orderedContactScore(aCandidate,
                                               aProfileParam,
                                               aGuideParam,
                                               theProfileTarget,
                                               theGuideTarget,
+                                              thePreviousProfileParam,
+                                              thePreviousGuideParam,
+                                              thePreviousProfileTarget,
+                                              thePreviousGuideTarget,
+                                              theHasPreviousProfile,
+                                              theHasPreviousGuide,
                                               theTolerance);
-    if (aScore < aBest)
+    double       aTangentMismatch = 0.0;
+    bool         hasTangentMatch  = false;
+    if (theIsProfileSeam)
     {
+      double aProfileMismatch = 0.0;
+      if (seamTangentMismatch(theProfile,
+                              theFirstProfileParam,
+                              aProfileParam,
+                              theProfileForward,
+                              theTolerance,
+                              aProfileMismatch))
+      {
+        aTangentMismatch += aProfileMismatch;
+        hasTangentMatch = true;
+      }
+    }
+    if (theIsGuideSeam)
+    {
+      double aGuideMismatch = 0.0;
+      if (seamTangentMismatch(theGuide,
+                              theFirstGuideParam,
+                              aGuideParam,
+                              theGuideForward,
+                              theTolerance,
+                              aGuideMismatch))
+      {
+        aTangentMismatch += aGuideMismatch;
+        hasTangentMatch = true;
+      }
+    }
+
+    if ((hasTangentMatch
+         && (aTangentMismatch < aBestTangentMismatch - Precision::Angular()
+             || (std::abs(aTangentMismatch - aBestTangentMismatch) <= Precision::Angular()
+                 && aScore < aBest)))
+        || (!hasTangentMatch && aBestTangentMismatch == RealLast() && aScore < aBest))
+    {
+      aBestTangentMismatch     = hasTangentMatch ? aTangentMismatch : RealLast();
       aBest                    = aScore;
       theSelected              = aCandidate;
       theSelected.ProfileParam = aProfileParam;
@@ -841,9 +951,10 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
   const NCollection_LinearVector<OrderedCurve> aGuideOrder =
     orderedCurves(columnMeans(aProfileParamMatrix));
 
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(theProfiles.Lower(),
-                                                               theProfiles.Upper());
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(theGuides.Lower(), theGuides.Upper());
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(
+    1,
+    static_cast<int>(theProfiles.Size()));
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, static_cast<int>(theGuides.Size()));
   NCollection_Array2<double>                         aProfileParams(theProfileParams.LowerRow(),
                                             theProfileParams.UpperRow(),
                                             theProfileParams.LowerCol(),
@@ -898,6 +1009,16 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
         aProfileIdx == 0
           ? 0.0
           : aGuideParamResult(static_cast<int>(aProfileIdx), static_cast<int>(aGuideIdx) + 1);
+      const double aPreviousProfileTarget =
+        aGuideIdx < 2 ? 0.0 : static_cast<double>(aGuideIdx - 1) / (aGuideOrder.Size() - 1);
+      const double aPreviousGuideTarget =
+        aProfileIdx < 2 ? 0.0 : static_cast<double>(aProfileIdx - 1) / (aProfileOrder.Size() - 1);
+      const bool   isProfileSeam = aGuideIdx + 1 == aGuideOrder.Size();
+      const bool   isGuideSeam   = aProfileIdx + 1 == aProfileOrder.Size();
+      const double aFirstProfileParam =
+        isProfileSeam ? aProfileParamResult(static_cast<int>(aProfileIdx) + 1, 1) : 0.0;
+      const double aFirstGuideParam =
+        isGuideSeam ? aGuideParamResult(1, static_cast<int>(aGuideIdx) + 1) : 0.0;
 
       Contact aContact;
       if (!chooseOrderedContact(
@@ -912,6 +1033,12 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
             aPreviousGuideParam,
             aGuideIdx != 0,
             aProfileIdx != 0,
+            aPreviousProfileTarget,
+            aPreviousGuideTarget,
+            aFirstProfileParam,
+            aFirstGuideParam,
+            isProfileSeam,
+            isGuideSeam,
             theTolerance,
             aContact))
       {
@@ -940,7 +1067,7 @@ bool reorderNetwork(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theProfi
 }
 
 //! Monotone scalar map converting target parameters back to the source curve.
-class ScalarLaw
+class ScalarLaw : public BSplCLib_EvaluatorFunction
 {
 public:
   //! Stores a strictly increasing piecewise-linear parameter map.
@@ -997,10 +1124,174 @@ public:
     return mySource.Last();
   }
 
+  void Evaluate(const int theDerivativeRequest,
+                const double* /*theStartEnd*/,
+                const double theTargetParameter,
+                double&      theResult,
+                int&         theErrorCode) const override
+  {
+    theErrorCode = 0;
+    if (theDerivativeRequest == 0)
+    {
+      theResult = Value(theTargetParameter);
+      return;
+    }
+    if (theDerivativeRequest != 1)
+    {
+      theResult = 0.0;
+      return;
+    }
+
+    for (size_t aParamIdx = 1; aParamIdx < myTarget.Size(); ++aParamIdx)
+    {
+      if (theTargetParameter <= myTarget.Value(aParamIdx))
+      {
+        theResult = (mySource.Value(aParamIdx) - mySource.Value(aParamIdx - 1))
+                    / (myTarget.Value(aParamIdx) - myTarget.Value(aParamIdx - 1));
+        return;
+      }
+    }
+    theResult = (mySource.Last() - mySource.Value(mySource.Size() - 2))
+                / (myTarget.Last() - myTarget.Value(myTarget.Size() - 2));
+  }
+
 private:
   NCollection_LinearVector<double> mySource;
   NCollection_LinearVector<double> myTarget;
 };
+
+//! Reparametrizes a polynomial B-spline exactly using a piecewise-linear parameter law.
+bool reparametrizeExactly(const occ::handle<Geom_BSplineCurve>& theCurve,
+                          const math_Vector&                    theSourceParams,
+                          const math_Vector&                    theTargetParams,
+                          const int                             theNbConstraints,
+                          const ScalarLaw&                      theLaw,
+                          occ::handle<Geom_BSplineCurve>&       theResult)
+{
+  if (theNbConstraints < 2)
+  {
+    return false;
+  }
+
+  const int                        aDegree = theCurve->Degree();
+  NCollection_LinearVector<double> aNewKnotValues;
+  NCollection_LinearVector<int>    aNewKnotMults;
+  int                              aConstraintIdx = 1;
+  for (size_t aKnotIdx = 0; aKnotIdx < theCurve->Knots().Size(); ++aKnotIdx)
+  {
+    const double aSourceKnot = theCurve->Knots().At(aKnotIdx);
+    while (aConstraintIdx <= theNbConstraints
+           && theSourceParams(aConstraintIdx) < aSourceKnot - Precision::PConfusion())
+    {
+      aNewKnotValues.Append(theTargetParams(aConstraintIdx));
+      aNewKnotMults.Append(aDegree);
+      ++aConstraintIdx;
+    }
+
+    double aTargetKnot = theTargetParams(theNbConstraints);
+    for (int aParamIdx = 1; aParamIdx < theNbConstraints; ++aParamIdx)
+    {
+      if (aSourceKnot <= theSourceParams(aParamIdx + 1) + Precision::PConfusion())
+      {
+        const double aSourceFirst = theSourceParams(aParamIdx);
+        const double aSourceLast  = theSourceParams(aParamIdx + 1);
+        const double aTargetFirst = theTargetParams(aParamIdx);
+        const double aTargetLast  = theTargetParams(aParamIdx + 1);
+        aTargetKnot               = aTargetFirst
+                      + (aSourceKnot - aSourceFirst) * (aTargetLast - aTargetFirst)
+                          / (aSourceLast - aSourceFirst);
+        break;
+      }
+    }
+
+    int aMultiplicity = theCurve->Multiplicities().At(aKnotIdx);
+    if (aConstraintIdx <= theNbConstraints
+        && std::abs(theSourceParams(aConstraintIdx) - aSourceKnot) <= Precision::PConfusion())
+    {
+      if (aConstraintIdx > 1 && aConstraintIdx < theNbConstraints)
+      {
+        aMultiplicity = std::max(aMultiplicity, aDegree);
+      }
+      ++aConstraintIdx;
+    }
+    aNewKnotValues.Append(aTargetKnot);
+    aNewKnotMults.Append(aMultiplicity);
+  }
+
+  NCollection_Array1<double> aNewKnots   = toOneBasedArrayView(aNewKnotValues);
+  NCollection_Array1<int>    aNewMults   = toOneBasedArrayView(aNewKnotMults);
+  const int                  aNbNewPoles = BSplCLib::NbPoles(aDegree, false, aNewMults);
+  NCollection_Array1<double> aSourceFlatKnots(1, theCurve->NbPoles() + aDegree + 1);
+  NCollection_Array1<double> aTargetFlatKnots(1, aNbNewPoles + aDegree + 1);
+  BSplCLib::KnotSequence(theCurve->Knots(), theCurve->Multiplicities(), aSourceFlatKnots);
+  BSplCLib::KnotSequence(aNewKnots, aNewMults, aTargetFlatKnots);
+
+  int aStatus = 0;
+  if (!theCurve->IsRational())
+  {
+    NCollection_Array1<gp_Pnt> aNewPoles(1, aNbNewPoles);
+    BSplCLib::FunctionReparameterise(theLaw,
+                                     aDegree,
+                                     aSourceFlatKnots,
+                                     theCurve->Poles(),
+                                     aTargetFlatKnots,
+                                     aDegree,
+                                     aNewPoles,
+                                     aStatus);
+    if (aStatus != 0)
+    {
+      return false;
+    }
+    theResult = new Geom_BSplineCurve(aNewPoles, aNewKnots, aNewMults, aDegree);
+    return !theResult.IsNull();
+  }
+
+  NCollection_Array1<double> aHomogeneousPoles(1, 4 * theCurve->NbPoles());
+  for (size_t aPoleIdx = 0; aPoleIdx < theCurve->Poles().Size(); ++aPoleIdx)
+  {
+    const gp_Pnt& aPole                             = theCurve->Poles().At(aPoleIdx);
+    const double  aWeight                           = theCurve->WeightsArray().At(aPoleIdx);
+    const size_t  aHomogeneousIdx                   = 4 * aPoleIdx;
+    aHomogeneousPoles.ChangeAt(aHomogeneousIdx)     = aPole.X() * aWeight;
+    aHomogeneousPoles.ChangeAt(aHomogeneousIdx + 1) = aPole.Y() * aWeight;
+    aHomogeneousPoles.ChangeAt(aHomogeneousIdx + 2) = aPole.Z() * aWeight;
+    aHomogeneousPoles.ChangeAt(aHomogeneousIdx + 3) = aWeight;
+  }
+
+  NCollection_Array1<double> aNewHomogeneousPoles(1, 4 * aNbNewPoles);
+  BSplCLib::FunctionReparameterise(theLaw,
+                                   aDegree,
+                                   aSourceFlatKnots,
+                                   4,
+                                   aHomogeneousPoles(1),
+                                   aTargetFlatKnots,
+                                   aDegree,
+                                   aNewHomogeneousPoles(1),
+                                   aStatus);
+  if (aStatus != 0)
+  {
+    return false;
+  }
+
+  NCollection_Array1<gp_Pnt> aNewPoles(1, aNbNewPoles);
+  NCollection_Array1<double> aNewWeights(1, aNbNewPoles);
+  for (size_t aPoleIdx = 0; aPoleIdx < aNewPoles.Size(); ++aPoleIdx)
+  {
+    const size_t aHomogeneousIdx = 4 * aPoleIdx;
+    const double aWeight         = aNewHomogeneousPoles.At(aHomogeneousIdx + 3);
+    if (aWeight <= gp::Resolution())
+    {
+      return false;
+    }
+    aNewPoles.ChangeAt(aPoleIdx).SetCoord(aNewHomogeneousPoles.At(aHomogeneousIdx) / aWeight,
+                                          aNewHomogeneousPoles.At(aHomogeneousIdx + 1) / aWeight,
+                                          aNewHomogeneousPoles.At(aHomogeneousIdx + 2) / aWeight);
+    aNewWeights.ChangeAt(aPoleIdx) = aWeight;
+  }
+
+  theResult = new Geom_BSplineCurve(aNewPoles, aNewWeights, aNewKnots, aNewMults, aDegree);
+  return !theResult.IsNull();
+}
 
 //! Appends a monotone source/target pair.
 void pushConstraint(math_Vector& theSource,
@@ -1053,15 +1344,6 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
                   bool&                           theDidApproximate,
                   double&                         theMaxDeviation)
 {
-  if (theCurve->IsRational())
-  {
-    if (!theAllowApproximateRational)
-    {
-      return false;
-    }
-    theDidApproximate = true;
-  }
-
   math_Vector  aSource(1, theSourceParams.Length() + 2);
   math_Vector  aTarget(1, theTargetParams.Length() + 2);
   int          aNbConstraints = 0;
@@ -1106,6 +1388,34 @@ bool rebuildCurve(occ::handle<Geom_BSplineCurve>& theCurve,
   if (!aLaw.Init(aSource, aTarget, aNbConstraints))
   {
     return false;
+  }
+
+  occ::handle<Geom_BSplineCurve> anExactCurve;
+  math_Vector                    aExactSource(1, aNbConstraints);
+  math_Vector                    aExactTarget(1, aNbConstraints);
+  for (int aConstraintIdx = 1; aConstraintIdx <= aNbConstraints; ++aConstraintIdx)
+  {
+    aExactSource(aConstraintIdx) = aSource(aConstraintIdx);
+    aExactTarget(aConstraintIdx) = aTarget(aConstraintIdx);
+  }
+  if (reparametrizeExactly(theCurve,
+                           aExactSource,
+                           aExactTarget,
+                           aNbConstraints,
+                           aLaw,
+                           anExactCurve))
+  {
+    theCurve = anExactCurve;
+    return true;
+  }
+
+  if (theCurve->IsRational())
+  {
+    if (!theAllowApproximateRational)
+    {
+      return false;
+    }
+    theDidApproximate = true;
   }
 
   const GeomAdaptor_Curve          aCurveAdaptor(theCurve);
@@ -1252,7 +1562,7 @@ NCollection_Array2<gp_Pnt> contactPointGrid(
     for (size_t aGuideIdx = 0; aGuideIdx < static_cast<size_t>(theProfileParams.RowLength());
          ++aGuideIdx)
     {
-      aPoints(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
+      aPoints.ChangeAt(aGuideIdx, aProfileIdx) =
         aProfileAdaptor.EvalD0(theProfileParams.At(aProfileIdx, aGuideIdx));
     }
   }
@@ -1297,7 +1607,7 @@ NCollection_Array2<double> contactWeightGrid(
     for (size_t aGuideIdx = 0; aGuideIdx < static_cast<size_t>(theProfileParams.RowLength());
          ++aGuideIdx)
     {
-      aWeights(static_cast<int>(aGuideIdx) + 1, static_cast<int>(aProfileIdx) + 1) =
+      aWeights.ChangeAt(aGuideIdx, aProfileIdx) =
         curveWeightAt(theProfiles.At(aProfileIdx), theProfileParams.At(aProfileIdx, aGuideIdx));
     }
   }

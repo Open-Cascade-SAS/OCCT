@@ -19,8 +19,18 @@
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <ShapeFix_Face.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <GeomAPI_Interpolate.hxx>
+#include <gp_Ax3.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Wire.hxx>
 
 #include <gtest/gtest.h>
 
@@ -40,6 +50,45 @@ TopoDS_Face makePlanarFace()
     return TopoDS_Face();
   }
   return aMakeFace.Face();
+}
+
+// A closed edge belting a cone's full period (8 points sampled off the cone surface).
+TopoDS_Face MakeFaceOnPeriodicConicalSingleWire(occ::handle<Geom_ConicalSurface>& theCone)
+{
+  gp_Ax3 anAxis(gp_Pnt(0.0, 4.0, -9.1), gp_Dir(0.0, 0.09, -1.0));
+  theCone = new Geom_ConicalSurface(anAxis, 0.35, 0.0);
+
+  const int                                anN  = 8;
+  const double                             aV   = 0.5;
+  occ::handle<NCollection_HArray1<gp_Pnt>> aPts = new NCollection_HArray1<gp_Pnt>(1, anN);
+  for (int i = 1; i <= anN; i++)
+  {
+    const double anU = 2.0 * M_PI * (i - 1) / anN;
+    aPts->SetValue(i, theCone->Value(anU, aV));
+  }
+
+  GeomAPI_Interpolate anInterp(aPts, true, 1e-6);
+  anInterp.Perform();
+  if (!anInterp.IsDone())
+  {
+    return TopoDS_Face();
+  }
+
+  BRepBuilderAPI_MakeEdge aMakeEdge(anInterp.Curve());
+  if (!aMakeEdge.IsDone())
+  {
+    return TopoDS_Face();
+  }
+
+  BRepLib_MakeWire aMakeWire;
+  aMakeWire.Add(aMakeEdge.Edge());
+  if (!aMakeWire.IsDone() || !aMakeWire.Wire().Closed())
+  {
+    return TopoDS_Face();
+  }
+
+  BRepBuilderAPI_MakeFace aMakeFace(theCone, aMakeWire.Wire(), true);
+  return aMakeFace.IsDone() ? aMakeFace.Face() : TopoDS_Face();
 }
 } // namespace
 
@@ -77,4 +126,33 @@ TEST(ShapeFix_FaceTest, Perform_RemovedFace_PreservesNullReplacement)
   EXPECT_FALSE(aFixer->Perform());
   EXPECT_TRUE(aFixer->Status(ShapeExtend_OK));
   EXPECT_TRUE(aFixer->Result().IsNull());
+}
+
+// No SetContext() call (the ordinary usage) -- used to SIGSEGV in FixPeriodicDegenerated().
+TEST(ShapeFix_FaceTest, NoCrashOnPeriodicConicalSingleWire)
+{
+  occ::handle<Geom_ConicalSurface> aCone;
+  TopoDS_Face                      aFace = MakeFaceOnPeriodicConicalSingleWire(aCone);
+  ASSERT_FALSE(aFace.IsNull());
+
+  ShapeFix_Face aFixer(aFace);
+  aFixer.Perform();
+
+  EXPECT_FALSE(aFixer.Face().IsNull());
+}
+
+// With a context supplied, the same input heals to a genuinely valid face.
+TEST(ShapeFix_FaceTest, ValidFaceOnPeriodicConicalSingleWireWithContext)
+{
+  occ::handle<Geom_ConicalSurface> aCone;
+  TopoDS_Face                      aFace = MakeFaceOnPeriodicConicalSingleWire(aCone);
+  ASSERT_FALSE(aFace.IsNull());
+
+  ShapeFix_Face aFixer(aFace);
+  aFixer.SetContext(new ShapeBuild_ReShape);
+  aFixer.Perform();
+
+  const TopoDS_Face& aFixed = aFixer.Face();
+  ASSERT_FALSE(aFixed.IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFixed).IsValid());
 }
