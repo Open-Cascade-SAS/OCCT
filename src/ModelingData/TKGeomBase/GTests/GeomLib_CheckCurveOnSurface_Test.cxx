@@ -87,6 +87,33 @@ GeomLib_CheckCurveOnSurface makeLineOnPlaneCheck(const gp_Dir&   theCurveDirecti
   aCheck.Perform(aCoS);
   return aCheck;
 }
+
+GeomLib_CheckCurveOnSurface makeCircleAndEllipseCheck(const double theMajorRadius,
+                                                      const double theMinorRadius,
+                                                      const double theFirst,
+                                                      const double theLast)
+{
+  const occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
+                    2.0);
+  const occ::handle<GeomAdaptor_Curve> aC3d = new GeomAdaptor_Curve(aCircle, theFirst, theLast);
+
+  const occ::handle<Geom2d_Ellipse> anEllipse =
+    new Geom2d_Ellipse(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)),
+                       theMajorRadius,
+                       theMinorRadius);
+  const occ::handle<Geom2dAdaptor_Curve> aC2d =
+    new Geom2dAdaptor_Curve(anEllipse, theFirst, theLast);
+  const occ::handle<Geom_Plane> aPlane =
+    new Geom_Plane(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)));
+  const occ::handle<GeomAdaptor_Surface>      aSurf = new GeomAdaptor_Surface(aPlane);
+  const occ::handle<Adaptor3d_CurveOnSurface> aCoS  = new Adaptor3d_CurveOnSurface(aC2d, aSurf);
+
+  GeomLib_CheckCurveOnSurface aCheck;
+  aCheck.Init(aC3d, Precision::PConfusion());
+  aCheck.Perform(aCoS);
+  return aCheck;
+}
 } // namespace
 
 TEST(GeomLib_CheckCurveOnSurfaceTest, AnalyticCoincident_ReportsZeroDeviation)
@@ -129,27 +156,19 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, DeviatingLines_ReportsEndpointMaximum)
 
 TEST(GeomLib_CheckCurveOnSurfaceTest, CircleAndEllipse_ReportsAnalyticMaximum)
 {
-  const double aFirst = 0.0, aLast = 2.0 * M_PI;
-
-  const occ::handle<Geom_Circle> aCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
-                    2.0);
-  const occ::handle<GeomAdaptor_Curve> aC3d = new GeomAdaptor_Curve(aCircle, aFirst, aLast);
-
-  const occ::handle<Geom2d_Ellipse> anEllipse =
-    new Geom2d_Ellipse(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 4.0, 1.0);
-  const occ::handle<Geom2dAdaptor_Curve> aC2d = new Geom2dAdaptor_Curve(anEllipse, aFirst, aLast);
-  const occ::handle<Geom_Plane>          aPlane =
-    new Geom_Plane(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)));
-  const occ::handle<GeomAdaptor_Surface>      aSurf = new GeomAdaptor_Surface(aPlane);
-  const occ::handle<Adaptor3d_CurveOnSurface> aCoS  = new Adaptor3d_CurveOnSurface(aC2d, aSurf);
-
-  GeomLib_CheckCurveOnSurface aCheck;
-  aCheck.Init(aC3d, Precision::PConfusion());
-  aCheck.Perform(aCoS);
+  const GeomLib_CheckCurveOnSurface aCheck = makeCircleAndEllipseCheck(4.0, 1.0, 0.0, 2.0 * M_PI);
 
   ASSERT_TRUE(aCheck.IsDone());
   EXPECT_NEAR(aCheck.MaxDistance(), 2.0, Precision::Confusion());
+}
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, NegativeTrim_ReportsInteriorMaximum)
+{
+  const GeomLib_CheckCurveOnSurface aCheck = makeCircleAndEllipseCheck(2.0, 1.0, -2.0, -1.0);
+
+  ASSERT_TRUE(aCheck.IsDone());
+  EXPECT_NEAR(aCheck.MaxDistance(), 1.0, Precision::Confusion());
+  EXPECT_NEAR(aCheck.MaxParameter(), -0.5 * M_PI, Precision::PConfusion());
 }
 
 TEST(GeomLib_CheckCurveOnSurfaceTest, AnalyticAliasing_ReportsActualDeviation)

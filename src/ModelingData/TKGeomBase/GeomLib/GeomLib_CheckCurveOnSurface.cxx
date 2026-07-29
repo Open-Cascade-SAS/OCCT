@@ -16,6 +16,7 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -24,17 +25,17 @@
 #include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
-#include <MathRoot_Trig.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <math_PSO.hxx>
 #include <math_PSOParticlesPool.hxx>
+#include <math_TrigonometricFunctionRoots.hxx>
 #include <OSD_Parallel.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-#include <limits>
+#include <algorithm>
 
 typedef NCollection_Array1<occ::handle<Adaptor3d_Curve>> Array1OfHCurve;
 
@@ -271,17 +272,21 @@ public:
       return Value(myFirst, theBestValue);
     }
 
-    const MathRoot::TrigResult aRoots =
-      MathRoot::Trigonometric(aCosCos,
-                              aCosSin,
-                              aCos,
-                              aSin,
-                              aConstant,
-                              myFirst,
-                              myLast,
-                              std::numeric_limits<double>::epsilon());
-    if (!aRoots.IsDone() || aRoots.InfiniteRoots
-        || (myLast - myFirst >= 2.0 * M_PI && aRoots.NbRoots == 0))
+    const double aPeriod = 2.0 * M_PI;
+    const double aFirst  = ElCLib::InPeriod(myFirst, 0.0, aPeriod);
+    const double aShift  = aFirst - myFirst;
+    const double aLast   = aFirst + std::min(myLast - myFirst, aPeriod);
+    const double aScale  = std::max(
+      {std::abs(aCosCos), std::abs(aCosSin), std::abs(aCos), std::abs(aSin), std::abs(aConstant)});
+    math_TrigonometricFunctionRoots aRoots(aCosCos / aScale,
+                                           aCosSin / aScale,
+                                           aCos / aScale,
+                                           aSin / aScale,
+                                           aConstant / aScale,
+                                           aFirst,
+                                           aLast);
+    if (!aRoots.IsDone() || aRoots.InfiniteRoots()
+        || (myLast - myFirst >= aPeriod && aRoots.NbSolutions() == 0))
     {
       return false;
     }
@@ -306,9 +311,9 @@ public:
     {
       return false;
     }
-    for (int anIndex = 0; anIndex < aRoots.NbRoots; ++anIndex)
+    for (int anIndex = 1; anIndex <= aRoots.NbSolutions(); ++anIndex)
     {
-      if (!updateBest(aRoots.Roots[anIndex]))
+      if (!updateBest(aRoots.Value(anIndex) - aShift))
       {
         return false;
       }
