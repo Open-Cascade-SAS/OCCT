@@ -43,8 +43,8 @@ public:
 public:
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
-  //! @param[out] theDocument document to save result
-  //! @param[in] theWS current work session
+  //! @param[in,out] theDocument document receiving the imported data
+  //! @param[in,out] theWS work session used by the operation
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT bool Read(
@@ -55,8 +55,8 @@ public:
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
-  //! @param[out] theDocument document to export
-  //! @param[in] theWS current work session
+  //! @param[in] theDocument document to export
+  //! @param[in,out] theWS work session updated by the operation
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
@@ -67,7 +67,7 @@ public:
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
-  //! @param[out] theDocument document to save result
+  //! @param[in,out] theDocument document receiving the imported data
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT bool Read(
@@ -77,7 +77,7 @@ public:
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
-  //! @param[out] theDocument document to export
+  //! @param[in] theDocument document to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
@@ -87,8 +87,8 @@ public:
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
-  //! @param[out] theShape shape to save result
-  //! @param[in] theWS current work session
+  //! @param[out] theShape imported shape
+  //! @param[in,out] theWS work session used by the operation
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT bool Read(
@@ -99,8 +99,8 @@ public:
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
-  //! @param[out] theShape shape to export
-  //! @param[in] theWS current work session
+  //! @param[in] theShape shape to export
+  //! @param[in,out] theWS work session updated with the exported model and transfer map
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
@@ -110,9 +110,9 @@ public:
     const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
 
   //! Reads streams according to internal configuration
-  //! @param[in] theStreams streams to read from
-  //! @param[out] theDocument document to save result
-  //! @param[in] theWS current work session
+  //! @param[in,out] theStreams streams to read from
+  //! @param[in,out] theDocument document receiving the imported data
+  //! @param[in,out] theWS work session used by the operation
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT bool Read(
@@ -122,9 +122,9 @@ public:
     const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
 
   //! Writes streams according to internal configuration
-  //! @param[in] theStreams streams to write to
-  //! @param[out] theDocument document to export
-  //! @param[in] theWS current work session
+  //! @param[in,out] theStreams streams to write to
+  //! @param[in] theDocument document to export
+  //! @param[in,out] theWS work session updated by the operation
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
@@ -134,9 +134,9 @@ public:
     const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
 
   //! Reads streams according to internal configuration
-  //! @param[in] theStreams streams to read from
-  //! @param[out] theShape shape to save result
-  //! @param[in] theWS current work session
+  //! @param[in,out] theStreams streams to read from
+  //! @param[out] theShape imported shape
+  //! @param[in,out] theWS work session used by the operation
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT bool Read(
@@ -146,9 +146,9 @@ public:
     const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
 
   //! Writes streams according to internal configuration
-  //! @param[in] theStreams streams to write to
-  //! @param[out] theShape shape to export
-  //! @param[in] theWS current work session
+  //! @param[in,out] theStreams streams to write to
+  //! @param[in] theShape shape to export
+  //! @param[in,out] theWS work session updated with the exported model and transfer map
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
@@ -159,7 +159,7 @@ public:
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
-  //! @param[out] theShape shape to save result
+  //! @param[out] theShape imported shape
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT bool Read(
@@ -169,7 +169,7 @@ public:
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
-  //! @param[out] theShape shape to export
+  //! @param[in] theShape shape to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
@@ -178,8 +178,8 @@ public:
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
   //! Reads streams according to internal configuration
-  //! @param[in] theStreams streams to read from
-  //! @param[out] theDocument document to save result
+  //! @param[in,out] theStreams streams to read from
+  //! @param[in,out] theDocument document receiving the imported data
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT bool Read(
@@ -188,8 +188,8 @@ public:
     const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
 
   //! Writes streams according to internal configuration
-  //! @param[in] theStreams streams to write to
-  //! @param[out] theDocument document to export
+  //! @param[in,out] theStreams streams to write to
+  //! @param[in] theDocument document to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
@@ -198,8 +198,8 @@ public:
     const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
 
   //! Reads streams according to internal configuration
-  //! @param[in] theStreams streams to read from
-  //! @param[out] theShape shape to save result
+  //! @param[in,out] theStreams streams to read from
+  //! @param[out] theShape imported shape
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT bool Read(
@@ -208,8 +208,8 @@ public:
     const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Writes streams according to internal configuration
-  //! @param[in] theStreams streams to write to
-  //! @param[out] theShape shape to export
+  //! @param[in,out] theStreams streams to write to
+  //! @param[in] theShape shape to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT bool Write(
@@ -229,16 +229,18 @@ public:
 private:
   //! Personizes work session with current format.
   //! Creates new temporary session if current session is null
-  //! @param[in] theWS current work session
+  //! @param[in,out] theWS work session to create or configure
   void personizeWS(occ::handle<XSControl_WorkSession>& theWS);
 
-  //! Initialize static variables
+  //! Saves and initializes process-wide IGES parameters.
+  //! @param[in] theNode configuration node providing the new values
   void initStatic(const occ::handle<DE_ConfigurationNode>& theNode);
 
-  //! Initialize static variables
-  void setStatic(const DEIGES_Parameters& theParameter);
+  //! Applies process-wide IGES parameters.
+  //! @param[in] theParameters values to apply
+  void setStatic(const DEIGES_Parameters& theParameters);
 
-  //! Reset used interface static variables
+  //! Restores the saved process-wide IGES parameters.
   void resetStatic();
 
   DEIGES_Parameters myOldValues;

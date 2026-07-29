@@ -30,12 +30,16 @@
 
 namespace
 {
+//! Creates an IGES provider with default configuration.
+//! @return configured provider
 occ::handle<DEIGES_Provider> createProvider()
 {
   occ::handle<DEIGES_ConfigurationNode> aNode = new DEIGES_ConfigurationNode();
   return new DEIGES_Provider(aNode);
 }
 
+//! Creates an empty XCAF document.
+//! @return empty document
 occ::handle<TDocStd_Document> createDocument()
 {
   occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
@@ -44,26 +48,105 @@ occ::handle<TDocStd_Document> createDocument()
   return aDocument;
 }
 
+//! Creates a box shape.
+//! @return box shape, or a null shape if construction failed
 TopoDS_Shape createBoxShape()
 {
-  return BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  aBoxMaker.Build();
+  return aBoxMaker.IsDone() ? aBoxMaker.Shape() : TopoDS_Shape();
 }
 
+//! Counts subshapes of the requested type.
+//! @param[in] theShape shape to inspect
+//! @param[in] theType subshape type
+//! @return number of matching subshapes
 int countShapeElements(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
 {
   int aCount = 0;
   for (TopExp_Explorer anExplorer(theShape, theType); anExplorer.More(); anExplorer.Next())
   {
-    aCount++;
+    ++aCount;
   }
   return aCount;
 }
 
+//! Checks that content consists of valid 80-column records and contains all IGES sections.
+//! @param[in] theContent serialized IGES content
+//! @return true if all mandatory sections are present
 bool isValidIGESContent(const std::string& theContent)
 {
-  return !theContent.empty() && theContent.find('S') != std::string::npos
-         && theContent.find('G') != std::string::npos && theContent.find('D') != std::string::npos
-         && theContent.find('P') != std::string::npos && theContent.find('T') != std::string::npos;
+  bool               aFoundSections[5] = {};
+  std::istringstream aStream(theContent);
+  std::string        aRecord;
+  while (std::getline(aStream, aRecord))
+  {
+    if (!aRecord.empty() && aRecord.back() == '\r')
+    {
+      aRecord.pop_back();
+    }
+    if (aRecord.size() != 80)
+    {
+      return false;
+    }
+    switch (aRecord[72])
+    {
+      case 'S':
+        aFoundSections[0] = true;
+        break;
+      case 'G':
+        aFoundSections[1] = true;
+        break;
+      case 'D':
+        aFoundSections[2] = true;
+        break;
+      case 'P':
+        aFoundSections[3] = true;
+        break;
+      case 'T':
+        aFoundSections[4] = true;
+        break;
+      default:
+        return false;
+    }
+  }
+  return aFoundSections[0] && aFoundSections[1] && aFoundSections[2] && aFoundSections[3]
+         && aFoundSections[4];
+}
+
+//! Serializes a shape to IGES content.
+//! @param[in] theProvider provider used for writing
+//! @param[in] theShape shape to serialize
+//! @param[out] theContent serialized content
+//! @return true if serialization succeeded
+bool writeShape(const occ::handle<DEIGES_Provider>& theProvider,
+                const TopoDS_Shape&                 theShape,
+                std::string&                        theContent)
+{
+  std::ostringstream           anOutputStream;
+  DE_Provider::WriteStreamList aStreams;
+  aStreams.Append(DE_Provider::WriteStreamNode("shape.igs", anOutputStream));
+  if (!theProvider->Write(aStreams, theShape))
+  {
+    return false;
+  }
+  theContent = anOutputStream.str();
+  return true;
+}
+
+//! Reads a shape from IGES content.
+//! @param[in] theProvider provider used for reading
+//! @param[in] theContent serialized content
+//! @param[out] theShape translated shape
+//! @return true if reading and translation succeeded
+bool readShape(const occ::handle<DEIGES_Provider>& theProvider,
+               const std::string&                  theContent,
+               TopoDS_Shape&                       theShape)
+{
+  std::istringstream          anInputStream(theContent);
+  DE_Provider::ReadStreamList aStreams;
+  aStreams.Append(DE_Provider::ReadStreamNode("shape.igs", anInputStream));
+  return theProvider->Read(aStreams, theShape);
 }
 
 } // namespace
@@ -80,6 +163,7 @@ TEST(DEIGES_ProviderTest, StreamShapeWriteRead)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
   const TopoDS_Shape                 aBox      = createBoxShape();
+  ASSERT_FALSE(aBox.IsNull());
 
   std::ostringstream           anOStream;
   DE_Provider::WriteStreamList aWriteStreams;
@@ -109,8 +193,9 @@ TEST(DEIGES_ProviderTest, StreamDocumentWriteRead)
   const occ::handle<DEIGES_Provider>  aProvider = createProvider();
   const occ::handle<TDocStd_Document> aDocument = createDocument();
   const TopoDS_Shape                  aBox      = createBoxShape();
+  ASSERT_FALSE(aBox.IsNull());
 
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TDF_Label                aShapeLabel = aShapeTool->AddShape(aBox);
   EXPECT_FALSE(aShapeLabel.IsNull());
 
@@ -131,8 +216,75 @@ TEST(DEIGES_ProviderTest, StreamDocumentWriteRead)
 
   EXPECT_TRUE(aProvider->Read(aReadStreams, aReadDocument));
 
-  occ::handle<XCAFDoc_ShapeTool> aReadShapeTool = XCAFDoc_DocumentTool::ShapeTool(aReadDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool> aReadShapeTool =
+    XCAFDoc_DocumentTool::ShapeTool(aReadDocument->Main());
   NCollection_Sequence<TDF_Label> aLabels;
   aReadShapeTool->GetShapes(aLabels);
   EXPECT_GT(aLabels.Length(), 0);
+}
+
+TEST(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  const TopoDS_Shape                 aBox      = createBoxShape();
+  ASSERT_FALSE(aBox.IsNull());
+
+  std::string anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, aBox, anIGESContent));
+
+  std::string aCRContent;
+  aCRContent.reserve(anIGESContent.size());
+  for (const char aCharacter : anIGESContent)
+  {
+    if (aCharacter == '\n')
+    {
+      aCRContent.push_back('\r');
+    }
+    else if (aCharacter != '\r')
+    {
+      aCRContent.push_back(aCharacter);
+    }
+  }
+
+  TopoDS_Shape aReadShape;
+  EXPECT_TRUE(readShape(aProvider, aCRContent, aReadShape));
+  EXPECT_FALSE(aReadShape.IsNull());
+}
+
+TEST(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  const TopoDS_Shape                 aBox      = createBoxShape();
+  ASSERT_FALSE(aBox.IsNull());
+
+  std::string anIGESContent;
+  ASSERT_TRUE(writeShape(aProvider, aBox, anIGESContent));
+
+  std::string aFixedRecords;
+  aFixedRecords.reserve(anIGESContent.size());
+  for (const char aCharacter : anIGESContent)
+  {
+    if (aCharacter != '\r' && aCharacter != '\n')
+    {
+      aFixedRecords.push_back(aCharacter);
+    }
+  }
+
+  TopoDS_Shape aReadShape;
+  EXPECT_TRUE(readShape(aProvider, aFixedRecords, aReadShape));
+  EXPECT_FALSE(aReadShape.IsNull());
+}
+
+TEST(DEIGES_ProviderTest, ReadStream_FailedStream_ReturnsFalse)
+{
+  const occ::handle<DEIGES_Provider> aProvider = createProvider();
+  std::istringstream                 anInputStream;
+  anInputStream.setstate(std::ios::badbit);
+
+  DE_Provider::ReadStreamList aStreams;
+  aStreams.Append(DE_Provider::ReadStreamNode("failed.igs", anInputStream));
+
+  TopoDS_Shape aReadShape;
+  EXPECT_FALSE(aProvider->Read(aStreams, aReadShape));
+  EXPECT_TRUE(aReadShape.IsNull());
 }

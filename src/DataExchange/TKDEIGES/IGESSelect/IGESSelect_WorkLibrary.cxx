@@ -70,123 +70,147 @@ IGESSelect_WorkLibrary::IGESSelect_WorkLibrary(const bool modefnes)
   SetDumpHelp(6, "Complete + Transformed data");
 }
 
-int IGESSelect_WorkLibrary::ReadFile(const char* const                      name,
-                                     occ::handle<Interface_InterfaceModel>& model,
-                                     const occ::handle<Interface_Protocol>& protocol) const
+//==================================================================================================
+
+int IGESSelect_WorkLibrary::ReadFile(const char* const                      theName,
+                                     occ::handle<Interface_InterfaceModel>& theModel,
+                                     const occ::handle<Interface_Protocol>& theProtocol) const
 {
-  Message_Messenger::StreamBuffer            sout        = Message::SendInfo();
-  const occ::handle<OSD_FileSystem>&        aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream>             aStream =
-    aFileSystem->OpenIStream(name, std::ios::in | std::ios::binary);
+  Message_Messenger::StreamBuffer    aLog        = Message::SendInfo();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::istream>      aStream =
+    aFileSystem->OpenIStream(theName, std::ios::in | std::ios::binary);
   if (aStream.get() == nullptr)
   {
-    sout << "File not found : " << name << '\n';
-    model.Nullify();
+    aLog << "File not found : " << theName << '\n';
+    theModel.Nullify();
     return -1;
   }
-  return ReadStream(name, *aStream, model, protocol);
+  return ReadStream(theName, *aStream, theModel, theProtocol);
 }
+
+//==================================================================================================
 
 int IGESSelect_WorkLibrary::ReadStream(const char* const                      theName,
                                        std::istream&                          theIStream,
-                                       occ::handle<Interface_InterfaceModel>& model,
-                                       const occ::handle<Interface_Protocol>& protocol) const
+                                       occ::handle<Interface_InterfaceModel>& theModel,
+                                       const occ::handle<Interface_Protocol>& theProtocol) const
 {
-  Message_Messenger::StreamBuffer sout    = Message::SendInfo();
-  occ::handle<IGESData_IGESModel> igesmod = new IGESData_IGESModel;
-  DeclareAndCast(IGESData_Protocol, prot, protocol);
+  Message_Messenger::StreamBuffer      aLog      = Message::SendInfo();
+  occ::handle<IGESData_IGESModel>      aModel    = new IGESData_IGESModel;
+  const occ::handle<IGESData_Protocol> aProtocol = occ::down_cast<IGESData_Protocol>(theProtocol);
 
-  int status = IGESFile_Read(theName, theIStream, igesmod, prot);
+  const int aStatus = IGESFile_Read(theName, theIStream, aModel, aProtocol);
 
-  if (status < 0)
+  if (aStatus < 0)
   {
-    sout << "Stream read failed : " << theName << '\n';
+    aLog << "Stream read failed : " << theName << '\n';
   }
-  if (status > 0)
+  else if (aStatus > 0)
   {
-    sout << "Error when reading stream : " << theName << '\n';
+    aLog << "Error when reading stream : " << theName << '\n';
   }
-  if (status == 0)
+  if (aStatus == 0)
   {
-    model = igesmod;
+    theModel = aModel;
   }
   else
   {
-    model.Nullify();
+    theModel.Nullify();
   }
-  return status;
+  return aStatus;
 }
 
-bool IGESSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
+//==================================================================================================
+
+bool IGESSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& theContext) const
 {
-  Message_Messenger::StreamBuffer sout = Message::SendInfo();
-  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      aStream =
-    aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary);
-  if (aStream.get() == nullptr)
+  if (occ::down_cast<IGESData_IGESModel>(theContext.Model()).IsNull()
+      || occ::down_cast<IGESData_Protocol>(theContext.Protocol()).IsNull())
   {
-    ctx.CCheck(0)->AddFail("IGES File could not be created");
-    sout << " - IGES File could not be created : " << ctx.FileName() << '\n';
     return false;
   }
-  bool status = WriteStream(ctx, *aStream);
+
+  Message_Messenger::StreamBuffer    aLog        = Message::SendInfo();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::ostream>      aStream =
+    aFileSystem->OpenOStream(theContext.FileName(), std::ios::out | std::ios::binary);
+  if (aStream.get() == nullptr)
+  {
+    theContext.CCheck(0)->AddFail("IGES File could not be created");
+    aLog << " - IGES File could not be created : " << theContext.FileName() << '\n';
+    return false;
+  }
+  const bool isWritten = WriteStream(theContext, *aStream);
 
   errno = 0;
   aStream->flush();
-  status = aStream->good() && status && !errno;
+  const bool isFlushed = aStream->good() && errno == 0;
   aStream.reset();
   if (errno)
   {
-    sout << strerror(errno) << '\n';
+    aLog << strerror(errno) << '\n';
   }
 
-  return status;
+  return isWritten && isFlushed;
 }
 
-bool IGESSelect_WorkLibrary::WriteStream(IFSelect_ContextWrite& ctx,
-                                         Standard_OStream&     theOStream) const
-{
-  Message_Messenger::StreamBuffer sout = Message::SendInfo();
-  DeclareAndCast(IGESData_IGESModel, igesmod, ctx.Model());
-  DeclareAndCast(IGESData_Protocol, prot, ctx.Protocol());
+//==================================================================================================
 
-  if (igesmod.IsNull() || prot.IsNull())
+bool IGESSelect_WorkLibrary::WriteStream(IFSelect_ContextWrite& theContext,
+                                         Standard_OStream&      theOStream) const
+{
+  Message_Messenger::StreamBuffer       aLog = Message::SendInfo();
+  const occ::handle<IGESData_IGESModel> aModel =
+    occ::down_cast<IGESData_IGESModel>(theContext.Model());
+  const occ::handle<IGESData_Protocol> aProtocol =
+    occ::down_cast<IGESData_Protocol>(theContext.Protocol());
+
+  if (aModel.IsNull() || aProtocol.IsNull())
   {
     return false;
   }
-  sout << " IGES File Name : " << ctx.FileName();
-  IGESData_IGESWriter VW(igesmod);
-  sout << "(" << igesmod->NbEntities() << " ents) ";
+  aLog << " IGES File Name : " << theContext.FileName();
+  IGESData_IGESWriter aWriter(aModel);
+  aLog << "(" << aModel->NbEntities() << " ents) ";
 
-  int nbmod = ctx.NbModifiers();
-  for (int numod = 1; numod <= nbmod; numod++)
+  const int aNbModifiers = theContext.NbModifiers();
+  for (int aModifierIndex = 1; aModifierIndex <= aNbModifiers; ++aModifierIndex)
   {
-    ctx.SetModifier(numod);
-    DeclareAndCast(IGESSelect_FileModifier, filemod, ctx.FileModifier());
-    if (!filemod.IsNull())
+    theContext.SetModifier(aModifierIndex);
+    const occ::handle<IFSelect_GeneralModifier> aModifier = theContext.FileModifier();
+    if (aModifier.IsNull())
     {
-      filemod->Perform(ctx, VW);
+      continue;
     }
-    sout << " .. FileMod." << numod << " " << filemod->Label();
-    if (ctx.IsForAll())
+    const occ::handle<IGESSelect_FileModifier> aFileModifier =
+      occ::down_cast<IGESSelect_FileModifier>(aModifier);
+    if (aFileModifier.IsNull())
     {
-      sout << " (all model)";
+      theContext.CCheck(0)->AddFail("IGES file modifier has an incompatible type");
+      return false;
+    }
+    aFileModifier->Perform(theContext, aWriter);
+    aLog << " .. FileMod." << aModifierIndex << " " << aFileModifier->Label();
+    if (theContext.IsForAll())
+    {
+      aLog << " (all model)";
     }
     else
     {
-      sout << " (" << ctx.NbEntities() << " entities)";
+      aLog << " (" << theContext.NbEntities() << " entities)";
     }
   }
 
-  VW.SendModel(prot);
-  sout << " Write ";
+  aWriter.SendModel(aProtocol);
+  aLog << " Write ";
   if (themodefnes)
   {
-    VW.WriteMode() = 10;
+    aWriter.WriteMode() = 10;
   }
-  bool status = VW.Print(theOStream);
-  sout << " Done" << '\n';
-  return theOStream.good() && status;
+  const bool isPrinted = aWriter.Print(theOStream);
+  aLog << " Done" << '\n';
+  return isPrinted && theOStream.good();
 }
 
 occ::handle<IGESData_Protocol> IGESSelect_WorkLibrary::DefineProtocol()

@@ -77,6 +77,9 @@ public:
   Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* const filename);
 
   //! Writes the produced model to a stream.
+  //! @param[out] theOStream destination stream
+  //! @param[in] theName optional logical stream name
+  //! @return execution status
   Standard_EXPORT IFSelect_ReturnStatus WriteStream(Standard_OStream& theOStream,
                                                     const char* const theName = "");
 

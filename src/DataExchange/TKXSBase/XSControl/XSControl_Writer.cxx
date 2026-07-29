@@ -81,6 +81,8 @@ IFSelect_ReturnStatus XSControl_Writer::WriteFile(const char* const filename)
   return thesession->SendAll(filename);
 }
 
+//==================================================================================================
+
 IFSelect_ReturnStatus XSControl_Writer::WriteStream(Standard_OStream& theOStream,
                                                     const char* const theName)
 {

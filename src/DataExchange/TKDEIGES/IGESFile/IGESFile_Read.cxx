@@ -13,7 +13,7 @@
 
 // dce 21.01.99 : move of general message to IGESToBRep_Reader
 
-#include <cstdio>
+#include <cstdlib>
 // declarations of basic C programs:
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESReaderTool.hxx>
@@ -29,31 +29,48 @@
 
 #include <OSD_FileSystem.hxx>
 
-#include "igesread.h"
-
-// #define VERIFPRINT
+#include "igesread.pxx"
 
 // MGE 16/06/98
 // To use Msg class
 #include <Message_Msg.hxx>
 
 // internal breakdown to facilitate error recovery
-static int recupne, recupnp; // for display in case of problem
+static thread_local int THE_RECOVERY_ENTITY    = 0;
+static thread_local int THE_RECOVERY_PARAMETER = 0;
 
+//! Returns the diagnostic check associated with the calling thread.
+//! @return thread-local diagnostic check
 static occ::handle<Interface_Check>& checkread()
 {
-  static occ::handle<Interface_Check> chrd = new Interface_Check;
-  return chrd;
+  static thread_local occ::handle<Interface_Check> aCheck = new Interface_Check;
+  return aCheck;
 }
 
-static void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR);
-static void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& IR);
-void        IGESFile_Check(int mode, Message_Msg& amsg);
-// void IGESFile_Check2 (int mode,char * code, int num, char * str);
-// void IGESFile_Check3 (int mode,char * code);
+//! Loads the parser's start and global sections into reader data.
+//! @param[in,out] theReaderData reader data receiving header parameters
+static void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& theReaderData);
+
+//! Loads the parser's directory entries and parameters into reader data.
+//! @param[in,out] theReaderData reader data receiving entity records
+static void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& theReaderData);
+
+//! Sends a parser diagnostic.
+//! @param[in] theMode diagnostic severity
+//! @param[in] theMessage diagnostic message
+static void IGESFile_Check(int theMode, Message_Msg& theMessage);
 
 //  Correspondence between igesread types and Interface_ParamFile types ...
-static Interface_ParamType LesTypes[10];
+static constexpr Interface_ParamType THE_PARAMETER_TYPES[IGES_ParameterType_NbTypes] = {
+  Interface_ParamVoid,
+  Interface_ParamMisc,
+  Interface_ParamText,
+  Interface_ParamInteger,
+  Interface_ParamInteger,
+  Interface_ParamReal,
+  Interface_ParamMisc,
+  Interface_ParamReal,
+  Interface_ParamEnum};
 
 namespace
 {
@@ -62,118 +79,114 @@ struct IGESFile_StreamContext
   Standard_IStream& Stream;
 };
 
-int IGESFile_ReadLineFromStream(void* theContext, char* theLine, int theLineSize)
+//! Reads a byte block from a C++ input stream.
+//! @param[in] theContext stream context
+//! @param[out] theBuffer destination buffer
+//! @param[in] theBufferSize destination capacity
+//! @return positive byte count, IGES_ReadStatus_End, or IGES_ReadStatus_Error
+int readBytesFromStream(void* theContext, char* theBuffer, std::size_t theBufferSize)
 {
-  if (theContext == nullptr || theLine == nullptr || theLineSize <= 0)
+  if (theContext == nullptr || theBuffer == nullptr || theBufferSize == 0)
   {
-    return 0;
+    return IGES_ReadStatus_Error;
   }
 
-  IGESFile_StreamContext& aContext = *(IGESFile_StreamContext*)theContext;
-  for (int anIter = 0; anIter < theLineSize; ++anIter)
+  IGESFile_StreamContext& aContext = *static_cast<IGESFile_StreamContext*>(theContext);
+  try
   {
-    theLine[anIter] = '\0';
+    aContext.Stream.read(theBuffer, static_cast<std::streamsize>(theBufferSize));
+    const std::streamsize aBytesRead = aContext.Stream.gcount();
+    if (aBytesRead > 0)
+    {
+      return static_cast<int>(aBytesRead);
+    }
+    return aContext.Stream.eof() ? IGES_ReadStatus_End : IGES_ReadStatus_Error;
   }
-
-  aContext.Stream.getline(theLine, theLineSize);
-  if (!aContext.Stream.good())
+  catch (const std::ios_base::failure&)
   {
-    if (aContext.Stream.eof() && theLine[0] == '\0')
+    const std::streamsize aBytesRead = aContext.Stream.gcount();
+    if (aBytesRead > 0)
     {
-      return 0;
+      return static_cast<int>(aBytesRead);
     }
-    if (aContext.Stream.fail())
-    {
-      aContext.Stream.clear(aContext.Stream.rdstate() & ~std::ios::failbit);
-    }
+    return aContext.Stream.eof() ? IGES_ReadStatus_End : IGES_ReadStatus_Error;
   }
-  return 1;
 }
-}
+} // namespace
 
 //  New way: Protocol is sufficient
 
-int IGESFile_Read(char*                                  nomfic,
-                  const occ::handle<IGESData_IGESModel>& amodel,
-                  const occ::handle<IGESData_Protocol>&  protocol)
+int IGESFile_Read(char*                                  theFileName,
+                  const occ::handle<IGESData_IGESModel>& theModel,
+                  const occ::handle<IGESData_Protocol>&  theProtocol)
 {
-  occ::handle<IGESData_FileRecognizer> nulreco;
-  return IGESFile_Read(nomfic, amodel, protocol, nulreco, false);
+  occ::handle<IGESData_FileRecognizer> aRecognizer;
+  return IGESFile_Read(theFileName, theModel, theProtocol, aRecognizer, false);
 }
 
-int IGESFile_Read(const char* const                         theName,
-                  Standard_IStream&                         theIStream,
-                  const occ::handle<IGESData_IGESModel>&    amodel,
-                  const occ::handle<IGESData_Protocol>&     protocol)
+int IGESFile_Read(const char*                            theName,
+                  Standard_IStream&                      theIStream,
+                  const occ::handle<IGESData_IGESModel>& theModel,
+                  const occ::handle<IGESData_Protocol>&  theProtocol)
 {
-  occ::handle<IGESData_FileRecognizer> nulreco;
-  return IGESFile_Read(theName, theIStream, amodel, protocol, nulreco, false);
+  occ::handle<IGESData_FileRecognizer> aRecognizer;
+  return IGESFile_Read(theName, theIStream, theModel, theProtocol, aRecognizer, false);
 }
 
-int IGESFile_ReadFNES(char*                                  nomfic,
-                      const occ::handle<IGESData_IGESModel>& amodel,
-                      const occ::handle<IGESData_Protocol>&  protocol)
+int IGESFile_ReadFNES(char*                                  theFileName,
+                      const occ::handle<IGESData_IGESModel>& theModel,
+                      const occ::handle<IGESData_Protocol>&  theProtocol)
 {
-  occ::handle<IGESData_FileRecognizer> nulreco;
-  return IGESFile_Read(nomfic, amodel, protocol, nulreco, true);
+  occ::handle<IGESData_FileRecognizer> aRecognizer;
+  return IGESFile_Read(theFileName, theModel, theProtocol, aRecognizer, true);
 }
 
 //  Old way: with Recognizer
 
-int IGESFile_Read(char*                                       nomfic,
-                  const occ::handle<IGESData_IGESModel>&      amodel,
-                  const occ::handle<IGESData_Protocol>&       protocol,
-                  const occ::handle<IGESData_FileRecognizer>& reco,
-                  const bool                                  modefnes)
+int IGESFile_Read(char*                                       theFileName,
+                  const occ::handle<IGESData_IGESModel>&      theModel,
+                  const occ::handle<IGESData_Protocol>&       theProtocol,
+                  const occ::handle<IGESData_FileRecognizer>& theRecognizer,
+                  bool                                        theIsFNES)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aStream =
-    aFileSystem->OpenIStream(nomfic, std::ios::in | std::ios::binary);
-  if (aStream.get() == nullptr)
+    aFileSystem->OpenIStream(theFileName, std::ios::in | std::ios::binary);
+  if (!aStream)
   {
     return -1;
   }
-  return IGESFile_Read(nomfic, *aStream, amodel, protocol, reco, modefnes);
+  return IGESFile_Read(theFileName, *aStream, theModel, theProtocol, theRecognizer, theIsFNES);
 }
 
-int IGESFile_Read(const char* const                            theName,
-                  Standard_IStream&                            theIStream,
-                  const occ::handle<IGESData_IGESModel>&       amodel,
-                  const occ::handle<IGESData_Protocol>&        protocol,
-                  const occ::handle<IGESData_FileRecognizer>&  reco,
-                  const bool                                   modefnes)
+int IGESFile_Read(const char*                                 theName,
+                  Standard_IStream&                           theIStream,
+                  const occ::handle<IGESData_IGESModel>&      theModel,
+                  const occ::handle<IGESData_Protocol>&       theProtocol,
+                  const occ::handle<IGESData_FileRecognizer>& theRecognizer,
+                  bool                                        theIsFNES)
 {
-  (void)theName;
+  static_cast<void>(theName);
   //====================================
   Message_Msg Msg1  = Message_Msg("XSTEP_1");
   Message_Msg Msg15 = Message_Msg("XSTEP_15");
   //====================================
 
-  int   lesect[6];
+  int lesect[6];
 
   // Sending of message : Beginning of the reading
   IGESFile_Check(2, Msg1);
 
   checkread()->Clear();
   IGESFile_StreamContext aContext = {theIStream};
-  int result = igesread_stream(&aContext, IGESFile_ReadLineFromStream, lesect, modefnes);
+  const int aResult = igesread_stream(&aContext, readBytesFromStream, lesect, theIsFNES);
 
-  if (result != 0)
+  if (aResult != 0)
   {
-    return result;
+    return aResult;
   }
 
   //  Loading results into an IGESReader
-
-  LesTypes[ArgVide] = Interface_ParamVoid;
-  LesTypes[ArgQuid] = Interface_ParamMisc;
-  LesTypes[ArgChar] = Interface_ParamText;
-  LesTypes[ArgInt]  = Interface_ParamInteger;
-  LesTypes[ArgSign] = Interface_ParamInteger;
-  LesTypes[ArgReal] = Interface_ParamReal;
-  LesTypes[ArgExp]  = Interface_ParamMisc; // exponent not finished
-  LesTypes[ArgRexp] = Interface_ParamReal; // complete exponent
-  LesTypes[ArgMexp] = Interface_ParamEnum; // exponent but no decimal point
 
   int nbparts, nbparams;
   iges_stats(&nbparts, &nbparams); // and performs necessary initializations
@@ -209,17 +222,17 @@ int IGESFile_Read(const char* const                            theName,
       catch (Standard_Failure const&)
       {
         // Sending of message : Internal error during the content reading
-        if (recupnp == 0)
+        if (THE_RECOVERY_PARAMETER == 0)
         {
           Message_Msg Msg13 = Message_Msg("XSTEP_13");
-          Msg13.Arg(recupne);
+          Msg13.Arg(THE_RECOVERY_ENTITY);
           IGESFile_Check(1, Msg13);
         }
         else
         {
           Message_Msg Msg14 = Message_Msg("XSTEP_14");
-          Msg14.Arg(recupne);
-          Msg14.Arg(recupnp);
+          Msg14.Arg(THE_RECOVERY_ENTITY);
+          Msg14.Arg(THE_RECOVERY_PARAMETER);
           IGESFile_Check(1, Msg14);
         }
       }
@@ -231,26 +244,26 @@ int IGESFile_Read(const char* const                            theName,
   Msg15.Arg(nbr);
   IGESFile_Check(2, Msg15);
   iges_finfile(1);
-  IGESData_IGESReaderTool IT(IR, protocol);
-  IT.Prepare(reco);
+  IGESData_IGESReaderTool IT(IR, theProtocol);
+  IT.Prepare(theRecognizer);
   IT.SetErrorHandle(true);
 
   // Sending of message : Loading of Model : Beginning
-  IT.LoadModel(amodel);
-  if (amodel->Protocol().IsNull())
+  IT.LoadModel(theModel);
+  if (theModel->Protocol().IsNull())
   {
-    amodel->SetProtocol(protocol);
+    theModel->SetProtocol(theProtocol);
   }
   iges_finfile(2);
 
   //  Now, the check
   // Nb warning in global section.
   int nbWarn = checkread()->NbWarnings(), nbFail = checkread()->NbFails();
-  const occ::handle<Interface_Check>& oldglob = amodel->GlobalCheck();
+  const occ::handle<Interface_Check>& oldglob = theModel->GlobalCheck();
   if (nbWarn + nbFail > 0)
   {
     checkread()->GetMessages(oldglob);
-    amodel->SetGlobalCheck(checkread());
+    theModel->SetGlobalCheck(checkread());
   }
 
   checkread()->Trace(0, 1);
@@ -260,7 +273,7 @@ int IGESFile_Read(const char* const                            theName,
 
 // Internal breakdown
 
-void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR)
+void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& theReaderData)
 {
   int   l = 0; // szv#4:S4163:12Mar99 i,j,k not needed
   char* parval;
@@ -280,7 +293,7 @@ void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR)
     //  then the Global Section
     iges_setglobal();
     while ( (i = iges_lirparam(&typarg,&parval)) != 0) {
-      IR->AddGlobal(LesTypes[typarg],parval);
+      IR->AddGlobal(THE_PARAMETER_TYPES[typarg], parval);
     }
   */
   while (iges_lirparam(&typarg, &parval) != 0)
@@ -296,7 +309,7 @@ void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR)
     parval[j + 1] = '\0';
     if (j >= 0 || l > 0)
     {
-      IR->AddStartLine(parval);
+      theReaderData->AddStartLine(parval);
     }
     l++;
   }
@@ -304,12 +317,12 @@ void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR)
   iges_setglobal();
   while (iges_lirparam(&typarg, &parval) != 0)
   {
-    IR->AddGlobal(LesTypes[typarg], parval);
+    theReaderData->AddGlobal(THE_PARAMETER_TYPES[typarg], parval);
   }
-  IR->SetGlobalSection();
+  theReaderData->SetGlobalSection();
 }
 
-void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& IR)
+void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& theReaderData)
 {
   char *res1, *res2, *nom, *num;
   char* parval;
@@ -320,40 +333,36 @@ void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& IR)
   int ns; // szv#4:S4163:12Mar99 i unused
   while ((ns = iges_lirpart(&v, &res1, &res2, &nom, &num, &nbparam)) != 0)
   {
-    recupnp = 0;
-    recupne = (ns + 1) / 2; // numero entite
-                            //    if(recupne > IR->NbEntities()) {
-                            //      iges_nextpart();
-                            //      continue;
-                            //    }
-    IR->SetDirPart(recupne,
-                   v[0],
-                   v[1],
-                   v[2],
-                   v[3],
-                   v[4],
-                   v[5],
-                   v[6],
-                   v[7],
-                   v[8],
-                   v[9],
-                   v[10],
-                   v[11],
-                   v[12],
-                   v[13],
-                   v[14],
-                   v[15],
-                   v[16],
-                   res1,
-                   res2,
-                   nom,
-                   num);
+    THE_RECOVERY_PARAMETER = 0;
+    THE_RECOVERY_ENTITY    = (ns + 1) / 2; // numero entite
+    theReaderData->SetDirPart(THE_RECOVERY_ENTITY,
+                              v[0],
+                              v[1],
+                              v[2],
+                              v[3],
+                              v[4],
+                              v[5],
+                              v[6],
+                              v[7],
+                              v[8],
+                              v[9],
+                              v[10],
+                              v[11],
+                              v[12],
+                              v[13],
+                              v[14],
+                              v[15],
+                              v[16],
+                              res1,
+                              res2,
+                              nom,
+                              num);
     while (iges_lirparam(&typarg, &parval) != 0)
     { // szv#4:S4163:12Mar99 `i=` not needed
-      recupnp++;
-      if (typarg == ArgInt || typarg == ArgSign)
+      ++THE_RECOVERY_PARAMETER;
+      if (typarg == IGES_ParameterType_Integer || typarg == IGES_ParameterType_SignedInteger)
       {
-        int nument = atoi(parval);
+        int nument = std::atoi(parval);
         if (nument < 0)
         {
           nument = -nument;
@@ -366,79 +375,79 @@ void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& IR)
         {
           nument = 0;
         }
-        IR->AddParam(recupne, parval, LesTypes[typarg], nument);
+        theReaderData->AddParam(THE_RECOVERY_ENTITY, parval, THE_PARAMETER_TYPES[typarg], nument);
       }
       else
       {
-        IR->AddParam(recupne, parval, LesTypes[typarg]);
+        theReaderData->AddParam(THE_RECOVERY_ENTITY, parval, THE_PARAMETER_TYPES[typarg]);
       }
     }
-    IR->InitParams(recupne);
+    theReaderData->InitParams(THE_RECOVERY_ENTITY);
     iges_nextpart();
   }
 }
 
-void IGESFile_Check(int mode, Message_Msg& amsg)
+void IGESFile_Check(int theMode, Message_Msg& theMessage)
 {
   // MGE 20/07/98
-  switch (mode)
+  switch (theMode)
   {
     case 0:
-      checkread()->SendFail(amsg);
+      checkread()->SendFail(theMessage);
       break;
     case 1:
-      checkread()->SendWarning(amsg);
+      checkread()->SendWarning(theMessage);
       break;
     case 2:
-      checkread()->SendMsg(amsg);
+      checkread()->SendMsg(theMessage);
       break;
     default:
-      checkread()->SendMsg(amsg);
+      checkread()->SendMsg(theMessage);
   }
   // checkread().Trace(3,-1);
 }
 
-void IGESFile_Check2(int mode, char* code, int num, char* str)
+void IGESFile_Check2(int theMode, const char* theCode, int theNumber, const char* theText)
 {
   // MGE 20/07/98
-  Message_Msg amsg(code);
-  amsg.Arg(num);
-  amsg.Arg(str);
+  Message_Msg aMessage(theCode);
+  aMessage.Arg(theNumber);
+  aMessage.Arg(theText);
 
-  switch (mode)
+  switch (theMode)
   {
     case 0:
-      checkread()->SendFail(amsg);
+      checkread()->SendFail(aMessage);
       break;
     case 1:
-      checkread()->SendWarning(amsg);
+      checkread()->SendWarning(aMessage);
       break;
     case 2:
-      checkread()->SendMsg(amsg);
+      checkread()->SendMsg(aMessage);
       break;
     default:
-      checkread()->SendMsg(amsg);
+      checkread()->SendMsg(aMessage);
   }
   // checkread().Trace(3,-1);
 }
 
-void IGESFile_Check3(int mode, char* code)
+void IGESFile_Check3(int theMode, const char* theCode)
 {
   // MGE 20/07/98
-  Message_Msg amsg(code);
-  switch (mode)
+  Message_Msg aMessage(theCode);
+  switch (theMode)
   {
     case 0:
-      checkread()->SendFail(amsg);
+      checkread()->SendFail(aMessage);
       break;
     case 1:
-      checkread()->SendWarning(amsg);
+      checkread()->SendWarning(aMessage);
       break;
     case 2:
-      checkread()->SendMsg(amsg);
+      checkread()->SendMsg(aMessage);
       break;
     default:
-      checkread()->SendMsg(amsg);
+      checkread()->SendMsg(aMessage);
   }
   // checkread().Trace(3,-1);
 }
