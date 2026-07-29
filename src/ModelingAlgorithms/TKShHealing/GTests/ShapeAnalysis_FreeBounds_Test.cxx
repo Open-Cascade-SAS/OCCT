@@ -244,7 +244,7 @@ TEST(ShapeAnalysis_FreeBoundsTest, ConnectEdges_InternalEdgeAfterManifoldEdges)
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anInput, Precision::Confusion(), true);
-  checkResult(aResult, 2, 4, 1, 0, true);
+  checkResult(aResult, 1, 3, 0, 0, true);
 }
 
 TEST(ShapeAnalysis_FreeBoundsTest, ConnectEdges_InternalEdgeBeforeManifoldEdges)
@@ -260,7 +260,23 @@ TEST(ShapeAnalysis_FreeBoundsTest, ConnectEdges_InternalEdgeBeforeManifoldEdges)
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anInput, Precision::Confusion(), true);
-  checkResult(aResult, 2, 4, 1, 0, true);
+  checkResult(aResult, 1, 3, 0, 0, true);
+}
+
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectEdges_ExternalEdgeIsSkipped)
+{
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
+    new NCollection_HSequence<TopoDS_Shape>();
+  anInput->Append(aData.Edge1);
+  anInput->Append(aData.Edge2);
+  anInput->Append(aData.Edge3);
+  anInput->Append(aData.ExternalEdge);
+
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
+    ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anInput, Precision::Confusion(), true);
+  checkResult(aResult, 1, 3, 0, 0, true);
 }
 
 // Baseline: a single closed face alone does not trigger the bug (see below).

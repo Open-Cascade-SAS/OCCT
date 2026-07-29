@@ -36,8 +36,8 @@
 #include <ShapeExtend_Explorer.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -137,25 +137,33 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBounds::Conne
   const bool                                              shared)
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> iwires = new NCollection_HSequence<TopoDS_Shape>;
+  NCollection_LinearVector<int>                    anEdgeIndices;
   BRep_Builder                                     B;
 
   int i; // svv #1
   for (i = 1; i <= edges->Length(); i++)
   {
+    const TopAbs_Orientation anOrientation = edges->Value(i).Orientation();
+    if (anOrientation == TopAbs_INTERNAL || anOrientation == TopAbs_EXTERNAL)
+    {
+      continue;
+    }
+
     TopoDS_Wire wire;
     B.MakeWire(wire);
     B.Add(wire, edges->Value(i));
     iwires->Append(wire);
+    anEdgeIndices.Append(i);
   }
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> wires =
     ConnectWiresToWires(iwires, toler, shared);
 
-  for (i = 1; i <= edges->Length(); i++)
+  for (i = 1; i <= iwires->Length(); i++)
   {
     if (iwires->Value(i).Orientation() == TopAbs_REVERSED)
     {
-      edges->ChangeValue(i).Reverse();
+      edges->ChangeValue(anEdgeIndices[i - 1]).Reverse();
     }
   }
 
