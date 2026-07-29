@@ -645,7 +645,7 @@ TopAbs contains the *TopAbs_ShapeEnum* enumeration, which lists the different to
 
 A topological model can be considered as a graph of objects with adjacency relationships.
 When modeling a part in 2D or 3D space it must belong to one of the categories listed in the ShapeEnum enumeration.
-The TopAbspackage lists all the objects, which can be found in any model.
+The TopAbs package lists all the objects, which can be found in any model.
 It cannot be extended but a subset can be used. For example, the notion of solid is useless in 2D.
 
 The terms of the enumeration appear in order from the most complex to the most simple, because objects can contain simpler objects in their description.
@@ -1105,7 +1105,7 @@ One solution is to put all the Shapes in a Map so as to avoid counting them twic
   }
 ~~~~
 
-**Note** For more details about Maps, refer to the *TCollection* documentation (Foundation Classes Reference Manual).
+**Note** For more details about Maps, refer to the *NCollection* documentation (Foundation Classes Reference Manual).
 
 The following example is more ambitious and writes a program which copies a data structure using an *IndexedMap*.
 The copy is an identical structure but it shares nothing with the original.

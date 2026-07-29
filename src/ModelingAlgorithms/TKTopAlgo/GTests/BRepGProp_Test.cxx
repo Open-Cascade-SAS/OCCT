@@ -17,22 +17,29 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRep_Builder.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Plane.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <GProp_GProps.hxx>
 #include <GProp_PrincipalProps.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <Standard_Handle.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <gtest/gtest.h>
+
+#include <cmath>
 
 TEST(BRepGPropTest, LinearProperties_EdgeLength)
 {
@@ -194,4 +201,50 @@ TEST(BRepGPropTest, OCC8797_BSplineLengthConsistencyAbscissaVsLinearProperties)
 
   // Both methods must agree within 0.1 %
   EXPECT_NEAR(aLengthAbscissa, aLengthGProp, aLengthGProp * 1e-3);
+}
+
+// Regression: a degenerate edge whose ONLY representation is a Bezier/BSpline-type
+// curve-on-surface pcurve (no 3D curve) used to SIGSEGV inside
+// BRepGProp_EdgeTool::IntegrationOrder, which read the pole count via BAC.Curve().Curve()
+// (null when there is no 3D curve) instead of the adaptor's own NbPoles(). This is the
+// shape BRepBuilderAPI_Sewing produces reconciling near-coincident vertices between two
+// faces that do not share an edge outright.
+TEST(BRepGPropTest, LinearProperties_DegenerateEdgeWithBSplinePCurveNoCrash)
+{
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
+  aPoles.SetValue(1, gp_Pnt2d(0.0, 0.0));
+  aPoles.SetValue(2, gp_Pnt2d(0.1, 0.05));
+  aPoles.SetValue(3, gp_Pnt2d(0.2, -0.05));
+  aPoles.SetValue(4, gp_Pnt2d(0.3, 0.0));
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults.SetValue(1, 4);
+  aMults.SetValue(2, 4);
+
+  occ::handle<Geom2d_BSplineCurve> aPCurve = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  BRep_Builder aBuilder;
+  TopoDS_Edge  anEdge;
+  aBuilder.MakeEdge(anEdge);
+  aBuilder.UpdateEdge(anEdge, aPCurve, aPlane, TopLoc_Location(), Precision::Confusion());
+  aBuilder.Range(anEdge,
+                 aPlane,
+                 TopLoc_Location(),
+                 aPCurve->FirstParameter(),
+                 aPCurve->LastParameter());
+  aBuilder.Degenerated(anEdge, true);
+
+  GProp_GProps aProps;
+  BRepGProp::LinearProperties(anEdge, aProps);
+
+  // Reaching this point at all is the regression check: IntegrationOrder used to SIGSEGV
+  // before returning.
+  EXPECT_TRUE(std::isfinite(aProps.Mass()));
+  EXPECT_GE(aProps.Mass(), 0.0);
 }

@@ -13,7 +13,7 @@ Accepting and signing the Contributor License Agreement is a prerequisite for co
 2. Download the Contribution License Agreement pdf file and print it
 3. Read the agreement and sign it
 4. Scan the signed CLA to a pdf file
-5. If not yet done, log on to this website
+5. If not yet done, log on to [the OCCT development portal](https://dev.opencascade.org)
 6. In the CLA sending form, press the "Browse" button
 7. Select your signed CLA file
 8. Press "Send"

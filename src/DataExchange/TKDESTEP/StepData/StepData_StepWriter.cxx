@@ -1221,34 +1221,59 @@ void StepData_StepWriter::EndEntity()
 
 void StepData_StepWriter::AddString(const TCollection_AsciiString& astr, const int more)
 {
-  while (!thecurr.CanGet(astr.Length() + more))
-  {
-    thefile->Append(thecurr.Moved());
-    int indst = thelevel * 2;
-    if (theindent)
-    {
-      indst += theindval;
-    }
-    thecurr.SetInitial(indst);
-  }
-  thecurr.Add(astr);
+  AddString(astr.ToCString(), astr.Length(), more);
 }
 
 //=================================================================================================
 
 void StepData_StepWriter::AddString(const char* const astr, const int lnstr, const int more)
 {
-  while (!thecurr.CanGet(lnstr + more))
-  {
+  const auto flushLine = [this](const int theRequired) {
     thefile->Append(thecurr.Moved());
     int indst = thelevel * 2;
     if (theindent)
     {
       indst += theindval;
     }
-    thecurr.SetInitial(indst);
+    thecurr.SetInitial(indst < StepLong && indst + theRequired <= StepLong ? indst : 0);
+  };
+
+  if (lnstr + more <= StepLong)
+  {
+    while (!thecurr.CanGet(lnstr + more))
+    {
+      flushLine(lnstr + more);
+    }
+    thecurr.Add(astr, lnstr);
+    return;
   }
-  thecurr.Add(astr, lnstr);
+
+  int aStart = 0;
+  int aRest  = lnstr;
+  while (aRest > 0)
+  {
+    if (thecurr.CanGet(aRest + more))
+    {
+      thecurr.Add(astr + aStart, aRest);
+      return;
+    }
+
+    const int aRoom = StepLong - thecurr.Length();
+    if (aRoom <= 0 || (aRest + more <= StepLong && aRoom < aRest + more))
+    {
+      flushLine(aRest + more <= StepLong ? aRest + more : 0);
+      continue;
+    }
+
+    const int aChunk = (aRest < aRoom ? aRest : aRoom);
+    thecurr.Add(astr + aStart, aChunk);
+    aStart += aChunk;
+    aRest -= aChunk;
+    if (aRest > 0)
+    {
+      flushLine(aRest + more <= StepLong ? aRest + more : 0);
+    }
+  }
 }
 
 //   FINAL SENDING
