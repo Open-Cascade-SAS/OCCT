@@ -219,8 +219,8 @@ static void connectWiresToWiresImpl(
   owires           = new NCollection_HSequence<TopoDS_Shape>;
   double tolerance = std::max(toler, Precision::Confusion());
 
-  ShapeAnalysis_BoxBndTreeSelector       aSel(arrwires, shared);
-  occ::handle<ShapeExtend_WireData>      sewd;
+  ShapeAnalysis_BoxBndTreeSelector  aSel(arrwires, shared);
+  occ::handle<ShapeExtend_WireData> sewd;
   for (i = 1; i <= arrwires->Length(); i++)
   {
     occ::handle<ShapeExtend_WireData> aWireData =
