@@ -76,6 +76,10 @@ public:
   //! Writes the produced model
   Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* const filename);
 
+  //! Writes the produced model to a stream.
+  Standard_EXPORT IFSelect_ReturnStatus WriteStream(Standard_OStream& theOStream,
+                                                    const char* const theName = "");
+
   //! Prints Statistics about Transfer
   Standard_EXPORT void PrintStatsTransfer(const int what, const int mode = 0) const;
 

@@ -44,9 +44,21 @@ public:
                                occ::handle<Interface_InterfaceModel>& model,
                                const occ::handle<Interface_Protocol>& protocol) const override;
 
+  //! Reads an IGES stream and returns an IGES Model (into <mod>),
+  //! or lets <mod> "Null" in case of Error.
+  Standard_EXPORT int ReadStream(const char* const                      theName,
+                                 std::istream&                          theIStream,
+                                 occ::handle<Interface_InterfaceModel>& model,
+                                 const occ::handle<Interface_Protocol>& protocol) const override;
+
   //! Writes a File from a IGES Model (brought by <ctx>)
   //! Returns False (and writes no file) if <ctx> is not for IGES
   Standard_EXPORT bool WriteFile(IFSelect_ContextWrite& ctx) const override;
+
+  //! Writes an IGES stream from a IGES Model (brought by <ctx>)
+  //! Returns False if <ctx> is not for IGES.
+  Standard_EXPORT bool WriteStream(IFSelect_ContextWrite& ctx,
+                                   Standard_OStream&     theOStream) const override;
 
   //! Defines a protocol to be adequate for IGES
   //! (encompasses ALL the IGES norm including IGESSolid, IGESAppli)

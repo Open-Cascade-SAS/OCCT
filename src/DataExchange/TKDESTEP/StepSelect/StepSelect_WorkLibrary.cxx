@@ -81,15 +81,7 @@ int StepSelect_WorkLibrary::ReadStream(const char* const                      th
 
 bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
 {
-  //  Preparation
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
-  DeclareAndCast(StepData_StepModel, stepmodel, ctx.Model());
-  DeclareAndCast(StepData_Protocol, stepro, ctx.Protocol());
-  if (stepmodel.IsNull() || stepro.IsNull())
-  {
-    return false;
-  }
-
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary | std::ios::trunc);
@@ -100,43 +92,7 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
     sout << " Step File could not be created : " << ctx.FileName() << '\n';
     return false;
   }
-  sout << " Step File Name : " << ctx.FileName();
-  StepData_StepWriter SW(stepmodel);
-  sout << "(" << stepmodel->NbEntities() << " ents) ";
-
-  //  File Modifiers
-  int nbmod = ctx.NbModifiers();
-  for (int numod = 1; numod <= nbmod; numod++)
-  {
-    ctx.SetModifier(numod);
-    DeclareAndCast(StepSelect_FileModifier, filemod, ctx.FileModifier());
-    if (!filemod.IsNull())
-    {
-      filemod->Perform(ctx, SW);
-    }
-    //   (impressions de mise au point)
-    sout << " .. FileMod." << numod << filemod->Label();
-    if (ctx.IsForAll())
-    {
-      sout << " (all model)";
-    }
-    else
-    {
-      sout << " (" << ctx.NbEntities() << " entities)";
-    }
-    //    sout << std::flush;
-  }
-
-  //  Envoi
-  SW.SendModel(stepro);
-  Interface_CheckIterator chl = SW.CheckList();
-  for (chl.Start(); chl.More(); chl.Next())
-  {
-    ctx.CCheck(chl.Number())->GetMessages(chl.Value());
-  }
-  sout << " Write ";
-  bool isGood = SW.Print(*aStream);
-  sout << " Done" << '\n';
+  bool isGood = WriteStream(ctx, *aStream);
 
   errno = 0;
   aStream->flush();
@@ -147,6 +103,53 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
     sout << strerror(errno) << '\n';
   }
   return isGood;
+}
+
+bool StepSelect_WorkLibrary::WriteStream(IFSelect_ContextWrite& ctx,
+                                         Standard_OStream&     theOStream) const
+{
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  DeclareAndCast(StepData_StepModel, stepmodel, ctx.Model());
+  DeclareAndCast(StepData_Protocol, stepro, ctx.Protocol());
+  if (stepmodel.IsNull() || stepro.IsNull())
+  {
+    return false;
+  }
+
+  sout << " Step File Name : " << ctx.FileName();
+  StepData_StepWriter SW(stepmodel);
+  sout << "(" << stepmodel->NbEntities() << " ents) ";
+
+  int nbmod = ctx.NbModifiers();
+  for (int numod = 1; numod <= nbmod; numod++)
+  {
+    ctx.SetModifier(numod);
+    DeclareAndCast(StepSelect_FileModifier, filemod, ctx.FileModifier());
+    if (!filemod.IsNull())
+    {
+      filemod->Perform(ctx, SW);
+    }
+    sout << " .. FileMod." << numod << filemod->Label();
+    if (ctx.IsForAll())
+    {
+      sout << " (all model)";
+    }
+    else
+    {
+      sout << " (" << ctx.NbEntities() << " entities)";
+    }
+  }
+
+  SW.SendModel(stepro);
+  Interface_CheckIterator chl = SW.CheckList();
+  for (chl.Start(); chl.More(); chl.Next())
+  {
+    ctx.CCheck(chl.Number())->GetMessages(chl.Value());
+  }
+  sout << " Write ";
+  bool isGood = SW.Print(theOStream);
+  sout << " Done" << '\n';
+  return theOStream.good() && isGood;
 }
 
 bool StepSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceModel>& original,

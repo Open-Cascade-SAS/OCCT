@@ -14,6 +14,8 @@
 */
 
 #include "igesread.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 /*    Basic routine for reading an IGES file
 
@@ -31,63 +33,89 @@
 */
 
 static int iges_fautrelire = 0;
-int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
-/*int iges_lire (lefic,numsec,line,modefnes)*/
-/*FILE* lefic; int *numsec; char line[100]; int modefnes;*/
+static int iges_readline(void* theContext,
+                         IGES_ReadLineCallback theReadLine,
+                         char theLine[100])
 {
-  int i,result; char typesec;
+  int anIter;
+  for (anIter = 0; anIter < 100; ++anIter)
+  {
+    theLine[anIter] = '\0';
+  }
+
+  if (theReadLine == NULL)
+  {
+    return 0;
+  }
+
+  return theReadLine(theContext, theLine, 100);
+}
+
+int iges_lire_stream(void* theContext,
+                     IGES_ReadLineCallback theReadLine,
+                     int* numsec,
+                     char line[100],
+                     int modefnes)
+{
+  int i, result;
+  char typesec;
 /*  int length;*/
   if (iges_fautrelire == 0)
   {
     if (*numsec == 0)
       line[72] = line[79] = ' ';
 
-    line[0] = '\0'; 
+    line[0] = '\0';
     if(modefnes)
     {
-      if (fgets(line,99,lefic) == NULL) /*for kept compatibility with fnes*/
+      if (iges_readline(theContext, theReadLine, line) == 0)
         return 0;
     }
     else
     {
-      /* PTV: 21.03.2002 it is necessary for files that have only `\r` but no `\n`
-              example file is 919-001-T02-04-CP-VL.iges */
-      while ( fgets ( line, 2, lefic ) && ( line[0] == '\r' || line[0] == '\n' ) )
+      do
       {
       }
-      
-      if (fgets(&line[1],80,lefic) == NULL)
+      while (iges_readline(theContext, theReadLine, line) != 0
+             && (line[0] == '\r' || line[0] == '\n'));
+
+      if (line[0] == '\0')
         return 0;
     }
-    
+
     if (*numsec == 0 && line[72] != 'S' && line[79] == ' ')
-    {/*        WE HAVE FNES: Skip the 1st line          */
+    {
       line[0] = '\0';
-      
+
       if(modefnes)
       {
-        if (fgets(line,99,lefic) == NULL) /*for kept compatibility with fnes*/
+        if (iges_readline(theContext, theReadLine, line) == 0)
           return 0;
       }
       else
       {
-        while ( fgets ( line, 2, lefic ) && ( line[0] == '\r' || line[0] == '\n' ) )
+        do
         {
         }
-        if (fgets(&line[1],80,lefic) == NULL)
+        while (iges_readline(theContext, theReadLine, line) != 0
+               && (line[0] == '\r' || line[0] == '\n'));
+        if (line[0] == '\0')
           return 0;
       }
     }
 
     if ((line[0] & 128) && modefnes)
     {
-      for (i = 0; i < 80; i ++)
+      for (i = 0; i < 80; i++)
         line[i] = (char)(line[i] ^ (150 + (i & 3)));
     }
   }
 
-  if (feof(lefic))
-    return 0;
+  i = (int)strlen(line);
+  if (i > 0 && line[i - 1] == '\r')
+  {
+    line[i - 1] = '\0';
+  }
 
   {//0x1A is END_OF_FILE for OS DOS and WINDOWS. For other OS we set this rule forcefully.
     char *fc = strchr(line, 0x1A);
@@ -100,38 +128,43 @@ int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
 
   iges_fautrelire = 0;
   if (line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
-    return iges_lire(lefic,numsec,line,modefnes); /* 0 */
+    return iges_lire_stream(theContext, theReadLine, numsec, line, modefnes); /* 0 */
 
-  if (sscanf(&line[73],"%d",&result) == 1) {
-    *numsec = result;
-    typesec = line[72];
-    switch (typesec) {
-     case 'S' :  line[72] = '\0'; return (1);
-     case 'G' :  line[72] = '\0'; return (2);
-     case 'D' :  line[72] = '\0'; return (3);
-     case 'P' :  line[72] = '\0'; return (4);
-     case 'T' :  line[72] = '\0'; return (5);
-     default  :;
-    }
-    /* the column 72 is empty, try to check the neighbour*/
-    if(strlen(line)==80 
-        && (line[79]=='\n' || line[79]=='\r') && (line[0]<='9' && line[0]>='0')) {
-       /*check in case of loss.*/
-       int index;
-       for(index = 1; line[index]<='9' && line[index]>='0'; index++);
-       if (line[index]=='D' || line[index]=='d') {
-         for(index = 79; index > 0; index--)
-           line[index] = line[index-1];
-         line[0]='.';
-       }
-       typesec = line[72];
-       switch (typesec) {
+  {
+    char* anEndPtr = NULL;
+    result         = (int)strtol(&line[73], &anEndPtr, 10);
+    if (anEndPtr != &line[73])
+    {
+      *numsec = result;
+      typesec = line[72];
+      switch (typesec) {
        case 'S' :  line[72] = '\0'; return (1);
        case 'G' :  line[72] = '\0'; return (2);
        case 'D' :  line[72] = '\0'; return (3);
        case 'P' :  line[72] = '\0'; return (4);
        case 'T' :  line[72] = '\0'; return (5);
        default  :;
+      }
+      /* the column 72 is empty, try to check the neighbour*/
+      if (strlen(line) == 80
+          && (line[79] == '\n' || line[79] == '\r') && (line[0] <= '9' && line[0] >= '0')) {
+         /*check in case of loss.*/
+         int index;
+         for(index = 1; line[index]<='9' && line[index]>='0'; index++);
+         if (line[index]=='D' || line[index]=='d') {
+           for(index = 79; index > 0; index--)
+             line[index] = line[index-1];
+           line[0]='.';
+         }
+         typesec = line[72];
+         switch (typesec) {
+         case 'S' :  line[72] = '\0'; return (1);
+         case 'G' :  line[72] = '\0'; return (2);
+         case 'D' :  line[72] = '\0'; return (3);
+         case 'P' :  line[72] = '\0'; return (4);
+         case 'T' :  line[72] = '\0'; return (5);
+         default  :;
+        }
       }
     }
   }
@@ -146,8 +179,12 @@ int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
   // find the number start
   while (line[i] >= '0' && line[i] <= '9' && i > 0)
     i--;
-  if (sscanf(&line[i + 1],"%d",&result) != 1)
-    return -1;
+  {
+    char* aTailEndPtr = NULL;
+    result            = (int)strtol(&line[i + 1], &aTailEndPtr, 10);
+    if (aTailEndPtr == &line[i + 1])
+      return -1;
+  }
   *numsec = result;
   // find type of line
   while (line[i] == ' ' && i > 0)

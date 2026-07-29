@@ -88,6 +88,15 @@ public:
   //! }
   Standard_EXPORT virtual bool WriteFile(IFSelect_ContextWrite& ctx) const = 0;
 
+  //! Interface to write data to the specified stream.
+  //! @param ctx the writing context carrying the model, protocol and modifiers
+  //! @param theOStream the destination stream
+  //! @return True if the data has been written successfully
+  //!
+  //! Default implementation returns False.
+  Standard_EXPORT virtual bool WriteStream(IFSelect_ContextWrite& ctx,
+                                           Standard_OStream&     theOStream) const;
+
   //! Performs the copy of entities from an original model to a new
   //! one. It must also copy headers if any. Returns True when done.
   //! The provided default works by copying the individual entities

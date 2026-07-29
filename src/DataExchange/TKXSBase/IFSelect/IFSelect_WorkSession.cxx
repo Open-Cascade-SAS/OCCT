@@ -2636,6 +2636,66 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll(const char* const filename,
 
 //=================================================================================================
 
+IFSelect_ReturnStatus IFSelect_WorkSession::SendAll(Standard_OStream& theOStream,
+                                                    const char* const theName,
+                                                    const bool        computegraph)
+{
+  Interface_CheckIterator checks;
+  if (!IsLoaded())
+  {
+    return IFSelect_RetVoid;
+  }
+  if (thelibrary.IsNull())
+  {
+    checks.CCheck(0)->AddFail("WorkLibrary undefined");
+    thecheckrun = checks;
+    return IFSelect_RetError;
+  }
+
+  if (errhand)
+  {
+    errhand = false;
+    try
+    {
+      OCC_CATCH_SIGNALS
+      ComputeGraph(computegraph);
+      checks = thecopier->SendAll(theOStream, theName, thegraph->Graph(), thelibrary, theprotocol);
+    }
+    catch (Standard_Failure const& anException)
+    {
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
+      sout << "    ****    SendAll Interrupted by Exception :   ****\n";
+      sout << anException.what();
+      sout << "\n    Abandon" << '\n';
+      errhand = theerrhand;
+      checks.CCheck(0)->AddFail("Exception Raised -> Abandon");
+      thecheckrun = checks;
+      return IFSelect_RetFail;
+    }
+  }
+  else
+  {
+    checks = thecopier->SendAll(theOStream, theName, thegraph->Graph(), thelibrary, theprotocol);
+  }
+  occ::handle<Interface_Check> aMainFail = checks.CCheck(0);
+  if (!aMainFail.IsNull() && aMainFail->HasFailed())
+  {
+    return IFSelect_RetStop;
+  }
+  if (theloaded.Length() == 0 && theName != nullptr && theName[0] != '\0')
+  {
+    theloaded.AssignCat(theName);
+  }
+  thecheckrun = checks;
+  if (checks.IsEmpty(true))
+  {
+    return IFSelect_RetDone;
+  }
+  return IFSelect_RetError;
+}
+
+//=================================================================================================
+
 IFSelect_ReturnStatus IFSelect_WorkSession::SendSelected(const char* const filename,
                                                          const occ::handle<IFSelect_Selection>& sel,
                                                          const bool computegraph)
@@ -2705,6 +2765,23 @@ IFSelect_ReturnStatus IFSelect_WorkSession::WriteFile(const char* const filename
     return IFSelect_RetVoid;
   }
   return SendAll(filename);
+}
+
+//=================================================================================================
+
+IFSelect_ReturnStatus IFSelect_WorkSession::WriteStream(Standard_OStream& theOStream,
+                                                        const char* const theName)
+{
+  if (WorkLibrary().IsNull())
+  {
+    return IFSelect_RetVoid;
+  }
+  ComputeGraph(true);
+  if (!IsLoaded())
+  {
+    return IFSelect_RetVoid;
+  }
+  return SendAll(theOStream, theName);
 }
 
 //=================================================================================================

@@ -151,6 +151,15 @@ public:
                                                   const occ::handle<IFSelect_WorkLibrary>& WL,
                                                   const occ::handle<Interface_Protocol>& protocol);
 
+  //! Sends a model (defined in <G>) into one stream, without managing
+  //! remaining data, already sent files, etc. Applies the Model and
+  //! File Modifiers.
+  Standard_EXPORT Interface_CheckIterator SendAll(Standard_OStream&                        theOStream,
+                                                  const char* const                        theName,
+                                                  const Interface_Graph&                   G,
+                                                  const occ::handle<IFSelect_WorkLibrary>& WL,
+                                                  const occ::handle<Interface_Protocol>& protocol);
+
   //! Sends a part of a model into one file. Model is gotten from
   //! <G>, the part is defined in <iter>.
   //! Remaining data are managed and can be later be worked on.

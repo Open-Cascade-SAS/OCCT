@@ -27,6 +27,8 @@
 // basic definition, to include for use
 #include <IGESFile_Read.hxx>
 
+#include <OSD_FileSystem.hxx>
+
 #include "igesread.h"
 
 // #define VERIFPRINT
@@ -53,6 +55,42 @@ void        IGESFile_Check(int mode, Message_Msg& amsg);
 //  Correspondence between igesread types and Interface_ParamFile types ...
 static Interface_ParamType LesTypes[10];
 
+namespace
+{
+struct IGESFile_StreamContext
+{
+  Standard_IStream& Stream;
+};
+
+int IGESFile_ReadLineFromStream(void* theContext, char* theLine, int theLineSize)
+{
+  if (theContext == nullptr || theLine == nullptr || theLineSize <= 0)
+  {
+    return 0;
+  }
+
+  IGESFile_StreamContext& aContext = *(IGESFile_StreamContext*)theContext;
+  for (int anIter = 0; anIter < theLineSize; ++anIter)
+  {
+    theLine[anIter] = '\0';
+  }
+
+  aContext.Stream.getline(theLine, theLineSize);
+  if (!aContext.Stream.good())
+  {
+    if (aContext.Stream.eof() && theLine[0] == '\0')
+    {
+      return 0;
+    }
+    if (aContext.Stream.fail())
+    {
+      aContext.Stream.clear(aContext.Stream.rdstate() & ~std::ios::failbit);
+    }
+  }
+  return 1;
+}
+}
+
 //  New way: Protocol is sufficient
 
 int IGESFile_Read(char*                                  nomfic,
@@ -61,6 +99,15 @@ int IGESFile_Read(char*                                  nomfic,
 {
   occ::handle<IGESData_FileRecognizer> nulreco;
   return IGESFile_Read(nomfic, amodel, protocol, nulreco, false);
+}
+
+int IGESFile_Read(const char* const                         theName,
+                  Standard_IStream&                         theIStream,
+                  const occ::handle<IGESData_IGESModel>&    amodel,
+                  const occ::handle<IGESData_Protocol>&     protocol)
+{
+  occ::handle<IGESData_FileRecognizer> nulreco;
+  return IGESFile_Read(theName, theIStream, amodel, protocol, nulreco, false);
 }
 
 int IGESFile_ReadFNES(char*                                  nomfic,
@@ -79,19 +126,37 @@ int IGESFile_Read(char*                                       nomfic,
                   const occ::handle<IGESData_FileRecognizer>& reco,
                   const bool                                  modefnes)
 {
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::istream>      aStream =
+    aFileSystem->OpenIStream(nomfic, std::ios::in | std::ios::binary);
+  if (aStream.get() == nullptr)
+  {
+    return -1;
+  }
+  return IGESFile_Read(nomfic, *aStream, amodel, protocol, reco, modefnes);
+}
+
+int IGESFile_Read(const char* const                            theName,
+                  Standard_IStream&                            theIStream,
+                  const occ::handle<IGESData_IGESModel>&       amodel,
+                  const occ::handle<IGESData_Protocol>&        protocol,
+                  const occ::handle<IGESData_FileRecognizer>&  reco,
+                  const bool                                   modefnes)
+{
+  (void)theName;
   //====================================
   Message_Msg Msg1  = Message_Msg("XSTEP_1");
   Message_Msg Msg15 = Message_Msg("XSTEP_15");
   //====================================
 
-  char* ficnom = nomfic; // ficnom ?
   int   lesect[6];
 
   // Sending of message : Beginning of the reading
   IGESFile_Check(2, Msg1);
 
   checkread()->Clear();
-  int result = igesread(ficnom, lesect, modefnes);
+  IGESFile_StreamContext aContext = {theIStream};
+  int result = igesread_stream(&aContext, IGESFile_ReadLineFromStream, lesect, modefnes);
 
   if (result != 0)
   {

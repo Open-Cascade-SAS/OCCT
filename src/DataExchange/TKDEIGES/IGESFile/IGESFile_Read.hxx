@@ -19,10 +19,16 @@
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_Protocol.hxx>
 #include <IGESData_FileRecognizer.hxx>
+#include <Standard_IStream.hxx>
 
 Standard_EXPORT int IGESFile_Read(char*                                  nomfic,
                                   const occ::handle<IGESData_IGESModel>& amodel,
                                   const occ::handle<IGESData_Protocol>&  protocol);
+
+Standard_EXPORT int IGESFile_Read(const char* const                         theName,
+                                  Standard_IStream&                         theIStream,
+                                  const occ::handle<IGESData_IGESModel>&    amodel,
+                                  const occ::handle<IGESData_Protocol>&     protocol);
 
 Standard_EXPORT int IGESFile_ReadFNES(char*                                  nomfic,
                                       const occ::handle<IGESData_IGESModel>& amodel,
@@ -33,5 +39,12 @@ Standard_EXPORT int IGESFile_Read(char*                                       no
                                   const occ::handle<IGESData_Protocol>&       protocol,
                                   const occ::handle<IGESData_FileRecognizer>& reco,
                                   const bool                                  modefnes = false);
+
+Standard_EXPORT int IGESFile_Read(const char* const                            theName,
+                                  Standard_IStream&                            theIStream,
+                                  const occ::handle<IGESData_IGESModel>&       amodel,
+                                  const occ::handle<IGESData_Protocol>&        protocol,
+                                  const occ::handle<IGESData_FileRecognizer>&  reco,
+                                  const bool                                   modefnes = false);
 
 #endif

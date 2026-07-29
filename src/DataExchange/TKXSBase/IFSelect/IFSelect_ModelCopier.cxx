@@ -355,6 +355,55 @@ Interface_CheckIterator IFSelect_ModelCopier::SendAll(
   return checks;
 }
 
+Interface_CheckIterator IFSelect_ModelCopier::SendAll(
+  Standard_OStream&                        theOStream,
+  const char* const                        theName,
+  const Interface_Graph&                   G,
+  const occ::handle<IFSelect_WorkLibrary>& WL,
+  const occ::handle<Interface_Protocol>&   protocol)
+{
+  Interface_CheckIterator checks;
+  checks.SetName("X-STEP WorkSession : Send All");
+  Message::SendInfo() << "** WorkSession : Sending all data" << '\n';
+  const occ::handle<Interface_InterfaceModel>& model = G.Model();
+  if (model.IsNull() || protocol.IsNull() || WL.IsNull())
+  {
+    return checks;
+  }
+
+  Interface_CopyTool TC(model, protocol);
+  int                i, nb = model->NbEntities();
+  for (i = 1; i <= nb; i++)
+  {
+    TC.Bind(model->Value(i), model->Value(i));
+  }
+
+  Interface_EntityIterator               pipo;
+  occ::handle<Interface_InterfaceModel>  newmod;
+  occ::handle<IFSelect_AppliedModifiers> applied;
+  CopiedModel(G,
+              WL,
+              protocol,
+              pipo,
+              TCollection_AsciiString(theName == nullptr ? "" : theName),
+              0,
+              0,
+              TC,
+              newmod,
+              applied,
+              checks);
+
+  IFSelect_ContextWrite   ctx(model, protocol, applied, theName == nullptr ? "" : theName);
+  bool                    res      = WL->WriteStream(ctx, theOStream);
+  Interface_CheckIterator checklst = ctx.CheckList();
+  checks.Merge(checklst);
+  if (!res)
+  {
+    checks.CCheck(0)->AddFail("SendAll (WriteStream) has failed");
+  }
+  return checks;
+}
+
 //  .... SendSelected : Data to transfer in G, filtered by iter,
 //       no split, file sending
 

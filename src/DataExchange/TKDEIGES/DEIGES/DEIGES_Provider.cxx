@@ -26,6 +26,8 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XSControl_WorkSession.hxx>
 
+#include <mutex>
+
 IMPLEMENT_STANDARD_RTTIEXT(DEIGES_Provider, DE_Provider)
 
 namespace
@@ -129,6 +131,31 @@ TCollection_AsciiString getIGESUnitString(const occ::handle<DEIGES_Configuration
 {
   int aFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
   return (aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM";
+}
+
+std::mutex& GetGlobalReadMutex()
+{
+  static std::mutex THE_GLOBAL_READ_MUTEX;
+  return THE_GLOBAL_READ_MUTEX;
+}
+
+std::mutex& GetGlobalWriteMutex()
+{
+  static std::mutex THE_GLOBAL_WRITE_MUTEX;
+  return THE_GLOBAL_WRITE_MUTEX;
+}
+
+bool checkStreamWritability(Standard_OStream& theStream, const TCollection_AsciiString& theKey)
+{
+  if (!theStream.good())
+  {
+    TCollection_AsciiString aKeyInfo = theKey.IsEmpty() ? "<empty key>" : theKey;
+    Message::SendFail() << "Error: Output stream '" << aKeyInfo
+                        << "' is not in good state for writing";
+    return false;
+  }
+
+  return true;
 }
 
 // Helper function to process read file operation
@@ -279,6 +306,7 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
                            occ::handle<XSControl_WorkSession>&  theWS,
                            const Message_ProgressRange&         theProgress)
 {
+  std::lock_guard<std::mutex> aLock(GetGlobalReadMutex());
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
       || !validateConfigurationNode(GetNode(), aContext))
@@ -325,6 +353,7 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
                             occ::handle<XSControl_WorkSession>&  theWS,
                             const Message_ProgressRange&         theProgress)
 {
+  std::lock_guard<std::mutex> aLock(GetGlobalWriteMutex());
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
       || !validateConfigurationNode(GetNode(), aContext))
@@ -384,6 +413,7 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&      thePath,
                            occ::handle<XSControl_WorkSession>& theWS,
                            const Message_ProgressRange&        theProgress)
 {
+  std::lock_guard<std::mutex> aLock(GetGlobalReadMutex());
   if (!validateConfigurationNode(GetNode(), TCollection_AsciiString("reading the file ") + thePath))
   {
     return false;
@@ -422,6 +452,7 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&      thePath,
                             occ::handle<XSControl_WorkSession>& theWS,
                             const Message_ProgressRange&        theProgress)
 {
+  std::lock_guard<std::mutex> aLock(GetGlobalWriteMutex());
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!validateConfigurationNode(GetNode(), aContext))
   {
@@ -476,48 +507,31 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-TCollection_AsciiString DEIGES_Provider::GetFormat() const
+bool DEIGES_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
+                           const Message_ProgressRange&         theProgress)
 {
-  return TCollection_AsciiString("IGES");
-}
-
-//=================================================================================================
-
-TCollection_AsciiString DEIGES_Provider::GetVendor() const
-{
-  return TCollection_AsciiString("OCC");
-}
-
-/*
-
-// TODO: Implement IGES stream support
-
-//=================================================================================================
-
-bool DEIGES_Provider::Read(ReadStreamList&                  theStreams,
-                                       const occ::handle<TDocStd_Document>& theDocument,
-                                       occ::handle<XSControl_WorkSession>&  theWS,
-                                       const Message_ProgressRange&    theProgress)
-{
+  std::lock_guard<std::mutex> aLock(GetGlobalReadMutex());
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
-  TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
-  Standard_IStream&              aStream      = theStreams.First().Stream;
-
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
       || !validateConfigurationNode(GetNode(), aFullContext))
   {
     return false;
   }
 
+  Standard_IStream& aStream = theStreams.First().Stream;
+
   occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
-  initStatic(aNode);
   personizeWS(theWS);
+  initStatic(aNode);
 
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
                                       aNode->GlobalParameters.LengthUnit,
@@ -549,20 +563,19 @@ bool DEIGES_Provider::Read(ReadStreamList&                  theStreams,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Write(WriteStreamList&                 theStreams,
-                                        const occ::handle<TDocStd_Document>& theDocument,
-                                        occ::handle<XSControl_WorkSession>&  theWS,
-                                        const Message_ProgressRange&    theProgress)
+bool DEIGES_Provider::Write(WriteStreamList&                     theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const Message_ProgressRange&         theProgress)
 {
+  std::lock_guard<std::mutex> aLock(GetGlobalWriteMutex());
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_OStream&              aStream   = theStreams.First().Stream;
-
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
       || !validateConfigurationNode(GetNode(), aFullContext))
@@ -570,9 +583,15 @@ bool DEIGES_Provider::Write(WriteStreamList&                 theStreams,
     return false;
   }
 
+  Standard_OStream& aStream = theStreams.First().Stream;
+  if (!checkStreamWritability(aStream, aFirstKey))
+  {
+    return false;
+  }
+
   occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
-  initStatic(aNode);
   personizeWS(theWS);
+  initStatic(aNode);
 
   IGESCAFControl_Writer aWriter(theWS, false);
   configureIGESCAFWriter(aWriter, aNode, theDocument, aFirstKey);
@@ -598,25 +617,46 @@ bool DEIGES_Provider::Write(WriteStreamList&                 theStreams,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Read(ReadStreamList&                 theStreams,
-                                       TopoDS_Shape&                  theShape,
-                                       occ::handle<XSControl_WorkSession>& theWS,
-                                       const Message_ProgressRange&   theProgress)
+bool DEIGES_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           const Message_ProgressRange&         theProgress)
 {
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
+  return Read(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+bool DEIGES_Provider::Write(WriteStreamList&                     theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            const Message_ProgressRange&         theProgress)
+{
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
+  return Write(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+bool DEIGES_Provider::Read(ReadStreamList&                     theStreams,
+                           TopoDS_Shape&                       theShape,
+                           occ::handle<XSControl_WorkSession>& theWS,
+                           const Message_ProgressRange&        theProgress)
+{
+  std::lock_guard<std::mutex> aLock(GetGlobalReadMutex());
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_IStream&              aStream   = theStreams.First().Stream;
-
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!validateConfigurationNode(GetNode(), aFullContext))
   {
     return false;
   }
+
+  Standard_IStream& aStream = theStreams.First().Stream;
 
   occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   initStatic(aNode);
@@ -649,22 +689,27 @@ bool DEIGES_Provider::Read(ReadStreamList&                 theStreams,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Write(WriteStreamList&                theStreams,
-                                        const TopoDS_Shape&            theShape,
-                                        occ::handle<XSControl_WorkSession>& theWS,
-                                        const Message_ProgressRange&   theProgress)
+bool DEIGES_Provider::Write(WriteStreamList&                    theStreams,
+                            const TopoDS_Shape&                 theShape,
+                            occ::handle<XSControl_WorkSession>& theWS,
+                            const Message_ProgressRange&        theProgress)
 {
+  std::lock_guard<std::mutex> aLock(GetGlobalWriteMutex());
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_OStream&              aStream   = theStreams.First().Stream;
-
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!validateConfigurationNode(GetNode(), aFullContext))
+  {
+    return false;
+  }
+
+  Standard_OStream& aStream = theStreams.First().Stream;
+  if (!checkStreamWritability(aStream, aFirstKey))
   {
     return false;
   }
@@ -677,8 +722,8 @@ bool DEIGES_Provider::Write(WriteStreamList&                theStreams,
                              aNode->InternalParameters.WriteBRepMode);
   configureIGESControlWriter(aWriter, aNode);
 
-  bool isOk = aWriter.AddShape(theShape, theProgress);
-  if (!isOk)
+  bool aIsOk = aWriter.AddShape(theShape, theProgress);
+  if (!aIsOk)
   {
     Message::SendFail() << "Error: DEIGES_Provider failed to transfer shape for stream "
                         << aFirstKey;
@@ -698,29 +743,9 @@ bool DEIGES_Provider::Write(WriteStreamList&                theStreams,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Read(ReadStreamList&                  theStreams,
-                                       const occ::handle<TDocStd_Document>& theDocument,
-                                       const Message_ProgressRange&    theProgress)
-{
-  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
-  return Read(theStreams, theDocument, aWS, theProgress);
-}
-
-//=================================================================================================
-
-bool DEIGES_Provider::Write(WriteStreamList&                 theStreams,
-                                        const occ::handle<TDocStd_Document>& theDocument,
-                                        const Message_ProgressRange&    theProgress)
-{
-  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
-  return Write(theStreams, theDocument, aWS, theProgress);
-}
-
-//=================================================================================================
-
-bool DEIGES_Provider::Read(ReadStreamList&               theStreams,
-                                       TopoDS_Shape&                theShape,
-                                       const Message_ProgressRange& theProgress)
+bool DEIGES_Provider::Read(ReadStreamList&              theStreams,
+                           TopoDS_Shape&                theShape,
+                           const Message_ProgressRange& theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(theStreams, theShape, aWS, theProgress);
@@ -728,12 +753,24 @@ bool DEIGES_Provider::Read(ReadStreamList&               theStreams,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Write(WriteStreamList&              theStreams,
-                                        const TopoDS_Shape&          theShape,
-                                        const Message_ProgressRange& theProgress)
+bool DEIGES_Provider::Write(WriteStreamList&             theStreams,
+                            const TopoDS_Shape&          theShape,
+                            const Message_ProgressRange& theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(theStreams, theShape, aWS, theProgress);
 }
 
-*/
+//=================================================================================================
+
+TCollection_AsciiString DEIGES_Provider::GetFormat() const
+{
+  return TCollection_AsciiString("IGES");
+}
+
+//=================================================================================================
+
+TCollection_AsciiString DEIGES_Provider::GetVendor() const
+{
+  return TCollection_AsciiString("OCC");
+}

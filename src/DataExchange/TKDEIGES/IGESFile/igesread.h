@@ -13,8 +13,7 @@
  commercial license or contractual agreement.
 */
 
-/* External call to reading routines (in C) */
-#include <stdio.h>
+/* External call to reading routines */
 
 /*  structiges : */
 struct parlist
@@ -37,7 +36,13 @@ extern "C"
 {
 #endif
 
+  typedef int (*IGES_ReadLineCallback)(void* theContext, char* theLine, int theLineSize);
+
   int igesread(char* nomfic, int lesect[6], int modefnes);
+  int igesread_stream(void*                  theContext,
+                      IGES_ReadLineCallback  theReadLine,
+                      int                    lesect[6],
+                      int                    modefnes);
 
   /*  structiges : */
   int  iges_lirpart(int** tabval, char** res1, char** res2, char** nom, char** num, int* nbparam);
@@ -49,7 +54,11 @@ extern "C"
   struct dirpart* iges_get_curp(void);
 
   void iges_initfile();
-  int  iges_lire(FILE* lefic, int* numsec, char line[100], int modefnes);
+  int  iges_lire_stream(void*                 theContext,
+                        IGES_ReadLineCallback theReadLine,
+                        int*                  numsec,
+                        char                  line[100],
+                        int                   modefnes);
   void iges_newparam(int typarg, int longval, char* parval);
   void iges_param(int* Pstat, char* line, char c_separ, char c_fin, int lonlin);
   void iges_Dsect(int* Dstat, int numsec, char* line);
