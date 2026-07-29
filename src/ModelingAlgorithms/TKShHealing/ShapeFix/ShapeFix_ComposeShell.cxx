@@ -205,6 +205,12 @@ void ShapeFix_ComposeShell::Init(const occ::handle<ShapeExtend_CompositeSurface>
 
 bool ShapeFix_ComposeShell::Perform()
 {
+  // Every Context() dereference below assumes a live context; SetContext() is optional
+  if (Context().IsNull())
+  {
+    SetContext(new ShapeBuild_ReShape);
+  }
+
   myStatus           = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   myInvertEdgeStatus = false;
 
@@ -258,6 +264,12 @@ bool ShapeFix_ComposeShell::Perform()
 
 void ShapeFix_ComposeShell::SplitEdges()
 {
+  // LoadWires()/SplitByGrid() below dereference Context(); SetContext() is optional
+  if (Context().IsNull())
+  {
+    SetContext(new ShapeBuild_ReShape);
+  }
+
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
   NCollection_Sequence<ShapeFix_WireSegment> seqw; // working data: wire segments
