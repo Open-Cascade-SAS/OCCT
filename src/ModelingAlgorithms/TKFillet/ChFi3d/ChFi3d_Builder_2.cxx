@@ -1424,9 +1424,9 @@ bool ChFi3d_Builder::StartSol(
         return false;
       }
       HS->Initialize(Fref);
-      W       = aCommonPoint.ParameterOnArc();
-      pons    = aPCurve->Value(W);
-      RecS    = true;
+      W    = aCommonPoint.ParameterOnArc();
+      pons = aPCurve->Value(W);
+      RecS = true;
       return true;
     }
 
@@ -1477,8 +1477,8 @@ bool ChFi3d_Builder::StartSol(
             prepareDefaultReturn();
             return false;
           }
-          HSBis   = new BRepAdaptor_Surface(F);
-          PBis    = aPCurve->Value(aCommonPoint.ParameterOnArc());
+          HSBis = new BRepAdaptor_Surface(F);
+          PBis  = aPCurve->Value(aCommonPoint.ParameterOnArc());
         }
 
         if (newedge.IsNull())
