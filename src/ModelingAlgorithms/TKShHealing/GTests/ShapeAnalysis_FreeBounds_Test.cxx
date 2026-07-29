@@ -29,169 +29,181 @@
 
 namespace
 {
-class ShapeAnalysis_FreeBoundsTest : public testing::Test
+struct TestData
 {
-protected:
-  void SetUp() override
+  TopoDS_Edge Edge1;
+  TopoDS_Edge Edge2;
+  TopoDS_Edge Edge3;
+  TopoDS_Edge InternalEdge;
+  TopoDS_Edge ExternalEdge;
+  TopoDS_Wire Loop;
+  TopoDS_Wire InternalWire;
+  TopoDS_Wire ExternalWire;
+  TopoDS_Wire EmptyWire;
+};
+
+static bool makeTestData(TestData& theData)
+{
+  BRep_Builder  aBuilder;
+  TopoDS_Vertex aVertex1, aVertex2, aVertex3, aNonManifoldVertex;
+  aBuilder.MakeVertex(aVertex1, gp_Pnt(0.0, 0.0, 0.0), Precision::Confusion());
+  aBuilder.MakeVertex(aVertex2, gp_Pnt(1.0, 0.0, 0.0), Precision::Confusion());
+  aBuilder.MakeVertex(aVertex3, gp_Pnt(0.0, 1.0, 0.0), Precision::Confusion());
+  aBuilder.MakeVertex(aNonManifoldVertex, gp_Pnt(2.0, -1.0, 0.0), Precision::Confusion());
+
+  BRepBuilderAPI_MakeEdge anEdgeMaker1(aVertex1, aVertex2);
+  BRepBuilderAPI_MakeEdge anEdgeMaker2(aVertex2, aVertex3);
+  BRepBuilderAPI_MakeEdge anEdgeMaker3(aVertex3, aVertex1);
+  BRepBuilderAPI_MakeEdge aNonManifoldMaker(aVertex1, aNonManifoldVertex);
+  if (!anEdgeMaker1.IsDone() || !anEdgeMaker2.IsDone() || !anEdgeMaker3.IsDone()
+      || !aNonManifoldMaker.IsDone())
   {
-    BRep_Builder  aBuilder;
-    TopoDS_Vertex aVertex1, aVertex2, aVertex3, aNonManifoldVertex;
-    aBuilder.MakeVertex(aVertex1, gp_Pnt(0.0, 0.0, 0.0), Precision::Confusion());
-    aBuilder.MakeVertex(aVertex2, gp_Pnt(1.0, 0.0, 0.0), Precision::Confusion());
-    aBuilder.MakeVertex(aVertex3, gp_Pnt(0.0, 1.0, 0.0), Precision::Confusion());
-    aBuilder.MakeVertex(aNonManifoldVertex, gp_Pnt(2.0, -1.0, 0.0), Precision::Confusion());
-
-    BRepBuilderAPI_MakeEdge anEdgeMaker1(aVertex1, aVertex2);
-    BRepBuilderAPI_MakeEdge anEdgeMaker2(aVertex2, aVertex3);
-    BRepBuilderAPI_MakeEdge anEdgeMaker3(aVertex3, aVertex1);
-    BRepBuilderAPI_MakeEdge aNonManifoldMaker(aVertex1, aNonManifoldVertex);
-
-    ASSERT_TRUE(anEdgeMaker1.IsDone());
-    ASSERT_TRUE(anEdgeMaker2.IsDone());
-    ASSERT_TRUE(anEdgeMaker3.IsDone());
-    ASSERT_TRUE(aNonManifoldMaker.IsDone());
-
-    myEdge1        = anEdgeMaker1.Edge();
-    myEdge2        = anEdgeMaker2.Edge();
-    myEdge3        = anEdgeMaker3.Edge();
-    myInternalEdge = aNonManifoldMaker.Edge();
-    myInternalEdge.Orientation(TopAbs_INTERNAL);
-    myExternalEdge = aNonManifoldMaker.Edge();
-    myExternalEdge.Orientation(TopAbs_EXTERNAL);
-
-    aBuilder.MakeWire(myLoop);
-    aBuilder.Add(myLoop, myEdge1);
-    aBuilder.Add(myLoop, myEdge2);
-    aBuilder.Add(myLoop, myEdge3);
-    aBuilder.MakeWire(myInternalWire);
-    aBuilder.Add(myInternalWire, myInternalEdge);
-    aBuilder.MakeWire(myExternalWire);
-    aBuilder.Add(myExternalWire, myExternalEdge);
-    aBuilder.MakeWire(myEmptyWire);
+    return false;
   }
 
-  void checkResult(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& theResult,
-                   const int                                               theNbWires,
-                   const int                                               theNbEdges,
-                   const int                                               theNbInternalEdges,
-                   const int                                               theNbExternalEdges,
-                   const bool                                              theHasClosedLoop)
-  {
-    ASSERT_FALSE(theResult.IsNull());
-    ASSERT_EQ(theResult->Length(), theNbWires);
+  theData.Edge1        = anEdgeMaker1.Edge();
+  theData.Edge2        = anEdgeMaker2.Edge();
+  theData.Edge3        = anEdgeMaker3.Edge();
+  theData.InternalEdge = aNonManifoldMaker.Edge();
+  theData.InternalEdge.Orientation(TopAbs_INTERNAL);
+  theData.ExternalEdge = aNonManifoldMaker.Edge();
+  theData.ExternalEdge.Orientation(TopAbs_EXTERNAL);
 
-    int  aNbEdges         = 0;
-    int  aNbInternalEdges = 0;
-    int  aNbExternalEdges = 0;
-    bool hasClosedLoop    = false;
-    for (const TopoDS_Shape& aWire : *theResult)
+  aBuilder.MakeWire(theData.Loop);
+  aBuilder.Add(theData.Loop, theData.Edge1);
+  aBuilder.Add(theData.Loop, theData.Edge2);
+  aBuilder.Add(theData.Loop, theData.Edge3);
+  aBuilder.MakeWire(theData.InternalWire);
+  aBuilder.Add(theData.InternalWire, theData.InternalEdge);
+  aBuilder.MakeWire(theData.ExternalWire);
+  aBuilder.Add(theData.ExternalWire, theData.ExternalEdge);
+  aBuilder.MakeWire(theData.EmptyWire);
+  return true;
+}
+
+static void checkResult(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& theResult,
+                        const int                                               theNbWires,
+                        const int                                               theNbEdges,
+                        const int                                               theNbInternalEdges,
+                        const int                                               theNbExternalEdges,
+                        const bool                                              theHasClosedLoop)
+{
+  ASSERT_FALSE(theResult.IsNull());
+  ASSERT_EQ(theResult->Length(), theNbWires);
+
+  int  aNbEdges         = 0;
+  int  aNbInternalEdges = 0;
+  int  aNbExternalEdges = 0;
+  bool hasClosedLoop    = false;
+  for (const TopoDS_Shape& aWire : *theResult)
+  {
+    int aNbWireEdges = 0;
+    for (TopExp_Explorer anExp(aWire, TopAbs_EDGE); anExp.More(); anExp.Next())
     {
-      int aNbWireEdges = 0;
-      for (TopExp_Explorer anExp(aWire, TopAbs_EDGE); anExp.More(); anExp.Next())
+      ++aNbEdges;
+      ++aNbWireEdges;
+      if (anExp.Current().Orientation() == TopAbs_INTERNAL)
       {
-        ++aNbEdges;
-        ++aNbWireEdges;
-        if (anExp.Current().Orientation() == TopAbs_INTERNAL)
-        {
-          ++aNbInternalEdges;
-        }
-        else if (anExp.Current().Orientation() == TopAbs_EXTERNAL)
-        {
-          ++aNbExternalEdges;
-        }
+        ++aNbInternalEdges;
       }
-      if (aNbWireEdges == 3 && aWire.Closed())
+      else if (anExp.Current().Orientation() == TopAbs_EXTERNAL)
       {
-        hasClosedLoop = true;
+        ++aNbExternalEdges;
       }
     }
-    EXPECT_EQ(aNbEdges, theNbEdges);
-    EXPECT_EQ(aNbInternalEdges, theNbInternalEdges);
-    EXPECT_EQ(aNbExternalEdges, theNbExternalEdges);
-    EXPECT_EQ(hasClosedLoop, theHasClosedLoop);
+    if (aNbWireEdges == 3 && aWire.Closed())
+    {
+      hasClosedLoop = true;
+    }
   }
-
-  TopoDS_Edge myEdge1;
-  TopoDS_Edge myEdge2;
-  TopoDS_Edge myEdge3;
-  TopoDS_Edge myInternalEdge;
-  TopoDS_Edge myExternalEdge;
-  TopoDS_Wire myLoop;
-  TopoDS_Wire myInternalWire;
-  TopoDS_Wire myExternalWire;
-  TopoDS_Wire myEmptyWire;
-};
+  EXPECT_EQ(aNbEdges, theNbEdges);
+  EXPECT_EQ(aNbInternalEdges, theNbInternalEdges);
+  EXPECT_EQ(aNbExternalEdges, theNbExternalEdges);
+  EXPECT_EQ(hasClosedLoop, theHasClosedLoop);
+}
 } // namespace
 
-TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectWires_InternalOnlyWireAfterManifoldWire)
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectWires_InternalOnlyWireAfterManifoldWire)
 {
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
     new NCollection_HSequence<TopoDS_Shape>();
-  anInput->Append(myLoop);
-  anInput->Append(myInternalWire);
+  anInput->Append(aData.Loop);
+  anInput->Append(aData.InternalWire);
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectWiresToWires(anInput, Precision::Confusion(), true);
   checkResult(aResult, 2, 4, 1, 0, true);
 }
 
-TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectWires_InternalOnlyWireBeforeManifoldWire)
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectWires_InternalOnlyWireBeforeManifoldWire)
 {
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
     new NCollection_HSequence<TopoDS_Shape>();
-  anInput->Append(myInternalWire);
-  anInput->Append(myLoop);
+  anInput->Append(aData.InternalWire);
+  anInput->Append(aData.Loop);
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectWiresToWires(anInput, Precision::Confusion(), true);
   checkResult(aResult, 2, 4, 1, 0, true);
 }
 
-TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectWires_OnlyNonManifoldWires)
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectWires_OnlyNonManifoldWires)
 {
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
     new NCollection_HSequence<TopoDS_Shape>();
-  anInput->Append(myInternalWire);
-  anInput->Append(myExternalWire);
+  anInput->Append(aData.InternalWire);
+  anInput->Append(aData.ExternalWire);
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectWiresToWires(anInput, Precision::Confusion(), true);
   checkResult(aResult, 2, 2, 1, 1, false);
 }
 
-TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectWires_EmptyWireBeforeValidWires)
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectWires_EmptyWireBeforeValidWires)
 {
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
     new NCollection_HSequence<TopoDS_Shape>();
-  anInput->Append(myEmptyWire);
-  anInput->Append(myInternalWire);
-  anInput->Append(myLoop);
+  anInput->Append(aData.EmptyWire);
+  anInput->Append(aData.InternalWire);
+  anInput->Append(aData.Loop);
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectWiresToWires(anInput, Precision::Confusion(), true);
   checkResult(aResult, 2, 4, 1, 0, true);
 }
 
-TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectWires_OnlyEmptyWire)
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectWires_OnlyEmptyWire)
 {
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
     new NCollection_HSequence<TopoDS_Shape>();
-  anInput->Append(myEmptyWire);
+  anInput->Append(aData.EmptyWire);
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectWiresToWires(anInput, Precision::Confusion(), true);
   checkResult(aResult, 0, 0, 0, 0, false);
 }
 
-TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectWires_MixedManifoldAndInternalEdges)
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectWires_MixedManifoldAndInternalEdges)
 {
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
   BRep_Builder aBuilder;
   TopoDS_Wire  aMixedWire;
   aBuilder.MakeWire(aMixedWire);
-  aBuilder.Add(aMixedWire, myEdge1);
-  aBuilder.Add(aMixedWire, myEdge2);
-  aBuilder.Add(aMixedWire, myEdge3);
-  aBuilder.Add(aMixedWire, myInternalEdge);
+  aBuilder.Add(aMixedWire, aData.Edge1);
+  aBuilder.Add(aMixedWire, aData.Edge2);
+  aBuilder.Add(aMixedWire, aData.Edge3);
+  aBuilder.Add(aMixedWire, aData.InternalEdge);
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
     new NCollection_HSequence<TopoDS_Shape>();
@@ -202,28 +214,32 @@ TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectWires_MixedManifoldAndInternalEdges)
   checkResult(aResult, 1, 4, 1, 0, false);
 }
 
-TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectEdges_InternalEdgeAfterManifoldEdges)
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectEdges_InternalEdgeAfterManifoldEdges)
 {
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
     new NCollection_HSequence<TopoDS_Shape>();
-  anInput->Append(myEdge1);
-  anInput->Append(myEdge2);
-  anInput->Append(myEdge3);
-  anInput->Append(myInternalEdge);
+  anInput->Append(aData.Edge1);
+  anInput->Append(aData.Edge2);
+  anInput->Append(aData.Edge3);
+  anInput->Append(aData.InternalEdge);
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anInput, Precision::Confusion(), true);
   checkResult(aResult, 2, 4, 1, 0, true);
 }
 
-TEST_F(ShapeAnalysis_FreeBoundsTest, ConnectEdges_InternalEdgeBeforeManifoldEdges)
+TEST(ShapeAnalysis_FreeBoundsTest, ConnectEdges_InternalEdgeBeforeManifoldEdges)
 {
+  TestData aData;
+  ASSERT_TRUE(makeTestData(aData));
   occ::handle<NCollection_HSequence<TopoDS_Shape>> anInput =
     new NCollection_HSequence<TopoDS_Shape>();
-  anInput->Append(myInternalEdge);
-  anInput->Append(myEdge1);
-  anInput->Append(myEdge2);
-  anInput->Append(myEdge3);
+  anInput->Append(aData.InternalEdge);
+  anInput->Append(aData.Edge1);
+  anInput->Append(aData.Edge2);
+  anInput->Append(aData.Edge3);
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anInput, Precision::Confusion(), true);
