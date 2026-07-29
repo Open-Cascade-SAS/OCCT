@@ -125,6 +125,19 @@ static void checkResult(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& 
   EXPECT_EQ(aNbExternalEdges, theNbExternalEdges);
   EXPECT_EQ(hasClosedLoop, theHasClosedLoop);
 }
+
+static TopoDS_Face MakeSquareFace(const gp_Pnt& theA,
+                                  const gp_Pnt& theB,
+                                  const gp_Pnt& theC,
+                                  const gp_Pnt& theD)
+{
+  BRepBuilderAPI_MakeWire aMakeWire;
+  aMakeWire.Add(BRepBuilderAPI_MakeEdge(theA, theB).Edge());
+  aMakeWire.Add(BRepBuilderAPI_MakeEdge(theB, theC).Edge());
+  aMakeWire.Add(BRepBuilderAPI_MakeEdge(theC, theD).Edge());
+  aMakeWire.Add(BRepBuilderAPI_MakeEdge(theD, theA).Edge());
+  return BRepBuilderAPI_MakeFace(aMakeWire.Wire()).Face();
+}
 } // namespace
 
 TEST(ShapeAnalysis_FreeBoundsTest, ConnectWires_InternalOnlyWireAfterManifoldWire)
@@ -248,19 +261,7 @@ TEST(ShapeAnalysis_FreeBoundsTest, ConnectEdges_InternalEdgeBeforeManifoldEdges)
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aResult =
     ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anInput, Precision::Confusion(), true);
   checkResult(aResult, 2, 4, 1, 0, true);
-static TopoDS_Face MakeSquareFace(const gp_Pnt& theA,
-                                  const gp_Pnt& theB,
-                                  const gp_Pnt& theC,
-                                  const gp_Pnt& theD)
-{
-  BRepBuilderAPI_MakeWire aMakeWire;
-  aMakeWire.Add(BRepBuilderAPI_MakeEdge(theA, theB).Edge());
-  aMakeWire.Add(BRepBuilderAPI_MakeEdge(theB, theC).Edge());
-  aMakeWire.Add(BRepBuilderAPI_MakeEdge(theC, theD).Edge());
-  aMakeWire.Add(BRepBuilderAPI_MakeEdge(theD, theA).Edge());
-  return BRepBuilderAPI_MakeFace(aMakeWire.Wire()).Face();
 }
-} // namespace
 
 // Baseline: a single closed face alone does not trigger the bug (see below).
 TEST(ShapeAnalysis_FreeBoundsTest, SingleFaceNoCrash)
