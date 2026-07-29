@@ -276,6 +276,10 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
 
 void ShapeUpgrade_WireDivide::Perform()
 {
+  if (Context().IsNull())
+  {
+    SetContext(new ShapeBuild_ReShape);
+  }
 
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 

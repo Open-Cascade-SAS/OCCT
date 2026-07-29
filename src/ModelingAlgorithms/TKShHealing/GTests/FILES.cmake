@@ -7,6 +7,7 @@ set(OCCT_TKShHealing_GTests_FILES
   ShapeAnalysis_FreeBounds_Test.cxx
   ShapeBuild_ReShape_Test.cxx
   ShapeConstruct_ProjectCurveOnSurface_Test.cxx
+  ShapeFix_ComposeShell_Test.cxx
   ShapeFix_EdgeConnect_Test.cxx
   ShapeFix_Face_Test.cxx
   ShapeFix_FaceConnect_Test.cxx
@@ -14,4 +15,5 @@ set(OCCT_TKShHealing_GTests_FILES
   ShapeUpgrade_FaceDivide_Test.cxx
   ShapeUpgrade_ShellSewing_Test.cxx
   ShapeUpgrade_UnifySameDomain_Test.cxx
+  ShapeUpgrade_WireDivide_Test.cxx
 )
