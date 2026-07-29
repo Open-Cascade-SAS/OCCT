@@ -20,7 +20,9 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <math_PSO.hxx>
@@ -37,7 +39,6 @@ class GeomLib_CheckCurveOnSurface_TargetFunc;
 static bool MinComputing(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
                          const double                            theEpsilon, // 1.0e-3
                          const int                               theNbParticles,
-                         const bool                              theIsAnalytic,
                          double&                                 theBestValue,
                          double&                                 theBestParameter);
 
@@ -189,6 +190,56 @@ public:
   //
   double LastParameter() const { return myLast; }
 
+  // Computes the exact maximum for elementary compositions supported by the adaptors.
+  bool ElementaryMaximum(double& theBestValue, double& theBestParameter) const
+  {
+    const GeomAbs_CurveType aType1 = myCurve1.GetType();
+    const GeomAbs_CurveType aType2 = myCurve2.GetType();
+    if (aType1 == GeomAbs_Line && aType2 == GeomAbs_Line)
+    {
+      double aFirstValue = RealLast(), aLastValue = RealLast();
+      if (!Value(myFirst, aFirstValue) || !Value(myLast, aLastValue))
+      {
+        return false;
+      }
+
+      if (aFirstValue <= aLastValue)
+      {
+        theBestValue     = aFirstValue;
+        theBestParameter = myFirst;
+      }
+      else
+      {
+        theBestValue     = aLastValue;
+        theBestParameter = myLast;
+      }
+      return true;
+    }
+
+    if (aType1 != GeomAbs_Circle || aType2 != GeomAbs_Circle)
+    {
+      return false;
+    }
+
+    const gp_Circ aCircle1  = myCurve1.Circle();
+    const gp_Circ aCircle2  = myCurve2.Circle();
+    const auto    isSameXYZ = [](const gp_XYZ& theLeft, const gp_XYZ& theRight) {
+      return theLeft.X() == theRight.X() && theLeft.Y() == theRight.Y()
+             && theLeft.Z() == theRight.Z();
+    };
+
+    // Equal centers and parameter frames make the distance the constant radius difference.
+    if (!isSameXYZ(aCircle1.Location().XYZ(), aCircle2.Location().XYZ())
+        || !isSameXYZ(aCircle1.XAxis().Direction().XYZ(), aCircle2.XAxis().Direction().XYZ())
+        || !isSameXYZ(aCircle1.YAxis().Direction().XYZ(), aCircle2.YAxis().Direction().XYZ()))
+    {
+      return false;
+    }
+
+    theBestParameter = myFirst;
+    return Value(myFirst, theBestValue);
+  }
+
 private:
   GeomLib_CheckCurveOnSurface_TargetFunc operator=(GeomLib_CheckCurveOnSurface_TargetFunc&) =
     delete;
@@ -215,14 +266,12 @@ public:
                                     const Array1OfHCurve&             theCurveOnSurfaceArray,
                                     const NCollection_Array1<double>& theIntervalsArr,
                                     const double                      theEpsilonRange,
-                                    const int                         theNbParticles,
-                                    const bool                        theIsAnalytic)
+                                    const int                         theNbParticles)
       : myCurveArray(theCurveArray),
         myCurveOnSurfaceArray(theCurveOnSurfaceArray),
         mySubIntervals(theIntervalsArr),
         myEpsilonRange(theEpsilonRange),
         myNbParticles(theNbParticles),
-        myIsAnalytic(theIsAnalytic),
         myArrOfDist(theIntervalsArr.Lower(), theIntervalsArr.Upper() - 1),
         myArrOfParam(theIntervalsArr.Lower(), theIntervalsArr.Upper() - 1)
   {
@@ -242,7 +291,7 @@ public:
       mySubIntervals.Value(theElemIndex + 1));
 
     double aMinDist = RealLast(), aPar = 0.0;
-    if (!MinComputing(aFunc, myEpsilonRange, myNbParticles, myIsAnalytic, aMinDist, aPar))
+    if (!MinComputing(aFunc, myEpsilonRange, myNbParticles, aMinDist, aPar))
     {
       myArrOfDist(theElemIndex)  = RealLast();
       myArrOfParam(theElemIndex) = aFunc.FirstParameter();
@@ -281,7 +330,6 @@ private:
   const NCollection_Array1<double>&  mySubIntervals;
   const double                       myEpsilonRange;
   const int                          myNbParticles;
-  const bool                         myIsAnalytic;
   mutable NCollection_Array1<double> myArrOfDist;
   mutable NCollection_Array1<double> myArrOfParam;
 };
@@ -332,43 +380,6 @@ void GeomLib_CheckCurveOnSurface::Init(const occ::handle<Adaptor3d_Curve>& theCu
   myMaxDistance  = RealLast();
   myMaxParameter = 0.0;
   myTolRange     = theTolRange;
-}
-
-//=================================================================================================
-
-//=================================================================================================
-
-// Returns true when the whole composition is made of analytic geometry: the
-// deviation function is then a low-degree smooth function whose behavior is
-// fully resolved by the control-point sampling performed before the swarm
-// optimization, so a flat sampled deviation can be trusted without running it.
-static bool IsAnalyticComposition(const Adaptor3d_Curve&          theCurve,
-                                  const Adaptor3d_CurveOnSurface& theCurveOnSurface)
-{
-  auto isAnalyticCurveType = [](const GeomAbs_CurveType theType) {
-    return theType == GeomAbs_Line || theType == GeomAbs_Circle || theType == GeomAbs_Ellipse
-           || theType == GeomAbs_Hyperbola || theType == GeomAbs_Parabola;
-  };
-
-  if (!isAnalyticCurveType(theCurve.GetType()))
-  {
-    return false;
-  }
-
-  const occ::handle<Adaptor2d_Curve2d>& aCurve2d = theCurveOnSurface.GetCurve();
-  if (aCurve2d.IsNull() || !isAnalyticCurveType(aCurve2d->GetType()))
-  {
-    return false;
-  }
-
-  const occ::handle<Adaptor3d_Surface>& aSurface = theCurveOnSurface.GetSurface();
-  if (aSurface.IsNull())
-  {
-    return false;
-  }
-  const GeomAbs_SurfaceType aSurfType = aSurface->GetType();
-  return aSurfType == GeomAbs_Plane || aSurfType == GeomAbs_Cylinder || aSurfType == GeomAbs_Cone
-         || aSurfType == GeomAbs_Sphere || aSurfType == GeomAbs_Torus;
 }
 
 //=================================================================================================
@@ -438,14 +449,11 @@ void GeomLib_CheckCurveOnSurface::Perform(
         aNbThreads > 1 ? theCurveOnSurface->ShallowCopy()
                        : static_cast<const occ::handle<Adaptor3d_Curve>&>(theCurveOnSurface));
     }
-    const bool isAnalytic = IsAnalyticComposition(*myCurve, *theCurveOnSurface);
-
     GeomLib_CheckCurveOnSurface_Local aComp(aCurveArray,
                                             aCurveOnSurfaceArray,
                                             anIntervals,
                                             anEpsilonRange,
-                                            aNbParticles,
-                                            isAnalytic);
+                                            aNbParticles);
     if (aNbThreads > 1)
     {
       const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
@@ -690,13 +698,9 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
                  const math_Vector&                      theParSup,
                  const double                            theEpsilon,
                  const int                               theNbParticles,
-                 const bool                              theIsAnalytic,
                  double&                                 theBestValue,
-                 math_Vector&                            theOutputParam,
-                 bool&                                   theIsFlat)
+                 math_Vector&                            theOutputParam)
 {
-  theIsFlat = false;
-
   const double aDeltaParam = theParSup(1) - theParInf(1);
   if (aDeltaParam < Precision::PConfusion())
   {
@@ -711,10 +715,6 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
   // They are used for finding a position of theNbParticles worst places
   const int aNbControlPoints = 3 * theNbParticles;
 
-  int    aNbComputed  = 0;
-  double aBestSeedVal = RealLast();
-  double aBestSeedPrm = theParInf(1);
-
   const double aStep  = aDeltaParam / (aNbControlPoints - 1);
   int          aCount = 1;
   for (double aPrm = theParInf(1); aCount <= aNbControlPoints;
@@ -724,13 +724,6 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
     if (!theFunction.Value(aPrm, aVal))
     {
       continue;
-    }
-
-    ++aNbComputed;
-    if (aVal < aBestSeedVal)
-    {
-      aBestSeedVal = aVal;
-      aBestSeedPrm = aPrm;
     }
 
     PSO_Particle* aParticle = aParticles.GetWorstParticle();
@@ -746,45 +739,6 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
     aParticle->BestDistance    = aVal;
   }
 
-  // When every control point lies below the geometric noise floor (squared
-  // distances under Precision::SquareConfusion()), the curves are coincident
-  // within Precision::Confusion() and the swarm optimization, the Newton
-  // refinement (whose Hessian is singular on such a flat function) and the
-  // fallback swarm would only rediscover this value. For a fully analytic
-  // composition the control-point sampling already resolves the low-degree
-  // deviation function; otherwise flatness is confirmed by resampling at
-  // half-step offsets before the optimization is skipped.
-  if (aNbComputed == aNbControlPoints && aBestSeedVal >= -Precision::SquareConfusion())
-  {
-    bool isConfirmedFlat = theIsAnalytic;
-    if (!isConfirmedFlat)
-    {
-      isConfirmedFlat = true;
-      for (double aPrm = theParInf(1) + 0.5 * aStep; aPrm < theParSup(1); aPrm += aStep)
-      {
-        double aVal = RealLast();
-        if (!theFunction.Value(aPrm, aVal) || aVal < -Precision::SquareConfusion())
-        {
-          isConfirmedFlat = false;
-          break;
-        }
-        if (aVal < aBestSeedVal)
-        {
-          aBestSeedVal = aVal;
-          aBestSeedPrm = aPrm;
-        }
-      }
-    }
-
-    if (isConfirmedFlat)
-    {
-      theBestValue      = aBestSeedVal;
-      theOutputParam(1) = aBestSeedPrm;
-      theIsFlat         = true;
-      return true;
-    }
-  }
-
   math_PSO aPSO(&theFunction, theParInf, theParSup, aStepPar);
   aPSO.Perform(aParticles, theNbParticles, theBestValue, theOutputParam);
 
@@ -796,7 +750,6 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
 bool MinComputing(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
                   const double                            theEpsilon, // 1.0e-3
                   const int                               theNbParticles,
-                  const bool                              theIsAnalytic,
                   double&                                 theBestValue,
                   double&                                 theBestParameter)
 {
@@ -811,16 +764,18 @@ bool MinComputing(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
     theBestParameter = aParInf(1);
     theBestValue     = RealLast();
 
-    bool isFlat = false;
+    if (theFunction.ElementaryMaximum(theBestValue, theBestParameter))
+    {
+      return true;
+    }
+
     if (!PSO_Perform(theFunction,
                      aParInf,
                      aParSup,
                      theEpsilon,
                      theNbParticles,
-                     theIsAnalytic,
                      theBestValue,
-                     anOutputParam,
-                     isFlat))
+                     anOutputParam))
     {
 #ifdef OCCT_DEBUG
       std::cout << "BRepLib_CheckCurveOnSurface::Compute(): math_PSO is failed!" << std::endl;
@@ -829,11 +784,6 @@ bool MinComputing(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
     }
 
     theBestParameter = anOutputParam(1);
-
-    if (isFlat)
-    {
-      return true;
-    }
 
     // Here, anOutputParam contains parameter, which is near to optimal.
     // It needs to be more precise. Precision is made by math_NewtonMinimum.
@@ -858,10 +808,8 @@ bool MinComputing(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
                       aParSup,
                       theEpsilon,
                       theNbParticles,
-                      theIsAnalytic,
                       aValue,
-                      anOutputParam,
-                      isFlat))
+                      anOutputParam))
       {
         if (aValue < theBestValue)
         {
