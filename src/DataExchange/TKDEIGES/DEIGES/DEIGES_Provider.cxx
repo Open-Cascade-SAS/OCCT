@@ -118,7 +118,7 @@ void setupIGESUnits(IGESData_GlobalSection&                      theGlobalSectio
   if (theUseDocumentUnits && !theDocument.IsNull())
   {
     double     aScaleFactorMM = 1.;
-    const bool aHasUnits = XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
+    const bool aHasUnits      = XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
                                                                aScaleFactorMM,
                                                                UnitsMethods_LengthUnit_Millimeter);
     if (aHasUnits)

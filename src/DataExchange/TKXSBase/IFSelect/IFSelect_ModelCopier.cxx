@@ -367,12 +367,12 @@ Interface_CheckIterator IFSelect_ModelCopier::sendAll(
               anAppliedModifiers,
               aChecks);
 
-  IFSelect_ContextWrite aContext(aCopiedModel,
+  IFSelect_ContextWrite   aContext(aCopiedModel,
                                  theProtocol,
                                  anAppliedModifiers,
                                  aDestinationName.ToCString());
-  const bool isWritten = theOStream == nullptr ? theWorkLibrary->WriteFile(aContext)
-                                               : theWorkLibrary->WriteStream(aContext, *theOStream);
+  const bool              isWritten = theOStream == nullptr ? theWorkLibrary->WriteFile(aContext)
+                                                            : theWorkLibrary->WriteStream(aContext, *theOStream);
   Interface_CheckIterator aContextChecks = aContext.CheckList();
   aChecks.Merge(aContextChecks);
   if (!isWritten)
