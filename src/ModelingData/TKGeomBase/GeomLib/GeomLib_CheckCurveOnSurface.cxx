@@ -21,8 +21,10 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
+#include <MathRoot_Trig.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <math_PSO.hxx>
@@ -31,6 +33,8 @@
 #include <Standard_ErrorHandler.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+
+#include <limits>
 
 typedef NCollection_Array1<occ::handle<Adaptor3d_Curve>> Array1OfHCurve;
 
@@ -216,28 +220,100 @@ public:
       return true;
     }
 
-    if (aType1 != GeomAbs_Circle || aType2 != GeomAbs_Circle)
+    const bool isTrigType1 = aType1 == GeomAbs_Circle || aType1 == GeomAbs_Ellipse;
+    const bool isTrigType2 = aType2 == GeomAbs_Circle || aType2 == GeomAbs_Ellipse;
+    if (!isTrigType1 || !isTrigType2)
     {
       return false;
     }
 
-    const gp_Circ aCircle1  = myCurve1.Circle();
-    const gp_Circ aCircle2  = myCurve2.Circle();
-    const auto    isSameXYZ = [](const gp_XYZ& theLeft, const gp_XYZ& theRight) {
-      return theLeft.X() == theRight.X() && theLeft.Y() == theRight.Y()
-             && theLeft.Z() == theRight.Z();
+    struct Coefficients
+    {
+      gp_XYZ Origin;
+      gp_XYZ Cos;
+      gp_XYZ Sin;
     };
 
-    // Equal centers and parameter frames make the distance the constant radius difference.
-    if (!isSameXYZ(aCircle1.Location().XYZ(), aCircle2.Location().XYZ())
-        || !isSameXYZ(aCircle1.XAxis().Direction().XYZ(), aCircle2.XAxis().Direction().XYZ())
-        || !isSameXYZ(aCircle1.YAxis().Direction().XYZ(), aCircle2.YAxis().Direction().XYZ()))
+    const auto getCoefficients = [](const Adaptor3d_Curve&  theCurve,
+                                    const GeomAbs_CurveType theType) -> Coefficients {
+      if (theType == GeomAbs_Circle)
+      {
+        const gp_Circ aCircle = theCurve.Circle();
+        return {aCircle.Location().XYZ(),
+                aCircle.XAxis().Direction().XYZ() * aCircle.Radius(),
+                aCircle.YAxis().Direction().XYZ() * aCircle.Radius()};
+      }
+
+      const gp_Elips anEllipse = theCurve.Ellipse();
+      return {anEllipse.Location().XYZ(),
+              anEllipse.XAxis().Direction().XYZ() * anEllipse.MajorRadius(),
+              anEllipse.YAxis().Direction().XYZ() * anEllipse.MinorRadius()};
+    };
+
+    const auto [anOrigin1, aCosCoeff1, aSinCoeff1] = getCoefficients(myCurve1, aType1);
+    const auto [anOrigin2, aCosCoeff2, aSinCoeff2] = getCoefficients(myCurve2, aType2);
+
+    const gp_XYZ anOffset  = anOrigin1 - anOrigin2;
+    const gp_XYZ aCosCoeff = aCosCoeff1 - aCosCoeff2;
+    const gp_XYZ aSinCoeff = aSinCoeff1 - aSinCoeff2;
+
+    // Coefficients of the derivative of the squared distance in trigonometric form.
+    const double aCosCos   = 2.0 * aCosCoeff.Dot(aSinCoeff);
+    const double aCosSin   = 0.5 * (aSinCoeff.SquareModulus() - aCosCoeff.SquareModulus());
+    const double aCos      = anOffset.Dot(aSinCoeff);
+    const double aSin      = -anOffset.Dot(aCosCoeff);
+    const double aConstant = -aCosCoeff.Dot(aSinCoeff);
+
+    // Exact zero is required here: a tolerance could classify a varying distance as constant.
+    if (aCosCos == 0.0 && aCosSin == 0.0 && aCos == 0.0 && aSin == 0.0 && aConstant == 0.0)
+    {
+      theBestParameter = myFirst;
+      return Value(myFirst, theBestValue);
+    }
+
+    const MathRoot::TrigResult aRoots =
+      MathRoot::Trigonometric(aCosCos,
+                              aCosSin,
+                              aCos,
+                              aSin,
+                              aConstant,
+                              myFirst,
+                              myLast,
+                              std::numeric_limits<double>::epsilon());
+    if (!aRoots.IsDone() || aRoots.InfiniteRoots
+        || (myLast - myFirst >= 2.0 * M_PI && aRoots.NbRoots == 0))
     {
       return false;
     }
 
-    theBestParameter = myFirst;
-    return Value(myFirst, theBestValue);
+    theBestValue          = RealLast();
+    theBestParameter      = myFirst;
+    const auto updateBest = [&](const double theParameter) {
+      double aValue = RealLast();
+      if (!Value(theParameter, aValue))
+      {
+        return false;
+      }
+      if (aValue < theBestValue)
+      {
+        theBestValue     = aValue;
+        theBestParameter = theParameter;
+      }
+      return true;
+    };
+
+    if (!updateBest(myFirst) || !updateBest(myLast))
+    {
+      return false;
+    }
+    for (int anIndex = 0; anIndex < aRoots.NbRoots; ++anIndex)
+    {
+      if (!updateBest(aRoots.Roots[anIndex]))
+      {
+        return false;
+      }
+    }
+    return true;
   }
 
 private:

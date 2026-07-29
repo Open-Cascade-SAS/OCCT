@@ -17,6 +17,7 @@
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
@@ -28,6 +29,7 @@
 #include <Geom_ToroidalSurface.hxx>
 #include <Precision.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Ax2d.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
@@ -123,6 +125,31 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, DeviatingLines_ReportsEndpointMaximum)
   ASSERT_TRUE(aCheck.IsDone());
   EXPECT_NEAR(aCheck.MaxDistance(), std::sqrt(18.0), Precision::Confusion());
   EXPECT_DOUBLE_EQ(aCheck.MaxParameter(), 3.0);
+}
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, CircleAndEllipse_ReportsAnalyticMaximum)
+{
+  const double aFirst = 0.0, aLast = 2.0 * M_PI;
+
+  const occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
+                    2.0);
+  const occ::handle<GeomAdaptor_Curve> aC3d = new GeomAdaptor_Curve(aCircle, aFirst, aLast);
+
+  const occ::handle<Geom2d_Ellipse> anEllipse =
+    new Geom2d_Ellipse(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 4.0, 1.0);
+  const occ::handle<Geom2dAdaptor_Curve> aC2d = new Geom2dAdaptor_Curve(anEllipse, aFirst, aLast);
+  const occ::handle<Geom_Plane>          aPlane =
+    new Geom_Plane(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)));
+  const occ::handle<GeomAdaptor_Surface>      aSurf = new GeomAdaptor_Surface(aPlane);
+  const occ::handle<Adaptor3d_CurveOnSurface> aCoS  = new Adaptor3d_CurveOnSurface(aC2d, aSurf);
+
+  GeomLib_CheckCurveOnSurface aCheck;
+  aCheck.Init(aC3d, Precision::PConfusion());
+  aCheck.Perform(aCoS);
+
+  ASSERT_TRUE(aCheck.IsDone());
+  EXPECT_NEAR(aCheck.MaxDistance(), 2.0, Precision::Confusion());
 }
 
 TEST(GeomLib_CheckCurveOnSurfaceTest, AnalyticAliasing_ReportsActualDeviation)
