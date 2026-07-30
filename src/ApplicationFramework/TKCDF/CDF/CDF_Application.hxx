@@ -25,6 +25,7 @@
 #include <CDM_CanCloseStatus.hxx>
 #include <Standard_IStream.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <mutex>
 
 class Standard_GUID;
 class CDM_Document;
@@ -233,6 +234,7 @@ protected:
   NCollection_IndexedDataMap<TCollection_ExtendedString, occ::handle<PCDM_RetrievalDriver>>
                                                                                           myReaders;
   NCollection_IndexedDataMap<TCollection_ExtendedString, occ::handle<PCDM_StorageDriver>> myWriters;
+  mutable std::mutex myReadersWritersMutex;
 
 private:
   TCollection_ExtendedString myDefaultFolder;

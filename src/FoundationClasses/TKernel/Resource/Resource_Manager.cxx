@@ -152,6 +152,20 @@ Resource_Manager::Resource_Manager()
 
 //=================================================================================================
 
+Resource_Manager::Resource_Manager(const Resource_Manager& theOther)
+    : Standard_Transient()
+{
+  std::lock_guard<std::recursive_mutex> aLock(theOther.myMutex);
+  myName        = theOther.myName;
+  myRefMap      = theOther.myRefMap;
+  myUserMap     = theOther.myUserMap;
+  myExtStrMap   = theOther.myExtStrMap;
+  myVerbose     = theOther.myVerbose;
+  myInitialized = theOther.myInitialized;
+}
+
+//=================================================================================================
+
 void Resource_Manager::Load(
   const TCollection_AsciiString&                                         thePath,
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aMap)
@@ -322,7 +336,8 @@ static int GetLine(OSD_File& aFile, TCollection_AsciiString& aLine)
 //=======================================================================
 bool Resource_Manager::Save() const
 {
-  TCollection_AsciiString anEnvVar("CSF_");
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
+  TCollection_AsciiString               anEnvVar("CSF_");
   anEnvVar += myName;
   anEnvVar += "UserDefaults";
 
@@ -455,7 +470,8 @@ bool Resource_Manager::Save() const
 
 int Resource_Manager::Integer(const char* const aResourceName) const
 {
-  TCollection_AsciiString Result = Value(aResourceName);
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
+  TCollection_AsciiString               Result = Value(aResourceName);
   if (!Result.IsIntegerValue())
   {
     TCollection_AsciiString n("Value of resource `");
@@ -473,7 +489,8 @@ int Resource_Manager::Integer(const char* const aResourceName) const
 
 double Resource_Manager::Real(const char* const aResourceName) const
 {
-  TCollection_AsciiString Result = Value(aResourceName);
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
+  TCollection_AsciiString               Result = Value(aResourceName);
   if (!Result.IsRealValue())
   {
     TCollection_AsciiString n("Value of resource `");
@@ -491,7 +508,8 @@ double Resource_Manager::Real(const char* const aResourceName) const
 
 const char* Resource_Manager::Value(const char* const aResource) const
 {
-  TCollection_AsciiString Resource(aResource);
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
+  TCollection_AsciiString               Resource(aResource);
   if (myUserMap.IsBound(Resource))
   {
     return myUserMap(Resource).ToCString();
@@ -510,7 +528,8 @@ const char* Resource_Manager::Value(const char* const aResource) const
 
 const char16_t* Resource_Manager::ExtValue(const char* const aResource)
 {
-  TCollection_AsciiString Resource(aResource);
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
+  TCollection_AsciiString               Resource(aResource);
   if (myExtStrMap.IsBound(Resource))
   {
     return myExtStrMap(Resource).ToExtString();
@@ -532,6 +551,7 @@ const char16_t* Resource_Manager::ExtValue(const char* const aResource)
 //=======================================================================
 void Resource_Manager::SetResource(const char* const aResourceName, const int aValue)
 {
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
   SetResource(aResourceName, TCollection_AsciiString(aValue).ToCString());
 }
 
@@ -542,6 +562,7 @@ void Resource_Manager::SetResource(const char* const aResourceName, const int aV
 //=======================================================================
 void Resource_Manager::SetResource(const char* const aResourceName, const double aValue)
 {
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
   SetResource(aResourceName, TCollection_AsciiString(aValue).ToCString());
 }
 
@@ -552,10 +573,11 @@ void Resource_Manager::SetResource(const char* const aResourceName, const double
 //=======================================================================
 void Resource_Manager::SetResource(const char* const aResource, const char16_t* const aValue)
 {
-  Standard_PCharacter        pStr;
-  TCollection_AsciiString    Resource = aResource;
-  TCollection_ExtendedString ExtValue = aValue;
-  TCollection_AsciiString    FormatStr(ExtValue.Length() * 3 + 10, ' ');
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
+  Standard_PCharacter                   pStr;
+  TCollection_AsciiString               Resource = aResource;
+  TCollection_ExtendedString            ExtValue = aValue;
+  TCollection_AsciiString               FormatStr(ExtValue.Length() * 3 + 10, ' ');
 
   if (!myExtStrMap.Bind(Resource, ExtValue))
   {
@@ -577,8 +599,9 @@ void Resource_Manager::SetResource(const char* const aResource, const char16_t* 
 //=======================================================================
 void Resource_Manager::SetResource(const char* const aResource, const char* const aValue)
 {
-  TCollection_AsciiString Resource = aResource;
-  TCollection_AsciiString Value    = aValue;
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
+  TCollection_AsciiString               Resource = aResource;
+  TCollection_AsciiString               Value    = aValue;
   if (!myUserMap.Bind(Resource, Value))
   {
     myUserMap(Resource) = Value;
@@ -589,7 +612,8 @@ void Resource_Manager::SetResource(const char* const aResource, const char* cons
 
 bool Resource_Manager::Find(const char* const aResource) const
 {
-  TCollection_AsciiString Resource(aResource);
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
+  TCollection_AsciiString               Resource(aResource);
   return myUserMap.IsBound(Resource) || myRefMap.IsBound(Resource);
 }
 
@@ -598,6 +622,7 @@ bool Resource_Manager::Find(const char* const aResource) const
 bool Resource_Manager::Find(const TCollection_AsciiString& theResource,
                             TCollection_AsciiString&       theValue) const
 {
+  std::lock_guard<std::recursive_mutex> aLock(myMutex);
   return myUserMap.Find(theResource, theValue) || myRefMap.Find(theResource, theValue);
 }
 

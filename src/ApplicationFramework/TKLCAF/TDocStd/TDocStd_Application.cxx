@@ -59,6 +59,7 @@ bool TDocStd_Application::IsDriverLoaded() const
 
 occ::handle<Resource_Manager> TDocStd_Application::Resources()
 {
+  std::lock_guard<std::mutex> aLock(myResourcesMutex);
   if (myResources.IsNull())
   {
     myResources = new Resource_Manager(ResourcesName());
@@ -99,6 +100,7 @@ void TDocStd_Application::DefineFormat(const TCollection_AsciiString&           
   }
 
   // register drivers
+  std::lock_guard<std::mutex> aLock(myReadersWritersMutex);
   myReaders.Add(theFormat, theReader);
   myWriters.Add(theFormat, theWriter);
 }
@@ -109,6 +111,7 @@ void TDocStd_Application::ReadingFormats(NCollection_Sequence<TCollection_AsciiS
 {
   theFormats.Clear();
 
+  std::lock_guard<std::mutex> aLock(myReadersWritersMutex);
   NCollection_IndexedDataMap<TCollection_ExtendedString,
                              occ::handle<PCDM_RetrievalDriver>>::Iterator anIter(myReaders);
   for (; anIter.More(); anIter.Next())
@@ -127,6 +130,7 @@ void TDocStd_Application::WritingFormats(NCollection_Sequence<TCollection_AsciiS
 {
   theFormats.Clear();
 
+  std::lock_guard<std::mutex> aLock(myReadersWritersMutex);
   NCollection_IndexedDataMap<TCollection_ExtendedString, occ::handle<PCDM_StorageDriver>>::Iterator
     anIter(myWriters);
   for (; anIter.More(); anIter.Next())

@@ -23,6 +23,7 @@
 #include <NCollection_List.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
+#include <mutex>
 class CDM_Document;
 
 //! A directory is a collection of documents. There is only one instance
@@ -62,6 +63,7 @@ private:
   Standard_EXPORT const NCollection_List<occ::handle<CDM_Document>>& List() const;
 
   NCollection_List<occ::handle<CDM_Document>> myDocuments;
+  mutable std::mutex                          myMutex;
 };
 
 #endif // _CDF_Directory_HeaderFile

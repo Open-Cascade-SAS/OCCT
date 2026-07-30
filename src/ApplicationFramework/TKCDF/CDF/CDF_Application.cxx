@@ -472,6 +472,7 @@ void CDF_Application::Read(Standard_IStream&                     theIStream,
 occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
   const TCollection_ExtendedString& theFormat)
 {
+  std::lock_guard<std::mutex> aLock(myReadersWritersMutex);
   // check map of readers
   occ::handle<PCDM_RetrievalDriver> aReader;
   if (myReaders.FindFromKey(theFormat, aReader))
@@ -531,6 +532,7 @@ occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
 occ::handle<PCDM_StorageDriver> CDF_Application::WriterFromFormat(
   const TCollection_ExtendedString& theFormat)
 {
+  std::lock_guard<std::mutex> aLock(myReadersWritersMutex);
   // check map of writers
   occ::handle<PCDM_StorageDriver> aDriver;
   if (myWriters.FindFromKey(theFormat, aDriver))
