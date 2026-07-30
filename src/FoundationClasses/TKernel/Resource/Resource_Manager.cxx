@@ -39,6 +39,7 @@
 #include <NCollection_Array1.hxx>
 
 #include <algorithm>
+#include <atomic>
 #include <cerrno>
 
 IMPLEMENT_STANDARD_RTTIEXT(Resource_Manager, Standard_Transient)
@@ -59,7 +60,7 @@ static Resource_KindOfLine WhatKindOfLine(OSD_File&                aFile,
 
 static int GetLine(OSD_File& aFile, TCollection_AsciiString& aLine);
 
-static bool Debug;
+static std::atomic<bool> Debug(false);
 
 //=================================================================================================
 
