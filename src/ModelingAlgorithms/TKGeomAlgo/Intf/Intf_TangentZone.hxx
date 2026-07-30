@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Intf_SectionPoint.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 class Intf_SectionPoint;
@@ -39,6 +40,12 @@ public:
   //! Gives the SectionPoint of address <Index> in the
   //! TangentZone.
   Standard_EXPORT const Intf_SectionPoint& GetPoint(const int Index) const;
+
+  //! All points (1-based), for callers that touch every point of a large
+  //! TangentZone. Builds and caches a true random-access array in one
+  //! linear pass; the cache is invalidated by any mutation. Faster than
+  //! looping GetPoint(Index), which is O(n) per call.
+  Standard_EXPORT const NCollection_Array1<Intf_SectionPoint>& Points() const;
 
   //! Compares two TangentZones.
   Standard_EXPORT bool IsEqual(const Intf_TangentZone& Other) const;
@@ -101,6 +108,10 @@ private:
   double                                  ParamOnFirstMax;
   double                                  ParamOnSecondMin;
   double                                  ParamOnSecondMax;
+
+  // Points() cache, invalidated by any mutation.
+  mutable NCollection_Array1<Intf_SectionPoint> myPtsCache;
+  mutable bool                                  myPtsCacheValid = false;
 };
 
 #include <Intf_TangentZone.lxx>
