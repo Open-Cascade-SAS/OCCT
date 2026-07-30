@@ -15,6 +15,8 @@
 
 #include <XCAFDoc_ShapeTool.hxx>
 
+#include <atomic>
+
 #include <BRep_Builder.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -50,7 +52,7 @@
 
 IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_ShapeTool, TDataStd_GenericEmpty, "xcaf", "ShapeTool")
 
-static bool theAutoNaming = true;
+static std::atomic<bool> theAutoNaming{true};
 
 // attribute methods //////////////////////////////////////////////////
 
@@ -81,6 +83,7 @@ occ::handle<XCAFDoc_ShapeTool> XCAFDoc_ShapeTool::Set(const TDF_Label& L)
 XCAFDoc_ShapeTool::XCAFDoc_ShapeTool()
 {
   hasSimpleShapes = false;
+  myOwnAutonaming = -1;
 }
 
 //=================================================================================================
@@ -453,7 +456,7 @@ void XCAFDoc_ShapeTool::MakeReference(const TDF_Label&       L,
   refNode->Remove(); // abv: fix against bug in TreeNode::Append()
   mainNode->Append(refNode);
 
-  if (theAutoNaming)
+  if (OwnAutoNaming())
   {
     SetLabelNameByLink(L);
   }
@@ -529,7 +532,7 @@ TDF_Label XCAFDoc_ShapeTool::addShape(const TopoDS_Shape& S, const bool makeAsse
   //  }
   A->SetShape(S);
 
-  if (theAutoNaming)
+  if (OwnAutoNaming())
   {
     SetLabelNameByShape(ShapeLabel);
   }
@@ -540,7 +543,7 @@ TDF_Label XCAFDoc_ShapeTool::addShape(const TopoDS_Shape& S, const bool makeAsse
     // mark assembly by assigning UAttribute
     occ::handle<TDataStd_UAttribute> Uattr;
     Uattr = TDataStd_UAttribute::Set(ShapeLabel, XCAFDoc::AssemblyGUID());
-    if (theAutoNaming)
+    if (OwnAutoNaming())
     {
       TDataStd_Name::Set(ShapeLabel, TCollection_ExtendedString("ASSEMBLY"));
     }
@@ -698,6 +701,31 @@ void XCAFDoc_ShapeTool::SetAutoNaming(const bool V)
 bool XCAFDoc_ShapeTool::AutoNaming()
 {
   return theAutoNaming;
+}
+
+//=================================================================================================
+
+// Saves/restores the instance's own override, not a shared flag -- no locking
+// needed, and nested scopes on the same instance compose correctly since each
+// one restores exactly the state it observed on entry.
+XCAFDoc_ShapeTool::OwnAutoNamingScope::OwnAutoNamingScope(
+  const occ::handle<XCAFDoc_ShapeTool>& theTool,
+  const bool                            theTemporaryValue)
+    : myTool(theTool),
+      myWasOwnAutoNaming(theTool.IsNull() ? -1 : theTool->myOwnAutonaming)
+{
+  if (!myTool.IsNull())
+  {
+    myTool->myOwnAutonaming = theTemporaryValue ? 1 : 0;
+  }
+}
+
+XCAFDoc_ShapeTool::OwnAutoNamingScope::~OwnAutoNamingScope()
+{
+  if (!myTool.IsNull())
+  {
+    myTool->myOwnAutonaming = myWasOwnAutoNaming;
+  }
 }
 
 //=================================================================================================
@@ -1542,7 +1570,7 @@ bool XCAFDoc_ShapeTool::SetSHUO(const NCollection_Sequence<TDF_Label>& labels,
 
   TDF_TagSource aTag;
   TDF_Label     UpperSubL = TDF_TagSource::NewChild(labels(1));
-  if (theAutoNaming)
+  if (OwnAutoNaming())
   {
     TCollection_ExtendedString Entry("SHUO");
     TDataStd_Name::Set(UpperSubL, TCollection_ExtendedString(Entry));
@@ -1555,7 +1583,7 @@ bool XCAFDoc_ShapeTool::SetSHUO(const NCollection_Sequence<TDF_Label>& labels,
   for (i = 2; i <= labels.Length(); i++)
   {
     TDF_Label NextSubL = TDF_TagSource::NewChild(labels(i));
-    if (theAutoNaming)
+    if (OwnAutoNaming())
     {
       TCollection_ExtendedString EntrySub("SHUO-");
       EntrySub += i;
